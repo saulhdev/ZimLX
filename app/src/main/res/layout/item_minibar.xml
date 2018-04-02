@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.balysv.materialripple.MaterialRippleLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp"
+    android:paddingTop="24dp"
+    app:mrl_rippleColor="?android:textColorPrimaryInverse"
+    app:mrl_rippleDimension="40dp"
+    app:mrl_rippleDuration="250"
+    app:mrl_rippleFadeDuration="150"
+    app:mrl_rippleOverlay="true"
+    app:mrl_rippleRoundedCorners="40dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/iv"
+            android:layout_width="match_parent"
+            android:layout_height="28dp"
+            android:tint="#FFF" />
+
+        <TextView
+            android:id="@+id/tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:visibility="gone" />
+
+    </LinearLayout>
+
+</com.balysv.materialripple.MaterialRippleLayout>

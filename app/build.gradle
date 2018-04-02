@@ -1,0 +1,132 @@
+apply plugin: 'com.android.application'
+if (enable_plugin_kotlin) {
+    apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-android-extensions'
+    apply plugin: 'kotlin-kapt'
+}
+
+android {
+    compileSdkVersion 26
+    buildToolsVersion '27.0.1'
+
+    defaultConfig {
+        minSdkVersion 26
+        targetSdkVersion 26
+
+        flavorDimensions "versionCode"
+
+        versionCode 20180331
+        versionName '0.1'
+
+        applicationId "org.zimmob.zimlx"
+        resValue 'string', 'app_name', "ZimLX"
+        resValue "string", "manifest_package_id", "org.zimmob.zimlx"
+        multiDexEnabled false
+
+
+        buildConfigField "boolean", "IS_TEST_BUILD", "false"
+        buildConfigField "boolean", "IS_GPLAY_BUILD", "false"
+        buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
+        buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+    }
+
+    productFlavors {
+        flavorDefault {
+            minSdkVersion 26
+            targetSdkVersion 26
+        }
+        flavorGplay {
+            buildConfigField "boolean", "IS_GPLAY_BUILD", "true"
+            minSdkVersion 26
+            targetSdkVersion 26
+        }
+        flavorTest {
+            buildConfigField "boolean", "IS_TEST_BUILD", "true"
+            resValue 'string', 'app_name', "OL Nightly"
+            versionCode = Integer.parseInt(new Date().format('yyMMdd'))
+            versionName = new Date().format('yyMMdd')
+            applicationId "io.github.openlauncherteam.openlauncher.test"
+            minSdkVersion 26
+            targetSdkVersion 26
+        }
+    }
+
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+        abortOnError false
+    }
+
+    configurations.all {
+        resolutionStrategy {
+            eachDependency { details ->
+                if (details.requested.group == 'com.android.support') {
+                    if (details.requested.name != 'multidex' && details.requested.name != 'multidex-instrumentation') {
+                        details.useVersion "${version_library_appcompat}"
+                    }
+                }
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            debuggable true
+            jniDebuggable true
+            renderscriptDebuggable true
+            pseudoLocalesEnabled true
+        }
+    }
+
+    sourceSets {
+        if (enable_plugin_kotlin) {
+            main.java.srcDirs += 'src/main/kotlin'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+}
+
+dependencies {
+    implementation project(':core')
+    // UI Libs
+    implementation 'com.mikepenz:fastadapter:3.0.0@aar'
+    implementation 'com.mikepenz:fastadapter-commons:3.0.0@aar'
+    implementation 'com.mikepenz:fastadapter-extensions:3.0.0@aar'
+    implementation('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+        transitive = true
+    }
+    implementation 'com.github.kizitonwose.colorpreference:support:1.0.4'
+    implementation 'com.github.daniel-stoneuk:material-about-library:2.2.3-support26.1.0'
+    implementation 'com.afollestad.material-dialogs:core:0.9.4.5'
+    implementation 'com.balysv:material-ripple:1.0.2'
+    implementation 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    implementation 'agency.tango.android:material-intro-screen:0.0.5'
+    implementation 'cat.ereza:customactivityoncrash:1.5.0'
+    implementation 'de.psdev.licensesdialog:licensesdialog:1.8.2'
+    implementation 'com.jaredrummler:colorpicker:1.0.1'
+    implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
+
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+    // Tools
+    implementation "com.jakewharton:butterknife:${version_library_butterknife}"
+    if (enable_plugin_kotlin) {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$version_plugin_kotlin"
+    }
+    // Processors
+    def anpros = ["com.jakewharton:butterknife-compiler:${version_library_butterknife}"]
+    for (anpro in anpros) {
+        if (enable_plugin_kotlin) {
+            kapt anpro
+        } else {
+            annotationProcessor anpro
+        }
+    }
+}
+repositories {
+    mavenCentral()
+}

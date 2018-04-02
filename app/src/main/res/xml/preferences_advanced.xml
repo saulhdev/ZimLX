@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <net.gsantner.opoc.preference.LanguagePreferenceCompat
+        android:defaultValue=""
+        android:key="@string/pref_key__language"
+        android:summary="@string/pref_summary__language"
+        android:title="@string/pref_title__language" />
+
+    <android.support.v7.preference.Preference
+        android:key="@string/pref_key__backup"
+        android:summary="@string/pref_summary__backup"
+        android:title="@string/pref_title__backup" />
+
+    <android.support.v7.preference.ListPreference
+        android:defaultValue="0"
+        android:entries="@array/entries__themes"
+        android:entryValues="@array/values__zero_to_one"
+        android:key="@string/pref_key__theme"
+        android:summary="@string/pref_summary__theme"
+        android:title="@string/pref_title__theme" />
+
+    <android.support.v7.preference.CheckBoxPreference
+        android:defaultValue="false"
+        android:key="@string/pref_key__desktop_rotate"
+        android:summary="@string/pref_summary__desktop_rotate"
+        android:title="@string/pref_title__desktop_rotate" />
+
+
+</android.support.v7.preference.PreferenceScreen>

@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__interfaces">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_desktop_windows_dark_24dp"
+            android:key="@string/pref_key__cat_desktop"
+            android:title="@string/pref_title__desktop" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_dock_dark_24dp"
+            android:key="@string/pref_key__cat_dock"
+            android:title="@string/pref_title__dock" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_apps_dark_24dp"
+            android:key="@string/pref_key__cat_app_drawer"
+            android:title="@string/pref_title__app_drawer" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_android_dark_24dp"
+            android:key="@string/pref_key__cat_icons"
+            android:title="@string/pref_title__icons" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_android_dark_24dp"
+            android:key="@string/pref_key__cat_fonts"
+            android:title="@string/pref_title__fonts" />
+
+        <org.zimmob.zimlx.preference.ColorPreferenceSupport
+            android:defaultValue="@color/colorPrimary"
+            android:key="@string/pref_key__primary_color"
+            android:title="@string/pref_title__primary_color"
+            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_showAlphaSlider="true" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__inputs">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_gesture_dark_24dp"
+            android:key="@string/pref_key__cat_gestures"
+            android:title="@string/pref_title__gestures" />
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_gesture_dark_24dp"
+            android:key="@string/pref_key__cat_transitions"
+            android:title="@string/pref_title__transitions" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__others">
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_bug_report_dark_24dp"
+            android:key="@string/pref_key__cat_debug"
+            android:title="@string/debug" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_more_horiz_black_24dp"
+            android:key="@string/pref_key__cat_advanced"
+            android:title="@string/pref_title__miscellaneous" />
+
+        <android.support.v7.preference.Preference
+            android:icon="@drawable/ic_info_outline_dark_24dp"
+            android:key="@string/pref_key__cat_about"
+            android:title="@string/pref_title__about" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>
