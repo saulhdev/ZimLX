@@ -83,7 +83,7 @@ class Desktop @JvmOverloads constructor(c: Context, attr: AttributeSet? = null) 
 
     fun initDesktopShowAll(c: Context, home: CoreHome) {
         val apps = ArrayList<Item>()
-        val allApps = Setup.appLoader().getAllApps(c, false)
+        val allApps = Setup.appLoader().getAllApps(c,1, false)
         for (app in allApps)
             apps.add(Item.newAppItem(app))
 

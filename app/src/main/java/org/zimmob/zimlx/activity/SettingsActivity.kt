@@ -33,7 +33,7 @@ class SettingsActivity : ThemeActivity() {
         setSupportActionBar(toolbar)
         appSettings = AppSettings.get()
         toolbar.setTitle(R.string.settings)
-        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24px)
+        toolbar.navigationIcon = this@SettingsActivity.getDrawable(R.drawable.ic_arrow_back_white_24px)
         toolbar.setNavigationOnClickListener { this@SettingsActivity.onBackPressed() }
         toolbar.setBackgroundColor(AppSettings.get().primaryColor)
 
@@ -64,13 +64,23 @@ class SettingsActivity : ThemeActivity() {
                     fragment = SettingsFragmentIcons()
                     toolbar.setTitle(R.string.pref_title__icons)
                 }
+
+                SettingsFragmentFonts.TAG -> {
+                    fragment = SettingsFragmentFonts()
+                    toolbar.setTitle(R.string.pref_title__fonts)
+                }
+                SettingsFragmentNotifications.TAG -> {
+                    fragment = SettingsFragmentNotifications()
+                    toolbar.setTitle(R.string.pref_title__notifications)
+                }
+
                 SettingsFragmentDebug.TAG -> {
                     fragment = SettingsFragmentDebug()
-                    toolbar.setTitle(R.string.debug)
+                    toolbar.setTitle(R.string.pref_title__debug)
                 }
                 SettingsFragmentAdvanced.TAG -> {
                     fragment = SettingsFragmentAdvanced()
-                    toolbar.setTitle(R.string.pref_title__miscellaneous)
+                    toolbar.setTitle(R.string.pref_title__advanced)
                 }
                 SettingsFragmentMaster.TAG -> {
                     fragment = SettingsFragmentMaster()
@@ -122,7 +132,15 @@ class SettingsActivity : ThemeActivity() {
                 } else if (settings.isKeyEqual(key, R.string.pref_key__cat_icons)) {
                     (activity as SettingsActivity).showFragment(SettingsFragmentIcons.TAG, true)
                     return true
-                } else if (settings.isKeyEqual(key, R.string.pref_key__cat_debug)) {
+                }
+                else if (settings.isKeyEqual(key, R.string.pref_key__cat_fonts)) {
+                    (activity as SettingsActivity).showFragment(SettingsFragmentFonts.TAG, true)
+                    return true
+                }
+                else if (settings.isKeyEqual(key, R.string.pref_key__cat_notifications)) {
+                    (activity as SettingsActivity).showFragment(SettingsFragmentNotifications.TAG, true)
+                    return true
+                }else if (settings.isKeyEqual(key, R.string.pref_key__cat_debug)) {
                     (activity as SettingsActivity).showFragment(SettingsFragmentDebug.TAG, true)
                     return true
                 } else if (settings.isKeyEqual(key, R.string.pref_key__cat_advanced)) {
@@ -155,16 +173,6 @@ class SettingsActivity : ThemeActivity() {
                 AppDrawerController.DrawerMode.VERTICAL -> drawerSummary += getString(R.string.vertical_scroll_drawer)
             }
             findPreference(getString(R.string.pref_key__cat_app_drawer)).summary = drawerSummary
-
-            var drawerSortMode = String.format("%s: ", getString(R.string.pref_sort_title))
-
-            when (settings.drawerStyle) {
-                AppDrawerController.SortMode.ALPHABETICAL_AZ -> drawerSummary += getString(R.string.pref_sort_alphabetical_az)
-                AppDrawerController.SortMode.ALPHABETICAL_ZA -> drawerSummary += getString(R.string.pref_sort_alphabetical_za)
-                AppDrawerController.SortMode.LAST_INSTALLED -> drawerSummary += getString(R.string.pref_sort_last_installed)
-                AppDrawerController.SortMode.MOST_USED -> drawerSummary += getString(R.string.pref_sort_most_used)
-            }
-            findPreference(getString(R.string.pref_key__cat_sort_mode)).summary = drawerSortMode
 
             val iconsSummary = String.format("%s: %ddp", getString(R.string.pref_title__size), settings.iconSize)
             findPreference(getString(R.string.pref_key__cat_icons)).summary = iconsSummary
@@ -276,16 +284,14 @@ class SettingsActivity : ThemeActivity() {
                 val key = preference.key
 
                 if (key == getString(R.string.pref_key__hidden_apps)) {
-                    Log.i("PREF", "TESTING HIDDEN APPS")
+                    Log.i("PREFERENCES", "HANDLE HIDDEN APPS")
                     val intent = Intent(activity, HideAppsActivity::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION)
                     startActivity(intent)
                     (activity as SettingsActivity).shouldLauncherRestart = true
                     return true
                 }
-                if (key == getString(R.string.pref_key__sort_mode)) {
-                    Log.i("PREF", "TESTING SORT MODE")
-                }
+
 
             }
             return super.onPreferenceTreeClick(preference)
@@ -402,6 +408,80 @@ class SettingsActivity : ThemeActivity() {
         }
     }
 
+    class SettingsFragmentFonts: BasePreferenceFragment(){
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.sharedPreferencesName = "app"
+            addPreferencesFromResource(R.xml.preferences_fonts)
+        }
+
+        override fun onPreferenceTreeClick(preference: Preference): Boolean {
+            if (isAdded && preference.hasKey()) {
+                val key = preference.key
+
+                /*if (key == getString(R.string.pref_key__icon_pack)) {
+                    AppManager.getInstance(activity!!).startPickIconPackIntent(activity!!)
+                    return true
+                }*/
+            }
+            return super.onPreferenceTreeClick(preference)
+        }
+
+        override fun onPause() {
+            appSettings.unregisterPreferenceChangedListener(this)
+            super.onPause()
+        }
+
+        override fun onResume() {
+            appSettings.registerPreferenceChangedListener(this)
+            super.onResume()
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            checkIfPreferenceChangedRequireRestart(requireRestartPreferenceIds, key)
+        }
+
+        companion object {
+            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentFonts"
+
+            private val requireRestartPreferenceIds = intArrayOf(R.string.pref_key__font_size)
+        }
+    }
+    class SettingsFragmentNotifications: BasePreferenceFragment(){
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.sharedPreferencesName = "app"
+            addPreferencesFromResource(R.xml.preferences_notifications)
+        }
+
+        override fun onPreferenceTreeClick(preference: Preference): Boolean {
+            if (isAdded && preference.hasKey()) {
+                val key = preference.key
+
+
+            }
+            return super.onPreferenceTreeClick(preference)
+        }
+
+        override fun onPause() {
+            appSettings.unregisterPreferenceChangedListener(this)
+            super.onPause()
+        }
+
+        override fun onResume() {
+            appSettings.registerPreferenceChangedListener(this)
+            super.onResume()
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            checkIfPreferenceChangedRequireRestart(requireRestartPreferenceIds, key)
+        }
+
+        companion object {
+            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentNotifications"
+
+            private val requireRestartPreferenceIds = intArrayOf(R.string.pref_key__notifications)
+        }
+    }
+
     class SettingsFragmentDebug : BasePreferenceFragment() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -498,7 +578,7 @@ class SettingsActivity : ThemeActivity() {
         }
 
         companion object {
-            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentMiscellaneous"
+            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentAdvanced"
 
             private val requireRestartPreferenceIds = intArrayOf(R.string.pref_summary__backup, R.string.pref_summary__theme)
         }

@@ -94,7 +94,7 @@ public class AppDrawerPaged extends SmoothViewPager {
             setLandscapeValue();
         }
 
-        List<AbstractApp> allApps = Setup.Companion.appLoader().getAllApps(c, false);
+        List<AbstractApp> allApps = Setup.Companion.appLoader().getAllApps(c, 1,false);
 
         allApps.sort(Comparator.comparing(AbstractApp::getLabel));
         if (allApps.size() != 0) {

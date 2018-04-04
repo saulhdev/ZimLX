@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__size">
+        <org.zimmob.zimlx.preference.NumberPickerPreference
+            android:defaultValue="12"
+            android:key="@string/pref_key__font_size"
+            android:summary="@string/pref_summary__font_size"
+            android:title="@string/pref_title__font_size"
+            app:maxValue="16"
+            app:minValue="8" />
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key__font_type"
+            android:summary="@string/pref_summary__font_type"
+            android:title="@string/pref_title__font_type" />
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

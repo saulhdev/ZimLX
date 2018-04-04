@@ -56,7 +56,7 @@
         android:defaultValue="30"
         android:key="@string/pref_key__overall_animation_speed_modifier"
         android:max="100"
-        android:summary="@string/pref_summnary__overall_animation_speed_modifier"
+        android:summary="@string/pref_summary__overall_animation_speed_modifier"
         android:title="@string/pref_title__overall_animation_speed_modifier"
         app:min="1" />
 

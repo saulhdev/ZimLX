@@ -42,7 +42,6 @@
     <string name="about_author_description">ZimLX is a launcher based on OpenLauncher</string>
 
     <!-- Settings -->
-
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Dock</string>
     <string name="pref_title__app_drawer">App Drawer</string>
@@ -50,7 +49,7 @@
     <string name="pref_title__icons">Icons</string>
     <string name="pref_title__miscellaneous">Miscellaneous</string>
     <string name="pref_title__about">About</string>
-    <string name="pref_title__fonts"></string>
+    <string name="pref_title__fonts">Fonts</string>
     <string name="pref_title__size">Size</string>
     <string name="pref_title__style">Style</string>
     <string name="pref_title__sort">Sort Mode</string>
@@ -58,10 +57,18 @@
     <string name="pref_title__color">Colors</string>
     <string name="pref_title__search_bar">Search Bar</string>
     <string name="pref_title__interfaces">Interfaces</string>
-    <string name="pref_title__inputs">Gesture &amp; Transition</string>
+    <string name="pref_title__inputs">Gestures &amp; Notifications</string>
     <string name="pref_title__feels">Feels</string>
     <string name="pref_title__others">Others</string>
     <string name="pref_title__transitions">Transitions</string>
+
+    <string name="pref_summary__font_size">Choose the font size</string>
+    <string name="pref_title__font_size">Font Size</string>
+    <string name="pref_summary__font_type">Choose the font type</string>
+    <string name="pref_title__font_type">Font</string>
+    <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__debug">Debug</string>
 
     <string name="pref_title__desktop_style">Style</string>
     <string name="pref_title__desktop_indicator_style">Indicator Style</string>
@@ -77,7 +84,7 @@
     <string name="pref_summary__desktop_show_position_indicator">Show the page indicator below the desktop.</string>
     <string name="pref_title__desktop_show_label">Show Labels</string>
     <string name="pref_summary__desktop_show_label">Show item labels below their icons.</string>
-    <string name="pref_title__desktop_rotate">Roate</string>
+    <string name="pref_title__desktop_rotate">Rotate</string>
     <string name="pref_summary__desktop_rotate">Allow screen rotate.</string>
 
     <string name="pref_title__search_bar_base_uri">Search URI</string>
@@ -115,7 +122,7 @@
     <string name="pref_title__drawer_fast_scroll_color">Scrollbar</string>
     <string name="settings__pref_drawer_label_font_size">Label Text Size</string>
     <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
-    <string name="pref_summnary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
+    <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
 
 
     <string name="pref_title__gesture_feedback">Gesture Feedback</string>

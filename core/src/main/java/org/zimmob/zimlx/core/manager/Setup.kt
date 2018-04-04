@@ -66,6 +66,8 @@ abstract class Setup<A : AbstractApp> {
 
         fun getAllApps(context: Context, includeHidden: Boolean): List<A>
 
+        fun getAllApps(context: Context,sortMode: Int, includeHidden: Boolean): List<A>
+
         fun createApp(intent: Intent): A?
 
         fun findItemApp(item: Item): A?

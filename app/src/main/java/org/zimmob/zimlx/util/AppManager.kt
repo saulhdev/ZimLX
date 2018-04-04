@@ -25,6 +25,8 @@ import org.zimmob.zimlx.core.util.Tool
 import org.zimmob.zimlx.core.util.toPx
 import java.text.Collator
 import java.util.*
+import kotlin.collections.ArrayList
+
 
 class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
 
@@ -50,7 +52,8 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
         return null
     }
 
-    fun getApps(): List<App> = apps
+    private fun getApps():List<App> =apps
+
 
     fun getNonFilteredApps(): List<App> = nonFilteredApps
 
@@ -126,7 +129,26 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
     }
 
     override fun getAllApps(context: Context, includeHidden: Boolean): List<App> {
-        return if (includeHidden) getNonFilteredApps() else getApps()
+        val appx:List<App>
+        if (includeHidden)
+            appx=getNonFilteredApps()
+        else
+            appx=getApps()
+        return appx
+    }
+
+    override fun getAllApps(context: Context,sortMode: Int, includeHidden: Boolean): List<App> {
+        val appx:List<App>
+        if (includeHidden)
+            appx=getNonFilteredApps()
+        else
+            appx=getApps()
+        //when(sortMode) {
+        //    0 -> appx.sortedBy{ it.className }
+        //    1 -> appx.sortedByDescending {it.className}
+        //}
+        return appx
+
     }
 
     override fun findItemApp(item: Item): App? {
@@ -139,6 +161,8 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
             val app = App(context, info, packageManager)
             if (apps != null && !apps.contains(app))
                 apps.add(app)
+
+
             return app
         } catch (e: Exception) {
             return null
@@ -190,6 +214,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
 
         override fun onPreExecute() {
             tempApps = ArrayList(apps)
+
             super.onPreExecute()
         }
 
@@ -210,6 +235,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
             for (info in activitiesInfo) {
                 val app = App(context, info, packageManager)
                 nonFilteredApps.add(app)
+                //nonFilteredApps.sortedByDescending { it.label }
             }
 
             val hiddenList = AppSettings.get().hiddenAppsList
@@ -229,6 +255,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
             } else {
                 for (info in activitiesInfo)
                     apps.add(App(context, info, packageManager))
+                    //apps.sortByDescending { it.label }
             }
 
             val appSettings = AppSettings.get()

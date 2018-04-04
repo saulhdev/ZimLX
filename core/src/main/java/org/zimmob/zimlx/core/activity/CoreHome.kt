@@ -665,7 +665,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
             }
             AppDrawerController.DrawerMode.VERTICAL -> {
             }
-        }// handled in the AppDrawerVertical class
+        }
     }
 
     private fun initDock() {
@@ -984,7 +984,8 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
             cx -= (appDrawerController!!.drawer.layoutParams as ViewGroup.MarginLayoutParams).leftMargin
             cy -= (appDrawerController!!.drawer.layoutParams as ViewGroup.MarginLayoutParams).topMargin
             cy -= appDrawerController!!.paddingTop
-        } else {
+        }
+        else {
             cx = x
             cy = y
             rad = 0

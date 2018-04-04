@@ -221,7 +221,7 @@ object Tool {
     @JvmStatic
     fun print(o: Any?) {
         if (o != null)
-            Log.e("Hey", o.toString())
+            Log.e("ZIMLX", o.toString())
     }
 
     @JvmStatic
@@ -230,7 +230,7 @@ object Tool {
         for (i in o.indices) {
             sb.append(o[i].toString()).append("  ")
         }
-        Log.e("Hey", sb.toString())
+        Log.e("ZIMLX", sb.toString())
     }
 
     @JvmStatic

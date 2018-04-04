@@ -91,6 +91,8 @@
     <string name="pref_key__cat_about" translatable="false">pref_key__cat_about</string>
     <string name="pref_key__cat_fonts" translatable="false">pref_key__cat_fonts</string>
     <string name="pref_key__cat_transitions" translatable="false">pref_key__cat_transitions</string>
+    <string name="pref_key__cat_notifications" translatable="false">pref_key__cat_notifications</string>
+    <string name="pref_key__notifications" translatable="false">pref_key__notifications</string>
 
     <string name="pref_key__first_start" translatable="false">pref_key__first_start</string>
     <string name="pref_key__desktop_lock" translatable="false">pref_key__desktop_lock</string>
@@ -105,5 +107,6 @@
     <string name="pref_key__date_bar_date_text_color" translatable="false">pref_key__date_bar_date_text_color</string>
     <string name="pref_key__sort_mode" translatable="false">pref_key__sort_mode</string>
 
-
+    <string name="pref_key__font_size" translatable="false">pref_key__font_size</string>
+    <string name="pref_key__font_type" translatable="false">pref_key__font_type</string>
 </resources>

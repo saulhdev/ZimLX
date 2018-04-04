@@ -23,7 +23,6 @@ abstract class ThemeActivity : AppCompatActivity() {
         }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             window.statusBarColor = dark(AppSettings.get().primaryColor, 0.8)
-            //getWindow().setNavigationBarColor(AppSettings.get().getPrimaryColor());
         }
         super.onCreate(savedInstanceState)
     }
@@ -42,7 +41,7 @@ abstract class ThemeActivity : AppCompatActivity() {
         startActivity(intent)
     }
 
-    fun dark(color: Int, factor: Double): Int {
+    private fun dark(color: Int, factor: Double): Int {
         val a = Color.alpha(color)
         val r = Color.red(color)
         val g = Color.green(color)

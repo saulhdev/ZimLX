@@ -10,7 +10,7 @@ android {
     buildToolsVersion '27.0.1'
 
     defaultConfig {
-        minSdkVersion 26
+        minSdkVersion 25
         targetSdkVersion 26
 
         flavorDimensions "versionCode"
@@ -32,12 +32,12 @@ android {
 
     productFlavors {
         flavorDefault {
-            minSdkVersion 26
+            minSdkVersion 25
             targetSdkVersion 26
         }
         flavorGplay {
             buildConfigField "boolean", "IS_GPLAY_BUILD", "true"
-            minSdkVersion 26
+            minSdkVersion 25
             targetSdkVersion 26
         }
         flavorTest {
@@ -46,7 +46,7 @@ android {
             versionCode = Integer.parseInt(new Date().format('yyMMdd'))
             versionName = new Date().format('yyMMdd')
             applicationId "io.github.openlauncherteam.openlauncher.test"
-            minSdkVersion 26
+            minSdkVersion 25
             targetSdkVersion 26
         }
     }

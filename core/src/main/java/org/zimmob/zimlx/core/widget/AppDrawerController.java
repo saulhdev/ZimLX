@@ -23,6 +23,7 @@ public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerPaged drawerViewPaged;
     public AppDrawerVertical drawerViewGrid;
     public int drawerMode;
+    public int sortMode;
     public boolean isOpen = false;
     private CallBack openCallBack, closeCallBack;
     private Animator appDrawerAnimator;
@@ -161,7 +162,8 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     public void init() {
-        if (isInEditMode()) return;
+        if (isInEditMode())
+            return;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         drawerMode = Setup.Companion.appSettings().getDrawerStyle();
         switch (drawerMode) {
@@ -177,16 +179,27 @@ public class AppDrawerController extends RevealFrameLayout {
                 break;
             case DrawerMode.VERTICAL:
                 drawerViewGrid = (AppDrawerVertical) layoutInflater.inflate(R.layout.view_app_drawer_vertical, this, false);
-                //int marginHorizontal = Tool.INSTANCE.dp2px(Setup.Companion.appSettings().getVerticalDrawerHorizontalMargin(), getContext());
-                //int marginVertical = Tool.INSTANCE.dp2px(Setup.Companion.appSettings().getVerticalDrawerVerticalMargin(), getContext());
                 RevealFrameLayout.LayoutParams lp = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
-                lp.leftMargin = 0;//marginHorizontal;
-                lp.rightMargin = 0;//marginHorizontal;
-                lp.topMargin = 0;//marginVertical;
-                lp.bottomMargin = 0;//marginVertical;
+                lp.leftMargin = 0;
+                lp.rightMargin = 0;
+                lp.topMargin = 0;
+                lp.bottomMargin = 0;
                 addView(drawerViewGrid, lp);
                 break;
         }
+        /*sortMode=Setup.Companion.appSettings().getSortMode();
+        switch (sortMode){
+            case SortMode.ALPHABETICAL_AZ:
+                break;
+            case SortMode.ALPHABETICAL_ZA:
+                break;
+            case SortMode.LAST_INSTALLED:
+                break;
+            case SortMode.MOST_USED:
+                break;
+            default:
+                break;
+        }*/
     }
 
     @Override

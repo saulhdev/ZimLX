@@ -63,15 +63,15 @@ class AboutActivity : MaterialAboutActivity() {
                     startActivity(Intent(this, InitActivity::class.java))
                 }
                 .build())
-        titleCard.addItem(ConvenienceBuilder.createWebsiteActionItem(this, resources.getDrawable(R.drawable.ic_github_dark_24dp), "GitHub", false, Uri.parse("https://github.com/otakuhzq/zimlx")))
-        titleCard.addItem(MaterialAboutActionItem(getString(R.string.about_libs), null, resources.getDrawable(R.drawable.ic_android_dark_24dp), MaterialAboutItemOnClickAction {
+        titleCard.addItem(ConvenienceBuilder.createWebsiteActionItem(this, context.getDrawable(R.drawable.ic_github_dark_24dp), "GitHub", false, Uri.parse("https://github.com/otakuhzq/zimlx")))
+        titleCard.addItem(MaterialAboutActionItem(getString(R.string.about_libs), null, context.getDrawable(R.drawable.ic_android_dark_24dp), MaterialAboutItemOnClickAction {
             LicensesDialog.Builder(this@AboutActivity)
                     .setNotices(notices)
                     .setIncludeOwnLicense(true)
                     .build()
                     .show()
         }))
-        titleCard.addItem(ConvenienceBuilder.createRateActionItem(this, resources.getDrawable(R.drawable.ic_thumb_up_dark_24dp), getString(R.string.about_rate), null))
+        titleCard.addItem(ConvenienceBuilder.createRateActionItem(this, context.getDrawable(R.drawable.ic_thumb_up_dark_24dp), getString(R.string.about_rate), null))
 
         /*author section*/
         val opAuthorCard = MaterialAboutCard.Builder()
