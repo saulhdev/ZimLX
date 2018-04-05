@@ -52,10 +52,10 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
         return null
     }
 
-    private fun getApps():List<App> =apps
+    private fun getApps(): List<App> = apps
 
 
-    fun getNonFilteredApps(): List<App> = nonFilteredApps
+    private fun getNonFilteredApps(): List<App> = nonFilteredApps
 
     fun clearListener() {
         updateListeners.clear()
@@ -129,24 +129,20 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
     }
 
     override fun getAllApps(context: Context, includeHidden: Boolean): List<App> {
-        val appx:List<App>
+        val appx: List<App>
         if (includeHidden)
-            appx=getNonFilteredApps()
+            appx = getNonFilteredApps()
         else
-            appx=getApps()
+            appx = getApps()
         return appx
     }
 
-    override fun getAllApps(context: Context,sortMode: Int, includeHidden: Boolean): List<App> {
-        val appx:List<App>
+    override fun getAllApps(context: Context, sortMode: Int, includeHidden: Boolean): List<App> {
+        val appx: List<App>
         if (includeHidden)
-            appx=getNonFilteredApps()
+            appx = getNonFilteredApps()
         else
-            appx=getApps()
-        //when(sortMode) {
-        //    0 -> appx.sortedBy{ it.className }
-        //    1 -> appx.sortedByDescending {it.className}
-        //}
+            appx = getApps()
         return appx
 
     }
@@ -223,19 +219,31 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
             super.onCancelled()
         }
 
-        protected override fun doInBackground(vararg p0: Void?): Void? {
+        override fun doInBackground(vararg p0: Void?): Void? {
             apps.clear()
             nonFilteredApps.clear()
 
             val intent = Intent(Intent.ACTION_MAIN, null)
             intent.addCategory(Intent.CATEGORY_LAUNCHER)
             val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
-            Collections.sort(activitiesInfo) { p1, p2 -> Collator.getInstance().compare(p1.loadLabel(packageManager).toString(), p2.loadLabel(packageManager).toString()) }
+
+            val settings = AppSettings.get()
+
+            val sort:String=settings.sortMode
+            when(sort){
+                "az"->Collections.sort(activitiesInfo) { p1, p2 -> Collator.getInstance().compare(p1.loadLabel(packageManager).toString(), p2.loadLabel(packageManager).toString()) }
+                "za"->Collections.sort(activitiesInfo) { p2, p1 -> Collator.getInstance().compare(p1.loadLabel(packageManager).toString(), p2.loadLabel(packageManager).toString()) }
+                "li"->Collections.sort(activitiesInfo) {
+                    p1, p2 -> Collator
+                        .getInstance()
+                        .compare(p1.activityInfo.applicationInfo.sourceDir.toString(),
+                                 p2.activityInfo.applicationInfo.sourceDir.toString())}
+            }
 
             for (info in activitiesInfo) {
                 val app = App(context, info, packageManager)
                 nonFilteredApps.add(app)
-                //nonFilteredApps.sortedByDescending { it.label }
+
             }
 
             val hiddenList = AppSettings.get().hiddenAppsList
@@ -255,7 +263,6 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
             } else {
                 for (info in activitiesInfo)
                     apps.add(App(context, info, packageManager))
-                    //apps.sortByDescending { it.label }
             }
 
             val appSettings = AppSettings.get()
@@ -286,7 +293,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
     data class App(
             val context: Context,
             var info: ResolveInfo,
-            val packageManager: PackageManager,
+            private val packageManager: PackageManager,
             override var label: String = info.loadLabel(packageManager).toString(),
             override var packageName: String = info.activityInfo.packageName,
             override var className: String = info.activityInfo.name,

@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <net.gsantner.opoc.preference.LanguagePreferenceCompat
         android:defaultValue=""
@@ -14,20 +12,7 @@
         android:summary="@string/pref_summary__backup"
         android:title="@string/pref_title__backup" />
 
-    <org.zimmob.zimlx.preference.ColorPreferenceSupport
-        android:defaultValue="@color/colorPrimary"
-        android:key="@string/pref_key__primary_color"
-        android:title="@string/pref_title__primary_color"
-        app:cpv_dialogTitle="@string/pref_title__primary_color"
-        app:cpv_showAlphaSlider="true" />
 
-    <android.support.v7.preference.ListPreference
-        android:defaultValue="0"
-        android:entries="@array/entries__themes"
-        android:entryValues="@array/values__zero_to_one"
-        android:key="@string/pref_key__theme"
-        android:summary="@string/pref_summary__theme"
-        android:title="@string/pref_title__theme" />
 
     <android.support.v7.preference.CheckBoxPreference
         android:defaultValue="false"

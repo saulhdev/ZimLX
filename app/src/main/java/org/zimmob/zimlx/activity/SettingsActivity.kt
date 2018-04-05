@@ -60,15 +60,15 @@ class SettingsActivity : ThemeActivity() {
                     fragment = SettingsFragmentGestures()
                     toolbar.setTitle(R.string.pref_title__gestures)
                 }
-                SettingsFragmentIcons.TAG -> {
-                    fragment = SettingsFragmentIcons()
-                    toolbar.setTitle(R.string.pref_title__icons)
+                SettingsFragmentAppearance.TAG -> {
+                    fragment = SettingsFragmentAppearance()
+                    toolbar.setTitle(R.string.pref_title__appearance)
+                }
+                SettingsFragmentFolders.TAG -> {
+                    fragment = SettingsFragmentFolders()
+                    toolbar.setTitle(R.string.pref_title__folders)
                 }
 
-                SettingsFragmentFonts.TAG -> {
-                    fragment = SettingsFragmentFonts()
-                    toolbar.setTitle(R.string.pref_title__fonts)
-                }
                 SettingsFragmentNotifications.TAG -> {
                     fragment = SettingsFragmentNotifications()
                     toolbar.setTitle(R.string.pref_title__notifications)
@@ -129,12 +129,12 @@ class SettingsActivity : ThemeActivity() {
                 } else if (settings.isKeyEqual(key, R.string.pref_key__cat_gestures)) {
                     (activity as SettingsActivity).showFragment(SettingsFragmentGestures.TAG, true)
                     return true
-                } else if (settings.isKeyEqual(key, R.string.pref_key__cat_icons)) {
-                    (activity as SettingsActivity).showFragment(SettingsFragmentIcons.TAG, true)
+                } else if (settings.isKeyEqual(key, R.string.pref_key__cat_appearance)) {
+                    (activity as SettingsActivity).showFragment(SettingsFragmentAppearance.TAG, true)
                     return true
                 }
-                else if (settings.isKeyEqual(key, R.string.pref_key__cat_fonts)) {
-                    (activity as SettingsActivity).showFragment(SettingsFragmentFonts.TAG, true)
+                else if (settings.isKeyEqual(key, R.string.pref_key__cat_folders)) {
+                    (activity as SettingsActivity).showFragment(SettingsFragmentFolders.TAG, true)
                     return true
                 }
                 else if (settings.isKeyEqual(key, R.string.pref_key__cat_notifications)) {
@@ -175,7 +175,7 @@ class SettingsActivity : ThemeActivity() {
             findPreference(getString(R.string.pref_key__cat_app_drawer)).summary = drawerSummary
 
             val iconsSummary = String.format("%s: %ddp", getString(R.string.pref_title__size), settings.iconSize)
-            findPreference(getString(R.string.pref_key__cat_icons)).summary = iconsSummary
+            findPreference(getString(R.string.pref_key__cat_appearance)).summary = iconsSummary
         }
 
         companion object {
@@ -333,6 +333,42 @@ class SettingsActivity : ThemeActivity() {
         }
     }
 
+    class SettingsFragmentFolders : BasePreferenceFragment(){
+        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+            preferenceManager.sharedPreferencesName = "app"
+            addPreferencesFromResource(R.xml.preferences_folders)
+        }
+
+        override fun onPreferenceTreeClick(preference: Preference): Boolean {
+            if (isAdded && preference.hasKey()) {
+                val key = preference.key
+            }
+            return super.onPreferenceTreeClick(preference)
+        }
+
+        override fun onPause() {
+            appSettings.unregisterPreferenceChangedListener(this)
+            super.onPause()
+        }
+
+        override fun onResume() {
+            appSettings.registerPreferenceChangedListener(this)
+            super.onResume()
+        }
+
+        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
+            checkIfPreferenceChangedRequireRestart(requireRestartPreferenceIds, key)
+        }
+
+        companion object {
+            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentFolders"
+
+            private val requireRestartPreferenceIds = intArrayOf(
+                    R.string.pref_key__drawer_columns)
+        }
+
+    }
+
     class SettingsFragmentGestures : BasePreferenceFragment() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
@@ -368,11 +404,11 @@ class SettingsActivity : ThemeActivity() {
         }
     }
 
-    class SettingsFragmentIcons : BasePreferenceFragment() {
+    class SettingsFragmentAppearance : BasePreferenceFragment() {
 
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.sharedPreferencesName = "app"
-            addPreferencesFromResource(R.xml.preferences_icons)
+            addPreferencesFromResource(R.xml.preferences_appearance)
         }
 
         override fun onPreferenceTreeClick(preference: Preference): Boolean {
@@ -402,50 +438,12 @@ class SettingsActivity : ThemeActivity() {
         }
 
         companion object {
-            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentIcons"
+            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentAppareance"
 
             private val requireRestartPreferenceIds = intArrayOf(R.string.pref_key__icon_size, R.string.pref_key__icon_pack)
         }
     }
 
-    class SettingsFragmentFonts: BasePreferenceFragment(){
-        override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-            preferenceManager.sharedPreferencesName = "app"
-            addPreferencesFromResource(R.xml.preferences_fonts)
-        }
-
-        override fun onPreferenceTreeClick(preference: Preference): Boolean {
-            if (isAdded && preference.hasKey()) {
-                val key = preference.key
-
-                /*if (key == getString(R.string.pref_key__icon_pack)) {
-                    AppManager.getInstance(activity!!).startPickIconPackIntent(activity!!)
-                    return true
-                }*/
-            }
-            return super.onPreferenceTreeClick(preference)
-        }
-
-        override fun onPause() {
-            appSettings.unregisterPreferenceChangedListener(this)
-            super.onPause()
-        }
-
-        override fun onResume() {
-            appSettings.registerPreferenceChangedListener(this)
-            super.onResume()
-        }
-
-        override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
-            checkIfPreferenceChangedRequireRestart(requireRestartPreferenceIds, key)
-        }
-
-        companion object {
-            val TAG = "org.zimmob.zimlx.settings.SettingsFragmentFonts"
-
-            private val requireRestartPreferenceIds = intArrayOf(R.string.pref_key__font_size)
-        }
-    }
     class SettingsFragmentNotifications: BasePreferenceFragment(){
         override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
             preferenceManager.sharedPreferencesName = "app"

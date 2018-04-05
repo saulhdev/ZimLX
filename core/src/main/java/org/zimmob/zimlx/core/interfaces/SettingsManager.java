@@ -71,7 +71,7 @@ public interface SettingsManager {
     // not in app settings yet
     int getDrawerIconSize();
 
-    int getSortMode();
+    String getSortMode();
 
     // search bar
     boolean getSearchBarEnable();

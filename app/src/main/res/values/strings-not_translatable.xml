@@ -93,6 +93,7 @@
     <string name="pref_key__cat_transitions" translatable="false">pref_key__cat_transitions</string>
     <string name="pref_key__cat_notifications" translatable="false">pref_key__cat_notifications</string>
     <string name="pref_key__notifications" translatable="false">pref_key__notifications</string>
+    <string name="pref_key__cat_appearance" translatable="false">pref_key__cat_appearance</string>
 
     <string name="pref_key__first_start" translatable="false">pref_key__first_start</string>
     <string name="pref_key__desktop_lock" translatable="false">pref_key__desktop_lock</string>
@@ -109,4 +110,12 @@
 
     <string name="pref_key__font_size" translatable="false">pref_key__font_size</string>
     <string name="pref_key__font_type" translatable="false">pref_key__font_type</string>
+
+    <string name="pref_key__folder_preview" translatable="false">pref_key__folder_preview</string>
+    <string name="pref_key__folder_shape" translatable="false">pref_key__folder_shape</string>
+    <string name="pref_key__folder_transition" translatable="false">pref_key__folder_transition</string>
+    <string name="pref_key__folder_label" translatable="false">pref_key__folder_label</string>
+    <string name="pref_key__folder_color" translatable="false">pref_key__folder_color</string>
+    <string name="pref_key__cat_color" translatable="false">pref_key__cat_color</string>
+    <string name="pref_key__cat_folders" translatable="false">pref_key__cat_folders</string>
 </resources>

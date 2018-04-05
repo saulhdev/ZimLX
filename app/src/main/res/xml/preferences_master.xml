@@ -19,16 +19,14 @@
             android:title="@string/pref_title__app_drawer" />
 
         <android.support.v7.preference.Preference
-            android:icon="@drawable/ic_android_dark_24dp"
-            android:key="@string/pref_key__cat_icons"
-            android:title="@string/pref_title__icons" />
+            android:icon="@drawable/ic_style_black_24dp"
+            android:key="@string/pref_key__cat_appearance"
+            android:title="@string/pref_title__appearance" />
 
         <android.support.v7.preference.Preference
-            android:icon="@drawable/ic_android_dark_24dp"
-            android:key="@string/pref_key__cat_fonts"
-            android:title="@string/pref_title__fonts" />
-
-
+            android:icon="@drawable/ic_folder_black_24dp"
+            android:key="@string/pref_key__cat_folders"
+            android:title="@string/pref_title__folder" />
 
     </android.support.v7.preference.PreferenceCategory>
 
@@ -39,7 +37,7 @@
             android:key="@string/pref_key__cat_gestures"
             android:title="@string/pref_title__gestures" />
         <android.support.v7.preference.Preference
-            android:icon="@drawable/ic_gesture_dark_24dp"
+            android:icon="@drawable/ic_notifications_black_24dp"
             android:key="@string/pref_key__cat_notifications"
             android:title="@string/pref_title__notifications" />
 

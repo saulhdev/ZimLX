@@ -31,9 +31,9 @@
             android:title="@string/pref_title__drawer_style" />
 
         <android.support.v7.preference.ListPreference
-            android:defaultValue="0"
-            android:entries="@array/entries_sort_mode"
-            android:entryValues="@array/values__zero_to_three"
+            android:defaultValue="az"
+            android:entries="@array/entries__sort_mode"
+            android:entryValues="@array/values__sort_mode"
             android:key="pref_key__sort_mode"
             android:summary="@string/pref_sort_summary"
             android:title="@string/pref_sort_title" />

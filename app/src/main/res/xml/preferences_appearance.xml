@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?><!--suppress AndroidElementNotAllowed -->
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__theme">
+        <org.zimmob.zimlx.preference.ColorPreferenceSupport
+            android:defaultValue="@color/colorPrimary"
+            android:key="@string/pref_key__primary_color"
+            android:title="@string/pref_title__primary_color"
+            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_showAlphaSlider="true" />
+
+        <android.support.v7.preference.ListPreference
+            android:defaultValue="0"
+            android:entries="@array/entries__themes"
+            android:entryValues="@array/values__zero_to_one"
+            android:key="@string/pref_key__theme"
+            android:summary="@string/pref_summary__theme"
+            android:title="@string/pref_title__theme" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__fonts">
+
+        <org.zimmob.zimlx.preference.NumberPickerPreference
+            android:defaultValue="12"
+            android:key="@string/pref_key__font_size"
+            android:summary="@string/pref_summary__font_size"
+            android:title="@string/pref_title__font_size"
+            app:maxValue="16"
+            app:minValue="8" />
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key__font_type"
+            android:summary="@string/pref_summary__font_type"
+            android:title="@string/pref_title__font_type" />
+
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__icons">
+        <org.zimmob.zimlx.preference.NumberPickerPreference
+            android:defaultValue="48"
+            android:key="@string/pref_key__icon_size"
+            android:summary="@string/pref_summary__icon_size"
+            android:title="@string/pref_title__icon_size"
+            app:maxValue="120"
+            app:minValue="20" />
+
+        <android.support.v7.preference.Preference
+            android:key="@string/pref_key__icon_pack"
+            android:summary="@string/pref_summary__icon_pack"
+            android:title="@string/pref_title__icon_pack" />
+    </android.support.v7.preference.PreferenceCategory>
+
+
+</android.support.v7.preference.PreferenceScreen>

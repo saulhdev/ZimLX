@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__folders">
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key__folder_preview"
+            android:title="@string/pref_title__folder_preview" />
+
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key__folder_shape"
+            android:title="@string/pref_title__folder_shape" />
+
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__folder_window">
+        <android.support.v7.preference.ListPreference
+            android:defaultValue="1"
+            android:entries="@array/entries__folder_transition"
+            android:entryValues="@array/values__folder_transition"
+            android:key="@string/pref_key__folder_transition"
+            android:summary="@string/pref_summary__folder_transition"
+            android:title="@string/pref_title__folder_transition" />
+    </android.support.v7.preference.PreferenceCategory>
+    <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__icons">
+        <android.support.v7.preference.CheckBoxPreference
+            android:defaultValue="true"
+            android:key="@string/pref_key__folder_label"
+            android:summary="@string/pref_summary__folder_label"
+            android:title="@string/pref_title__folder_label"/>
+        <org.zimmob.zimlx.preference.ColorPreferenceSupport
+            android:defaultValue="@color/colorPrimary"
+            android:key="@string/pref_key__folder_color"
+            android:title="@string/pref_title__folder_color"
+            app:cpv_dialogTitle="@string/pref_title__folder_color"
+            app:cpv_showAlphaSlider="true" />
+    </android.support.v7.preference.PreferenceCategory>
+
+</android.support.v7.preference.PreferenceScreen>

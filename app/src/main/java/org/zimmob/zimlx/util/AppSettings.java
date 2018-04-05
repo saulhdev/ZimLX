@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Locale;
 
 public class AppSettings extends AppSettingsBase implements SettingsManager {
+
     private AppSettings(Context context) {
         super(context);
     }
@@ -219,8 +220,11 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getInt(R.string.pref_key__drawer_label_color, Color.WHITE);
     }
 
-    public int getSortMode() {
-        return getInt(R.string.pref_key__sort_mode, 0);
+    public String getSortMode() {
+        return getString(R.string.pref_key__sort_mode, "0");
+    }
+    public void setSortMode(String sort) {
+        setString(R.string.pref_key__sort_mode, sort);
     }
 
     @Override

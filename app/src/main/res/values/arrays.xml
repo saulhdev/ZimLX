@@ -43,13 +43,27 @@
         <item>@string/theme_dark</item>
     </string-array>
 
-    <string-array name="entries_sort_mode">
+    <string-array name="entries__sort_mode">
         <item>@string/pref_sort_alphabetical_az</item>
         <item>@string/pref_sort_alphabetical_za</item>
         <item>@string/pref_sort_last_installed</item>
         <item>@string/pref_sort_most_used</item>
     </string-array>
+    <string-array name="values__sort_mode" translatable="false">
+        <item>az</item>
+        <item>za</item>
+        <item>li</item>
+        <item>mo</item>
+    </string-array>
 
+    <string-array name="entries__folder_transition">
+        <item>Zoom</item>
+        <item>Circle</item>
+    </string-array>
+    <string-array name="values__folder_transition" translatable="false" >
+        <item>zoom</item>
+        <item>circle</item>
+    </string-array>
     <string-array name="entries__wallpaper_options">
         <item>Set Wallpaper</item>
         <item>Blur Wallpaper</item>
@@ -62,12 +76,7 @@
         <item>February 17, 2018\n15:48</item>
         <item>15:48\nFebruary 17, 2018</item>
     </string-array>
-    <string-array name="values__zero_to_three" translatable="false">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
+
     <string-array name="values__zero_to_four" translatable="false">
         <item>0</item>
         <item>1</item>

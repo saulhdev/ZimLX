@@ -47,6 +47,7 @@
     <string name="pref_title__app_drawer">App Drawer</string>
     <string name="pref_title__gestures">Gestures</string>
     <string name="pref_title__icons">Icons</string>
+    <string name="pref_title__folders">Folders</string>
     <string name="pref_title__miscellaneous">Miscellaneous</string>
     <string name="pref_title__about">About</string>
     <string name="pref_title__fonts">Fonts</string>
@@ -86,6 +87,7 @@
     <string name="pref_summary__desktop_show_label">Show item labels below their icons.</string>
     <string name="pref_title__desktop_rotate">Rotate</string>
     <string name="pref_summary__desktop_rotate">Allow screen rotate.</string>
+
 
     <string name="pref_title__search_bar_base_uri">Search URI</string>
     <string name="pref_summary__search_bar_base_uri">Set the URI used for web searches.</string>
@@ -158,6 +160,16 @@
     <string name="pref_sort_last_installed">Last Installed</string>
     <string name="pref_sort_most_used">Most Used</string>
     <string name="pref_sort_summary">Choose the sort mode</string>
+
+    <string name="pref_title__folder">Folders</string>
+    <string name="pref_title__folder_preview">Folder Preview</string>
+    <string name="pref_title__folder_shape">Folder Shape</string>
+    <string name="pref_title__folder_window">Folder Window</string>
+    <string name="pref_title__folder_transition">Folder Transition</string>
+    <string name="pref_title__folder_label">Folder Label</string>
+    <string name="pref_title__folder_color">Color</string>
+    <string name="pref_summary__folder_transition">Select animation for folder transition</string>
+    <string name="pref_summary__folder_label">Show or hide the folder label</string>
 
     <string name="vertical_scroll_drawer">Vertical</string>
     <string name="horizontal_paged_drawer">Paged</string>
