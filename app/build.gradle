@@ -6,17 +6,18 @@ if (enable_plugin_kotlin) {
 }
 
 android {
+    signingConfigs {
+    }
     compileSdkVersion 26
     buildToolsVersion '27.0.1'
-
     defaultConfig {
         minSdkVersion 25
         targetSdkVersion 26
 
         flavorDimensions "versionCode"
 
-        versionCode 20180331
-        versionName '0.1'
+        versionCode 20180410
+        versionName '0.2'
 
         applicationId "org.zimmob.zimlx"
         resValue 'string', 'app_name', "ZimLX"
@@ -29,11 +30,11 @@ android {
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
     }
-
     productFlavors {
         flavorDefault {
             minSdkVersion 25
             targetSdkVersion 26
+            applicationId 'org.zimmob.zimlx'
         }
         flavorGplay {
             buildConfigField "boolean", "IS_GPLAY_BUILD", "true"
@@ -50,13 +51,11 @@ android {
             targetSdkVersion 26
         }
     }
-
     lintOptions {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
         abortOnError false
     }
-
     configurations.all {
         resolutionStrategy {
             eachDependency { details ->
@@ -68,7 +67,6 @@ android {
             }
         }
     }
-
     buildTypes {
         release {
             minifyEnabled false
@@ -79,7 +77,6 @@ android {
             pseudoLocalesEnabled true
         }
     }
-
     sourceSets {
         if (enable_plugin_kotlin) {
             main.java.srcDirs += 'src/main/kotlin'
@@ -88,6 +85,8 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
+    }
+    dexOptions {
     }
 }
 
@@ -110,8 +109,7 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:1.8.2'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
-
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    testCompile 'junit:junit:4.12'
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {

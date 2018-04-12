@@ -6,6 +6,7 @@ import android.content.pm.ActivityInfo
 import android.content.res.Resources
 import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.provider.MediaStore
 import android.provider.Settings
 import android.support.v4.widget.DrawerLayout
 import android.util.Log
@@ -24,10 +25,7 @@ import org.zimmob.zimlx.core.interfaces.DialogListener
 import org.zimmob.zimlx.core.interfaces.SettingsManager
 import org.zimmob.zimlx.core.manager.Setup
 import org.zimmob.zimlx.core.model.Item
-import org.zimmob.zimlx.core.util.BaseIconProvider
-import org.zimmob.zimlx.core.util.DatabaseHelper
-import org.zimmob.zimlx.core.util.SimpleIconProvider
-import org.zimmob.zimlx.core.util.Tool
+import org.zimmob.zimlx.core.util.*
 import org.zimmob.zimlx.core.viewutil.DesktopGestureListener
 import org.zimmob.zimlx.core.viewutil.ItemGestureListener
 import org.zimmob.zimlx.util.AppManager
@@ -78,6 +76,59 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
     override fun initAppManager() {
         super.initAppManager()
         AppManager.getInstance(this).init()
+
+        //Create Default DockItems
+        addDockDialer(Intent.ACTION_DIAL, 0)
+        addDockApps(Intent.CATEGORY_APP_MESSAGING, 1)
+        addDockCamera(3);
+        addDockApps(Intent.CATEGORY_APP_BROWSER, 4)
+
+    }
+
+    private fun addDockDialer(appIntent: String, position: Int) {
+        val intent = Intent(Intent.ACTION_DIAL, null)
+
+        //intent.addCategory(Intent.ACTION_MAIN)
+        intent.addCategory(Intent.CATEGORY_DEFAULT)
+
+        val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
+
+        for (info in activitiesInfo) {
+            val app = AppManager.App(this, info, packageManager)
+            Log.i("HOME", app.packageName)
+            val item = Item.newAppItem(app)
+            //item.x=position
+
+            db.saveItem(item, 0, Definitions.ItemPosition.Dock)
+        }
+
+    }
+
+    private fun addDockCamera(position: Int) {
+        val intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
+        val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
+        for (info in activitiesInfo) {
+            val app = AppManager.App(this, info, packageManager)
+            Log.i("HOME", app.packageName)
+            val item = Item.newAppItem(app)
+            item.x = position
+            db.saveItem(item, 0, Definitions.ItemPosition.Dock)
+        }
+
+    }
+
+    private fun addDockApps(appCategory: String, position: Int) {
+        val intent = Intent(Intent.ACTION_MAIN, null)
+        intent.addCategory(appCategory)
+        val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
+        for (info in activitiesInfo) {
+            val app = AppManager.App(this, info, packageManager)
+            Log.i("HOME", app.packageName)
+            val item = Item.newAppItem(app)
+            item.x = position
+            db.saveItem(item, 0, Definitions.ItemPosition.Dock)
+        }
+
     }
 
     override fun initViews() {
@@ -90,6 +141,7 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
         super.initSettings()
         drawer_layout.setDrawerLockMode(if (AppSettings.get().minibarEnable) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
+
 
     override fun onRemovePage() = if (!getDesktop().isCurrentPageEmpty)
         DialogHelper.alertDialog(this, getString(R.string.remove),
@@ -164,7 +216,9 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
 
     override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
 
-    override fun onDrawerOpened(drawerView: View) {}
+    override fun onDrawerOpened(drawerView: View) {
+
+    }
 
     override fun onDrawerClosed(drawerView: View) {}
 

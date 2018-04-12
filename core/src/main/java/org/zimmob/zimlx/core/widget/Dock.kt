@@ -46,7 +46,7 @@ class Dock @JvmOverloads constructor(c: Context, attr: AttributeSet? = null) : C
         }
     }
 
-    override fun onTouchEvent(ev: MotionEvent): Boolean = super.onTouchEvent(ev)
+    override fun onTouchEvent(evt: MotionEvent): Boolean = super.onTouchEvent(evt)
 
     override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
         detectSwipe(ev)

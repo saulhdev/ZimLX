@@ -23,11 +23,10 @@ public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerPaged drawerViewPaged;
     public AppDrawerVertical drawerViewGrid;
     public int drawerMode;
-    public int sortMode;
     public boolean isOpen = false;
     private CallBack openCallBack, closeCallBack;
     private Animator appDrawerAnimator;
-    private Long drawerAnimationTime = 200L;
+    private Long drawerAnimationTime = 500L;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -187,19 +186,7 @@ public class AppDrawerController extends RevealFrameLayout {
                 addView(drawerViewGrid, lp);
                 break;
         }
-        /*sortMode=Setup.Companion.appSettings().getSortMode();
-        switch (sortMode){
-            case SortMode.ALPHABETICAL_AZ:
-                break;
-            case SortMode.ALPHABETICAL_ZA:
-                break;
-            case SortMode.LAST_INSTALLED:
-                break;
-            case SortMode.MOST_USED:
-                break;
-            default:
-                break;
-        }*/
+
     }
 
     @Override
@@ -261,12 +248,5 @@ public class AppDrawerController extends RevealFrameLayout {
     public static class DrawerMode {
         public static final int HORIZONTAL_PAGED = 0;
         public static final int VERTICAL = 1;
-    }
-
-    public static class SortMode {
-        public static final int ALPHABETICAL_AZ = 0;
-        public static final int ALPHABETICAL_ZA = 1;
-        public static final int LAST_INSTALLED = 2;
-        public static final int MOST_USED = 3;
     }
 }

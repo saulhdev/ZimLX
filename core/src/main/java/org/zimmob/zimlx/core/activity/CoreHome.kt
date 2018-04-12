@@ -133,12 +133,12 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
         System.gc()
     }
 
-    fun onUninstallItem(item: Item) {
+    private fun onUninstallItem(item: Item) {
         consumeNextResume = true
         Setup.eventHandler().showDeletePackageDialog(this, item)
     }
 
-    fun onRemoveItem(item: Item) {
+    private fun onRemoveItem(item: Item) {
         when (item.locationInLauncher) {
             Item.LOCATION_DESKTOP -> {
                 desktop.removeItem(desktop.currentPage.coordinateToChildView(Point(item.x, item.y))!!, true)
@@ -151,7 +151,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
         db.deleteItem(item, true)
     }
 
-    fun onInfoItem(item: Item) {
+    private fun onInfoItem(item: Item) {
         if (item.type === Item.Type.APP) {
             try {
                 startActivity(Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + item.intent!!.component!!.packageName)))
@@ -161,7 +161,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
         }
     }
 
-    fun onEditItem(item: Item) {
+    private fun onEditItem(item: Item) {
         Setup.eventHandler().showEditDialog(this, item, DialogListener.OnEditDialogListener { name ->
             item.label = name
             db.saveItem(item)
@@ -561,6 +561,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
     }
 
     protected open fun initAppManager() {
+
         Setup.appLoader().addUpdateListener(AppUpdateListener {
             if (desktop == null)
                 return@AppUpdateListener false

@@ -2,7 +2,7 @@
 Open Source and free launcher for Android based on OpenLauncher.
 
 ##Donations
-Want su support me? https://paypal.me/saulhenriquez
+Want to support me? https://paypal.me/saulhenriquez
 
 
 ##Features
@@ -11,12 +11,12 @@ Want su support me? https://paypal.me/saulhenriquez
 * Folder shape change
 * Folder background change
 * IconPack Support
-* App Drawe customization
-* Four Apps sort mode: Alphabetical AZ, Alphabetical ZA, Last Installed, Most Used
+* App Drawer customization
+* Sort mode: Alphabetical AZ, Alphabetical ZA, Last Installed, Most Used
 * Minibar
 and more cool stuff.
 
 ##Collaborate
-If you are interested in collaborate, please contactme at saul_henriquez@hotmail.com
+If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com
 
 For more information about OpenLauncher please visit https://github.com/OpenLauncherTeam

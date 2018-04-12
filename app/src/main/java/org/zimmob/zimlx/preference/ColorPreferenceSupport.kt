@@ -61,7 +61,7 @@ class ColorPreferenceSupport : Preference, ColorPickerDialogListener {
      *
      * @return The tag
      */
-    val fragmentTag: String
+    private val fragmentTag: String
         get() = "color_" + key
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
@@ -166,7 +166,7 @@ class ColorPreferenceSupport : Preference, ColorPickerDialogListener {
      *
      * @param color The newly selected color
      */
-    fun saveValue(@ColorInt color: Int) {
+    private fun saveValue(@ColorInt color: Int) {
         this.color = color
         persistInt(this.color)
         notifyChanged()

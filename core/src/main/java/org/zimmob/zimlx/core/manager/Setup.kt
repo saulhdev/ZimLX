@@ -56,6 +56,7 @@ abstract class Setup<A : AbstractApp> {
 
         fun saveItem(item: Item, page: Int, desktop: Definitions.ItemPosition)
 
+
         fun deleteItem(item: Item, deleteSubItems: Boolean)
 
         fun getItem(id: Int): Item

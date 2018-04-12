@@ -37,7 +37,7 @@
             android:key="@string/pref_key__cat_gestures"
             android:title="@string/pref_title__gestures" />
         <android.support.v7.preference.Preference
-            android:icon="@drawable/ic_notifications_black_24dp"
+            android:icon="@drawable/ic_notifications_paused_black_24dp"
             android:key="@string/pref_key__cat_notifications"
             android:title="@string/pref_title__notifications" />
 

@@ -70,7 +70,7 @@ class PagerIndicator : View, SmoothViewPager.OnPageChangeListener {
     }
 
     fun setOutlinePaint() {
-        dotPaint!!.style = Paint.Style.STROKE
+        dotPaint.style = Paint.Style.STROKE
         invalidate()
     }
 

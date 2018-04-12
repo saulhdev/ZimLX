@@ -26,6 +26,7 @@
     <string name="pref_key__desktop_rows" translatable="false">pref_key__desktop_rows</string>
     <string name="pref_key__desktop_style" translatable="false">pref_key__desktop_style</string>
     <string name="pref_key__desktop_indicator_style" translatable="false">pref_key__desktop_indicator_style</string>
+    <string name="pref_key__desktop_transition" translatable="false">pref_key__desktop_transition</string>
     <string name="pref_key__minibar" translatable="false">pref_key__minibar</string>
     <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
     <string name="pref_key__minibar_arrangement" translatable="false">pref_key__minibar_arrangement</string>

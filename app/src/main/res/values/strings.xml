@@ -162,6 +162,7 @@
     <string name="pref_sort_summary">Choose the sort mode</string>
 
     <string name="pref_title__folder">Folders</string>
+    <string name="pref_title__folder_options">Options &amp; Transition</string>
     <string name="pref_title__folder_preview">Folder Preview</string>
     <string name="pref_title__folder_shape">Folder Shape</string>
     <string name="pref_title__folder_window">Folder Window</string>
@@ -220,4 +221,19 @@
     <string name="pref_title__date_bar_date_format_custom_1">Custom Format: Line 1</string>
     <string name="pref_title__date_bar_date_format_custom_2">Custom Format: Line 2</string>
 
+    <string name="title_folder_grid">Grid</string>
+    <string name="title_folder_line">Line</string>
+    <string name="title_folder_disorder">Disorder</string>
+
+    <string name="title_folder_circle">Circle</string>
+    <string name="title_folder_circle_bg">Circle Shadow</string>
+    <string name="title_folder_square">Square</string>
+    <string name="title_folder_square_bg">Square Shadow</string>
+
+    <string name="title_transition_fade">Fade</string>
+    <string name="title_transition_default">Default</string>
+    <string name="title_transition_zoom">Zoom</string>
+    <string name="title_transition_3d">3D</string>
+    <string name="title_transition_random">Random</string>
+    <string name="pref_title__desktop_transition">Transition</string>
 </resources>

@@ -443,7 +443,7 @@ class Desktop @JvmOverloads constructor(c: Context, attr: AttributeSet? = null) 
             return layout
         }
 
-        fun enterDesktopEditMode() {
+        private fun enterDesktopEditMode() {
             scaleFactor = 0.8f
             translateFactor = (if (Setup.appSettings().searchBarEnable) 20 else 40).toPx().toFloat()
             for (v in desktop.pages) {

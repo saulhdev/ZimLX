@@ -39,7 +39,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
 
     private var task: AsyncTask<*, *, *>? = null
 
-    fun findApp(intent: Intent?): App? {
+    private fun findApp(intent: Intent?): App? {
         if (intent == null || intent.component == null) return null
 
         val packageName = intent.component!!.packageName
@@ -116,7 +116,7 @@ class AppManager(val context: Context) : Setup.AppLoader<AppManager.App> {
         d.show()
     }
 
-    fun onReceive(p1: Context, p2: Intent) {
+    private fun onReceive(p1: Context, p2: Intent) {
         getAllApps()
     }
 

@@ -68,7 +68,7 @@ object DialogHelper {
                 .show()
     }
 
-    fun selectAppDialog(context: Context, onAppSelectedListener: OnAppSelectedListener?) {
+    private fun selectAppDialog(context: Context, onAppSelectedListener: OnAppSelectedListener?) {
         val builder = MaterialDialog.Builder(context)
         val fastItemAdapter = FastItemAdapter<IconLabelItem>()
         builder.title(R.string.select_app)
