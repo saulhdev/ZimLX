@@ -6,6 +6,7 @@ import android.animation.PropertyValuesHolder;
 import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,6 +56,7 @@ public class AppDrawerController extends RevealFrameLayout {
         drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
 
         appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
+
         appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         appDrawerAnimator.setDuration(drawerAnimationTime);
         appDrawerAnimator.setStartDelay((int) (Setup.appSettings().getOverallAnimationSpeedModifier() * 200));
@@ -68,15 +70,22 @@ public class AppDrawerController extends RevealFrameLayout {
                 animator.setDuration(drawerAnimationTime);
                 animator.start();
 
+                boolean mRotated = false;
+
                 switch (drawerMode) {
                     case DrawerMode.HORIZONTAL_PAGED:
                         for (int i = 0; i < drawerViewPaged.pages.size(); i++) {
                             drawerViewPaged.pages.get(i).findViewById(R.id.group).setAlpha(1);
+
                         }
                         if (drawerViewPaged.pages.size() > 0) {
                             View mGrid = drawerViewPaged.pages.get(drawerViewPaged.getCurrentItem()).findViewById(R.id.group);
+                            final CardView transitionsContainer = (CardView) findViewById(R.id.groupParent);
                             mGrid.setAlpha(0);
                             mGrid.animate().alpha(1).setDuration(150L).setStartDelay(Math.max(drawerAnimationTime - 50, 1)).setInterpolator(new AccelerateDecelerateInterpolator());
+                            //TransitionManager.beginDelayedTransition(transitionsContainer, new Rotate());
+                            //mRotated = !mRotated;
+                            //mGrid.setRotation(mRotated ? 360 : 0);
                         }
                         break;
                     case DrawerMode.VERTICAL:

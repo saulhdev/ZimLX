@@ -168,11 +168,11 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
 
             when (item.locationInLauncher) {
                 Item.LOCATION_DESKTOP -> {
-                    desktop.removeItem(desktop.currentPage.coordinateToChildView(Point(item.x, item.y))!!, false)
+                    desktop.removeItem(desktop.currentPage.coordinateToChildView(Point(item.x, item.y))!!, true)
                     desktop.addItemToCell(item, item.x, item.y)
                 }
                 Item.LOCATION_DOCK -> {
-                    dock.removeItem(dock.coordinateToChildView(Point(item.x, item.y))!!, false)
+                    dock.removeItem(dock.coordinateToChildView(Point(item.x, item.y))!!, true)
                     dock.addItemToCell(item, item.x, item.y)
                 }
             }

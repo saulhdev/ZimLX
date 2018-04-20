@@ -109,6 +109,8 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:1.8.2'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
+    //implementation 'com.andkulikov:transitionseverywhere:1.7.9'
+    implementation 'com.andkulikov:transitionseverywhere:1.7.9'
     testCompile 'junit:junit:4.12'
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"

@@ -33,7 +33,6 @@ import org.zimmob.zimlx.util.AppSettings
 import org.zimmob.zimlx.util.LauncherAction
 import org.zimmob.zimlx.viewutil.DialogHelper
 import org.zimmob.zimlx.viewutil.IconListAdapter
-import java.util.*
 
 class Home : CoreHome(), DrawerLayout.DrawerListener {
 
@@ -50,6 +49,8 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
 
         ContextUtils(applicationContext).setAppLanguage(AppSettings.get().language) // before setContentView
         super.onCreate(savedInstanceState)
+
+
 
         if (BuildConfig.IS_GPLAY_BUILD) {
             CustomActivityOnCrash.setShowErrorDetails(true)
@@ -78,31 +79,37 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
         AppManager.getInstance(this).init()
 
         //Create Default DockItems
-        addDockDialer(Intent.ACTION_DIAL, 0)
-        addDockApps(Intent.CATEGORY_APP_MESSAGING, 1)
-        addDockCamera(3);
-        addDockApps(Intent.CATEGORY_APP_BROWSER, 4)
+        //addDockDialer(Intent.ACTION_DIAL, 0)
+        //addDockApps(Intent.CATEGORY_APP_MESSAGING, 1)
+        //addDockCamera(3);
+        //addDockApps(Intent.CATEGORY_APP_BROWSER, 4)
 
     }
 
     private fun addDockDialer(appIntent: String, position: Int) {
         val intent = Intent(Intent.ACTION_DIAL, null)
-
-        //intent.addCategory(Intent.ACTION_MAIN)
         intent.addCategory(Intent.CATEGORY_DEFAULT)
 
         val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
 
         for (info in activitiesInfo) {
             val app = AppManager.App(this, info, packageManager)
-            Log.i("HOME", app.packageName)
-            val item = Item.newAppItem(app)
-            //item.x=position
+            if (app.label.equals("Phone")) {
+                Log.i("HOME", app.className)
+                val itemP = Item.newAppItem(app)
+                itemP.x = position
+                itemP.type = Item.Type.APP
+                //val myPers= Array<String>(size = 2){android.Manifest.permission.CALL_PHONE}
 
-            db.saveItem(item, 0, Definitions.ItemPosition.Dock)
+                //requestPermissions(myPers, REQUEST_PERMISSION_CALL_PHONE)
+                db.saveItem(itemP, 0, Definitions.ItemPosition.Dock)
+            }
+
+
         }
 
     }
+
 
     private fun addDockCamera(position: Int) {
         val intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
@@ -142,9 +149,8 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
         drawer_layout.setDrawerLockMode(if (AppSettings.get().minibarEnable) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
 
-
     override fun onRemovePage() = if (!getDesktop().isCurrentPageEmpty)
-        DialogHelper.alertDialog(this, getString(R.string.remove),
+        DialogHelper.alertDialog(this, getString(R.string.dialog_title__remove),
                 "This page is not empty. Those item will also be removed.",
                 MaterialDialog.SingleButtonCallback { _, _ ->
                     super@Home.onRemovePage()
@@ -366,4 +372,5 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
         else
             requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
+
 }

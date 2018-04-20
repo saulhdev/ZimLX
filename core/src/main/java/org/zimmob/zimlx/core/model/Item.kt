@@ -12,6 +12,7 @@ import org.zimmob.zimlx.core.util.BaseIconProvider
 import org.zimmob.zimlx.core.util.Tool
 import java.util.*
 
+
 data class Item(
         var type: Type? = null,
         var iconProvider: BaseIconProvider? = null,
@@ -46,6 +47,7 @@ data class Item(
             idValue = random.nextInt()
         }
     }
+
 
     constructor(parcel: Parcel) : this() {
         idValue = parcel.readInt()
@@ -117,6 +119,7 @@ data class Item(
         }
         out.writeInt(locationInLauncher)
     }
+
 
     fun reset() {
         val random = Random()

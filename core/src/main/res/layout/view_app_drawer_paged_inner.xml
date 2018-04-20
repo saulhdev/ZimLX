@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:theme="@android:style/Theme.Material.Light.NoActionBar.Fullscreen"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -7,10 +8,11 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
-        android:layout_margin="8dp"
+        android:layout_margin="1dp"
+        android:id="@+id/groupParent"
         app:cardBackgroundColor="@color/white"
-        app:cardElevation="4dp"
-        app:contentPadding="10dp">
+        app:cardElevation="2dp"
+        app:contentPadding="0dp">
 
         <org.zimmob.zimlx.core.widget.CellContainer
             android:id="@+id/group"

@@ -62,14 +62,15 @@
     <string name="pref_title__feels">Feels</string>
     <string name="pref_title__others">Others</string>
     <string name="pref_title__transitions">Transitions</string>
+    <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__debug">Debug</string>
 
     <string name="pref_summary__font_size">Choose the font size</string>
     <string name="pref_title__font_size">Font Size</string>
     <string name="pref_summary__font_type">Choose the font type</string>
     <string name="pref_title__font_type">Font</string>
-    <string name="pref_title__notifications">Notifications</string>
-    <string name="pref_title__advanced">Advanced</string>
-    <string name="pref_title__debug">Debug</string>
+
 
     <string name="pref_title__desktop_style">Style</string>
     <string name="pref_title__desktop_indicator_style">Indicator Style</string>
@@ -125,7 +126,8 @@
     <string name="settings__pref_drawer_label_font_size">Label Text Size</string>
     <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
     <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
-
+    <string name="pref_title__drawer_enter">Enter Animation</string>
+    <string name="pref_title__drawer_transition">Drawer Animation</string>
 
     <string name="pref_title__gesture_feedback">Gesture Feedback</string>
     <string name="pref_summary__gesture_feedback">Get feedback when long pressing an item on the desktop.</string>
@@ -236,4 +238,7 @@
     <string name="title_transition_3d">3D</string>
     <string name="title_transition_random">Random</string>
     <string name="pref_title__desktop_transition">Transition</string>
+
+    <string name="dialog_title__remove">Remove</string>
+    <string name="dialog_message__remove">This page is not empty. Those item will also be removed.</string>
 </resources>

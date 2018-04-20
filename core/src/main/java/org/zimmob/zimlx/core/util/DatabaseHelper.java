@@ -77,8 +77,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         String concat = "";
         switch (item.getType()) {
             case APP:
+                Setup.Companion.logger().log(this, Log.INFO, null, "Checking Save Method: %s", item.getIntent().toString());
+
+
                 if (Setup.Companion.appSettings().enableImageCaching()) {
                     Tool.INSTANCE.saveIcon(context, Tool.INSTANCE.drawableToBitmap(item.getIconProvider().getDrawableSynchronously(-1)), Integer.toString(item.getId()));
+                    Setup.Companion.logger().log(this, Log.INFO, null, "Checking Save Method:%s", item.getIntent().toString());
+
                 }
                 itemValues.put(COLUMN_DATA, Tool.INSTANCE.getIntentAsString(item.getIntent()));
                 break;

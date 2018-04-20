@@ -159,7 +159,8 @@ public class DesktopOptionView extends FrameLayout {
         });
     }
 
-    private void initItems(final Typeface typeface, final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener, int itemWidth) {
+    private void initItems(final Typeface typeface,
+                           final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener, int itemWidth) {
         List<FastItem.DesktopOptionsItem> itemsTop = new ArrayList<>();
         itemsTop.add(createItem(R.drawable.ic_delete_white_36dp, R.string.remove, typeface, itemWidth));
         itemsTop.add(createItem(R.drawable.ic_star_white_36dp, R.string.home, typeface, itemWidth));

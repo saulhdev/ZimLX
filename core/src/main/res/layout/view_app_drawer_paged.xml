@@ -3,6 +3,7 @@
 <org.zimmob.zimlx.core.widget.AppDrawerPaged xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:theme="@android:style/Theme.Material.Light.NoActionBar.Fullscreen"
     android:paddingBottom="0dp"
     android:paddingTop="0dp"
     android:visibility="invisible" />
