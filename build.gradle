@@ -4,7 +4,7 @@ buildscript {
     ext.version_setup_compileSdk = 26
     ext.version_setup_minSdk = 17
     ext.version_setup_targetSdk = ext.version_setup_compileSdk
-    ext.version_setup_buildTools = "26.0.2" // Specifying optional
+    ext.version_setup_buildTools = "27.0.3" // Specifying optional
 
     // https://developer.android.com/studio/releases/gradle-plugin.html
     ext.version_gradle_tools = "3.0.1"
@@ -17,7 +17,7 @@ buildscript {
     // https://github.com/guardianproject/NetCipher/releases
     ext.version_library_netcipher = "2.0.0-alpha1"
     // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-gradle-plugin#LookAtCentral
-    ext.version_plugin_kotlin = "1.2.21"
+    ext.version_plugin_kotlin = "1.2.30"
     ext.enable_plugin_kotlin = true
 
     repositories {
@@ -25,7 +25,7 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.0.1'
+        classpath 'com.android.tools.build:gradle:3.1.1'
         classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
         if (project.enable_plugin_kotlin) {
             classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_plugin_kotlin"

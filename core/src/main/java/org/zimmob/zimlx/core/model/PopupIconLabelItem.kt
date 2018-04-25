@@ -20,7 +20,7 @@ class PopupIconLabelItem(val labelRes: Int, val iconRes: Int) : AbstractItem<Pop
 
     override fun getLayoutRes(): Int = R.layout.item_popup_icon_label
 
-    override fun bindView(holder: ViewHolder?, payloads: MutableList<Any>?) {
+    override fun bindView(holder: ViewHolder, payloads: MutableList<Any>) {
         super.bindView(holder, payloads)
 
         holder?.labelView?.setText(labelRes)

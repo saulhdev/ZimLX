@@ -58,25 +58,25 @@
             android:summary="@string/pref_summary__hide_apps"
             android:title="@string/pref_title__hide_apps" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__drawer_show_card_view"
             android:summary="@string/pref_summary__drawer_show_card_view"
             android:title="@string/pref_title__drawer_show_card_view" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__drawer_remember_position"
             android:summary="@string/pref_summary__drawer_remember_position"
             android:title="@string/pref_title__drawer_remember_position" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__drawer_show_position_indicator"
             android:summary="@string/pref_summary__drawer_show_position_indicator"
             android:title="@string/pref_title__drawer_show_position_indicator" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__drawer_show_label"
             android:summary="@string/pref_summary__drawer_show_label"

@@ -43,25 +43,25 @@
             android:summary="@string/pref_summary__minibar"
             android:title="@string/pref_title__minibar" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__desktop_hide_grid"
             android:summary="@string/pref_summary__desktop_hide_grid"
             android:title="@string/pref_title__desktop_hide_grid" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:key="@string/pref_key__desktop_fullscreen"
             android:summary="@string/pref_summary__desktop_fullscreen"
             android:title="@string/pref_title__desktop_fullscreen" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__desktop_show_position_indicator"
             android:summary="@string/pref_summary__desktop_show_position_indicator"
             android:title="@string/pref_title__desktop_show_position_indicator" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__desktop_show_label"
             android:summary="@string/pref_summary__desktop_show_label"
@@ -71,7 +71,7 @@
 
     <android.support.v7.preference.PreferenceCategory android:title="@string/pref_title__search_bar">
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="true"
             android:key="@string/pref_key__search_bar_enable"
             android:summary="@string/pref_summary__search_bar_enable"
@@ -87,14 +87,14 @@
             android:summary="@string/pref_summary__search_bar_base_uri"
             android:title="@string/pref_title__search_bar_base_uri" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:dependency="@string/pref_key__search_bar_enable"
             android:key="@string/pref_key__search_bar_force_browser"
             android:summary="@string/pref_summary__search_bar_force_browser"
             android:title="@string/pref_title__search_bar_force_browser" />
 
-        <android.support.v7.preference.CheckBoxPreference
+        <android.support.v7.preference.SwitchPreferenceCompat
             android:defaultValue="false"
             android:dependency="@string/pref_key__search_bar_enable"
             android:key="@string/pref_key__search_bar_show_hidden_apps"

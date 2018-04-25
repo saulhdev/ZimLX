@@ -241,4 +241,7 @@
 
     <string name="dialog_title__remove">Remove</string>
     <string name="dialog_message__remove">This page is not empty. Those item will also be removed.</string>
+    <string name="title_activity_login">Sign in</string>
+
+
 </resources>

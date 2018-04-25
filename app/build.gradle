@@ -9,7 +9,7 @@ android {
     signingConfigs {
     }
     compileSdkVersion 26
-    buildToolsVersion '27.0.1'
+    buildToolsVersion '27.0.3'
     defaultConfig {
         minSdkVersion 25
         targetSdkVersion 26
@@ -111,7 +111,7 @@ dependencies {
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
     //implementation 'com.andkulikov:transitionseverywhere:1.7.9'
     implementation 'com.andkulikov:transitionseverywhere:1.7.9'
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {
@@ -130,3 +130,6 @@ dependencies {
 repositories {
     mavenCentral()
 }
+
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'

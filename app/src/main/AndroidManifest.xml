@@ -11,8 +11,13 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
     <application
-        android:name="org.zimmob.zimlx.App"
+        android:name=".App"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -21,25 +26,23 @@
         android:stateNotNeeded="true"
         android:taskAffinity=""
         android:theme="@style/Home.Light">
-
         <meta-data
             android:name="android.max_aspect"
             android:value="2.1" />
 
         <activity
-            android:name="org.zimmob.zimlx.activity.InitActivity"
+            android:name=".activity.InitActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/app_name"
             android:theme="@style/Home.Intro">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="org.zimmob.zimlx.activity.Home"
+            android:name=".activity.Home"
             android:clearTaskOnLaunch="true"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/app_name"
@@ -49,46 +52,47 @@
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="org.zimmob.zimlx.activity.AutoFinishActivity"
+            android:name=".activity.AutoFinishActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar.Fullscreen" />
         <activity
-            android:name="org.zimmob.zimlx.activity.MinibarEditActivity"
+            android:name=".activity.MinibarEditActivity"
             android:label="Edit Item"
-            android:parentActivityName="org.zimmob.zimlx.activity.Home"
+            android:parentActivityName=".activity.Home"
             android:theme="@style/NormalActivity.Light" />
         <activity
-            android:name="org.zimmob.zimlx.activity.SettingsActivity"
+            android:name=".activity.SettingsActivity"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="Settings"
             android:theme="@style/NormalActivity.Light" />
         <activity
-            android:name="org.zimmob.zimlx.activity.HideAppsActivity"
+            android:name=".activity.HideAppsActivity"
             android:label="@string/app_name"
             android:theme="@style/NormalActivity.Light" />
         <activity
-            android:name="org.zimmob.zimlx.activity.AboutActivity"
+            android:name=".activity.AboutActivity"
             android:label="About"
             android:parentActivityName=".activity.SettingsActivity"
             android:theme="@style/NormalActivity.Light" />
 
         <receiver
-            android:name="org.zimmob.zimlx.util.DeviceAdminReceiver"
+            android:name=".util.DeviceAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
             </intent-filter>
+
             <meta-data
                 android:name="android.app.device_admin"
                 android:resource="@xml/device_admin" />
         </receiver>
-
         <receiver
-            android:name="org.zimmob.zimlx.core.util.ShortcutReceiver"
+            android:name=".core.util.ShortcutReceiver"
             android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
@@ -104,9 +108,8 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
         <provider
-            android:name="org.zimmob.zimlx.util.FiveSecsDelayContentProvider"
+            android:name=".util.FiveSecsDelayContentProvider"
             android:authorities="${applicationId}.util.FiveSecsDelayContentProvider"
             android:enabled="true"
             android:exported="true"

@@ -33,7 +33,9 @@ import java.util.List;
 public class DesktopOptionView extends FrameLayout {
 
     private RecyclerView[] actionRecyclerViews = new RecyclerView[2];
+
     private FastItemAdapter<FastItem.DesktopOptionsItem>[] actionAdapters = new FastItemAdapter[2];
+
     private DesktopOptionViewListener desktopOptionViewListener;
 
     public DesktopOptionView(@NonNull Context context) {
@@ -60,11 +62,11 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void run() {
                 if (home) {
-                    actionAdapters[0].getAdapterItem(1).setIcon(R.drawable.ic_star_white_36dp);
+                    actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_black_36dp);
                 } else {
-                    actionAdapters[0].getAdapterItem(1).setIcon(R.drawable.ic_star_border_white_36dp);
+                    actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_white_36dp);
                 }
-                actionAdapters[0].notifyAdapterItemChanged(1);
+                actionAdapters[0].notifyAdapterItemChanged(2);
             }
         });
     }
@@ -76,11 +78,11 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void run() {
                 if (lock) {
-                    actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_lock_white_36dp);
+                    actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_white_36dp);
                 } else {
-                    actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_lock_open_white_36dp);
+                    actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_open_white_36dp);
                 }
-                actionAdapters[0].notifyAdapterItemChanged(2);
+                actionAdapters[1].notifyAdapterItemChanged(2);
             }
         });
     }
@@ -99,7 +101,7 @@ public class DesktopOptionView extends FrameLayout {
             return;
         }
 
-        final int paddingHorizontal = Tool.INSTANCE.dp2px(42, getContext());
+        final int paddingHorizontal = Tool.INSTANCE.dp2px(30, getContext());
         final Typeface typeface = Typeface.createFromAsset(getContext().getAssets(), "RobotoCondensed-Regular.ttf");
 
         actionAdapters[0] = new FastItemAdapter<>();
@@ -107,12 +109,13 @@ public class DesktopOptionView extends FrameLayout {
 
         actionRecyclerViews[0] = createRecyclerView(actionAdapters[0], Gravity.TOP | Gravity.CENTER_HORIZONTAL, paddingHorizontal);
         actionRecyclerViews[1] = createRecyclerView(actionAdapters[1], Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, paddingHorizontal);
-
         final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener = new com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem>() {
             @Override
             public boolean onClick(View v, IAdapter<FastItem.DesktopOptionsItem> adapter, FastItem.DesktopOptionsItem item, int position) {
                 if (desktopOptionViewListener != null) {
-                    final int id = (int) item.getIdentifier();
+
+                    int id = (int) item.getIdentifier();
+
                     if (id == R.string.home) {
                         updateHomeIcon(true);
                         desktopOptionViewListener.onSetPageAsHome();
@@ -136,8 +139,11 @@ public class DesktopOptionView extends FrameLayout {
                         }
                     } else if (id == R.string.lock) {
                         Setup.Companion.appSettings().setDesktopLock(!Setup.Companion.appSettings().isDesktopLock());
-                        //LauncherSettings.getInstance(getContext()).generalSettings.desktopLock = !LauncherSettings.getInstance(getContext()).generalSettings.desktopLock;
                         updateLockIcon(Setup.Companion.appSettings().isDesktopLock());
+                    } else if (id == R.string.add_left) {
+                        desktopOptionViewListener.onAddPage(0);
+                    } else if (id == R.string.add_right) {
+                        desktopOptionViewListener.onAddPage(1);
                     } else if (id == R.string.settings) {
                         desktopOptionViewListener.onLaunchSettings();
                     } else {
@@ -153,24 +159,26 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int itemWidth = (getWidth() - 2 * paddingHorizontal) / 3;
+                int itemWidth = (getWidth() - 2 * paddingHorizontal) / 4;
                 initItems(typeface, clickListener, itemWidth);
             }
         });
     }
 
-    private void initItems(final Typeface typeface,
-                           final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener, int itemWidth) {
+    private void initItems(final Typeface typeface, final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener, int itemWidth) {
         List<FastItem.DesktopOptionsItem> itemsTop = new ArrayList<>();
+        itemsTop.add(createItem(R.drawable.ic_add_to_queue_white_36dp, R.string.add_left, typeface, itemWidth));
         itemsTop.add(createItem(R.drawable.ic_delete_white_36dp, R.string.remove, typeface, itemWidth));
-        itemsTop.add(createItem(R.drawable.ic_star_white_36dp, R.string.home, typeface, itemWidth));
-        itemsTop.add(createItem(R.drawable.ic_lock_open_white_36dp, R.string.lock, typeface, itemWidth));
+        itemsTop.add(createItem(R.drawable.ic_home_white_36dp, R.string.home, typeface, itemWidth));
+        itemsTop.add(createItem(R.drawable.ic_add_to_queue_white_36dp, R.string.add_right, typeface, itemWidth));
+
         actionAdapters[0].set(itemsTop);
         actionAdapters[0].withOnClickListener(clickListener);
 
         List<FastItem.DesktopOptionsItem> itemsBottom = new ArrayList<>();
         itemsBottom.add(createItem(R.drawable.ic_dashboard_white_36dp, R.string.widget, typeface, itemWidth));
         itemsBottom.add(createItem(R.drawable.ic_launch_white_36dp, R.string.action, typeface, itemWidth));
+        itemsBottom.add(createItem(R.drawable.ic_lock_open_white_36dp, R.string.lock, typeface, itemWidth));
         itemsBottom.add(createItem(R.drawable.ic_settings_launcher_white_36dp, R.string.settings, typeface, itemWidth));
         actionAdapters[1].set(itemsBottom);
         actionAdapters[1].withOnClickListener(clickListener);
@@ -209,6 +217,8 @@ public class DesktopOptionView extends FrameLayout {
 
     public interface DesktopOptionViewListener {
         void onRemovePage();
+
+        void onAddPage(int option);
 
         void onSetPageAsHome();
 

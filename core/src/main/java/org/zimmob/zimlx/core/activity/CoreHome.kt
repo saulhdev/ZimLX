@@ -320,7 +320,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
             else
                 y -= 4.toPx()
 
-            dragNDropView.showPopupMenuForItem(x, y, itemList, OnClickListener { v, adapter, item, position ->
+            dragNDropView.showPopupMenuForItem(x, y, itemList, OnClickListener { _v, adapter, item, _position ->
                 when (item.identifier) {
                     uninstallItemIdentifier -> onUninstallItem(dragNDropView.dragItem!!)
                     editItemIdentifier -> onEditItem(dragNDropView.dragItem!!)
@@ -603,7 +603,7 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
     override fun onDesktopEdit() {
         Tool.visibleViews(100, 20, desktopEditOptionPanel)
 
-        hideDesktopIndicator()
+        //hideDesktopIndicator()
         updateDock(false)
         updateSearchBar(false)
     }
@@ -612,9 +612,16 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
         Tool.invisibleViews(100, 20, desktopEditOptionPanel)
 
         desktopIndicator.hideDelay()
-        showDesktopIndicator()
+        //showDesktopIndicator()
         updateDock(true)
         updateSearchBar(true)
+    }
+
+    override fun onAddPage(option: Int) {
+        if (option == 0)
+            desktop!!.addPageLeft(true)
+        else if (option == 1)
+            desktop!!.addPageRight(true)
     }
 
     override fun onRemovePage() {
@@ -999,6 +1006,4 @@ abstract class CoreHome : Activity(), Desktop.OnDesktopEditListener, DesktopOpti
         val finalRadius = Math.max(appDrawerController!!.drawer.width, appDrawerController!!.drawer.height)
         appDrawerController!!.close(cx, cy, rad, finalRadius)
     }
-
-
 }

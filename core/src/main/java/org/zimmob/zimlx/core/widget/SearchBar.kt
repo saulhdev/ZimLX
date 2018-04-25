@@ -295,7 +295,7 @@ class SearchBar : FrameLayout {
             callback!!.onCollapse()
         }
         icon.setIcon(this.context.getDrawable(R.drawable.ic_search_light_24dp))
-        Tool.visibleViews(ANIM_TIME, searchClock!!)
+        Tool.visibleViews(ANIM_TIME, searchClock)
         Tool.goneViews(ANIM_TIME, searchCardContainer, searchRecycler, switchButton)
         searchInput.text.clear()
     }

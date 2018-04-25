@@ -110,7 +110,6 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
 
     }
 
-
     private fun addDockCamera(position: Int) {
         val intent = Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA)
         val activitiesInfo = packageManager.queryIntentActivities(intent, 0)
@@ -148,6 +147,7 @@ class Home : CoreHome(), DrawerLayout.DrawerListener {
         super.initSettings()
         drawer_layout.setDrawerLockMode(if (AppSettings.get().minibarEnable) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
     }
+
 
     override fun onRemovePage() = if (!getDesktop().isCurrentPageEmpty)
         DialogHelper.alertDialog(this, getString(R.string.dialog_title__remove),

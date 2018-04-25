@@ -52,7 +52,7 @@ class Desktop @JvmOverloads constructor(c: Context, attr: AttributeSet? = null) 
 
         pageCount = CoreHome.db.desktop.size
         if (pageCount == 0) {
-            pageCount = 1
+            pageCount = 3
         }
 
         currentItem = Setup.appSettings().desktopPageCurrent
@@ -348,8 +348,8 @@ class Desktop @JvmOverloads constructor(c: Context, attr: AttributeSet? = null) 
     }
 
     inner class DesktopAdapter(private val desktop: Desktop) : SmoothPagerAdapter() {
-        internal var scaleFactor = 1.0f
-        internal var translateFactor = 0.0f
+        private var scaleFactor = 1.0f
+        private var translateFactor = 0.0f
         private var currentEvent: MotionEvent? = null
 
         private val gestureListener: SimpleFingerGestures.OnFingerGestureListener
