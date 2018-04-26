@@ -13,14 +13,13 @@ import android.graphics.drawable.BitmapDrawable;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
-import org.zimmob.zimlx.core.manager.Setup;
-import org.zimmob.zimlx.core.util.Definitions;
+import org.zimmob.zimlx.manager.Setup;
 
 import java.io.InputStream;
 import java.util.List;
 
 public class IconPackHelper {
-    public static void themePacs(AppManager appManager, final int iconSize, String resPacName, List<AppManager.App> apps) {
+    public static void themePacs(AppManager appManager, final int iconSize, String resPacName, List<App> apps) {
         //theming vars-----------------------------------------------
         Resources themeRes = null;
         String iconResource;
@@ -104,7 +103,7 @@ public class IconPackHelper {
                 }
 
                 if (intres != 0) {//has single drawable for app
-                    apps.get(I).setIconProvider(Setup.Companion.imageLoader().createIconProvider(new BitmapDrawable(BitmapFactory.decodeResource(themeRes, intres, uniformOptions))));
+                    apps.get(I).setIconProvider(Setup.imageLoader().createIconProvider(new BitmapDrawable(BitmapFactory.decodeResource(themeRes, intres, uniformOptions))));
                 } else {
                     try {
                         orig = Bitmap.createBitmap(apps.get(I).getIconProvider().getDrawableSynchronously(Definitions.NO_SCALE).getIntrinsicWidth(), apps.get(I).getIconProvider().getDrawableSynchronously(Definitions.NO_SCALE).getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
@@ -133,7 +132,7 @@ public class IconPackHelper {
                     if (front != null)
                         canvas.drawBitmap(front, getResizedMatrix(front, iconSize, iconSize), p);
 
-                    apps.get(I).setIconProvider(Setup.Companion.imageLoader().createIconProvider(new BitmapDrawable(appManager.getContext().getResources(), scaledBitmap)));
+                    apps.get(I).setIconProvider(Setup.imageLoader().createIconProvider(new BitmapDrawable(appManager.getContext().getResources(), scaledBitmap)));
                 }
             }
         }

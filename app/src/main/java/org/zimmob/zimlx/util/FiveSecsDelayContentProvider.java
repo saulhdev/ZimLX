@@ -8,7 +8,6 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
 import org.zimmob.zimlx.activity.AutoFinishActivity;
-import org.zimmob.zimlx.core.util.Tool;
 
 public class FiveSecsDelayContentProvider extends ContentProvider {
 
@@ -50,14 +49,14 @@ public class FiveSecsDelayContentProvider extends ContentProvider {
     public int delete(@NonNull Uri uri,
                       String selection,
                       String[] selectionArgs) {
-        Tool.INSTANCE.print("dfshgjsdfdfrghid");
+        Tool.print("dfshgjsdfdfrghid");
         checkCallingPackage();
         if (PATH_RESET_5SEC_DELAY.equals(uri.getLastPathSegment())) {
             /**
              * This assumes you have a transparent activity that will just call finish() during its onCreate method
              * Activity in this case also provides a static method for starting itself
              */
-            AutoFinishActivity.Companion.start(getContext());
+            AutoFinishActivity.start(getContext());
             return 1;
         }
         return 0;

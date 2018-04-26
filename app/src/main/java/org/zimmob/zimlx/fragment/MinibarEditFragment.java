@@ -98,9 +98,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
         ArrayList<String> minibarArrangement = new ArrayList<>();
         for (AppItem item : adapter.getAdapterItems()) {
             if (item.enable) {
-                minibarArrangement.add("0" + item.item.label.toString());
+                minibarArrangement.add("0" + item.item._label.toString());
             } else {
-                minibarArrangement.add("1" + item.item.label.toString());
+                minibarArrangement.add("1" + item.item._label.toString());
             }
         }
         AppSettings.get().setMinibarArrangement(minibarArrangement);
@@ -154,9 +154,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
 
         @Override
         public void bindView(ViewHolder holder, List payloads) {
-            holder.label.setText(item.label.toString());
-            holder.description.setText(item.description);
-            holder.icon.setImageResource(item.icon);
+            holder.label.setText(item._label.toString());
+            holder.description.setText(item._description);
+            holder.icon.setImageResource(item._icon);
             holder.checkbox.setChecked(enable);
             holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

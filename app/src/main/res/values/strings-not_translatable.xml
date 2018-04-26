@@ -30,6 +30,8 @@
     <string name="pref_key__minibar" translatable="false">pref_key__minibar</string>
     <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
     <string name="pref_key__minibar_arrangement" translatable="false">pref_key__minibar_arrangement</string>
+
+    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
     <string name="pref_key__search_bar_enable" translatable="false">pref_key__search_bar_enable</string>
     <string name="pref_key__search_bar_show_hidden_apps" translatable="false">pref_key__search_bar_show_hidden_apps</string>
     <string name="pref_key__desktop_fullscreen" translatable="false">pref_key__desktop_fullscreen</string>
@@ -47,7 +49,7 @@
     <string name="pref_key__dock_size" translatable="false">pref_key__dock_size</string>
     <string name="pref_key__dock_show_label" translatable="false">pref_key__dock_show_label</string>
     <string name="pref_key__dock_background_color" translatable="false">pref_key__dock_background_color</string>
-
+    <string name="pref_key__more_info__app" translatable="false">pref_key__more_info__app</string>
     <string name="pref_key__drawer_columns" translatable="false">pref_key__drawer_columns</string>
     <string name="pref_key__drawer_rows" translatable="false">pref_key__drawer_rows</string>
     <string name="pref_key__drawer_style" translatable="false">pref_key__drawer_style</string>
@@ -120,4 +122,37 @@
     <string name="pref_key__folder_color" translatable="false">pref_key__folder_color</string>
     <string name="pref_key__cat_color" translatable="false">pref_key__cat_color</string>
     <string name="pref_key__cat_folders" translatable="false">pref_key__cat_folders</string>
+
+    <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
+    <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>
+    <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
+    <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
+    <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
+    <string name="pref_key__more_info__help" translatable="false">pref_key__more_info__help</string>
+    <string name="pref_key__more_info__rate_app" translatable="false">pref_key__more_info__rate_app</string>
+    <string name="pref_key__more_info__translate" translatable="false">pref_key__more_info__translate</string>
+    <string name="pref_key__more_info__join_community" translatable="false">pref_key__more_info__join_community</string>
+    <string name="pref_key__more_info__android_contribution_guide" translatable="false">pref_key__more_info__android_contribution_guide</string>
+    <string name="pref_key__more_info__donate" translatable="false">pref_key__more_info__donate</string>
+    <string name="pref_key__more_info__project_contribution_info" translatable="false">pref_key__more_info__project_contribution_info</string>
+    <string name="pref_key__more_info__project_community" translatable="false">pref_key__more_info__project_community</string>
+    <string name="pref_key__more_info__project_team" translatable="false">pref_key__more_info__project_team</string>
+    <string name="pref_key__more_info__contributors_public_info" translatable="false">pref_key__more_info__contributors_public_info</string>
+    <string name="pref_key__more_info__copy_build_information" translatable="false">pref_key__more_info__copy_build_information</string>
+    <string name="community" translatable="false">Community</string>
+    <string name="pref__date_bar_date_format_custom__default_value_1" translatable="false"><![CDATA[EEEE\', \'dd\'.\']]></string>
+    <string name="pref__date_bar_date_format_custom__default_value_2" translatable="false"><![CDATA[MMMM yyyy\', KW \'ww]]></string>
+    <string name="pref_key__about" translatable="false">pref_key__about</string>
+    <string name="pref_default__search_bar_base_uri" translatable="false">
+    <![CDATA[https://duckduckgo.com/?kae=c&k1=-1&kaj=m&kv=l&kp=-1&q={query}]]></string>
+
+
+    <string name="app_license_name" translatable="false">Apache 2.0</string>
+    <string name="app_community_url" translatable="false">https://matrix.to/#/#openlauncher:matrix.org</string>
+    <string name="app_bugreport_url" translatable="false">https://github.com/openlauncherteam/openlauncher/issues</string>
+    <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
+    <string name="app_web_url" translatable="false">https://github.com/openlauncherteam/openlauncher</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/openlauncherteam/openlauncher</string>
+    <string name="app_donate_url" translatable="false"><![CDATA[https://gsantner.net/supportme/?project=openlauncher&source=inapp_supdon]]></string>
+    <string name="app_contribution_info_url" translatable="false">https://github.com/openlauncherteam/openlauncher/blob/master/README.md#contributions</string>
 </resources>

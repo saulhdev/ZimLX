@@ -22,10 +22,11 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.core.model.AppInfo;
-import org.zimmob.zimlx.core.util.Definitions;
+import org.zimmob.zimlx.model.AppInfo;
+import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.Definitions;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,9 +158,9 @@ public class HideAppsFragment extends Fragment {
     }
 
     private void prepareData() {
-        List<AppManager.App> apps = AppManager.Companion.getInstance(getContext()).getNonFilteredApps();
+        List<App> apps = AppManager.getInstance(getContext()).getNonFilteredApps();
 
-        for (AppManager.App app : apps) {
+        for (App app : apps) {
             AppInfo tempAppInfo = new AppInfo(
                     app.getPackageName() + "/" + app.getClassName(),
                     app.getLabel(),

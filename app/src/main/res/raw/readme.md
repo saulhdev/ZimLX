@@ -1,11 +1,11 @@
 # ZimLX
 Open Source and free launcher for Android based on OpenLauncher.
 
-##Donations
+## Donations
 Want to support me? https://paypal.me/saulhenriquez
 
 
-##Features
+## Features
 * Custom color interface
 * No ads
 * Folder shape change
@@ -16,7 +16,7 @@ Want to support me? https://paypal.me/saulhenriquez
 * Minibar
 and more cool stuff.
 
-##Collaborate
+## Collaborate
 If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com
 
 For more information about OpenLauncher please visit https://github.com/OpenLauncherTeam

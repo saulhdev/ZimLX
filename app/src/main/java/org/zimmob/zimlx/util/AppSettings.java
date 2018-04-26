@@ -5,28 +5,28 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.v4.content.ContextCompat;
 
-import net.gsantner.opoc.util.AppSettingsBase;
+import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
-import org.zimmob.zimlx.App;
+import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.core.interfaces.SettingsManager;
-import org.zimmob.zimlx.core.manager.Setup;
-import org.zimmob.zimlx.core.widget.AppDrawerController;
-import org.zimmob.zimlx.core.widget.Desktop;
-import org.zimmob.zimlx.core.widget.PagerIndicator;
+import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.widget.AppDrawerController;
+import org.zimmob.zimlx.widget.Desktop;
+import org.zimmob.zimlx.widget.PagerIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
-public class AppSettings extends AppSettingsBase implements SettingsManager {
+public class AppSettings extends SharedPreferencesPropertyBackend {
 
-    private AppSettings(Context context) {
+    public AppSettings(Context context) {
         super(context);
     }
 
     public static AppSettings get() {
-        return new AppSettings(App.Companion.get());
+        return new AppSettings(AppObject.get());
     }
 
     public int getDesktopColumnCount() {
@@ -69,21 +69,21 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getBool(R.string.pref_key__search_bar_force_browser, false);
     }
 
-    @Override
+
     public boolean getSearchBarShouldShowHiddenApps() {
         return getBool(R.string.pref_key__search_bar_show_hidden_apps, false);
     }
 
-    @Override
+
     public boolean isSearchBarTimeEnabled() {
         return true;
     }
 
-    @Override
+
     @SuppressLint("SimpleDateFormat")
     public SimpleDateFormat getUserDateFormat() {
-        String line1 = getString(R.string.pref_key__date_bar_date_format_custom_1, rstr(R.string.pref_key__date_bar_date_format_custom__default_value_1));
-        String line2 = getString(R.string.pref_key__date_bar_date_format_custom_2, rstr(R.string.pref_key__date_bar_date_format_custom__default_value_2));
+        String line1 = getString(R.string.pref_key__date_bar_date_format_custom_1, rstr(R.string.pref__date_bar_date_format_custom__default_value_1));
+        String line2 = getString(R.string.pref_key__date_bar_date_format_custom_2, rstr(R.string.pref__date_bar_date_format_custom__default_value_2));
 
         try {
             return new SimpleDateFormat((line1 + "'\n'" + line2).replace("''", ""), Locale.getDefault());
@@ -92,42 +92,42 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         }
     }
 
-    @Override
+
     public int getDesktopDateMode() {
         return getIntOfStringPref(R.string.pref_key__date_bar_date_format_type, 1);
     }
 
-    @Override
+
     public int getDesktopDateTextColor() {
         return getInt(R.string.pref_key__date_bar_date_text_color, Color.WHITE);
     }
 
-    @Override
+
     public boolean isResetSearchBarOnOpen() {
         return false;
     }
 
-    @Override
+
     public boolean isSearchGridListSwitchEnabled() {
         return false;
     }
 
-    @Override
+
     public boolean isSearchUseGrid() {
         return getBool(R.string.pref_key__desktop_search_use_grid, false);
     }
 
-    @Override
+
     public void setSearchUseGrid(boolean enabled) {
         setBool(R.string.pref_key__desktop_search_use_grid, enabled);
     }
 
-    @Override
+
     public int getSearchGridSize() {
         return 4;
     }
 
-    @Override
+
     public int getSearchLabelLines() {
         return Integer.MAX_VALUE;
     }
@@ -136,7 +136,7 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getInt(R.string.pref_key__desktop_background_color, Color.TRANSPARENT);
     }
 
-    @Override
+
     public int getDesktopFolderColor() {
         return getInt(R.string.pref_key__desktop_folder_color, Color.WHITE);
     }
@@ -145,12 +145,12 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getInt(R.string.pref_key__minibar_background_color, ContextCompat.getColor(_context, R.color.colorPrimary));
     }
 
-    @Override
+
     public int getFolderLabelColor() {
         return getInt(R.string.pref_key__desktop_folder_label_color, Color.BLACK);
     }
 
-    @Override
+
     public int getDesktopIconSize() {
         return getIconSize();
     }
@@ -175,7 +175,7 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getInt(R.string.pref_key__dock_background_color, Color.TRANSPARENT);
     }
 
-    @Override
+
     public int getDockIconSize() {
         return getIconSize();
     }
@@ -220,29 +220,22 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getInt(R.string.pref_key__drawer_label_color, Color.WHITE);
     }
 
-    public String getSortMode() {
-        return getString(R.string.pref_key__sort_mode, "0");
-    }
-    public void setSortMode(String sort) {
-        setString(R.string.pref_key__sort_mode, sort);
-    }
 
-    @Override
     public int getDrawerFastScrollColor() {
-        return getInt(R.string.pref_key__drawer_fast_scroll_color, ContextCompat.getColor(Setup.Companion.appContext(), R.color.op_red));
+        return getInt(R.string.pref_key__drawer_fast_scroll_color, ContextCompat.getColor(Setup.appContext(), R.color.op_red));
     }
 
-    @Override
+
     public int getVerticalDrawerHorizontalMargin() {
-        return 0;
-    }
-
-    @Override
-    public int getVerticalDrawerVerticalMargin() {
         return 8;
     }
 
-    @Override
+
+    public int getVerticalDrawerVerticalMargin() {
+        return 16;
+    }
+
+
     public int getDrawerIconSize() {
         return getIconSize();
     }
@@ -255,32 +248,32 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         return getBool(R.string.pref_key__gesture_quick_swipe, true);
     }
 
-    public String getGestureDoubleTap() {
-        return getString(R.string.pref_key__gesture_double_tap, "0");
+    public int getGestureDoubleTap() {
+        return getIntOfStringPref(R.string.pref_key__gesture_double_tap, 0);
     }
 
-    public String getGestureSwipeUp() {
-        return getString(R.string.pref_key__gesture_swipe_up, "8");
+    public int getGestureSwipeUp() {
+        return getIntOfStringPref(R.string.pref_key__gesture_swipe_up, 8);
     }
 
-    public String getGestureSwipeDown() {
-        return getString(R.string.pref_key__gesture_swipe_down, "0");
+    public int getGestureSwipeDown() {
+        return getIntOfStringPref(R.string.pref_key__gesture_swipe_down, 10);
     }
 
-    public String getGesturePinch() {
-        return getString(R.string.pref_key__gesture_pinch, "0");
+    public int getGesturePinch() {
+        return getIntOfStringPref(R.string.pref_key__gesture_pinch, 0);
     }
 
-    public String getGestureUnpinch() {
-        return getString(R.string.pref_key__gesture_unpinch, "0");
+    public int getGestureUnpinch() {
+        return getIntOfStringPref(R.string.pref_key__gesture_unpinch, 0);
     }
 
-    @Override
+
     public boolean isDesktopHideGrid() {
         return getBool(R.string.pref_key__desktop_hide_grid, true);
     }
 
-    @Override
+
     public void setDesktopHideGrid(boolean hideGrid) {
         setBool(R.string.pref_key__desktop_hide_grid, hideGrid);
     }
@@ -319,10 +312,12 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
     }
 
     public ArrayList<String> getMinibarArrangement() {
-        ArrayList<String> ret = getStringList(R.string.pref_key__minibar_arrangement);
+        ArrayList<String> ret = getStringList(R.string.pref_key__minibar_items);
         if (ret.isEmpty()) {
             for (LauncherAction.ActionDisplayItem item : LauncherAction.actionDisplayItems) {
-                ret.add("0" + item.label.toString());
+                if (Arrays.asList(98, 36, 24, 50, 71, 25, 73).contains(item._id)) {
+                    ret.add(Integer.toString(item._id));
+                }
             }
             setMinibarArrangement(ret);
         }
@@ -330,7 +325,7 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
     }
 
     public void setMinibarArrangement(ArrayList<String> value) {
-        setStringList(R.string.pref_key__minibar_arrangement, value);
+        setStringList(R.string.pref_key__minibar_items, value);
     }
 
     public ArrayList<String> getHiddenAppsList() {
@@ -357,12 +352,12 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         setBool(R.string.pref_key__desktop_lock, value);
     }
 
-    @Override
+
     public int getDesktopIndicatorMode() {
-        return getIntOfStringPref(R.string.pref_key__desktop_indicator_style, PagerIndicator.Mode.INSTANCE.getNORMAL());
+        return getIntOfStringPref(R.string.pref_key__desktop_indicator_style, PagerIndicator.Mode.NORMAL);
     }
 
-    @Override
+
     public void setDesktopIndicatorMode(int mode) {
         setInt(R.string.pref_key__desktop_indicator_style, mode);
     }
@@ -388,18 +383,27 @@ public class AppSettings extends AppSettingsBase implements SettingsManager {
         _prefApp.edit().putBoolean(_context.getString(R.string.pref_key__first_start), value).commit();
     }
 
-    @Override
+
     public boolean enableImageCaching() {
         return true;
     }
 
-    @Override
+
     public float getDrawerLabelFontSize() {
         return getInt(R.string.pref_key__drawer_label_font_size, 13);
     }
 
-    @Override
+
     public float getOverallAnimationSpeedModifier() {
         return (float) (getInt(R.string.pref_key__overall_animation_speed_modifier, 30) / 100.0);
     }
+
+    public String getSortMode() {
+        return getString(R.string.pref_key__sort_mode, "0");
+    }
+
+    public void setSortMode(String sort) {
+        setString(R.string.pref_key__sort_mode, sort);
+    }
+
 }
