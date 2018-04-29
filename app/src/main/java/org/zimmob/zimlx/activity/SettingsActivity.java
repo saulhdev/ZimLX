@@ -21,6 +21,7 @@ import net.gsantner.opoc.preference.GsPreferenceFragmentCompat;
 import net.gsantner.opoc.util.ContextUtils;
 import net.gsantner.opoc.util.PermissionChecker;
 
+import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppManager;
@@ -80,7 +81,6 @@ public class SettingsActivity extends ThemeActivity {
             switch (tag) {
                 case SettingsFragmentMaster.TAG:
                 default: {
-
                     prefFrag = new SettingsFragmentMaster();
                     toolbar.setTitle(prefFrag.getTitleOrDefault(toolbarTitle));
                     break;
@@ -143,10 +143,16 @@ public class SettingsActivity extends ThemeActivity {
         public static final String TAG = "SettingsFragmentMaster";
 
         private static final int[] requireRestartPreferenceIds = new int[]{
-                R.string.pref_key__desktop_columns, R.string.pref_key__desktop_rows, R.string.pref_key__desktop_style,
-                R.string.pref_key__desktop_fullscreen, R.string.pref_key__desktop_show_label, R.string.pref_key__search_bar_enable,
-                R.string.pref_key__search_bar_show_hidden_apps, R.string.pref_key__desktop_background_color,
-                R.string.pref_key__minibar_background_color, R.string.pref_key__dock_enable, R.string.pref_key__dock_size,
+                R.string.pref_key__desktop_columns,
+                R.string.pref_key__desktop_rows,
+                R.string.pref_key__desktop_style,
+                R.string.pref_key__desktop_fullscreen,
+                R.string.pref_key__desktop_show_label,
+                R.string.pref_key__search_bar_enable,
+                R.string.pref_key__search_bar_show_hidden_apps,
+                R.string.pref_key__desktop_background_color,
+                R.string.pref_key__minibar_background_color,
+                R.string.pref_key__dock_enable, R.string.pref_key__dock_size,
                 R.string.pref_key__dock_show_label, R.string.pref_key__dock_background_color, R.string.pref_key__drawer_columns,
                 R.string.pref_key__drawer_rows, R.string.pref_key__drawer_style, R.string.pref_key__drawer_show_card_view,
                 R.string.pref_key__drawer_show_position_indicator, R.string.pref_key__drawer_show_label,
@@ -154,7 +160,8 @@ public class SettingsActivity extends ThemeActivity {
                 R.string.pref_key__drawer_fast_scroll_color, R.string.pref_key__date_bar_date_format_custom_1,
                 R.string.pref_key__date_bar_date_format_custom_2, R.string.pref_key__date_bar_date_format_type,
                 R.string.pref_key__date_bar_date_text_color, R.string.pref_key__icon_size, R.string.pref_key__icon_pack,
-                R.string.pref_title__clear_database, R.string.pref_summary__backup, R.string.pref_summary__theme
+                R.string.pref_title__clear_database, R.string.pref_summary__backup,
+                R.string.pref_summary__theme
         };
 
         @Override
@@ -167,6 +174,7 @@ public class SettingsActivity extends ThemeActivity {
             return TAG;
         }
 
+        @Contract(pure = true)
         private boolean requiresRestart(int key) {
             for (int k : requireRestartPreferenceIds) {
                 if (k == key) {
@@ -208,6 +216,28 @@ public class SettingsActivity extends ThemeActivity {
             }
             if ((pref = findPreference(R.string.pref_key__cat_icons)) != null) {
                 tmp = String.format(Locale.ENGLISH, "%s: %ddp", getString(R.string.pref_title__size), _as.getIconSize());
+                pref.setSummary(tmp);
+            }
+            if ((pref = findPreference(R.string.pref_key__cat_folders)) != null) {
+                tmp = String.format(Locale.ENGLISH, "%s: ", getString(R.string.pref_title__folder_shape));
+                switch (_as.getFolderShape()) {
+                    case 0: {
+                        tmp += getString(R.string.title_folder_circle);
+                        break;
+                    }
+                    case 1: {
+                        tmp += getString(R.string.title_folder_circle_bg);
+                        break;
+                    }
+                    case 2: {
+                        tmp += getString(R.string.title_folder_square);
+                        break;
+                    }
+                    case 3: {
+                        tmp += getString(R.string.title_folder_square_bg);
+                        break;
+                    }
+                }
                 pref.setSummary(tmp);
             }
         }

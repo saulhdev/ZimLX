@@ -12,6 +12,7 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.widget.AppDrawerController;
 import org.zimmob.zimlx.widget.Desktop;
+import org.zimmob.zimlx.widget.Folder;
 import org.zimmob.zimlx.widget.PagerIndicator;
 
 import java.text.SimpleDateFormat;
@@ -35,6 +36,10 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
 
     public int getDesktopRowCount() {
         return getInt(R.string.pref_key__desktop_rows, 6);
+    }
+
+    public int getFolderShape() {
+        return getIntOfStringPref(R.string.pref_key__folder_shape, Folder.Shape.CIRCLE);
     }
 
     public int getDesktopStyle() {
@@ -69,16 +74,13 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getBool(R.string.pref_key__search_bar_force_browser, false);
     }
 
-
     public boolean getSearchBarShouldShowHiddenApps() {
         return getBool(R.string.pref_key__search_bar_show_hidden_apps, false);
     }
 
-
     public boolean isSearchBarTimeEnabled() {
         return true;
     }
-
 
     @SuppressLint("SimpleDateFormat")
     public SimpleDateFormat getUserDateFormat() {
@@ -92,41 +94,33 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         }
     }
 
-
     public int getDesktopDateMode() {
         return getIntOfStringPref(R.string.pref_key__date_bar_date_format_type, 1);
     }
-
 
     public int getDesktopDateTextColor() {
         return getInt(R.string.pref_key__date_bar_date_text_color, Color.WHITE);
     }
 
-
     public boolean isResetSearchBarOnOpen() {
         return false;
     }
-
 
     public boolean isSearchGridListSwitchEnabled() {
         return false;
     }
 
-
     public boolean isSearchUseGrid() {
         return getBool(R.string.pref_key__desktop_search_use_grid, false);
     }
-
 
     public void setSearchUseGrid(boolean enabled) {
         setBool(R.string.pref_key__desktop_search_use_grid, enabled);
     }
 
-
     public int getSearchGridSize() {
         return 4;
     }
-
 
     public int getSearchLabelLines() {
         return Integer.MAX_VALUE;
@@ -136,7 +130,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getInt(R.string.pref_key__desktop_background_color, Color.TRANSPARENT);
     }
 
-
     public int getDesktopFolderColor() {
         return getInt(R.string.pref_key__desktop_folder_color, Color.WHITE);
     }
@@ -145,11 +138,9 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getInt(R.string.pref_key__minibar_background_color, ContextCompat.getColor(_context, R.color.colorPrimary));
     }
 
-
     public int getFolderLabelColor() {
         return getInt(R.string.pref_key__desktop_folder_label_color, Color.BLACK);
     }
-
 
     public int getDesktopIconSize() {
         return getIconSize();
@@ -174,7 +165,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public int getDockColor() {
         return getInt(R.string.pref_key__dock_background_color, Color.TRANSPARENT);
     }
-
 
     public int getDockIconSize() {
         return getIconSize();
@@ -220,21 +210,17 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getInt(R.string.pref_key__drawer_label_color, Color.WHITE);
     }
 
-
     public int getDrawerFastScrollColor() {
         return getInt(R.string.pref_key__drawer_fast_scroll_color, ContextCompat.getColor(Setup.appContext(), R.color.op_red));
     }
-
 
     public int getVerticalDrawerHorizontalMargin() {
         return 8;
     }
 
-
     public int getVerticalDrawerVerticalMargin() {
         return 16;
     }
-
 
     public int getDrawerIconSize() {
         return getIconSize();
@@ -268,11 +254,9 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return getIntOfStringPref(R.string.pref_key__gesture_unpinch, 0);
     }
 
-
     public boolean isDesktopHideGrid() {
         return getBool(R.string.pref_key__desktop_hide_grid, true);
     }
-
 
     public void setDesktopHideGrid(boolean hideGrid) {
         setBool(R.string.pref_key__desktop_hide_grid, hideGrid);
@@ -352,11 +336,9 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         setBool(R.string.pref_key__desktop_lock, value);
     }
 
-
     public int getDesktopIndicatorMode() {
         return getIntOfStringPref(R.string.pref_key__desktop_indicator_style, PagerIndicator.Mode.NORMAL);
     }
-
 
     public void setDesktopIndicatorMode(int mode) {
         setInt(R.string.pref_key__desktop_indicator_style, mode);
@@ -383,16 +365,13 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         _prefApp.edit().putBoolean(_context.getString(R.string.pref_key__first_start), value).commit();
     }
 
-
     public boolean enableImageCaching() {
         return true;
     }
 
-
     public float getDrawerLabelFontSize() {
         return getInt(R.string.pref_key__drawer_label_font_size, 13);
     }
-
 
     public float getOverallAnimationSpeedModifier() {
         return (float) (getInt(R.string.pref_key__overall_animation_speed_modifier, 30) / 100.0);
@@ -405,5 +384,4 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public void setSortMode(String sort) {
         setString(R.string.pref_key__sort_mode, sort);
     }
-
 }

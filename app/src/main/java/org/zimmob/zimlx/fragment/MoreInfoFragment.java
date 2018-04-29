@@ -3,6 +3,7 @@ package org.zimmob.zimlx.fragment;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceGroup;
 
@@ -26,6 +27,7 @@ import java.util.Locale;
 public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
     public static final String TAG = "MoreInfoFragment";
 
+    @NonNull
     public static MoreInfoFragment newInstance() {
         return new MoreInfoFragment();
     }
