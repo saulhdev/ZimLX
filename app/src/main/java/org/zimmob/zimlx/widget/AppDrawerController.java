@@ -26,10 +26,9 @@ public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerVertical _drawerViewGrid;
     public int _drawerMode;
     public boolean _isOpen = false;
-    private CallBack openCallBack, _closeCallBack;
+    private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 500L;
-    private Callback.a2<Boolean, Boolean> _appDrawerCallback;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -118,7 +117,7 @@ public class AppDrawerController extends RevealFrameLayout {
         _appDrawerAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator p1) {
-                _closeCallBack.onStart();
+                //_closeCallBack.onStart();
 
                 ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(getBackground(), PropertyValuesHolder.ofInt("alpha", 255, 0));
                 animator.setDuration(_drawerAnimationTime);
@@ -127,7 +126,7 @@ public class AppDrawerController extends RevealFrameLayout {
 
             @Override
             public void onAnimationEnd(Animator p1) {
-                _closeCallBack.onEnd();
+                _appDrawerCallback.callback(true, false);
             }
 
             @Override
@@ -146,7 +145,10 @@ public class AppDrawerController extends RevealFrameLayout {
                     mGrid.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(new Runnable() {
                         @Override
                         public void run() {
-                            _appDrawerAnimator.start();
+                            try {
+                                _appDrawerAnimator.start();
+                            } catch (NullPointerException ignored) {
+                            }
                         }
                     });
                 }
@@ -155,7 +157,10 @@ public class AppDrawerController extends RevealFrameLayout {
                 _drawerViewGrid.recyclerView.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(new Runnable() {
                     @Override
                     public void run() {
-                        _appDrawerAnimator.start();
+                        try {
+                            _appDrawerAnimator.start();
+                        } catch (NullPointerException ignored) {
+                        }
                     }
                 });
                 break;
@@ -234,12 +239,6 @@ public class AppDrawerController extends RevealFrameLayout {
             case DrawerMode.VERTICAL:
                 break;
         }
-    }
-
-    public interface CallBack {
-        void onStart();
-
-        void onEnd();
     }
 
     public static class DrawerMode {

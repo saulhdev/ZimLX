@@ -21,9 +21,11 @@ import org.zimmob.zimlx.activity.SettingsActivity;
 import org.zimmob.zimlx.viewutil.DialogHelper;
 
 public class LauncherAction {
+
     public enum Action {
         EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, OpenAppDrawer, LaunchApp, OpenSearch, MobileNetworkSettings,
     }
+
     static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
             new ActionDisplayItem(Action.EditMinibar, Home.Companion.get_resources().getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
             new ActionDisplayItem(Action.SetWallpaper, Home.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
@@ -36,29 +38,17 @@ public class LauncherAction {
             new ActionDisplayItem(Action.MobileNetworkSettings, Home.Companion.get_resources().getString(R.string.mobile_network_settings), R.drawable.ic_network_24dp, 46),
     };
 
-    public static boolean clearingRam = false;
-
     public static void RunAction(@Nullable ActionItem actionItem, final Context context) {
         if (actionItem != null)
-            switch (actionItem.action) {
+            switch (actionItem._action) {
                 case LaunchApp:
                     Tool.startApp(context, actionItem.extraData);
                     break;
 
                 default:
-                    RunAction(actionItem.action, context);
+                    RunAction(actionItem._action, context);
             }
     }
-
-    public static ActionDisplayItem getActionItemFromString(String string) {
-        for (ActionDisplayItem item : actionDisplayItems) {
-            if (Integer.toString(item._id).equals(string)) {
-                return item;
-            }
-        }
-        return null;
-    }
-
 
     public static void RunAction(Action action, final Context context) {
         switch (action) {
@@ -120,31 +110,26 @@ public class LauncherAction {
         }
     }
 
+    public static ActionDisplayItem getActionItemFromString(String string) {
+        for (ActionDisplayItem item : actionDisplayItems) {
+            if (Integer.toString(item._id).equals(string)) {
+                return item;
+            }
+        }
+        return null;
+    }
+
     public static ActionItem getActionItem(int position) {
         return new ActionItem(Action.values()[position], null);
     }
 
-    public static int getActionItemIndex(ActionItem item) {
-        if (item == null) return -1;
-        for (int i = 0; i < Action.values().length; i++) {
-            if (item.action == Action.values()[i])
-                return i;
-        }
-        return -1;
-    }
-
-    public enum Theme {
-        Dark, Light
-    }
-
-
     public static class ActionItem {
-        public Action action;
+        public Action _action;
         public Intent extraData;
 
         public ActionItem(Action action, Intent extraData) {
-            this.action = action;
-            this.extraData = extraData;
+            _action = action;
+            extraData = extraData;
         }
     }
 

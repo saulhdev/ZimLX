@@ -12,6 +12,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
+import android.graphics.Point;
+import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -24,18 +26,28 @@ import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
+import android.view.WindowManager;
 import android.widget.AdapterView;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import net.gsantner.opoc.util.ContextUtils;
 
 import org.zimmob.zimlx.BuildConfig;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.activity.homeparts.HpAppDrawer;
+import org.zimmob.zimlx.activity.homeparts.HpDragNDrop;
+import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
+import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
+import org.zimmob.zimlx.interfaces.AppDeleteListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.App;
+import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.AppUpdateReceiver;
+import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.LauncherAction;
 import org.zimmob.zimlx.util.LauncherAction.Action;
 import org.zimmob.zimlx.util.ShortcutReceiver;
@@ -51,9 +63,11 @@ import org.zimmob.zimlx.widget.Desktop.OnDesktopEditListener;
 import org.zimmob.zimlx.widget.DesktopOptionView;
 import org.zimmob.zimlx.widget.Dock;
 import org.zimmob.zimlx.widget.DragNDropLayout;
+import org.zimmob.zimlx.widget.DragOptionView;
 import org.zimmob.zimlx.widget.GroupPopupView;
 import org.zimmob.zimlx.widget.PagerIndicator;
 import org.zimmob.zimlx.widget.SearchBar;
+import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SwipeListView;
 
 import java.util.ArrayList;
@@ -117,7 +131,7 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
         contextUtils.setAppLanguage(appSettings.getLanguage());
         super.onCreate(savedInstanceState);
         if (!Setup.wasInitialised()) {
-            //Setup.init(new HpInitSetup(this));
+            Setup.init(new HpInitSetup(this));
         }
         AppSettings appSettings2 = Setup.appSettings();
 
@@ -144,7 +158,7 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
 
             decorView.setSystemUiVisibility(1536);
         }
-        //init();
+        init();
     }
 
     protected void onResume() {
@@ -240,6 +254,19 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
         }
     }
 
+    public final void updateSearchClock() {
+        SearchBar searchBar = (SearchBar) findViewById(R.id.searchBar);
+        TextView textView = searchBar._searchClock;
+
+        if (textView.getText() != null) {
+            try {
+                searchBar = (SearchBar) findViewById(R.id.searchBar);
+                searchBar.updateClock();
+            } catch (Exception e) {
+                ((SearchBar) findViewById(R.id.searchBar))._searchClock.setText(R.string.bad_format);
+            }
+        }
+    }
     public final void updateHomeLayout() {
         updateSearchBar(true);
         updateDock$default(this, true, 0, 2, null);
@@ -277,6 +304,48 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
             onHandleLauncherPause();
         } else {
             Companion.setConsumeNextResume(false);
+        }
+    }
+
+    public final void onUninstallItem(@NonNull Item item) {
+
+        Companion.setConsumeNextResume(true);
+        Setup.eventHandler().showDeletePackageDialog(this, item);
+    }
+
+    public final void onRemoveItem(@NonNull Item item) {
+        Desktop desktop = getDesktop();
+        View coordinateToChildView;
+        switch (item._locationInLauncher) {
+            case 0:
+                coordinateToChildView = desktop.getCurrentPage().coordinateToChildView(new Point(item._x, item._y));
+                desktop.removeItem(coordinateToChildView, true);
+                break;
+            case 1:
+                Dock dock = getDock();
+                coordinateToChildView = dock.coordinateToChildView(new Point(item._x, item._y));
+                dock.removeItem(coordinateToChildView, true);
+                break;
+            default:
+                break;
+        }
+        Companion.getDb().deleteItem(item, true);
+    }
+
+    public final void onInfoItem(@NonNull Item item) {
+
+        if (item._type == Item.Type.APP) {
+            try {
+                String str = "android.settings.APPLICATION_DETAILS_SETTINGS";
+                StringBuilder stringBuilder = new StringBuilder();
+                stringBuilder.append("package:");
+                Intent intent = item._intent;
+                ComponentName component = intent.getComponent();
+                stringBuilder.append(component.getPackageName());
+                startActivity(new Intent(str, Uri.parse(stringBuilder.toString())));
+            } catch (Exception e) {
+                Tool.toast((Context) this, (int) R.string.toast_app_uninstalled);
+            }
         }
     }
 
@@ -536,6 +605,157 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
         return dragNDropLayout;
     }
 
+    private final void init() {
+        Companion.setAppWidgetHost(new WidgetHost(getApplicationContext(), R.id.app_widget_host));
+        Companion companion = Companion;
+        AppWidgetManager instance = AppWidgetManager.getInstance(this);
+
+        companion.setAppWidgetManager(instance);
+        WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+        appWidgetHost.startListening();
+        initViews();
+        HpDragNDrop hpDragNDrop = new HpDragNDrop();
+        View findViewById = findViewById(R.id.leftDragHandle);
+
+        View findViewById2 = findViewById(R.id.rightDragHandle);
+
+        DragNDropLayout dragNDropLayout = findViewById(R.id.dragNDropView);
+
+        hpDragNDrop.initDragNDrop(this, findViewById, findViewById2, dragNDropLayout);
+        registerBroadcastReceiver();
+        initAppManager();
+        initSettings();
+        System.runFinalization();
+        System.gc();
+    }
+
+    public final void initSettings() {
+        updateHomeLayout();
+        AppSettings appSettings = Setup.appSettings();
+
+        if (appSettings.isDesktopFullscreen()) {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        } else {
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN, WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        }
+        Desktop desktop = findViewById(R.id.desktop);
+        AppSettings appSettings2 = Setup.appSettings();
+
+        desktop.setBackgroundColor(appSettings2.getDesktopBackgroundColor());
+        Dock dock = findViewById(R.id.dock);
+        appSettings2 = Setup.appSettings();
+
+        dock.setBackgroundColor(appSettings2.getDockColor());
+        getDrawerLayout().setDrawerLockMode(AppSettings.get().getMinibarEnable() ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+    }
+
+    protected void initAppManager() {
+        Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
+            @Override
+            public boolean onAppUpdated(List<App> it) {
+                if ((getDesktop() == null)) {
+                    return false;
+                }
+                AppSettings appSettings = Setup.appSettings();
+
+                if (appSettings.getDesktopStyle() != 1) {
+                    appSettings = Setup.appSettings();
+
+                    if (appSettings.isAppFirstLaunch()) {
+                        appSettings = Setup.appSettings();
+
+                        appSettings.setAppFirstLaunch(false);
+                        Item appDrawerBtnItem = Item.newActionItem(8);
+                        appDrawerBtnItem._x = 2;
+                        Companion.getDb().saveItem(appDrawerBtnItem, 0, Definitions.ItemPosition.Dock);
+                    }
+                }
+                appSettings = Setup.appSettings();
+
+                if (appSettings.getDesktopStyle() == 0) {
+                    getDesktop().initDesktopNormal(Home.this);
+                } else {
+                    appSettings = Setup.appSettings();
+
+                    if (appSettings.getDesktopStyle() == 1) {
+                        getDesktop().initDesktopShowAll(Home.this, Home.this);
+                    }
+                }
+                getDock().initDockItem(Home.this);
+                return true;
+            }
+        });
+        Setup.appLoader().addDeleteListener(new AppDeleteListener() {
+            @Override
+            public boolean onAppDeleted(List<App> apps) {
+                AppSettings appSettings = Setup.appSettings();
+
+                if (appSettings.getDesktopStyle() == 0) {
+                    ((Desktop) findViewById(R.id.desktop)).initDesktopNormal(Home.this);
+                } else {
+                    appSettings = Setup.appSettings();
+
+                    if (appSettings.getDesktopStyle() == 1) {
+                        ((Desktop) findViewById(R.id.desktop)).initDesktopShowAll(Home.this, Home.this);
+                    }
+                }
+                ((Dock) findViewById(R.id.dock)).initDockItem(Home.this);
+                setToHomePage();
+                return false;
+            }
+        });
+        AppManager.getInstance(this).init();
+    }
+
+    private final void initDock() {
+        int iconSize = Setup.appSettings().getDockIconSize();
+        Dock dock = findViewById(R.id.dock);
+        dock.setHome(this);
+        dock.init();
+        AppSettings appSettings = Setup.appSettings();
+
+        if (appSettings.isDockShowLabel()) {
+            dock.getLayoutParams().height = Tool.dp2px(((16 + iconSize) + 14) + 10, this) + dock.getBottomInset();
+        } else {
+            dock.getLayoutParams().height = Tool.dp2px((16 + iconSize) + 10, this) + dock.getBottomInset();
+        }
+    }
+
+    protected void initViews() {
+        new HpSearchBar(this, (SearchBar) findViewById(R.id.searchBar), (CalendarDropDownView) findViewById(R.id.calendarDropDownView)).initSearchBar();
+        initDock();
+        ((AppDrawerController) findViewById(R.id.appDrawerController)).init();
+        ((AppDrawerController) findViewById(R.id.appDrawerController)).setHome(this);
+        ((DragOptionView) findViewById(R.id.dragOptionPanel)).setHome(this);
+        ((Desktop) findViewById(R.id.desktop)).init();
+        Desktop desktop = (Desktop) findViewById(R.id.desktop);
+
+        desktop.setDesktopEditListener(this);
+        ((DesktopOptionView) findViewById(R.id.desktopEditOptionPanel)).setDesktopOptionViewListener(this);
+        DesktopOptionView desktopOptionView = (DesktopOptionView) findViewById(R.id.desktopEditOptionPanel);
+        AppSettings appSettings = Setup.appSettings();
+
+        desktopOptionView.updateLockIcon(appSettings.isDesktopLock());
+        ((Desktop) findViewById(R.id.desktop)).addOnPageChangeListener(new SmoothViewPager.OnPageChangeListener() {
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+            }
+
+            public void onPageSelected(int position) {
+                DesktopOptionView desktopOptionView = (DesktopOptionView) findViewById(R.id.desktopEditOptionPanel);
+                AppSettings appSettings = Setup.appSettings();
+
+                desktopOptionView.updateHomeIcon(appSettings.getDesktopPageCurrent() == position);
+            }
+
+            public void onPageScrollStateChanged(int state) {
+            }
+        });
+        desktop = (Desktop) findViewById(R.id.desktop);
+        desktop.setPageIndicator((PagerIndicator) findViewById(R.id.desktopIndicator));
+        ((DragOptionView) findViewById(R.id.dragOptionPanel)).setAutoHideView((SearchBar) findViewById(R.id.searchBar));
+        new HpAppDrawer(this, (PagerIndicator) findViewById(R.id.appDrawerIndicator), (DragOptionView) findViewById(R.id.dragOptionPanel)).initAppDrawer((AppDrawerController) findViewById(R.id.appDrawerController));
+        initMinibar();
+    }
     public final void onStartApp(@NonNull Context context, @NonNull Intent intent, @Nullable View view) {
         ComponentName component = intent.getComponent();
 
@@ -583,6 +803,20 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
 
     }
 
+    protected void onDestroy() {
+        WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+        if (appWidgetHost != null) {
+            appWidgetHost.stopListening();
+        }
+        Companion.setAppWidgetHost((WidgetHost) null);
+        unregisterReceiver(_appUpdateReceiver);
+        if (_timeChangedReceiver != null) {
+            unregisterReceiver(_timeChangedReceiver);
+        }
+        unregisterReceiver(_shortcutReceiver);
+        Companion.setLauncher((Home) null);
+        super.onDestroy();
+    }
     public final void hideDesktopIndicator() {
         AppSettings appSettings = Setup.appSettings();
 

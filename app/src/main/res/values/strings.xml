@@ -195,8 +195,8 @@
     <string name="project_team">Project Team</string>
     <string name="project_license">Project License</string>
     <string name="help_this_app">More information and help about this app</string>
-    <string name="more_info_on_how_to_donate_or_otherwise_support_this_project">More information on donating or otherwise supporting this project</string>
-    <string name="contribute_code_to_this_project_anybody_welcome">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
+    <string name="more_info_support">More information on donating or otherwise supporting this project</string>
+    <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
     <string name="source_code">Source Code</string>
     <string name="open_source_licenses">Open Source Licenses</string>
     <string name="licenses">Licenses</string>

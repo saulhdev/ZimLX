@@ -148,6 +148,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         }
     }
 
+    @Override
     public void setLastItem(@NonNull Object... args) {
         Item item = (Item) args[0];
         View v = (View) args[1];

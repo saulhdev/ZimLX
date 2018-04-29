@@ -80,8 +80,9 @@ public class SettingsActivity extends ThemeActivity {
             switch (tag) {
                 case SettingsFragmentMaster.TAG:
                 default: {
+
                     prefFrag = new SettingsFragmentMaster();
-                    toolbarTitle = prefFrag.getTitleOrDefault(toolbarTitle);
+                    toolbar.setTitle(prefFrag.getTitleOrDefault(toolbarTitle));
                     break;
                 }
             }
@@ -140,7 +141,6 @@ public class SettingsActivity extends ThemeActivity {
 
     public static class SettingsFragmentMaster extends OlSettingsFragment {
         public static final String TAG = "SettingsFragmentMaster";
-
 
         private static final int[] requireRestartPreferenceIds = new int[]{
                 R.string.pref_key__desktop_columns, R.string.pref_key__desktop_rows, R.string.pref_key__desktop_style,
@@ -258,6 +258,7 @@ public class SettingsActivity extends ThemeActivity {
             Home launcher = Home.Companion.getLauncher();
 
             switch (keyRes) {
+
                 case R.string.pref_key__minibar: {
                     LauncherAction.RunAction(LauncherAction.Action.EditMinibar, getActivity());
                     return true;
@@ -299,7 +300,7 @@ public class SettingsActivity extends ThemeActivity {
                     getActivity().finish();
                     return true;
                 }
-                case R.string.pref_key__about: {
+                case R.string.pref_key__cat_about: {
                     startActivity(new Intent(getActivity(), MoreInfoActivity.class));
                     return true;
                 }

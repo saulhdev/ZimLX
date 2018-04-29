@@ -27,13 +27,12 @@
             android:value="2.1" />
 
         <activity
-            android:name=".activity.InitActivity"
+            android:name="org.zimmob.zimlx.activity.OnBoardActivity"
             android:clearTaskOnLaunch="true"
             android:label="@string/app_name"
             android:theme="@style/Home.Intro">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -48,7 +47,6 @@
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -70,11 +68,15 @@
             android:name=".activity.HideAppsActivity"
             android:label="@string/app_name"
             android:theme="@style/NormalActivity.Light" />
+
         <activity
-            android:name=".activity.AboutActivity"
-            android:label="About"
+            android:name=".activity.MoreInfoActivity"
             android:parentActivityName=".activity.SettingsActivity"
-            android:theme="@style/NormalActivity.Light" />
+            android:theme="@style/NormalActivity.Light">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".activity.SettingsActivity" />
+        </activity>
 
         <receiver
             android:name=".util.DeviceAdminReceiver"

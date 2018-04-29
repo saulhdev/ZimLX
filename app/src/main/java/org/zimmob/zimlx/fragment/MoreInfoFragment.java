@@ -165,6 +165,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
 
         // Extract some build information and publish in summary
         if ((pref = findPreference(R.string.pref_key__more_info__copy_build_information)) != null && pref.getSummary() == null) {
+
             String summary = String.format(locale, "\n<b>Package:</b> %s\n<b>Version:</b> v%s (%d)", _cu.getPackageName(), _cu.getAppVersionName(), _cu.bcint("VERSION_CODE", 0));
             summary += (tmp = _cu.bcstr("FLAVOR", "")).isEmpty() ? "" : ("\n<b>Flavor:</b> " + tmp.replace("flavor", ""));
             summary += (tmp = _cu.bcstr("BUILD_TYPE", "")).isEmpty() ? "" : (" (" + tmp + ")");
@@ -174,7 +175,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
             pref.setSummary(_cu.htmlToSpanned(summary.trim().replace("\n", "<br/>")));
         }
 
-        // Extract project team from raw ressource, where 1 person = 4 lines
+        // Extract project team from raw resource, where 1 person = 4 lines
         // 1) Name/Title, 2) Description/Summary, 3) Link/View-Intent, 4) Empty line
         if ((pref = findPreference(R.string.pref_key__more_info__project_team)) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
             String[] data = (_cu.readTextfileFromRawRes(R.raw.project_team, "", "").trim() + "\n\n").split("\n");

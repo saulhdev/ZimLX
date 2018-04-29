@@ -44,11 +44,9 @@ public class App {
         return _packageName;
     }
 
-
     public String getClassName() {
         return _className;
     }
-
 
     public BaseIconProvider getIconProvider() {
         return _iconProvider;

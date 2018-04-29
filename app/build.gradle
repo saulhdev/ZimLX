@@ -11,8 +11,8 @@ android {
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
     defaultConfig {
-        minSdkVersion 25
-        targetSdkVersion 26
+        minSdkVersion version_setup_minSdk
+        targetSdkVersion version_setup_targetSdk
 
         flavorDimensions "versionCode"
 
@@ -29,6 +29,7 @@ android {
         buildConfigField "boolean", "IS_GPLAY_BUILD", "false"
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+
     }
     productFlavors {
         flavorDefault {

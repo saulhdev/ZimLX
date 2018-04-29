@@ -1,3 +1,5 @@
+[![GitHub release](https://img.shields.io/badge/release-0.5.8-blue.svg)](https://github.com/otakuhqz/zimlx/releases)
+
 # ZimLX
 Open Source and free launcher for Android based on OpenLauncher.
 

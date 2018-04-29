@@ -34,6 +34,7 @@ import butterknife.ButterKnife;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
+
 public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallback {
     @BindView(R.id.toolbar)
     Toolbar _toolbar;

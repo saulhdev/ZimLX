@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.zimmob.zimlx.core.widget.DragNDropLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.zimmob.zimlx.widget.DragNDropLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dragNDropView"
     android:layout_width="match_parent"
@@ -22,7 +22,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <org.zimmob.zimlx.core.widget.SearchBar
+        <org.zimmob.zimlx.widget.SearchBar
             android:id="@+id/searchBar"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -42,7 +42,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintWidth_max="400dp" />
 
-        <org.zimmob.zimlx.core.widget.Desktop
+        <org.zimmob.zimlx.widget.Desktop
             android:id="@+id/desktop"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -52,7 +52,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
-        <org.zimmob.zimlx.core.widget.PagerIndicator
+        <org.zimmob.zimlx.widget.PagerIndicator
             android:id="@+id/desktopIndicator"
             android:layout_width="0dp"
             android:layout_height="10dp"
@@ -61,7 +61,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <org.zimmob.zimlx.core.widget.Dock
+        <org.zimmob.zimlx.widget.Dock
             android:id="@+id/dock"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -136,4 +136,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</org.zimmob.zimlx.core.widget.DragNDropLayout>
+</org.zimmob.zimlx.widget.DragNDropLayout>
