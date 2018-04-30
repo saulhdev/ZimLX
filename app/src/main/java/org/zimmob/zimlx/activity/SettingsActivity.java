@@ -218,6 +218,22 @@ public class SettingsActivity extends ThemeActivity {
                 tmp = String.format(Locale.ENGLISH, "%s: %ddp", getString(R.string.pref_title__size), _as.getIconSize());
                 pref.setSummary(tmp);
             }
+
+            if ((pref = findPreference(R.string.pref_key__cat_appearance)) != null) {
+                tmp = String.format(Locale.ENGLISH, "%s: ", getString(R.string.pref_title__theme));
+                switch (_as.getTheme()) {
+                    case "0": {
+                        tmp += getString(R.string.theme_light);
+                        break;
+                    }
+                    case "1": {
+                        tmp += getString(R.string.theme_dark);
+                        break;
+                    }
+                }
+                pref.setSummary(tmp);
+            }
+
             if ((pref = findPreference(R.string.pref_key__cat_folders)) != null) {
                 tmp = String.format(Locale.ENGLISH, "%s: ", getString(R.string.pref_title__folder_shape));
                 switch (_as.getFolderShape()) {
