@@ -28,7 +28,7 @@ public class AppDrawerController extends RevealFrameLayout {
     public boolean _isOpen = false;
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
-    private Long _drawerAnimationTime = 500L;
+    private Long _drawerAnimationTime = 250L;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -117,7 +117,7 @@ public class AppDrawerController extends RevealFrameLayout {
         _appDrawerAnimator.addListener(new Animator.AnimatorListener() {
             @Override
             public void onAnimationStart(Animator p1) {
-                //_closeCallBack.onStart();
+                _appDrawerCallback.callback(false, true);
 
                 ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(getBackground(), PropertyValuesHolder.ofInt("alpha", 255, 0));
                 animator.setDuration(_drawerAnimationTime);
@@ -126,7 +126,7 @@ public class AppDrawerController extends RevealFrameLayout {
 
             @Override
             public void onAnimationEnd(Animator p1) {
-                _appDrawerCallback.callback(true, false);
+                _appDrawerCallback.callback(false, false);
             }
 
             @Override

@@ -52,11 +52,15 @@ public class Item implements LabelProvider, Parcelable {
     private int _idValue;
     private String _name = "";
 
+
     public Item() {
         Random random = new Random();
         _idValue = random.nextInt();
     }
 
+    /**
+     * @param parcel
+     */
     public Item(Parcel parcel) {
         _idValue = parcel.readInt();
         _type = Type.valueOf(parcel.readString());
@@ -123,6 +127,9 @@ public class Item implements LabelProvider, Parcelable {
         return item;
     }
 
+    /**
+     * @return
+     */
     public static Item newGroupItem() {
         Item item = new Item();
         item._type = Type.GROUP;
@@ -130,6 +137,7 @@ public class Item implements LabelProvider, Parcelable {
         item._spanX = 1;
         item._spanY = 1;
         item._items = new ArrayList<>();
+
         return item;
     }
 
@@ -148,9 +156,14 @@ public class Item implements LabelProvider, Parcelable {
         item._widgetValue = widgetValue;
         item._spanX = 1;
         item._spanY = 1;
+
         return item;
     }
 
+    /**
+     * @param app
+     * @return
+     */
     private static Intent toIntent(App app) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

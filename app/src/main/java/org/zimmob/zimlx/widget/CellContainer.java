@@ -241,7 +241,7 @@ public class CellContainer extends ViewGroup {
 
     public final void clearCachedOutlineBitmap() {
         _outlinePaint.setAlpha(0);
-        _cachedOutlineBitmap = (Bitmap) null;
+        _cachedOutlineBitmap = null;
         invalidate();
     }
 

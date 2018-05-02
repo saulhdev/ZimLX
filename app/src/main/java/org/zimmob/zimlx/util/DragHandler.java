@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.os.Parcelable;
+import android.support.annotation.Nullable;
 import android.view.DragEvent;
 import android.view.View;
 
@@ -14,17 +15,17 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.widget.AppItemView;
 
 /**
- * Created by saul on 04-25-18.
+ * Created by saul on 05-01-18.
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class DragNDropHandler {
+public final class DragHandler {
     private static final String DRAG_DROP_EXTRA = "DRAG_DROP_EXTRA";
     private static final String DRAG_DROP_INTENT = "DRAG_DROP_INTENT";
-    public static final DragNDropHandler INSTANCE = new DragNDropHandler();
+    public static final DragHandler INSTANCE = new DragHandler();
     public static Bitmap _cachedDragBitmap;
 
-    public static void startDrag(View view, Item item, DragAction.Action action, AppItemView.LongPressCallBack eventAction) {
+    public static <T extends Parcelable> void startDrag(View view, Item item, DragAction.Action action, @Nullable final AppItemView.LongPressCallBack eventAction) {
         _cachedDragBitmap = loadBitmapFromView(view);
 
         if (Home.Companion.getLauncher() != null)

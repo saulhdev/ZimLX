@@ -52,7 +52,6 @@ public class CircleDrawable extends Drawable {
     @Override
     public void draw(Canvas canvas) {
         canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2, paint);
-
         if (iconToFade != null) {
             canvas.save();
             if (hidingOldIcon)

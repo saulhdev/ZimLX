@@ -88,6 +88,10 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         }
     }
 
+    /**
+     * @param x
+     * @param y
+     */
     public final void updateIconProjection(int x, int y) {
         Home launcher;
         DragNDropLayout dragNDropView;

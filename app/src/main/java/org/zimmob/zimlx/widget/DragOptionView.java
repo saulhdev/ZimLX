@@ -75,7 +75,10 @@ public class DragOptionView extends CardView {
             public boolean onDrag(final View view, DragEvent dragEvent) {
                 switch (dragEvent.getAction()) {
                     case DragEvent.ACTION_DRAG_STARTED:
-                        return ((DragAction) dragEvent.getLocalState()).action != DragAction.Action.APP_DRAWER;
+                        if (((DragAction) dragEvent.getLocalState()).action == DragAction.Action.APP_DRAWER) {
+                            return false;
+                        }
+                        return true;
                     case DragEvent.ACTION_DRAG_ENTERED:
                         return true;
                     case DragEvent.ACTION_DRAG_EXITED:

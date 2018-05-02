@@ -17,8 +17,8 @@ public class ItemGestureListener extends GestureDetector.SimpleOnGestureListener
         SwipeDown,
         SwipeLeft,
         SwipeRight,
-//        DoubleTap,
-//        LongPress
+        DoubleTap,
+        LongPress
     }
 
     private static final int SWIPE_THRESHOLD = 30;
@@ -71,15 +71,15 @@ public class ItemGestureListener extends GestureDetector.SimpleOnGestureListener
         return result;
     }
 
-//    @Override
-//    public void onLongPress(MotionEvent event) {
-//        callback.onItemGesture(item, Type.LongPress);
-//    }
-//
-//    @Override
-//    public boolean onDoubleTapEvent(MotionEvent event) {
-//        return callback.onItemGesture(item, Type.DoubleTap);
-//    }
+    @Override
+    public void onLongPress(MotionEvent event) {
+        // callback.onItemGesture(item, Type.LongPress);
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent event) {
+        return callback.onItemGesture(item, Type.DoubleTap);
+    }
 
     public boolean onSingleTapConfirmed(MotionEvent e) {
         return callback.onItemGesture(item, Type.Click);

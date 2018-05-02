@@ -119,21 +119,6 @@
                     android:title="@string/pref_title__desktop_background_color"
                     app:cpv_dialogTitle="@string/pref_title__desktop_background_color"
                     app:cpv_showAlphaSlider="true" />
-
-                <org.zimmob.zimlx.preference.ColorPreferenceCompat
-                    android:defaultValue="@color/white"
-                    android:key="@string/pref_key__desktop_folder_color"
-                    android:title="@string/pref_title__desktop_folder_color"
-                    app:cpv_dialogTitle="@string/pref_title__desktop_folder_color"
-                    app:cpv_showAlphaSlider="true" />
-
-                <org.zimmob.zimlx.preference.ColorPreferenceCompat
-                    android:defaultValue="@color/black"
-                    android:key="@string/pref_key__desktop_folder_label_color"
-                    android:title="@string/pref_title__desktop_folder_color_text"
-                    app:cpv_dialogTitle="@string/pref_title__desktop_folder_color_text"
-                    app:cpv_showAlphaSlider="true" />
-
                 <org.zimmob.zimlx.preference.ColorPreferenceCompat
                     android:defaultValue="@color/colorPrimaryDark"
                     android:key="@string/pref_key__minibar_background_color"
@@ -437,11 +422,19 @@
                     android:summary="@string/pref_summary__folder_label"
                     android:title="@string/pref_title__folder_label" />
                 <org.zimmob.zimlx.preference.ColorPreferenceCompat
-                    android:defaultValue="@color/colorPrimary"
-                    android:key="@string/pref_key__folder_color"
-                    android:title="@string/pref_title__folder_color"
-                    app:cpv_dialogTitle="@string/pref_title__folder_color"
+                    android:defaultValue="@color/white"
+                    android:key="@string/pref_key__desktop_folder_color"
+                    android:title="@string/pref_title__desktop_folder_color"
+                    app:cpv_dialogTitle="@string/pref_title__desktop_folder_color"
                     app:cpv_showAlphaSlider="true" />
+
+                <org.zimmob.zimlx.preference.ColorPreferenceCompat
+                    android:defaultValue="@color/black"
+                    android:key="@string/pref_key__desktop_folder_label_color"
+                    android:title="@string/pref_title__desktop_folder_color_text"
+                    app:cpv_dialogTitle="@string/pref_title__desktop_folder_color_text"
+                    app:cpv_showAlphaSlider="true" />
+
             </android.support.v7.preference.PreferenceCategory>
         </PreferenceScreen>
 

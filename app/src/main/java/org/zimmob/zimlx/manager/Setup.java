@@ -7,8 +7,8 @@ import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.BaseIconProvider;
 import org.zimmob.zimlx.util.Definitions;
+import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
 
@@ -104,9 +104,9 @@ public abstract class Setup {
     // ----------------
 
     public interface ImageLoader {
-        BaseIconProvider createIconProvider(Drawable drawable);
+        SimpleIconProvider createIconProvider(Drawable drawable);
 
-        BaseIconProvider createIconProvider(int icon);
+        SimpleIconProvider createIconProvider(int icon);
     }
 
     public interface DataManager {

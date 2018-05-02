@@ -11,13 +11,13 @@ android {
     compileSdkVersion 26
     buildToolsVersion '27.0.3'
     defaultConfig {
-        minSdkVersion version_setup_minSdk
+        minSdkVersion 23
         targetSdkVersion version_setup_targetSdk
 
         flavorDimensions "versionCode"
 
-        versionCode 20180410
-        versionName '0.2'
+        versionCode 20180501
+        versionName '0.2.1'
 
         applicationId "org.zimmob.zimlx"
         resValue 'string', 'app_name', "ZimLX"
@@ -116,21 +116,17 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2'
     implementation 'com.github.daniel-stoneuk:material-about-library:2.3.0'
-    implementation ('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+    implementation('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
         transitive = true
     }
-
     implementation('com.github.turing-tech:MaterialScrollBar:12.4.0') {
         exclude group: 'com.android.support'
     }
-
-
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$version_plugin_kotlin"
     }
-
     // Processors
     def anpros = ["com.jakewharton:butterknife-compiler:${version_library_butterknife}"]
     for (anpro in anpros) {

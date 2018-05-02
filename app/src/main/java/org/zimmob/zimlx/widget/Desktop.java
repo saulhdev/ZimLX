@@ -66,7 +66,14 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     private View _previousItemView;
     private int _previousPage;
 
-    public static boolean handleOnDropOver(Home home, Item dropItem, Item item, View itemView, CellContainer parent, int page, ItemPosition itemPosition, DesktopCallBack<?> callback) {
+    public static boolean handleOnDropOver(Home home,
+                                           Item dropItem,
+                                           Item item,
+                                           View itemView,
+                                           CellContainer parent,
+                                           int page,
+                                           ItemPosition itemPosition,
+                                           DesktopCallBack<?> callback) {
         if (item != null) {
             if (dropItem != null) {
                 Type type = item._type;
@@ -127,7 +134,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     @NonNull
     public final Dock getDock() {
-        Dock dock = (Dock) findViewById(R.id.dock);
+        Dock dock = findViewById(R.id.dock);
 
         return dock;
     }
@@ -172,7 +179,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     @NonNull
     public final CellContainer getCurrentPage() {
-        return (CellContainer) _pages.get(getCurrentItem());
+        return _pages.get(getCurrentItem());
     }
 
     public final void setPageIndicator(@NonNull PagerIndicator pageIndicator) {

@@ -6,7 +6,6 @@ import android.view.View;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.App;
@@ -32,7 +31,7 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
             @Override
             public void afterDrag(View view) {
                 //This will be handled by the Drag N Drop listener in the CoreHome
-                Home.Companion.getLauncher().closeAppDrawer();
+                //Home.Companion.getLauncher().closeAppDrawer();
             }
         };
     }

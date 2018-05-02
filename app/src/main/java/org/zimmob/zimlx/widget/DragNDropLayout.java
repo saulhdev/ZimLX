@@ -67,7 +67,7 @@ public class DragNDropLayout extends FrameLayout {
 
     public static final class DragFlag {
         private boolean _previousOutside = true;
-        private boolean _shouldIgnore;
+        private boolean _shouldIgnore = false;
 
         public final boolean getPreviousOutside() {
             return _previousOutside;
@@ -91,7 +91,6 @@ public class DragNDropLayout extends FrameLayout {
         private final View view;
 
         public DropTargetListener(@NonNull View view) {
-
             this.view = view;
         }
 
@@ -101,34 +100,22 @@ public class DragNDropLayout extends FrameLayout {
         }
 
         public boolean onStart(@NonNull Action action, @NonNull PointF location, boolean isInside) {
-
-
             return false;
         }
 
         public void onStartDrag(@NonNull Action action, @NonNull PointF location) {
-
-
         }
 
         public void onDrop(@NonNull Action action, @NonNull PointF location, @NonNull Item item) {
-
-
         }
 
         public void onMove(@NonNull Action action, @NonNull PointF location) {
-
-
         }
 
         public void onEnter(@NonNull Action action, @NonNull PointF location) {
-
-
         }
 
         public void onExit(@NonNull Action action, @NonNull PointF location) {
-
-
         }
 
         public void onEnd() {
@@ -217,7 +204,6 @@ public class DragNDropLayout extends FrameLayout {
         return _dragAction;
     }
 
-
     public final boolean getDragExceedThreshold() {
         return _dragExceedThreshold;
     }
@@ -241,7 +227,9 @@ public class DragNDropLayout extends FrameLayout {
         int[] toCoordinate = new int[2];
         fromView.getLocationOnScreen(fromCoordinate);
         toView.getLocationOnScreen(toCoordinate);
-        _previewLocation.set(((float) (fromCoordinate[0] - toCoordinate[0])) + x, ((float) (fromCoordinate[1] - toCoordinate[1])) + y);
+        _previewLocation.set(
+                ((float) (fromCoordinate[0] - toCoordinate[0])) + x,
+                ((float) (fromCoordinate[1] - toCoordinate[1])) + y);
     }
 
     public final void cancelFolderPreview() {
@@ -308,8 +296,6 @@ public class DragNDropLayout extends FrameLayout {
     }
 
     public final void startDragNDropOverlay(@NonNull View view, @NonNull Item item, @NonNull Action action) {
-
-
         _dragging = true;
         _dragExceedThreshold = false;
         _overlayIconScale = 0.0f;
@@ -334,9 +320,9 @@ public class DragNDropLayout extends FrameLayout {
     public final void cancelAllDragNDrop() {
         _dragging = false;
         if (!_overlayPopupShowing) {
-            _dragView = (View) null;
-            _dragItem = (Item) null;
-            _dragAction = (Action) null;
+            _dragView = null;
+            _dragItem = null;
+            _dragAction = null;
         }
         for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
             ((DropTargetListener) dropTarget.getKey()).onEnd();
@@ -403,7 +389,9 @@ public class DragNDropLayout extends FrameLayout {
             DropTargetListener dropTargetListener = dropTarget2.getKey();
             if (!dropTarget2.getValue().getShouldIgnore()) {
                 convertPoint(dropTarget2.getKey().getView());
-                if (isViewContains(dropTarget2.getKey().getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
+                if (isViewContains(dropTarget2.getKey().getView(),
+                        (int) _dragLocation.x,
+                        (int) _dragLocation.y)) {
 
                     dropTargetListener.onMove(_dragAction, _dragLocationConverted);
                     if (dropTarget2.getValue().getPreviousOutside()) {
@@ -424,7 +412,10 @@ public class DragNDropLayout extends FrameLayout {
         _dragging = false;
         for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
             if (!((DragFlag) dropTarget.getValue()).getShouldIgnore()) {
-                if (isViewContains(((DropTargetListener) dropTarget.getKey()).getView(), (int) _dragLocation.x, (int) _dragLocation.y)) {
+                if (isViewContains(
+                        ((DropTargetListener) dropTarget.getKey()).getView(),
+                        (int) _dragLocation.x,
+                        (int) _dragLocation.y)) {
                     convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
                     DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
                     dropTargetListener.onDrop(_dragAction, _dragLocationConverted, _dragItem);
@@ -443,9 +434,17 @@ public class DragNDropLayout extends FrameLayout {
         int[] toCoordinate = new int[2];
         getLocationOnScreen(fromCoordinate);
         toView.getLocationOnScreen(toCoordinate);
-        _dragLocationConverted.set(((float) (fromCoordinate[0] - toCoordinate[0])) + _dragLocation.x, ((float) (fromCoordinate[1] - toCoordinate[1])) + _dragLocation.y);
+        _dragLocationConverted.set(
+                (fromCoordinate[0] - toCoordinate[0]) + _dragLocation.x,
+                (fromCoordinate[1] - toCoordinate[1]) + _dragLocation.y);
     }
 
+    /**
+     * @param view
+     * @param rx
+     * @param ry
+     * @return
+     */
     private final boolean isViewContains(View view, int rx, int ry) {
         view.getLocationOnScreen(_tempArrayOfInt2);
         int x = _tempArrayOfInt2[0];

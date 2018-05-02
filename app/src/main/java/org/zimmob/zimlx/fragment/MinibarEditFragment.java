@@ -98,9 +98,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
         ArrayList<String> minibarArrangement = new ArrayList<>();
         for (AppItem item : adapter.getAdapterItems()) {
             if (item.enable) {
-                minibarArrangement.add("0" + item.item._label.toString());
+                minibarArrangement.add("0" + item.item.label.toString());
             } else {
-                minibarArrangement.add("1" + item.item._label.toString());
+                minibarArrangement.add("1" + item.item.label.toString());
             }
         }
         AppSettings.get().setMinibarArrangement(minibarArrangement);
@@ -154,9 +154,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
 
         @Override
         public void bindView(ViewHolder holder, List payloads) {
-            holder.label.setText(item._label.toString());
-            holder.description.setText(item._description);
-            holder.icon.setImageResource(item._icon);
+            holder.label.setText(item.label.toString());
+            holder.description.setText(item.description);
+            holder.icon.setImageResource(item.icon);
             holder.checkbox.setChecked(enable);
             holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
@@ -176,10 +176,10 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
 
             public ViewHolder(View itemView) {
                 super(itemView);
-                label = (TextView) itemView.findViewById(R.id.tv);
-                description = (TextView) itemView.findViewById(R.id.tv2);
-                icon = (ImageView) itemView.findViewById(R.id.iv);
-                checkbox = (CheckBox) itemView.findViewById(R.id.cb);
+                label = itemView.findViewById(R.id.tv);
+                description = itemView.findViewById(R.id.tv2);
+                icon = itemView.findViewById(R.id.iv);
+                checkbox = itemView.findViewById(R.id.cb);
             }
         }
     }

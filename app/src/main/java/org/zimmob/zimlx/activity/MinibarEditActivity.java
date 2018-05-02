@@ -62,15 +62,12 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         touchHelper.attachToRecyclerView(_recyclerView);
 
         _recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         _recyclerView.setAdapter(_adapter);
 
-        int i = 0;
+
         final ArrayList<String> minibarArrangement = AppSettings.get().getMinibarArrangement();
-        for (String act : minibarArrangement) {
-            LauncherAction.ActionDisplayItem item = LauncherAction.getActionItemFromString(act.substring(1));
-            _adapter.add(new Item(i, item, act.charAt(0) == '0'));
-            i++;
+        for (LauncherAction.ActionDisplayItem item : LauncherAction.actionDisplayItems) {
+            _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
 
         boolean minBarEnable = AppSettings.get().getMinibarEnable();
@@ -95,10 +92,8 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     protected void onPause() {
         ArrayList<String> minibarArrangement = new ArrayList<>();
         for (Item item : _adapter.getAdapterItems()) {
-            if (item.enable) {
-                minibarArrangement.add("0" + item.item._label.toString());
-            } else
-                minibarArrangement.add("1" + item.item._label.toString());
+            if (item.enable)
+                minibarArrangement.add(Long.toString(item.id));
         }
         AppSettings.get().setMinibarArrangement(minibarArrangement);
         super.onPause();
@@ -152,9 +147,9 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
         @Override
         public void bindView(ViewHolder holder, List payloads) {
-            holder._tv.setText(item._label.toString());
-            holder._tv2.setText(item._description);
-            holder._iv.setImageResource(item._icon);
+            holder._tv.setText(item.label.toString());
+            holder._tv2.setText(item.description);
+            holder._iv.setImageResource(item.icon);
             holder._cb.setChecked(enable);
             holder._cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override

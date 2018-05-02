@@ -4,6 +4,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import com.mikepenz.fastadapter.IAdapter;
@@ -34,7 +35,10 @@ public class HpDragNDrop {
     private PopupIconLabelItem editItem = new PopupIconLabelItem(R.string.edit, R.drawable.ic_edit_black_24dp).withIdentifier(editItemIdentifier);
     private PopupIconLabelItem removeItem = new PopupIconLabelItem(R.string.remove, R.drawable.ic_close_dark_24dp).withIdentifier(removeItemIdentifier);
 
-    public void initDragNDrop(@NonNull final Home _home, @NonNull final View leftDragHandle, @NonNull final View rightDragHandle, @NonNull final DragNDropLayout dragNDropView) {
+    public void initDragNDrop(@NonNull final Home _home,
+                              @NonNull final View leftDragHandle,
+                              @NonNull final View rightDragHandle,
+                              @NonNull final DragNDropLayout dragNDropView) {
         //dragHandle's drag event
         final Handler dragHandler = new Handler();
 
@@ -178,11 +182,14 @@ public class HpDragNDrop {
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
                     // add the item to the database
-                    Home._db.saveItem(item, _home.getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop);
+                    Home._db.saveItem(item, _home.getDesktop()
+                            .getCurrentItem(), Definitions.ItemPosition.Desktop);
                 } else {
                     Point pos = new Point();
                     _home.getDesktop().getCurrentPage().touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
-                    View itemView = _home.getDesktop().getCurrentPage().coordinateToChildView(pos);
+                    View itemView = _home.getDesktop()
+                            .getCurrentPage()
+                            .coordinateToChildView(pos);
                     if (itemView != null && Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop, _home.getDesktop())) {
                         _home.getDesktop().consumeRevert();
                         _home.getDock().consumeRevert();
@@ -225,7 +232,7 @@ public class HpDragNDrop {
             public boolean onStart(@NonNull Action action, @NonNull PointF location, boolean isInside) {
                 boolean ok = !DragAction.Action.WIDGET.equals(action);
                 if (ok && isInside) {
-                    //showItemPopup()
+                    //showItemPopup();
                 }
                 return ok;
             }
@@ -246,6 +253,7 @@ public class HpDragNDrop {
 
                 int x = (int) location.x;
                 int y = (int) location.y;
+
                 if (_home.getDock().addItemToPoint(item, x, y)) {
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
@@ -254,8 +262,11 @@ public class HpDragNDrop {
                     Home._db.saveItem(item, 0, Definitions.ItemPosition.Dock);
                 } else {
                     Point pos = new Point();
+
                     _home.getDock().touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
                     View itemView = _home.getDock().coordinateToChildView(pos);
+                    Log.e("X POST ", String.valueOf(item._spanX));
+                    Log.e("Y POST ", String.valueOf(item._spanY));
                     if (itemView != null) {
                         if (Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Definitions.ItemPosition.Dock, _home.getDock())) {
                             _home.getDesktop().consumeRevert();
@@ -339,7 +350,10 @@ public class HpDragNDrop {
         }
 
         if (y < 0)
-            y = dragNDropView.getDragLocation().y - Home._itemTouchY + home.getDesktop().getCurrentPage().getCellHeight() + Tool.toPx(4);
+            y = dragNDropView.getDragLocation().y
+                    - Home._itemTouchY
+                    + home.getDesktop().getCurrentPage().getCellHeight()
+                    + Tool.toPx(4);
         else
             y -= Tool.toPx(4);
 

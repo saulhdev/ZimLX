@@ -6,10 +6,10 @@ import android.app.admin.DevicePolicyManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.provider.Settings;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -23,35 +23,27 @@ import org.zimmob.zimlx.viewutil.DialogHelper;
 public class LauncherAction {
 
     public enum Action {
-        EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, OpenAppDrawer, LaunchApp, OpenSearch, MobileNetworkSettings,
+        EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, AppDrawer, LaunchApp, SearchBar, MobileNetworkSettings,
     }
 
-    static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, Home.Companion.get_resources().getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
-            new ActionDisplayItem(Action.SetWallpaper, Home.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
-            new ActionDisplayItem(Action.LockScreen, Home.Companion.get_resources().getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
-            new ActionDisplayItem(Action.LauncherSettings, Home.Companion.get_resources().getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
-            new ActionDisplayItem(Action.VolumeDialog, Home.Companion.get_resources().getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
-            new ActionDisplayItem(Action.DeviceSettings, Home.Companion.get_resources().getString(R.string.minibar_4), R.drawable.ic_android_minimal, 25),
-            new ActionDisplayItem(Action.OpenAppDrawer, Home.Companion.get_resources().getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
-            new ActionDisplayItem(Action.OpenSearch, Home.Companion.get_resources().getString(R.string.pref_title__search_bar), R.drawable.ic_search_light_24dp, 89),
-            new ActionDisplayItem(Action.MobileNetworkSettings, Home.Companion.get_resources().getString(R.string.mobile_network_settings), R.drawable.ic_network_24dp, 46),
+    public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
+            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Home.Companion.get_resources().getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
+            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Home.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
+            new ActionDisplayItem(Action.LockScreen, "LockScreen", Home.Companion.get_resources().getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
+            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Home.Companion.get_resources().getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
+            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Home.Companion.get_resources().getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
+            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Home.Companion.get_resources().getString(R.string.minibar_4), R.drawable.ic_android_minimal, 25),
+            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", Home.Companion.get_resources().getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
+            new ActionDisplayItem(Action.SearchBar, "SearchBar", Home.Companion.get_resources().getString(R.string.minibar_9), R.drawable.ic_search_light_24dp, 89),
+            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Home.Companion.get_resources().getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
     };
 
-    public static void RunAction(@Nullable ActionItem actionItem, final Context context) {
-        if (actionItem != null)
-            switch (actionItem._action) {
-                case LaunchApp:
-                    Tool.startApp(context, actionItem.extraData);
-                    break;
-
-                default:
-                    RunAction(actionItem._action, context);
-            }
+    public static void RunAction(Action action, final Context context) {
+        LauncherAction.RunAction(new ActionItem(action, null), context);
     }
 
-    public static void RunAction(Action action, final Context context) {
-        switch (action) {
+    public static void RunAction(ActionItem action, final Context context) {
+        switch (action.action) {
             case EditMinibar:
                 context.startActivity(new Intent(context, MinibarEditActivity.class));
                 break;
@@ -83,10 +75,10 @@ public class LauncherAction {
             case LauncherSettings:
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
-            case OpenAppDrawer:
+            case AppDrawer:
                 Home.Companion.getLauncher().openAppDrawer();
                 break;
-            case OpenSearch: {
+            case SearchBar: {
                 Home.Companion.getLauncher().getSearchBar().getSearchButton().performClick();
                 break;
             }
@@ -107,12 +99,16 @@ public class LauncherAction {
                     audioManager.setStreamVolume(AudioManager.STREAM_RING, audioManager.getStreamVolume(AudioManager.STREAM_RING), AudioManager.FLAG_SHOW_UI);
                 }
                 break;
+            case LaunchApp:
+                PackageManager pm = AppManager.getInstance(context).getPackageManager();
+                action.extraData = new Intent(pm.getLaunchIntentForPackage(AppSettings.get().getString(context.getString(R.string.pref_key__gesture_double_tap) + "__", "")));
+                break;
         }
     }
 
     public static ActionDisplayItem getActionItemFromString(String string) {
         for (ActionDisplayItem item : actionDisplayItems) {
-            if (Integer.toString(item._id).equals(string)) {
+            if (Integer.toString(item.id).equals(string)) {
                 return item;
             }
         }
@@ -124,26 +120,28 @@ public class LauncherAction {
     }
 
     public static class ActionItem {
-        public Action _action;
+        public Action action;
         public Intent extraData;
 
         public ActionItem(Action action, Intent extraData) {
-            _action = action;
-            extraData = extraData;
+            this.action = action;
+            this.extraData = extraData;
         }
     }
 
     public static class ActionDisplayItem {
-        public Action _label;
-        public String _description;
-        public int _icon;
-        public int _id;
+        public Action action;
+        public String label;
+        public String description;
+        public int icon;
+        public int id;
 
-        public ActionDisplayItem(Action label, String description, int icon, int id) {
-            _label = label;
-            _description = description;
-            _icon = icon;
-            _id = id;
+        public ActionDisplayItem(Action action, String label, String description, int icon, int id) {
+            this.action = action;
+            this.label = label;
+            this.description = description;
+            this.icon = icon;
+            this.id = id;
         }
     }
 }

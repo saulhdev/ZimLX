@@ -12,7 +12,6 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.BaseIconProvider;
 import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
@@ -46,12 +45,12 @@ public final class HpInitSetup extends Setup {
 
         _imageLoader = new ImageLoader() {
             @NonNull
-            public BaseIconProvider createIconProvider(@Nullable Drawable drawable) {
+            public SimpleIconProvider createIconProvider(@Nullable Drawable drawable) {
                 return new SimpleIconProvider(drawable);
             }
 
             @NonNull
-            public BaseIconProvider createIconProvider(int icon) {
+            public SimpleIconProvider createIconProvider(int icon) {
                 return new SimpleIconProvider(icon);
             }
         };
