@@ -13,7 +13,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
@@ -101,25 +100,20 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         } else {
             scaleFactor = Tool.clampFloat(scaleFactor + 0.09f, 0.5f, 1f);
         }
-
+        paintInnerCircle = new Paint();
+        paintInnerCircle.setColor(Color.parseColor("#EA040404"));
+        paintInnerCircle.setAlpha(150);
+        paintInnerCircle.setAntiAlias(true);
         canvas.scale(scaleFactor, scaleFactor, iconSize / 2, iconSize / 2);
         if (appSettings.getFolderShape() == Folder.Shape.CIRCLE) {
-            paintInnerCircle = new Paint();
-            paintInnerCircle.setColor(Color.WHITE);
-            paintInnerCircle.setAlpha(150);
-            paintInnerCircle.setAntiAlias(true);
 
             Path clip = new Path();
             clip.addCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, Path.Direction.CW);
             canvas.clipPath(clip, Region.Op.REPLACE);
             canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintInnerCircle);
         } else {
-            paintInnerSquare = new Paint();
-            paintInnerSquare.setColor(Color.WHITE);
-            paintInnerSquare.setAlpha(150);
-            paintInnerSquare.setAntiAlias(true);
             Rect rect = new Rect(10, 10, 164, 164);
-            canvas.drawRect(rect, paintInnerSquare);
+            canvas.drawRect(rect, paintInnerCircle);
         }
         if (icons[0] != null) {
             drawIcon(canvas, icons[0], padding, padding, iconSizeDiv2 - padding, iconSizeDiv2 - padding, paintIcon);
@@ -136,7 +130,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         canvas.clipRect(0, 0, iconSize, iconSize, Region.Op.REPLACE);
 
         if (appSettings.getFolderShape() == Folder.Shape.CIRCLE) {
-            this.paintOuterCircle = new Paint();
+           /* this.paintOuterCircle = new Paint();
             paintOuterCircle.setColor(Color.BLUE);
             paintOuterCircle.setAntiAlias(true);
             paintOuterCircle.setFlags(Paint.ANTI_ALIAS_FLAG);
@@ -144,16 +138,17 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
             outline = Tool.dp2px(2, Home.Companion.getLauncher());
             paintOuterCircle.setStrokeWidth(outline);
             canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintOuterCircle);
+       */
         } else {
-            paintOuterSquare = new Paint();
-            paintOuterSquare.setColor(Color.BLUE);
+            /*paintOuterSquare = new Paint();
+            paintOuterSquare.setColor(Color.parseColor("EA040404"));
             paintOuterSquare.setAntiAlias(true);
             paintOuterSquare.setFlags(Paint.ANTI_ALIAS_FLAG);
             paintOuterSquare.setStyle(Paint.Style.STROKE);
             outline = Tool.dp2px(2, Home.Companion.getLauncher());
             paintOuterSquare.setStrokeWidth(outline);
             Rect rectX = new Rect(10, 10, 164, 164);
-            canvas.drawRect(rectX, paintOuterSquare);
+            canvas.drawRect(rectX, paintOuterSquare);*/
         }
         canvas.restore();
 

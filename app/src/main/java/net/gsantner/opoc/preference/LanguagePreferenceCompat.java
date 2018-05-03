@@ -132,7 +132,8 @@ public class LanguagePreferenceCompat extends ListPreference {
             entryval[i + 2] = languages.get(i).split(";")[1];
         }
         entryval[0] = SYSTEM_LANGUAGE_CODE;
-        entries[0] = _systemLanguageName + " » " + summarizeLocale(context.getResources().getConfiguration().locale, "");
+        entries[0] = _systemLanguageName + " » " + summarizeLocale(context.getResources()
+                .getConfiguration().locale, "");
         entryval[1] = _defaultLanguageCode;
         entries[1] = summarizeLocale(contextUtils.getLocaleByAndroidCode(_defaultLanguageCode), _defaultLanguageCode);
 

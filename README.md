@@ -1,22 +1,64 @@
-[![GitHub release](https://img.shields.io/badge/release-0.5.8-blue.svg)](https://github.com/otakuhqz/zimlx/releases)
-
 # ZimLX
 Open Source and free launcher for Android based on OpenLauncher.
 
 ## Donations
 Want to support me? https://paypal.me/saulhenriquez
 
+## Working Features
+#### * Minibar
+    -> Minibar custom color
+    -> Minibar Edit items
 
-## Features
-* Custom color interface
-* No ads
-* Folder shape change
-* Folder background change
-* IconPack Support
-* App Drawer customization
-* Sort mode: Alphabetical AZ, Alphabetical ZA, Last Installed, Most Used
-* Minibar
-and more cool stuff.
+#### * Desktop
+    -> Row and Columns config
+    -> Indicator Style Config
+    -> Full screen mode
+    -> Background color
+#### * Dock
+    -> Dock Size
+    -> Background Size
+
+#### * App Drawer
+    -> Row and Columns config
+    -> Page Style
+    -> Sort Mode (AZ, ZA, Last Installed)
+    -> Hide Apps
+    -> Label Size
+    -> Background color
+    -> Scrollbar color
+    -> Label Size
+    -> Label color
+    -> Cardview color
+
+
+#### * Appearance
+    -> Theme Color Change
+    -> Theme Dark and Light
+    -> Icon Size
+    -> Icon Pack
+
+#### * Folder
+    -> Folder Shape
+    -> Folder Background
+#### * Gestures
+    -> Gestures Config
+
+#### * Notifications
+
+## Future Features
+* Desktop
+    * Transitions
+* App Drawer
+    * Transitions
+    * Page Style
+    * Sort Mode Most Used
+* Folder
+    * Folder Preview
+    * Folder Transition
+* Appearance
+    * Font Type
+    * Font Size
+* Multilanguage support and more cool stuff.
 
 ## Collaborate
 If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com

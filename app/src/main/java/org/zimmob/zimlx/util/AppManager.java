@@ -221,13 +221,41 @@ public class AppManager {
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
-            Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
-                @Override
-                public int compare(ResolveInfo p1, ResolveInfo p2) {
-                    return Collator.getInstance().compare(p1.loadLabel(_packageManager).toString(), p2.loadLabel(_packageManager).toString());
-                }
-            });
+            AppSettings appSettings = AppSettings.get();
+            String sort = appSettings.getSortMode();
+            switch (sort) {
+                case "az":
+                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
+                        @Override
+                        public int compare(ResolveInfo p1, ResolveInfo p2) {
+                            return Collator.getInstance().compare(
+                                    p1.loadLabel(_packageManager).toString(),
+                                    p2.loadLabel(_packageManager).toString());
+                        }
+                    });
+                    break;
+                case "za":
+                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
+                        @Override
+                        public int compare(ResolveInfo p2, ResolveInfo p1) {
+                            return Collator.getInstance().compare(
+                                    p1.loadLabel(_packageManager).toString(),
+                                    p2.loadLabel(_packageManager).toString());
+                        }
+                    });
+                    break;
+                case "li":
+                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
+                        @Override
+                        public int compare(ResolveInfo p1, ResolveInfo p2) {
+                            return Collator.getInstance().compare(
+                                    p1.activityInfo.applicationInfo.sourceDir.toString(),
+                                    p2.activityInfo.applicationInfo.sourceDir.toString());
+                        }
+                    });
 
+                    break;
+            }
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(_context, info, _packageManager);
                 _nonFilteredApps.add(app);
@@ -252,7 +280,6 @@ public class AppManager {
                     _apps.add(new App(_context, info, _packageManager));
             }
 
-            AppSettings appSettings = AppSettings.get();
             if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
                 IconPackHelper.themePacs(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), _apps);
             }
