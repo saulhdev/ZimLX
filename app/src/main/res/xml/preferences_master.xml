@@ -379,8 +379,8 @@
                     android:key="@string/pref_key__icon_size"
                     android:summary="@string/pref_summary__icon_size"
                     android:title="@string/pref_title__icon_size"
-                    app:maxValue="120"
-                    app:minValue="20" />
+                    app:maxValue="64"
+                    app:minValue="30" />
 
                 <android.support.v7.preference.Preference
                     android:key="@string/pref_key__icon_pack"

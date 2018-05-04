@@ -24,10 +24,7 @@ import org.zimmob.zimlx.widget.Folder;
 public class GroupIconDrawable extends Drawable implements IconDrawer {
     private Drawable[] icons;
     private Paint paintInnerCircle;
-    private Paint paintOuterCircle;
     private Paint paintIcon;
-    private Paint paintInnerSquare;
-    private Paint paintOuterSquare;
     private boolean needAnimate;
     private boolean needAnimateScale;
     private float scaleFactor = 1;
@@ -129,27 +126,6 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         }
         canvas.clipRect(0, 0, iconSize, iconSize, Region.Op.REPLACE);
 
-        if (appSettings.getFolderShape() == Folder.Shape.CIRCLE) {
-           /* this.paintOuterCircle = new Paint();
-            paintOuterCircle.setColor(Color.BLUE);
-            paintOuterCircle.setAntiAlias(true);
-            paintOuterCircle.setFlags(Paint.ANTI_ALIAS_FLAG);
-            paintOuterCircle.setStyle(Paint.Style.STROKE);
-            outline = Tool.dp2px(2, Home.Companion.getLauncher());
-            paintOuterCircle.setStrokeWidth(outline);
-            canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintOuterCircle);
-       */
-        } else {
-            /*paintOuterSquare = new Paint();
-            paintOuterSquare.setColor(Color.parseColor("EA040404"));
-            paintOuterSquare.setAntiAlias(true);
-            paintOuterSquare.setFlags(Paint.ANTI_ALIAS_FLAG);
-            paintOuterSquare.setStyle(Paint.Style.STROKE);
-            outline = Tool.dp2px(2, Home.Companion.getLauncher());
-            paintOuterSquare.setStrokeWidth(outline);
-            Rect rectX = new Rect(10, 10, 164, 164);
-            canvas.drawRect(rectX, paintOuterSquare);*/
-        }
         canvas.restore();
 
         if (needAnimate) {

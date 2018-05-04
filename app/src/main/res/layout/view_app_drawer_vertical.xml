@@ -5,4 +5,4 @@
     android:layout_height="match_parent"
     android:visibility="invisible"
     app:cardBackgroundColor="@color/white"
-    app:cardElevation="4dp" />
+    app:cardElevation="1dp" />

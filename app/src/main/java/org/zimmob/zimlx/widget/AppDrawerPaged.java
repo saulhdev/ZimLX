@@ -85,7 +85,8 @@ public class AppDrawerPaged extends SmoothViewPager {
 
         setOverScrollMode(OVER_SCROLL_NEVER);
 
-        boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
+        boolean mPortrait = c.getResources().getConfiguration().orientation ==
+                Configuration.ORIENTATION_PORTRAIT;
 
         if (mPortrait) {
             setPortraitValue();

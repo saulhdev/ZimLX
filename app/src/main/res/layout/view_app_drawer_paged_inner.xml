@@ -10,7 +10,7 @@
         android:layout_margin="1dp"
         android:id="@+id/groupParent"
         app:cardBackgroundColor="@color/white"
-        app:cardElevation="2dp"
+        app:cardElevation="1dp"
         app:contentPadding="0dp">
 
         <org.zimmob.zimlx.widget.CellContainer
