@@ -69,7 +69,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         this.icons = icons;
         this.iconSize = size;
         iconSizeDiv2 = Math.round(iconSize / 2f);
-        padding = iconSize / 25f;
+        padding = iconSize / 20f;
 
         this.paintIcon = new Paint();
         paintIcon.setAntiAlias(true);
@@ -113,16 +113,16 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
             canvas.drawRect(rect, paintInnerCircle);
         }
         if (icons[0] != null) {
-            drawIcon(canvas, icons[0], padding, padding, iconSizeDiv2 - padding, iconSizeDiv2 - padding, paintIcon);
+            drawIcon(canvas, icons[0], padding + 5, padding + 5, iconSizeDiv2 - padding + 5, iconSizeDiv2 - padding, paintIcon);
         }
         if (icons[1] != null) {
-            drawIcon(canvas, icons[1], iconSizeDiv2 + padding, padding, iconSize - padding, iconSizeDiv2 - padding, paintIcon);
+            drawIcon(canvas, icons[1], iconSizeDiv2 + padding - 5, padding + 5, iconSize - padding - 5, iconSizeDiv2 - padding, paintIcon);
         }
         if (icons[2] != null) {
-            drawIcon(canvas, icons[2], padding, iconSizeDiv2 + padding, iconSizeDiv2 - padding, iconSize - padding, paintIcon);
+            drawIcon(canvas, icons[2], padding + 5, iconSizeDiv2 + padding, iconSizeDiv2 - padding + 5, iconSize - padding - 5, paintIcon);
         }
         if (icons[3] != null) {
-            drawIcon(canvas, icons[3], iconSizeDiv2 + padding, iconSizeDiv2 + padding, iconSize - padding, iconSize - padding, paintIcon);
+            drawIcon(canvas, icons[3], iconSizeDiv2 + padding - 5, iconSizeDiv2 + padding, iconSize - padding - 5, iconSize - padding - 5, paintIcon);
         }
         canvas.clipRect(0, 0, iconSize, iconSize, Region.Op.REPLACE);
 
