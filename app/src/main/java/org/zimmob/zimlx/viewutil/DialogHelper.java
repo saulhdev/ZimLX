@@ -158,9 +158,6 @@ public class DialogHelper {
         void onAppSelected(App app);
     }
 
-    /**
-     *
-     */
     public interface OnItemEditListener {
         void itemLabel(String label);
     }
