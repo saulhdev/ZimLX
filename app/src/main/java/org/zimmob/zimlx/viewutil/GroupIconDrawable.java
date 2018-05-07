@@ -16,11 +16,15 @@ import android.util.Log;
 
 import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.widget.Folder;
+
+import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE;
+import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE_SHADOW;
+import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
+import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE_SHADOW;
 
 public class GroupIconDrawable extends Drawable implements IconDrawer {
     private Drawable[] icons;
@@ -107,7 +111,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         Path clip = new Path();
         Rect rect;
         switch (mode) {
-            case Folder.Shape.CIRCLE:
+            case FOLDER_SHAPE_CIRCLE:
                 paintBackground.setColor(Color.parseColor("#A4101947"));
 
                 //create circle
@@ -116,7 +120,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
                 canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintBackground);
                 break;
 
-            case Folder.Shape.CIRCLE_SHADOW:
+            case FOLDER_SHAPE_CIRCLE_SHADOW:
                 paintBackground.setColor(Color.parseColor("#CFC6C6C6"));
                 //create circle
                 clip.addCircle(iconSize / 2 + 2, iconSize / 2 + 2, iconSize / 2 - outline, Path.Direction.CW);
@@ -124,7 +128,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
                 canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintBackground);
                 break;
 
-            case Folder.Shape.SQUARE:
+            case FOLDER_SHAPE_SQUARE:
                 paintBackground.setColor(Color.parseColor("#A4101947"));
 
                 rect = new Rect(0, 0, (int) iconSize, (int) iconSize);
@@ -132,7 +136,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
                 canvas.drawRoundRect(rectF, 20, 20, paintBackground);
                 break;
 
-            case Folder.Shape.SQUARE_SHADOW:
+            case FOLDER_SHAPE_SQUARE_SHADOW:
                 paintBackground.setColor(Color.parseColor("#CFC6C6C6"));
                 rect = new Rect(0, 0, (int) iconSize, (int) iconSize);
                 rectF = new RectF(rect);
