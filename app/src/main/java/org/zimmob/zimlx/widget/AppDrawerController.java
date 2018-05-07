@@ -21,6 +21,9 @@ import org.zimmob.zimlx.util.Tool;
 
 import io.codetail.widget.RevealFrameLayout;
 
+import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
+import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
+
 public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerPaged _drawerViewPaged;
     public AppDrawerVertical _drawerViewGrid;
@@ -30,26 +33,50 @@ public class AppDrawerController extends RevealFrameLayout {
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
 
+    /**
+     * @param context
+     * @param attrs
+     */
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
+    /**
+     * @param context
+     */
     public AppDrawerController(Context context) {
         super(context);
     }
 
+    /**
+     * @param context
+     * @param attrs
+     * @param defStyle
+     */
     public AppDrawerController(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
+    /**
+     * @param callBack
+     */
     public void setCallBack(Callback.a2<Boolean, Boolean> callBack) {
         _appDrawerCallback = callBack;
     }
 
+    /**
+     * @return
+     */
     public View getDrawer() {
         return getChildAt(0);
     }
 
+    /**
+     * @param cx
+     * @param cy
+     * @param startRadius
+     * @param finalRadius
+     */
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (_isOpen) return;
         _isOpen = true;
@@ -70,7 +97,7 @@ public class AppDrawerController extends RevealFrameLayout {
                 animator.start();
 
                 switch (_drawerMode) {
-                    case DrawerMode.HORIZONTAL_PAGED:
+                    case DRAWER_HORIZONTAL:
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
                             _drawerViewPaged._pages.get(i).findViewById(R.id.group).setAlpha(1);
                         }
@@ -80,7 +107,7 @@ public class AppDrawerController extends RevealFrameLayout {
                             mGrid.animate().alpha(1).setDuration(150L).setStartDelay(Math.max(_drawerAnimationTime - 50, 1)).setInterpolator(new AccelerateDecelerateInterpolator());
                         }
                         break;
-                    case DrawerMode.VERTICAL:
+                    case DRAWER_VERTICAL:
                         _drawerViewGrid.recyclerView.setAlpha(0);
                         _drawerViewGrid.recyclerView.animate().alpha(1).setDuration(150L).setStartDelay(Math.max(_drawerAnimationTime - 50, 1)).setInterpolator(new AccelerateDecelerateInterpolator());
                         break;
@@ -104,6 +131,12 @@ public class AppDrawerController extends RevealFrameLayout {
         _appDrawerAnimator.start();
     }
 
+    /**
+     * @param cx
+     * @param cy
+     * @param startRadius
+     * @param finalRadius
+     */
     public void close(int cx, int cy, int startRadius, int finalRadius) {
         if (!_isOpen) return;
         _isOpen = false;
@@ -139,7 +172,7 @@ public class AppDrawerController extends RevealFrameLayout {
         });
 
         switch (_drawerMode) {
-            case DrawerMode.HORIZONTAL_PAGED:
+            case DRAWER_HORIZONTAL:
                 if (_drawerViewPaged._pages.size() > 0) {
                     View mGrid = _drawerViewPaged._pages.get(_drawerViewPaged.getCurrentItem()).findViewById(R.id.group);
                     mGrid.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(() -> {
@@ -150,7 +183,7 @@ public class AppDrawerController extends RevealFrameLayout {
                     });
                 }
                 break;
-            case DrawerMode.VERTICAL:
+            case DRAWER_VERTICAL:
                 _drawerViewGrid.recyclerView.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(() -> {
                     try {
                         _appDrawerAnimator.start();
@@ -166,12 +199,12 @@ public class AppDrawerController extends RevealFrameLayout {
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         _drawerMode = Setup.appSettings().getDrawerStyle();
         switch (_drawerMode) {
-            case DrawerMode.HORIZONTAL_PAGED:
+            case DRAWER_HORIZONTAL:
                 _drawerViewPaged = (AppDrawerPaged) layoutInflater.inflate(R.layout.view_app_drawer_paged, this, false);
                 addView(_drawerViewPaged);
                 layoutInflater.inflate(R.layout.view_drawer_indicator, this, true);
                 break;
-            case DrawerMode.VERTICAL:
+            case DRAWER_VERTICAL:
                 _drawerViewGrid = (AppDrawerVertical) layoutInflater.inflate(R.layout.view_app_drawer_vertical, this, false);
                 int marginHorizontal = Tool.dp2px(Setup.appSettings().getVerticalDrawerHorizontalMargin(), getContext());
                 int marginVertical = Tool.dp2px(Setup.appSettings().getVerticalDrawerVerticalMargin(), getContext());
@@ -196,10 +229,10 @@ public class AppDrawerController extends RevealFrameLayout {
 
     public void reloadDrawerCardTheme() {
         switch (_drawerMode) {
-            case DrawerMode.HORIZONTAL_PAGED:
+            case DRAWER_HORIZONTAL:
                 _drawerViewPaged.resetAdapter();
                 break;
-            case DrawerMode.VERTICAL:
+            case DRAWER_VERTICAL:
                 if (!Setup.appSettings().isDrawerShowCardView()) {
                     _drawerViewGrid.setCardBackgroundColor(Color.TRANSPARENT);
                     _drawerViewGrid.setCardElevation(0);
@@ -216,10 +249,10 @@ public class AppDrawerController extends RevealFrameLayout {
 
     public void scrollToStart() {
         switch (_drawerMode) {
-            case DrawerMode.HORIZONTAL_PAGED:
+            case DRAWER_HORIZONTAL:
                 _drawerViewPaged.setCurrentItem(0, false);
                 break;
-            case DrawerMode.VERTICAL:
+            case DRAWER_VERTICAL:
                 _drawerViewGrid.recyclerView.scrollToPosition(0);
                 break;
         }
@@ -227,16 +260,15 @@ public class AppDrawerController extends RevealFrameLayout {
 
     public void setHome(Home home) {
         switch (_drawerMode) {
-            case DrawerMode.HORIZONTAL_PAGED:
+            case DRAWER_HORIZONTAL:
                 _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
                 break;
-            case DrawerMode.VERTICAL:
+            case DRAWER_VERTICAL:
                 break;
         }
     }
 
     public static class DrawerMode {
-        public static final int HORIZONTAL_PAGED = 0;
-        public static final int VERTICAL = 1;
+
     }
 }

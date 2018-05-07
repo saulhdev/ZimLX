@@ -8,7 +8,6 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.widget.AppDrawerVertical;
 import org.zimmob.zimlx.widget.AppItemView;

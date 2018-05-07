@@ -32,8 +32,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-import static org.zimmob.zimlx.widget.AppDrawerController.DrawerMode.HORIZONTAL_PAGED;
-import static org.zimmob.zimlx.widget.AppDrawerController.DrawerMode.VERTICAL;
+import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
+import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
+
 
 /**
  * Created by saul on 04-25-18.
@@ -214,11 +215,11 @@ public class SettingsActivity extends ThemeActivity {
             if ((pref = findPreference(R.string.pref_key__cat_app_drawer)) != null) {
                 tmp = String.format("%s: ", getString(R.string.pref_title__style));
                 switch (_as.getDrawerStyle()) {
-                    case HORIZONTAL_PAGED: {
+                    case DRAWER_HORIZONTAL: {
                         tmp += getString(R.string.horizontal_paged_drawer);
                         break;
                     }
-                    case VERTICAL: {
+                    case DRAWER_VERTICAL: {
                         tmp += getString(R.string.vertical_scroll_drawer);
                         break;
                     }
@@ -295,7 +296,7 @@ public class SettingsActivity extends ThemeActivity {
                 case R.string.pref_key__gesture_unpinch: {
                     if (prefs.getString(key, "0").equals("9")) {
                         DialogHelper.selectAppDialog(getContext(), app ->
-                                prefs.edit().putString(key + "__", app._packageName).apply());
+                                prefs.edit().putString(key + "__", app.getPackageName()).apply());
                     }
                     break;
                 }

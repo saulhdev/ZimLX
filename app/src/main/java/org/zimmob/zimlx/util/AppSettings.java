@@ -10,15 +10,16 @@ import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.widget.AppDrawerController;
 import org.zimmob.zimlx.widget.Desktop;
-import org.zimmob.zimlx.widget.Folder;
 import org.zimmob.zimlx.widget.PagerIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Locale;
+
+import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
+import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE;
 
 public class AppSettings extends SharedPreferencesPropertyBackend {
 
@@ -39,7 +40,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getFolderShape() {
-        return getIntOfStringPref(R.string.pref_key__folder_shape, Folder.Shape.CIRCLE);
+        return getIntOfStringPref(R.string.pref_key__folder_shape, FOLDER_SHAPE_CIRCLE);
     }
 
     public int getDesktopStyle() {
@@ -179,7 +180,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getDrawerStyle() {
-        return getIntOfStringPref(R.string.pref_key__drawer_style, AppDrawerController.DrawerMode.VERTICAL);
+        return getIntOfStringPref(R.string.pref_key__drawer_style, DRAWER_HORIZONTAL);
     }
 
     public boolean isDrawerShowCardView() {

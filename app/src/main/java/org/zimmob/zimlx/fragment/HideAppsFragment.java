@@ -21,8 +21,8 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.AppInfo;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Definitions;

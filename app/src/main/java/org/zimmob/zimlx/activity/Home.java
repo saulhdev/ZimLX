@@ -42,8 +42,8 @@ import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
 import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.AppUpdateReceiver;
@@ -686,9 +686,7 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
         Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
             @Override
             public boolean onAppUpdated(List<App> it) {
-                if ((getDesktop() == null)) {
-                    return false;
-                }
+                if ((getDesktop() == null)) return false;
                 AppSettings appSettings = Setup.appSettings();
 
                 if (appSettings.getDesktopStyle() != 1) {
@@ -823,14 +821,14 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
     }
 
     public final void onStartApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
-        if (BuildConfig.APPLICATION_ID.equals(app._packageName)) {
+        if (BuildConfig.APPLICATION_ID.equals(app.getPackageName())) {
             LauncherAction.RunAction(Action.LauncherSettings, context);
             Companion.setConsumeNextResume(true);
         } else {
             try {
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                intent.setClassName(app._packageName, app._className);
+                intent.setClassName(app.getPackageName(), app.getClassName());
                 context.startActivity(intent, getActivityAnimationOpts(view));
                 Companion.setConsumeNextResume(true);
             } catch (Exception e) {

@@ -20,8 +20,8 @@ import com.turingtechnologies.materialscrollbar.INameableAdapter;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.DrawerAppItem;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;

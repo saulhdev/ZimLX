@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.App;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
 

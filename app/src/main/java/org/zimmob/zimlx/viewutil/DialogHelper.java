@@ -14,9 +14,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.IconLabelItem;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.Tool;
 
@@ -76,7 +76,7 @@ public class DialogHelper {
 
         final MaterialDialog dialog = builder.build();
         List<IconLabelItem> items = new ArrayList<>();
-        final List<App> apps = AppManager.getInstance(context).getApps(); // TODO: Tool.java migration
+        final List<App> apps = AppManager.getInstance(context).getApps();
         int size = Tool.dp2px(18, context);
         int sizePad = Tool.dp2px(8, context);
         for (int i = 0; i < apps.size(); i++) {
@@ -95,6 +95,10 @@ public class DialogHelper {
         dialog.show();
     }
 
+    /**
+     * @param context
+     * @param item
+     */
     public static void deletePackageDialog(Context context, Item item) {
         if (item.getType() == Item.Type.APP) {
             try {

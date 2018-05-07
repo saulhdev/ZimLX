@@ -14,6 +14,7 @@ import android.util.Log;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 
 public class ShortcutReceiver extends BroadcastReceiver {

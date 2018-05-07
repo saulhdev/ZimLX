@@ -1,6 +1,6 @@
 package org.zimmob.zimlx.interfaces;
 
-import org.zimmob.zimlx.util.App;
+import org.zimmob.zimlx.model.App;
 
 import java.util.List;
 

@@ -14,6 +14,7 @@ import android.graphics.drawable.BitmapDrawable;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 
 import java.io.InputStream;
 import java.util.List;

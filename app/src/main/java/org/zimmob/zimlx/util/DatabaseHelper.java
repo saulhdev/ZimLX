@@ -9,6 +9,7 @@ import android.util.Log;
 
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 
 import java.util.ArrayList;
@@ -277,7 +278,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                             item.setIconProvider(app != null ? app.getIconProvider() : null);
                             break;
                         default:
-                            // TODO...
                             break;
                     }
                 }

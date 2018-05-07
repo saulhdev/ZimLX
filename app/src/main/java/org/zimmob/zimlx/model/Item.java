@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.interfaces.LabelProvider;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.BaseIconProvider;
 import org.zimmob.zimlx.util.Tool;
 
@@ -101,7 +100,6 @@ public class Item implements LabelProvider, Parcelable {
                     _iconProvider = app != null ? app.getIconProvider() : null;
                     break;
                 default:
-                    // TODO...
                     break;
             }
         }

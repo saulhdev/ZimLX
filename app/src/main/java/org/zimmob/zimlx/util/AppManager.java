@@ -18,6 +18,7 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.interfaces.AppDeleteListener;
 import org.zimmob.zimlx.interfaces.AppUpdateListener;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.IconLabelItem;
 import org.zimmob.zimlx.model.Item;
 
@@ -63,7 +64,7 @@ public class AppManager {
         String packageName = intent.getComponent().getPackageName();
         String className = intent.getComponent().getClassName();
         for (App app : _apps) {
-            if (app._className.equals(className) && app._packageName.equals(packageName)) {
+            if (app.getClassName().equals(className) && app.getPackageName().equals(packageName)) {
                 return app;
             }
         }
@@ -243,7 +244,7 @@ public class AppManager {
                 for (int i = 0; i < _nonFilteredApps.size(); i++) {
                     boolean shouldGetAway = false;
                     for (String hidItemRaw : hiddenList) {
-                        if ((_nonFilteredApps.get(i)._packageName + "/" + _nonFilteredApps.get(i)._className).equals(hidItemRaw)) {
+                        if ((_nonFilteredApps.get(i).getPackageName() + "/" + _nonFilteredApps.get(i).getClassName()).equals(hidItemRaw)) {
                             shouldGetAway = true;
                             break;
                         }
