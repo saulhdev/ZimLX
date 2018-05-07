@@ -43,11 +43,7 @@ public class MultiSelectListPreference extends ListPreference {
                             "array which are both the same length");
         }
         restoreCheckedEntries();
-        DialogInterface.OnMultiChoiceClickListener listener = new DialogInterface.OnMultiChoiceClickListener() {
-            public void onClick(DialogInterface dialog, int which, boolean val) {
-                entryChecked[which] = val;
-            }
-        };
+        DialogInterface.OnMultiChoiceClickListener listener = (dialog, which, val) -> entryChecked[which] = val;
         builder.setMultiChoiceItems(entries, entryChecked, listener);
     }
 
@@ -78,7 +74,7 @@ public class MultiSelectListPreference extends ListPreference {
     }
 
     protected void onDialogClosed(boolean positiveResult) {
-        List<CharSequence> values = new ArrayList<CharSequence>();
+        List<CharSequence> values = new ArrayList<>();
         CharSequence[] entryValues = getEntryValues();
         if (positiveResult && entryValues != null) {
             for (int i = 0; i < entryValues.length; i++) {

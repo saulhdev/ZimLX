@@ -25,7 +25,7 @@ import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.BaseIconProvider;
 import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
@@ -288,19 +288,16 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         }
 
         public static OnLongClickListener getLongClickDragAppListener(final Item item, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
-            return new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (Setup.appSettings().isDesktopLock()) {
-                        return false;
-                    }
-                    if (eventAction != null && !eventAction.readyForDrag(v)) {
-                        return false;
-                    }
-                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    DragNDropHandler.startDrag(v, item, action, eventAction);
-                    return true;
+            return v -> {
+                if (Setup.appSettings().isDesktopLock()) {
+                    return false;
                 }
+                if (eventAction != null && !eventAction.readyForDrag(v)) {
+                    return false;
+                }
+                v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                DragHandler.startDrag(v, item, action, eventAction);
+                return true;
             };
         }
 
@@ -311,16 +308,10 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         public Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
             _view.setIconProvider(app.getIconProvider());
-            _view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                        @Override
-                        public void run() {
-                            Tool.startApp(_view.getContext(), app, _view);
-                        }
-                    }, 0.85f);
-                }
+            _view.setOnClickListener(v -> {
+                Tool.createScaleInScaleOutAnim(_view, () -> {
+                    Tool.startApp(_view.getContext(), app, _view);
+                }, 0.85f);
             });
             return this;
         }
@@ -328,46 +319,28 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         public Builder setAppItem(final Item item, final App app) {
             _view.setLabel(item.getLabel());
             _view.setIconProvider(app.getIconProvider());
-            _view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                        @Override
-                        public void run() {
-                            Tool.startApp(_view.getContext(), app, _view);
-                        }
-                    }, 0.85f);
-                }
-            });
+            _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
         }
 
         public Builder setShortcutItem(final Item item) {
             _view.setLabel(item.getLabel());
             _view.setIconProvider(item.getIconProvider());
-            _view.setOnClickListener(new OnClickListener() {
+            _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, new Runnable() {
                 @Override
-                public void onClick(View v) {
-                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                        @Override
-                        public void run() {
-                            _view.getContext().startActivity(item.getIntent());
-                        }
-                    }, 0.85f);
+                public void run() {
+                    _view.getContext().startActivity(item.getIntent());
                 }
-            });
+            }, 0.85f));
             return this;
         }
 
         public Builder setGroupItem(Context context, final DesktopCallBack callback, final Item item, int iconSize) {
             _view.setLabel(item.getLabel());
             _view.setIconProvider(Setup.imageLoader().createIconProvider(new GroupIconDrawable(context, item, iconSize)));
-            _view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    if (Home.Companion.getLauncher() != null && (Home.Companion.getLauncher()).getGroupPopup().showWindowV(item, v, callback)) {
-                        ((GroupIconDrawable) ((AppItemView) v).getCurrentIcon()).popUp();
-                    }
+            _view.setOnClickListener(v -> {
+                if (Home.Companion.getLauncher() != null && (Home.Companion.getLauncher()).getGroupPopup().showWindowV(item, v, callback)) {
+                    ((GroupIconDrawable) ((AppItemView) v).getCurrentIcon()).popUp();
                 }
             });
             return this;
@@ -379,12 +352,9 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
                     ContextCompat.getDrawable(Setup.appContext(), R.drawable.ic_apps_white_48dp)));
             switch (item.getActionValue()) {
                 case Definitions.ACTION_LAUNCHER:
-                    _view.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View view) {
-                            view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                            Home.Companion.getLauncher().openAppDrawer(view);
-                        }
+                    _view.setOnClickListener(view -> {
+                        view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                        Home.Companion.getLauncher().openAppDrawer(view);
                     });
                     break;
             }
@@ -398,21 +368,18 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         }
 
         public Builder withOnLongClick(final Item item, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
-            _view.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    if (Setup.appSettings().isDesktopLock()) {
-                        return false;
-                    }
-                    if (eventAction != null && !eventAction.readyForDrag(v)) {
-                        return false;
-                    }
-                    if (_view._vibrateWhenLongPress) {
-                        v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                    }
-                    DragNDropHandler.startDrag(_view, item, action, eventAction);
-                    return true;
+            _view.setOnLongClickListener(v -> {
+                if (Setup.appSettings().isDesktopLock()) {
+                    return false;
                 }
+                if (eventAction != null && !eventAction.readyForDrag(v)) {
+                    return false;
+                }
+                if (_view._vibrateWhenLongPress) {
+                    v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+                }
+                DragHandler.startDrag(_view, item, action, eventAction);
+                return true;
             });
             return this;
         }

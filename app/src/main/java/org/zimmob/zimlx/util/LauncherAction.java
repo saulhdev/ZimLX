@@ -9,10 +9,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.AudioManager;
 import android.provider.Settings;
-import android.support.annotation.NonNull;
-
-import com.afollestad.materialdialogs.DialogAction;
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
@@ -27,7 +23,7 @@ public class LauncherAction {
     }
 
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Home.Companion.get_resources().getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
+            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Home.Companion.get_resources() != null ? Home.Companion.get_resources().getString(R.string.minibar_0) : null, R.drawable.ic_mode_edit_black_24dp, 98),
             new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Home.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
             new ActionDisplayItem(Action.LockScreen, "LockScreen", Home.Companion.get_resources().getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
             new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Home.Companion.get_resources().getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
@@ -58,14 +54,11 @@ public class LauncherAction {
                 try {
                     ((DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE)).lockNow();
                 } catch (Exception e) {
-                    DialogHelper.alertDialog(context, "Device Admin Required", "OpenLauncher requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.", "Enable", new MaterialDialog.SingleButtonCallback() {
-                        @Override
-                        public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            Tool.toast(context, context.getString(R.string.toast_device_admin_required));
-                            Intent intent = new Intent();
-                            intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
-                            context.startActivity(intent);
-                        }
+                    DialogHelper.alertDialog(context, "Device Admin Required", "OpenLauncher requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.", "Enable", (dialog, which) -> {
+                        Tool.toast(context, context.getString(R.string.toast_device_admin_required));
+                        Intent intent = new Intent();
+                        intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
+                        context.startActivity(intent);
                     });
                 }
                 break;
@@ -79,6 +72,7 @@ public class LauncherAction {
                 Home.Companion.getLauncher().openAppDrawer();
                 break;
             case SearchBar: {
+                assert Home.Companion.getLauncher() != null;
                 Home.Companion.getLauncher().getSearchBar().getSearchButton().performClick();
                 break;
             }

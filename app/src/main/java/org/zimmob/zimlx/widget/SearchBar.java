@@ -33,7 +33,6 @@ import com.mikepenz.fastadapter.IItemAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.IconLabelItem;
@@ -120,13 +119,10 @@ public class SearchBar extends FrameLayout {
 
         _switchButton = new AppCompatImageView(getContext());
         updateSwitchIcon();
-        _switchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Setup.appSettings().setSearchUseGrid(!Setup.appSettings().isSearchUseGrid());
-                updateSwitchIcon();
-                updateRecyclerViewLayoutManager();
-            }
+        _switchButton.setOnClickListener(view -> {
+            Setup.appSettings().setSearchUseGrid(!Setup.appSettings().isSearchUseGrid());
+            updateSwitchIcon();
+            updateRecyclerViewLayoutManager();
         });
         _switchButton.setVisibility(View.GONE);
         _switchButton.setPadding(0, iconPadding, 0, iconPadding);
@@ -139,19 +135,16 @@ public class SearchBar extends FrameLayout {
         _icon = new CircleDrawable(getContext(), getResources().getDrawable(R.drawable.ic_search_light_24dp), Color.BLACK);
         _searchButton = new AppCompatImageView(getContext());
         _searchButton.setImageDrawable(_icon);
-        _searchButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (_expanded && _searchInput.getText().length() > 0) {
-                    _searchInput.getText().clear();
-                    return;
-                }
-                _expanded = !_expanded;
-                if (_expanded) {
-                    expandInternal();
-                } else {
-                    collapseInternal();
-                }
+        _searchButton.setOnClickListener(v -> {
+            if (_expanded && _searchInput.getText().length() > 0) {
+                _searchInput.getText().clear();
+                return;
+            }
+            _expanded = !_expanded;
+            if (_expanded) {
+                expandInternal();
+            } else {
+                collapseInternal();
             }
         });
         LayoutParams buttonParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -186,16 +179,13 @@ public class SearchBar extends FrameLayout {
             }
         });
 
-        _searchInput.setOnKeyListener(new OnKeyListener() {
-            @Override
-            public boolean onKey(View v, int keyCode, KeyEvent event) {
-                if ((event != null) && (event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
-                    _callback.onInternetSearch(_searchInput.getText().toString());
-                    _searchInput.getText().clear();
-                    return true;
-                }
-                return false;
+        _searchInput.setOnKeyListener((v, keyCode, event) -> {
+            if ((event != null) && (event.getAction() == KeyEvent.ACTION_DOWN) && (keyCode == KeyEvent.KEYCODE_ENTER)) {
+                _callback.onInternetSearch(_searchInput.getText().toString());
+                _searchInput.getText().clear();
+                return true;
             }
+            return false;
         });
         LayoutParams inputCardParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //(switchButton != null ? iconMarginOutside + iconSize : 0) + searchTextHorizontalMargin
@@ -211,79 +201,61 @@ public class SearchBar extends FrameLayout {
 
         initRecyclerView();
 
-        Setup.appLoader().addUpdateListener(new AppUpdateListener() {
-
-            @Override
-            public boolean onAppUpdated(List<App> apps) {
-                _adapter.clear();
-                if (Setup.appSettings().getSearchBarShouldShowHiddenApps()) {
-                    apps = Setup.appLoader().getAllApps(getContext(), true);
-                }
-                List<FastItem.LabelItem> items = new ArrayList<>();
-                if (_searchInternetEnabled) {
-                    items.add(new IconLabelItem(getContext(), R.string.search_online)
-                            .withIconGravity(Gravity.START)
-                            .withOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    _callback.onInternetSearch(_searchInput.getText().toString());
-                                    _searchInput.getText().clear();
-                                }
-                            })
-                            .withTextColor(Color.WHITE)
-                            .withDrawablePadding(getContext(), 8)
-                            .withBold(true)
-                            .withMatchParent(true)
-                            .withTextGravity(Gravity.END));
-                }
-                for (int i = 0; i < apps.size(); i++) {
-                    final App app = apps.get(i);
-                    final int finalI = i;
-                    items.add(new IconLabelItem(getContext(), app.getIconProvider(), app.getLabel(), 36)
-                            .withIconGravity(Setup.appSettings().getSearchGridSize() > 1 && Setup.appSettings().getSearchLabelLines() == 0 ? Gravity.TOP : Gravity.START)
-                            .withOnClickListener(new OnClickListener() {
-                                @Override
-                                public void onClick(View v) {
-                                    startApp(v.getContext(), app);
-                                }
-                            })
-                            .withOnLongClickListener(AppItemView.Builder.getLongClickDragAppListener(Item.newAppItem(app), DragAction.Action.APP, new AppItemView.LongPressCallBack() {
-                                @Override
-                                public boolean readyForDrag(View view) {
-                                    if (finalI == -1) return false;
-
-                                    _expanded = !_expanded;
-                                    collapseInternal();
-                                    return true;
-                                }
-
-                                @Override
-                                public void afterDrag(View view) {
-                                }
-                            }))
-                            .withTextColor(Color.WHITE)
-                            .withMatchParent(true)
-                            .withDrawablePadding(getContext(), 8)
-                            .withMaxTextLines(Setup.appSettings().getSearchLabelLines()));
-                }
-                _adapter.set(items);
-
-                return false;
+        Setup.appLoader().addUpdateListener(apps -> {
+            _adapter.clear();
+            if (Setup.appSettings().getSearchBarShouldShowHiddenApps()) {
+                apps = Setup.appLoader().getAllApps(getContext(), true);
             }
+            List<FastItem.LabelItem> items = new ArrayList<>();
+            if (_searchInternetEnabled) {
+                items.add(new IconLabelItem(getContext(), R.string.search_online)
+                        .withIconGravity(Gravity.START)
+                        .withOnClickListener(v -> {
+                            _callback.onInternetSearch(_searchInput.getText().toString());
+                            _searchInput.getText().clear();
+                        })
+                        .withTextColor(Color.WHITE)
+                        .withDrawablePadding(getContext(), 8)
+                        .withBold(true)
+                        .withMatchParent(true)
+                        .withTextGravity(Gravity.END));
+            }
+            for (int i = 0; i < apps.size(); i++) {
+                final App app = apps.get(i);
+                final int finalI = i;
+                items.add(new IconLabelItem(getContext(), app.getIconProvider(), app.getLabel(), 36)
+                        .withIconGravity(Setup.appSettings().getSearchGridSize() > 1 && Setup.appSettings().getSearchLabelLines() == 0 ? Gravity.TOP : Gravity.START)
+                        .withOnClickListener(v -> startApp(v.getContext(), app))
+                        .withOnLongClickListener(AppItemView.Builder.getLongClickDragAppListener(Item.newAppItem(app), DragAction.Action.APP, new AppItemView.LongPressCallBack() {
+                            @Override
+                            public boolean readyForDrag(View view) {
+                                if (finalI == -1) return false;
+
+                                _expanded = !_expanded;
+                                collapseInternal();
+                                return true;
+                            }
+
+                            @Override
+                            public void afterDrag(View view) {
+                            }
+                        }))
+                        .withTextColor(Color.WHITE)
+                        .withMatchParent(true)
+                        .withDrawablePadding(getContext(), 8)
+                        .withMaxTextLines(Setup.appSettings().getSearchLabelLines()));
+            }
+            _adapter.set(items);
+
+            return false;
         });
-        _adapter.getItemFilter().withFilterPredicate(new IItemAdapter.Predicate<FastItem.LabelItem>() {
-            @Override
-            public boolean filter(FastItem.LabelItem item, CharSequence constraint) {
-                if (item.getLabel().equals(getContext().getString(R.string.search_online)))
-                    return false;
-                String s = constraint.toString();
-                if (s.isEmpty())
-                    return true;
-                else if (item.getLabel().toLowerCase().contains(s.toLowerCase()))
-                    return false;
-                else
-                    return true;
-            }
+        _adapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<FastItem.LabelItem>) (item, constraint) -> {
+            if (item.getLabel().equals(getContext().getString(R.string.search_online)))
+                return false;
+            String s = constraint.toString();
+            if (s.isEmpty())
+                return true;
+            else return !item.getLabel().toLowerCase().contains(s.toLowerCase());
         });
 
         final LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

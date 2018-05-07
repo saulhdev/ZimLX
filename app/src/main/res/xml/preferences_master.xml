@@ -402,7 +402,7 @@
                     android:key="@string/pref_key__folder_shape"
                     android:title="@string/pref_title__folder_shape" />
                 <android.support.v7.preference.ListPreference
-                    android:defaultValue="1"
+                    android:defaultValue="0"
                     android:entries="@array/entries__folder_preview"
                     android:entryValues="@array/values__zero_to_two"
                     android:key="@string/pref_key__folder_preview"

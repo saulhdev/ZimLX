@@ -9,6 +9,9 @@ import android.view.MotionEvent;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 
+/**
+ *
+ */
 public class ItemGestureListener extends GestureDetector.SimpleOnGestureListener implements GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     public enum Type {

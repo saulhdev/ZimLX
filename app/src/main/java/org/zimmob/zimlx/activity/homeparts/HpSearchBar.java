@@ -58,24 +58,14 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
 
         _searchBar._searchInput.setFocusable(true);
         _searchBar._searchInput.setFocusableInTouchMode(true);
-        _searchBar._searchInput.post(new Runnable() {
-            @Override
-            public void run() {
-                _searchBar._searchInput.requestFocus();
-            }
-        });
+        _searchBar._searchInput.post(() -> _searchBar._searchInput.requestFocus());
 
         Tool.showKeyboard(_home, _searchBar._searchInput);
     }
 
     @Override
     public void onCollapse() {
-        _home.getDesktop().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                _home.unClearRoomForPopUp();
-            }
-        }, 100);
+        _home.getDesktop().postDelayed(() -> _home.unClearRoomForPopUp(), 100);
 
         _home.unDimBackground();
         _searchBar._searchInput.clearFocus();

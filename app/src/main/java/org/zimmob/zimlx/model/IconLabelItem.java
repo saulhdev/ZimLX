@@ -42,8 +42,8 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private boolean _bold = false;
     private int _textGravity = Gravity.CENTER_VERTICAL;
     private int _maxTextLines = 1;
+
     private boolean _dontSetOnLongClickListener;
-    private boolean _hideLabel = false;
 
     public IconLabelItem(Item item) {
         _iconProvider = item != null ? item.getIconProvider() : null;
@@ -188,6 +188,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         holder.textView.setGravity(_textGravity);
         holder.textView.setCompoundDrawablePadding((int) _drawablePadding);
 
+        boolean _hideLabel = false;
         if (_hideLabel) {
             holder.textView.setText(null);
             _iconProvider.loadIconIntoTextView(holder.textView, _forceSize, Gravity.TOP);

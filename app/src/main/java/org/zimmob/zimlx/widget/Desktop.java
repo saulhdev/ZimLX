@@ -24,7 +24,7 @@ import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.Definitions.ItemPosition;
 import org.zimmob.zimlx.util.Definitions.ItemState;
 import org.zimmob.zimlx.util.DragAction.Action;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
@@ -57,7 +57,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     private PagerIndicator _pageIndicator;
 
     @NonNull
-    private final List<CellContainer> _pages = new ArrayList<CellContainer>();
+    private final List<CellContainer> _pages = new ArrayList<>();
     private final Point _previousDragPoint = new Point();
 
     @Nullable
@@ -341,7 +341,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         _previousDragPoint.set(_coordinate.x, _coordinate.y);
         switch (state) {
             case CurrentNotOccupied:
-                getCurrentPage().projectImageOutlineAt(_coordinate, DragNDropHandler._cachedDragBitmap);
+                getCurrentPage().projectImageOutlineAt(_coordinate, DragHandler._cachedDragBitmap);
                 break;
             case OutOffRange:
             case ItemViewNotFound:
@@ -417,13 +417,13 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     public boolean addItemToPage(@NonNull Item item, int page) {
 
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDesktopIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
             Home.Companion.getDb().deleteItem(item, true);
             return false;
         }
         item._locationInLauncher = 0;
-        ((CellContainer) _pages.get(page)).addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
+        _pages.get(page).addViewToGrid(itemView, item._x, item._y, item._spanX, item._spanY);
         return true;
     }
 
@@ -435,7 +435,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         item._locationInLauncher = 0;
         item._x = positionToLayoutPrams.getX();
         item._y = positionToLayoutPrams.getY();
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDesktopIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView != null) {
             itemView.setLayoutParams(positionToLayoutPrams);
             getCurrentPage().addView(itemView);
@@ -448,7 +448,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         item._locationInLauncher = 0;
         item._x = x;
         item._y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDesktopIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
             return false;
         }
@@ -481,13 +481,10 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
         Tool.print("Start Removing a view from Desktop");
         if (animate) {
-            view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    Tool.print("Ok Removing a view from Desktop");
-                    if (getParent() != null && getParent().equals(getCurrentPage())) {
-                        getCurrentPage().removeView(view);
-                    }
+            view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(() -> {
+                Tool.print("Ok Removing a view from Desktop");
+                if (getParent() != null && getParent().equals(getCurrentPage())) {
+                    getCurrentPage().removeView(view);
                 }
             });
         } else if (getCurrentPage().equals(view.getParent())) {
@@ -549,43 +546,31 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             SimpleFingerGestures mySfg = new SimpleFingerGestures();
             mySfg.setOnFingerGestureListener(getGestureListener());
             layout.setGestures(mySfg);
-            layout.setOnItemRearrangeListener(new CellContainer.OnItemRearrangeListener() {
-                @Override
-                public void onItemRearrange(@NonNull Point from, @NonNull Point to) {
-                    Item itemFromCoordinate = Desktop._companion.getItemFromCoordinate(from, getCurrentItem());
-                    if (itemFromCoordinate != null) {
-                        itemFromCoordinate._x = to.x;
-                        itemFromCoordinate._y = to.y;
-                    }
+            layout.setOnItemRearrangeListener((from, to) -> {
+                Item itemFromCoordinate = Desktop._companion.getItemFromCoordinate(from, getCurrentItem());
+                if (itemFromCoordinate != null) {
+                    itemFromCoordinate._x = to.x;
+                    itemFromCoordinate._y = to.y;
                 }
             });
-            layout.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    _currentEvent = event;
-                    return false;
-                }
+            layout.setOnTouchListener((v, event) -> {
+                _currentEvent = event;
+                return false;
             });
             layout.setGridSize(Setup.appSettings().getDesktopColumnCount(), Setup.appSettings().getDesktopRowCount());
-            layout.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!(_desktop.getInEditMode() || _currentEvent == null)) {
-                        WallpaperManager instance = WallpaperManager.getInstance(view.getContext());
-                        IBinder windowToken = view.getWindowToken();
-                        String str = "android.wallpaper.tap";
-                        MotionEvent access$getCurrentEvent$p = _currentEvent;
-                        instance.sendWallpaperCommand(windowToken, str, (int) access$getCurrentEvent$p.getX(), (int) access$getCurrentEvent$p.getY(), 0, null);
-                    }
-                    exitDesktopEditMode();
+            layout.setOnClickListener(view -> {
+                if (!(_desktop.getInEditMode() || _currentEvent == null)) {
+                    WallpaperManager instance = WallpaperManager.getInstance(view.getContext());
+                    IBinder windowToken = view.getWindowToken();
+                    String str = "android.wallpaper.tap";
+                    MotionEvent access$getCurrentEvent$p = _currentEvent;
+                    instance.sendWallpaperCommand(windowToken, str, (int) access$getCurrentEvent$p.getX(), (int) access$getCurrentEvent$p.getY(), 0, null);
                 }
+                exitDesktopEditMode();
             });
-            layout.setOnLongClickListener(new OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    enterDesktopEditMode();
-                    return true;
-                }
+            layout.setOnLongClickListener(v -> {
+                enterDesktopEditMode();
+                return true;
             });
             return layout;
         }
@@ -602,7 +587,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
         public final void removePage(int position, boolean deleteItems) {
             if (deleteItems) {
-                for (View v : ((CellContainer) _desktop.getPages().get(position)).getAllCells()) {
+                for (View v : _desktop.getPages().get(position).getAllCells()) {
                     Object item = v.getTag();
                     if (item instanceof Item) {
                         Home.Companion.getDb().deleteItem((Item) item, true);
@@ -637,7 +622,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int pos) {
 
-            CellContainer layout = (CellContainer) _desktop.getPages().get(pos);
+            CellContainer layout = _desktop.getPages().get(pos);
             container.addView(layout);
             return layout;
         }
@@ -690,7 +675,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         @Nullable
         public final Item getItemFromCoordinate(@NonNull Point point, int page) {
 
-            List pageData = (List) Home.Companion.getDb().getDesktop().get(page);
+            List pageData = Home.Companion.getDb().getDesktop().get(page);
             int size = pageData.size();
             for (int i = 0; i < size; i++) {
                 Item item = (Item) pageData.get(i);

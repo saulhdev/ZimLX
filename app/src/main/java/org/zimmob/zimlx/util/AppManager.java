@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.view.Gravity;
-import android.view.View;
 
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
@@ -25,7 +24,6 @@ import org.zimmob.zimlx.model.Item;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -108,32 +106,26 @@ public class AppManager {
 
         fastItemAdapter.add(new IconLabelItem(activity, R.drawable.ic_launcher, R.string.label_default, -1)
                 .withIconGravity(Gravity.START)
-                .withOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _recreateAfterGettingApps = true;
-                        AppSettings.get().setIconPack("");
-                        getAllApps();
-                        d.dismiss();
-                    }
+                .withOnClickListener(v -> {
+                    _recreateAfterGettingApps = true;
+                    AppSettings.get().setIconPack("");
+                    getAllApps();
+                    d.dismiss();
                 }));
 
         for (int i = 0; i < resolveInfos.size(); i++) {
             final int mI = i;
             fastItemAdapter.add(new IconLabelItem(activity, resolveInfos.get(i).loadIcon(_packageManager), resolveInfos.get(i).loadLabel(_packageManager).toString(), -1)
                     .withIconGravity(Gravity.START)
-                    .withOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if (ActivityCompat.checkSelfPermission(_context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                                _recreateAfterGettingApps = true;
-                                AppSettings.get().setIconPack(resolveInfos.get(mI).activityInfo.packageName);
-                                getAllApps();
-                                d.dismiss();
-                            } else {
-                                Tool.toast(_context, (activity.getString(R.string.dialog__icon_pack_info_toast)));
-                                ActivityCompat.requestPermissions(Home.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Home.REQUEST_PERMISSION_STORAGE);
-                            }
+                    .withOnClickListener(v -> {
+                        if (ActivityCompat.checkSelfPermission(_context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
+                            _recreateAfterGettingApps = true;
+                            AppSettings.get().setIconPack(resolveInfos.get(mI).activityInfo.packageName);
+                            getAllApps();
+                            d.dismiss();
+                        } else {
+                            Tool.toast(_context, (activity.getString(R.string.dialog__icon_pack_info_toast)));
+                            ActivityCompat.requestPermissions(Home.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Home.REQUEST_PERMISSION_STORAGE);
                         }
                     }));
         }
@@ -225,34 +217,19 @@ public class AppManager {
             String sort = appSettings.getSortMode();
             switch (sort) {
                 case "az":
-                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
-                        @Override
-                        public int compare(ResolveInfo p1, ResolveInfo p2) {
-                            return Collator.getInstance().compare(
-                                    p1.loadLabel(_packageManager).toString(),
-                                    p2.loadLabel(_packageManager).toString());
-                        }
-                    });
+                    Collections.sort(activitiesInfo, (p11, p2) -> Collator.getInstance().compare(
+                            p11.loadLabel(_packageManager).toString(),
+                            p2.loadLabel(_packageManager).toString()));
                     break;
                 case "za":
-                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
-                        @Override
-                        public int compare(ResolveInfo p2, ResolveInfo p1) {
-                            return Collator.getInstance().compare(
-                                    p1.loadLabel(_packageManager).toString(),
-                                    p2.loadLabel(_packageManager).toString());
-                        }
-                    });
+                    Collections.sort(activitiesInfo, (p2, p112) -> Collator.getInstance().compare(
+                            p112.loadLabel(_packageManager).toString(),
+                            p2.loadLabel(_packageManager).toString()));
                     break;
                 case "li":
-                    Collections.sort(activitiesInfo, new Comparator<ResolveInfo>() {
-                        @Override
-                        public int compare(ResolveInfo p1, ResolveInfo p2) {
-                            return Collator.getInstance().compare(
-                                    p1.activityInfo.applicationInfo.sourceDir.toString(),
-                                    p2.activityInfo.applicationInfo.sourceDir.toString());
-                        }
-                    });
+                    Collections.sort(activitiesInfo, (p113, p2) -> Collator.getInstance().compare(
+                            p113.activityInfo.applicationInfo.sourceDir,
+                            p2.activityInfo.applicationInfo.sourceDir));
 
                     break;
             }

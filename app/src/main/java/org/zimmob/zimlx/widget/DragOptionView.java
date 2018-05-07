@@ -17,11 +17,10 @@ import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
-import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DragAction;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 
 public class DragOptionView extends CardView {
@@ -70,127 +69,109 @@ public class DragOptionView extends CardView {
         addView(_dragOptions);
 
         _editIcon = _dragOptions.findViewById(R.id.editIcon);
-        _editIcon.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(final View view, DragEvent dragEvent) {
-                switch (dragEvent.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        if (((DragAction) dragEvent.getLocalState()).action == DragAction.Action.APP_DRAWER) {
-                            return false;
-                        }
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        return true;
-                    case DragEvent.ACTION_DROP:
-                        final Item item = DragNDropHandler.INSTANCE.getDraggedObject(dragEvent);
+        _editIcon.setOnDragListener((view, dragEvent) -> {
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    return ((DragAction) dragEvent.getLocalState()).action != DragAction.Action.APP_DRAWER;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    final Item item = DragHandler.INSTANCE.getDraggedObject(dragEvent);
 
-                        Setup.eventHandler().showEditDialog(getContext(), item, new DialogListener.OnEditDialogListener() {
-                            @Override
-                            public void onRename(String name) {
-                                item.setLabel(name);
-                                Home.Companion.getDb().saveItem(item);
+                    Setup.eventHandler().showEditDialog(getContext(), item, name -> {
+                        item.setLabel(name);
+                        Home.Companion.getDb().saveItem(item);
 
-                                Home.Companion.getLauncher().getDesktop().addItemToCell(item, item.getX(), item.getY());
-                                Home.Companion.getLauncher().getDesktop().removeItem(Home.Companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
-                            }
-                        });
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        return true;
-                }
-                return false;
+                        Home.Companion.getLauncher().getDesktop().addItemToCell(item, item.getX(), item.getY());
+                        Home.Companion.getLauncher().getDesktop().removeItem(Home.Companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
+                    });
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    return true;
             }
+            return false;
         });
         _removeIcon = _dragOptions.findViewById(R.id.removeIcon);
-        _removeIcon.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
-                switch (dragEvent.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        switch (((DragAction) dragEvent.getLocalState()).action) {
-                            case GROUP:
-                            case APP:
-                            case WIDGET:
-                            case SHORTCUT:
-                            case APP_DRAWER:
-                            case ACTION:
-                                return true;
-                        }
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        return true;
-                    case DragEvent.ACTION_DROP:
-                        Item item = DragNDropHandler.INSTANCE.getDraggedObject(dragEvent);
+        _removeIcon.setOnDragListener((view, dragEvent) -> {
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    switch (((DragAction) dragEvent.getLocalState()).action) {
+                        case GROUP:
+                        case APP:
+                        case WIDGET:
+                        case SHORTCUT:
+                        case APP_DRAWER:
+                        case ACTION:
+                            return true;
+                    }
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    Item item = DragHandler.INSTANCE.getDraggedObject(dragEvent);
 
-                        // remove all items from the database
-                        Home.Companion.getLauncher().Companion.getDb().deleteItem(item, true);
+                    // remove all items from the database
+                    Home.Companion.getDb().deleteItem(item, true);
 
-                        _home.getDesktop().consumeRevert();
-                        _home.getDock().consumeRevert();
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        return true;
-                }
-                return false;
+                    _home.getDesktop().consumeRevert();
+                    _home.getDock().consumeRevert();
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    return true;
             }
+            return false;
         });
         _infoIcon = _dragOptions.findViewById(R.id.infoIcon);
-        _infoIcon.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
-                switch (dragEvent.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        switch (((DragAction) dragEvent.getLocalState()).action) {
-                            case APP_DRAWER:
-                            case APP:
-                                return true;
+        _infoIcon.setOnDragListener((view, dragEvent) -> {
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    switch (((DragAction) dragEvent.getLocalState()).action) {
+                        case APP_DRAWER:
+                        case APP:
+                            return true;
+                    }
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    Item item = DragHandler.INSTANCE.getDraggedObject(dragEvent);
+                    if (item.getType() == Item.Type.APP) {
+                        try {
+                            getContext().startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + item.getIntent().getComponent().getPackageName())));
+                        } catch (Exception e) {
+                            Tool.toast(getContext(), R.string.toast_app_uninstalled);
                         }
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        return true;
-                    case DragEvent.ACTION_DROP:
-                        Item item = DragNDropHandler.INSTANCE.getDraggedObject(dragEvent);
-                        if (item.getType() == Item.Type.APP) {
-                            try {
-                                getContext().startActivity(new Intent(android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:" + item.getIntent().getComponent().getPackageName())));
-                            } catch (Exception e) {
-                                Tool.toast(getContext(), R.string.toast_app_uninstalled);
-                            }
-                        }
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        return true;
-                }
-                return false;
+                    }
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    return true;
             }
+            return false;
         });
         _deleteIcon = _dragOptions.findViewById(R.id.deleteIcon);
-        _deleteIcon.setOnDragListener(new View.OnDragListener() {
-            @Override
-            public boolean onDrag(View view, DragEvent dragEvent) {
-                switch (dragEvent.getAction()) {
-                    case DragEvent.ACTION_DRAG_STARTED:
-                        switch (((DragAction) dragEvent.getLocalState()).action) {
-                            case APP_DRAWER:
-                            case APP:
-                                return true;
-                        }
-                    case DragEvent.ACTION_DRAG_ENTERED:
-                        return true;
-                    case DragEvent.ACTION_DRAG_EXITED:
-                        return true;
-                    case DragEvent.ACTION_DROP:
-                        //Setup.eventHandler().showDeletePackageDialog(getContext(), dragEvent);
-                        return true;
-                    case DragEvent.ACTION_DRAG_ENDED:
-                        return true;
-                }
-                return false;
+        _deleteIcon.setOnDragListener((view, dragEvent) -> {
+            switch (dragEvent.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    switch (((DragAction) dragEvent.getLocalState()).action) {
+                        case APP_DRAWER:
+                        case APP:
+                            return true;
+                    }
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    return true;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    return true;
+                case DragEvent.ACTION_DROP:
+                    //Setup.eventHandler().showDeletePackageDialog(getContext(), dragEvent);
+                    return true;
+                case DragEvent.ACTION_DRAG_ENDED:
+                    return true;
             }
+            return false;
         });
 
         _editIcon.setText(_editIcon.getText(), TextView.BufferType.SPANNABLE);
@@ -211,12 +192,7 @@ public class DragOptionView extends CardView {
             // If we got a start or end and the return value is true, our
             // onDragEvent wasn't called by ViewGroup.dispatchDragEvent
             // So we do it here.
-            this.post(new Runnable() {
-                @Override
-                public void run() {
-                    onDragEvent(event);
-                }
-            });
+            this.post(() -> onDragEvent(event));
 
 
             // fix crash on older versions of android

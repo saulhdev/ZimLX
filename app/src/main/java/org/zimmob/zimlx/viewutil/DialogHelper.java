@@ -6,14 +6,11 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Environment;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
@@ -38,12 +35,7 @@ public class DialogHelper {
         builder.title(title)
                 .positiveText(R.string.ok)
                 .negativeText(R.string.cancel)
-                .input(null, defaultText, new MaterialDialog.InputCallback() {
-                    @Override
-                    public void onInput(@NonNull MaterialDialog dialog, CharSequence input) {
-                        listener.itemLabel(input.toString());
-                    }
-                }).show();
+                .input(null, defaultText, (dialog, input) -> listener.itemLabel(input.toString())).show();
     }
 
     public static void alertDialog(Context context, String title, String msg, MaterialDialog.SingleButtonCallback onPositive) {
@@ -93,15 +85,12 @@ public class DialogHelper {
                     .withDrawablePadding(context, sizePad));
         }
         fastItemAdapter.set(items);
-        fastItemAdapter.withOnClickListener(new com.mikepenz.fastadapter.listeners.OnClickListener<IconLabelItem>() {
-            @Override
-            public boolean onClick(View v, IAdapter<IconLabelItem> adapter, IconLabelItem item, int position) {
-                if (onAppSelectedListener != null) {
-                    onAppSelectedListener.onAppSelected(apps.get(position));
-                }
-                dialog.dismiss();
-                return true;
+        fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
+            if (onAppSelectedListener != null) {
+                onAppSelectedListener.onAppSelected(apps.get(position));
             }
+            dialog.dismiss();
+            return true;
         });
         dialog.show();
     }
@@ -123,40 +112,37 @@ public class DialogHelper {
                 .title(R.string.pref_title__backup)
                 .positiveText(R.string.cancel)
                 .items(R.array.entries__backup_options)
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int item, CharSequence text) {
-                        PackageManager m = context.getPackageManager();
-                        String s = context.getPackageName();
+                .itemsCallback((dialog, itemView, item, text) -> {
+                    PackageManager m = context.getPackageManager();
+                    String s = context.getPackageName();
 
-                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
-                            if (!directory.exists()) {
-                                directory.mkdir();
-                            }
-                            try {
-                                PackageInfo p = m.getPackageInfo(s, 0);
-                                s = p.applicationInfo.dataDir;
-                                Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
-                                Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
-                            }
+                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
+                        File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                        if (!directory.exists()) {
+                            directory.mkdir();
                         }
-                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
-                            try {
-                                PackageInfo p = m.getPackageInfo(s, 0);
-                                s = p.applicationInfo.dataDir;
-                                Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
-                                Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
-                            }
-                            System.exit(1);
+                        try {
+                            PackageInfo p = m.getPackageInfo(s, 0);
+                            s = p.applicationInfo.dataDir;
+                            Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
+                            Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
                         }
+                    }
+                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
+                        File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                        try {
+                            PackageInfo p = m.getPackageInfo(s, 0);
+                            s = p.applicationInfo.dataDir;
+                            Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
+                            Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
+                        }
+                        System.exit(1);
                     }
                 }).show();
     }

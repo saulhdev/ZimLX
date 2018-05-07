@@ -46,18 +46,14 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     public void animateShow() {
         if (stateOpened) return;
+        assert Home.Companion.getLauncher() != null;
         Tool.invisibleViews(Home.Companion.getLauncher().getSearchBar());
         Home.Companion.getLauncher().dimBackground();
         Home.Companion.getLauncher().clearRoomForPopUp();
         Home.Companion.getLauncher().getBackground().setOnClickListener(this);
         calendarView.setSelectedDate(Calendar.getInstance());
         stateOpened = true;
-        animate().scaleY(1).setDuration(200).withEndAction(new Runnable() {
-            @Override
-            public void run() {
-                Tool.visibleViews(200, calendarView);
-            }
-        });
+        animate().scaleY(1).setDuration(200).withEndAction(() -> Tool.visibleViews(200, calendarView));
     }
 
     public void animateHide() {

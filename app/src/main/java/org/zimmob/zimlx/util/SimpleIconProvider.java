@@ -55,14 +55,21 @@ public class SimpleIconProvider extends BaseIconProvider {
                 int gravity = (Integer) args[0];
                 Drawable d = getDrawable();
                 d = scaleDrawable(d, forceSize);
-                if (gravity == Gravity.LEFT || gravity == Gravity.START) {
-                    tv.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
-                } else if (gravity == Gravity.RIGHT || gravity == Gravity.END) {
-                    tv.setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
-                } else if (gravity == Gravity.TOP) {
-                    tv.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
-                } else if (gravity == Gravity.BOTTOM) {
-                    tv.setCompoundDrawablesWithIntrinsicBounds(null, null, null, d);
+                switch (gravity) {
+                    case Gravity.LEFT:
+                    case Gravity.START:
+                        tv.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
+                        break;
+                    case Gravity.RIGHT:
+                    case Gravity.END:
+                        tv.setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
+                        break;
+                    case Gravity.TOP:
+                        tv.setCompoundDrawablesWithIntrinsicBounds(null, d, null, null);
+                        break;
+                    case Gravity.BOTTOM:
+                        tv.setCompoundDrawablesWithIntrinsicBounds(null, null, null, d);
+                        break;
                 }
                 break;
             }

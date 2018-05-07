@@ -166,13 +166,10 @@ public class PagerIndicator extends View implements OnPageChangeListener {
         _arrowPaint.setStrokeJoin(Join.ROUND);
         _arrowPath = new Path();
         _mode = Setup.appSettings().getDesktopIndicatorMode();
-        _delayShow = new Runnable() {
-            @Override
-            public void run() {
-                _alphaFade = true;
-                _alphaShow = false;
-                invalidate();
-            }
+        _delayShow = () -> {
+            _alphaFade = true;
+            _alphaShow = false;
+            invalidate();
         };
         _currentPagerState = -1;
     }

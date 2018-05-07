@@ -11,7 +11,6 @@ import android.view.ViewGroup;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
-import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.Tool;
@@ -102,17 +101,14 @@ public class AppDrawerPaged extends SmoothViewPager {
             if (_appDrawerIndicator != null)
                 _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
         }
-        Setup.appLoader().addUpdateListener(new AppUpdateListener() {
-            @Override
-            public boolean onAppUpdated(List<App> apps) {
-                AppDrawerPaged.this._apps = apps;
-                calculatePage();
-                setAdapter(new Adapter());
-                if (_appDrawerIndicator != null)
-                    _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
+        Setup.appLoader().addUpdateListener(apps -> {
+            AppDrawerPaged.this._apps = apps;
+            calculatePage();
+            setAdapter(new Adapter());
+            if (_appDrawerIndicator != null)
+                _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
 
-                return false;
-            }
+            return false;
         });
     }
 

@@ -7,9 +7,6 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
-import com.mikepenz.fastadapter.IAdapter;
-import com.mikepenz.fastadapter.listeners.OnClickListener;
-
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.model.Item;
@@ -186,7 +183,9 @@ public class HpDragNDrop {
                             .getCurrentItem(), Definitions.ItemPosition.Desktop);
                 } else {
                     Point pos = new Point();
-                    _home.getDesktop().getCurrentPage().touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
+                    _home.getDesktop()
+                            .getCurrentPage()
+                            .touchPosToCoordinate(pos, x, y, item._spanX, item._spanY, false);
                     View itemView = _home.getDesktop()
                             .getCurrentPage()
                             .coordinateToChildView(pos);
@@ -357,33 +356,30 @@ public class HpDragNDrop {
         else
             y -= Tool.toPx(4);
 
-        dragNDropView.showPopupMenuForItem(x, y, itemList, new OnClickListener<PopupIconLabelItem>() {
-            @Override
-            public boolean onClick(View v, IAdapter<PopupIconLabelItem> adapter, PopupIconLabelItem item, int position) {
-                Item dragItem;
-                if ((dragItem = dragNDropView.getDragItem()) != null) {
-                    switch ((int) item.getIdentifier()) {
-                        case uninstallItemIdentifier: {
-                            home.onUninstallItem(dragItem);
-                            break;
-                        }
-                        case editItemIdentifier: {
-                            new HpAppEditApplier(home).onEditItem(dragItem);
-                            break;
-                        }
-                        case removeItemIdentifier: {
-                            home.onRemoveItem(dragItem);
-                            break;
-                        }
-                        case infoItemIdentifier: {
-                            home.onInfoItem(dragItem);
-                            break;
-                        }
+        dragNDropView.showPopupMenuForItem(x, y, itemList, (v, adapter, item, position) -> {
+            Item dragItem;
+            if ((dragItem = dragNDropView.getDragItem()) != null) {
+                switch ((int) item.getIdentifier()) {
+                    case uninstallItemIdentifier: {
+                        home.onUninstallItem(dragItem);
+                        break;
+                    }
+                    case editItemIdentifier: {
+                        new HpAppEditApplier(home).onEditItem(dragItem);
+                        break;
+                    }
+                    case removeItemIdentifier: {
+                        home.onRemoveItem(dragItem);
+                        break;
+                    }
+                    case infoItemIdentifier: {
+                        home.onInfoItem(dragItem);
+                        break;
                     }
                 }
-                dragNDropView.hidePopupMenu();
-                return true;
             }
+            dragNDropView.hidePopupMenu();
+            return true;
         });
     }
 }

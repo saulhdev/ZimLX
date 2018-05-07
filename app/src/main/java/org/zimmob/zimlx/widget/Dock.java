@@ -14,7 +14,7 @@ import org.zimmob.zimlx.activity.Home;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DragAction.Action;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
@@ -73,7 +73,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
                 break;
             case 1:
                 Tool.print("ACTION_UP");
-                Tool.print(Integer.valueOf((int) ev.getX()), Integer.valueOf((int) ev.getY()));
+                Tool.print((int) ev.getX(), (int) ev.getY());
                 if (_startPosY - ev.getY() > 150.0f && Setup.appSettings().getGestureDockSwipeUp()) {
                     Point p = new Point((int) ev.getX(), (int) ev.getY());
                     p = Tool.convertPoint(p, this, _home.getAppDrawerController());
@@ -108,7 +108,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         _previousDragPoint.set(_coordinate.x, _coordinate.y);
         switch (state) {
             case CurrentNotOccupied:
-                projectImageOutlineAt(_coordinate, DragNDropHandler._cachedDragBitmap);
+                projectImageOutlineAt(_coordinate, DragHandler._cachedDragBitmap);
                 break;
             case OutOffRange:
             case ItemViewNotFound:
@@ -188,8 +188,8 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
     }
 
     public void consumeRevert() {
-        _previousItem = (Item) null;
-        _previousItemView = (View) null;
+        _previousItem = null;
+        _previousItemView = null;
     }
 
     public void revertLastItem() {
@@ -202,7 +202,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
 
     public boolean addItemToPage(@NonNull Item item, int page) {
 
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDockIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
             Home.Companion.getDb().deleteItem(item, true);
             return false;
@@ -221,7 +221,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         item._locationInLauncher = 1;
         item._x = positionToLayoutPrams.getX();
         item._y = positionToLayoutPrams.getY();
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDockIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView != null) {
             itemView.setLayoutParams(positionToLayoutPrams);
             addView(itemView);
@@ -234,7 +234,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         item._locationInLauncher = 1;
         item._x = x;
         item._y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), (DesktopCallBack) this, Setup.appSettings().getDockIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
             return false;
         }
@@ -245,12 +245,9 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
     public void removeItem(final View view, boolean animate) {
 
         if (animate) {
-            view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    if (view.getParent().equals(Dock.this)) {
-                        removeView(view);
-                    }
+            view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(() -> {
+                if (view.getParent().equals(Dock.this)) {
+                    removeView(view);
                 }
             });
         } else if (this.equals(view.getParent())) {

@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -69,15 +68,12 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
         boolean minibarEnable = AppSettings.get().getMinibarEnable();
         enableSwitch.setChecked(minibarEnable);
         enableSwitch.setText(minibarEnable ? R.string.on : R.string.off);
-        enableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.setText(isChecked ? R.string.on : R.string.off);
-                AppSettings.get().setMinibarEnable(isChecked);
-                if (Home.Companion.getLauncher() != null) {
-                    Home.Companion.getLauncher().getDrawerLayout().closeDrawers();
-                    Home.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                }
+        enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            buttonView.setText(isChecked ? R.string.on : R.string.off);
+            AppSettings.get().setMinibarEnable(isChecked);
+            if (Home.Companion.getLauncher() != null) {
+                Home.Companion.getLauncher().getDrawerLayout().closeDrawers();
+                Home.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
         });
     }
@@ -97,11 +93,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
     public void onPause() {
         ArrayList<String> minibarArrangement = new ArrayList<>();
         for (AppItem item : adapter.getAdapterItems()) {
-            if (item.enable) {
-                minibarArrangement.add("0" + item.item.label.toString());
-            } else {
-                minibarArrangement.add("1" + item.item.label.toString());
-            }
+            if (item.enable)
+                minibarArrangement.add("0" + item.item.label);
+            else minibarArrangement.add("1" + item.item.label.toString());
         }
         AppSettings.get().setMinibarArrangement(minibarArrangement);
         super.onPause();
@@ -154,16 +148,13 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
 
         @Override
         public void bindView(ViewHolder holder, List payloads) {
-            holder.label.setText(item.label.toString());
+            holder.label.setText(item.label);
             holder.description.setText(item.description);
             holder.icon.setImageResource(item.icon);
             holder.checkbox.setChecked(enable);
-            holder.checkbox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    edited = true;
-                    enable = b;
-                }
+            holder.checkbox.setOnCheckedChangeListener((compoundButton, b) -> {
+                edited = true;
+                enable = b;
             });
             super.bindView(holder, payloads);
         }

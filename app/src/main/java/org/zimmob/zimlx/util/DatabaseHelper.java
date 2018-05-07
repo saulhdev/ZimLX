@@ -71,9 +71,9 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         itemValues.put(COLUMN_X_POS, item.getX());
         itemValues.put(COLUMN_Y_POS, item.getY());
 
-        Setup.logger().log(this, Log.INFO, null, "createItem: %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
+        Setup.logger().log(this, Log.INFO, null, "createItem: %s (ID: %d)", item.getLabel(), item.getId());
 
-        String concat = "";
+        StringBuilder concat = new StringBuilder();
         switch (item.getType()) {
             case APP:
                 Setup.logger().log(this, Log.INFO, null, "Checking Save Method: %s", item.getIntent().toString());
@@ -88,18 +88,18 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat += tmp.getId() + Definitions.INT_SEP;
+                    concat.append(tmp.getId()).append(Definitions.INT_SEP);
                 }
-                itemValues.put(COLUMN_DATA, concat);
+                itemValues.put(COLUMN_DATA, concat.toString());
                 break;
             case ACTION:
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
+                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
                         + Integer.toString(item.getSpanX()) + Definitions.INT_SEP
-                        + Integer.toString(item.getSpanY());
-                itemValues.put(COLUMN_DATA, concat);
+                        + Integer.toString(item.getSpanY()));
+                itemValues.put(COLUMN_DATA, concat.toString());
                 break;
         }
         itemValues.put(COLUMN_PAGE, page);
@@ -154,7 +154,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 int desktopVar = Integer.parseInt(cursor.getString(7));
                 int stateVar = Integer.parseInt(cursor.getString(8));
                 while (page >= desktop.size()) {
-                    desktop.add(new ArrayList<Item>());
+                    desktop.add(new ArrayList<>());
                 }
                 if (desktopVar == 1 && stateVar == 1) {
                     desktop.get(page).add(getSelection(cursor));
@@ -205,7 +205,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
 
         Setup.logger().log(this, Log.INFO, null, "updateItem: %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
 
-        String concat = "";
+        StringBuilder concat = new StringBuilder();
         switch (item.getType()) {
             case APP:
                 if (Setup.appSettings().enableImageCaching()) {
@@ -215,18 +215,18 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat += tmp.getId() + Definitions.INT_SEP;
+                    concat.append(tmp.getId()).append(Definitions.INT_SEP);
                 }
-                itemValues.put(COLUMN_DATA, concat);
+                itemValues.put(COLUMN_DATA, concat.toString());
                 break;
             case ACTION:
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
+                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
                         + Integer.toString(item.getSpanX()) + Definitions.INT_SEP
-                        + Integer.toString(item.getSpanY());
-                itemValues.put(COLUMN_DATA, concat);
+                        + Integer.toString(item.getSpanY()));
+                itemValues.put(COLUMN_DATA, concat.toString());
                 break;
         }
         db.update(TABLE_HOME, itemValues, COLUMN_TIME + " = " + item.getId(), null);
@@ -283,7 +283,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 }
                 break;
             case GROUP:
-                item.setItems(new ArrayList<Item>());
+                item.setItems(new ArrayList<>());
                 dataSplit = data.split(Definitions.INT_SEP);
                 for (String s : dataSplit) {
                     item.getItems().add(getItem(Integer.parseInt(s)));

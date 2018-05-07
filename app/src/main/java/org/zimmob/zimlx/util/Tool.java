@@ -17,7 +17,6 @@ import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -74,12 +73,7 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    view.setVisibility(View.INVISIBLE);
-                }
-            });
+            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.INVISIBLE));
         }
     }
 
@@ -92,12 +86,7 @@ public class Tool {
                     .setStartDelay(0)
                     .setDuration(duration)
                     .setInterpolator(new AccelerateDecelerateInterpolator())
-                    .withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            view.setVisibility(View.INVISIBLE);
-                        }
-                    });
+                    .withEndAction(() -> view.setVisibility(View.INVISIBLE));
         }
     }
 
@@ -105,12 +94,7 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(delay).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    view.setVisibility(View.INVISIBLE);
-                }
-            });
+            view.animate().alpha(0).setStartDelay(delay).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.INVISIBLE));
         }
     }
 
@@ -118,12 +102,7 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    view.setVisibility(View.GONE);
-                }
-            });
+            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
 
@@ -131,12 +110,7 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    view.setVisibility(View.GONE);
-                }
-            });
+            view.animate().alpha(0).setStartDelay(0).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
 
@@ -145,17 +119,10 @@ public class Tool {
         ViewPropertyAnimator duration = view.animate().scaleX(0.85f).scaleY(0.85f).setDuration(animTime);
 
         duration.setInterpolator(new AccelerateDecelerateInterpolator());
-        new Handler().postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                ViewPropertyAnimator duration = view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(animTime);
-                duration.setInterpolator(new AccelerateDecelerateInterpolator());
-                new Handler().postDelayed(new Runnable() {
-                    public final void run() {
-                        endAction.run();
-                    }
-                }, animTime);
-            }
+        new Handler().postDelayed(() -> {
+            ViewPropertyAnimator duration1 = view.animate().scaleX(1.0f).scaleY(1.0f).setDuration(animTime);
+            duration1.setInterpolator(new AccelerateDecelerateInterpolator());
+            new Handler().postDelayed(() -> endAction.run(), animTime);
         }, (long) (animTime * runActionAtPercent));
     }
 
@@ -272,8 +239,8 @@ public class Tool {
 
     public static void print(Object... o) {
         StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < o.length; i++) {
-            sb.append(o[i].toString()).append("  ");
+        for (Object anO : o) {
+            sb.append(anO.toString()).append("  ");
         }
         Log.e("ZimLX", sb.toString());
     }
@@ -353,16 +320,10 @@ public class Tool {
 
     public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Definitions.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
-        return new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                Home.Companion.setItemTouchX((int) motionEvent.getX());
-                Home.Companion.setItemTouchY((int) motionEvent.getY());
-                if (itemGestureListener != null) {
-                    return itemGestureListener.onTouchEvent(motionEvent);
-                }
-                return false;
-            }
+        return (view, motionEvent) -> {
+            Home.Companion.setItemTouchX((int) motionEvent.getX());
+            Home.Companion.setItemTouchY((int) motionEvent.getY());
+            return itemGestureListener != null && itemGestureListener.onTouchEvent(motionEvent);
         };
     }
 

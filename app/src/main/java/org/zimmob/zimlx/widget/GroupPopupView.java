@@ -20,7 +20,7 @@ import org.zimmob.zimlx.util.App;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
@@ -65,14 +65,11 @@ public class GroupPopupView extends RevealFrameLayout {
 
         bringToFront();
 
-        setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (_dismissListener != null) {
-                    _dismissListener.onDismiss();
-                }
-                dismissPopup();
+        setOnClickListener(view -> {
+            if (_dismissListener != null) {
+                _dismissListener.onDismiss();
             }
+            dismissPopup();
         });
 
         addView(_popupCard);
@@ -115,52 +112,38 @@ public class GroupPopupView extends RevealFrameLayout {
                 AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, groupApp, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
                 final View view = appItemView.getView();
 
-                view.setOnLongClickListener(new OnLongClickListener() {
-                    @Override
-                    public boolean onLongClick(View view2) {
-                        if (Setup.appSettings().isDesktopLock()) return false;
+                view.setOnLongClickListener(view2 -> {
+                    if (Setup.appSettings().isDesktopLock()) return false;
 
-                        removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
+                    removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
 
-                        DragAction.Action action = groupItem.getType() == Item.Type.SHORTCUT ? DragAction.Action.SHORTCUT : DragAction.Action.APP;
+                    DragAction.Action action = groupItem.getType() == Item.Type.SHORTCUT ? DragAction.Action.SHORTCUT : DragAction.Action.APP;
 
-                        // start the drag action
-                        DragNDropHandler.startDrag(view, groupItem, action, null);
+                    // start the drag action
+                    DragHandler.startDrag(view, groupItem, action, null);
 
-                        dismissPopup();
-                        updateItem(callBack, item, groupItem, itemView);
-                        return true;
-                    }
+                    dismissPopup();
+                    updateItem(callBack, item, groupItem, itemView);
+                    return true;
                 });
                 final App app = Setup.appLoader().findItemApp(groupItem);
                 if (app == null) {
                     removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
                 } else {
-                    view.setOnClickListener(new OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            Tool.createScaleInScaleOutAnim(view, new Runnable() {
-                                @Override
-                                public void run() {
-                                    dismissPopup();
-                                    setVisibility(View.INVISIBLE);
-                                    view.getContext().startActivity(groupItem.getIntent());
-                                }
-                            }, 1f);
-                        }
-                    });
+                    view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(view, () -> {
+                        dismissPopup();
+                        setVisibility(View.INVISIBLE);
+                        view.getContext().startActivity(groupItem.getIntent());
+                    }, 1f));
                 }
                 _cellContainer.addViewToGrid(view, x2, y2, 1, 1);
             }
         }
 
-        _dismissListener = new PopupWindow.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                if (((AppItemView) itemView).getIconProvider().isGroupIconDrawable()) {
-                    if (((AppItemView) itemView).getCurrentIcon() != null) {
-                        ((GroupIconDrawable) ((AppItemView) itemView).getCurrentIcon()).popBack();
-                    }
+        _dismissListener = () -> {
+            if (((AppItemView) itemView).getIconProvider().isGroupIconDrawable()) {
+                if (((AppItemView) itemView).getCurrentIcon() != null) {
+                    ((GroupIconDrawable) ((AppItemView) itemView).getCurrentIcon()).popBack();
                 }
             }
         };

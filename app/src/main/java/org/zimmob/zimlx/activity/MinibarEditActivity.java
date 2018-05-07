@@ -9,7 +9,6 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.CheckBox;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -73,15 +72,12 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         boolean minBarEnable = AppSettings.get().getMinibarEnable();
         _enableSwitch.setChecked(minBarEnable);
         _enableSwitch.setText(minBarEnable ? R.string.on : R.string.off);
-        _enableSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                buttonView.setText(isChecked ? R.string.on : R.string.off);
-                AppSettings.get().setMinibarEnable(isChecked);
-                if (Home.Companion.getLauncher() != null) {
-                    Home.Companion.getLauncher().closeAppDrawer();
-                    Home.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-                }
+        _enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            buttonView.setText(isChecked ? R.string.on : R.string.off);
+            AppSettings.get().setMinibarEnable(isChecked);
+            if (Home.Companion.getLauncher() != null) {
+                Home.Companion.getLauncher().closeAppDrawer();
+                Home.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
         });
 
@@ -147,16 +143,13 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
         @Override
         public void bindView(ViewHolder holder, List payloads) {
-            holder._tv.setText(item.label.toString());
+            holder._tv.setText(item.label);
             holder._tv2.setText(item.description);
             holder._iv.setImageResource(item.icon);
             holder._cb.setChecked(enable);
-            holder._cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-                @Override
-                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
-                    edited = true;
-                    enable = b;
-                }
+            holder._cb.setOnCheckedChangeListener((compoundButton, b) -> {
+                edited = true;
+                enable = b;
             });
             super.bindView(holder, payloads);
         }

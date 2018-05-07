@@ -18,7 +18,6 @@ import com.turingtechnologies.materialscrollbar.DragScrollBar;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.DrawerAppItem;
@@ -108,12 +107,7 @@ public class AppDrawerVertical extends CardView {
         scrollBar.setClipToPadding(true);
         scrollBar.setDraggableFromAnywhere(true);
 
-        scrollBar.post(new Runnable() {
-            @Override
-            public void run() {
-                scrollBar.setHandleColour(Setup.appSettings().getDrawerFastScrollColor());
-            }
-        });
+        scrollBar.post(() -> scrollBar.setHandleColour(Setup.appSettings().getDrawerFastScrollColor()));
 
         boolean mPortrait = getContext().getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
         gridDrawerAdapter = new GridAppDrawerAdapter();
@@ -128,25 +122,22 @@ public class AppDrawerVertical extends CardView {
         recyclerView.setDrawingCacheEnabled(true);
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
-            AppDrawerVertical.this.apps = allApps;
+            apps = allApps;
             ArrayList<FastItem.AppItem> items = new ArrayList<>();
             for (int i = 0; i < apps.size(); i++) {
                 items.add(new DrawerAppItem(apps.get(i)));
             }
             gridDrawerAdapter.set(items);
         }
-        Setup.appLoader().addUpdateListener(new AppUpdateListener() {
-            @Override
-            public boolean onAppUpdated(List<App> apps) {
-                AppDrawerVertical.this.apps = apps;
-                ArrayList<FastItem.AppItem> items = new ArrayList<>();
-                for (int i = 0; i < apps.size(); i++) {
-                    items.add(new DrawerAppItem(apps.get(i)));
-                }
-                gridDrawerAdapter.set(items);
-
-                return false;
+        Setup.appLoader().addUpdateListener(apps -> {
+            AppDrawerVertical.apps = apps;
+            ArrayList<FastItem.AppItem> items = new ArrayList<>();
+            for (int i = 0; i < apps.size(); i++) {
+                items.add(new DrawerAppItem(apps.get(i)));
             }
+            gridDrawerAdapter.set(items);
+
+            return false;
         });
 
         addView(rl);
@@ -155,12 +146,7 @@ public class AppDrawerVertical extends CardView {
     public static class GridAppDrawerAdapter extends FastItemAdapter<FastItem.AppItem> implements INameableAdapter {
 
         GridAppDrawerAdapter() {
-            getItemFilter().withFilterPredicate(new IItemAdapter.Predicate<FastItem.AppItem>() {
-                @Override
-                public boolean filter(FastItem.AppItem item, CharSequence constraint) {
-                    return !item.getApp().getLabel().toLowerCase().contains(constraint.toString().toLowerCase());
-                }
-            });
+            getItemFilter().withFilterPredicate((IItemAdapter.Predicate<FastItem.AppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(constraint.toString().toLowerCase()));
         }
 
         @Override

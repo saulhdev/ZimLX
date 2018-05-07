@@ -18,7 +18,6 @@ import android.view.WindowInsets;
 import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.FastAdapter;
-import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
@@ -56,32 +55,26 @@ public class DesktopOptionView extends FrameLayout {
     }
 
     public void updateHomeIcon(final boolean home) {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (home) {
-                    _actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_black_36dp);
-                } else {
-                    _actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_white_36dp);
-                }
-                _actionAdapters[0].notifyAdapterItemChanged(2);
+        post(() -> {
+            if (home) {
+                _actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_black_36dp);
+            } else {
+                _actionAdapters[0].getAdapterItem(2).setIcon(R.drawable.ic_home_white_36dp);
             }
+            _actionAdapters[0].notifyAdapterItemChanged(2);
         });
     }
 
     public void updateLockIcon(final boolean lock) {
         if (_actionAdapters.length == 0) return;
         if (_actionAdapters[0].getAdapterItemCount() == 0) return;
-        post(new Runnable() {
-            @Override
-            public void run() {
-                if (lock) {
-                    _actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_white_36dp);
-                } else {
-                    _actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_open_white_36dp);
-                }
-                _actionAdapters[1].notifyAdapterItemChanged(2);
+        post(() -> {
+            if (lock) {
+                _actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_white_36dp);
+            } else {
+                _actionAdapters[1].getAdapterItem(2).setIcon(R.drawable.ic_lock_open_white_36dp);
             }
+            _actionAdapters[1].notifyAdapterItemChanged(2);
         });
     }
 
@@ -107,48 +100,54 @@ public class DesktopOptionView extends FrameLayout {
 
         _actionRecyclerViews[0] = createRecyclerView(_actionAdapters[0], Gravity.TOP | Gravity.CENTER_HORIZONTAL, paddingHorizontal);
         _actionRecyclerViews[1] = createRecyclerView(_actionAdapters[1], Gravity.BOTTOM | Gravity.CENTER_HORIZONTAL, paddingHorizontal);
-        final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener = new com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem>() {
-            @Override
-            public boolean onClick(View v, IAdapter<FastItem.DesktopOptionsItem> adapter, FastItem.DesktopOptionsItem item, int position) {
-                if (_desktopOptionViewListener != null) {
-                    int id = (int) item.getIdentifier();
-                    if (id == R.string.home) {
+        final com.mikepenz.fastadapter.listeners.OnClickListener<FastItem.DesktopOptionsItem> clickListener = (v, adapter, item, position) -> {
+            if (_desktopOptionViewListener != null) {
+                int id = (int) item.getIdentifier();
+                switch (id) {
+                    case R.string.home:
                         updateHomeIcon(true);
                         _desktopOptionViewListener.onSetPageAsHome();
-                    } else if (id == R.string.remove) {
+                        break;
+                    case R.string.remove:
                         if (!Setup.appSettings().isDesktopLock()) {
                             _desktopOptionViewListener.onRemovePage();
                         } else {
                             Tool.toast(getContext(), "Desktop is locked.");
                         }
-                    } else if (id == R.string.widget) {
+                        break;
+                    case R.string.widget:
                         if (!Setup.appSettings().isDesktopLock()) {
                             _desktopOptionViewListener.onPickWidget();
                         } else {
                             Tool.toast(getContext(), "Desktop is locked.");
                         }
-                    } else if (id == R.string.action) {
+                        break;
+                    case R.string.action:
                         if (!Setup.appSettings().isDesktopLock()) {
                             _desktopOptionViewListener.onPickDesktopAction();
                         } else {
                             Tool.toast(getContext(), "Desktop is locked.");
                         }
-                    } else if (id == R.string.lock) {
+                        break;
+                    case R.string.lock:
                         Setup.appSettings().setDesktopLock(!Setup.appSettings().isDesktopLock());
                         updateLockIcon(Setup.appSettings().isDesktopLock());
-                    } else if (id == R.string.add_left) {
+                        break;
+                    case R.string.add_left:
                         _desktopOptionViewListener.onAddPage(0);
-                    } else if (id == R.string.add_right) {
+                        break;
+                    case R.string.add_right:
                         _desktopOptionViewListener.onAddPage(1);
-                    } else if (id == R.string.settings) {
+                        break;
+                    case R.string.settings:
                         _desktopOptionViewListener.onLaunchSettings();
-                    } else {
+                        break;
+                    default:
                         return false;
-                    }
-                    return true;
                 }
-                return false;
+                return true;
             }
+            return false;
         };
 
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {

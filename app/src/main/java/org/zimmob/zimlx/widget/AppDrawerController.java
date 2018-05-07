@@ -142,25 +142,19 @@ public class AppDrawerController extends RevealFrameLayout {
             case DrawerMode.HORIZONTAL_PAGED:
                 if (_drawerViewPaged._pages.size() > 0) {
                     View mGrid = _drawerViewPaged._pages.get(_drawerViewPaged.getCurrentItem()).findViewById(R.id.group);
-                    mGrid.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(new Runnable() {
-                        @Override
-                        public void run() {
-                            try {
-                                _appDrawerAnimator.start();
-                            } catch (NullPointerException ignored) {
-                            }
+                    mGrid.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(() -> {
+                        try {
+                            _appDrawerAnimator.start();
+                        } catch (NullPointerException ignored) {
                         }
                     });
                 }
                 break;
             case DrawerMode.VERTICAL:
-                _drawerViewGrid.recyclerView.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            _appDrawerAnimator.start();
-                        } catch (NullPointerException ignored) {
-                        }
+                _drawerViewGrid.recyclerView.animate().setStartDelay(0).alpha(0).setDuration(60L).withEndAction(() -> {
+                    try {
+                        _appDrawerAnimator.start();
+                    } catch (NullPointerException ignored) {
                     }
                 });
                 break;
@@ -234,7 +228,7 @@ public class AppDrawerController extends RevealFrameLayout {
     public void setHome(Home home) {
         switch (_drawerMode) {
             case DrawerMode.HORIZONTAL_PAGED:
-                _drawerViewPaged.withHome(home, (PagerIndicator) findViewById(R.id.appDrawerIndicator));
+                _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
                 break;
             case DrawerMode.VERTICAL:
                 break;

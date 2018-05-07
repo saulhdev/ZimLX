@@ -22,7 +22,7 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.PopupIconLabelItem;
 import org.zimmob.zimlx.util.DragAction.Action;
-import org.zimmob.zimlx.util.DragNDropHandler;
+import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.HashMap;
@@ -140,7 +140,7 @@ public class DragNDropLayout extends FrameLayout {
 
         protected void onDraw(@Nullable Canvas canvas) {
             super.onDraw(canvas);
-            if (canvas == null || DragNDropHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
+            if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
                 return;
 
             float x = _dragLocation.x - Home._itemTouchX;
@@ -149,8 +149,10 @@ public class DragNDropLayout extends FrameLayout {
             if (_dragging) {
                 canvas.save();
                 _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
-                canvas.scale(_overlayIconScale, _overlayIconScale, x + DragNDropHandler._cachedDragBitmap.getWidth() / 2, y + DragNDropHandler._cachedDragBitmap.getHeight() / 2);
-                canvas.drawBitmap(DragNDropHandler._cachedDragBitmap, x, y, _paint);
+                canvas.scale(_overlayIconScale,
+                        _overlayIconScale, x + DragHandler._cachedDragBitmap.getWidth() / 2,
+                        y + DragHandler._cachedDragBitmap.getHeight() / 2);
+                canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
                 canvas.restore();
             }
 
@@ -280,17 +282,14 @@ public class DragNDropLayout extends FrameLayout {
     public final void hidePopupMenu() {
         if (_overlayPopupShowing) {
             _overlayPopupShowing = false;
-            _overlayPopup.animate().alpha(0.0f).withEndAction(new Runnable() {
-                @Override
-                public void run() {
-                    _overlayPopup.setVisibility(View.INVISIBLE);
-                    _overlayPopupAdapter.clear();
-                }
+            _overlayPopup.animate().alpha(0.0f).withEndAction(() -> {
+                _overlayPopup.setVisibility(View.INVISIBLE);
+                _overlayPopupAdapter.clear();
             });
             if (!_dragging) {
-                _dragView = (View) null;
-                _dragItem = (Item) null;
-                _dragAction = (Action) null;
+                _dragView = null;
+                _dragItem = null;
+                _dragAction = null;
             }
         }
     }
@@ -361,10 +360,7 @@ public class DragNDropLayout extends FrameLayout {
                     default:
                         break;
                 }
-                if (_dragging) {
-                    return true;
-                }
-                return super.onTouchEvent(event);
+                return _dragging || super.onTouchEvent(event);
             }
         }
         return super.onTouchEvent(event);
@@ -451,9 +447,6 @@ public class DragNDropLayout extends FrameLayout {
         int y = _tempArrayOfInt2[1];
         int w = view.getWidth();
         int h = view.getHeight();
-        if (rx < x || rx > x + w || ry < y || ry > y + h) {
-            return false;
-        }
-        return true;
+        return rx >= x && rx <= x + w && ry >= y && ry <= y + h;
     }
 }

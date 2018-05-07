@@ -8,6 +8,7 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -23,7 +24,7 @@ import org.zimmob.zimlx.widget.Folder;
 
 public class GroupIconDrawable extends Drawable implements IconDrawer {
     private Drawable[] icons;
-    private Paint paintInnerCircle;
+
     private Paint paintIcon;
     private boolean needAnimate;
     private boolean needAnimateScale;
@@ -33,6 +34,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
     private int outline;
     private int iconSizeDiv2;
     AppSettings appSettings = Setup.appSettings();
+
     public GroupIconDrawable(Context context, Item item, int iconSize) {
         final float size = Tool.dp2px(iconSize, context);
         final Drawable[] icons = new Drawable[4];
@@ -91,41 +93,61 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
     @Override
     public void draw(Canvas canvas) {
         canvas.save();
+        Paint paintBackground = new Paint();
+        ;
+        if (needAnimateScale)
+            scaleFactor = Tool.clampFloat(scaleFactor - 0.09f, 0.4f, 1f);
+        else
+            scaleFactor = Tool.clampFloat(scaleFactor + 0.09f, 0.4f, 1f);
 
-        if (needAnimateScale) {
-            scaleFactor = Tool.clampFloat(scaleFactor - 0.09f, 0.5f, 1f);
-        } else {
-            scaleFactor = Tool.clampFloat(scaleFactor + 0.09f, 0.5f, 1f);
-        }
-        paintInnerCircle = new Paint();
-        paintInnerCircle.setColor(Color.parseColor("#EA040404"));
-        paintInnerCircle.setAlpha(150);
-        paintInnerCircle.setAntiAlias(true);
+        paintBackground.setAlpha(150);
+        paintBackground.setAntiAlias(true);
         canvas.scale(scaleFactor, scaleFactor, iconSize / 2, iconSize / 2);
-        if (appSettings.getFolderShape() == Folder.Shape.CIRCLE) {
+        int mode = appSettings.getFolderShape();
+        Path clip = new Path();
+        Rect rect;
+        switch (mode) {
+            case Folder.Shape.CIRCLE:
+                paintBackground.setColor(Color.parseColor("#A4101947"));
 
-            Path clip = new Path();
-            clip.addCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, Path.Direction.CW);
-            canvas.clipPath(clip, Region.Op.REPLACE);
-            canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintInnerCircle);
-        } else {
-            Rect rect = new Rect(10, 10, 164, 164);
-            canvas.drawRect(rect, paintInnerCircle);
-        }
-        if (icons[0] != null) {
-            drawIcon(canvas, icons[0], padding + 5, padding + 5, iconSizeDiv2 - padding + 5, iconSizeDiv2 - padding, paintIcon);
-        }
-        if (icons[1] != null) {
-            drawIcon(canvas, icons[1], iconSizeDiv2 + padding - 5, padding + 5, iconSize - padding - 5, iconSizeDiv2 - padding, paintIcon);
-        }
-        if (icons[2] != null) {
-            drawIcon(canvas, icons[2], padding + 5, iconSizeDiv2 + padding, iconSizeDiv2 - padding + 5, iconSize - padding - 5, paintIcon);
-        }
-        if (icons[3] != null) {
-            drawIcon(canvas, icons[3], iconSizeDiv2 + padding - 5, iconSizeDiv2 + padding, iconSize - padding - 5, iconSize - padding - 5, paintIcon);
-        }
-        canvas.clipRect(0, 0, iconSize, iconSize, Region.Op.REPLACE);
+                //create circle
+                clip.addCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, Path.Direction.CW);
+                canvas.clipPath(clip, Region.Op.REPLACE);
+                canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintBackground);
+                break;
 
+            case Folder.Shape.CIRCLE_SHADOW:
+                paintBackground.setColor(Color.parseColor("#CFC6C6C6"));
+                //create circle
+                clip.addCircle(iconSize / 2 + 2, iconSize / 2 + 2, iconSize / 2 - outline, Path.Direction.CW);
+                canvas.clipPath(clip, Region.Op.REPLACE);
+                canvas.drawCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, paintBackground);
+                break;
+
+            case Folder.Shape.SQUARE:
+                paintBackground.setColor(Color.parseColor("#A4101947"));
+
+                rect = new Rect(0, 0, (int) iconSize, (int) iconSize);
+                RectF rectF = new RectF(rect);
+                canvas.drawRoundRect(rectF, 20, 20, paintBackground);
+                break;
+
+            case Folder.Shape.SQUARE_SHADOW:
+                paintBackground.setColor(Color.parseColor("#CFC6C6C6"));
+                rect = new Rect(0, 0, (int) iconSize, (int) iconSize);
+                rectF = new RectF(rect);
+                canvas.drawRoundRect(rectF, 20, 20, paintBackground);
+                break;
+        }
+
+        if (icons[0] != null)
+            drawIcon(canvas, icons[0], padding, padding, iconSizeDiv2 - padding, iconSizeDiv2 - padding, paintIcon);
+        if (icons[1] != null)
+            drawIcon(canvas, icons[1], iconSizeDiv2 + padding, padding, iconSize - padding, iconSizeDiv2 - padding, paintIcon);
+        if (icons[2] != null)
+            drawIcon(canvas, icons[2], padding, iconSizeDiv2 + padding, iconSizeDiv2 - padding, iconSize - padding, paintIcon);
+        if (icons[3] != null)
+            drawIcon(canvas, icons[3], iconSizeDiv2 + padding, iconSizeDiv2 + padding, iconSize - padding, iconSize - padding, paintIcon);
         canvas.restore();
 
         if (needAnimate) {

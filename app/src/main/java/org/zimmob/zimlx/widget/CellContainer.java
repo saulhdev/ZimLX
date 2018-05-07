@@ -44,7 +44,7 @@ public class CellContainer extends ViewGroup {
     private int _cellWidth;
     private Rect[][] _cells;
     private Point _currentOutlineCoordinate = new Point(-1, -1);
-    private Long _down = Long.valueOf(0);
+    private Long _down = 0L;
     @Nullable
     private SimpleFingerGestures _gestures;
     private boolean _hideGrid = true;
@@ -54,7 +54,7 @@ public class CellContainer extends ViewGroup {
     private OnItemRearrangeListener _onItemRearrangeListener;
     private final Paint _outlinePaint = new Paint(1);
     private PeekDirection _peekDirection;
-    private Long _peekDownTime = Long.valueOf(-1);
+    private Long _peekDownTime = (long) -1;
     private Point _preCoordinate = new Point(-1, -1);
     private Point _startCoordinate = new Point();
     @NonNull
@@ -260,12 +260,12 @@ public class CellContainer extends ViewGroup {
                     _startCoordinate = coordinate;
                 }
                 if (!_preCoordinate.equals(coordinate)) {
-                    _peekDownTime = Long.valueOf(-1);
+                    _peekDownTime = (long) -1;
                 }
                 Long l = _peekDownTime;
                 if (l != null && l == -1) {
                     _peekDirection = getPeekDirectionFromCoordinate(_startCoordinate, coordinate);
-                    _peekDownTime = Long.valueOf(System.currentTimeMillis());
+                    _peekDownTime = System.currentTimeMillis();
                     _preCoordinate = coordinate;
 
                 }
@@ -305,7 +305,7 @@ public class CellContainer extends ViewGroup {
             case 1:
                 long currentTimeMillis = System.currentTimeMillis();
                 Long l = _down;
-                if (currentTimeMillis - l.longValue() < 260 && _blockTouch) {
+                if (currentTimeMillis - l < 260 && _blockTouch) {
                     performClick();
                     break;
                 }
@@ -316,7 +316,7 @@ public class CellContainer extends ViewGroup {
             return true;
         }
         if (_gestures == null) {
-            Tool.print((Object) "gestures is null");
+            Tool.print("gestures is null");
             return super.onTouchEvent(event);
         }
         try {
@@ -328,10 +328,7 @@ public class CellContainer extends ViewGroup {
     }
 
     public boolean onInterceptTouchEvent(@NonNull MotionEvent ev) {
-        if (_blockTouch) {
-            return true;
-        }
-        return super.onInterceptTouchEvent(ev);
+        return _blockTouch || super.onInterceptTouchEvent(ev);
     }
 
     public void init() {
@@ -482,10 +479,9 @@ public class CellContainer extends ViewGroup {
             int y = lp.getY() + lp.getYSpan();
             for (int y2 = lp.getY(); y2 < y; y2++) {
                 Object[] objArr = new Object[2];
-                StringBuilder stringBuilder = new StringBuilder();
-                stringBuilder.append("Setting ok (");
-                stringBuilder.append(String.valueOf(b));
-                objArr[0] = stringBuilder.toString();
+                String stringBuilder = "Setting ok (" +
+                        String.valueOf(b);
+                objArr[0] = stringBuilder;
                 objArr[1] = ")";
                 Tool.print(objArr);
                 boolean[][] zArr = _occupied;
@@ -497,7 +493,7 @@ public class CellContainer extends ViewGroup {
     public final boolean checkOccupied(@NonNull Point start, int spanX, int spanY) {
         int i = start.x + spanX;
         boolean[][] zArr = _occupied;
-        if (i <= ((Object[]) zArr).length) {
+        if (i <= zArr.length) {
             i = start.y + spanY;
             zArr = _occupied;
             if (i <= zArr[0].length) {
