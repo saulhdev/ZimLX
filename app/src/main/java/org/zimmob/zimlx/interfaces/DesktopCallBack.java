@@ -1,9 +1,8 @@
-package org.zimmob.zimlx.viewutil;
+package org.zimmob.zimlx.interfaces;
 
 import android.view.View;
 
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.RevertibleAction;
 
 public interface DesktopCallBack<V extends View> extends RevertibleAction {
     boolean addItemToPoint(Item item, int x, int y);

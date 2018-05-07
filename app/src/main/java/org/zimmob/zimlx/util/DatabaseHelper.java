@@ -77,7 +77,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         StringBuilder concat = new StringBuilder();
         switch (item.getType()) {
             case APP:
-                Setup.logger().log(this, Log.INFO, null, "Checking Save Method: %s", item.getIntent().toString());
+                Setup.logger().log(this, Log.INFO, null, "Save App: %s", item.getIntent().toString());
 
 
                 if (Setup.appSettings().enableImageCaching()) {

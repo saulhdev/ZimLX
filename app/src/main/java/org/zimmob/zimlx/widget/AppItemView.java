@@ -17,6 +17,7 @@ import android.view.View;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.interfaces.IconProvider;
 import org.zimmob.zimlx.manager.Setup;
@@ -27,7 +28,6 @@ import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
 

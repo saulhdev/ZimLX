@@ -114,6 +114,11 @@ public abstract class Setup {
 
         void saveItem(Item item, Definitions.ItemState state);
 
+        /**
+         * @param item
+         * @param page
+         * @param desktop
+         */
         void saveItem(Item item, int page, Definitions.ItemPosition desktop);
 
         void deleteItem(Item item, boolean deleteSubItems);

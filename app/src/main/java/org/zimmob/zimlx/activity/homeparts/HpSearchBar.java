@@ -16,6 +16,11 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
     private SearchBar _searchBar;
     private CalendarDropDownView _calendarDropDownView;
 
+    /**
+     * @param home
+     * @param searchBar
+     * @param calendarDropDownView
+     */
     public HpSearchBar(Home home, SearchBar searchBar, CalendarDropDownView calendarDropDownView) {
         _home = home;
         _searchBar = searchBar;

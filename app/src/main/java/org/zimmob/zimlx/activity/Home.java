@@ -12,11 +12,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
 import android.os.Build.VERSION;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.provider.Settings;
 import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
@@ -699,10 +702,15 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
                         Item appDrawerBtnItem = Item.newActionItem(8);
                         appDrawerBtnItem._x = 2;
                         Companion.getDb().saveItem(appDrawerBtnItem, 0, Definitions.ItemPosition.Dock);
+                        //Create Default DockItems
+                        addDockDialer(0);
+                        addDockApps(Intent.CATEGORY_APP_MESSAGING, 1);
+                        addDockCamera(3);
+                        addDockApps(Intent.CATEGORY_APP_BROWSER, 4);
+
                     }
                 }
                 appSettings = Setup.appSettings();
-
                 if (appSettings.getDesktopStyle() == 0) {
                     getDesktop().initDesktopNormal(Home.this);
                 } else {
@@ -735,6 +743,55 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
         AppManager.getInstance(this).init();
     }
 
+    private void addDockApps(String appCategory, int position) {
+        Intent intent = new Intent(Intent.ACTION_MAIN, null);
+        intent.addCategory(appCategory);
+        PackageManager packageManager = this.getPackageManager();
+        List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
+        for (ResolveInfo info : activitiesInfo) {
+            App app = new App(this, info, packageManager);
+            Log.i("HOME", app.getPackageName());
+            Item item = Item.newAppItem(app);
+            item._x = position;
+            Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+        }
+
+    }
+
+    private void addDockCamera(int position) {
+        Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
+        PackageManager packageManager = this.getPackageManager();
+        List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
+        for (ResolveInfo info : activitiesInfo) {
+            App app = new App(this, info, packageManager);
+            Log.i("HOME", app.getPackageName());
+            Item item = Item.newAppItem(app);
+            item._x = position;
+            Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+        }
+
+    }
+
+    private void addDockDialer(int position) {
+        Intent intent = new Intent(Intent.ACTION_DIAL, null);
+        intent.addCategory(Intent.CATEGORY_DEFAULT);
+        PackageManager packageManager = this.getPackageManager();
+        List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
+
+        for (ResolveInfo info : activitiesInfo) {
+            App app = new App(this, info, packageManager);
+            if (app.getLabel().equals("Phone")) {
+
+                Item item = Item.newAppItem(app);
+                Log.i("HOME DIAL", item.getLabel());
+
+                item._x = position;
+                item._type = Item.Type.APP;
+                Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+            }
+        }
+    }
+
     private final void initDock() {
         int iconSize = Setup.appSettings().getDockIconSize();
         Dock dock = findViewById(R.id.dock);
@@ -765,9 +822,11 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
 
         desktopOptionView.updateLockIcon(appSettings.isDesktopLock());
         ((Desktop) findViewById(R.id.desktop)).addOnPageChangeListener(new SmoothViewPager.OnPageChangeListener() {
+            @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
             }
 
+            @Override
             public void onPageSelected(int position) {
                 DesktopOptionView desktopOptionView = findViewById(R.id.desktopEditOptionPanel);
                 AppSettings appSettings = Setup.appSettings();
@@ -775,6 +834,7 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
                 desktopOptionView.updateHomeIcon(appSettings.getDesktopPageCurrent() == position);
             }
 
+            @Override
             public void onPageScrollStateChanged(int state) {
             }
         });
@@ -866,7 +926,6 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
 
     public final void hideDesktopIndicator() {
         AppSettings appSettings = Setup.appSettings();
-
         if (appSettings.isDesktopShowIndicator()) {
             Tool.invisibleViews(100, (PagerIndicator) findViewById(R.id.desktopIndicator));
         }
@@ -894,7 +953,6 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
     public void onFinishDesktopEdit() {
         Tool.invisibleViews(100, 20, (DesktopOptionView) findViewById(R.id.desktopEditOptionPanel));
         ((PagerIndicator) findViewById(R.id.desktopIndicator)).hideDelay();
-        //showDesktopIndicator();
         updateDock$default(this, true, 0, 2, null);
         updateSearchBar(true);
     }
@@ -902,7 +960,6 @@ public class Home extends Activity implements OnDesktopEditListener, DesktopOpti
     @Override
     public void onRemovePage() {
         if (getDesktop().isCurrentPageEmpty()) {
-
             getDesktop().removeCurrentPage();
             return;
         }

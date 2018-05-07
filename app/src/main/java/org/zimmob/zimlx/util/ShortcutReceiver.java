@@ -53,7 +53,14 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item = Item.newShortcutItem(newIntent, shortcutIconDrawable, name);
         }
-        Point preferredPos = Home.Companion.getLauncher().getDesktop().getPages().get(Home.Companion.getLauncher().getDesktop().getCurrentItem()).findFreeSpace();
+        Point preferredPos = Home.Companion
+                .getLauncher()
+                .getDesktop()
+                .getPages()
+                .get(Home.Companion
+                        .getLauncher()
+                        .getDesktop()
+                        .getCurrentItem()).findFreeSpace();
         if (preferredPos == null) {
             Tool.toast(Home.Companion.getLauncher(), R.string.toast_not_enough_space);
         } else {

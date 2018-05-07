@@ -268,7 +268,4 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
-    public static class DrawerMode {
-
-    }
 }

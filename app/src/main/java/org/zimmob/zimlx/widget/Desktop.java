@@ -17,6 +17,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -26,7 +27,6 @@ import org.zimmob.zimlx.util.Definitions.ItemState;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallBack;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;

@@ -32,6 +32,10 @@ import java.util.UUID;
 public class AppManager {
     private static AppManager _ref;
 
+    /**
+     * @param context
+     * @return
+     */
     public static AppManager getInstance(Context context) {
         return _ref == null ? (_ref = new AppManager(context)) : _ref;
     }
@@ -53,6 +57,9 @@ public class AppManager {
         return _context;
     }
 
+    /**
+     * @param c
+     */
     public AppManager(Context c) {
         _context = c;
         _packageManager = c.getPackageManager();
@@ -71,6 +78,9 @@ public class AppManager {
         return null;
     }
 
+    /**
+     * @return
+     */
     public List<App> getApps() {
         return _apps;
     }
