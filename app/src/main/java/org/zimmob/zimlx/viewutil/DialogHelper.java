@@ -111,6 +111,9 @@ public class DialogHelper {
         }
     }
 
+    /**
+     * @param context
+     */
     public static void backupDialog(final Context context) {
         new MaterialDialog.Builder(context)
                 .title(R.string.pref_title__backup)
@@ -155,6 +158,9 @@ public class DialogHelper {
         void onAppSelected(App app);
     }
 
+    /**
+     *
+     */
     public interface OnItemEditListener {
         void itemLabel(String label);
     }
