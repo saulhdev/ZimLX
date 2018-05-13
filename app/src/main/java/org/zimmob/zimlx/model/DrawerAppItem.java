@@ -29,8 +29,6 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
 
             @Override
             public void afterDrag(View view) {
-                //This will be handled by the Drag N Drop listener in the CoreHome
-                //Home.Companion.getLauncher().closeAppDrawer();
             }
         };
     }

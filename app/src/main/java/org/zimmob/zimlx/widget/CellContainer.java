@@ -18,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Contract;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;
@@ -422,7 +422,7 @@ public class CellContainer extends ViewGroup {
         }
 
         //Animating alpha and drawing projected image
-        Home home = Home.Companion.getLauncher();
+        HomeActivity home = HomeActivity.Companion.getLauncher();
         if (home != null && home.getDragNDropView().getDragExceedThreshold() && _currentOutlineCoordinate.x != -1 && _currentOutlineCoordinate.y != -1) {
             if (_outlinePaint.getAlpha() != 160)
                 _outlinePaint.setAlpha(Math.min(_outlinePaint.getAlpha() + 20, 160));

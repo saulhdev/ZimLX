@@ -10,7 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.Tool;
@@ -23,7 +23,7 @@ public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
 
     public List<ViewGroup> _pages = new ArrayList<>();
-    private Home _home;
+    private HomeActivity _home;
 
     private static int _rowCellCount, _columnCellCount;
 
@@ -112,7 +112,7 @@ public class AppDrawerPaged extends SmoothViewPager {
         });
     }
 
-    public void withHome(Home home, PagerIndicator appDrawerIndicator) {
+    public void withHome(HomeActivity home, PagerIndicator appDrawerIndicator) {
         _home = home;
         _appDrawerIndicator = appDrawerIndicator;
         appDrawerIndicator.setMode(PagerIndicator.Mode.NORMAL);
@@ -137,10 +137,7 @@ public class AppDrawerPaged extends SmoothViewPager {
             final App app = _apps.get(pos);
 
             return AppItemView
-                    .createDrawerAppItemView(
-                            getContext(),
-                            _home,
-                            app,
+                    .createDrawerAppItemView(getContext(), _home, app,
                             Setup.appSettings().getDrawerIconSize(),
                             new AppItemView.LongPressCallBack() {
                                 @Override
@@ -150,7 +147,7 @@ public class AppDrawerPaged extends SmoothViewPager {
 
                                 @Override
                                 public void afterDrag(View view) {
-                                    //This will be handled by the Drag N Drop listener in the Home
+                                    //This will be handled by the Drag N Drop listener in the HomeActivity
                                     //home.closeAppDrawer();
                                 }
                             });

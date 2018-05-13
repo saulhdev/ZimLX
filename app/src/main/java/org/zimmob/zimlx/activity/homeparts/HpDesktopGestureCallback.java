@@ -22,14 +22,14 @@ public class HpDesktopGestureCallback implements DesktopGestureListener.DesktopG
     public boolean onDrawerGesture(Desktop desktop, DesktopGestureListener.Type event) {
         Context context = _appSettings.getContext();
         PackageManager packageManager = context.getPackageManager();
-        int gestureid;
+        int gestureId;
         LauncherAction.ActionItem gesture = null;
         switch (event) {
             case SwipeUp: {
-                gestureid = _appSettings.getGestureSwipeUp();
-                if (gestureid != 0) {
-                    gesture = LauncherAction.getActionItem(gestureid - 1);
-                    if (gestureid == 9) {
+                gestureId = _appSettings.getGestureSwipeUp();
+                if (gestureId != 0) {
+                    gesture = LauncherAction.getActionItem(gestureId - 1);
+                    if (gestureId == 9) {
                         gesture.extraData = new Intent(packageManager.getLaunchIntentForPackage(_appSettings.getString(context.getString(R.string.pref_key__gesture_swipe_up) + "__", "")));
                     }
 
@@ -37,10 +37,10 @@ public class HpDesktopGestureCallback implements DesktopGestureListener.DesktopG
                 break;
             }
             case SwipeDown: {
-                gestureid = _appSettings.getGestureSwipeDown();
-                if (gestureid != 0) {
-                    gesture = LauncherAction.getActionItem(gestureid - 1);
-                    if (gestureid == 9) {
+                gestureId = _appSettings.getGestureSwipeDown();
+                if (gestureId != 0) {
+                    gesture = LauncherAction.getActionItem(gestureId - 1);
+                    if (gestureId == 9) {
                         gesture.extraData = new Intent(packageManager.getLaunchIntentForPackage(_appSettings.getString(context.getString(R.string.pref_key__gesture_swipe_down) + "__", "")));
                     }
                 }
@@ -51,31 +51,31 @@ public class HpDesktopGestureCallback implements DesktopGestureListener.DesktopG
                 break;
             }
             case Pinch: {
-                gestureid = _appSettings.getGesturePinch();
-                if (gestureid != 0) {
-                    gesture = LauncherAction.getActionItem(gestureid - 1);
+                gestureId = _appSettings.getGesturePinch();
+                if (gestureId != 0) {
+                    gesture = LauncherAction.getActionItem(gestureId - 1);
 
-                    if (gestureid == 9) {
+                    if (gestureId == 9) {
                         gesture.extraData = new Intent(packageManager.getLaunchIntentForPackage(_appSettings.getString(context.getString(R.string.pref_key__gesture_pinch) + "__", "")));
                     }
                 }
                 break;
             }
             case Unpinch: {
-                gestureid = _appSettings.getGestureUnpinch();
-                if (gestureid != 0) {
-                    gesture = LauncherAction.getActionItem(gestureid - 1);
-                    if (gestureid == 9) {
+                gestureId = _appSettings.getGestureUnpinch();
+                if (gestureId != 0) {
+                    gesture = LauncherAction.getActionItem(gestureId - 1);
+                    if (gestureId == 9) {
                         gesture.extraData = new Intent(packageManager.getLaunchIntentForPackage(_appSettings.getString(context.getString(R.string.pref_key__gesture_unpinch) + "__", "")));
                     }
                 }
                 break;
             }
             case DoubleTap: {
-                gestureid = _appSettings.getGestureDoubleTap();
-                if (gestureid != 0) {
-                    gesture = LauncherAction.getActionItem(gestureid - 1);
-                    if (gestureid == 9) {
+                gestureId = _appSettings.getGestureDoubleTap();
+                if (gestureId != 0) {
+                    gesture = LauncherAction.getActionItem(gestureId - 1);
+                    if (gestureId == 9) {
                         gesture.extraData = new Intent(packageManager.getLaunchIntentForPackage(_appSettings.getString(context.getString(R.string.pref_key__gesture_double_tap) + "__", "")));
                     }
                 }

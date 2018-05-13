@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.interfaces.LabelProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.BaseIconProvider;
@@ -19,6 +19,26 @@ public class Item implements LabelProvider, Parcelable {
 
     public static final int LOCATION_DESKTOP = 0;
     public static final int LOCATION_DOCK = 1;
+    public Type type;
+    private BaseIconProvider iconProvider = null;
+    public int x = 0;
+    public int y = 0;
+    //Needed for folder to optimize the folder open position
+    public int _locationInLauncher;
+    // intent for shortcuts and apps
+    public Intent intent;
+    // list of items for groups
+    private List<Item> items;
+    // int value for launcher action
+    public int _actionValue;
+    // widget specific values
+    public int _widgetValue;
+    public int spanX = 1;
+    public int spanY = 1;
+    // all items need these values
+    private int _idValue;
+    private String _name = "";
+
     public static final Creator<Item> CREATOR = new Creator<Item>() {
 
         @Override
@@ -31,26 +51,6 @@ public class Item implements LabelProvider, Parcelable {
             return new Item[size];
         }
     };
-    public Type _type;
-    public BaseIconProvider _iconProvider = null;
-    public int _x = 0;
-    public int _y = 0;
-    //Needed for folder to optimize the folder open position
-    public int _locationInLauncher;
-    // intent for shortcuts and apps
-    public Intent _intent;
-    // list of items for groups
-    public List<Item> _items;
-    // int value for launcher action
-    public int _actionValue;
-    // widget specific values
-    public int _widgetValue;
-    public int _spanX = 1;
-    public int _spanY = 1;
-    // all items need these values
-    private int _idValue;
-    private String _name = "";
-
 
     public Item() {
         Random random = new Random();
@@ -62,21 +62,21 @@ public class Item implements LabelProvider, Parcelable {
      */
     public Item(Parcel parcel) {
         _idValue = parcel.readInt();
-        _type = Type.valueOf(parcel.readString());
+        type = Type.valueOf(parcel.readString());
         _name = parcel.readString();
-        _x = parcel.readInt();
-        _y = parcel.readInt();
-        switch (_type) {
+        x = parcel.readInt();
+        y = parcel.readInt();
+        switch (type) {
             case APP:
             case SHORTCUT:
-                _intent = Tool.getIntentFromString(parcel.readString());
+                intent = Tool.getIntentFromString(parcel.readString());
                 break;
             case GROUP:
                 List<String> labels = new ArrayList<>();
                 parcel.readStringList(labels);
-                _items = new ArrayList<>();
+                items = new ArrayList<>();
                 for (String s : labels) {
-                    _items.add(Home._db.getItem(Integer.parseInt(s)));
+                    items.add(HomeActivity._db.getItem(Integer.parseInt(s)));
                 }
                 break;
             case ACTION:
@@ -84,20 +84,20 @@ public class Item implements LabelProvider, Parcelable {
                 break;
             case WIDGET:
                 _widgetValue = parcel.readInt();
-                _spanX = parcel.readInt();
-                _spanY = parcel.readInt();
+                spanX = parcel.readInt();
+                spanY = parcel.readInt();
                 break;
         }
         _locationInLauncher = parcel.readInt();
 
         if (Setup.appSettings().enableImageCaching()) {
-            _iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(Home.Companion.getLauncher(), Integer.toString(_idValue)));
+            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue)));
         } else {
-            switch (_type) {
+            switch (type) {
                 case APP:
                 case SHORTCUT:
                     App app = Setup.appLoader().findItemApp(this);
-                    _iconProvider = app != null ? app.getIconProvider() : null;
+                    iconProvider = app != null ? app.getIconProvider() : null;
                     break;
                 default:
                     break;
@@ -107,21 +107,21 @@ public class Item implements LabelProvider, Parcelable {
 
     public static Item newAppItem(App app) {
         Item item = new Item();
-        item._type = Type.APP;
+        item.type = Type.APP;
         item._name = app.getLabel();
-        item._iconProvider = app.getIconProvider();
-        item._intent = toIntent(app);
+        item.iconProvider = app.getIconProvider();
+        item.intent = toIntent(app);
         return item;
     }
 
     public static Item newShortcutItem(Intent intent, Drawable icon, String name) {
         Item item = new Item();
-        item._type = Type.SHORTCUT;
+        item.type = Type.SHORTCUT;
         item._name = name;
-        item._iconProvider = Setup.imageLoader().createIconProvider(icon);
-        item._spanX = 1;
-        item._spanY = 1;
-        item._intent = intent;
+        item.iconProvider = Setup.imageLoader().createIconProvider(icon);
+        item.spanX = 1;
+        item.spanY = 1;
+        item.intent = intent;
         return item;
     }
 
@@ -130,30 +130,30 @@ public class Item implements LabelProvider, Parcelable {
      */
     public static Item newGroupItem() {
         Item item = new Item();
-        item._type = Type.GROUP;
+        item.type = Type.GROUP;
         item._name = "";
-        item._spanX = 1;
-        item._spanY = 1;
-        item._items = new ArrayList<>();
+        item.spanX = 1;
+        item.spanY = 1;
+        item.items = new ArrayList<>();
 
         return item;
     }
 
     public static Item newActionItem(int action) {
         Item item = new Item();
-        item._type = Type.ACTION;
-        item._spanX = 1;
-        item._spanY = 1;
+        item.type = Type.ACTION;
+        item.spanX = 1;
+        item.spanY = 1;
         item._actionValue = action;
         return item;
     }
 
     public static Item newWidgetItem(int widgetValue) {
         Item item = new Item();
-        item._type = Type.WIDGET;
+        item.type = Type.WIDGET;
         item._widgetValue = widgetValue;
-        item._spanX = 1;
-        item._spanY = 1;
+        item.spanX = 1;
+        item.spanY = 1;
 
         return item;
     }
@@ -183,18 +183,18 @@ public class Item implements LabelProvider, Parcelable {
     @Override
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(_idValue);
-        out.writeString(_type.toString());
+        out.writeString(type.toString());
         out.writeString(_name);
-        out.writeInt(_x);
-        out.writeInt(_y);
-        switch (_type) {
+        out.writeInt(x);
+        out.writeInt(y);
+        switch (type) {
             case APP:
             case SHORTCUT:
-                out.writeString(Tool.getIntentAsString(_intent));
+                out.writeString(Tool.getIntentAsString(intent));
                 break;
             case GROUP:
                 List<String> labels = new ArrayList<>();
-                for (Item i : _items) {
+                for (Item i : items) {
                     labels.add(Integer.toString(i._idValue));
                 }
                 out.writeStringList(labels);
@@ -204,8 +204,8 @@ public class Item implements LabelProvider, Parcelable {
                 break;
             case WIDGET:
                 out.writeInt(_widgetValue);
-                out.writeInt(_spanX);
-                out.writeInt(_spanY);
+                out.writeInt(spanX);
+                out.writeInt(spanY);
                 break;
         }
         out.writeInt(_locationInLauncher);
@@ -225,7 +225,7 @@ public class Item implements LabelProvider, Parcelable {
     }
 
     public Intent getIntent() {
-        return _intent;
+        return intent;
     }
 
     @Override
@@ -238,47 +238,47 @@ public class Item implements LabelProvider, Parcelable {
     }
 
     public Type getType() {
-        return _type;
+        return type;
     }
 
     public List<Item> getGroupItems() {
-        return _items;
+        return items;
     }
 
     public int getX() {
-        return _x;
+        return x;
     }
 
     public void setX(int x) {
-        _x = x;
+        this.x = x;
     }
 
     public int getY() {
-        return _y;
+        return y;
     }
 
     public void setY(int y) {
-        _y = y;
+        this.y = y;
     }
 
     public int getSpanX() {
-        return _spanX;
+        return spanX;
     }
 
     public void setSpanX(int x) {
-        _spanX = x;
+        spanX = x;
     }
 
     public int getSpanY() {
-        return _spanY;
+        return spanY;
     }
 
     public void setSpanY(int y) {
-        _spanY = y;
+        spanY = y;
     }
 
     public BaseIconProvider getIconProvider() {
-        return _iconProvider;
+        return iconProvider;
     }
 
     public enum Type {
@@ -290,11 +290,11 @@ public class Item implements LabelProvider, Parcelable {
     }
 
     public void setType(Type type) {
-        _type = type;
+        this.type = type;
     }
 
     public void setIconProvider(BaseIconProvider iconProvider) {
-        _iconProvider = iconProvider;
+        this.iconProvider = iconProvider;
     }
 
     public int getLocationInLauncher() {
@@ -302,15 +302,15 @@ public class Item implements LabelProvider, Parcelable {
     }
 
     public void setIntent(Intent intent) {
-        _intent = intent;
+        this.intent = intent;
     }
 
     public List<Item> getItems() {
-        return _items;
+        return items;
     }
 
     public void setItems(List<Item> items) {
-        _items = items;
+        this.items = items;
     }
 
     public int getActionValue() {

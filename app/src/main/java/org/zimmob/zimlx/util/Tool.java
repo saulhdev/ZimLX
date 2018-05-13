@@ -24,7 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -151,7 +151,6 @@ public class Tool {
         }
     }
 
-
     public static int dp2px(int dp, Context context) {
         Resources resources = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics()));
@@ -171,17 +170,26 @@ public class Tool {
     }
 
     public static void startApp(Context context, App app) {
-        if (Home.Companion.getLauncher() != null)
-            Home.Companion.getLauncher().onStartApp(context, app, null);
+        if (HomeActivity.Companion.getLauncher() != null)
+            HomeActivity.Companion.getLauncher().onStartApp(context, app, null);
     }
 
     public static void startApp(Context context, Intent intent) {
-        if (Home.Companion.getLauncher() != null)
-            Home.Companion.getLauncher().onStartApp(context, intent, null);
+        if (HomeActivity.Companion.getLauncher() != null)
+            HomeActivity.Companion.getLauncher().onStartApp(context, intent, null);
     }
 
+    public static Bitmap loadBitmapFromView(View v) {
+        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
+        Canvas c = new Canvas(b);
+        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
+        v.draw(c);
+        return b;
+    }
+
+
     public static final void startApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
-        Home launcher = Home.Companion.getLauncher();
+        HomeActivity launcher = HomeActivity.Companion.getLauncher();
         if (launcher != null) {
             launcher.onStartApp(context, app, view);
         }
@@ -226,11 +234,9 @@ public class Tool {
         return toPoint;
     }
 
-    //
     public static void vibrate(View view) {
         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
     }
-    //
 
     public static void print(Object o) {
         if (o != null) {
@@ -322,8 +328,8 @@ public class Tool {
     public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Definitions.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
-            Home.Companion.setItemTouchX((int) motionEvent.getX());
-            Home.Companion.setItemTouchY((int) motionEvent.getY());
+            HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
+            HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
             return itemGestureListener != null && itemGestureListener.onTouchEvent(motionEvent);
         };
     }

@@ -9,7 +9,7 @@ import android.view.WindowInsets;
 
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.Calendar;
@@ -46,11 +46,11 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     public void animateShow() {
         if (stateOpened) return;
-        assert Home.Companion.getLauncher() != null;
-        Tool.invisibleViews(Home.Companion.getLauncher().getSearchBar());
-        Home.Companion.getLauncher().dimBackground();
-        Home.Companion.getLauncher().clearRoomForPopUp();
-        Home.Companion.getLauncher().getBackground().setOnClickListener(this);
+        assert HomeActivity.Companion.getLauncher() != null;
+        Tool.invisibleViews(HomeActivity.Companion.getLauncher().getSearchBar());
+        HomeActivity.Companion.getLauncher().dimBackground();
+        HomeActivity.Companion.getLauncher().clearRoomForPopUp();
+        HomeActivity.Companion.getLauncher().getBackground().setOnClickListener(this);
         calendarView.setSelectedDate(Calendar.getInstance());
         stateOpened = true;
         animate().scaleY(1).setDuration(200).withEndAction(() -> Tool.visibleViews(200, calendarView));
@@ -58,10 +58,10 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     public void animateHide() {
         if (!stateOpened) return;
-        Tool.visibleViews(Home.Companion.getLauncher().getSearchBar());
-        Home.Companion.getLauncher().unDimBackground();
-        Home.Companion.getLauncher().unClearRoomForPopUp();
-        Home.Companion.getLauncher().getBackground().setOnClickListener(null);
+        Tool.visibleViews(HomeActivity.Companion.getLauncher().getSearchBar());
+        HomeActivity.Companion.getLauncher().unDimBackground();
+        HomeActivity.Companion.getLauncher().unClearRoomForPopUp();
+        HomeActivity.Companion.getLauncher().getBackground().setOnClickListener(null);
         stateOpened = false;
         Tool.invisibleViews(200, calendarView);
         animate().scaleY(0).setStartDelay(200).setDuration(200);

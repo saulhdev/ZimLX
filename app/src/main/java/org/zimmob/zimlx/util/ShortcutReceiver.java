@@ -12,7 +12,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -53,23 +53,23 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item = Item.newShortcutItem(newIntent, shortcutIconDrawable, name);
         }
-        Point preferredPos = Home.Companion
+        Point preferredPos = HomeActivity.Companion
                 .getLauncher()
                 .getDesktop()
                 .getPages()
-                .get(Home.Companion
+                .get(HomeActivity.Companion
                         .getLauncher()
                         .getDesktop()
                         .getCurrentItem()).findFreeSpace();
         if (preferredPos == null) {
-            Tool.toast(Home.Companion.getLauncher(), R.string.toast_not_enough_space);
+            Tool.toast(HomeActivity.Companion.getLauncher(), R.string.toast_not_enough_space);
         } else {
             item.setX(preferredPos.x);
             item.setY(preferredPos.y);
-            Home.Companion.getDb().saveItem(item, Home.Companion.getLauncher().getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop);
-            boolean added = Home.Companion.getLauncher().getDesktop().addItemToPage(item, Home.Companion.getLauncher().getDesktop().getCurrentItem());
+            HomeActivity.Companion.getDb().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop);
+            boolean added = HomeActivity.Companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem());
 
-            Setup.logger().log(this, Log.INFO, null, "Shortcut installed - %s => Intent: %s (Item _type: %s; x = %d, y = %d, added = %b)", name, newIntent, item.getType(), item.getX(), item.getY(), added);
+            Setup.logger().log(this, Log.INFO, null, "Shortcut installed - %s => Intent: %s (Item type: %s; x = %d, y = %d, added = %b)", name, newIntent, item.getType(), item.getX(), item.getY(), added);
         }
     }
 }

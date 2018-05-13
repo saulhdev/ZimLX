@@ -15,7 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.interfaces.AppDeleteListener;
 import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.model.App;
@@ -136,7 +136,7 @@ public class AppManager {
                             d.dismiss();
                         } else {
                             Tool.toast(_context, (activity.getString(R.string.dialog__icon_pack_info_toast)));
-                            ActivityCompat.requestPermissions(Home.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, Home.REQUEST_PERMISSION_STORAGE);
+                            ActivityCompat.requestPermissions(HomeActivity.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, HomeActivity.REQUEST_PERMISSION_STORAGE);
                         }
                     }));
         }
@@ -286,8 +286,8 @@ public class AppManager {
 
             if (_recreateAfterGettingApps) {
                 _recreateAfterGettingApps = false;
-                if (_context instanceof Home)
-                    ((Home) _context).recreate();
+                if (_context instanceof HomeActivity)
+                    ((HomeActivity) _context).recreate();
             }
 
             super.onPostExecute(result);

@@ -5,14 +5,14 @@ import android.content.Intent;
 import android.net.Uri;
 import android.view.View;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CalendarDropDownView;
 import org.zimmob.zimlx.widget.SearchBar;
 
 public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
-    private Home _home;
+    private HomeActivity _home;
     private SearchBar _searchBar;
     private CalendarDropDownView _calendarDropDownView;
 
@@ -21,7 +21,7 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
      * @param searchBar
      * @param calendarDropDownView
      */
-    public HpSearchBar(Home home, SearchBar searchBar, CalendarDropDownView calendarDropDownView) {
+    public HpSearchBar(HomeActivity home, SearchBar searchBar, CalendarDropDownView calendarDropDownView) {
         _home = home;
         _searchBar = searchBar;
         _calendarDropDownView = calendarDropDownView;

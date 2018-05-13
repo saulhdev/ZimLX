@@ -22,7 +22,7 @@ import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback;
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.LauncherAction;
 
@@ -71,9 +71,9 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
         enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.setText(isChecked ? R.string.on : R.string.off);
             AppSettings.get().setMinibarEnable(isChecked);
-            if (Home.Companion.getLauncher() != null) {
-                Home.Companion.getLauncher().getDrawerLayout().closeDrawers();
-                Home.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            if (HomeActivity.Companion.getLauncher() != null) {
+                HomeActivity.Companion.getLauncher().getDrawerLayout().closeDrawers();
+                HomeActivity.Companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
             }
         });
     }
@@ -103,7 +103,7 @@ public class MinibarEditFragment extends Fragment implements ItemTouchCallback {
 
     @Override
     public void onStop() {
-        Home.Companion.getLauncher().initMinibar();
+        HomeActivity.Companion.getLauncher().initMinibar();
         super.onStop();
     }
 

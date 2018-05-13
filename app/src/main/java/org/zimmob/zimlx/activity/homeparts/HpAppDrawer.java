@@ -4,7 +4,7 @@ import android.view.View;
 
 import net.gsantner.opoc.util.Callback;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.AppSettings;
@@ -17,11 +17,11 @@ import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
 public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
-    private Home _home;
+    private HomeActivity _home;
     private PagerIndicator _appDrawerIndicator;
     private DragOptionView _dragOptionPanel;
 
-    public HpAppDrawer(Home home, PagerIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
+    public HpAppDrawer(HomeActivity home, PagerIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
         _home = home;
         _appDrawerIndicator = appDrawerIndicator;
         _dragOptionPanel = dragOptionPanel;

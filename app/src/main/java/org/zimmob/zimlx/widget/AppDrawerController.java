@@ -15,7 +15,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
@@ -28,7 +28,7 @@ public class AppDrawerController extends RevealFrameLayout {
     public AppDrawerPaged _drawerViewPaged;
     public AppDrawerVertical _drawerViewGrid;
     public int _drawerMode;
-    public boolean _isOpen = false;
+    public boolean isOpen = false;
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
@@ -78,8 +78,8 @@ public class AppDrawerController extends RevealFrameLayout {
      * @param finalRadius
      */
     public void open(int cx, int cy, int startRadius, int finalRadius) {
-        if (_isOpen) return;
-        _isOpen = true;
+        if (isOpen) return;
+        isOpen = true;
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
 
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
@@ -138,8 +138,8 @@ public class AppDrawerController extends RevealFrameLayout {
      * @param finalRadius
      */
     public void close(int cx, int cy, int startRadius, int finalRadius) {
-        if (!_isOpen) return;
-        _isOpen = false;
+        if (!isOpen) return;
+        isOpen = false;
 
         if (_appDrawerAnimator == null || _appDrawerAnimator.isRunning())
             return;
@@ -258,7 +258,7 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
-    public void setHome(Home home) {
+    public void setHome(HomeActivity home) {
         switch (_drawerMode) {
             case DRAWER_HORIZONTAL:
                 _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));

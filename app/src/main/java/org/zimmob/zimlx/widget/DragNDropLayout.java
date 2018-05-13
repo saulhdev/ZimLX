@@ -17,10 +17,11 @@ import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.PopupIconLabelItem;
+import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
@@ -38,17 +39,14 @@ import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
  * henriquez.saul@gmail.com
  */
 public class DragNDropLayout extends FrameLayout {
+
     private final float DRAG_THRESHOLD;
-    @Nullable
-    private Action _dragAction;
+    private DragAction.Action _dragAction;
     private boolean _dragExceedThreshold;
-    @Nullable
     private Item _dragItem;
-    @NonNull
     private PointF _dragLocation;
     private PointF _dragLocationConverted;
     private PointF _dragLocationStart;
-    @Nullable
     private View _dragView;
     private boolean _dragging;
     private float _folderPreviewScale;
@@ -64,102 +62,6 @@ public class DragNDropLayout extends FrameLayout {
     private final SlideInLeftAnimator _slideInLeftAnimator;
     private final SlideInRightAnimator _slideInRightAnimator;
     private final int[] _tempArrayOfInt2;
-
-    public static final class DragFlag {
-        private boolean _previousOutside = true;
-        private boolean _shouldIgnore = false;
-
-        public final boolean getPreviousOutside() {
-            return _previousOutside;
-        }
-
-        public final void setPreviousOutside(boolean v) {
-            _previousOutside = v;
-        }
-
-        public final boolean getShouldIgnore() {
-            return _shouldIgnore;
-        }
-
-        public final void setShouldIgnore(boolean v) {
-            _shouldIgnore = v;
-        }
-    }
-
-    public static class DropTargetListener {
-        @NonNull
-        private final View view;
-
-        public DropTargetListener(@NonNull View view) {
-            this.view = view;
-        }
-
-        @NonNull
-        public final View getView() {
-            return this.view;
-        }
-
-        public boolean onStart(@NonNull Action action, @NonNull PointF location, boolean isInside) {
-            return false;
-        }
-
-        public void onStartDrag(@NonNull Action action, @NonNull PointF location) {
-        }
-
-        public void onDrop(@NonNull Action action, @NonNull PointF location, @NonNull Item item) {
-        }
-
-        public void onMove(@NonNull Action action, @NonNull PointF location) {
-        }
-
-        public void onEnter(@NonNull Action action, @NonNull PointF location) {
-        }
-
-        public void onExit(@NonNull Action action, @NonNull PointF location) {
-        }
-
-        public void onEnd() {
-        }
-    }
-
-    @SuppressLint({"ResourceType"})
-    public final class OverlayView extends View {
-
-        public OverlayView() {
-            super(DragNDropLayout.this.getContext());
-            setWillNotDraw(false);
-        }
-
-        public boolean onTouchEvent(@Nullable MotionEvent event) {
-            if (event == null || event.getActionMasked() != 0 || DragNDropLayout.this.getDragging() || !DragNDropLayout.this._overlayPopupShowing) {
-                return super.onTouchEvent(event);
-            }
-            DragNDropLayout.this.hidePopupMenu();
-            return true;
-        }
-
-        protected void onDraw(@Nullable Canvas canvas) {
-            super.onDraw(canvas);
-            if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
-                return;
-
-            float x = _dragLocation.x - Home._itemTouchX;
-            float y = _dragLocation.y - Home._itemTouchY;
-
-            if (_dragging) {
-                canvas.save();
-                _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
-                canvas.scale(_overlayIconScale,
-                        _overlayIconScale, x + DragHandler._cachedDragBitmap.getWidth() / 2,
-                        y + DragHandler._cachedDragBitmap.getHeight() / 2);
-                canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
-                canvas.restore();
-            }
-
-            if (_dragging)
-                invalidate();
-        }
-    }
 
     public DragNDropLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
@@ -190,7 +92,6 @@ public class DragNDropLayout extends FrameLayout {
         setWillNotDraw(false);
     }
 
-
     public final boolean getDragging() {
         return _dragging;
     }
@@ -199,7 +100,6 @@ public class DragNDropLayout extends FrameLayout {
     public final PointF getDragLocation() {
         return _dragLocation;
     }
-
 
     @Nullable
     public final Action getDragAction() {
@@ -224,22 +124,13 @@ public class DragNDropLayout extends FrameLayout {
         }
     }
 
-    public final void convertPoint(@NonNull View fromView, @NonNull View toView, float x, float y) {
-        int[] fromCoordinate = new int[2];
-        int[] toCoordinate = new int[2];
-        fromView.getLocationOnScreen(fromCoordinate);
-        toView.getLocationOnScreen(toCoordinate);
-        _previewLocation.set(
-                ((float) (fromCoordinate[0] - toCoordinate[0])) + x,
-                ((float) (fromCoordinate[1] - toCoordinate[1])) + y);
-    }
-
     public final void cancelFolderPreview() {
         _showFolderPreview = false;
         _previewLocation.set(-1.0f, -1.0f);
         invalidate();
     }
 
+    @Override
     protected void onDraw(@Nullable Canvas canvas) {
         super.onDraw(canvas);
         if (!(canvas == null || !_showFolderPreview || _previewLocation.equals(-1.0f, -1.0f))) {
@@ -294,19 +185,25 @@ public class DragNDropLayout extends FrameLayout {
         }
     }
 
-    public final void startDragNDropOverlay(@NonNull View view, @NonNull Item item, @NonNull Action action) {
+    /**
+     * @param view
+     * @param item
+     * @param action
+     */
+    public final void startDragNDropOverlay(@NonNull View view, @NonNull Item item, @NonNull DragAction.Action action) {
         _dragging = true;
         _dragExceedThreshold = false;
         _overlayIconScale = 0.0f;
         _dragView = view;
         _dragItem = item;
         _dragAction = action;
-        _dragLocationStart.set(_dragLocation);
         for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
             convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
             DragFlag dragFlag = (DragFlag) dropTarget.getValue();
             DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
-            dragFlag.setShouldIgnore(!dropTargetListener.onStart(_dragAction, _dragLocationConverted, isViewContains(((DropTargetListener) dropTarget.getKey()).getView(), (int) _dragLocation.x, (int) _dragLocation.y)));
+            dragFlag.setShouldIgnore(!dropTargetListener.onStart(_dragAction, _dragLocationConverted,
+                    isViewContains(((DropTargetListener) dropTarget.getKey()).getView(), (int) _dragLocation.x, (int) _dragLocation.y)));
+
         }
         _overlayView.invalidate();
     }
@@ -351,11 +248,11 @@ public class DragNDropLayout extends FrameLayout {
             if (_dragging) {
                 _dragLocation.set(event.getX(), event.getY());
                 switch (event.getActionMasked()) {
-                    case 1:
-                        handleDragFinished();
-                        break;
-                    case 2:
+                    case MotionEvent.ACTION_MOVE:
                         handleMovement();
+                        break;
+                    case MotionEvent.ACTION_UP:
+                        handleDragFinished();
                         break;
                     default:
                         break;
@@ -369,6 +266,7 @@ public class DragNDropLayout extends FrameLayout {
     private final void handleMovement() {
         if (!_dragExceedThreshold && (Math.abs(_dragLocationStart.x - _dragLocation.x) > this.DRAG_THRESHOLD || Math.abs(_dragLocationStart.y - _dragLocation.y) > this.DRAG_THRESHOLD)) {
             _dragExceedThreshold = true;
+
             for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
                 if (!((DragFlag) dropTarget.getValue()).getShouldIgnore()) {
                     convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
@@ -435,12 +333,16 @@ public class DragNDropLayout extends FrameLayout {
                 (fromCoordinate[1] - toCoordinate[1]) + _dragLocation.y);
     }
 
-    /**
-     * @param view
-     * @param rx
-     * @param ry
-     * @return
-     */
+    public final void convertPoint(@NonNull View fromView, @NonNull View toView, float x, float y) {
+        int[] fromCoordinate = new int[2];
+        int[] toCoordinate = new int[2];
+        fromView.getLocationOnScreen(fromCoordinate);
+        toView.getLocationOnScreen(toCoordinate);
+        _previewLocation.set(
+                ((float) (fromCoordinate[0] - toCoordinate[0])) + x,
+                ((float) (fromCoordinate[1] - toCoordinate[1])) + y);
+    }
+
     private final boolean isViewContains(View view, int rx, int ry) {
         view.getLocationOnScreen(_tempArrayOfInt2);
         int x = _tempArrayOfInt2[0];
@@ -449,4 +351,100 @@ public class DragNDropLayout extends FrameLayout {
         int h = view.getHeight();
         return rx >= x && rx <= x + w && ry >= y && ry <= y + h;
     }
+
+    public static final class DragFlag {
+        private boolean _previousOutside = true;
+        private boolean _shouldIgnore = false;
+
+        public final boolean getPreviousOutside() {
+            return _previousOutside;
+        }
+
+        public final void setPreviousOutside(boolean v) {
+            _previousOutside = v;
+        }
+
+        public final boolean getShouldIgnore() {
+            return _shouldIgnore;
+        }
+
+        public final void setShouldIgnore(boolean v) {
+            _shouldIgnore = v;
+        }
+    }
+
+    public static class DropTargetListener {
+        @NonNull
+        private final View view;
+
+        public DropTargetListener(@NonNull View view) {
+            this.view = view;
+        }
+
+        @NonNull
+        public final View getView() {
+            return this.view;
+        }
+
+        public boolean onStart(@NonNull Action action, @NonNull PointF location, boolean isInside) {
+            return false;
+        }
+
+        public void onStartDrag(@NonNull Action action, @NonNull PointF location) {
+        }
+
+        public void onDrop(@NonNull Action action, @NonNull PointF location, @NonNull Item item) {
+        }
+
+        public void onMove(@NonNull Action action, @NonNull PointF location) {
+        }
+
+        public void onEnter(@NonNull Action action, @NonNull PointF location) {
+        }
+
+        public void onExit(@NonNull Action action, @NonNull PointF location) {
+        }
+
+        public void onEnd() {
+        }
+    }
+
+    public final class OverlayView extends View {
+
+        public OverlayView() {
+            super(DragNDropLayout.this.getContext());
+            setWillNotDraw(false);
+        }
+
+        public boolean onTouchEvent(@Nullable MotionEvent event) {
+            if (event == null || event.getActionMasked() != 0 || DragNDropLayout.this.getDragging() || !DragNDropLayout.this._overlayPopupShowing) {
+                return super.onTouchEvent(event);
+            }
+            DragNDropLayout.this.hidePopupMenu();
+            return true;
+        }
+
+        protected void onDraw(@Nullable Canvas canvas) {
+            super.onDraw(canvas);
+            if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
+                return;
+
+            float x = _dragLocation.x - HomeActivity._itemTouchX;
+            float y = _dragLocation.y - HomeActivity._itemTouchY;
+            if (_dragging) {
+                canvas.save();
+                _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
+                canvas.scale(_overlayIconScale,
+                        _overlayIconScale, x + DragHandler._cachedDragBitmap.getWidth() / 2,
+                        y + DragHandler._cachedDragBitmap.getHeight() / 2);
+
+                canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
+                canvas.restore();
+            }
+
+            if (_dragging)
+                invalidate();
+        }
+    }
+
 }

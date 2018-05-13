@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.view.DragEvent;
 import android.view.View;
 
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.widget.AppItemView;
 
@@ -27,10 +27,15 @@ public final class DragHandler {
 
     public static <T extends Parcelable> void startDrag(View view, Item item, DragAction.Action action, @Nullable final AppItemView.LongPressCallBack eventAction) {
         _cachedDragBitmap = loadBitmapFromView(view);
-
-        if (Home.Companion.getLauncher() != null)
-            Home.Companion.getLauncher().getDragNDropView().startDragNDropOverlay(view, item, action);
-
+        Intent i = new Intent();
+        i.putExtra(DRAG_DROP_EXTRA, item);
+        ClipData data = ClipData.newIntent(DRAG_DROP_INTENT, i);
+        if (HomeActivity.Companion.getLauncher() != null)
+            HomeActivity.Companion.getLauncher()
+                    .getDragNDropView()
+                    .startDragNDropOverlay(view, item, action);
+        if (eventAction != null)
+            eventAction.afterDrag(view);
         if (eventAction != null)
             eventAction.afterDrag(view);
     }

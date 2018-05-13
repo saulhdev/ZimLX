@@ -13,7 +13,7 @@ import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.Home;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -273,8 +273,8 @@ public class GroupPopupView extends RevealFrameLayout {
     private void removeItem(Context context, final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
 
-        Home.Companion.getDb().saveItem(dragOutItem, Definitions.ItemState.Visible);
-        Home.Companion.getDb().saveItem(currentItem);
+        HomeActivity.Companion.getDb().saveItem(dragOutItem, Definitions.ItemState.Visible);
+        HomeActivity.Companion.getDb().saveItem(currentItem);
 
         currentView.setIconProvider(Setup.imageLoader().createIconProvider(new GroupIconDrawable(context, currentItem, Setup.appSettings().getDesktopIconSize())));
     }
@@ -284,21 +284,21 @@ public class GroupPopupView extends RevealFrameLayout {
             final App app = Setup.appLoader().findItemApp(currentItem.getGroupItems().get(0));
             if (app != null) {
                 //Creating a new app item fixed the folder crash bug
-                Item item = Item.newAppItem(app); //Home.Companion.getDb().getItem(currentItem.getGroupItems().get(0).getId());
+                Item item = Item.newAppItem(app); //HomeActivity.Companion.getDb().getItem(currentItem.getGroupItems().get(0).getId());
 
                 item.setX(currentItem.getX());
                 item.setY(currentItem.getY());
 
-                Home.Companion.getDb().saveItem(item);
-                Home.Companion.getDb().saveItem(item, Definitions.ItemState.Visible);
-                Home.Companion.getDb().deleteItem(currentItem, true);
+                HomeActivity.Companion.getDb().saveItem(item);
+                HomeActivity.Companion.getDb().saveItem(item, Definitions.ItemState.Visible);
+                HomeActivity.Companion.getDb().deleteItem(currentItem, true);
 
                 callBack.removeItem(currentView, false);
                 Tool.print("_______________________");
                 callBack.addItemToCell(item, item.getX(), item.getY());
             }
-            if (Home.Companion.getLauncher() != null) {
-                Home.Companion.getLauncher().getDesktop().requestLayout();
+            if (HomeActivity.Companion.getLauncher() != null) {
+                HomeActivity.Companion.getLauncher().getDesktop().requestLayout();
             }
         }
     }
