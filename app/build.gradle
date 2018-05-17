@@ -51,6 +51,8 @@ android {
             minSdkVersion 25
             targetSdkVersion 26
         }
+        ZimLxDebug {
+        }
     }
     lintOptions {
         disable 'MissingTranslation'
