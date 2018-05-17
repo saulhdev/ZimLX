@@ -8,7 +8,7 @@ import android.os.Parcelable;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.interfaces.LabelProvider;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.BaseIconProvider;
+import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;
@@ -20,7 +20,7 @@ public class Item implements LabelProvider, Parcelable {
     public static final int LOCATION_DESKTOP = 0;
     public static final int LOCATION_DOCK = 1;
     public Type type;
-    private BaseIconProvider iconProvider = null;
+    private SimpleIconProvider iconProvider = null;
     public int x = 0;
     public int y = 0;
     //Needed for folder to optimize the folder open position
@@ -109,6 +109,8 @@ public class Item implements LabelProvider, Parcelable {
         Item item = new Item();
         item.type = Type.APP;
         item._name = app.getLabel();
+        item.spanX = 1;
+        item.spanY = 1;
         item.iconProvider = Setup.imageLoader().createIconProvider(app.getIcon());
         item.intent = toIntent(app);
         return item;
@@ -277,7 +279,7 @@ public class Item implements LabelProvider, Parcelable {
         spanY = y;
     }
 
-    public BaseIconProvider getIconProvider() {
+    public SimpleIconProvider getIconProvider() {
         return iconProvider;
     }
 
@@ -293,7 +295,7 @@ public class Item implements LabelProvider, Parcelable {
         this.type = type;
     }
 
-    public void setIconProvider(BaseIconProvider iconProvider) {
+    public void setIconProvider(SimpleIconProvider iconProvider) {
         this.iconProvider = iconProvider;
     }
 

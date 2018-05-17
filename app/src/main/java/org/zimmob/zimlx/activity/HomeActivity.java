@@ -985,7 +985,14 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
 
         public final void setLauncher(@Nullable HomeActivity v) {
+
             _launcher = v;
+            Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
+            intent.putExtra("badge_count", 0);
+            intent.putExtra("badge_count_package_name", this.getLauncher().getApplicationContext().getPackageName());
+            intent.putExtra("badge_count_class_name", _launcher.getClass());
+            this.getLauncher().getApplicationContext().sendBroadcast(intent);
+
         }
 
         @Nullable
@@ -1028,7 +1035,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         public final void setItemTouchX(float v) {
             _itemTouchX = v;
         }
-
 
         public final void setItemTouchY(float v) {
             _itemTouchY = v;

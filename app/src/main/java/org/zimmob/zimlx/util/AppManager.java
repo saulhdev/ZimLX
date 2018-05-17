@@ -228,20 +228,23 @@ public class AppManager {
             String sort = appSettings.getSortMode();
             switch (sort) {
                 case "az":
-                    Collections.sort(activitiesInfo, (p11, p2) -> Collator.getInstance().compare(
-                            p11.loadLabel(_packageManager).toString(),
+                    Collections.sort(activitiesInfo, (pa, p2) -> Collator.getInstance().compare(
+                            pa.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
                     break;
                 case "za":
-                    Collections.sort(activitiesInfo, (p2, p112) -> Collator.getInstance().compare(
-                            p112.loadLabel(_packageManager).toString(),
+                    Collections.sort(activitiesInfo, (p2, pz) -> Collator.getInstance().compare(
+                            pz.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
                     break;
                 case "li":
-                    Collections.sort(activitiesInfo, (p113, p2) -> Collator.getInstance().compare(
-                            p113.activityInfo.applicationInfo.sourceDir,
+                    Collections.sort(activitiesInfo, (pi, p2) -> Collator.getInstance().compare(
+                            pi.activityInfo.applicationInfo.sourceDir,
                             p2.activityInfo.applicationInfo.sourceDir));
 
+                    break;
+
+                case "mu":
                     break;
             }
             for (ResolveInfo info : activitiesInfo) {
