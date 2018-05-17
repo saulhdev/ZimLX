@@ -265,35 +265,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         }
     }
 
-    public final void addPageRight(boolean showGrid) {
-        _pageCount++;
-        int previousPage = getCurrentItem();
-        SmoothPagerAdapter adapter = getAdapter();
-        ((DesktopAdapter) adapter).addPageRight();
-        setCurrentItem(previousPage + 1);
-        if (!Setup.appSettings().isDesktopHideGrid()) {
-            for (CellContainer cellContainer : _pages) {
-                cellContainer.setHideGrid(!showGrid);
-            }
-        }
-        _pageIndicator.invalidate();
-    }
-
-    public final void addPageLeft(boolean showGrid) {
-        _pageCount++;
-        int previousPage = getCurrentItem();
-        SmoothPagerAdapter adapter = getAdapter();
-        ((DesktopAdapter) adapter).addPageLeft();
-        setCurrentItem(previousPage + 1, false);
-        setCurrentItem(previousPage - 1);
-        if (!Setup.appSettings().isDesktopHideGrid()) {
-            for (CellContainer cellContainer : _pages) {
-                cellContainer.setHideGrid(!showGrid);
-            }
-        }
-        _pageIndicator.invalidate();
-    }
-
     public final void removeCurrentPage() {
         if (Setup.appSettings().getDesktopStyle() != DesktopMode.INSTANCE.getSHOW_ALL_APPS()) {
             _pageCount--;
@@ -323,7 +294,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         DragNDropLayout dragNDropView;
         DragState state = getCurrentPage().peekItemAndSwap(x, y, _coordinate);
         if (_previousDragPoint != null && !_previousDragPoint.equals(_coordinate)) {
-            launcher = HomeActivity.Companion.getLauncher();
+            launcher = _home;
             if (launcher != null) {
                 dragNDropView = launcher.getDragNDropView();
                 if (dragNDropView != null) {
@@ -499,6 +470,36 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         }
     }
 
+    public final void addPageRight(boolean showGrid) {
+        _pageCount++;
+        int previousPage = getCurrentItem();
+        SmoothPagerAdapter adapter = getAdapter();
+        ((DesktopAdapter) adapter).addPageRight();
+        setCurrentItem(previousPage + 1);
+        if (!Setup.appSettings().isDesktopHideGrid()) {
+            for (CellContainer cellContainer : _pages) {
+                cellContainer.setHideGrid(!showGrid);
+            }
+        }
+        _pageIndicator.invalidate();
+    }
+
+    public final void addPageLeft(boolean showGrid) {
+        _pageCount++;
+        int previousPage = getCurrentItem();
+        SmoothPagerAdapter adapter = getAdapter();
+        ((DesktopAdapter) adapter).addPageLeft();
+        setCurrentItem(previousPage + 1, false);
+        setCurrentItem(previousPage - 1);
+        if (!Setup.appSettings().isDesktopHideGrid()) {
+            for (CellContainer cellContainer : _pages) {
+                cellContainer.setHideGrid(!showGrid);
+            }
+        }
+        _pageIndicator.invalidate();
+    }
+
+
     @NonNull
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
 
@@ -601,20 +602,15 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         }
 
         public boolean isViewFromObject(@NonNull View p1, @NonNull Object p2) {
-
-
             return p1 == p2;
         }
 
         public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
-
-
             container.removeView((View) object);
         }
 
         @NonNull
         public Object instantiateItem(@NonNull ViewGroup container, int pos) {
-
             CellContainer layout = _desktop.getPages().get(pos);
             container.addView(layout);
             return layout;

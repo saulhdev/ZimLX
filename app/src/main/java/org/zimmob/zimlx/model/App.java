@@ -3,9 +3,7 @@ package org.zimmob.zimlx.model;
 import android.content.Context;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-
-import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.SimpleIconProvider;
+import android.graphics.drawable.Drawable;
 
 /**
  * Created by saul on 05-01-18.
@@ -14,13 +12,11 @@ import org.zimmob.zimlx.util.SimpleIconProvider;
  */
 public class App {
     private String label, packageName, className;
-    private SimpleIconProvider iconProvider;
-    public ResolveInfo info;
+    private Drawable icon;
 
     public App(Context _context, ResolveInfo _info, PackageManager _pm) {
-        this.info = _info;
         this.label = _info.loadLabel(_pm).toString();
-        this.iconProvider = Setup.imageLoader().createIconProvider(_info.loadIcon(_pm));
+        this.icon = _info.loadIcon(_pm);
         this.packageName = _info.activityInfo.packageName;
         this.className = _info.activityInfo.name;
     }
@@ -47,11 +43,15 @@ public class App {
         return className;
     }
 
-    public SimpleIconProvider getIconProvider() {
-        return iconProvider;
+    public Drawable getIcon() {
+        return icon;
     }
 
-    public void setIconProvider(SimpleIconProvider iconProvider) {
-        this.iconProvider = iconProvider;
+    public void setIcon(Drawable icon) {
+        this.icon = icon;
+    }
+
+    public String getComponentName() {
+        return "ComponentInfo{" + packageName + "/" + className + "}";
     }
 }

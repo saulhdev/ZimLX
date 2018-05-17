@@ -18,7 +18,6 @@ import android.widget.FrameLayout;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.PopupIconLabelItem;
 import org.zimmob.zimlx.util.DragAction;
@@ -133,14 +132,20 @@ public class DragNDropLayout extends FrameLayout {
     @Override
     protected void onDraw(@Nullable Canvas canvas) {
         super.onDraw(canvas);
-        if (!(canvas == null || !_showFolderPreview || _previewLocation.equals(-1.0f, -1.0f))) {
-            _folderPreviewScale += 0.08f;
-            _folderPreviewScale = Tool.clampFloat(_folderPreviewScale, 0.5f, 1.0f);
-            canvas.drawCircle(_previewLocation.x, _previewLocation.y, ((float) Tool.toPx((Setup.appSettings().getDesktopIconSize() / 2) + 10)) * _folderPreviewScale, _paint);
+        if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
+            return;
+        float x = _dragLocation.x - HomeActivity._itemTouchX;
+        float y = _dragLocation.y - HomeActivity._itemTouchY;
+        if (_dragging) {
+            canvas.save();
+            _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
+            canvas.scale(_overlayIconScale, _overlayIconScale, x + DragHandler._cachedDragBitmap
+                    .getWidth() / 2, y + DragHandler._cachedDragBitmap.getHeight() / 2);
+            canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
+            canvas.restore();
         }
-        if (_showFolderPreview) {
+        if (_dragging)
             invalidate();
-        }
     }
 
     @SuppressLint({"ResourceType"})
@@ -185,23 +190,19 @@ public class DragNDropLayout extends FrameLayout {
         }
     }
 
-    /**
-     * @param view
-     * @param item
-     * @param action
-     */
-    public final void startDragNDropOverlay(@NonNull View view, @NonNull Item item, @NonNull DragAction.Action action) {
+    public final void startDragNDropOverlay(View view, Item item, DragAction.Action action) {
         _dragging = true;
         _dragExceedThreshold = false;
         _overlayIconScale = 0.0f;
         _dragView = view;
         _dragItem = item;
         _dragAction = action;
+        _dragLocationStart.set(_dragLocation);
         for (Entry dropTarget : _registeredDropTargetEntries.entrySet()) {
             convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
             DragFlag dragFlag = (DragFlag) dropTarget.getValue();
             DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
-            dragFlag.setShouldIgnore(!dropTargetListener.onStart(_dragAction, _dragLocationConverted,
+            dragFlag.setShouldIgnore(!dropTargetListener.onStart(_dragAction, _dragLocation,
                     isViewContains(((DropTargetListener) dropTarget.getKey()).getView(), (int) _dragLocation.x, (int) _dragLocation.y)));
 
         }
@@ -229,16 +230,21 @@ public class DragNDropLayout extends FrameLayout {
         _registeredDropTargetEntries.put(targetListener, new DragFlag());
     }
 
+    public void unregisterDropTarget(DropTargetListener targetListener) {
+        _registeredDropTargetEntries.remove(targetListener);
+    }
+
     public boolean onInterceptTouchEvent(@Nullable MotionEvent event) {
         if (event != null && event.getActionMasked() == 1 && _dragging) {
             handleDragFinished();
         }
-        if (_dragging) {
-            return true;
-        }
         if (event != null) {
             _dragLocation.set(event.getX(), event.getY());
         }
+        if (_dragging) {
+            return true;
+        }
+
         return super.onInterceptTouchEvent(event);
     }
 
@@ -374,35 +380,34 @@ public class DragNDropLayout extends FrameLayout {
     }
 
     public static class DropTargetListener {
-        @NonNull
+
         private final View view;
 
-        public DropTargetListener(@NonNull View view) {
+        public DropTargetListener(View view) {
             this.view = view;
         }
 
-        @NonNull
         public final View getView() {
             return this.view;
         }
 
-        public boolean onStart(@NonNull Action action, @NonNull PointF location, boolean isInside) {
+        public boolean onStart(Action action, PointF location, boolean isInside) {
             return false;
         }
 
-        public void onStartDrag(@NonNull Action action, @NonNull PointF location) {
+        public void onStartDrag(Action action, PointF location) {
         }
 
-        public void onDrop(@NonNull Action action, @NonNull PointF location, @NonNull Item item) {
+        public void onDrop(Action action, PointF location, Item item) {
         }
 
-        public void onMove(@NonNull Action action, @NonNull PointF location) {
+        public void onMove(Action action, PointF location) {
         }
 
-        public void onEnter(@NonNull Action action, @NonNull PointF location) {
+        public void onEnter(Action action, PointF location) {
         }
 
-        public void onExit(@NonNull Action action, @NonNull PointF location) {
+        public void onExit(Action action, PointF location) {
         }
 
         public void onEnd() {

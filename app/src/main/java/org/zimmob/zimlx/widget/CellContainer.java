@@ -42,6 +42,8 @@ public class CellContainer extends ViewGroup {
     private int _cellSpanH;
     private int _cellSpanV;
     private int _cellWidth;
+    private int mX;
+    private int mY;
     private Rect[][] _cells;
     private Point _currentOutlineCoordinate = new Point(-1, -1);
     private Long _down = 0L;
@@ -60,67 +62,23 @@ public class CellContainer extends ViewGroup {
     @NonNull
     private final Rect _tempRect = new Rect();
 
-    public enum DragState {
-        CurrentNotOccupied, OutOffRange, ItemViewNotFound, CurrentOccupied
+    public CellContainer(@NonNull Context c) {
+        this(c, null);
     }
 
-    public static final class LayoutParams extends android.view.ViewGroup.LayoutParams {
-        private int _x;
-        private int _xSpan = 1;
-        private int _y;
-        private int _ySpan = 1;
-
-        @Contract(pure = true)
-        public final int getX() {
-            return _x;
-        }
-
-        public final void setX(int v) {
-            _x = v;
-        }
-
-        @Contract(pure = true)
-        public final int getY() {
-            return _y;
-        }
-
-        public final void setY(int v) {
-            _y = v;
-        }
-
-        public final int getXSpan() {
-            return _xSpan;
-        }
-
-        public final void setXSpan(int v) {
-            _xSpan = v;
-        }
-
-        public final int getYSpan() {
-            return _ySpan;
-        }
-
-        public final void setYSpan(int v) {
-            _ySpan = v;
-        }
-
-        public LayoutParams(int w, int h, int x, int y) {
-            super(w, h);
-            _x = x;
-            _y = y;
-        }
-
-        public LayoutParams(int w, int h, int x, int y, int xSpan, int ySpan) {
-            super(w, h);
-            _x = x;
-            _y = y;
-            _xSpan = xSpan;
-            _ySpan = ySpan;
-        }
-
-        public LayoutParams(int w, int h) {
-            super(w, h);
-        }
+    public CellContainer(@NonNull Context c, @Nullable AttributeSet attr) {
+        super(c, attr);
+        _paint.setStyle(Style.STROKE);
+        _paint.setStrokeWidth(2.0f);
+        _paint.setStrokeJoin(Join.ROUND);
+        _paint.setColor(-1);
+        _paint.setAlpha(0);
+        _bgPaint.setStyle(Style.FILL);
+        _bgPaint.setColor(-1);
+        _bgPaint.setAlpha(0);
+        _outlinePaint.setColor(-1);
+        _outlinePaint.setAlpha(0);
+        init();
     }
 
     public interface OnItemRearrangeListener {
@@ -169,25 +127,6 @@ public class CellContainer extends ViewGroup {
         return views;
     }
 
-    public CellContainer(@NonNull Context c) {
-        this(c, null);
-    }
-
-    public CellContainer(@NonNull Context c, @Nullable AttributeSet attr) {
-        super(c, attr);
-        _paint.setStyle(Style.STROKE);
-        _paint.setStrokeWidth(2.0f);
-        _paint.setStrokeJoin(Join.ROUND);
-        _paint.setColor(-1);
-        _paint.setAlpha(0);
-        _bgPaint.setStyle(Style.FILL);
-        _bgPaint.setColor(-1);
-        _bgPaint.setAlpha(0);
-        _outlinePaint.setColor(-1);
-        _outlinePaint.setAlpha(0);
-        init();
-    }
-
     public final void setGridSize(int x, int y) {
         _cellSpanV = y;
         _cellSpanH = x;
@@ -217,7 +156,7 @@ public class CellContainer extends ViewGroup {
         super.removeAllViews();
     }
 
-    public final void projectImageOutlineAt(@NonNull Point newCoordinate, @Nullable Bitmap bitmap) {
+    public final void projectImageOutlineAt(Point newCoordinate, Bitmap bitmap) {
         _cachedOutlineBitmap = bitmap;
         if (!_currentOutlineCoordinate.equals(newCoordinate)) {
             _outlinePaint.setAlpha(0);
@@ -538,16 +477,15 @@ public class CellContainer extends ViewGroup {
         touchPosToCoordinate(coordinate, mX, mY, xSpan, ySpan, checkAvailability, false);
     }
 
-
-    public final void touchPosToCoordinate(@NonNull Point coordinate, int mX, int mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
+    public void touchPosToCoordinate(@NonNull Point coordinate, int _mX, int _mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
         if (_cells == null) {
             coordinate.set(-1, -1);
             return;
         }
-
-
-        mX -= (xSpan - 1) * _cellWidth / 2f;
-        mY -= (ySpan - 1) * _cellHeight / 2f;
+        this.mX = _mX;
+        this.mY = _mY;
+        this.mX -= (xSpan - 1) * _cellWidth / 2f;
+        this.mY -= (ySpan - 1) * _cellHeight / 2f;
 
         int x = 0;
         while (x < _cellSpanH) {
@@ -668,4 +606,68 @@ public class CellContainer extends ViewGroup {
             curBottom = t + _cellHeight;
         }
     }
+
+    public static final class LayoutParams extends ViewGroup.LayoutParams {
+        private int _x;
+        private int _xSpan = 1;
+        private int _y;
+        private int _ySpan = 1;
+
+        @Contract(pure = true)
+        public final int getX() {
+            return _x;
+        }
+
+        public final void setX(int v) {
+            _x = v;
+        }
+
+        @Contract(pure = true)
+        public final int getY() {
+            return _y;
+        }
+
+        public final void setY(int v) {
+            _y = v;
+        }
+
+        public final int getXSpan() {
+            return _xSpan;
+        }
+
+        public final void setXSpan(int v) {
+            _xSpan = v;
+        }
+
+        public final int getYSpan() {
+            return _ySpan;
+        }
+
+        public final void setYSpan(int v) {
+            _ySpan = v;
+        }
+
+        public LayoutParams(int w, int h, int x, int y) {
+            super(w, h);
+            _x = x;
+            _y = y;
+        }
+
+        public LayoutParams(int w, int h, int x, int y, int xSpan, int ySpan) {
+            super(w, h);
+            _x = x;
+            _y = y;
+            _xSpan = xSpan;
+            _ySpan = ySpan;
+        }
+
+        public LayoutParams(int w, int h) {
+            super(w, h);
+        }
+    }
+
+    public enum DragState {
+        CurrentNotOccupied, OutOffRange, ItemViewNotFound, CurrentOccupied
+    }
+
 }

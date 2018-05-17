@@ -19,6 +19,7 @@ import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
+import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
 
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
@@ -144,7 +145,7 @@ public class AppDrawerController extends RevealFrameLayout {
         if (_appDrawerAnimator == null || _appDrawerAnimator.isRunning())
             return;
 
-        _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, finalRadius, startRadius);
+        _appDrawerAnimator = ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, finalRadius, startRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         _appDrawerAnimator.setDuration(_drawerAnimationTime);
         _appDrawerAnimator.addListener(new Animator.AnimatorListener() {

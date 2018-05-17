@@ -224,7 +224,6 @@ public class HpDragNDrop {
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 boolean ok = !DragAction.Action.WIDGET.equals(action);
                 if (ok && isInside) {
-                    //showItemPopup();
                 }
                 return ok;
             }
@@ -334,7 +333,8 @@ public class HpDragNDrop {
 
         if ((x + Tool.toPx(200)) > dragNDropView.getWidth()) {
             dragNDropView.setPopupMenuShowDirection(false);
-            x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX + home.getDesktop().getCurrentPage().getCellWidth() - Tool.toPx(200) - Tool.toPx(10);
+            x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX
+                    + home.getDesktop().getCurrentPage().getCellWidth() - Tool.toPx(200) - Tool.toPx(10);
         } else {
             dragNDropView.setPopupMenuShowDirection(true);
         }

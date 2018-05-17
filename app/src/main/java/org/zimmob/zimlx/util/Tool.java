@@ -179,15 +179,6 @@ public class Tool {
             HomeActivity.Companion.getLauncher().onStartApp(context, intent, null);
     }
 
-    public static Bitmap loadBitmapFromView(View v) {
-        Bitmap b = Bitmap.createBitmap(v.getWidth(), v.getHeight(), Bitmap.Config.ARGB_8888);
-        Canvas c = new Canvas(b);
-        v.layout(0, 0, v.getLayoutParams().width, v.getLayoutParams().height);
-        v.draw(c);
-        return b;
-    }
-
-
     public static final void startApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
         HomeActivity launcher = HomeActivity.Companion.getLauncher();
         if (launcher != null) {
@@ -328,6 +319,7 @@ public class Tool {
     public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Definitions.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
+
             HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
             HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
             return itemGestureListener != null && itemGestureListener.onTouchEvent(motionEvent);
