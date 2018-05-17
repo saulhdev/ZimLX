@@ -140,7 +140,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
-                        //updateSearchClock();
+                        updateSearchClock();
                     }
                 }
             };
@@ -442,8 +442,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     public final void closeAppDrawer() {
         int finalRadius = Math.max(getAppDrawerController().getDrawer().getWidth(), getAppDrawerController().getDrawer().getHeight());
-        Log.i("Test x", " ");
-        Log.i("Test y", " " + cy);
         getAppDrawerController().close(cx, cy, rad, finalRadius);
     }
 
@@ -505,9 +503,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private final void setToHomePage() {
         Desktop desktop = findViewById(R.id.desktop);
-
         AppSettings appSettings = Setup.appSettings();
-
         desktop.setCurrentItem(appSettings.getDesktopPageCurrent());
     }
 
@@ -518,7 +514,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     public final void updateDesktopIndicatorVisibility() {
         AppSettings appSettings = Setup.appSettings();
-
         if (appSettings.isDesktopShowIndicator()) {
             Tool.visibleViews(100, (PagerIndicator) findViewById(R.id.desktopIndicator));
             return;

@@ -216,11 +216,11 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getVerticalDrawerHorizontalMargin() {
-        return 8;
+        return 2;
     }
 
     public int getVerticalDrawerVerticalMargin() {
-        return 16;
+        return 2;
     }
 
     public int getDrawerIconSize() {
