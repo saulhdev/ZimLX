@@ -3,6 +3,7 @@ package org.zimmob.zimlx.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
@@ -77,7 +78,9 @@ public class CellContainer extends ViewGroup {
         _bgPaint.setColor(-1);
         _bgPaint.setAlpha(0);
         _outlinePaint.setColor(-1);
+        _outlinePaint.setColor(Color.GREEN);
         _outlinePaint.setAlpha(0);
+
         init();
     }
 

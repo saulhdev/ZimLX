@@ -158,11 +158,11 @@ public class AppDrawerPaged extends SmoothViewPager {
             for (int i = 0; i < getCount(); i++) {
                 ViewGroup layout = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_paged_inner, null);
                 if (!Setup.appSettings().isDrawerShowCardView()) {
-                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Color.TRANSPARENT);
-                    ((CardView) layout.getChildAt(0)).setCardElevation(0);
+                    ((CardView) layout.getChildAt(1)).setCardBackgroundColor(Color.TRANSPARENT);
+                    ((CardView) layout.getChildAt(1)).setCardElevation(0);
                 } else {
-                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
-                    ((CardView) layout.getChildAt(0)).setCardElevation(Tool.dp2px(4, getContext()));
+                    ((CardView) layout.getChildAt(1)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
+                    ((CardView) layout.getChildAt(1)).setCardElevation(Tool.dp2px(4, getContext()));
                 }
                 CellContainer cc = layout.findViewById(R.id.group);
                 cc.setGridSize(_columnCellCount, _rowCellCount);
