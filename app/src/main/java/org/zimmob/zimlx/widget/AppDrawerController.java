@@ -34,17 +34,10 @@ public class AppDrawerController extends RevealFrameLayout {
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
 
-    /**
-     * @param context
-     * @param attrs
-     */
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    /**
-     * @param context
-     */
     public AppDrawerController(Context context) {
         super(context);
     }
@@ -81,6 +74,8 @@ public class AppDrawerController extends RevealFrameLayout {
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (isOpen) return;
         isOpen = true;
+        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        layoutInflater.inflate(R.layout.search_apps, this, true);
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
 
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
@@ -139,7 +134,10 @@ public class AppDrawerController extends RevealFrameLayout {
      * @param finalRadius
      */
     public void close(int cx, int cy, int startRadius, int finalRadius) {
-        if (!isOpen) return;
+        if (!isOpen) {
+            removeView(findViewById(R.id.search_apps));
+            return;
+        }
         isOpen = false;
 
         if (_appDrawerAnimator == null || _appDrawerAnimator.isRunning())
@@ -215,6 +213,7 @@ public class AppDrawerController extends RevealFrameLayout {
                 lp.topMargin = marginVertical;
                 lp.bottomMargin = marginVertical;
                 addView(_drawerViewGrid, lp);
+
                 break;
         }
     }

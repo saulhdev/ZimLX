@@ -127,9 +127,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     @NonNull
     public final Dock getDock() {
-        Dock dock = findViewById(R.id.dock);
-
-        return dock;
+        return findViewById(R.id.dock);
     }
 
     public Desktop(@NonNull Context context) {
@@ -223,7 +221,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     public final void initDesktopShowAll(@NonNull Context c, @NonNull HomeActivity home) {
         Desktop desktop = this;
         Context context = c;
-        HomeActivity home2 = home;
+        //HomeActivity home2 = home;
 
 
         ArrayList apps = new ArrayList();
@@ -247,7 +245,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         if (Setup.appSettings().isDesktopShowIndicator() && desktop._pageIndicator != null) {
             desktop._pageIndicator.setViewPager(desktop);
         }
-        desktop._home = home2;
+        desktop._home = home;
 
         for (int i = 0; i < _pageCount; i++) {
             for (int x = 0; x < columns; x++) {
@@ -442,7 +440,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     }
 
     public void removeItem(final View view, boolean animate) {
-
         Tool.print("Start Removing a view from Desktop");
         if (animate) {
             view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(() -> {
@@ -499,8 +496,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         _pageIndicator.invalidate();
     }
 
-
-    @NonNull
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
 
         if (VERSION.SDK_INT >= 20) {
@@ -529,11 +524,11 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             }
         }
 
-        private final OnFingerGestureListener getGestureListener() {
+        private OnFingerGestureListener getGestureListener() {
             return new DesktopGestureListener(_desktop, Setup.desktopGestureCallback());
         }
 
-        private final CellContainer getItemLayout() {
+        private CellContainer getItemLayout() {
             Context context = _desktop.getContext();
             CellContainer layout = new CellContainer(context);
             layout.setSoundEffectsEnabled(false);
@@ -569,17 +564,17 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             return layout;
         }
 
-        public final void addPageLeft() {
+        private final void addPageLeft() {
             _desktop.getPages().add(0, getItemLayout());
             notifyDataSetChanged();
         }
 
-        public final void addPageRight() {
+        private void addPageRight() {
             _desktop.getPages().add(getItemLayout());
             notifyDataSetChanged();
         }
 
-        public final void removePage(int position, boolean deleteItems) {
+        private void removePage(int position, boolean deleteItems) {
             if (deleteItems) {
                 for (View v : _desktop.getPages().get(position).getAllCells()) {
                     Object item = v.getTag();
@@ -616,7 +611,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             return layout;
         }
 
-        public final void enterDesktopEditMode() {
+        private void enterDesktopEditMode() {
             _scaleFactor = 0.8f;
             _translateFactor = (float) Tool.toPx(Setup.appSettings().getSearchBarEnable() ? 20 : 40);
             for (CellContainer v : _desktop.getPages()) {
@@ -653,11 +648,11 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         private Companion() {
         }
 
-        public final void setTopInset(int v) {
+        private void setTopInset(int v) {
             Desktop._topInset = v;
         }
 
-        public final void setBottomInset(int v) {
+        private void setBottomInset(int v) {
             Desktop._bottomInset = v;
         }
 
@@ -678,8 +673,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     public static final class DesktopMode {
         public static final DesktopMode INSTANCE = new DesktopMode();
-        public static final int NORMAL = 0;
-        public static final int SHOW_ALL_APPS = 1;
+        private static final int NORMAL = 0;
+        private static final int SHOW_ALL_APPS = 1;
 
         private DesktopMode() {
         }

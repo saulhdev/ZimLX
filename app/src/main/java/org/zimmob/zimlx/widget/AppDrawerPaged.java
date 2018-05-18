@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
@@ -21,15 +22,13 @@ import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
-
+    public static int itemHeightPadding;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
-
     private static int _rowCellCount, _columnCellCount;
-
     private PagerIndicator _appDrawerIndicator;
-
     private int _pageCount = 0;
+
 
     public AppDrawerPaged(Context c, AttributeSet attr) {
         super(c, attr);
@@ -40,6 +39,7 @@ public class AppDrawerPaged extends SmoothViewPager {
         super(c);
         init(c);
     }
+
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
@@ -52,7 +52,8 @@ public class AppDrawerPaged extends SmoothViewPager {
             setLandscapeValue();
             calculatePage();
             setAdapter(new Adapter());
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitValue();
             calculatePage();
             setAdapter(new Adapter());
@@ -80,6 +81,9 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     private void init(Context c) {
+        itemHeightPadding = Tool.dp2px(20, getContext());
+
+
         if (isInEditMode()) return;
 
         setOverScrollMode(OVER_SCROLL_NEVER);
@@ -94,13 +98,13 @@ public class AppDrawerPaged extends SmoothViewPager {
         }
 
         List<App> allApps = Setup.appLoader().getAllApps(c, false);
-        if (allApps.size() != 0) {
+        /*if (allApps.size() != 0) {
             AppDrawerPaged.this._apps = allApps;
             calculatePage();
             setAdapter(new Adapter());
             if (_appDrawerIndicator != null)
                 _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
-        }
+        }*/
         Setup.appLoader().addUpdateListener(apps -> {
             AppDrawerPaged.this._apps = apps;
             calculatePage();
@@ -153,17 +157,18 @@ public class AppDrawerPaged extends SmoothViewPager {
                             });
         }
 
-        public Adapter() {
+        private Adapter() {
             _pages.clear();
             for (int i = 0; i < getCount(); i++) {
                 ViewGroup layout = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_paged_inner, null);
                 if (!Setup.appSettings().isDrawerShowCardView()) {
-                    ((CardView) layout.getChildAt(1)).setCardBackgroundColor(Color.TRANSPARENT);
-                    ((CardView) layout.getChildAt(1)).setCardElevation(0);
+                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Color.TRANSPARENT);
+                    ((CardView) layout.getChildAt(0)).setCardElevation(0);
                 } else {
-                    ((CardView) layout.getChildAt(1)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
-                    ((CardView) layout.getChildAt(1)).setCardElevation(Tool.dp2px(4, getContext()));
+                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
+                    ((CardView) layout.getChildAt(0)).setCardElevation(Tool.dp2px(4, getContext()));
                 }
+
                 CellContainer cc = layout.findViewById(R.id.group);
                 cc.setGridSize(_columnCellCount, _rowCellCount);
 

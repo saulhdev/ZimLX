@@ -5,4 +5,10 @@
     android:layout_height="match_parent"
     android:paddingBottom="0dp"
     android:paddingTop="0dp"
-    android:visibility="invisible" />
+    android:visibility="invisible" >
+    <include
+        layout="@layout/search_apps"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" />
+</org.zimmob.zimlx.widget.AppDrawerPaged>

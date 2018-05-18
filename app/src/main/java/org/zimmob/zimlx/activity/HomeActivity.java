@@ -93,10 +93,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private static final IntentFilter _appUpdateIntentFilter = new IntentFilter();
     @Nullable
     private static WidgetHost _appWidgetHost;
-    @NonNull
+
     public static AppWidgetManager _appWidgetManager;
     private static boolean _consumeNextResume;
-    @NonNull
+
     public static Setup.DataManager _db;
     public static float _itemTouchX;
     public static float _itemTouchY;
@@ -124,7 +124,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         Companion.setLauncher(this);
-        Companion.set_resources(getResources());
+        Companion.setResources(getResources());
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
         AppSettings appSettings = AppSettings.get();
 
@@ -133,29 +133,27 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
         }
-        AppSettings appSettings2 = Setup.appSettings();
+        //AppSettings appSettings = Setup.appSettings();
 
-        if (appSettings2.isSearchBarTimeEnabled()) {
+        if (appSettings.isSearchBarTimeEnabled()) {
             _timeChangedReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+                    if (intent.getAction() ==Intent.ACTION_TIME_TICK) {
                         updateSearchClock();
                     }
                 }
             };
         }
         Companion.setLauncher(this);
-        Companion companion = Companion;
+        //Companion companion = Companion;
         DataManager dataManager = Setup.dataManager();
 
-        companion.setDb(dataManager);
+        Companion.setDb(dataManager);
         setContentView(getLayoutInflater().inflate(R.layout.activity_home, null));
         if (VERSION.SDK_INT >= 21) {
             Window window = getWindow();
-
             View decorView = window.getDecorView();
-
             decorView.setSystemUiVisibility(1536);
         }
         init();
@@ -164,10 +162,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     protected void onResume() {
         super.onResume();
         AppSettings appSettings = Setup.appSettings();
-
         boolean rotate = false;
         if (appSettings.getAppRestartRequired()) {
-            appSettings = Setup.appSettings();
+            //appSettings = Setup.appSettings();
 
             appSettings.setAppRestartRequired(false);
             PendingIntent restartIntentP = PendingIntent.getActivity(this, 123556, new Intent(this, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
@@ -207,7 +204,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         openAppDrawer$default(this, null, 0, 0, 7, null);
     }
 
-    public final void openAppDrawer(@Nullable View view) {
+    public final void openAppDrawer(View view) {
         openAppDrawer$default(this, view, 0, 0, 6, null);
     }
 
@@ -224,7 +221,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         home.openAppDrawer(view, i, i2);
     }
 
-    public final void openAppDrawer(@Nullable View view, int x, int y) {
+    public final void openAppDrawer(View view, int x, int y) {
         if (!(x > 0 && y > 0)) {
             int[] pos = new int[2];
             view.getLocationInWindow(pos);
@@ -243,7 +240,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             cx -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).getMarginStart();
             cy -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).topMargin;
             cy -= getAppDrawerController().getPaddingTop();
-        } else {
+        }
+        else {
             cx = x;
             cy = y;
             rad = 0;
@@ -296,7 +294,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public final void updateSearchClock() {
         SearchBar searchBar = findViewById(R.id.searchBar);
         TextView textView = searchBar._searchClock;
-
         if (textView.getText() != null) {
             try {
                 searchBar = findViewById(R.id.searchBar);
@@ -409,7 +406,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public final void onInfoItem(@NonNull Item item) {
-
         if (item.getType() == Item.Type.APP) {
             try {
                 String str = "android.settings.APPLICATION_DETAILS_SETTINGS";
@@ -462,7 +458,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 top = (int) ((AppItemView) view).getDrawIconTop();
             }
             opts = ActivityOptions.makeClipRevealAnimation(view, left, top, width, height);
-        } else if (VERSION.SDK_INT < 21) {
+        }
+        else if (VERSION.SDK_INT < 21) {
             opts = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
         if (opts != null) {
@@ -488,9 +485,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                     ((CellContainer) pages.get(desktop2.getCurrentItem())).performClick();
                 } else {
                     AppDrawerController appDrawerController = findViewById(R.id.appDrawerController);
-
                     View drawer = appDrawerController.getDrawer();
-
                     if (drawer.getVisibility() == View.VISIBLE) {
                         closeAppDrawer();
                     } else {
@@ -508,6 +503,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void onBackPressed() {
+
+        Tool.goneViews(100,  findViewById(R.id.search_apps));
         handleLauncherPause(false);
         ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
     }
@@ -634,14 +631,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         initViews();
         HpDragNDrop hpDragNDrop = new HpDragNDrop();
         View findViewById = findViewById(R.id.leftDragHandle);
-
         View findViewById2 = findViewById(R.id.rightDragHandle);
-
         DragNDropLayout dragNDropLayout = findViewById(R.id.dragNDropView);
-
         hpDragNDrop.initDragNDrop(this, findViewById, findViewById2, dragNDropLayout);
-
-        //initDragNDrop();
         registerBroadcastReceiver();
         initAppManager();
         initSettings();
@@ -685,7 +677,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         appDrawerBtnItem.x = 2;
                         Companion.getDb().saveItem(appDrawerBtnItem, 0, Definitions.ItemPosition.Dock);
                         //Create Default DockItems
-                        addDockDialer(0);
+                        //addDockDialer(0);
+                        addDockApps(Intent.ACTION_DIAL, 0);
                         addDockApps(Intent.CATEGORY_APP_MESSAGING, 1);
                         addDockCamera(3);
                         addDockApps(Intent.CATEGORY_APP_BROWSER, 4);
@@ -813,6 +806,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         ((DragOptionView) findViewById(R.id.dragOptionPanel)).setAutoHideView((SearchBar) findViewById(R.id.searchBar));
         new HpAppDrawer(this, findViewById(R.id.appDrawerIndicator), findViewById(R.id.dragOptionPanel)).initAppDrawer(findViewById(R.id.appDrawerController));
         initMinibar();
+
     }
 
     @Override
@@ -876,7 +870,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void onDrawerClosed(@NonNull View drawerView) {
-
     }
 
     protected void onDestroy() {
@@ -985,14 +978,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
 
         public final void setLauncher(@Nullable HomeActivity v) {
-
             _launcher = v;
-            Intent intent = new Intent("android.intent.action.BADGE_COUNT_UPDATE");
-            intent.putExtra("badge_count", 0);
-            intent.putExtra("badge_count_package_name", this.getLauncher().getApplicationContext().getPackageName());
-            intent.putExtra("badge_count_class_name", _launcher.getClass());
-            this.getLauncher().getApplicationContext().sendBroadcast(intent);
-
         }
 
         @Nullable
@@ -1000,7 +986,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return resources;
         }
 
-        public final void set_resources(@Nullable Resources v) {
+        public final void setResources(@Nullable Resources v) {
             resources = v;
         }
 

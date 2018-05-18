@@ -3,12 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        layout="@layout/search_apps"
-        android:layout_width="match_parent"
 
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp" />
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
@@ -20,7 +15,6 @@
         app:cardElevation="1dp"
         android:layout_marginTop="55dp"
         app:contentPadding="0dp">
-
 
         <org.zimmob.zimlx.widget.CellContainer
             android:id="@+id/group"

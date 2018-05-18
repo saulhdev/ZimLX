@@ -2,22 +2,26 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:orientation="horizontal"
     android:layout_marginBottom="15dp"
     android:layout_marginTop="5dp"
+    android:orientation="horizontal"
+    android:visibility="visible"
+    android:id="@+id/search_apps"
     android:weightSum="1">
 
     <EditText
-        android:id="@+id/editText"
+        android:id="@+id/searchApp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="12"
         android:inputType="textPersonName"
-        android:text="Name" />
+        android:hint="Search Apps"
+        android:text=""
+        android:textColor="@color/colorPrimaryDark" />
 
     <Button
-        android:id="@+id/button"
+        android:id="@+id/drawerMenu"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
