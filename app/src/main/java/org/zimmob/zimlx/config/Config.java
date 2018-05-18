@@ -15,4 +15,10 @@ public class Config {
     public static final int FOLDER_SHAPE_CIRCLE_SHADOW = 1;
     public static final int FOLDER_SHAPE_SQUARE = 2;
     public static final int FOLDER_SHAPE_SQUARE_SHADOW = 3;
+
+    //SORT MODE
+    public static final String APP_SORT_AZ="az";
+    public static final String APP_SORT_ZA="za";
+    public static final String APP_SORT_LI="li";//last installer
+    public static final String APP_SORT_MU="mu";//most used
 }

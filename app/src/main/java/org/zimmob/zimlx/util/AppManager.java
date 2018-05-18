@@ -4,11 +4,13 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
 import android.view.Gravity;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -16,6 +18,7 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.AppDeleteListener;
 import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.model.App;
@@ -25,6 +28,7 @@ import org.zimmob.zimlx.model.Item;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 import java.util.UUID;
@@ -226,18 +230,27 @@ public class AppManager {
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
             AppSettings appSettings = AppSettings.get();
             String sort = appSettings.getSortMode();
-            switch (sort) {
+            activitiesInfo = sortApplications(activitiesInfo, sort);
+            /*switch (sort) {
                 case "az":
-                    Collections.sort(activitiesInfo, (pa, p2) -> Collator.getInstance().compare(
+
+
+
+                    /*Collections.sort(activitiesInfo, (pa, p2) -> Collator.getInstance().compare(
                             pa.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
+
                     break;
                 case "za":
-                    Collections.sort(activitiesInfo, (p2, pz) -> Collator.getInstance().compare(
+                    activitiesInfo = sortApplications(activitiesInfo, "byNameDesc");
+                    /*Collections.sort(activitiesInfo, (p2, pz) -> Collator.getInstance().compare(
                             pz.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
+
                     break;
                 case "li":
+                   //activitiesInfo = sortApplications(activitiesInfo, "byInstalledDate");
+
                     Collections.sort(activitiesInfo, (pi, p2) -> Collator.getInstance().compare(
                             pi.activityInfo.applicationInfo.sourceDir,
                             p2.activityInfo.applicationInfo.sourceDir));
@@ -245,8 +258,9 @@ public class AppManager {
                     break;
 
                 case "mu":
+                    activitiesInfo = sortApplications(activitiesInfo, "byMostUsed");
                     break;
-            }
+            }*/
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(_context, info, _packageManager);
                 _nonFilteredApps.add(app);
@@ -277,6 +291,33 @@ public class AppManager {
             return null;
         }
 
+        private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, String sort) {
+            List<ResolveInfo> sortedAtivities = activitiesInfo;
+            switch (sort) {
+                default:
+                case Config.APP_SORT_AZ:
+                    Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                            p1.loadLabel(_packageManager).toString(),
+                            p2.loadLabel(_packageManager).toString()));
+                break;
+                case Config.APP_SORT_ZA:
+                    Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                            p2.loadLabel(_packageManager).toString(),
+                            p1.loadLabel(_packageManager).toString()));
+                    break;
+                case Config.APP_SORT_LI:
+                    Log.i("apps","sorting by Last Installed" );
+                    Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
+                    break;
+                case Config.APP_SORT_MU:
+
+
+                    break;
+            }
+
+            return  sortedAtivities;
+        }
+
         @Override
         protected void onPostExecute(Object result) {
 
@@ -294,6 +335,32 @@ public class AppManager {
             }
 
             super.onPostExecute(result);
+        }
+    }
+
+    public static class InstallTimeComparator implements Comparator<ResolveInfo> {
+        private final PackageManager mPackageManager;
+
+        public InstallTimeComparator(PackageManager packageManager) {
+            mPackageManager = packageManager;
+        }
+
+        @Override
+        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
+            try {
+                long lhsInstallTime = mPackageManager.getPackageInfo(lhs.activityInfo.packageName, 0).firstInstallTime;
+                long rhsInstallTime = mPackageManager.getPackageInfo(rhs.activityInfo.packageName, 0).firstInstallTime;
+                if (lhsInstallTime < rhsInstallTime) {
+                    return 1;
+                } else if (rhsInstallTime < lhsInstallTime) {
+                    return -1;
+                } else {
+                    return 0;
+                }
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+                return 0;
+            }
         }
     }
 
