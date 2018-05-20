@@ -4,7 +4,6 @@ import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
@@ -141,7 +140,7 @@ public class AppManager {
         d.show();
     }
 
-    private void onReceive(Context p1, Intent p2) {
+    private void onReceive() {
         getAllApps();
     }
 
@@ -170,7 +169,7 @@ public class AppManager {
     }
 
     public void onAppUpdated(Context p1, Intent p2) {
-        onReceive(p1, p2);
+        onReceive();
     }
 
     public void addUpdateListener(AppUpdateListener updateListener) {

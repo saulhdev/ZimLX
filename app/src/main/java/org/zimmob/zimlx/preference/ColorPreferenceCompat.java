@@ -179,7 +179,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
         return "color_" + getKey();
     }
 
-    interface OnShowDialogListener {
+    private interface OnShowDialogListener {
 
         void onShowColorPickerDialog(String title, int currentColor);
     }
