@@ -92,7 +92,7 @@ public class DragNDropLayout extends FrameLayout {
         setWillNotDraw(false);
     }
 
-    public final boolean getDragging() {
+    private boolean getDragging() {
         return _dragging;
     }
 
@@ -215,7 +215,7 @@ public class DragNDropLayout extends FrameLayout {
         super.onDetachedFromWindow();
     }
 
-    public final void cancelAllDragNDrop() {
+    private void cancelAllDragNDrop() {
         _dragging = false;
         if (!_overlayPopupShowing) {
             _dragView = null;
@@ -242,11 +242,8 @@ public class DragNDropLayout extends FrameLayout {
         if (event != null) {
             _dragLocation.set(event.getX(), event.getY());
         }
-        if (_dragging) {
-            return true;
-        }
+        return _dragging || super.onInterceptTouchEvent(event);
 
-        return super.onInterceptTouchEvent(event);
     }
 
     @SuppressLint({"ClickableViewAccessibility"})
@@ -329,7 +326,7 @@ public class DragNDropLayout extends FrameLayout {
         cancelFolderPreview();
     }
 
-    public final void convertPoint(@NonNull View toView) {
+    private void convertPoint(@NonNull View toView) {
 
         int[] fromCoordinate = new int[2];
         int[] toCoordinate = new int[2];
@@ -340,7 +337,7 @@ public class DragNDropLayout extends FrameLayout {
                 (fromCoordinate[1] - toCoordinate[1]) + _dragLocation.y);
     }
 
-    public final void convertPoint(@NonNull View fromView, @NonNull View toView, float x, float y) {
+    private void convertPoint(@NonNull View fromView, @NonNull View toView, float x, float y) {
         int[] fromCoordinate = new int[2];
         int[] toCoordinate = new int[2];
         fromView.getLocationOnScreen(fromCoordinate);
@@ -359,23 +356,23 @@ public class DragNDropLayout extends FrameLayout {
         return rx >= x && rx <= x + w && ry >= y && ry <= y + h;
     }
 
-    public static final class DragFlag {
+    static final class DragFlag {
         private boolean _previousOutside = true;
         private boolean _shouldIgnore = false;
 
-        public final boolean getPreviousOutside() {
+        final boolean getPreviousOutside() {
             return _previousOutside;
         }
 
-        public final void setPreviousOutside(boolean v) {
+        final void setPreviousOutside(boolean v) {
             _previousOutside = v;
         }
 
-        public final boolean getShouldIgnore() {
+        final boolean getShouldIgnore() {
             return _shouldIgnore;
         }
 
-        public final void setShouldIgnore(boolean v) {
+        final void setShouldIgnore(boolean v) {
             _shouldIgnore = v;
         }
     }
@@ -388,7 +385,7 @@ public class DragNDropLayout extends FrameLayout {
             this.view = view;
         }
 
-        public final View getView() {
+        final View getView() {
             return this.view;
         }
 
@@ -417,7 +414,7 @@ public class DragNDropLayout extends FrameLayout {
 
     public final class OverlayView extends View {
 
-        public OverlayView() {
+        OverlayView() {
             super(DragNDropLayout.this.getContext());
             setWillNotDraw(false);
         }

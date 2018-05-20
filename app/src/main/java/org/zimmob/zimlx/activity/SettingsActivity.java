@@ -48,10 +48,10 @@ public class SettingsActivity extends ThemeActivity {
         static final int RESTART_REQ = 2;
     }
 
-    public static int activityRetVal = RESULT.NOCHANGE;
+    private static int activityRetVal = RESULT.NOCHANGE;
 
     @BindView(R.id.toolbar)
-    protected Toolbar toolbar;
+    public Toolbar toolbar;
 
     public void onCreate(Bundle b) {
         // Must be applied before setContentView
@@ -66,13 +66,13 @@ public class SettingsActivity extends ThemeActivity {
         // Custom code
         toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
+        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_arrow_back_white_24px));
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setBackgroundColor(_appSettings.getPrimaryColor());
         showFragment(SettingsFragmentMaster.TAG, false);
     }
 
-    protected void showFragment(String tag, boolean addToBackStack) {
+    private void showFragment(String tag, boolean addToBackStack) {
         String toolbarTitle = getString(R.string.settings);
         GsPreferenceFragmentCompat prefFrag = (GsPreferenceFragmentCompat) getSupportFragmentManager().findFragmentByTag(tag);
         if (prefFrag == null) {
@@ -110,7 +110,7 @@ public class SettingsActivity extends ThemeActivity {
     }
 
     public static abstract class OlSettingsFragment extends GsPreferenceFragmentCompat<AppSettings> {
-        protected AppSettings _as;
+        AppSettings _as;
 
         @Override
         protected AppSettings getAppSettings(Context context) {
@@ -138,7 +138,7 @@ public class SettingsActivity extends ThemeActivity {
     }
 
     public static class SettingsFragmentMaster extends OlSettingsFragment {
-        public static final String TAG = "SettingsFragmentMaster";
+        static final String TAG = "SettingsFragmentMaster";
 
         private static final int[] requireRestartPreferenceIds = new int[]{
                 R.string.pref_key__desktop_columns,
@@ -278,7 +278,6 @@ public class SettingsActivity extends ThemeActivity {
             switch (keyRes) {
                 case R.string.pref_key__desktop_indicator_style: {
                     launcher.getDesktopIndicator().setMode(_as.getDesktopIndicatorMode());
-
                     break;
                 }
                 case R.string.pref_title__desktop_show_position_indicator: {
@@ -301,8 +300,6 @@ public class SettingsActivity extends ThemeActivity {
                     break;
                 }
             }
-
-
             if (requiresRestart(keyRes)) {
                 activityRetVal = RESULT.RESTART_REQ;
                 _as.setAppRestartRequired(true);
@@ -316,7 +313,6 @@ public class SettingsActivity extends ThemeActivity {
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
 
             switch (keyRes) {
-
                 case R.string.pref_key__minibar: {
                     LauncherAction.RunAction(LauncherAction.Action.EditMinibar, getActivity());
                     return true;
@@ -373,7 +369,6 @@ public class SettingsActivity extends ThemeActivity {
                 });
                 dialog.show(getActivity().getFragmentManager(), "color-picker-dialog");
             }
-
             return false;
         }
     }

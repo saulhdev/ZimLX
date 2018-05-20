@@ -25,7 +25,7 @@ import org.zimmob.zimlx.util.Tool;
 
 public class DragOptionView extends CardView {
     public boolean _isDraggedFromDrawer = false;
-    public boolean _dragging = false;
+    private boolean _dragging = false;
     private View[] _hideViews;
     private LinearLayout _dragOptions;
     private TextView _editIcon;
@@ -55,9 +55,7 @@ public class DragOptionView extends CardView {
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            ((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin = insets.getSystemWindowInsetTop() + Tool.dp2px(14, getContext());
-        }
+        ((MarginLayoutParams) getLayoutParams()).topMargin = insets.getSystemWindowInsetTop() + Tool.dp2px(14, getContext());
         return insets;
     }
 

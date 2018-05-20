@@ -154,7 +154,7 @@ public class ActivityUtils extends ContextUtils {
         String pkgId = "details?id=" + _activity.getPackageName();
         Intent goToMarket = new Intent(Intent.ACTION_VIEW, Uri.parse("market://" + pkgId));
         goToMarket.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY |
-                (Build.VERSION.SDK_INT >= 21 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET) |
+                (Build.VERSION.SDK_INT >= 25 ? Intent.FLAG_ACTIVITY_NEW_DOCUMENT : Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET) |
                 Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         try {
             _activity.startActivity(goToMarket);

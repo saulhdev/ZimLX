@@ -30,8 +30,8 @@ import org.zimmob.zimlx.widget.WidgetView;
  */
 public class ItemViewFactory {
 
-    public static final int NO_FLAGS = 0x01;
-    public static final int NO_LABEL = 0x02;
+    private static final int NO_FLAGS = 0x01;
+    private static final int NO_LABEL = 0x02;
 
     public static View getItemView(Context context, Item item, boolean showLabels, DesktopCallBack callBack, int iconSize) {
         int flag = showLabels ? ItemViewFactory.NO_FLAGS : ItemViewFactory.NO_LABEL;

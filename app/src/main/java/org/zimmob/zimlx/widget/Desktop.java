@@ -43,7 +43,7 @@ import in.championswimmer.sfg.lib.SimpleFingerGestures.OnFingerGestureListener;
  * henriquez.saul@gmail.com
  */
 public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
-    public static final Companion _companion = new Companion();
+    private static final Companion _companion = new Companion();
     public static int _bottomInset;
     public static int _topInset;
     private final Point _coordinate = new Point(-1, -1);
@@ -143,7 +143,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     }
 
     @Nullable
-    public final OnDesktopEditListener getDesktopEditListener() {
+    private OnDesktopEditListener getDesktopEditListener() {
         return _desktopEditListener;
     }
 
@@ -155,7 +155,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         return _inEditMode;
     }
 
-    public final void setInEditMode(boolean v) {
+    private void setInEditMode(boolean v) {
         _inEditMode = v;
     }
 
@@ -649,7 +649,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         }
 
         @Nullable
-        public final Item getItemFromCoordinate(@NonNull Point point, int page) {
+        final Item getItemFromCoordinate(@NonNull Point point, int page) {
 
             List pageData = HomeActivity.Companion.getDb().getDesktop().get(page);
             int size = pageData.size();

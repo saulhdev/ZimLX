@@ -58,10 +58,10 @@ public class SearchBar extends FrameLayout {
 
     private static final long ANIM_TIME = 200;
     public TextView _searchClock;
-    public AppCompatImageView _switchButton;
-    public AppCompatImageView _searchButton;
+    private AppCompatImageView _switchButton;
+    private AppCompatImageView _searchButton;
     public AppCompatEditText _searchInput;
-    public RecyclerView _searchRecycler;
+    private RecyclerView _searchRecycler;
     private CircleDrawable _icon;
     private CardView _searchCardContainer;
     private FastItemAdapter<FastItem.LabelItem> _adapter = new FastItemAdapter<>();
@@ -253,9 +253,7 @@ public class SearchBar extends FrameLayout {
             if (item.getLabel().equals(getContext().getString(R.string.search_online)))
                 return false;
             String s = constraint.toString();
-            if (s.isEmpty())
-                return true;
-            else return !item.getLabel().toLowerCase().contains(s.toLowerCase());
+            return s.isEmpty() || !item.getLabel().toLowerCase().contains(s.toLowerCase());
         });
 
         final LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -320,7 +318,7 @@ public class SearchBar extends FrameLayout {
         _searchRecycler.getLayoutManager().setAutoMeasureEnabled(false);
     }
 
-    protected void initRecyclerView() {
+    private void initRecyclerView() {
         _searchRecycler = new RecyclerView(getContext());
         _searchRecycler.setItemAnimator(null);
         _searchRecycler.setVisibility(View.GONE);
@@ -330,7 +328,7 @@ public class SearchBar extends FrameLayout {
         updateRecyclerViewLayoutManager();
     }
 
-    protected void startApp(Context context, App app) {
+    private void startApp(Context context, App app) {
         Tool.startApp(context, app);
     }
 
@@ -371,10 +369,8 @@ public class SearchBar extends FrameLayout {
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            int topInset = insets.getSystemWindowInsetTop();
-            setPadding(getPaddingLeft(), topInset + Tool.dp2px(10, getContext()), getPaddingRight(), getPaddingBottom());
-        }
+        int topInset = insets.getSystemWindowInsetTop();
+        setPadding(getPaddingLeft(), topInset + Tool.dp2px(10, getContext()), getPaddingRight(), getPaddingBottom());
         return insets;
     }
 
@@ -393,7 +389,7 @@ public class SearchBar extends FrameLayout {
             this.sdf = sdf;
         }
 
-        public static Mode getById(int id) {
+        static Mode getById(int id) {
             for (int i = 0; i < values().length; i++) {
                 if (values()[i].getId() == id)
                     return values()[i];
@@ -402,11 +398,11 @@ public class SearchBar extends FrameLayout {
         }
 
 
-        public int getId() {
+        int getId() {
             return id;
         }
 
-        public static int getCount() {
+        static int getCount() {
             return values().length;
         }
     }

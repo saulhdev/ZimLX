@@ -114,23 +114,23 @@ public class LauncherAction {
     }
 
     public static class ActionItem {
-        public Action action;
+        Action action;
         public Intent extraData;
 
-        public ActionItem(Action action, Intent extraData) {
+        ActionItem(Action action, Intent extraData) {
             this.action = action;
             this.extraData = extraData;
         }
     }
 
     public static class ActionDisplayItem {
-        public Action action;
+        Action action;
         public String label;
         public String description;
         public int icon;
         public int id;
 
-        public ActionDisplayItem(Action action, String label, String description, int icon, int id) {
+        ActionDisplayItem(Action action, String label, String description, int icon, int id) {
             this.action = action;
             this.label = label;
             this.description = description;

@@ -14,17 +14,4 @@
         <item>Abrir aplicación</item>
     </string-array>
 
-    <string-array name="desktopActionEntries">
-        <item>Cajón de aplicaciones</item>
-    </string-array>
-
-    <string-array name="entries__drawer_modes">
-        <item>Horizontal (Paginado)</item>
-        <item>Vertical</item>
-    </string-array>
-
-    <string-array name="wallpaperOptionEntries">
-        <item>Establecer fondo de pantalla</item>
-        <item>Difuminar fondo de pantalla</item>
-    </string-array>
 </resources>

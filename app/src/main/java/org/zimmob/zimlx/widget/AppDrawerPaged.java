@@ -21,7 +21,7 @@ import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
-    public static int itemHeightPadding;
+    private static int itemHeightPadding;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
     private static int _rowCellCount, _columnCellCount;

@@ -26,19 +26,20 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
     private static final int SIZE_NORMAL = 0;
     private static final int SIZE_LARGE = 1;
 
-    OnShowDialogListener onShowDialogListener;
-    int color = Color.BLACK;
-    boolean showDialog;
+    private OnShowDialogListener onShowDialogListener;
+    private int color = Color.BLACK;
+    private boolean showDialog;
     @ColorPickerDialog.DialogType
+    private
     int dialogType;
-    int colorShape;
-    boolean allowPresets;
-    boolean allowCustom;
-    boolean showAlphaSlider;
-    boolean showColorShades;
-    int previewSize;
-    int[] presets;
-    int dialogTitle;
+    private int colorShape;
+    private boolean allowPresets;
+    private boolean allowCustom;
+    private boolean showAlphaSlider;
+    private boolean showColorShades;
+    private int previewSize;
+    private int[] presets;
+    private int dialogTitle;
 
     public ColorPreferenceCompat(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -178,7 +179,7 @@ public class ColorPreferenceCompat extends Preference implements ColorPickerDial
         return "color_" + getKey();
     }
 
-    public interface OnShowDialogListener {
+    interface OnShowDialogListener {
 
         void onShowColorPickerDialog(String title, int currentColor);
     }

@@ -279,7 +279,7 @@ public class GroupPopupView extends RevealFrameLayout {
         currentView.setIconProvider(Setup.imageLoader().createIconProvider(new GroupIconDrawable(context, currentItem, Setup.appSettings().getDesktopIconSize())));
     }
 
-    public void updateItem(final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, View currentView) {
+    private void updateItem(final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, View currentView) {
         if (currentItem.getGroupItems().size() == 1) {
             final App app = Setup.appLoader().findItemApp(currentItem.getGroupItems().get(0));
             if (app != null) {

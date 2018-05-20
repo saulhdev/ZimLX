@@ -46,6 +46,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
     private boolean _showLabel = true;
     private boolean _vibrateWhenLongPress;
     private float _labelHeight;
+    private float _labelWidth;
     private int _targetedWidth;
     private int _fontSizeSp;
     private int _targetedHeightPadding;
@@ -68,6 +69,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         setWillNotCacheDrawing(false);
 
         _labelHeight = Tool.dp2px(14, getContext());
+        _labelWidth = Tool.dp2px(48, getContext());
 
         _textPaint.setTextSize(Tool.sp2px(getContext(), 13));
         _textPaint.setColor(Color.DKGRAY);
@@ -135,7 +137,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         return _iconSize;
     }
 
-    public void setIconSize(float iconSize) {
+    private void setIconSize(float iconSize) {
         this._iconSize = iconSize;
     }
 
@@ -184,9 +186,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-
         _heightPadding = (getHeight() - _iconSize - (_showLabel ? _labelHeight : 0)) / 2f;
-
         if (_label != null && _showLabel) {
             _textPaint.getTextBounds(_label, 0, _label.length(), _textContainer);
             int maxTextWidth = getWidth() - MIN_ICON_TEXT_MARGIN * 2;
@@ -202,7 +202,8 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
 
                 canvas.drawText(_label.substring(0, _label.length() - charsToTruncate) + ELLIPSIS,
                         MIN_ICON_TEXT_MARGIN, getHeight() - _heightPadding, _textPaint);
-            } else {
+            }
+            else {
                 canvas.drawText(_label, (getWidth() - _textContainer.width()) / 2f, getHeight() - _heightPadding, _textPaint);
             }
         }

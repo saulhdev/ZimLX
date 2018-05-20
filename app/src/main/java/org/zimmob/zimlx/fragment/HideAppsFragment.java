@@ -64,7 +64,7 @@ public class HideAppsFragment extends Fragment {
         return rootView;
     }
 
-    public class AsyncWorkerList extends AsyncTask<String, Integer, String> {
+    class AsyncWorkerList extends AsyncTask<String, Integer, String> {
 
         private AsyncWorkerList() {
         }
@@ -136,25 +136,23 @@ public class HideAppsFragment extends Fragment {
         appInfoAdapter = new AppAdapter(getActivity(), listActivitiesAll);
 
         grid.setAdapter(appInfoAdapter);
-        grid.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            public void onItemClick(AdapterView<?> AdapterView, View view, int position, long row) {
-                App appInfo = (App) AdapterView.getItemAtPosition(position);
-                CheckBox checker = view.findViewById(R.id.CBappSelect);
-                ViewSwitcher icon = view.findViewById(R.id.viewSwitcherChecked);
+        grid.setOnItemClickListener((AdapterView, view, position, row) -> {
+            App appInfo = (App) AdapterView.getItemAtPosition(position);
+            CheckBox checker = view.findViewById(R.id.CBappSelect);
+            ViewSwitcher icon = view.findViewById(R.id.viewSwitcherChecked);
 
-                checker.toggle();
-                if (checker.isChecked()) {
-                    listActivitiesHidden.add(appInfo.getComponentName());
-                    if (DEBUG) Log.v(TAG, "Selected App: " + appInfo.getLabel());
-                    if (icon.getDisplayedChild() == 0) {
-                        icon.showNext();
-                    }
-                } else {
-                    listActivitiesHidden.remove(appInfo.getComponentName());
-                    if (DEBUG) Log.v(TAG, "Deselected App: " + appInfo.getLabel());
-                    if (icon.getDisplayedChild() == 1) {
-                        icon.showPrevious();
-                    }
+            checker.toggle();
+            if (checker.isChecked()) {
+                listActivitiesHidden.add(appInfo.getComponentName());
+                if (DEBUG) Log.v(TAG, "Selected App: " + appInfo.getLabel());
+                if (icon.getDisplayedChild() == 0) {
+                    icon.showNext();
+                }
+            } else {
+                listActivitiesHidden.remove(appInfo.getComponentName());
+                if (DEBUG) Log.v(TAG, "Deselected App: " + appInfo.getLabel());
+                if (icon.getDisplayedChild() == 1) {
+                    icon.showPrevious();
                 }
             }
         });

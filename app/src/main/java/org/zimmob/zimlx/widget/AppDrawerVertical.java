@@ -34,7 +34,7 @@ public class AppDrawerVertical extends CardView {
 
     public RecyclerView recyclerView;
     public GridAppDrawerAdapter gridDrawerAdapter;
-    public DragScrollBar scrollBar;
+    private DragScrollBar scrollBar;
 
     private static List<App> apps;
     private GridLayoutManager layoutManager;
@@ -55,7 +55,7 @@ public class AppDrawerVertical extends CardView {
         preInit();
     }
 
-    public void preInit() {
+    private void preInit() {
         getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
@@ -101,7 +101,7 @@ public class AppDrawerVertical extends CardView {
 
     private void init() {
 
-        itemHeightPadding = Tool.dp2px(20, getContext());
+        itemHeightPadding = Tool.dp2px(10, getContext());
         scrollBar = rl.findViewById(R.id.dragScrollBar);
         scrollBar.setIndicator(new AlphabetIndicator(getContext()), true);
         scrollBar.setClipToPadding(true);

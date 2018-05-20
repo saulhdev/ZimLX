@@ -37,11 +37,13 @@ import butterknife.ButterKnife;
 
 public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallback {
     @BindView(R.id.toolbar)
-    Toolbar _toolbar;
+    public Toolbar _toolbar;
+
     @BindView(R.id.enableSwitch)
-    SwitchCompat _enableSwitch;
+    public SwitchCompat _enableSwitch;
+
     @BindView(R.id.recyclerView)
-    RecyclerView _recyclerView;
+    public RecyclerView _recyclerView;
     private FastItemAdapter<Item> _adapter;
 
     @Override
@@ -116,12 +118,12 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     }
 
     public static class Item extends AbstractItem<Item, Item.ViewHolder> {
-        public final long id;
-        public final LauncherAction.ActionDisplayItem item;
-        public boolean enable;
-        public boolean edited;
+        final long id;
+        final LauncherAction.ActionDisplayItem item;
+        boolean enable;
+        boolean edited;
 
-        public Item(long id, LauncherAction.ActionDisplayItem item, boolean enable) {
+        Item(long id, LauncherAction.ActionDisplayItem item, boolean enable) {
             this.id = id;
             this.item = item;
             this.enable = enable;
@@ -162,7 +164,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             ImageView _iv;
             CheckBox _cb;
 
-            public ViewHolder(View itemView) {
+            ViewHolder(View itemView) {
                 super(itemView);
                 _tv = itemView.findViewById(R.id.tv);
                 _tv2 = itemView.findViewById(R.id.tv2);

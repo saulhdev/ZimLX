@@ -81,8 +81,8 @@ public abstract class SmoothPagerAdapter {
     private final DataSetObservable mObservable = new DataSetObservable();
     private DataSetObserver mViewPagerObserver;
 
-    public static final int POSITION_UNCHANGED = -1;
-    public static final int POSITION_NONE = -2;
+    private static final int POSITION_UNCHANGED = -1;
+    protected static final int POSITION_NONE = -2;
 
     /**
      * Return the number of views available.
@@ -274,7 +274,7 @@ public abstract class SmoothPagerAdapter {
      * This method should be called by the application if the data backing this adapter has changed
      * and associated views should update.
      */
-    public void notifyDataSetChanged() {
+    protected void notifyDataSetChanged() {
         synchronized (this) {
             if (mViewPagerObserver != null) {
                 mViewPagerObserver.onChanged();

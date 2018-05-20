@@ -306,7 +306,7 @@ public class Tool {
         }
     }
 
-    public static void removeIcon(Context context, String filename) {
+    private static void removeIcon(Context context, String filename) {
         File file = new File(context.getFilesDir() + "/icons/" + filename + ".png");
         if (file.exists()) {
             try {

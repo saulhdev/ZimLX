@@ -85,23 +85,23 @@ import java.util.List;
 public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener {
 
     public static final Companion Companion = new Companion();
-    public static final int REQUEST_CREATE_APPWIDGET = 0x6475;
+    private static final int REQUEST_CREATE_APPWIDGET = 0x6475;
     public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
-    public static final int REQUEST_PICK_APPWIDGET = 0x2678;
+    private static final int REQUEST_PICK_APPWIDGET = 0x2678;
 
     private static Resources resources;
     private static final IntentFilter _appUpdateIntentFilter = new IntentFilter();
 
     private static WidgetHost _appWidgetHost;
 
-    public static AppWidgetManager _appWidgetManager;
+    private static AppWidgetManager _appWidgetManager;
     private static boolean _consumeNextResume;
 
     public static Setup.DataManager _db;
     public static float _itemTouchX;
     public static float _itemTouchY;
 
-    public static HomeActivity _launcher;
+    private static HomeActivity _launcher;
     private static final IntentFilter _shortcutIntentFilter = new IntentFilter();
     private static final IntentFilter _timeChangesIntentFilter = new IntentFilter();
     private final AppUpdateReceiver _appUpdateReceiver = new AppUpdateReceiver();
@@ -249,7 +249,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         updateDock$default(this, z, 0, 2, null);
     }
 
-    public static void updateDock$default(HomeActivity home, boolean z, long j, int i, Object obj) {
+    private static void updateDock$default(HomeActivity home, boolean z, long j, int i, Object obj) {
         if ((i & 2) != 0) {
             j = 0;
         }
@@ -463,7 +463,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         return bundle;
     }
 
-    protected void onHandleLauncherPause() {
+    private void onHandleLauncherPause() {
         ((GroupPopupView) findViewById(R.id.groupPopup)).dismissPopup();
         ((CalendarDropDownView) findViewById(R.id.calendarDropDownView)).animateHide();
         ((DragNDropLayout) findViewById(R.id.dragNDropView)).hidePopupMenu();
@@ -636,7 +636,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         System.gc();
     }
 
-    public final void initSettings() {
+    private void initSettings() {
         updateHomeLayout();
         AppSettings appSettings = Setup.appSettings();
 
@@ -656,7 +656,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         getDrawerLayout().setDrawerLockMode(AppSettings.get().getMinibarEnable() ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
     }
 
-    protected void initAppManager() {
+    private void initAppManager() {
         Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
             @Override
             public boolean onAppUpdated(List<App> it) {
@@ -764,7 +764,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
-    protected void initViews() {
+    private void initViews() {
         new HpSearchBar(this, findViewById(R.id.searchBar), findViewById(R.id.calendarDropDownView)).initSearchBar();
         initDock();
         ((AppDrawerController) findViewById(R.id.appDrawerController)).init();
@@ -972,7 +972,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return _launcher;
         }
 
-        public final void setLauncher(@Nullable HomeActivity v) {
+        final void setLauncher(@Nullable HomeActivity v) {
             _launcher = v;
         }
 
@@ -981,7 +981,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return resources;
         }
 
-        public final void setResources(@Nullable Resources v) {
+        final void setResources(@Nullable Resources v) {
             resources = v;
         }
 

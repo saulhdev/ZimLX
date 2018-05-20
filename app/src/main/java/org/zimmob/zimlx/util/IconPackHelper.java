@@ -17,7 +17,7 @@ import org.zimmob.zimlx.model.App;
 
 import java.util.List;
 
-public class IconPackHelper {
+class IconPackHelper {
     public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
         Resources iconPackResources = null;
         int intResourceIcon;

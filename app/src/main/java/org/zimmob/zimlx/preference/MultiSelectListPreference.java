@@ -18,7 +18,7 @@ import java.util.List;
  * henriquez.saul@gmail.com
  */
 
-public class MultiSelectListPreference extends ListPreference {
+class MultiSelectListPreference extends ListPreference {
     private String DEFAULT_SEPARATOR = "\u0001\u0007\u001D\u0007\u0001";
     private String separator;
     private boolean[] entryChecked;
@@ -132,7 +132,7 @@ public class MultiSelectListPreference extends ListPreference {
         setValueAndEvent(value);
     }
 
-    protected static String join(Iterable<?> iterable, String separator) {
+    private static String join(Iterable<?> iterable, String separator) {
         Iterator<?> oIter;
         if (iterable == null || (!(oIter = iterable.iterator()).hasNext()))
             return "";

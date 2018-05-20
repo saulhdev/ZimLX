@@ -22,7 +22,7 @@ import org.zimmob.zimlx.viewutil.ItemViewFactory;
 import java.util.List;
 
 public final class Dock extends CellContainer implements DesktopCallBack<View> {
-    public int _bottomInset;
+    private int _bottomInset;
     private final Point _coordinate = new Point();
     private HomeActivity _home;
     private final Point _previousDragPoint = new Point();
@@ -170,10 +170,8 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
     @NonNull
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
 
-        if (VERSION.SDK_INT >= 20) {
-            _bottomInset = insets.getSystemWindowInsetBottom();
-            setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), _bottomInset);
-        }
+        _bottomInset = insets.getSystemWindowInsetBottom();
+        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), _bottomInset);
         return insets;
     }
 

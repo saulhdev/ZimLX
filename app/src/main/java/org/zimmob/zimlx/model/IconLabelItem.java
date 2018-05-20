@@ -24,12 +24,12 @@ import java.util.List;
 public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> implements FastItem.LabelItem<IconLabelItem, IconLabelItem.ViewHolder>, FastItem.DesktopOptionsItem<IconLabelItem, IconLabelItem.ViewHolder> {
 
     // Data
-    public BaseIconProvider _iconProvider = null;
-    public View.OnLongClickListener _onLongClickListener;
-    protected String _label = null;
+    private BaseIconProvider _iconProvider = null;
+    private View.OnLongClickListener _onLongClickListener;
+    private String _label = null;
     // Others
-    protected View.OnClickListener _listener;
-    protected View.OnTouchListener _onOnTouchListener;
+    private View.OnClickListener _listener;
+    private View.OnTouchListener _onOnTouchListener;
 
     private int _forceSize = -1;
     private int _iconGravity;
@@ -45,12 +45,12 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     private boolean _dontSetOnLongClickListener;
 
-    public IconLabelItem(Item item) {
+    private IconLabelItem(Item item) {
         _iconProvider = item != null ? item.getIconProvider() : null;
         _label = item != null ? item.getLabel() : null;
     }
 
-    public IconLabelItem(Context context, int icon, int label) {
+    private IconLabelItem(Context context, int icon, int label) {
         _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _label = context.getString(label);
     }

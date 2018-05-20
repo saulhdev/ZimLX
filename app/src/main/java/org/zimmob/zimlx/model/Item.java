@@ -30,9 +30,9 @@ public class Item implements LabelProvider, Parcelable {
     // list of items for groups
     private List<Item> items;
     // int value for launcher action
-    public int _actionValue;
+    private int _actionValue;
     // widget specific values
-    public int _widgetValue;
+    private int _widgetValue;
     public int spanX = 1;
     public int spanY = 1;
     // all items need these values

@@ -20,7 +20,7 @@ import java.util.Calendar;
 
 public class CalendarDropDownView extends CardView implements View.OnClickListener {
 
-    public MaterialCalendarView calendarView;
+    private MaterialCalendarView calendarView;
     private boolean stateOpened = false;
 
     public CalendarDropDownView(Context context) {
@@ -69,9 +69,7 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            ((MarginLayoutParams) getLayoutParams()).topMargin = insets.getSystemWindowInsetTop();
-        }
+        ((MarginLayoutParams) getLayoutParams()).topMargin = insets.getSystemWindowInsetTop();
         return insets;
     }
 

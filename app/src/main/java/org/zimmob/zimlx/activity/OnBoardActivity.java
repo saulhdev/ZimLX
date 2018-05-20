@@ -26,20 +26,16 @@ public class OnBoardActivity extends MaterialIntroActivity {
             skipStart();
             return;
         }
-
         OverScrollViewPager overScrollLayout = findViewById(agency.tango.materialintroscreen.R.id.view_pager_slides);
         SwipeableViewPager viewPager = overScrollLayout.getOverScrollView();
         viewPager.setOverScrollMode(View.OVER_SCROLL_NEVER);
-
         addSlide(new OnBoardActivity.CustomSlide());
-
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.op_red)
                 .buttonsColor(R.color.intro_button_color)
                 .image(R.drawable.intro_2)
                 .description(getString(R.string.intro2_text))
                 .build());
-
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.op_green)
                 .buttonsColor(R.color.intro_button_color)
@@ -47,7 +43,6 @@ public class OnBoardActivity extends MaterialIntroActivity {
                 .title(getString(R.string.intro3_title))
                 .description(getString(R.string.intro3_text))
                 .build());
-
         addSlide(new SlideFragmentBuilder()
                 .backgroundColor(R.color.op_blue)
                 .buttonsColor(R.color.intro_button_color)

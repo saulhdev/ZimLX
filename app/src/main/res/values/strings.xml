@@ -5,7 +5,6 @@
 
     <!-- Intro -->
     <string name="intro_finish">Let\'s start.</string>
-    <string name="intro1_text">This is OpenLauncher. A fully open source launcher. Here for you.</string>
     <string name="intro2_text">Swipe inwards from the left border of your home screen to open the minibar. There you can find the settings,
         change the wallpaper, and do lots of other stuff.</string>
     <string name="intro3_title">Settings</string>
@@ -29,16 +28,6 @@
     <string name="minibar_10">Mobile network settings.</string>
 
     <!-- About -->
-    <string name="about_libs">Open Source Libraries</string>
-    <string name="about_rate">Rate</string>
-    <string name="about_credit">Contributors</string>
-    <string name="about_credit_text_all_contributors">All contributors</string>
-
-    <string name="about_author">Developer</string>
-    <string name="about_author_name">Saul Henriquez</string>
-    <string name="about_author_email">henriquez.saul@gmail.com</string>
-    <string name="about_author_website">https://github.com/otakuhqz</string>
-    <string name="about_author_description">ZimLX is a launcher based on OpenLauncher</string>
 
     <!-- Settings -->
     <string name="pref_title__desktop">Desktop</string>
@@ -46,21 +35,16 @@
     <string name="pref_title__app_drawer">App Drawer</string>
     <string name="pref_title__gestures">Gestures</string>
     <string name="pref_title__icons">Icons</string>
-    <string name="pref_title__folders">Folders</string>
-    <string name="pref_title__miscellaneous">Miscellaneous</string>
     <string name="pref_title__about">About</string>
     <string name="pref_title__fonts">Fonts</string>
     <string name="pref_title__size">Size</string>
     <string name="pref_title__style">Style</string>
-    <string name="pref_title__sort">Sort Mode</string>
     <string name="pref_title__appearance">Appearance</string>
     <string name="pref_title__color">Colors</string>
     <string name="pref_title__search_bar">Search Bar</string>
     <string name="pref_title__interfaces">Interfaces</string>
     <string name="pref_title__inputs">Gestures &amp; Notifications</string>
-    <string name="pref_title__feels">Feels</string>
     <string name="pref_title__others">Others</string>
-    <string name="pref_title__transitions">Transitions</string>
     <string name="pref_title__notifications">Notifications</string>
     <string name="pref_title__advanced">Advanced</string>
     <string name="pref_title__debug">Debug</string>
@@ -71,9 +55,7 @@
     <string name="pref_title__font_type">Font</string>
 
 
-    <string name="pref_title__desktop_style">Style</string>
     <string name="pref_title__desktop_indicator_style">Indicator Style</string>
-    <string name="pref_summary__desktop_style">Choose between a normal desktop and showing all installed apps.</string>
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
     <string name="pref_title__search_bar_enable">Search Bar</string>
     <string name="pref_summary__search_bar_enable">Display a search bar above the desktop.</string>
@@ -153,7 +135,6 @@
     <string name="pref_summary__theme">Set the theme for the entire app.</string>
     <string name="pref_title__theme">Theme</string>
     <string name="pref_title__primary_color">Primary Color</string>
-    <string name="pref_summary__primary_color">Set the primary color for the app.</string>
 
     <string name="pref_sort_title">Sort Mode</string>
     <string name="pref_sort_alphabetical_az">Alphabetical AZ</string>
@@ -166,47 +147,32 @@
     <string name="pref_title__folder_options">Options &amp; Transition</string>
     <string name="pref_title__folder_preview">Folder Preview</string>
     <string name="pref_title__folder_shape">Folder Shape</string>
-    <string name="pref_title__folder_window">Folder Window</string>
     <string name="pref_title__folder_transition">Folder Transition</string>
     <string name="pref_title__folder_label">Folder Label</string>
-    <string name="pref_title__folder_color">Color</string>
     <string name="pref_summary__folder_transition">Select animation for folder transition</string>
     <string name="pref_summary__folder_label">Show or hide the folder label</string>
 
     <string name="vertical_scroll_drawer">Vertical</string>
     <string name="horizontal_paged_drawer">Paged</string>
 
-    <string name="desktop_mode_normal">Normal</string>
-    <string name="desktop_mode_show_all_apps">Show All Apps</string>
-
     <string name="desktop_indicator_mode_normal">Normal</string>
     <string name="desktop_indicator_mode_arrow">Arrow</string>
-    <string name="dots">Dots</string>
 
     <string name="more">More</string>
     <string name="rate_the_app">Rate this app</string>
     <string name="contribute">Contribute</string>
     <string name="donate">Donate</string>
-    <string name="translate">Translate</string>
     <string name="bug_reports">Report bugs</string>
     <string name="help">Help</string>
-    <string name="project_contribution_info">Project contribution info</string>
     <string name="project_team">Project Team</string>
     <string name="project_license">Project License</string>
     <string name="help_this_app">More information and help about this app</string>
     <string name="more_info_support">More information on donating or otherwise supporting this project</string>
     <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
     <string name="source_code">Source Code</string>
-    <string name="open_source_licenses">Open Source Licenses</string>
     <string name="licenses">Licenses</string>
     <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
-    <string name="more_info_on_how_to_contribute_to_this_project">More information on how to contribute to this project</string>
-    <string name="help_translating_this_app">Translate this app to other languages</string>
-    <string name="android_contribution_guide">Android contribution guide</string>
-    <string name="more_info_on_how_to_contribute_to_foss_android_projects">More information on contributing to Open Source projects, especially Android Apps</string>
     <string name="contributors">Contributors</string>
-    <string name="contributors_public_info">Show information about contributors. Contributors can provide information to be shown here (opt-in) after contribution</string>
-    <string name="join_community">Join the Community</string>
     <string name="changelog">Changelog</string>
 
     <!-- Item Labels -->
@@ -216,16 +182,12 @@
     <!-- Dialogs -->
     <string name="request_dummy_text">Hello world!</string>
     <string name="request_please_wait">Searching for installed apps. Please wait.</string>
-    <string name="request_toast">No apps selected. Show all apps in drawer?</string>
     <string name="on">On</string>
     <string name="desktop_action">Desktop Action</string>
     <string name="select_app">Select App</string>
     <string name="off">Off</string>
     <string name="ok">OK</string>
-    <string name="version">Version</string>
-    <string name="wallpaper">Wallpaper</string>
     <string name="wallpaper_pick">Pick Wallpaper</string>
-    <string name="wallpaper_unable_to_blur">Unable to blur</string>
     <string name="dialog__icon_pack_title">Pick icon pack</string>
     <string name="dialog__icon_pack_info_toast">Unable to grab the icon without READ_EXTERNAL_STORAGE permission.</string>
     <string name="dialog__backup_app_settings__backup">Backup</string>
@@ -234,15 +196,8 @@
     <string name="dialog__backup_app_settings__error">Something went wrong.</string>
     <string name="columns">Columns</string>
     <string name="rows">Rows</string>
-    <string name="memory">Memory</string>
-    <string name="storage">Storage</string>
-    <string name="volume_level_ringtone">Ringtone</string>
-    <string name="volume_level_notification">Notification</string>
-    <string name="volume_level_system">System</string>
-    <string name="volume_level_media">Media</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
-    <string name="debug">Debug</string>
     <string name="pref_title__date_bar">Date Bar</string>
     <string name="pref_title__date_bar_text_color">Text Color</string>
     <string name="pref_title__date_bar_date_format">Date Format</string>
@@ -265,10 +220,6 @@
     <string name="title_transition_random">Random</string>
     <string name="pref_title__desktop_transition">Transition</string>
 
-    <string name="dialog_title__remove">Remove</string>
-    <string name="dialog_message__remove">This page is not empty. Those item will also be removed.</string>
-    <string name="title_activity_login">Sign in</string>
-    <string name="mobile_network_settings">Mobile network settings</string>
     <string name="clear_user_data">Clear user data</string>
     <string name="clear_user_data_are_you_sure">Are you sure, all your shortcuts will be removed.</string>
     <!-- Titles -->
@@ -292,7 +243,6 @@
     <string name="toast_app_uninstalled">App uninstalled.</string>
 
     <!-- Item Labels -->
-    <string name="folder">Unnamed</string>
 
     <!-- Dialogs -->
     <string name="cancel">Cancel</string>
@@ -307,6 +257,6 @@
     <string name="menu_settings">Drawer Settings</string>
     <string name="menu_vertical_layout">Vertical Layout</string>
     <string name="menu_hidden_apps">Hidden Apps</string>
-    <string name="menu_add_apps_home">Add Aps to Home</string>
+    <string name="menu_add_apps_home">Add Apps to Home</string>
     <string name="menu_sort_apps">Sort Mode</string>
 </resources>

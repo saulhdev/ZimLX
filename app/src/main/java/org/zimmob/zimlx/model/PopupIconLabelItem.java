@@ -24,18 +24,18 @@ public final class PopupIconLabelItem extends AbstractItem<PopupIconLabelItem, P
         private ImageView iconView;
         private TextView labelView;
 
-        public ViewHolder_PopupIconLabelItem(@NonNull View itemView) {
+        ViewHolder_PopupIconLabelItem(@NonNull View itemView) {
             super(itemView);
             this.cardView = (CardView) itemView;
             this.labelView = itemView.findViewById(R.id.item_popup_label);
             this.iconView = itemView.findViewById(R.id.item_popup_icon);
         }
 
-        public final TextView getLabelView() {
+        final TextView getLabelView() {
             return this.labelView;
         }
 
-        public final ImageView getIconView() {
+        final ImageView getIconView() {
             return this.iconView;
         }
     }

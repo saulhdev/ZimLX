@@ -30,14 +30,14 @@ import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
 public class AppDrawerController extends RevealFrameLayout {
-    public AppDrawerPaged _drawerViewPaged;
-    public AppDrawerVertical _drawerViewGrid;
-    public int _drawerMode;
+    private AppDrawerPaged _drawerViewPaged;
+    private AppDrawerVertical _drawerViewGrid;
+    private int _drawerMode;
     public boolean isOpen = false;
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
-    Button searchButton;
+    private Button searchButton;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -45,7 +45,6 @@ public class AppDrawerController extends RevealFrameLayout {
 
     public AppDrawerController(Context context) {
         super(context);
-
     }
 
     /**
@@ -89,7 +88,6 @@ public class AppDrawerController extends RevealFrameLayout {
 
 
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
-
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         _appDrawerAnimator.setDuration(_drawerAnimationTime);
@@ -99,11 +97,9 @@ public class AppDrawerController extends RevealFrameLayout {
             @Override
             public void onAnimationStart(Animator p1) {
                 getChildAt(0).setVisibility(View.VISIBLE);
-
                 ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(getBackground(), PropertyValuesHolder.ofInt("alpha", 0, 255));
                 animator.setDuration(_drawerAnimationTime);
                 animator.start();
-
                 switch (_drawerMode) {
                     case DRAWER_HORIZONTAL:
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
@@ -142,14 +138,11 @@ public class AppDrawerController extends RevealFrameLayout {
     public void close(int cx, int cy, int startRadius, int finalRadius) {
         removeView(findViewById(R.id.search_apps));
         if (!isOpen) {
-
             return;
         }
         isOpen = false;
-
         if (_appDrawerAnimator == null || _appDrawerAnimator.isRunning())
             return;
-
         _appDrawerAnimator = ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, finalRadius, startRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         _appDrawerAnimator.setDuration(_drawerAnimationTime);
@@ -157,7 +150,6 @@ public class AppDrawerController extends RevealFrameLayout {
             @Override
             public void onAnimationStart(Animator p1) {
                 _appDrawerCallback.callback(false, true);
-
                 ObjectAnimator animator = ObjectAnimator.ofPropertyValuesHolder(getBackground(), PropertyValuesHolder.ofInt("alpha", 255, 0));
                 animator.setDuration(_drawerAnimationTime);
                 animator.start();
@@ -225,26 +217,17 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
-    public void showDrawerMenu(View v){
+    private void showDrawerMenu(View v){
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> false);
 
-        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem item) {
-                return false;
-            }
-        });
-
-        popupMenu.show();;
+        popupMenu.show();
     }
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
-            setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
-            return insets;
-        }
+        setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
         return insets;
     }
 

@@ -148,7 +148,7 @@ public class CellContainer extends ViewGroup {
         invalidate();
     }
 
-    public final void resetOccupiedSpace() {
+    private void resetOccupiedSpace() {
         if (_cellSpanH > 0 && _cellSpanV > 0) {
             _occupied = new boolean[_cellSpanH][_cellSpanV];
         }
@@ -239,6 +239,7 @@ public class CellContainer extends ViewGroup {
         return null;
     }
 
+    @Override
     public boolean onTouchEvent(@NonNull MotionEvent event) {
         switch (MotionEventCompat.getActionMasked(event)) {
             case 0:
@@ -273,7 +274,7 @@ public class CellContainer extends ViewGroup {
         return _blockTouch || super.onInterceptTouchEvent(ev);
     }
 
-    public void init() {
+    void init() {
         setWillNotDraw(false);
     }
 
@@ -329,33 +330,26 @@ public class CellContainer extends ViewGroup {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawRect(0f, 0f, getWidth(), getHeight(), _bgPaint);
-
         if (_cells == null)
             return;
-
         float s = 7f;
         for (int x = 0; x < _cellSpanH; x++) {
             for (int y = 0; y < _cellSpanV; y++) {
                 if (x >= _cells.length || y >= _cells[0].length)
                     continue;
-
                 Rect cell = _cells[x][y];
-
                 canvas.save();
                 canvas.rotate(45f, cell.left, cell.top);
                 canvas.drawRect(cell.left - s, cell.top - s, cell.left + s, cell.top + s, _paint);
                 canvas.restore();
-
                 canvas.save();
                 canvas.rotate(45f, cell.left, cell.bottom);
                 canvas.drawRect(cell.left - s, cell.bottom - s, cell.left + s, cell.bottom + s, _paint);
                 canvas.restore();
-
                 canvas.save();
                 canvas.rotate(45f, cell.right, cell.top);
                 canvas.drawRect(cell.right - s, cell.top - s, cell.right + s, cell.top + s, _paint);
                 canvas.restore();
-
                 canvas.save();
                 canvas.rotate(45f, cell.right, cell.bottom);
                 canvas.drawRect(cell.right - s, cell.bottom - s, cell.right + s, cell.bottom + s, _paint);
@@ -480,7 +474,7 @@ public class CellContainer extends ViewGroup {
         touchPosToCoordinate(coordinate, mX, mY, xSpan, ySpan, checkAvailability, false);
     }
 
-    public void touchPosToCoordinate(@NonNull Point coordinate, int _mX, int _mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
+    private void touchPosToCoordinate(@NonNull Point coordinate, int _mX, int _mY, int xSpan, int ySpan, boolean checkAvailability, boolean checkBoundary) {
         if (_cells == null) {
             coordinate.set(-1, -1);
             return;
@@ -501,10 +495,8 @@ public class CellContainer extends ViewGroup {
                             coordinate.set(-1, -1);
                             return;
                         }
-
                         int dx = x + xSpan - 1;
                         int dy = y + ySpan - 1;
-
                         if (dx >= _cellSpanH - 1) {
                             dx = _cellSpanH - 1;
                             x = dx + 1 - xSpan;
@@ -570,11 +562,14 @@ public class CellContainer extends ViewGroup {
                     }
                     if (lp.getXSpan() == 1 && lp.getYSpan() == 1) {
                         child.layout(upRect.left, upRect.top, upRect.right, upRect.bottom);
-                    } else if (lp.getXSpan() > 1 && lp.getYSpan() > 1) {
+                    }
+                    else if (lp.getXSpan() > 1 && lp.getYSpan() > 1) {
                         child.layout(upRect.left, upRect.top, downRect.right, downRect.bottom);
-                    } else if (lp.getXSpan() > 1) {
+                    }
+                    else if (lp.getXSpan() > 1) {
                         child.layout(upRect.left, upRect.top, downRect.right, upRect.bottom);
-                    } else if (lp.getYSpan() > 1) {
+                    }
+                    else if (lp.getYSpan() > 1) {
                         child.layout(upRect.left, upRect.top, upRect.right, downRect.bottom);
                     }
                 }
@@ -634,7 +629,7 @@ public class CellContainer extends ViewGroup {
             _y = v;
         }
 
-        public final int getXSpan() {
+        final int getXSpan() {
             return _xSpan;
         }
 
@@ -642,7 +637,7 @@ public class CellContainer extends ViewGroup {
             _xSpan = v;
         }
 
-        public final int getYSpan() {
+        final int getYSpan() {
             return _ySpan;
         }
 

@@ -236,7 +236,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update the state of an item
-    public void updateItem(Item item, Config.ItemState state) {
+    private void updateItem(Item item, Config.ItemState state) {
         ContentValues itemValues = new ContentValues();
         Setup.logger().log(this, Log.INFO, null, "updateItem (state): %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
         itemValues.put(COLUMN_STATE, state.ordinal());
@@ -244,7 +244,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update the fields only used by the database
-    public void updateItem(Item item, int page, Config.ItemPosition itemPosition) {
+    private void updateItem(Item item, int page, Config.ItemPosition itemPosition) {
         Setup.logger().log(this, Log.INFO, null, "updateItem (delete + create): %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
         deleteItem(item, false);
         createItem(item, page, itemPosition);

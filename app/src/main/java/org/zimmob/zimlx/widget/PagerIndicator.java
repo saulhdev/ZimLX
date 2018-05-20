@@ -22,7 +22,7 @@ import org.zimmob.zimlx.widget.SmoothViewPager.OnPageChangeListener;
  * henriquez.saul@gmail.com
  */
 public class PagerIndicator extends View implements OnPageChangeListener {
-    public static final Companion _companion = new Companion();
+    private static final Companion _companion = new Companion();
     private static float _pad;
     private boolean _alphaFade;
     private boolean _alphaShow;
@@ -60,7 +60,7 @@ public class PagerIndicator extends View implements OnPageChangeListener {
 
     public static class Mode {
         public static final int NORMAL = 0;
-        public static final int ARROW = 1;
+        static final int ARROW = 1;
     }
 
     protected void onDraw(Canvas canvas) {

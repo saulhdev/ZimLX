@@ -81,23 +81,23 @@ public abstract class Setup {
     // Settings
     // ----------------
 
-    public abstract Context getAppContext();
+    protected abstract Context getAppContext();
 
     public abstract AppSettings getAppSettings();
 
-    public abstract DesktopGestureListener.DesktopGestureCallback getDesktopGestureCallback();
+    protected abstract DesktopGestureListener.DesktopGestureCallback getDesktopGestureCallback();
 
-    public abstract ItemGestureListener.ItemGestureCallback getItemGestureCallback();
+    protected abstract ItemGestureListener.ItemGestureCallback getItemGestureCallback();
 
     public abstract ImageLoader getImageLoader();
 
-    public abstract DataManager getDataManager();
+    protected abstract DataManager getDataManager();
 
     public abstract AppManager getAppLoader();
 
-    public abstract EventHandler getEventHandler();
+    protected abstract EventHandler getEventHandler();
 
-    public abstract Logger getLogger();
+    protected abstract Logger getLogger();
 
     // ----------------
     // Interfaces

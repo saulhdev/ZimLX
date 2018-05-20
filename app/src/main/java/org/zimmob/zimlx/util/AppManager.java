@@ -61,12 +61,12 @@ public class AppManager {
         return _context;
     }
 
-    public AppManager(Context c) {
+    private AppManager(Context c) {
         _context = c;
         _packageManager = c.getPackageManager();
     }
 
-    public App findApp(Intent intent) {
+    private App findApp(Intent intent) {
         if (intent == null || intent.getComponent() == null) return null;
 
         String packageName = intent.getComponent().getPackageName();
@@ -141,7 +141,7 @@ public class AppManager {
         d.show();
     }
 
-    public void onReceive(Context p1, Intent p2) {
+    private void onReceive(Context p1, Intent p2) {
         getAllApps();
     }
 
@@ -181,7 +181,7 @@ public class AppManager {
         _deleteListeners.add(deleteListener);
     }
 
-    public void notifyUpdateListeners(@NonNull List<App> apps) {
+    private void notifyUpdateListeners(@NonNull List<App> apps) {
         Iterator<AppUpdateListener> iter = _updateListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppUpdated(apps)) {
@@ -190,7 +190,7 @@ public class AppManager {
         }
     }
 
-    public void notifyRemoveListeners(@NonNull List<App> apps) {
+    private void notifyRemoveListeners(@NonNull List<App> apps) {
         Iterator<AppDeleteListener> iter = _deleteListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppDeleted(apps)) {
@@ -303,10 +303,10 @@ public class AppManager {
         }
     }
 
-    public static class InstallTimeComparator implements Comparator<ResolveInfo> {
+    static class InstallTimeComparator implements Comparator<ResolveInfo> {
         private final PackageManager mPackageManager;
 
-        public InstallTimeComparator(PackageManager packageManager) {
+        InstallTimeComparator(PackageManager packageManager) {
             mPackageManager = packageManager;
         }
 

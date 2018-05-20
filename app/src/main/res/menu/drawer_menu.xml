@@ -1,18 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu
     xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:id="@+id/app_settings"
-        android:title="@string/menu_settings"/>
+    <item android:title="@string/menu_settings"/>
 
-    <item android:id="@+id/vertical_layout"
-        android:title="@string/menu_vertical_layout"/>
+    <item android:title="@string/menu_vertical_layout"/>
 
-    <item
-        android:id="@+id/hidden_apps"
-        android:title="@string/menu_hidden_apps" />
-    <item android:id="@+id/add_apps_home"
-        android:title="@string/menu_add_apps_home"/>
+    <item android:title="@string/menu_hidden_apps" />
+    <item android:title="@string/menu_add_apps_home"/>
 
-    <item android:id="@+id/drawer_sort"
-        android:title="@string/menu_sort_apps"/>
+    <item android:title="@string/menu_sort_apps"/>
 </menu>

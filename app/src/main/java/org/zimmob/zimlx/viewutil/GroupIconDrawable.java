@@ -37,7 +37,7 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
     private float padding;
     private int outline;
     private int iconSizeDiv2;
-    AppSettings appSettings = Setup.appSettings();
+    private AppSettings appSettings = Setup.appSettings();
 
     public GroupIconDrawable(Context context, Item item, int iconSize) {
         final float size = Tool.dp2px(iconSize, context);
@@ -98,7 +98,6 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
     public void draw(Canvas canvas) {
         canvas.save();
         Paint paintBackground = new Paint();
-        ;
         if (needAnimateScale)
             scaleFactor = Tool.clampFloat(scaleFactor - 0.09f, 0.4f, 1f);
         else

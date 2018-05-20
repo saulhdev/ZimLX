@@ -21,7 +21,6 @@ android {
 
         applicationId "org.zimmob.zimlx"
         resValue 'string', 'app_name', "ZimLX"
-        resValue "string", "manifest_package_id", "org.zimmob.zimlx"
         multiDexEnabled false
 
 

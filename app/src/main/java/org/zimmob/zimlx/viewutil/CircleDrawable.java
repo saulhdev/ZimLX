@@ -12,15 +12,15 @@ import org.zimmob.zimlx.util.Tool;
 
 public class CircleDrawable extends Drawable {
 
-    private int iconSize;
-    private int iconSizeReal;
-    private int iconPadding;
+    private final int iconSize;
+    private final int iconSizeReal;
+    private final int iconPadding;
     private Bitmap icon;
     private Bitmap iconToFade;
-    private Paint paint;
-    private Paint paint2;
+    private final Paint paint;
+    private final Paint paint2;
 
-    private float scaleStep = 0.08f;
+    private final float scaleStep = 0.08f;
     private float currentScale = 1f;
     private boolean hidingOldIcon;
 

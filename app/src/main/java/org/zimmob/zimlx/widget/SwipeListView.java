@@ -67,7 +67,7 @@ public class SwipeListView extends ListView {
         return super.dispatchTouchEvent(ev);
     }
 
-    public interface OnSwipeRight {
+    interface OnSwipeRight {
         void onSwipe(int pos, float x, float y);
     }
 }

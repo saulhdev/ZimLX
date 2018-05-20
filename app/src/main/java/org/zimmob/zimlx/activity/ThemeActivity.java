@@ -16,7 +16,7 @@ import org.zimmob.zimlx.util.AppSettings;
  */
 public class ThemeActivity extends AppCompatActivity {
 
-    protected AppSettings _appSettings;
+    AppSettings _appSettings;
     private String _currentTheme;
 
     @Override
@@ -43,14 +43,14 @@ public class ThemeActivity extends AppCompatActivity {
         }
     }
 
-    protected void restart() {
+    private void restart() {
         Intent intent = new Intent(this, getClass());
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         overridePendingTransition(0, 0);
         startActivity(intent);
     }
 
-    public int dark(int color, double factor) {
+    private int dark(int color, double factor) {
         int a = Color.alpha(color);
         int r = Color.red(color);
         int g = Color.green(color);
