@@ -16,15 +16,19 @@
         android:layout_weight="1"
         android:ems="12"
         android:inputType="textPersonName"
-        android:hint="Search Apps"
+        android:hint="@string/searchbar_search_apps"
         android:text=""
-        android:textColor="@color/colorPrimaryDark" />
+        android:textSize="20sp"
+        android:textColor="#FFE8DBDB" />
 
     <Button
         android:id="@+id/drawerMenu"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
         android:layout_weight="1"
-        android:gravity="center"
-        android:text="..." />
+        android:elevation="0dp"
+        android:text="@string/searchbar_button"
+        android:textSize="24sp"
+        android:textStyle="bold" />
 </LinearLayout>

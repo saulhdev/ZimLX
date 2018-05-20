@@ -8,9 +8,9 @@ import android.view.View;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.PopupIconLabelItem;
-import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;
@@ -174,7 +174,7 @@ public class HpDragNDrop {
                     _home.getDock().consumeRevert();
                     // add the item to the database
                     HomeActivity._db.saveItem(item, _home.getDesktop()
-                            .getCurrentItem(), Definitions.ItemPosition.Desktop);
+                            .getCurrentItem(), Config.ItemPosition.Desktop);
                 } else {
                     Point pos = new Point();
                     _home.getDesktop()
@@ -183,7 +183,7 @@ public class HpDragNDrop {
                     View itemView = _home.getDesktop()
                             .getCurrentPage()
                             .coordinateToChildView(pos);
-                    if (itemView != null && Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop, _home.getDesktop())) {
+                    if (itemView != null && Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, _home.getDesktop())) {
                         _home.getDesktop().consumeRevert();
                         _home.getDock().consumeRevert();
                     } else {
@@ -223,8 +223,6 @@ public class HpDragNDrop {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 boolean ok = !DragAction.Action.WIDGET.equals(action);
-                if (ok && isInside) {
-                }
                 return ok;
             }
 
@@ -250,14 +248,14 @@ public class HpDragNDrop {
                     _home.getDock().consumeRevert();
 
                     // add the item to the database
-                    HomeActivity._db.saveItem(item, 0, Definitions.ItemPosition.Dock);
+                    HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
                 } else {
                     Point pos = new Point();
 
                     _home.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
                     View itemView = _home.getDock().coordinateToChildView(pos);
                     if (itemView != null) {
-                        if (Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Definitions.ItemPosition.Dock, _home.getDock())) {
+                        if (Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Config.ItemPosition.Dock, _home.getDock())) {
                             _home.getDesktop().consumeRevert();
                             _home.getDock().consumeRevert();
                         } else {
@@ -301,7 +299,7 @@ public class HpDragNDrop {
         });
     }
 
-    void showItemPopup(@NonNull final DragNDropLayout dragNDropView, final HomeActivity home) {
+    private void showItemPopup(@NonNull final DragNDropLayout dragNDropView, final HomeActivity home) {
         ArrayList<PopupIconLabelItem> itemList = new ArrayList<>();
         switch (dragNDropView.getDragItem().getType()) {
             case APP:

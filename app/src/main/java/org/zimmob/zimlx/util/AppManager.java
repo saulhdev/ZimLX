@@ -47,8 +47,8 @@ public class AppManager {
     private PackageManager _packageManager;
     private List<App> _apps = new ArrayList<>();
     private List<App> _nonFilteredApps = new ArrayList<>();
-    public final List<AppUpdateListener> _updateListeners = new ArrayList<>();
-    public final List<AppDeleteListener> _deleteListeners = new ArrayList<>();
+    private final List<AppUpdateListener> _updateListeners = new ArrayList<>();
+    private final List<AppDeleteListener> _deleteListeners = new ArrayList<>();
     public boolean _recreateAfterGettingApps;
     private AsyncTask _task;
     private Context _context;
@@ -61,9 +61,6 @@ public class AppManager {
         return _context;
     }
 
-    /**
-     * @param c
-     */
     public AppManager(Context c) {
         _context = c;
         _packageManager = c.getPackageManager();
@@ -82,9 +79,6 @@ public class AppManager {
         return null;
     }
 
-    /**
-     * @return
-     */
     public List<App> getApps() {
         return _apps;
     }
@@ -231,36 +225,6 @@ public class AppManager {
             AppSettings appSettings = AppSettings.get();
             String sort = appSettings.getSortMode();
             activitiesInfo = sortApplications(activitiesInfo, sort);
-            /*switch (sort) {
-                case "az":
-
-
-
-                    /*Collections.sort(activitiesInfo, (pa, p2) -> Collator.getInstance().compare(
-                            pa.loadLabel(_packageManager).toString(),
-                            p2.loadLabel(_packageManager).toString()));
-
-                    break;
-                case "za":
-                    activitiesInfo = sortApplications(activitiesInfo, "byNameDesc");
-                    /*Collections.sort(activitiesInfo, (p2, pz) -> Collator.getInstance().compare(
-                            pz.loadLabel(_packageManager).toString(),
-                            p2.loadLabel(_packageManager).toString()));
-
-                    break;
-                case "li":
-                   //activitiesInfo = sortApplications(activitiesInfo, "byInstalledDate");
-
-                    Collections.sort(activitiesInfo, (pi, p2) -> Collator.getInstance().compare(
-                            pi.activityInfo.applicationInfo.sourceDir,
-                            p2.activityInfo.applicationInfo.sourceDir));
-
-                    break;
-
-                case "mu":
-                    activitiesInfo = sortApplications(activitiesInfo, "byMostUsed");
-                    break;
-            }*/
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(_context, info, _packageManager);
                 _nonFilteredApps.add(app);
@@ -280,7 +244,8 @@ public class AppManager {
                         _apps.add(_nonFilteredApps.get(i));
                     }
                 }
-            } else {
+            }
+            else {
                 for (ResolveInfo info : activitiesInfo)
                     _apps.add(new App(_context, info, _packageManager));
             }

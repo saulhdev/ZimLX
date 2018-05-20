@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Toasts -->
-    <string name="toast_free_ram">Free Memory: %1$d MB. Saved %2$d MB.</string>
-    <string name="toast_free_all_ram">Free Memory: %1$d MB. Your RAM is in best state.</string>
     <string name="toast_device_admin_required">Please enable device administration.</string>
 
     <!-- Intro -->
-    <string name="intro_skip">Skip</string>
     <string name="intro_finish">Let\'s start.</string>
     <string name="intro1_text">This is OpenLauncher. A fully open source launcher. Here for you.</string>
     <string name="intro2_text">Swipe inwards from the left border of your home screen to open the minibar. There you can find the settings,
         change the wallpaper, and do lots of other stuff.</string>
     <string name="intro3_title">Settings</string>
     <string name="intro3_text">You can configure your desktop, the app drawer, and the dock, try it out!</string>
+
     <string name="intro4_community">The Launcher from the community for the community</string>
     <string name="intro4_features">Features packed</string>
     <string name="intro4_customizable">Customizable</string>
@@ -302,4 +300,13 @@
     <string name="search_online">Search online&#8230;</string>
     <string name="bad_format">Bad Format</string>
 
+    <string name="searchbar_search_apps">Search Apps</string>
+    <string name="searchbar_button" translatable="false">...</string>
+
+    <!-- Dialog Menu -->
+    <string name="menu_settings">Drawer Settings</string>
+    <string name="menu_vertical_layout">Vertical Layout</string>
+    <string name="menu_hidden_apps">Hidden Apps</string>
+    <string name="menu_add_apps_home">Add Aps to Home</string>
+    <string name="menu_sort_apps">Sort Mode</string>
 </resources>

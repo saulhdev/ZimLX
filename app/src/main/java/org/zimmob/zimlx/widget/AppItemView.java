@@ -17,6 +17,7 @@ import android.view.View;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.interfaces.IconProvider;
@@ -24,7 +25,6 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.BaseIconProvider;
-import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
@@ -308,11 +308,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         public Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
             _view.setIconProvider(Setup.imageLoader().createIconProvider(app.getIcon()));
-            _view.setOnClickListener(v -> {
-                Tool.createScaleInScaleOutAnim(_view, () -> {
-                    Tool.startApp(_view.getContext(), app, _view);
-                }, 0.85f);
-            });
+            _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
         }
 
@@ -326,12 +322,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         public Builder setShortcutItem(final Item item) {
             _view.setLabel(item.getLabel());
             _view.setIconProvider(item.getIconProvider());
-            _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                @Override
-                public void run() {
-                    _view.getContext().startActivity(item.getIntent());
-                }
-            }, 0.85f));
+            _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> _view.getContext().startActivity(item.getIntent()), 0.85f));
             return this;
         }
 
@@ -351,7 +342,7 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
             _view.setIconProvider(Setup.imageLoader().createIconProvider(
                     ContextCompat.getDrawable(Setup.appContext(), R.drawable.ic_apps_white_48dp)));
             switch (item.getActionValue()) {
-                case Definitions.ACTION_LAUNCHER:
+                case Config.ACTION_LAUNCHER:
                     _view.setOnClickListener(view -> {
                         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
                         HomeActivity.Companion.getLauncher().openAppDrawer(view);

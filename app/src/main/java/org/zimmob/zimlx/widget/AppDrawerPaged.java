@@ -8,7 +8,6 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.EditText;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
@@ -29,7 +28,6 @@ public class AppDrawerPaged extends SmoothViewPager {
     private PagerIndicator _appDrawerIndicator;
     private int _pageCount = 0;
 
-
     public AppDrawerPaged(Context c, AttributeSet attr) {
         super(c, attr);
         init(c);
@@ -39,7 +37,6 @@ public class AppDrawerPaged extends SmoothViewPager {
         super(c);
         init(c);
     }
-
 
     @Override
     protected void onConfigurationChanged(Configuration newConfig) {
@@ -69,7 +66,6 @@ public class AppDrawerPaged extends SmoothViewPager {
     private void setLandscapeValue() {
         _columnCellCount = Setup.appSettings().getDrawerRowCount();
         _rowCellCount = Setup.appSettings().getDrawerColumnCount();
-
     }
 
     private void calculatePage() {
@@ -82,14 +78,9 @@ public class AppDrawerPaged extends SmoothViewPager {
 
     private void init(Context c) {
         itemHeightPadding = Tool.dp2px(20, getContext());
-
-
         if (isInEditMode()) return;
-
         setOverScrollMode(OVER_SCROLL_NEVER);
-
-        boolean mPortrait = c.getResources().getConfiguration().orientation ==
-                Configuration.ORIENTATION_PORTRAIT;
+        boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         if (mPortrait) {
             setPortraitValue();
@@ -98,13 +89,13 @@ public class AppDrawerPaged extends SmoothViewPager {
         }
 
         List<App> allApps = Setup.appLoader().getAllApps(c, false);
-        /*if (allApps.size() != 0) {
+        if (allApps.size() != 0) {
             AppDrawerPaged.this._apps = allApps;
             calculatePage();
             setAdapter(new Adapter());
             if (_appDrawerIndicator != null)
                 _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
-        }*/
+        }
         Setup.appLoader().addUpdateListener(apps -> {
             AppDrawerPaged.this._apps = apps;
             calculatePage();
@@ -151,8 +142,6 @@ public class AppDrawerPaged extends SmoothViewPager {
 
                                 @Override
                                 public void afterDrag(View view) {
-                                    //This will be handled by the Drag N Drop listener in the HomeActivity
-                                    //home.closeAppDrawer();
                                 }
                             });
         }

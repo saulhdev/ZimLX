@@ -10,6 +10,8 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.util.Log;
 
 import org.zimmob.zimlx.model.App;
 
@@ -18,7 +20,7 @@ import java.util.List;
 public class IconPackHelper {
     public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
         Resources iconPackResources = null;
-        int intResourceIcon = 0;
+        int intResourceIcon;
         int intResourceBack = 0;
         int intResourceMask = 0;
         int intResourceUpon = 0;
@@ -38,7 +40,7 @@ public class IconPackHelper {
             try {
                 iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
             } catch (Exception e) {
-                System.out.println(e);
+                Log.e("IconPackHelper",e.getMessage());
             }
             if (iconPackResources != null) {
                 if (getResource(iconPackResources, iconPackName, "iconback", null) != null)

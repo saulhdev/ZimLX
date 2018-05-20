@@ -8,27 +8,29 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.config.Config.ItemPosition.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManager {
-    protected static final String DATABASE_HOME = "home.db";
-    protected static final String TABLE_HOME = "home";
-    protected static final String COLUMN_TIME = "time";
-    protected static final String COLUMN_TYPE = "type";
-    protected static final String COLUMN_LABEL = "label";
-    protected static final String COLUMN_X_POS = "x";
-    protected static final String COLUMN_Y_POS = "y";
-    protected static final String COLUMN_DATA = "data";
-    protected static final String COLUMN_PAGE = "page";
-    protected static final String COLUMN_DESKTOP = "desktop";
-    protected static final String COLUMN_STATE = "state";
+    private static final String DATABASE_HOME = "home.db";
+    private static final String TABLE_HOME = "home";
+    private static final String COLUMN_TIME = "time";
+    private static final String COLUMN_TYPE = "type";
+    private static final String COLUMN_LABEL = "label";
+    private static final String COLUMN_X_POS = "x";
+    private static final String COLUMN_Y_POS = "y";
+    private static final String COLUMN_DATA = "data";
+    private static final String COLUMN_PAGE = "page";
+    private static final String COLUMN_DESKTOP = "desktop";
+    private static final String COLUMN_STATE = "state";
 
-    protected static final String SQL_CREATE_HOME =
+    private static final String SQL_CREATE_HOME =
             "CREATE TABLE " + TABLE_HOME + " (" +
                     COLUMN_TIME + " INTEGER PRIMARY KEY," +
                     COLUMN_TYPE + " VARCHAR," +
@@ -39,10 +41,10 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                     COLUMN_PAGE + " INTEGER," +
                     COLUMN_DESKTOP + " INTEGER," +
                     COLUMN_STATE + " INTEGER)";
-    protected static final String SQL_DELETE = "DROP TABLE IF EXISTS ";
-    protected static final String SQL_QUERY = "SELECT * FROM ";
-    protected SQLiteDatabase db;
-    protected Context context;
+    private static final String SQL_DELETE = "DROP TABLE IF EXISTS ";
+    private static final String SQL_QUERY = "SELECT * FROM ";
+    private SQLiteDatabase db;
+    private Context context;
 
     public DatabaseHelper(Context c) {
         super(c, DATABASE_HOME, null, 1);
@@ -64,7 +66,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public void createItem(Item item, int page, Definitions.ItemPosition itemPosition) {
+    private void createItem(Item item, int page, Config.ItemPosition itemPosition) {
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_TIME, item.getId());
         itemValues.put(COLUMN_TYPE, item.getType().toString());
@@ -89,7 +91,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat.append(tmp.getId()).append(Definitions.INT_SEP);
+                    concat.append(tmp.getId()).append(Config.INT_SEP);
                 }
                 itemValues.put(COLUMN_DATA, concat.toString());
                 break;
@@ -97,8 +99,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
-                        + Integer.toString(item.getSpanX()) + Definitions.INT_SEP
+                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Config.INT_SEP
+                        + Integer.toString(item.getSpanX()) + Config.INT_SEP
                         + Integer.toString(item.getSpanY()));
                 itemValues.put(COLUMN_DATA, concat.toString());
                 break;
@@ -117,12 +119,12 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     @Override
-    public void saveItem(Item item, Definitions.ItemState state) {
+    public void saveItem(Item item, Config.ItemState state) {
         updateItem(item, state);
     }
 
     @Override
-    public void saveItem(Item item, int page, Definitions.ItemPosition itemPosition) {
+    public void saveItem(Item item, int page, Config.ItemPosition itemPosition) {
         String SQL_QUERY_SPECIFIC = SQL_QUERY + TABLE_HOME + " WHERE " + COLUMN_TIME + " = " + item.getId();
         Cursor cursor = db.rawQuery(SQL_QUERY_SPECIFIC, null);
         if (cursor.getCount() == 0) {
@@ -198,7 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update data attribute for an item
-    public void updateItem(Item item) {
+    private void updateItem(Item item) {
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_LABEL, item.getLabel());
         itemValues.put(COLUMN_X_POS, item.getX());
@@ -210,13 +212,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         switch (item.getType()) {
             case APP:
                 if (Setup.appSettings().enableImageCaching()) {
-                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIconProvider().getDrawableSynchronously(Definitions.NO_SCALE)), Integer.toString(item.getId()));
+                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIconProvider().getDrawableSynchronously(Config.NO_SCALE)), Integer.toString(item.getId()));
                 }
                 itemValues.put(COLUMN_DATA, Tool.getIntentAsString(item.getIntent()));
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat.append(tmp.getId()).append(Definitions.INT_SEP);
+                    concat.append(tmp.getId()).append(Config.INT_SEP);
                 }
                 itemValues.put(COLUMN_DATA, concat.toString());
                 break;
@@ -224,8 +226,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Definitions.INT_SEP
-                        + Integer.toString(item.getSpanX()) + Definitions.INT_SEP
+                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Config.INT_SEP
+                        + Integer.toString(item.getSpanX()) + Config.INT_SEP
                         + Integer.toString(item.getSpanY()));
                 itemValues.put(COLUMN_DATA, concat.toString());
                 break;
@@ -234,7 +236,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update the state of an item
-    public void updateItem(Item item, Definitions.ItemState state) {
+    public void updateItem(Item item, Config.ItemState state) {
         ContentValues itemValues = new ContentValues();
         Setup.logger().log(this, Log.INFO, null, "updateItem (state): %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
         itemValues.put(COLUMN_STATE, state.ordinal());
@@ -242,7 +244,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update the fields only used by the database
-    public void updateItem(Item item, int page, Definitions.ItemPosition itemPosition) {
+    public void updateItem(Item item, int page, Config.ItemPosition itemPosition) {
         Setup.logger().log(this, Log.INFO, null, "updateItem (delete + create): %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
         deleteItem(item, false);
         createItem(item, page, itemPosition);
@@ -284,7 +286,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 break;
             case GROUP:
                 item.setItems(new ArrayList<>());
-                dataSplit = data.split(Definitions.INT_SEP);
+                dataSplit = data.split(Config.INT_SEP);
                 for (String s : dataSplit) {
                     item.getItems().add(getItem(Integer.parseInt(s)));
                 }
@@ -293,7 +295,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 item.setActionValue(Integer.parseInt(data));
                 break;
             case WIDGET:
-                dataSplit = data.split(Definitions.INT_SEP);
+                dataSplit = data.split(Config.INT_SEP);
                 item.setWidgetValue(Integer.parseInt(dataSplit[0]));
                 item.setSpanX(Integer.parseInt(dataSplit[1]));
                 item.setSpanY(Integer.parseInt(dataSplit[2]));

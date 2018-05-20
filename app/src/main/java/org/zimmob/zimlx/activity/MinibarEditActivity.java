@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.activity;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -136,6 +137,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             return R.layout.item_minibar_edit;
         }
 
+        @NonNull
         @Override
         public ViewHolder getViewHolder(View v) {
             return new ViewHolder(v);

@@ -16,8 +16,8 @@ android {
 
         flavorDimensions "versionCode"
 
-        versionCode 20180501
-        versionName '0.2.1'
+        versionCode 20180519
+        versionName '0.2.3'
 
         applicationId "org.zimmob.zimlx"
         resValue 'string', 'app_name', "ZimLX"

@@ -13,6 +13,7 @@ import android.util.Log;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -66,7 +67,7 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item.setX(preferredPos.x);
             item.setY(preferredPos.y);
-            HomeActivity.Companion.getDb().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem(), Definitions.ItemPosition.Desktop);
+            HomeActivity.Companion.getDb().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem(), Config.ItemPosition.Desktop);
             boolean added = HomeActivity.Companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem());
 
             Setup.logger().log(this, Log.INFO, null, "Shortcut installed - %s => Intent: %s (Item type: %s; x = %d, y = %d, added = %b)", name, newIntent, item.getType(), item.getX(), item.getY(), added);

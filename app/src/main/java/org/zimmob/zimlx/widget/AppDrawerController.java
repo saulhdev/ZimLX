@@ -8,9 +8,13 @@ import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
+import android.widget.PopupMenu;
+import android.widget.Toast;
 
 import net.gsantner.opoc.util.Callback;
 
@@ -33,6 +37,7 @@ public class AppDrawerController extends RevealFrameLayout {
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
+    Button searchButton;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,6 +45,7 @@ public class AppDrawerController extends RevealFrameLayout {
 
     public AppDrawerController(Context context) {
         super(context);
+
     }
 
     /**
@@ -76,6 +82,12 @@ public class AppDrawerController extends RevealFrameLayout {
         isOpen = true;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         layoutInflater.inflate(R.layout.search_apps, this, true);
+        searchButton=findViewById(R.id.drawerMenu);
+        searchButton.setOnClickListener((View v) ->{
+            showDrawerMenu(v);
+        } );
+
+
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
 
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
@@ -127,15 +139,10 @@ public class AppDrawerController extends RevealFrameLayout {
         _appDrawerAnimator.start();
     }
 
-    /**
-     * @param cx
-     * @param cy
-     * @param startRadius
-     * @param finalRadius
-     */
     public void close(int cx, int cy, int startRadius, int finalRadius) {
+        removeView(findViewById(R.id.search_apps));
         if (!isOpen) {
-            removeView(findViewById(R.id.search_apps));
+
             return;
         }
         isOpen = false;
@@ -216,6 +223,20 @@ public class AppDrawerController extends RevealFrameLayout {
 
                 break;
         }
+    }
+
+    public void showDrawerMenu(View v){
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+        popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
+
+        popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                return false;
+            }
+        });
+
+        popupMenu.show();;
     }
 
     @Override

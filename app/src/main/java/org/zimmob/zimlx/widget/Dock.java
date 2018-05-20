@@ -147,8 +147,8 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
                 if (launcher2 != null) {
                     dragNDropView2 = launcher2.getDragNDropView();
                     if (dragNDropView2 != null) {
-                        if (Setup.appSettings().isDockShowLabel()) {
-                        }
+                        /*if (Setup.appSettings().isDockShowLabel()) {
+                        }*/
                         dragNDropView2.showFolderPreviewAt(this, ((float) getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0)));
                     }
                 }

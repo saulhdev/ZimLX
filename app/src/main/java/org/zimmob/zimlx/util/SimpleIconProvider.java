@@ -7,6 +7,7 @@ import android.view.Gravity;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
@@ -18,8 +19,8 @@ import org.zimmob.zimlx.viewutil.GroupIconDrawable;
  */
 public class SimpleIconProvider extends BaseIconProvider {
 
-    protected Drawable _drawable;
-    protected int _drawableResource;
+    private Drawable _drawable;
+    private int _drawableResource;
 
     public SimpleIconProvider(Drawable drawable) {
         _drawable = drawable;
@@ -56,11 +57,9 @@ public class SimpleIconProvider extends BaseIconProvider {
                 Drawable d = getDrawable();
                 d = scaleDrawable(d, forceSize);
                 switch (gravity) {
-                    case Gravity.LEFT:
                     case Gravity.START:
                         tv.setCompoundDrawablesWithIntrinsicBounds(d, null, null, null);
                         break;
-                    case Gravity.RIGHT:
                     case Gravity.END:
                         tv.setCompoundDrawablesWithIntrinsicBounds(null, null, d, null);
                         break;
@@ -101,7 +100,7 @@ public class SimpleIconProvider extends BaseIconProvider {
     }
 
     private Drawable scaleDrawable(Drawable drawable, int forceSize) {
-        if (drawable != null && forceSize != Definitions.NO_SCALE) {
+        if (drawable != null && forceSize != Config.NO_SCALE) {
             forceSize = Tool.dp2px(forceSize, Setup.appContext());
             drawable = new BitmapDrawable(Setup.appContext().getResources(), Bitmap.createScaledBitmap(Tool.drawableToBitmap(drawable), forceSize, forceSize, true));
         }

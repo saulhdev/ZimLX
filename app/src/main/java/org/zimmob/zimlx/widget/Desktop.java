@@ -17,13 +17,12 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.Item.Type;
-import org.zimmob.zimlx.util.Definitions.ItemPosition;
-import org.zimmob.zimlx.util.Definitions.ItemState;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
@@ -66,7 +65,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     private View _previousItemView;
     private int _previousPage;
 
-    public static boolean handleOnDropOver(HomeActivity home, Item dropItem, Item item, View itemView, CellContainer parent, int page, ItemPosition itemPosition, DesktopCallBack<?> callback) {
+    public static boolean handleOnDropOver(HomeActivity home, Item dropItem, Item item, View itemView, CellContainer parent, int page, Config.ItemPosition itemPosition, DesktopCallBack<?> callback) {
         if (item != null) {
             if (dropItem != null) {
                 Type type = item.getType();
@@ -82,8 +81,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
                                 group.x = item.getX();
                                 group.y = item.getY();
                                 HomeActivity.Companion.getDb().saveItem(dropItem, page, itemPosition);
-                                HomeActivity.Companion.getDb().saveItem(item, ItemState.Hidden);
-                                HomeActivity.Companion.getDb().saveItem(dropItem, ItemState.Hidden);
+                                HomeActivity.Companion.getDb().saveItem(item, Config.ItemState.Hidden);
+                                HomeActivity.Companion.getDb().saveItem(dropItem, Config.ItemState.Hidden);
                                 HomeActivity.Companion.getDb().saveItem(group, page, itemPosition);
                                 callback.addItemToPage(group, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
@@ -98,7 +97,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
                                 parent.removeView(itemView);
                                 item.getGroupItems().add(dropItem);
                                 HomeActivity.Companion.getDb().saveItem(dropItem, page, itemPosition);
-                                HomeActivity.Companion.getDb().saveItem(dropItem, ItemState.Hidden);
+                                HomeActivity.Companion.getDb().saveItem(dropItem, Config.ItemState.Hidden);
                                 HomeActivity.Companion.getDb().saveItem(item, page, itemPosition);
                                 callback.addItemToPage(item, page);
                                 HomeActivity launcher = HomeActivity.Companion.getLauncher();
@@ -218,12 +217,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         }
     }
 
-    public final void initDesktopShowAll(@NonNull Context c, @NonNull HomeActivity home) {
+    public final void initDesktopShowAll(@NonNull Context context, @NonNull HomeActivity home) {
         Desktop desktop = this;
-        Context context = c;
-        //HomeActivity home2 = home;
-
-
         ArrayList apps = new ArrayList();
         for (App app : Setup.appLoader().getAllApps(context, false)) {
             apps.add(Item.newAppItem(app));
@@ -318,28 +313,25 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
                 launcher = HomeActivity.Companion.getLauncher();
                 if (launcher != null) {
                     dragNDropView = launcher.getDragNDropView();
-                    if (dragNDropView != null) {
-                        action = dragNDropView.getDragAction();
-                        if (!Action.WIDGET.equals(action) || !Action.ACTION.equals(action) && (getCurrentPage().coordinateToChildView(_coordinate) instanceof AppItemView)) {
-                            launcher2 = HomeActivity.Companion.getLauncher();
-                            if (launcher2 != null) {
-                                dragNDropView2 = launcher2.getDragNDropView();
-                                if (dragNDropView2 != null) {
-                                    dragNDropView2.showFolderPreviewAt(this, ((float) getCurrentPage().getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCurrentPage().getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDesktopShowLabel() ? Tool.toPx(7) : 0)));
-                                    break;
-                                }
+                    action = dragNDropView.getDragAction();
+                    if (!Action.WIDGET.equals(action) || !Action.ACTION.equals(action) && (getCurrentPage().coordinateToChildView(_coordinate) instanceof AppItemView)) {
+                        launcher2 = HomeActivity.Companion.getLauncher();
+                        if (launcher2 != null) {
+                            dragNDropView2 = launcher2.getDragNDropView();
+                            if (dragNDropView2 != null) {
+                                dragNDropView2.showFolderPreviewAt(this, ((float) getCurrentPage().getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCurrentPage().getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDesktopShowLabel() ? Tool.toPx(7) : 0)));
+                                break;
                             }
-                            break;
                         }
+                        break;
                     }
                 }
-                action = null;
                 launcher2 = HomeActivity.Companion.getLauncher();
                 if (launcher2 != null) {
                     dragNDropView2 = launcher2.getDragNDropView();
                     if (dragNDropView2 != null) {
-                        if (Setup.appSettings().isDesktopShowLabel()) {
-                        }
+                        /*if (Setup.appSettings().isDesktopShowLabel()) {
+                        }*/
                         dragNDropView2.showFolderPreviewAt(this, ((float) getCurrentPage().getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCurrentPage().getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDesktopShowLabel() ? Tool.toPx(7) : 0)));
                     }
                 }
@@ -429,7 +421,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         return super.onInterceptTouchEvent(ev);
     }
 
-    public boolean onTouchEvent(@Nullable MotionEvent ev) {
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
         if (ev != null && ev.getActionMasked() == 1) {
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
             if (launcher != null) {
@@ -515,7 +508,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         private float _scaleFactor = 1.0f;
         private float _translateFactor;
 
-        public DesktopAdapter(Desktop desktop) {
+        private DesktopAdapter(Desktop desktop) {
             _desktop = desktop;
             _desktop.getPages().clear();
             int count = getCount();
@@ -564,7 +557,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             return layout;
         }
 
-        private final void addPageLeft() {
+        private void addPageLeft() {
             _desktop.getPages().add(0, getItemLayout());
             notifyDataSetChanged();
         }
@@ -587,8 +580,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             notifyDataSetChanged();
         }
 
-        public int getItemPosition(@NonNull Object object) {
-
+        public int getItemPosition(Object object) {
             return -2;
         }
 
@@ -627,7 +619,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             }
         }
 
-        public final void exitDesktopEditMode() {
+        private final void exitDesktopEditMode() {
             _scaleFactor = 1.0f;
             _translateFactor = 0.0f;
             for (CellContainer v : _desktop.getPages()) {

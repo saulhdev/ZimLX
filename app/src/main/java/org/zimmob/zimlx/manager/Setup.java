@@ -3,11 +3,11 @@ package org.zimmob.zimlx.manager;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
@@ -112,14 +112,14 @@ public abstract class Setup {
     public interface DataManager {
         void saveItem(Item item);
 
-        void saveItem(Item item, Definitions.ItemState state);
+        void saveItem(Item item, Config.ItemState state);
 
         /**
          * @param item
          * @param page
          * @param desktop
          */
-        void saveItem(Item item, int page, Definitions.ItemPosition desktop);
+        void saveItem(Item item, int page, Config.ItemPosition desktop);
 
         void deleteItem(Item item, boolean deleteSubItems);
 

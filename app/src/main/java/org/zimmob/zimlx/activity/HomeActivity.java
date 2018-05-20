@@ -43,6 +43,7 @@ import org.zimmob.zimlx.activity.homeparts.HpDesktopPickAction;
 import org.zimmob.zimlx.activity.homeparts.HpDragNDrop;
 import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
 import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
@@ -50,7 +51,6 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.AppUpdateReceiver;
-import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.LauncherAction;
 import org.zimmob.zimlx.util.LauncherAction.Action;
 import org.zimmob.zimlx.util.ShortcutReceiver;
@@ -88,10 +88,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public static final int REQUEST_CREATE_APPWIDGET = 0x6475;
     public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
     public static final int REQUEST_PICK_APPWIDGET = 0x2678;
-    @Nullable
+
     private static Resources resources;
     private static final IntentFilter _appUpdateIntentFilter = new IntentFilter();
-    @Nullable
+
     private static WidgetHost _appWidgetHost;
 
     public static AppWidgetManager _appWidgetManager;
@@ -100,7 +100,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public static Setup.DataManager _db;
     public static float _itemTouchX;
     public static float _itemTouchY;
-    @Nullable
+
     public static HomeActivity _launcher;
     private static final IntentFilter _shortcutIntentFilter = new IntentFilter();
     private static final IntentFilter _timeChangesIntentFilter = new IntentFilter();
@@ -122,7 +122,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Companion.getShortcutIntentFilter().addAction("com.android.launcher.action.INSTALL_SHORTCUT");
     }
 
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         Companion.setLauncher(this);
         Companion.setResources(getResources());
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
@@ -133,20 +133,17 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
         }
-        //AppSettings appSettings = Setup.appSettings();
-
         if (appSettings.isSearchBarTimeEnabled()) {
             _timeChangedReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction() ==Intent.ACTION_TIME_TICK) {
+                    if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
                         updateSearchClock();
                     }
                 }
             };
         }
         Companion.setLauncher(this);
-        //Companion companion = Companion;
         DataManager dataManager = Setup.dataManager();
 
         Companion.setDb(dataManager);
@@ -164,8 +161,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         AppSettings appSettings = Setup.appSettings();
         boolean rotate = false;
         if (appSettings.getAppRestartRequired()) {
-            //appSettings = Setup.appSettings();
-
             appSettings.setAppRestartRequired(false);
             PendingIntent restartIntentP = PendingIntent.getActivity(this, 123556, new Intent(this, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
@@ -357,7 +352,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             item.y = point.y;
 
             // add item to database
-            _db.saveItem(item, desktop.getCurrentItem(), Definitions.ItemPosition.Desktop);
+            _db.saveItem(item, desktop.getCurrentItem(), Config.ItemPosition.Desktop);
             desktop.addItemToPage(item, desktop.getCurrentItem());
         } else {
             Tool.toast(this, R.string.toast_not_enough_space);
@@ -381,7 +376,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public final void onUninstallItem(@NonNull Item item) {
-
         Companion.setConsumeNextResume(true);
         Setup.eventHandler().showDeletePackageDialog(this, item);
     }
@@ -437,6 +431,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public final void closeAppDrawer() {
+
         int finalRadius = Math.max(getAppDrawerController().getDrawer().getWidth(), getAppDrawerController().getDrawer().getHeight());
         getAppDrawerController().close(cx, cy, rad, finalRadius);
     }
@@ -675,7 +670,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         appSettings.setAppFirstLaunch(false);
                         Item appDrawerBtnItem = Item.newActionItem(8);
                         appDrawerBtnItem.x = 2;
-                        Companion.getDb().saveItem(appDrawerBtnItem, 0, Definitions.ItemPosition.Dock);
+                        Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
                         //Create Default DockItems
                         //addDockDialer(0);
                         addDockApps(Intent.ACTION_DIAL, 0);
@@ -716,7 +711,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Log.i("HOME", app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = position;
-            Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
     }
@@ -730,7 +725,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Log.i("HOME", app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = position;
-            Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
     }
@@ -750,7 +745,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
                 item.x = position;
                 item.type = Item.Type.APP;
-                Companion.getDb().saveItem(item, 0, Definitions.ItemPosition.Dock);
+                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
             }
         }
     }
@@ -960,7 +955,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         pickWidget();
     }
 
-    private final void pickWidget() {
+    private void pickWidget() {
         Companion.setConsumeNextResume(true);
         int appWidgetId = Companion.getAppWidgetHost().allocateAppWidgetId();
         Intent pickIntent = new Intent("android.appwidget.action.APPWIDGET_PICK");
@@ -995,16 +990,16 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return _db;
         }
 
-        public final void setDb(@NonNull Setup.DataManager v) {
+        private void setDb(@NonNull Setup.DataManager v) {
             _db = v;
         }
 
         @Nullable
-        public final WidgetHost getAppWidgetHost() {
+        public WidgetHost getAppWidgetHost() {
             return _appWidgetHost;
         }
 
-        public final void setAppWidgetHost(@Nullable WidgetHost v) {
+        private void setAppWidgetHost(@Nullable WidgetHost v) {
             _appWidgetHost = v;
         }
 
@@ -1013,7 +1008,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return _appWidgetManager;
         }
 
-        public final void setAppWidgetManager(@NonNull AppWidgetManager v) {
+        private final void setAppWidgetManager(@NonNull AppWidgetManager v) {
 
             _appWidgetManager = v;
         }
@@ -1026,23 +1021,23 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             _itemTouchY = v;
         }
 
-        public final boolean getConsumeNextResume() {
+        private boolean getConsumeNextResume() {
             return _consumeNextResume;
         }
 
-        public final void setConsumeNextResume(boolean v) {
+        private void setConsumeNextResume(boolean v) {
             _consumeNextResume = v;
         }
 
-        private final IntentFilter getTimeChangesIntentFilter() {
+        private IntentFilter getTimeChangesIntentFilter() {
             return _timeChangesIntentFilter;
         }
 
-        private final IntentFilter getAppUpdateIntentFilter() {
+        private IntentFilter getAppUpdateIntentFilter() {
             return _appUpdateIntentFilter;
         }
 
-        private final IntentFilter getShortcutIntentFilter() {
+        private IntentFilter getShortcutIntentFilter() {
             return _shortcutIntentFilter;
         }
     }

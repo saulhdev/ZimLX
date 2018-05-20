@@ -54,8 +54,6 @@ public class SwipeListView extends ListView {
                         } catch (Exception ignored) {
 
                         }
-                    } else {
-
                     }
                 }
                 return true;

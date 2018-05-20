@@ -14,12 +14,12 @@ import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.Definitions;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
@@ -273,7 +273,7 @@ public class GroupPopupView extends RevealFrameLayout {
     private void removeItem(Context context, final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
 
-        HomeActivity.Companion.getDb().saveItem(dragOutItem, Definitions.ItemState.Visible);
+        HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
         HomeActivity.Companion.getDb().saveItem(currentItem);
 
         currentView.setIconProvider(Setup.imageLoader().createIconProvider(new GroupIconDrawable(context, currentItem, Setup.appSettings().getDesktopIconSize())));
@@ -290,7 +290,7 @@ public class GroupPopupView extends RevealFrameLayout {
                 item.setY(currentItem.getY());
 
                 HomeActivity.Companion.getDb().saveItem(item);
-                HomeActivity.Companion.getDb().saveItem(item, Definitions.ItemState.Visible);
+                HomeActivity.Companion.getDb().saveItem(item, Config.ItemState.Visible);
                 HomeActivity.Companion.getDb().deleteItem(currentItem, true);
 
                 callBack.removeItem(currentView, false);

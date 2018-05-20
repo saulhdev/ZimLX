@@ -18,6 +18,7 @@ import android.widget.FrameLayout;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.PopupIconLabelItem;
 import org.zimmob.zimlx.util.DragAction;
@@ -40,7 +41,7 @@ import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
 public class DragNDropLayout extends FrameLayout {
 
     private final float DRAG_THRESHOLD;
-    private DragAction.Action _dragAction;
+    private Action _dragAction;
     private boolean _dragExceedThreshold;
     private Item _dragItem;
     private PointF _dragLocation;
@@ -190,7 +191,7 @@ public class DragNDropLayout extends FrameLayout {
         }
     }
 
-    public final void startDragNDropOverlay(View view, Item item, DragAction.Action action) {
+    public final void startDragNDropOverlay(View view, Item item, Action action) {
         _dragging = true;
         _dragExceedThreshold = false;
         _overlayIconScale = 0.0f;
