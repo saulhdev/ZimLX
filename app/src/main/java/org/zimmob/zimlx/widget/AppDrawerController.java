@@ -244,7 +244,7 @@ public class AppDrawerController extends RevealFrameLayout {
                 case R.id.menu_add_apps_home:
                     break;
                 case R.id.menu_sort_mode:
-
+                    DialogHelper.sortModeDialog(getContext());
                     break;
             }
 

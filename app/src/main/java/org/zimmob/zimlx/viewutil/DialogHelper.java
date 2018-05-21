@@ -8,6 +8,7 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
+import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -146,11 +147,16 @@ public class DialogHelper {
                 }).show();
     }
 
-    public static void sortModeDialog(Context context, MaterialDialog.ListCallback callback){
+    public static void sortModeDialog(Context context){
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.title(R.string.menu_sort_apps);
         builder.items(R.array.entries__sort_mode);
-        builder.itemsCallback(callback);
+        builder.itemsCallbackSingleChoice(-1,new MaterialDialog.ListCallbackSingleChoice(){
+            @Override
+            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
+                return false;
+            }
+        });
         builder.show();
     }
 
