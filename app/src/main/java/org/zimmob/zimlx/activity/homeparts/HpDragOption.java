@@ -19,7 +19,7 @@ import org.zimmob.zimlx.widget.DragOptionLayout;
 
 import java.util.ArrayList;
 
-public class HpDragNDrop {
+public class HpDragOption {
     private final int uninstallItemIdentifier = 83;
     private final int infoItemIdentifier = 84;
     private final int editItemIdentifier = 85;
