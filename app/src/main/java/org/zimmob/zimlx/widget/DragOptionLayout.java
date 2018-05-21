@@ -38,7 +38,7 @@ import jp.wasabeef.recyclerview.animators.SlideInRightAnimator;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class DragNDropLayout extends FrameLayout {
+public class DragOptionLayout extends FrameLayout {
 
     private final float DRAG_THRESHOLD;
     private Action _dragAction;
@@ -63,7 +63,7 @@ public class DragNDropLayout extends FrameLayout {
     private final SlideInRightAnimator _slideInRightAnimator;
     private final int[] _tempArrayOfInt2;
 
-    public DragNDropLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
+    public DragOptionLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
         this.DRAG_THRESHOLD = 20.0f;
         _paint = new Paint(1);
@@ -415,15 +415,15 @@ public class DragNDropLayout extends FrameLayout {
     public final class OverlayView extends View {
 
         OverlayView() {
-            super(DragNDropLayout.this.getContext());
+            super(DragOptionLayout.this.getContext());
             setWillNotDraw(false);
         }
 
         public boolean onTouchEvent(@Nullable MotionEvent event) {
-            if (event == null || event.getActionMasked() != 0 || DragNDropLayout.this.getDragging() || !DragNDropLayout.this._overlayPopupShowing) {
+            if (event == null || event.getActionMasked() != 0 || DragOptionLayout.this.getDragging() || !DragOptionLayout.this._overlayPopupShowing) {
                 return super.onTouchEvent(event);
             }
-            DragNDropLayout.this.hidePopupMenu();
+            DragOptionLayout.this.hidePopupMenu();
             return true;
         }
 

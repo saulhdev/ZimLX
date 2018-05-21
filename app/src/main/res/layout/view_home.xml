@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<org.zimmob.zimlx.widget.DragNDropLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.zimmob.zimlx.widget.DragOptionLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/dragNDropView"
     android:layout_width="match_parent"
@@ -135,4 +135,4 @@
 
     </android.support.constraint.ConstraintLayout>
 
-</org.zimmob.zimlx.widget.DragNDropLayout>
+</org.zimmob.zimlx.widget.DragOptionLayout>

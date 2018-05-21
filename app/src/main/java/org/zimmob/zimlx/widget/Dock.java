@@ -93,7 +93,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
      */
     public final void updateIconProjection(int x, int y) {
         HomeActivity launcher;
-        DragNDropLayout dragNDropView;
+        DragOptionLayout dragNDropView;
         DragState state = peekItemAndSwap(x, y, _coordinate);
         if (!_coordinate.equals(_previousDragPoint)) {
             launcher = _home;
@@ -115,7 +115,7 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
             case CurrentOccupied:
                 Object action;
                 HomeActivity launcher2;
-                DragNDropLayout dragNDropView2;
+                DragOptionLayout dragNDropView2;
                 clearCachedOutlineBitmap();
                 launcher = _home;
                 if (launcher != null) {

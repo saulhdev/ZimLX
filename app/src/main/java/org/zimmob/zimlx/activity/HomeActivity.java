@@ -66,7 +66,7 @@ import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.Desktop.OnDesktopEditListener;
 import org.zimmob.zimlx.widget.DesktopOptionView;
 import org.zimmob.zimlx.widget.Dock;
-import org.zimmob.zimlx.widget.DragNDropLayout;
+import org.zimmob.zimlx.widget.DragOptionLayout;
 import org.zimmob.zimlx.widget.DragOptionView;
 import org.zimmob.zimlx.widget.GroupPopupView;
 import org.zimmob.zimlx.widget.PagerIndicator;
@@ -467,7 +467,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private void onHandleLauncherPause() {
         ((GroupPopupView) findViewById(R.id.groupPopup)).dismissPopup();
         ((CalendarDropDownView) findViewById(R.id.calendarDropDownView)).animateHide();
-        ((DragNDropLayout) findViewById(R.id.dragNDropView)).hidePopupMenu();
+        ((DragOptionLayout) findViewById(R.id.dragNDropView)).hidePopupMenu();
         if (!((SearchBar) findViewById(R.id.searchBar)).collapse()) {
             if ((findViewById(R.id.desktop)) != null) {
                 Desktop desktop = findViewById(R.id.desktop);
@@ -611,9 +611,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     @NonNull
-    public final DragNDropLayout getDragNDropView() {
-        DragNDropLayout dragNDropLayout = findViewById(R.id.dragNDropView);
-        return dragNDropLayout;
+    public final DragOptionLayout getDragNDropView() {
+        DragOptionLayout dragOptionLayout = findViewById(R.id.dragNDropView);
+        return dragOptionLayout;
     }
 
     private final void init() {
@@ -628,8 +628,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         HpDragNDrop hpDragNDrop = new HpDragNDrop();
         View findViewById = findViewById(R.id.leftDragHandle);
         View findViewById2 = findViewById(R.id.rightDragHandle);
-        DragNDropLayout dragNDropLayout = findViewById(R.id.dragNDropView);
-        hpDragNDrop.initDragNDrop(this, findViewById, findViewById2, dragNDropLayout);
+        DragOptionLayout dragOptionLayout = findViewById(R.id.dragNDropView);
+        hpDragNDrop.initDragNDrop(this, findViewById, findViewById2, dragOptionLayout);
         registerBroadcastReceiver();
         initAppManager();
         initSettings();

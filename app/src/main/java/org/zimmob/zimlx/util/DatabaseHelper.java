@@ -12,7 +12,6 @@ import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.config.Config.ItemPosition.*;
 
 import java.util.ArrayList;
 import java.util.List;

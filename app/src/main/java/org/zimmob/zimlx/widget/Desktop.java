@@ -284,7 +284,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
 
     public final void updateIconProjection(int x, int y) {
         HomeActivity launcher;
-        DragNDropLayout dragNDropView;
+        DragOptionLayout dragNDropView;
         DragState state = getCurrentPage().peekItemAndSwap(x, y, _coordinate);
         if (_previousDragPoint != null && !_previousDragPoint.equals(_coordinate)) {
             launcher = _home;
@@ -306,7 +306,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
             case CurrentOccupied:
                 Object action;
                 HomeActivity launcher2;
-                DragNDropLayout dragNDropView2;
+                DragOptionLayout dragNDropView2;
                 for (CellContainer page : _pages) {
                     page.clearCachedOutlineBitmap();
                 }
@@ -449,7 +449,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         if (!isInEditMode()) {
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
             if (launcher != null) {
-                DragNDropLayout dragNDropView = launcher.getDragNDropView();
+                DragOptionLayout dragNDropView = launcher.getDragNDropView();
                 if (dragNDropView != null) {
                     dragNDropView.cancelFolderPreview();
                 }

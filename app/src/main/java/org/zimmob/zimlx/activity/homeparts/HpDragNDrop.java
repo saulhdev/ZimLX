@@ -15,7 +15,7 @@ import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
-import org.zimmob.zimlx.widget.DragNDropLayout;
+import org.zimmob.zimlx.widget.DragOptionLayout;
 
 import java.util.ArrayList;
 
@@ -30,11 +30,11 @@ public class HpDragNDrop {
     private PopupIconLabelItem editItem = new PopupIconLabelItem(R.string.edit, R.drawable.ic_edit_black_24dp).withIdentifier(editItemIdentifier);
     private PopupIconLabelItem removeItem = new PopupIconLabelItem(R.string.remove, R.drawable.ic_close_dark_24dp).withIdentifier(removeItemIdentifier);
 
-    public void initDragNDrop(HomeActivity _home, View leftDragHandle, View rightDragHandle, DragNDropLayout dragNDropView) {
+    public void initDragNDrop(HomeActivity _home, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
         //dragHandle's drag event
         final Handler dragHandler = new Handler();
 
-        dragNDropView.registerDropTarget(new DragNDropLayout.DropTargetListener(leftDragHandle) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(leftDragHandle) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -88,7 +88,7 @@ public class HpDragNDrop {
             }
         });
 
-        dragNDropView.registerDropTarget(new DragNDropLayout.DropTargetListener(rightDragHandle) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(rightDragHandle) {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
@@ -143,7 +143,7 @@ public class HpDragNDrop {
         });
 
         //desktop's drag event
-        dragNDropView.registerDropTarget(new DragNDropLayout.DropTargetListener(_home.getDesktop()) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(_home.getDesktop()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 if (!DragAction.Action.SEARCH_RESULT.equals(action))
@@ -219,7 +219,7 @@ public class HpDragNDrop {
         });
 
         //dock's drag event
-        dragNDropView.registerDropTarget(new DragNDropLayout.DropTargetListener(_home.getDock()) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(_home.getDock()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 boolean ok = !DragAction.Action.WIDGET.equals(action);
@@ -299,7 +299,7 @@ public class HpDragNDrop {
         });
     }
 
-    private void showItemPopup(@NonNull final DragNDropLayout dragNDropView, final HomeActivity home) {
+    private void showItemPopup(@NonNull final DragOptionLayout dragNDropView, final HomeActivity home) {
         ArrayList<PopupIconLabelItem> itemList = new ArrayList<>();
         switch (dragNDropView.getDragItem().getType()) {
             case APP:
