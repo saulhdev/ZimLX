@@ -24,6 +24,7 @@
         android:id="@+id/drawerMenu"
         android:layout_width="48dp"
         android:layout_height="wrap_content"
+        android:gravity="center|center_horizontal"
         android:layout_marginTop="0dp"
         android:layout_weight="1"
         android:elevation="0dp"

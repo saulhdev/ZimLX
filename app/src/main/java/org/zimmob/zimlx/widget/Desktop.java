@@ -397,17 +397,16 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         return true;
     }
 
-    public boolean addItemToCell(@NonNull Item item, int x, int y) {
+    public void addItemToCell(@NonNull Item item, int x, int y) {
 
         item._locationInLauncher = 0;
         item.x = x;
         item.y = y;
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
-            return false;
+            return;
         }
         getCurrentPage().addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
-        return true;
     }
 
     public boolean onInterceptTouchEvent(@Nullable MotionEvent ev) {

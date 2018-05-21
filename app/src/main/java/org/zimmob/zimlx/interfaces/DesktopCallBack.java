@@ -9,7 +9,7 @@ public interface DesktopCallBack<V extends View> extends RevertibleAction {
 
     boolean addItemToPage(Item item, int page);
 
-    boolean addItemToCell(Item item, int x, int y);
+    void addItemToCell(Item item, int x, int y);
 
     void removeItem(V view, boolean animate);
 }

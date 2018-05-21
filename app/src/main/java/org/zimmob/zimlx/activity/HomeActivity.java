@@ -76,6 +76,7 @@ import org.zimmob.zimlx.widget.SwipeListView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by saul on 04-25-18.
@@ -137,7 +138,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             _timeChangedReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
-                    if (intent.getAction().equals(Intent.ACTION_TIME_TICK)) {
+                    if (Objects.requireNonNull(intent.getAction()).equals(Intent.ACTION_TIME_TICK)) {
                         updateSearchClock();
                     }
                 }
@@ -164,7 +165,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             appSettings.setAppRestartRequired(false);
             PendingIntent restartIntentP = PendingIntent.getActivity(this, 123556, new Intent(this, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + ((long) 100), restartIntentP);
+            Objects.requireNonNull(mgr).set(AlarmManager.RTC, System.currentTimeMillis() + ((long) 100), restartIntentP);
             System.exit(0);
             return;
         }
@@ -227,7 +228,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             cy += view.getHeight() / 2f;
             if (view instanceof AppItemView) {
                 AppItemView appItemView = (AppItemView) view;
-                if (appItemView != null && appItemView.getShowLabel()) {
+                if (appItemView.getShowLabel()) {
                     cy -= Tool.dp2px(14, this) / 2f;
                 }
                 rad = (int) (appItemView.getIconSize() / 2f - Tool.toPx(4));
@@ -325,7 +326,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private final void configureWidget(Intent data) {
         Bundle extras = data.getExtras();
-        int appWidgetId = extras.getInt("appWidgetId", -1);
+        int appWidgetId = Objects.requireNonNull(extras).getInt("appWidgetId", -1);
         AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
         if (appWidgetInfo.configure != null) {
             Intent intent = new Intent("android.appwidget.action.APPWIDGET_CONFIGURE");
@@ -339,7 +340,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private final void createWidget(Intent data) {
         Bundle extras = data.getExtras();
-        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        int appWidgetId = Objects.requireNonNull(extras).getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
         Item item = Item.newWidgetItem(appWidgetId);
         Desktop desktop = getDesktop();
@@ -407,7 +408,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 stringBuilder.append("package:");
                 Intent intent = item.intent;
                 ComponentName component = intent.getComponent();
-                stringBuilder.append(component.getPackageName());
+                stringBuilder.append(Objects.requireNonNull(component).getPackageName());
                 startActivity(new Intent(str, Uri.parse(stringBuilder.toString())));
             } catch (Exception e) {
                 Tool.toast(this, R.string.toast_app_uninstalled);
@@ -622,7 +623,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         companion.setAppWidgetManager(instance);
         WidgetHost appWidgetHost = Companion.getAppWidgetHost();
-        appWidgetHost.startListening();
+        Objects.requireNonNull(appWidgetHost).startListening();
         initViews();
         HpDragNDrop hpDragNDrop = new HpDragNDrop();
         View findViewById = findViewById(R.id.leftDragHandle);
@@ -660,9 +661,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
             @Override
             public boolean onAppUpdated(List<App> it) {
-                if (getDesktop() == null) {
-                    return false;
-                }
                 AppSettings appSettings = Setup.appSettings();
                 if (appSettings.getDesktopStyle() == 0) {
                     getDesktop().initDesktopNormal(HomeActivity.this);
@@ -808,9 +806,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == -1) {
             if (requestCode == REQUEST_PICK_APPWIDGET) {
-                configureWidget(data);
+                configureWidget(Objects.requireNonNull(data));
             } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
-                createWidget(data);
+                createWidget(Objects.requireNonNull(data));
             }
         } else if (resultCode == 0 && data != null) {
             int appWidgetId = data.getIntExtra("appWidgetId", -1);
@@ -826,7 +824,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public final void onStartApp(@NonNull Context context, @NonNull Intent intent, @Nullable View view) {
         ComponentName component = intent.getComponent();
 
-        if (BuildConfig.APPLICATION_ID.equals(component.getPackageName())) {
+        if (BuildConfig.APPLICATION_ID.equals(Objects.requireNonNull(component).getPackageName())) {
             LauncherAction.RunAction(Action.LauncherSettings, context);
             Companion.setConsumeNextResume(true);
         } else {
@@ -957,7 +955,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private void pickWidget() {
         Companion.setConsumeNextResume(true);
-        int appWidgetId = Companion.getAppWidgetHost().allocateAppWidgetId();
+        int appWidgetId = Objects.requireNonNull(Companion.getAppWidgetHost()).allocateAppWidgetId();
         Intent pickIntent = new Intent("android.appwidget.action.APPWIDGET_PICK");
         pickIntent.putExtra("appWidgetId", appWidgetId);
         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);

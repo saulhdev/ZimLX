@@ -21,10 +21,10 @@ import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
-    private static int itemHeightPadding;
+    private int itemHeightPadding;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
-    private static int _rowCellCount, _columnCellCount;
+    private int _rowCellCount, _columnCellCount;
     private PagerIndicator _appDrawerIndicator;
     private int _pageCount = 0;
 
@@ -77,7 +77,7 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     private void init(Context c) {
-        itemHeightPadding = Tool.dp2px(20, getContext());
+        itemHeightPadding = Tool.dp2px(5, getContext());
         if (isInEditMode()) return;
         setOverScrollMode(OVER_SCROLL_NEVER);
         boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
@@ -157,15 +157,15 @@ public class AppDrawerPaged extends SmoothViewPager {
                     ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
                     ((CardView) layout.getChildAt(0)).setCardElevation(Tool.dp2px(4, getContext()));
                 }
-
                 CellContainer cc = layout.findViewById(R.id.group);
                 cc.setGridSize(_columnCellCount, _rowCellCount);
-
                 for (int x = 0; x < _columnCellCount; x++) {
                     for (int y = 0; y < _rowCellCount; y++) {
                         View view = getItemView(i, x, y);
                         if (view != null) {
+
                             CellContainer.LayoutParams lp = new CellContainer.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, x, y, 1, 1);
+
                             view.setLayoutParams(lp);
                             cc.addViewToGrid(view);
                         }

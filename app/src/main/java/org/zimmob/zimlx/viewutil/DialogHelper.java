@@ -58,7 +58,6 @@ public class DialogHelper {
                 .show();
     }
 
-
     public static void addActionItemDialog(final Context context, MaterialDialog.ListCallback callback) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.title(R.string.desktop_action)
@@ -95,10 +94,6 @@ public class DialogHelper {
         dialog.show();
     }
 
-    /**
-     * @param context
-     * @param item
-     */
     public static void deletePackageDialog(Context context, Item item) {
         if (item.getType() == Item.Type.APP) {
             try {
@@ -111,9 +106,6 @@ public class DialogHelper {
         }
     }
 
-    /**
-     * @param context
-     */
     public static void backupDialog(final Context context) {
         new MaterialDialog.Builder(context)
                 .title(R.string.pref_title__backup)
@@ -154,6 +146,14 @@ public class DialogHelper {
                 }).show();
     }
 
+    public static void sortModeDialog(Context context, MaterialDialog.ListCallback callback){
+        MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
+        builder.title(R.string.menu_sort_apps);
+        builder.items(R.array.entries__sort_mode);
+        builder.itemsCallback(callback);
+        builder.show();
+    }
+
     public interface OnAppSelectedListener {
         void onAppSelected(App app);
     }
@@ -161,4 +161,6 @@ public class DialogHelper {
     public interface OnItemEditListener {
         void itemLabel(String label);
     }
+
+
 }

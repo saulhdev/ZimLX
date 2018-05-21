@@ -323,7 +323,7 @@ public class Tool {
 
             HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
             HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
-            return itemGestureListener != null && itemGestureListener.onTouchEvent(motionEvent);
+            return false;
         };
     }
 

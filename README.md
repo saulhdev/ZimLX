@@ -58,7 +58,7 @@ Want to support me? https://paypal.me/saulhenriquez
 * Appearance
     * Font Type
     * Font Size
-* Multilanguage support and more cool stuff.
+* Multi language support and more cool stuff.
 
 ## Collaborate
 If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com

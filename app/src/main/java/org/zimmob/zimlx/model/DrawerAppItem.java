@@ -79,6 +79,7 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
             super(itemView);
             appItemView = (AppItemView) itemView;
             appItemView.setTargetedWidth(AppDrawerVertical.itemWidth);
+
             appItemView.setTargetedHeightPadding(AppDrawerVertical.itemHeightPadding);
 
             builder = new AppItemView.Builder(appItemView, Setup.appSettings().getDrawerIconSize())

@@ -2,7 +2,6 @@ package org.zimmob.zimlx.widget;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.os.Build.VERSION;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -232,17 +231,16 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         return true;
     }
 
-    public boolean addItemToCell(@NonNull Item item, int x, int y) {
+    public void addItemToCell(@NonNull Item item, int x, int y) {
 
         item._locationInLauncher = 1;
         item.x = x;
         item.y = y;
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
-            return false;
+            return;
         }
         addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
-        return true;
     }
 
     public void removeItem(final View view, boolean animate) {

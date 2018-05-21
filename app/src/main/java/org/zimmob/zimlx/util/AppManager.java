@@ -35,10 +35,6 @@ import java.util.UUID;
 public class AppManager {
     private static AppManager _ref;
 
-    /**
-     * @param context
-     * @return
-     */
     public static AppManager getInstance(Context context) {
         return _ref == null ? (_ref = new AppManager(context)) : _ref;
     }
@@ -274,7 +270,7 @@ public class AppManager {
                     Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
                     break;
                 case Config.APP_SORT_MU:
-
+                    Log.i("apps","sorting by Most Used" );
 
                     break;
             }
@@ -337,7 +333,13 @@ public class AppManager {
 
         @Override
         public boolean equals(Object obj) {
-            return obj instanceof AppUpdatedListener && ((AppUpdatedListener) obj).listenerID.equals(this.listenerID);
+            if (obj instanceof AppUpdatedListener) {
+                if (!((AppUpdatedListener) obj).listenerID.equals(this.listenerID)) {
+                    return false;
+                }
+                return true;
+            }
+            return false;
         }
     }
 }

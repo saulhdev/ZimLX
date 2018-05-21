@@ -4,8 +4,10 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
+import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -16,12 +18,18 @@ import android.widget.Button;
 import android.widget.PopupMenu;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.activity.SettingsActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.DialogHelper;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -199,7 +207,9 @@ public class AppDrawerController extends RevealFrameLayout {
         switch (_drawerMode) {
             case DRAWER_HORIZONTAL:
                 _drawerViewPaged = (AppDrawerPaged) layoutInflater.inflate(R.layout.view_app_drawer_paged, this, false);
-                addView(_drawerViewPaged);
+                RevealFrameLayout.LayoutParams marginParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+                marginParams.topMargin = 15;
+                addView(_drawerViewPaged, marginParams);
                 layoutInflater.inflate(R.layout.view_drawer_indicator, this, true);
                 break;
             case DRAWER_VERTICAL:
@@ -212,7 +222,6 @@ public class AppDrawerController extends RevealFrameLayout {
                 lp.topMargin = marginVertical;
                 lp.bottomMargin = marginVertical;
                 addView(_drawerViewGrid, lp);
-
                 break;
         }
     }
@@ -220,7 +229,27 @@ public class AppDrawerController extends RevealFrameLayout {
     private void showDrawerMenu(View v){
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(item -> false);
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int menuItem = item.getItemId();
+            switch (menuItem){
+                case R.id.menu_settings:
+                break;
+
+                case R.id.menu_layout_mode:
+                    break;
+
+                case R.id.menu_hidden_apps:
+                    break;
+
+                case R.id.menu_add_apps_home:
+                    break;
+                case R.id.menu_sort_mode:
+
+                    break;
+            }
+
+            return false;
+        });
 
         popupMenu.show();
     }
