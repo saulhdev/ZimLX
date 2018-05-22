@@ -23,7 +23,6 @@ import org.zimmob.zimlx.interfaces.IconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.BaseIconProvider;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
@@ -37,7 +36,6 @@ public class AppItemView extends View implements Drawable.Callback {
     private static final char ELLIPSIS = '…';
 
     private Drawable icon = null;
-    private BaseIconProvider _iconProvider;
     private String _label;
     private Paint _textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private Rect _textContainer = new Rect(), testTextContainer = new Rect();
@@ -118,10 +116,6 @@ public class AppItemView extends View implements Drawable.Callback {
 
     public View getView() {
         return this;
-    }
-
-    public IconProvider getIconProvider() {
-        return _iconProvider;
     }
 
     public String getLabel() {

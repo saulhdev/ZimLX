@@ -1,9 +1,7 @@
 package org.zimmob.zimlx.activity.homeparts;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.zimmob.zimlx.AppObject;
@@ -13,7 +11,6 @@ import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
-import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener.ItemGestureCallback;
 

@@ -8,7 +8,6 @@ import android.os.Parcelable;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.interfaces.LabelProvider;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;
@@ -37,10 +36,9 @@ public class Item implements LabelProvider, Parcelable {
     public int spanY = 1;
     // all items need these values
     private int _idValue;
-    private String _name = "";
+    private String name = "";
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
-
         @Override
         public Item createFromParcel(Parcel parcel) {
             return new Item(parcel);
@@ -63,7 +61,7 @@ public class Item implements LabelProvider, Parcelable {
     public Item(Parcel parcel) {
         _idValue = parcel.readInt();
         type = Type.valueOf(parcel.readString());
-        _name = parcel.readString();
+        name = parcel.readString();
         x = parcel.readInt();
         y = parcel.readInt();
         switch (type) {
@@ -76,7 +74,7 @@ public class Item implements LabelProvider, Parcelable {
                 parcel.readStringList(labels);
                 items = new ArrayList<>();
                 for (String s : labels) {
-                    items.add(HomeActivity._db.getItem(Integer.parseInt(s)));
+                    items.add(HomeActivity.Companion.getLauncher()._db.getItem(Integer.parseInt(s)));
                 }
                 break;
             case ACTION:
@@ -109,7 +107,7 @@ public class Item implements LabelProvider, Parcelable {
     public static Item newAppItem(App app) {
         Item item = new Item();
         item.type = Type.APP;
-        item._name = app.getLabel();
+        item.name = app.getLabel();
         item.spanX = 1;
         item.spanY = 1;
         item.icon = app.getIcon();
@@ -120,7 +118,7 @@ public class Item implements LabelProvider, Parcelable {
     public static Item newShortcutItem(Intent intent, Drawable icon, String name) {
         Item item = new Item();
         item.type = Type.SHORTCUT;
-        item._name = name;
+        item.name = name;
         item.icon = icon;
         item.spanX = 1;
         item.spanY = 1;
@@ -134,7 +132,7 @@ public class Item implements LabelProvider, Parcelable {
     public static Item newGroupItem() {
         Item item = new Item();
         item.type = Type.GROUP;
-        item._name = "";
+        item.name = "";
         item.spanX = 1;
         item.spanY = 1;
         item.items = new ArrayList<>();
@@ -187,7 +185,7 @@ public class Item implements LabelProvider, Parcelable {
     public void writeToParcel(Parcel out, int flags) {
         out.writeInt(_idValue);
         out.writeString(type.toString());
-        out.writeString(_name);
+        out.writeString(name);
         out.writeInt(x);
         out.writeInt(y);
         switch (type) {
@@ -233,11 +231,11 @@ public class Item implements LabelProvider, Parcelable {
 
     @Override
     public String getLabel() {
-        return _name;
+        return name;
     }
 
     public void setLabel(String label) {
-        _name = label;
+        name = label;
     }
 
     public Type getType() {

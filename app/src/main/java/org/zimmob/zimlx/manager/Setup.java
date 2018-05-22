@@ -1,7 +1,6 @@
 package org.zimmob.zimlx.manager;
 
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DialogListener;
@@ -9,7 +8,6 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
-import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
 
