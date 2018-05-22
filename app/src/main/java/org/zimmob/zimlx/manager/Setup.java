@@ -94,16 +94,6 @@ public abstract class Setup {
 
     protected abstract Logger getLogger();
 
-    // ----------------
-    // Interfaces
-    // ----------------
-
-    public interface ImageLoader {
-        SimpleIconProvider createIconProvider(Drawable drawable);
-
-        SimpleIconProvider createIconProvider(int icon);
-    }
-
     public interface DataManager {
         void saveItem(Item item);
 

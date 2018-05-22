@@ -141,10 +141,8 @@ public class GroupPopupView extends RevealFrameLayout {
         }
 
         _dismissListener = () -> {
-            if (((AppItemView) itemView).getIconProvider().isGroupIconDrawable()) {
-                if (((AppItemView) itemView).getCurrentIcon() != null) {
-                    ((GroupIconDrawable) ((AppItemView) itemView).getCurrentIcon()).popBack();
-                }
+            if (((AppItemView) itemView).getCurrentIcon() != null) {
+                ((GroupIconDrawable) ((AppItemView) itemView).getCurrentIcon()).popBack();
             }
         };
 

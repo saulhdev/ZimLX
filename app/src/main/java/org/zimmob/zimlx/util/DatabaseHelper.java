@@ -315,7 +315,7 @@ private static final String TABLE_APP_COUNT="app_count";
                     +COLUMN_PACKAGE_NAME + " VARCHAR, "
                     +COLUMN_PACKAGE_COUNT+ " INTEGER)";
 
-    private void saveApp(String packageName){
+    public void saveApp(String packageName){
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_PACKAGE_NAME, packageName);
         itemValues.put(COLUMN_PACKAGE_COUNT, 0);

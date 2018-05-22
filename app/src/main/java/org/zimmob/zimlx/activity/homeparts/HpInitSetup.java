@@ -9,12 +9,15 @@ import android.util.Log;
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener.ItemGestureCallback;
+
+import java.util.List;
 
 /* compiled from: HomeActivity.kt */
 public final class HpInitSetup extends Setup {
@@ -35,8 +38,12 @@ public final class HpInitSetup extends Setup {
 
         _logger = (source, priority, tag, msg, args) -> Log.println(priority, tag, String.format(msg, args));
 
-
         _itemGestureCallback = (item, event) -> false;
+
+        List<App> allApps = _appLoader.getAllApps(getAppContext(), true);
+        for (App app: allApps) {
+            _dataManager.saveApp(app.getPackageName());
+        }
     }
 
     @NonNull
