@@ -21,8 +21,8 @@ import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.AppDeleteListener;
 import org.zimmob.zimlx.interfaces.AppUpdateListener;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.model.IconLabelItem;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.text.Collator;
 import java.util.ArrayList;

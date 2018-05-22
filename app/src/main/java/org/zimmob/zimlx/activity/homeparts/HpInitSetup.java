@@ -22,7 +22,6 @@ public final class HpInitSetup extends Setup {
     private final DatabaseHelper _dataManager;
     private final HpDesktopGestureCallback _desktopGestureCallback;
     private final HpEventHandler _eventHandler;
-    private final ImageLoader _imageLoader;
     private final ItemGestureCallback _itemGestureCallback;
     private final Logger _logger;
     private final AppSettings _appSettings;
@@ -36,17 +35,7 @@ public final class HpInitSetup extends Setup {
 
         _logger = (source, priority, tag, msg, args) -> Log.println(priority, tag, String.format(msg, args));
 
-        _imageLoader = new ImageLoader() {
-            @NonNull
-            public SimpleIconProvider createIconProvider(@Nullable Drawable drawable) {
-                return new SimpleIconProvider(drawable);
-            }
 
-            @NonNull
-            public SimpleIconProvider createIconProvider(int icon) {
-                return new SimpleIconProvider(icon);
-            }
-        };
         _itemGestureCallback = (item, event) -> false;
     }
 
@@ -71,12 +60,7 @@ public final class HpInitSetup extends Setup {
     }
 
     @NonNull
-    public ImageLoader getImageLoader() {
-        return _imageLoader;
-    }
-
-    @NonNull
-    public DataManager getDataManager() {
+    public DatabaseHelper getDataManager() {
         return _dataManager;
     }
 

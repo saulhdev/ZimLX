@@ -2,7 +2,6 @@ package org.zimmob.zimlx.widget;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -36,12 +35,12 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.model.IconLabelItem;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.CircleDrawable;
+import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -64,7 +63,7 @@ public class SearchBar extends FrameLayout {
     private RecyclerView _searchRecycler;
     private CircleDrawable _icon;
     private CardView _searchCardContainer;
-    private FastItemAdapter<FastItem.LabelItem> _adapter = new FastItemAdapter<>();
+    private FastItemAdapter<IconLabelItem> _adapter = new FastItemAdapter<>();
     private CallBack _callback;
     private boolean _expanded;
     private boolean _searchInternetEnabled = true;
@@ -206,7 +205,7 @@ public class SearchBar extends FrameLayout {
             if (Setup.appSettings().getSearchBarShouldShowHiddenApps()) {
                 apps = Setup.appLoader().getAllApps(getContext(), true);
             }
-            List<FastItem.LabelItem> items = new ArrayList<>();
+            List<IconLabelItem> items = new ArrayList<>();
             if (_searchInternetEnabled) {
                 items.add(new IconLabelItem(getContext(), R.string.search_online)
                         .withIconGravity(Gravity.START)
@@ -215,7 +214,7 @@ public class SearchBar extends FrameLayout {
                             _searchInput.getText().clear();
                         })
                         .withTextColor(Color.WHITE)
-                        .withDrawablePadding(getContext(), 8)
+                        .withIconPadding(getContext(), 8)
                         .withBold(true)
                         .withMatchParent(true)
                         .withTextGravity(Gravity.END));
@@ -242,18 +241,18 @@ public class SearchBar extends FrameLayout {
                         }))
                         .withTextColor(Color.WHITE)
                         .withMatchParent(true)
-                        .withDrawablePadding(getContext(), 8)
+                        .withIconPadding(getContext(), 8)
                         .withMaxTextLines(Setup.appSettings().getSearchLabelLines()));
             }
             _adapter.set(items);
 
             return false;
         });
-        _adapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<FastItem.LabelItem>) (item, constraint) -> {
-            if (item.getLabel().equals(getContext().getString(R.string.search_online)))
+        _adapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IconLabelItem>) (item, constraint) -> {
+            if (item._label.equals(getContext().getString(R.string.search_online)))
                 return false;
             String s = constraint.toString();
-            return s.isEmpty() || !item.getLabel().toLowerCase().contains(s.toLowerCase());
+            return s.isEmpty() || !item._label.toLowerCase().contains(s.toLowerCase());
         });
 
         final LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

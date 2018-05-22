@@ -8,6 +8,7 @@ import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.SimpleIconProvider;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
@@ -57,11 +58,7 @@ public abstract class Setup {
         return get().getItemGestureCallback();
     }
 
-    public static ImageLoader imageLoader() {
-        return get().getImageLoader();
-    }
-
-    public static DataManager dataManager() {
+    public static DatabaseHelper dataManager() {
         return get().getDataManager();
     }
 
@@ -89,9 +86,7 @@ public abstract class Setup {
 
     protected abstract ItemGestureListener.ItemGestureCallback getItemGestureCallback();
 
-    public abstract ImageLoader getImageLoader();
-
-    protected abstract DataManager getDataManager();
+    protected abstract DatabaseHelper getDataManager();
 
     public abstract AppManager getAppLoader();
 

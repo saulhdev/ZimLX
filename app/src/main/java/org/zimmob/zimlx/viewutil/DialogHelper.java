@@ -12,11 +12,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
+import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.model.IconLabelItem;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.Tool;
@@ -82,7 +82,7 @@ public class DialogHelper {
         for (int i = 0; i < apps.size(); i++) {
             items.add(new IconLabelItem(context, apps.get(i).getIcon(), apps.get(i).getLabel(), size)
                     .withIconGravity(Gravity.START)
-                    .withDrawablePadding(context, sizePad));
+                    .withIconPadding(context, sizePad));
         }
         fastItemAdapter.set(items);
         fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
@@ -112,37 +112,40 @@ public class DialogHelper {
                 .title(R.string.pref_title__backup)
                 .positiveText(R.string.cancel)
                 .items(R.array.entries__backup_options)
-                .itemsCallback((dialog, itemView, item, text) -> {
-                    PackageManager m = context.getPackageManager();
-                    String s = context.getPackageName();
+                .itemsCallback(new MaterialDialog.ListCallback() {
+                    @Override
+                    public void onSelection(MaterialDialog dialog, View itemView, int item, CharSequence text) {
+                        PackageManager m = context.getPackageManager();
+                        String s = context.getPackageName();
 
-                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
-                        File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLx/");
-                        if (!directory.exists()) {
-                            directory.mkdir();
+                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
+                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                            if (!directory.exists()) {
+                                directory.mkdir();
+                            }
+                            try {
+                                PackageInfo p = m.getPackageInfo(s, 0);
+                                s = p.applicationInfo.dataDir;
+                                Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
+                                Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
+                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
+                            }
                         }
-                        try {
-                            PackageInfo p = m.getPackageInfo(s, 0);
-                            s = p.applicationInfo.dataDir;
-                            Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
-                            Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
-                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
+                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
+                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                            try {
+                                PackageInfo p = m.getPackageInfo(s, 0);
+                                s = p.applicationInfo.dataDir;
+                                Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
+                                Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
+                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                            } catch (Exception e) {
+                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
+                            }
+                            System.exit(1);
                         }
-                    }
-                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
-                        File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLx/");
-                        try {
-                            PackageInfo p = m.getPackageInfo(s, 0);
-                            s = p.applicationInfo.dataDir;
-                            Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
-                            Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
-                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                        } catch (Exception e) {
-                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
-                        }
-                        System.exit(1);
                     }
                 }).show();
     }

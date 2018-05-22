@@ -53,11 +53,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
 
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(SQL_CREATE_HOME);
+        db.execSQL(SQL_CREATE_COUNT);
     }
 
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // discard the data and start over
         db.execSQL(SQL_DELETE + TABLE_HOME);
+        db.execSQL(SQL_DELETE + TABLE_APP_COUNT);
         onCreate(db);
     }
 
@@ -65,7 +67,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    private void createItem(Item item, int page, Config.ItemPosition itemPosition) {
+    public void createItem(Item item, int page, Config.ItemPosition itemPosition) {
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_TIME, item.getId());
         itemValues.put(COLUMN_TYPE, item.getType().toString());
@@ -73,35 +75,32 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         itemValues.put(COLUMN_X_POS, item.getX());
         itemValues.put(COLUMN_Y_POS, item.getY());
 
-        Setup.logger().log(this, Log.INFO, null, "createItem: %s (ID: %d)", item.getLabel(), item.getId());
+        Setup.logger().log(this, Log.INFO, null, "createItem: %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
 
-        StringBuilder concat = new StringBuilder();
+        String concat = "";
         switch (item.getType()) {
             case APP:
-                Setup.logger().log(this, Log.INFO, null, "Save App: %s", item.getIntent().toString());
-
-
                 if (Setup.appSettings().enableImageCaching()) {
-                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIconProvider().getDrawableSynchronously(-1)), Integer.toString(item.getId()));
-                    Setup.logger().log(this, Log.INFO, null, "Checking Save Method:%s", item.getIntent().toString());
-
+                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIcon()), Integer.toString(item.getId()));
                 }
                 itemValues.put(COLUMN_DATA, Tool.getIntentAsString(item.getIntent()));
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat.append(tmp.getId()).append(Config.INT_SEP);
+                    if (tmp != null) {
+                        concat += tmp.getId() + Config.INT_SEP;
+                    }
                 }
-                itemValues.put(COLUMN_DATA, concat.toString());
+                itemValues.put(COLUMN_DATA, concat);
                 break;
             case ACTION:
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Config.INT_SEP
+                concat = Integer.toString(item.getWidgetValue()) + Config.INT_SEP
                         + Integer.toString(item.getSpanX()) + Config.INT_SEP
-                        + Integer.toString(item.getSpanY()));
-                itemValues.put(COLUMN_DATA, concat.toString());
+                        + Integer.toString(item.getSpanY());
+                itemValues.put(COLUMN_DATA, concat);
                 break;
         }
         itemValues.put(COLUMN_PAGE, page);
@@ -199,7 +198,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
     }
 
     // update data attribute for an item
-    private void updateItem(Item item) {
+    public void updateItem(Item item) {
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_LABEL, item.getLabel());
         itemValues.put(COLUMN_X_POS, item.getX());
@@ -207,28 +206,28 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
 
         Setup.logger().log(this, Log.INFO, null, "updateItem: %s (ID: %d)", item != null ? item.getLabel() : "NULL", item != null ? item.getId() : -1);
 
-        StringBuilder concat = new StringBuilder();
+        String concat = "";
         switch (item.getType()) {
             case APP:
                 if (Setup.appSettings().enableImageCaching()) {
-                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIconProvider().getDrawableSynchronously(Config.NO_SCALE)), Integer.toString(item.getId()));
+                    Tool.saveIcon(context, Tool.drawableToBitmap(item.getIcon()), Integer.toString(item.getId()));
                 }
                 itemValues.put(COLUMN_DATA, Tool.getIntentAsString(item.getIntent()));
                 break;
             case GROUP:
                 for (Item tmp : item.getItems()) {
-                    concat.append(tmp.getId()).append(Config.INT_SEP);
+                    concat += tmp.getId() + Config.INT_SEP;
                 }
-                itemValues.put(COLUMN_DATA, concat.toString());
+                itemValues.put(COLUMN_DATA, concat);
                 break;
             case ACTION:
                 itemValues.put(COLUMN_DATA, item.getActionValue());
                 break;
             case WIDGET:
-                concat = new StringBuilder(Integer.toString(item.getWidgetValue()) + Config.INT_SEP
+                concat = Integer.toString(item.getWidgetValue()) + Config.INT_SEP
                         + Integer.toString(item.getSpanX()) + Config.INT_SEP
-                        + Integer.toString(item.getSpanY()));
-                itemValues.put(COLUMN_DATA, concat.toString());
+                        + Integer.toString(item.getSpanY());
+                itemValues.put(COLUMN_DATA, concat);
                 break;
         }
         db.update(TABLE_HOME, itemValues, COLUMN_TIME + " = " + item.getId(), null);
@@ -270,21 +269,22 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
             case SHORTCUT:
                 item.setIntent(Tool.getIntentFromString(data));
                 if (Setup.appSettings().enableImageCaching()) {
-                    item.setIconProvider(Setup.get().getImageLoader().createIconProvider(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(id))));
+                    item.setIcon(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(id)));
                 } else {
                     switch (type) {
                         case APP:
                         case SHORTCUT:
                             App app = Setup.get().getAppLoader().findItemApp(item);
-                            item.setIconProvider(app != null ? Setup.imageLoader().createIconProvider(app.getIcon()) : null);
+                            item.setIcon(app != null ? app.getIcon() : null);
                             break;
                         default:
+                            // TODO...
                             break;
                     }
                 }
                 break;
             case GROUP:
-                item.setItems(new ArrayList<>());
+                item.setItems(new ArrayList<Item>());
                 dataSplit = data.split(Config.INT_SEP);
                 for (String s : dataSplit) {
                     item.getItems().add(getItem(Integer.parseInt(s)));
@@ -302,4 +302,36 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         }
         return item;
     }
+
+/**/
+
+private static final String TABLE_APP_COUNT="app_count";
+    private static final String COLUMN_PACKAGE_NAME = "package_name";
+    private static final String COLUMN_PACKAGE_COUNT = "package_count";
+
+    private static final String SQL_CREATE_COUNT=
+            "CREATE TABLE "+TABLE_APP_COUNT +" ("
+                    +COLUMN_TIME + " INTEGER PRIMARY KEY,"
+                    +COLUMN_PACKAGE_NAME + " VARCHAR, "
+                    +COLUMN_PACKAGE_COUNT+ " INTEGER)";
+
+    private void saveApp(String packageName){
+        ContentValues itemValues = new ContentValues();
+        itemValues.put(COLUMN_PACKAGE_NAME, packageName);
+        itemValues.put(COLUMN_PACKAGE_COUNT, 0);
+
+        db.insert(TABLE_APP_COUNT, null, itemValues);
+    }
+
+    private void updateApp(String packageName){
+
+    }
+
+
+    private int getAppCount(){return 0;}
+    private void deleteApp(){
+
+    }
+
+
 }

@@ -19,7 +19,6 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.interfaces.DesktopCallBack;
-import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.interfaces.IconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -30,13 +29,14 @@ import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
+;
 
-public class AppItemView extends View implements Drawable.Callback, IconDrawer {
+public class AppItemView extends View implements Drawable.Callback {
 
     private static final int MIN_ICON_TEXT_MARGIN = 8;
     private static final char ELLIPSIS = '…';
 
-    private Drawable _icon = null;
+    private Drawable icon = null;
     private BaseIconProvider _iconProvider;
     private String _label;
     private Paint _textPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
@@ -105,7 +105,15 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
 
     @Override
     public Bitmap getDrawingCache() {
-        return Tool.drawableToBitmap(_icon);
+        return Tool.drawableToBitmap(icon);
+    }
+
+    public Drawable getCurrentIcon() {
+        return this.icon;
+    }
+
+    public void setCurrentIcon(Drawable icon) {
+        this.icon = icon;
     }
 
     public View getView() {
@@ -114,15 +122,6 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
 
     public IconProvider getIconProvider() {
         return _iconProvider;
-    }
-
-    public void setIconProvider(BaseIconProvider iconProvider) {
-        this._iconProvider = iconProvider;
-        iconProvider.loadIconIntoIconDrawer(this, (int) _iconSize, 0);
-    }
-
-    public Drawable getCurrentIcon() {
-        return _icon;
     }
 
     public String getLabel() {
@@ -153,18 +152,10 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         _targetedHeightPadding = padding;
     }
 
-    public void load() {
-        if (_iconProvider != null) {
-            _iconProvider.loadIconIntoIconDrawer(this, (int) _iconSize, 0);
-        }
-    }
 
     public void reset() {
-        if (_iconProvider != null) {
-            _iconProvider.cancelLoad(this);
-        }
         _label = "";
-        _icon = null;
+        this.icon = null;
         invalidate();
     }
 
@@ -209,11 +200,11 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
         }
 
         // center the icon
-        if (_icon != null) {
+        if (icon != null) {
             canvas.save();
             canvas.translate((getWidth() - _iconSize) / 2, _heightPadding);
-            _icon.setBounds(0, 0, (int) _iconSize, (int) _iconSize);
-            _icon.draw(canvas);
+            icon.setBounds(0, 0, (int) _iconSize, (int) _iconSize);
+            icon.draw(canvas);
             canvas.restore();
         }
     }
@@ -224,45 +215,6 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
 
     public float getDrawIconLeft() {
         return (getWidth() - _iconSize) / 2;
-    }
-
-    @Override
-    public void onIconAvailable(Drawable drawable, int index) {
-        _icon = drawable;
-        super.invalidate();
-    }
-
-    @Override
-    public void onIconCleared(Drawable placeholder, int index) {
-        _icon = placeholder;
-        super.invalidate();
-    }
-
-    @Override
-    public void onAttachedToWindow() {
-        if (!_fastAdapterItem && _iconProvider != null) {
-            _iconProvider.loadIconIntoIconDrawer(this, (int) _iconSize, 0);
-        }
-        super.onAttachedToWindow();
-    }
-
-    @Override
-    public void onDetachedFromWindow() {
-        if (!_fastAdapterItem && _iconProvider != null) {
-            _iconProvider.cancelLoad(this);
-            _icon = null;
-        }
-        super.onDetachedFromWindow();
-    }
-
-    @Override
-    public void invalidate() {
-        if (!_fastAdapterItem && _iconProvider != null) {
-            _iconProvider.cancelLoad(this);
-            _icon = null;
-        } else {
-            super.invalidate();
-        }
     }
 
     public interface LongPressCallBack {
@@ -308,28 +260,28 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
 
         public Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
-            _view.setIconProvider(Setup.imageLoader().createIconProvider(app.getIcon()));
+            _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
         }
 
         public Builder setAppItem(final Item item, final App app) {
             _view.setLabel(item.getLabel());
-            _view.setIconProvider(Setup.imageLoader().createIconProvider(app.getIcon()));
+            _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
         }
 
         public Builder setShortcutItem(final Item item) {
             _view.setLabel(item.getLabel());
-            _view.setIconProvider(item.getIconProvider());
+            _view.setCurrentIcon(item.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> _view.getContext().startActivity(item.getIntent()), 0.85f));
             return this;
         }
 
         public Builder setGroupItem(Context context, final DesktopCallBack callback, final Item item, int iconSize) {
             _view.setLabel(item.getLabel());
-            _view.setIconProvider(Setup.imageLoader().createIconProvider(new GroupIconDrawable(context, item, iconSize)));
+            _view.setCurrentIcon(new GroupIconDrawable(context, item, iconSize));
             _view.setOnClickListener(v -> {
                 if (HomeActivity.Companion.getLauncher() != null && (HomeActivity.Companion.getLauncher()).getGroupPopup().showWindowV(item, v, callback)) {
                     ((GroupIconDrawable) ((AppItemView) v).getCurrentIcon()).popUp();
@@ -338,10 +290,10 @@ public class AppItemView extends View implements Drawable.Callback, IconDrawer {
             return this;
         }
 
+
         public Builder setActionItem(Item item) {
             _view.setLabel(item.getLabel());
-            _view.setIconProvider(Setup.imageLoader().createIconProvider(
-                    ContextCompat.getDrawable(Setup.appContext(), R.drawable.ic_apps_white_48dp)));
+            _view.setCurrentIcon(ContextCompat.getDrawable(Setup.appContext(), R.drawable.ic_apps_white_48dp));
             switch (item.getActionValue()) {
                 case Config.ACTION_LAUNCHER:
                     _view.setOnClickListener(view -> {
