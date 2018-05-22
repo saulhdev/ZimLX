@@ -10,7 +10,7 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.model.PopupIconLabelItem;
+import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;

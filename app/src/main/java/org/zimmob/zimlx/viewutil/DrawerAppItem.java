@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.model;
+package org.zimmob.zimlx.viewutil;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -9,12 +9,10 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.DragAction;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.widget.AppDrawerVertical;
 import org.zimmob.zimlx.widget.AppItemView;
 import org.zimmob.zimlx.widget.Desktop;
-
-import java.util.List;
 
 public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.ViewHolder> implements FastItem.AppItem<DrawerAppItem, DrawerAppItem.ViewHolder> {
     private App app;

@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.model;
+package org.zimmob.zimlx.viewutil;
 
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;

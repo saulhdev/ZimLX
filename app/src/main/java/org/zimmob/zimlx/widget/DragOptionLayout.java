@@ -18,10 +18,8 @@ import android.widget.FrameLayout;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.model.PopupIconLabelItem;
-import org.zimmob.zimlx.util.DragAction;
+import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
