@@ -1,5 +1,6 @@
 package org.zimmob.zimlx.widget;
 
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -18,17 +19,15 @@ import android.view.View;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.DesktopCallBack;
-import org.zimmob.zimlx.interfaces.IconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
-;
 
 public class AppItemView extends View implements Drawable.Callback {
 
@@ -273,7 +272,7 @@ public class AppItemView extends View implements Drawable.Callback {
             return this;
         }
 
-        public Builder setGroupItem(Context context, final DesktopCallBack callback, final Item item, int iconSize) {
+        public Builder setGroupItem(Context context, final DesktopCallback callback, final Item item, int iconSize) {
             _view.setLabel(item.getLabel());
             _view.setCurrentIcon(new GroupIconDrawable(context, item, iconSize));
             _view.setOnClickListener(v -> {

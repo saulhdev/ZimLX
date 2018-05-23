@@ -7,14 +7,13 @@ import android.view.View;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.widget.AppDrawerVertical;
 import org.zimmob.zimlx.widget.AppItemView;
 import org.zimmob.zimlx.widget.Desktop;
 
-public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.ViewHolder> implements FastItem.AppItem<DrawerAppItem, DrawerAppItem.ViewHolder> {
+public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.ViewHolder> {
     private App app;
     private AppItemView.LongPressCallBack onLongClickCallback;
 
@@ -48,7 +47,6 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
         return new ViewHolder(v);
     }
 
-    @Override
     public App getApp() {
         return app;
     }

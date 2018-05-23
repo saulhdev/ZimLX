@@ -14,7 +14,6 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
 
-import org.zimmob.zimlx.interfaces.IconDrawer;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -26,7 +25,7 @@ import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE_SHADOW;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE_SHADOW;
 
-public class GroupIconDrawable extends Drawable implements IconDrawer {
+public class GroupIconDrawable extends Drawable {
     private Drawable[] icons;
 
     private Paint paintIcon;
@@ -191,15 +190,4 @@ public class GroupIconDrawable extends Drawable implements IconDrawer {
         return PixelFormat.TRANSPARENT;
     }
 
-    @Override
-    public void onIconAvailable(Drawable drawable, int index) {
-        icons[index] = drawable;
-        invalidateSelf();
-    }
-
-    @Override
-    public void onIconCleared(Drawable placeholder, int index) {
-        icons[index] = placeholder == null ? new ColorDrawable(Color.TRANSPARENT) : placeholder;
-        invalidateSelf();
-    }
 }

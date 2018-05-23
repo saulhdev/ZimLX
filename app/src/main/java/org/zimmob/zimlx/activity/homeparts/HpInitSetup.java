@@ -7,20 +7,17 @@ import android.util.Log;
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener.ItemGestureCallback;
 
-import java.util.List;
-
 /* compiled from: HomeActivity.kt */
 public final class HpInitSetup extends Setup {
     private final AppManager _appLoader;
     private final DatabaseHelper _dataManager;
-    private final HpDesktopGestureCallback _desktopGestureCallback;
+    private final HpGestureCallback _desktopGestureCallback;
     private final HpEventHandler _eventHandler;
     private final ItemGestureCallback _itemGestureCallback;
     private final Logger _logger;
@@ -28,7 +25,7 @@ public final class HpInitSetup extends Setup {
 
     public HpInitSetup(HomeActivity home) {
         _appSettings = AppSettings.get();
-        _desktopGestureCallback = new HpDesktopGestureCallback(_appSettings);
+        _desktopGestureCallback = new HpGestureCallback(_appSettings);
         _dataManager = new DatabaseHelper(home);
         _appLoader = AppManager.getInstance(home);
         _eventHandler = new HpEventHandler();

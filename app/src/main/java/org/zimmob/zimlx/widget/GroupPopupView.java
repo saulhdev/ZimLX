@@ -15,7 +15,6 @@ import android.widget.TextView;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -23,6 +22,7 @@ import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DragAction;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 
 import io.codetail.animation.ViewAnimationUtils;
@@ -80,7 +80,7 @@ public class GroupPopupView extends RevealFrameLayout {
     }
 
 
-    public boolean showWindowV(final Item item, final View itemView, final DesktopCallBack callBack) {
+    public boolean showWindowV(final Item item, final View itemView, final DesktopCallback callBack) {
         if (_isShowing || getVisibility() == View.VISIBLE) return false;
         _isShowing = true;
 
@@ -268,7 +268,7 @@ public class GroupPopupView extends RevealFrameLayout {
         _folderAnimator.start();
     }
 
-    private void removeItem(Context context, final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
+    private void removeItem(Context context, final DesktopCallback callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
 
         HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
@@ -277,7 +277,7 @@ public class GroupPopupView extends RevealFrameLayout {
 
      }
 
-    private void updateItem(final DesktopCallBack callBack, final Item currentItem, Item dragOutItem, View currentView) {
+    private void updateItem(final DesktopCallback callBack, final Item currentItem, Item dragOutItem, View currentView) {
         if (currentItem.getGroupItems().size() == 1) {
             final App app = Setup.appLoader().findItemApp(currentItem.getGroupItems().get(0));
             if (app != null) {

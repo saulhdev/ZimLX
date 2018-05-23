@@ -1,3 +1,5 @@
+import java.text.SimpleDateFormat
+
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
@@ -92,4 +94,9 @@ ext.getGitHash = { ->
     } catch (Exception ignored) {
         return 'unknown'
     }
+}
+static String getBuildDate() {
+    final SimpleDateFormat RFC3339_LIKE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+    RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return RFC3339_LIKE.format(new Date())
 }

@@ -167,7 +167,9 @@ public class HpDragOption {
                 }
 
                 int x = (int) location.x;
+                //int x = item.x;
                 int y = (int) location.y;
+                //int y = item.y;
                 //DragNDropLayout.DragFlag
                 if (_home.getDesktop().addItemToPoint(item, x, y)) {
                     _home.getDesktop().consumeRevert();
@@ -305,7 +307,7 @@ public class HpDragOption {
             case APP:
             case SHORTCUT:
             case GROUP: {
-                if (DragAction.Action.APP_DRAWER.equals(dragNDropView.getDragAction())) {
+                if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
                     itemList.add(uninstallItem);
                     itemList.add(infoItem);
                 } else {
@@ -326,12 +328,12 @@ public class HpDragOption {
             }
         }
 
-        float x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX + Tool.toPx(10);
-        float y = dragNDropView.getDragLocation().y - HomeActivity._itemTouchY - Tool.toPx((46 * itemList.size()));
+        float x = dragNDropView.getDragLocation().x - home._itemTouchX + Tool.toPx(10);
+        float y = dragNDropView.getDragLocation().y - home._itemTouchY - Tool.toPx((46 * itemList.size()));
 
         if ((x + Tool.toPx(200)) > dragNDropView.getWidth()) {
             dragNDropView.setPopupMenuShowDirection(false);
-            x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX
+            x = dragNDropView.getDragLocation().x - home._itemTouchX
                     + home.getDesktop().getCurrentPage().getCellWidth() - Tool.toPx(200) - Tool.toPx(10);
         } else {
             dragNDropView.setPopupMenuShowDirection(true);

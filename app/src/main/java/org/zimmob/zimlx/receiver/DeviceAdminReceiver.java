@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.receiver;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

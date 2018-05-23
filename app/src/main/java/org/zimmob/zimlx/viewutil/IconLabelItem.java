@@ -20,7 +20,7 @@ import org.zimmob.zimlx.util.Tool;
 import java.util.List;
 
 public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> {
-    private Drawable icon;
+    private Drawable _icon;
     public String _label;
     private View.OnLongClickListener _onLongClickListener;
     private View.OnClickListener _onClickListener;
@@ -38,20 +38,20 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private int _maxTextLines = 1;
 
     public Drawable getIcon() {
-        return icon;
+        return _icon;
     }
 
     public void setIcon(Drawable icon) {
-        this.icon = icon;
+        this._icon = icon;
     }
 
     public IconLabelItem(Item item) {
-        icon = item != null ? item.getIcon() : null;
+        _icon = item != null ? item.getIcon() : null;
         _label = item != null ? item.getLabel() : null;
     }
 
     public IconLabelItem(Context context, int icon, int label) {
-        this.icon = context.getDrawable(icon);
+        this._icon = context.getDrawable(icon);
         _label = context.getString(label);
     }
 
@@ -61,20 +61,20 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
         _label = label;
-        this.icon = context.getDrawable(icon);
+        _icon = context.getResources().getDrawable(icon);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, int icon, int label, int forceSize) {
         _label = context.getString(label);
-        this.icon = context.getDrawable(icon);
+        _icon =context.getDrawable(icon);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, Drawable icon, String label, int forceSize) {
-        _label = label;
-        this.icon = icon;
-        _forceSize = forceSize;
+        this._label = label;
+        this._icon = icon;
+        this._forceSize = forceSize;
     }
 
     public IconLabelItem withIconGravity(int iconGravity) {
@@ -168,7 +168,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         if (_bold)
             holder.textView.setTypeface(Typeface.DEFAULT_BOLD);
 
-        //Setup.logger().log(this, Log.INFO, null, "IconLabelItem - forceSize: %d", forceSize);
+        //Setup.logger().log(this, Log.INFO, null, "IconLabelItem - forceSize: %d", _forceSize);
 
         holder.textView.setTextColor(_textColor);
         if (_onClickListener != null)

@@ -8,7 +8,7 @@
     android:orientation="horizontal"
     android:padding="4dp"
     android:textAllCaps="false"
-    android:maxLines="2"
+    android:maxLines="1"
     android:ellipsize="end">
 
 </TextView>

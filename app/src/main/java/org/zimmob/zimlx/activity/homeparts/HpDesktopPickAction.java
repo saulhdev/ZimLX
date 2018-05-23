@@ -10,23 +10,23 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
 
 public class HpDesktopPickAction implements DialogListener.OnAddAppDrawerItemListener {
-    private HomeActivity _home;
+    private HomeActivity _homeActivity;
 
     public HpDesktopPickAction(HomeActivity home) {
-        _home = home;
+        _homeActivity = home;
     }
 
     public void onPickDesktopAction() {
-        Setup.eventHandler().showPickAction(_home, this);
+        Setup.eventHandler().showPickAction(_homeActivity, this);
     }
 
     @Override
     public void onAdd(int type) {
-        Point pos = _home.getDesktop().getCurrentPage().findFreeSpace();
+        Point pos = _homeActivity.getDesktop().getCurrentPage().findFreeSpace();
         if (pos != null) {
-            _home.getDesktop().addItemToCell(Item.newActionItem(type), pos.x, pos.y);
+            _homeActivity.getDesktop().addItemToCell(Item.newActionItem(type), pos.x, pos.y);
         } else {
-            Tool.toast(_home, R.string.toast_not_enough_space);
+            Tool.toast(_homeActivity, R.string.toast_not_enough_space);
         }
     }
 }

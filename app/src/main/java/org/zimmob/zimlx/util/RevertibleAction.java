@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.interfaces;
+package org.zimmob.zimlx.util;
 
 public interface RevertibleAction {
     void revertLastItem();

@@ -18,7 +18,6 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -26,6 +25,7 @@ import org.zimmob.zimlx.model.Item.Type;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
@@ -42,7 +42,7 @@ import in.championswimmer.sfg.lib.SimpleFingerGestures.OnFingerGestureListener;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
+public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
     private static final Companion _companion = new Companion();
     public static int _bottomInset;
     public static int _topInset;
@@ -65,7 +65,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
     private View _previousItemView;
     private int _previousPage;
 
-    public static boolean handleOnDropOver(HomeActivity home, Item dropItem, Item item, View itemView, CellContainer parent, int page, Config.ItemPosition itemPosition, DesktopCallBack<?> callback) {
+    public static boolean handleOnDropOver(HomeActivity home, Item dropItem, Item item, View itemView, CellContainer parent, int page, Config.ItemPosition itemPosition, DesktopCallback<?> callback) {
         if (item != null) {
             if (dropItem != null) {
                 Type type = item.getType();
@@ -397,16 +397,17 @@ public class Desktop extends SmoothViewPager implements DesktopCallBack<View> {
         return true;
     }
 
-    public void addItemToCell(@NonNull Item item, int x, int y) {
+    public boolean addItemToCell(@NonNull Item item, int x, int y) {
 
         item._locationInLauncher = 0;
         item.x = x;
         item.y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), (DesktopCallback) this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
-            return;
+            return false;
         }
         getCurrentPage().addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
+        return true;
     }
 
     public boolean onInterceptTouchEvent(@Nullable MotionEvent ev) {

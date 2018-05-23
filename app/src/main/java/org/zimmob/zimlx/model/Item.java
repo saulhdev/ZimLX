@@ -6,7 +6,6 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.interfaces.LabelProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
@@ -14,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-public class Item implements LabelProvider, Parcelable {
+public class Item implements Parcelable {
 
     public static final int LOCATION_DESKTOP = 0;
     public static final int LOCATION_DOCK = 1;
@@ -229,7 +228,6 @@ public class Item implements LabelProvider, Parcelable {
         return intent;
     }
 
-    @Override
     public String getLabel() {
         return name;
     }

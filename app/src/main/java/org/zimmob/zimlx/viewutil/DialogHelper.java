@@ -85,6 +85,13 @@ public class DialogHelper {
                     .withIconPadding(context, sizePad));
         }
         fastItemAdapter.set(items);
+        /*fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
+            if (onAppSelectedListener != null) {
+                onAppSelectedListener.onAppSelected(apps.get(position));
+            }
+            dialog.dismiss();
+            return true;
+        });*/
         fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
             if (onAppSelectedListener != null) {
                 onAppSelectedListener.onAppSelected(apps.get(position));

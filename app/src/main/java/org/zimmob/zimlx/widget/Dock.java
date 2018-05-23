@@ -10,17 +10,17 @@ import android.view.View;
 import android.view.WindowInsets;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DragAction.Action;
 import org.zimmob.zimlx.util.DragHandler;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
 
 import java.util.List;
 
-public final class Dock extends CellContainer implements DesktopCallBack<View> {
+public final class Dock extends CellContainer implements DesktopCallback<View> {
     private int _bottomInset;
     private final Point _coordinate = new Point();
     private HomeActivity _home;
@@ -231,17 +231,19 @@ public final class Dock extends CellContainer implements DesktopCallBack<View> {
         return true;
     }
 
-    public void addItemToCell(@NonNull Item item, int x, int y) {
+    public boolean addItemToCell(@NonNull Item item, int x, int y) {
 
         item._locationInLauncher = 1;
         item.x = x;
         item.y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), (DesktopCallback) this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
-            return;
+            return false;
         }
         addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
+        return true;
     }
+
 
     public void removeItem(final View view, boolean animate) {
 

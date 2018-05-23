@@ -14,7 +14,6 @@ import android.widget.Toast;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.interfaces.DesktopCallBack;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -33,7 +32,7 @@ public class ItemViewFactory {
     private static final int NO_FLAGS = 0x01;
     private static final int NO_LABEL = 0x02;
 
-    public static View getItemView(Context context, Item item, boolean showLabels, DesktopCallBack callBack, int iconSize) {
+    public static View getItemView(Context context, Item item, boolean showLabels, DesktopCallback callBack, int iconSize) {
         int flag = showLabels ? ItemViewFactory.NO_FLAGS : ItemViewFactory.NO_LABEL;
         return getItemView(context, callBack, item, iconSize, flag);
     }
@@ -46,7 +45,7 @@ public class ItemViewFactory {
      * @param flags
      * @return
      */
-    private static View getItemView(final Context context, final DesktopCallBack callBack, final Item item, int iconSize, int flags) {
+    private static View getItemView(final Context context, final DesktopCallback callBack, final Item item, int iconSize, int flags) {
         View view = null;
         switch (item.getType()) {
             case APP:

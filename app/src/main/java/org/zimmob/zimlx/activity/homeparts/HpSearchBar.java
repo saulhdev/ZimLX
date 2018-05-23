@@ -48,7 +48,6 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
             intent.setAction(Intent.ACTION_VIEW);
             intent.setData(Uri.parse(searchUri));
         }
-
         try {
             _home.startActivity(intent);
         } catch (Exception e) {

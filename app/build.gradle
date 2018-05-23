@@ -16,18 +16,23 @@ android {
 
         flavorDimensions "versionCode"
 
-        versionCode 20180519
-        versionName '0.2.3'
 
-        applicationId "org.zimmob.zimlx"
-        resValue 'string', 'app_name', "ZimLX"
+
+
         multiDexEnabled false
 
 
         buildConfigField "boolean", "IS_TEST_BUILD", "false"
         buildConfigField "boolean", "IS_GPLAY_BUILD", "false"
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
+        buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+        resValue "string", "manifest_package_id", "org.zimob.zimlx"
+
+        applicationId "org.zimmob.zimlx"
+        resValue 'string', 'app_name', "ZimLX"
+        versionCode 20180519
+        versionName '0.2.3'
 
     }
     productFlavors {
@@ -103,9 +108,9 @@ dependencies {
     implementation "com.android.support:preference-v14:${version_library_appcompat}"
     implementation 'com.android.support.constraint:constraint-layout:1.1.0'
     // UI Libs
-    implementation 'com.mikepenz:fastadapter:3.2.3@aar'
-    implementation 'com.mikepenz:fastadapter-commons:3.0.0@aar'
-    implementation 'com.mikepenz:fastadapter-extensions:3.0.0@aar'
+    implementation 'com.mikepenz:fastadapter:3.2.5@aar'
+    implementation 'com.mikepenz:fastadapter-commons:3.2.5@aar'
+    implementation 'com.mikepenz:fastadapter-extensions:3.2.5@aar'
     implementation 'jp.wasabeef:recyclerview-animators:2.2.7'
     implementation 'com.eightbitlab:blurview:1.3.3'
     implementation 'com.prolificinteractive:material-calendarview:1.4.3'

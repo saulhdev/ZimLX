@@ -79,7 +79,7 @@
         </activity>
 
         <receiver
-            android:name=".util.DeviceAdminReceiver"
+            android:name=".receiver.DeviceAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
             <intent-filter>
                 <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
@@ -90,7 +90,7 @@
                 android:resource="@xml/device_admin" />
         </receiver>
         <receiver
-            android:name=".util.ShortcutReceiver"
+            android:name=".receiver.ShortcutReceiver"
             android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />

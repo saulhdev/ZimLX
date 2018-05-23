@@ -52,6 +52,8 @@ Want to support me? https://paypal.me/saulhenriquez
     * Transitions
     * Page Style
     * Sort Mode Most Used
+    * Badge Icons
+    * Notifications
 * Folder
     * Folder Preview
     * Folder Transition

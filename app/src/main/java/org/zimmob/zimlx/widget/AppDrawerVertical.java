@@ -18,7 +18,6 @@ import com.turingtechnologies.materialscrollbar.DragScrollBar;
 import com.turingtechnologies.materialscrollbar.INameableAdapter;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.interfaces.FastItem;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.viewutil.DrawerAppItem;
@@ -123,7 +122,7 @@ public class AppDrawerVertical extends CardView {
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
             apps = allApps;
-            ArrayList<FastItem.AppItem> items = new ArrayList<>();
+            ArrayList<DrawerAppItem> items = new ArrayList<>();
             for (int i = 0; i < apps.size(); i++) {
                 items.add(new DrawerAppItem(apps.get(i)));
             }
@@ -131,7 +130,7 @@ public class AppDrawerVertical extends CardView {
         }
         Setup.appLoader().addUpdateListener(apps -> {
             AppDrawerVertical.apps = apps;
-            ArrayList<FastItem.AppItem> items = new ArrayList<>();
+            ArrayList<DrawerAppItem> items = new ArrayList<>();
             for (int i = 0; i < apps.size(); i++) {
                 items.add(new DrawerAppItem(apps.get(i)));
             }
@@ -143,10 +142,10 @@ public class AppDrawerVertical extends CardView {
         addView(rl);
     }
 
-    public static class GridAppDrawerAdapter extends FastItemAdapter<FastItem.AppItem> implements INameableAdapter {
+    public static class GridAppDrawerAdapter extends FastItemAdapter<DrawerAppItem> implements INameableAdapter {
 
         GridAppDrawerAdapter() {
-            getItemFilter().withFilterPredicate((IItemAdapter.Predicate<FastItem.AppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(constraint.toString().toLowerCase()));
+            getItemFilter().withFilterPredicate((IItemAdapter.Predicate<DrawerAppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(constraint.toString().toLowerCase()));
         }
 
         @Override
