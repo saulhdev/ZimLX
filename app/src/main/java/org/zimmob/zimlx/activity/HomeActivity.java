@@ -672,9 +672,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         appDrawerBtnItem.x = 2;
                         Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
 
-                        //addDockApps(Intent.ACTION_DIAL, 0);
-                        //addDockApps(Intent.CATEGORY_APP_MESSAGING, 1);
-                        //addDockApps(Intent.CATEGORY_APP_BROWSER, 4);
                         addDockCamera(3);
                         addDockApps();
 
@@ -728,8 +725,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
-        List<ResolveInfo> messagigInfo = packageManager.queryIntentActivities(messaging, 0);
-        for (ResolveInfo info : messagigInfo) {
+        List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
+        for (ResolveInfo info : messagingInfo) {
             App app = new App(this, info, packageManager);
             Item item = Item.newAppItem(app);
             item.x = 1;
