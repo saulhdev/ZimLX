@@ -319,7 +319,7 @@ private static final String TABLE_APP_COUNT="app_count";
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_PACKAGE_NAME, packageName);
         itemValues.put(COLUMN_PACKAGE_COUNT, 0);
-
+        Log.i("Save App",packageName);
         db.insert(TABLE_APP_COUNT, null, itemValues);
     }
 

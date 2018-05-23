@@ -51,6 +51,7 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.AppUpdateReceiver;
+import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.LauncherAction;
 import org.zimmob.zimlx.util.LauncherAction.Action;
 import org.zimmob.zimlx.util.ShortcutReceiver;
@@ -133,6 +134,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         super.onCreate(savedInstanceState);
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
+
         }
         if (appSettings.isSearchBarTimeEnabled()) {
             _timeChangedReceiver = new BroadcastReceiver() {
@@ -669,12 +671,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         Item appDrawerBtnItem = Item.newActionItem(8);
                         appDrawerBtnItem.x = 2;
                         Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
-                        //Create Default DockItems
-                        //addDockDialer(0);
-                        addDockApps(Intent.ACTION_DIAL, 0);
-                        addDockApps(Intent.CATEGORY_APP_MESSAGING, 1);
+
+                        //addDockApps(Intent.ACTION_DIAL, 0);
+                        //addDockApps(Intent.CATEGORY_APP_MESSAGING, 1);
+                        //addDockApps(Intent.CATEGORY_APP_BROWSER, 4);
                         addDockCamera(3);
-                        addDockApps(Intent.CATEGORY_APP_BROWSER, 4);
+                        addDockApps();
+
                     }
                 } else {
                     getDesktop().initDesktopShowAll(HomeActivity.this, HomeActivity.this);
@@ -698,18 +701,54 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         AppManager.getInstance(this).init();
     }
 
-    private void addDockApps(String appCategory, int position) {
-        Intent intent = new Intent(Intent.ACTION_MAIN, null);
-        intent.addCategory(appCategory);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
+    //private void addDockApps(String appCategory, int position) {
+    private void addDockApps() {
+
+        //PHONE
+        Intent phone = new Intent(Intent.ACTION_MAIN, null);
+        phone.addCategory(Intent.ACTION_DIAL);
+        phone.addCategory(Intent.CATEGORY_DEFAULT);
+
+        //MESSAGING
+        Intent messaging = new Intent(Intent.ACTION_MAIN, null);
+        messaging.addCategory(Intent.CATEGORY_APP_MESSAGING);
+        messaging.addCategory(Intent.CATEGORY_DEFAULT);
+
+        //BROWSER
+        Intent browser = new Intent(Intent.ACTION_MAIN, null);
+        browser.addCategory(Intent.CATEGORY_APP_BROWSER);
+        browser.addCategory(Intent.CATEGORY_DEFAULT);
+
         PackageManager packageManager = this.getPackageManager();
-        List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
-        for (ResolveInfo info : activitiesInfo) {
+        List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
+        for (ResolveInfo info : phoneInfo) {
             App app = new App(this, info, packageManager);
-            Log.i("HOME", app.getPackageName());
             Item item = Item.newAppItem(app);
-            item.x = position;
+            item.x = 0;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+        }
+
+        List<ResolveInfo> messagigInfo = packageManager.queryIntentActivities(messaging, 0);
+        for (ResolveInfo info : messagigInfo) {
+            App app = new App(this, info, packageManager);
+            Item item = Item.newAppItem(app);
+            item.x = 1;
+            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+        }
+
+        List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
+        for (ResolveInfo info : browserInfo) {
+            App app = new App(this, info, packageManager);
+            Item item = Item.newAppItem(app);
+            item.x = 4;
+            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+        }
+
+        //start apps count
+        List<App> allApps = Setup.appLoader().getAllApps(this, false);
+        Log.i("InitSetup","Loading count apps: "+allApps.size());
+        for (App app: allApps) {
+            Companion.getDb().saveApp(app.getPackageName());
         }
 
     }
@@ -726,26 +765,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
-    }
-
-    private void addDockDialer(int position) {
-        Intent intent = new Intent(Intent.ACTION_DIAL, null);
-        intent.addCategory(Intent.CATEGORY_DEFAULT);
-        PackageManager packageManager = this.getPackageManager();
-        List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
-
-        for (ResolveInfo info : activitiesInfo) {
-            App app = new App(this, info, packageManager);
-            if (app.getLabel().equals("Phone")) {
-
-                Item item = Item.newAppItem(app);
-                Log.i("HOME DIAL", item.getLabel());
-
-                item.x = position;
-                item.type = Item.Type.APP;
-                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
-            }
-        }
     }
 
     private final void initDock() {

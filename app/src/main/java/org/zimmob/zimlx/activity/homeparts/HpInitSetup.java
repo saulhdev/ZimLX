@@ -36,11 +36,6 @@ public final class HpInitSetup extends Setup {
         _logger = (source, priority, tag, msg, args) -> Log.println(priority, tag, String.format(msg, args));
 
         _itemGestureCallback = (item, event) -> false;
-
-        List<App> allApps = _appLoader.getAllApps(getAppContext(), true);
-        for (App app: allApps) {
-            _dataManager.saveApp(app.getPackageName());
-        }
     }
 
     @NonNull

@@ -111,6 +111,8 @@ public abstract class Setup {
         List<Item> getDock();
 
         Item getItem(int id);
+
+        void saveApp(String packageName);
     }
 
     public interface EventHandler {

@@ -119,7 +119,7 @@ public class DialogHelper {
                         String s = context.getPackageName();
 
                         if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                            File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
                             if (!directory.exists()) {
                                 directory.mkdir();
                             }
@@ -134,7 +134,7 @@ public class DialogHelper {
                             }
                         }
                         if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/OpenLauncher/");
+                            File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
                             try {
                                 PackageInfo p = m.getPackageInfo(s, 0);
                                 s = p.applicationInfo.dataDir;
