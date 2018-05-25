@@ -36,7 +36,7 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.DragAction;
+import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.CircleDrawable;
 import org.zimmob.zimlx.viewutil.IconLabelItem;

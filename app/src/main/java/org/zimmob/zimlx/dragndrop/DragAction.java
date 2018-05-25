@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.dragndrop;
 
 public class DragAction {
     public Action action;

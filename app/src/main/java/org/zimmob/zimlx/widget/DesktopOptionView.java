@@ -21,6 +21,7 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.IconLabelItem;
 
@@ -55,9 +56,9 @@ public class DesktopOptionView extends FrameLayout {
     public void updateHomeIcon(final boolean home) {
         post(() -> {
             if (home) {
-                _actionAdapters[0].getAdapterItem(2).setIcon(getContext().getDrawable(R.drawable.ic_home_black_36dp));
+                _actionAdapters[0].getAdapterItem(2).setIcon(getContext(), R.drawable.ic_home_black_36dp);
             } else {
-                _actionAdapters[0].getAdapterItem(2).setIcon(getContext().getDrawable(R.drawable.ic_home_white_36dp));
+                _actionAdapters[0].getAdapterItem(2).setIcon(getContext(),R.drawable.ic_home_white_36dp);
             }
             _actionAdapters[0].notifyAdapterItemChanged(1);
         });
@@ -68,9 +69,9 @@ public class DesktopOptionView extends FrameLayout {
         if (_actionAdapters[0].getAdapterItemCount() == 0) return;
         post(() -> {
             if (lock) {
-                _actionAdapters[1].getAdapterItem(2).setIcon(getContext().getDrawable(R.drawable.ic_lock_white_36dp));
+                _actionAdapters[1].getAdapterItem(2).setIcon(getContext(),R.drawable.ic_lock_white_36dp);
             } else {
-               _actionAdapters[1].getAdapterItem(2).setIcon(getContext().getDrawable(R.drawable.ic_lock_open_white_36dp));
+               _actionAdapters[1].getAdapterItem(2).setIcon(getContext(),R.drawable.ic_lock_open_white_36dp);
             }
             _actionAdapters[1].notifyAdapterItemChanged(2);
         });

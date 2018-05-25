@@ -22,8 +22,8 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.Item.Type;
-import org.zimmob.zimlx.util.DragAction.Action;
-import org.zimmob.zimlx.util.DragHandler;
+import org.zimmob.zimlx.dragndrop.DragAction.Action;
+import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
@@ -307,6 +307,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
                 Object action;
                 HomeActivity launcher2;
                 DragOptionLayout dragNDropView2;
+                clearCachedOutlineBitmap(); //TESTING
                 for (CellContainer page : _pages) {
                     page.clearCachedOutlineBitmap();
                 }

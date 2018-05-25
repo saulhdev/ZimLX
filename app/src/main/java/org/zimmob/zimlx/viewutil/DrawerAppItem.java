@@ -11,15 +11,16 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.widget.AppDrawerVertical;
 import org.zimmob.zimlx.widget.AppItemView;
+import org.zimmob.zimlx.widget.AppItemView.LongPressCallBack;
 import org.zimmob.zimlx.widget.Desktop;
 
 public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.ViewHolder> {
     private App app;
-    private AppItemView.LongPressCallBack onLongClickCallback;
+    private LongPressCallBack onLongClickCallback;
 
     public DrawerAppItem(App app) {
         this.app = app;
-        onLongClickCallback = new AppItemView.LongPressCallBack() {
+        onLongClickCallback = new LongPressCallBack() {
             @Override
             public boolean readyForDrag(View view) {
                 return Setup.appSettings().getDesktopStyle() != Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();

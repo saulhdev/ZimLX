@@ -124,7 +124,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-        Companion.setLauncher(this);
+        //Companion.setLauncher(this);
         Companion.setResources(getResources());
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
         AppSettings appSettings = AppSettings.get();
@@ -153,7 +153,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (VERSION.SDK_INT >= 21) {
             Window window = getWindow();
             View decorView = window.getDecorView();
-            decorView.setSystemUiVisibility(1536);
+            //decorView.setSystemUiVisibility(1536);
+            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         }
         init();
     }

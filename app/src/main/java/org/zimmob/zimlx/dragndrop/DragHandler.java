@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.dragndrop;
 
 import android.content.ClipData;
 import android.content.Intent;

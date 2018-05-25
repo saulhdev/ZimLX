@@ -14,13 +14,15 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.List;
 
 public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> {
-    private Drawable _icon;
+
+    public Drawable _icon;
     public String _label;
     private View.OnLongClickListener _onLongClickListener;
     private View.OnClickListener _onClickListener;
@@ -37,21 +39,14 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private int _textGravity = Gravity.CENTER_VERTICAL;
     private int _maxTextLines = 1;
 
-    public Drawable getIcon() {
-        return _icon;
-    }
-
-    public void setIcon(Drawable icon) {
-        this._icon = icon;
-    }
-
     public IconLabelItem(Item item) {
+
         _icon = item != null ? item.getIcon() : null;
         _label = item != null ? item.getLabel() : null;
     }
 
     public IconLabelItem(Context context, int icon, int label) {
-        this._icon = context.getDrawable(icon);
+        _icon = context.getResources().getDrawable(icon,null);
         _label = context.getString(label);
     }
 
@@ -61,20 +56,20 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
         _label = label;
-        _icon = context.getResources().getDrawable(icon);
+        _icon = context.getResources().getDrawable(icon,null);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, int icon, int label, int forceSize) {
         _label = context.getString(label);
-        _icon =context.getDrawable(icon);
+        _icon = context.getResources().getDrawable(icon,null);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, Drawable icon, String label, int forceSize) {
-        this._label = label;
-        this._icon = icon;
-        this._forceSize = forceSize;
+        _label = label;
+        _icon = icon;
+        _forceSize = forceSize;
     }
 
     public IconLabelItem withIconGravity(int iconGravity) {
@@ -168,14 +163,19 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         if (_bold)
             holder.textView.setTypeface(Typeface.DEFAULT_BOLD);
 
-        //Setup.logger().log(this, Log.INFO, null, "IconLabelItem - forceSize: %d", _forceSize);
+        //Setup.logger().log(this, Log.INFO, null, "IconLabelItem - forceSize: %d", forceSize);
 
         holder.textView.setTextColor(_textColor);
         if (_onClickListener != null)
             holder.itemView.setOnClickListener(_onClickListener);
         if (_onLongClickListener != null)
             holder.itemView.setOnLongClickListener(_onLongClickListener);
+
         super.bindView(holder, payloads);
+    }
+
+    public void setIcon(Context context, int icon) {
+        this._icon = context.getResources().getDrawable(icon, null);
     }
 
     @Override

@@ -279,6 +279,7 @@ public class Item implements Parcelable {
     public Drawable getIcon() {
         return icon;
     }
+
     public enum Type {
         APP,
         SHORTCUT,

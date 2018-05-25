@@ -11,7 +11,7 @@ import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
-import org.zimmob.zimlx.util.DragAction;
+import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
@@ -154,6 +154,7 @@ public class HpDragOption {
 
             @Override
             public void onStartDrag(@NonNull DragAction.Action action, @NonNull PointF location) {
+                super.onStartDrag(action, location);
                 _home.closeAppDrawer();
             }
 
@@ -167,24 +168,19 @@ public class HpDragOption {
                 }
 
                 int x = (int) location.x;
-                //int x = item.x;
                 int y = (int) location.y;
-                //int y = item.y;
-                //DragNDropLayout.DragFlag
                 if (_home.getDesktop().addItemToPoint(item, x, y)) {
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
                     // add the item to the database
                     HomeActivity._db.saveItem(item, _home.getDesktop()
                             .getCurrentItem(), Config.ItemPosition.Desktop);
-                } else {
+                }
+                else {
                     Point pos = new Point();
-                    _home.getDesktop()
-                            .getCurrentPage()
+                    _home.getDesktop().getCurrentPage()
                             .touchPosToCoordinate(pos, x, y, item.getSpanX(), item.getSpanY(), false);
-                    View itemView = _home.getDesktop()
-                            .getCurrentPage()
-                            .coordinateToChildView(pos);
+                    View itemView = _home.getDesktop().getCurrentPage().coordinateToChildView(pos);
                     if (itemView != null && Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, _home.getDesktop())) {
                         _home.getDesktop().consumeRevert();
                         _home.getDock().consumeRevert();
@@ -251,9 +247,9 @@ public class HpDragOption {
 
                     // add the item to the database
                     HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
-                } else {
+                }
+                else {
                     Point pos = new Point();
-
                     _home.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
                     View itemView = _home.getDock().coordinateToChildView(pos);
                     if (itemView != null) {
@@ -329,6 +325,7 @@ public class HpDragOption {
         }
 
         float x = dragNDropView.getDragLocation().x - home._itemTouchX + Tool.toPx(10);
+        //float x = dragNDropView.getDragLocation().x - home._itemTouchX - Tool.toPx(2);
         float y = dragNDropView.getDragLocation().y - home._itemTouchY - Tool.toPx((46 * itemList.size()));
 
         if ((x + Tool.toPx(200)) > dragNDropView.getWidth()) {
@@ -345,7 +342,7 @@ public class HpDragOption {
                     + home.getDesktop().getCurrentPage().getCellHeight()
                     + Tool.toPx(4);
         else
-            y -= Tool.toPx(4);
+            y -= Tool.toPx(2);
 
         dragNDropView.showPopupMenuForItem(x, y, itemList, (v, adapter, item, position) -> {
             Item dragItem;
