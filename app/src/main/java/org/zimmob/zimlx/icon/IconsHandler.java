@@ -7,7 +7,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
+import android.content.res.XmlResourceParser;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Matrix;
+import android.graphics.Paint;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -23,6 +30,8 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.apps.AppManager;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.IconLabelItem;
@@ -206,12 +215,179 @@ public class IconsHandler {
             new IconPackLoader(packageName).execute();
         }
     }
+
     public void hideDialog() {
         if (mDialogShowing && mAlertDialog != null) {
             mAlertDialog.dismiss();
             mDialogShowing = false;
         }
     }
+
+    public void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
+        Resources iconPackResources = null;
+        int intResourceIcon;
+        int intResourceBack = 0;
+        int intResourceMask = 0;
+        int intResourceUpon = 0;
+        float scale = 1;
+
+        Paint p = new Paint(Paint.FILTER_BITMAP_FLAG);
+        p.setAntiAlias(true);
+
+        Paint origP = new Paint(Paint.FILTER_BITMAP_FLAG);
+        origP.setAntiAlias(true);
+
+        Paint maskP = new Paint(Paint.FILTER_BITMAP_FLAG);
+        maskP.setAntiAlias(true);
+        maskP.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.DST_OUT));
+
+        if (!iconPackName.equals("")) {
+            try {
+                iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
+            } catch (Exception e) {
+                Log.e("IconPackHelper",e.getMessage());
+            }
+            if (iconPackResources != null) {
+                if (getResource(iconPackResources, iconPackName, "iconback", null) != null)
+                    intResourceBack = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconback", null), "drawable", iconPackName);
+                if (getResource(iconPackResources, iconPackName, "iconmask", null) != null)
+                    intResourceMask = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconmask", null), "drawable", iconPackName);
+                if (getResource(iconPackResources, iconPackName, "iconupon", null) != null)
+                    intResourceUpon = iconPackResources.getIdentifier(getResource(iconPackResources, iconPackName, "iconupon", null), "drawable", iconPackName);
+                if (getResource(iconPackResources, iconPackName, "scale", null) != null)
+                    scale = Float.parseFloat(getResource(iconPackResources, iconPackName, "scale", null));
+            }
+        }
+
+        BitmapFactory.Options uniformOptions = new BitmapFactory.Options();
+        uniformOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        uniformOptions.inScaled = false;
+        uniformOptions.inDither = false;
+
+        Bitmap back = null;
+        Bitmap mask = null;
+        Bitmap upon = null;
+        Canvas canvasOrig;
+        Canvas canvas;
+        Bitmap scaledBitmap;
+        Bitmap scaledOrig;
+        Bitmap orig;
+
+        if (iconPackName.compareTo("") != 0 && iconPackResources != null) {
+            try {
+                if (intResourceBack != 0)
+                    back = BitmapFactory.decodeResource(iconPackResources, intResourceBack, uniformOptions);
+                if (intResourceMask != 0)
+                    mask = BitmapFactory.decodeResource(iconPackResources, intResourceMask, uniformOptions);
+                if (intResourceUpon != 0)
+                    upon = BitmapFactory.decodeResource(iconPackResources, intResourceUpon, uniformOptions);
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+        }
+
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inJustDecodeBounds = false;
+        options.inPreferredConfig = Bitmap.Config.RGB_565;
+        options.inDither = true;
+
+        for (int I = 0; I < apps.size(); I++) {
+            if (iconPackResources != null) {
+                String iconResource = getResource(iconPackResources, iconPackName, null, apps.get(I).getComponentName());
+                if (iconResource != null) {
+                    intResourceIcon = iconPackResources.getIdentifier(iconResource, "drawable", iconPackName);
+                } else {
+                    intResourceIcon = 0;
+                }
+
+                if (intResourceIcon != 0) {
+                    // has single drawable for app
+                    apps.get(I).setIcon(new BitmapDrawable(BitmapFactory.decodeResource(iconPackResources, intResourceIcon, uniformOptions)));
+                } else {
+                    try {
+                        orig = Bitmap.createBitmap(apps.get(I).getIcon().getIntrinsicWidth(), apps.get(I).getIcon().getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+                    } catch (Exception e) {
+                        continue;
+                    }
+                    apps.get(I).getIcon().setBounds(0, 0, apps.get(I).getIcon().getIntrinsicWidth(), apps.get(I).getIcon().getIntrinsicHeight());
+                    apps.get(I).getIcon().draw(new Canvas(orig));
+
+                    scaledOrig = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+                    scaledBitmap = Bitmap.createBitmap(iconSize, iconSize, Bitmap.Config.ARGB_8888);
+                    canvas = new Canvas(scaledBitmap);
+
+                    if (back != null)
+                        canvas.drawBitmap(back, getResizedMatrix(back, iconSize, iconSize), p);
+
+                    canvasOrig = new Canvas(scaledOrig);
+                    orig = getResizedBitmap(orig, (int) (iconSize * scale), (int) (iconSize * scale));
+                    canvasOrig.drawBitmap(orig, scaledOrig.getWidth() - (orig.getWidth() / 2) - scaledOrig.getWidth() / 2, scaledOrig.getWidth() - (orig.getWidth() / 2) - scaledOrig.getWidth() / 2, origP);
+
+                    if (mask != null)
+                        canvasOrig.drawBitmap(mask, getResizedMatrix(mask, iconSize, iconSize), maskP);
+
+                    canvas.drawBitmap(getResizedBitmap(scaledOrig, iconSize, iconSize), 0, 0, p);
+
+                    if (upon != null)
+                        canvas.drawBitmap(upon, getResizedMatrix(upon, iconSize, iconSize), p);
+
+                    apps.get(I).setIcon(new BitmapDrawable(appManager.getContext().getResources(), scaledBitmap));
+                }
+            }
+        }
+    }
+
+    public String getResource(Resources resources, String packageName, String resourceName, String componentName) {
+        XmlResourceParser xrp;
+        String resource = null;
+        try {
+            int resourceValue = resources.getIdentifier("appfilter", "xml", packageName);
+            if (resourceValue != 0) {
+                xrp = resources.getXml(resourceValue);
+                while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
+                    if (xrp.getEventType() == 2) {
+                        try {
+                            String string = xrp.getName();
+                            if (componentName != null) {
+                                if (xrp.getAttributeValue(0).compareTo(componentName) == 0) {
+                                    resource = xrp.getAttributeValue(1);
+                                }
+                            } else if (string.equals(resourceName)) {
+                                resource = xrp.getAttributeValue(0);
+                            }
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                    }
+                    xrp.next();
+                }
+            }
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        return resource;
+    }
+
+    public Bitmap getResizedBitmap(Bitmap bm, int newHeight, int newWidth) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        return Bitmap.createBitmap(bm, 0, 0, width, height, matrix, true);
+    }
+
+    public Matrix getResizedMatrix(Bitmap bm, int newHeight, int newWidth) {
+        int width = bm.getWidth();
+        int height = bm.getHeight();
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        return matrix;
+    }
+
     public void showDialog(final Activity activity) {
         loadAvailableIconPacks();
         final IconAdapter iconAdapter = new IconAdapter(mContext, mIconPacks);

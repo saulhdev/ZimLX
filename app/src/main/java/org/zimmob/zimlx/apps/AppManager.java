@@ -1,29 +1,20 @@
 package org.zimmob.zimlx.apps;
 
-import android.Manifest;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
-import android.support.v4.app.ActivityCompat;
 import android.util.Log;
-import android.view.Gravity;
 
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
-
-import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.icon.IconPackHelper;
+import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -207,7 +198,8 @@ public class AppManager {
             }
 
             if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
-                IconPackHelper.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), _apps);
+                IconsHandler iconsHandler = new IconsHandler(_context);
+                iconsHandler.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), _apps);
             }
             return null;
         }
