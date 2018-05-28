@@ -14,8 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="12"
-        android:inputType="textPersonName"
+        android:inputType="text"
         android:hint="@string/searchbar_search_apps"
+        android:textColorHint="@android:color/white"
         android:text=""
         android:textSize="20sp"
         android:textColor="#FFE8DBDB" />
