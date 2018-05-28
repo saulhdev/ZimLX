@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -21,7 +20,7 @@ import android.widget.ViewSwitcher;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 
 import java.util.ArrayList;

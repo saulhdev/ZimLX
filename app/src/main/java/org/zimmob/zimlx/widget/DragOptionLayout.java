@@ -295,7 +295,8 @@ public class DragOptionLayout extends FrameLayout {
                         dropTargetListener = dropTarget2.getKey();
                         dropTargetListener.onEnter(_dragAction, _dragLocationConverted);
                     }
-                } else if (!dropTarget2.getValue().getPreviousOutside()) {
+                }
+                else if (!dropTarget2.getValue().getPreviousOutside()) {
                     dropTarget2.getValue().setPreviousOutside(true);
                     dropTargetListener = dropTarget2.getKey();
                     dropTargetListener.onExit(_dragAction, _dragLocationConverted);

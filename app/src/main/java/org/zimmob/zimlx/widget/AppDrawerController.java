@@ -4,32 +4,22 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.Build;
-import android.support.v7.app.AlertDialog;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.Button;
 import android.widget.PopupMenu;
-import android.widget.Toast;
-
-import com.afollestad.materialdialogs.MaterialDialog;
 
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.activity.SettingsActivity;
-import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DialogHelper;
+import org.zimmob.zimlx.util.DialogHelper;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -45,7 +35,6 @@ public class AppDrawerController extends RevealFrameLayout {
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
-    private Button searchButton;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -55,46 +44,25 @@ public class AppDrawerController extends RevealFrameLayout {
         super(context);
     }
 
-    /**
-     * @param context
-     * @param attrs
-     * @param defStyle
-     */
     public AppDrawerController(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
     }
 
-    /**
-     * @param callBack
-     */
     public void setCallBack(Callback.a2<Boolean, Boolean> callBack) {
         _appDrawerCallback = callBack;
     }
 
-    /**
-     * @return
-     */
     public View getDrawer() {
         return getChildAt(0);
     }
 
-    /**
-     * @param cx
-     * @param cy
-     * @param startRadius
-     * @param finalRadius
-     */
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (isOpen) return;
         isOpen = true;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         layoutInflater.inflate(R.layout.search_apps, this, true);
-        searchButton=findViewById(R.id.drawerMenu);
-        searchButton.setOnClickListener((View v) ->{
-            showDrawerMenu(v);
-        } );
-
-
+        Button searchButton = findViewById(R.id.drawerMenu);
+        searchButton.setOnClickListener(this::showDrawerMenu);
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -292,13 +260,8 @@ public class AppDrawerController extends RevealFrameLayout {
     }
 
     public void setHome(HomeActivity home) {
-        switch (_drawerMode) {
-            case DRAWER_HORIZONTAL:
-                _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
-                break;
-            case DRAWER_VERTICAL:
-                break;
-        }
+        if(_drawerMode==DRAWER_HORIZONTAL)
+            _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
     }
 
 }

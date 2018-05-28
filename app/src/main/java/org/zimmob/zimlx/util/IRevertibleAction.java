@@ -1,6 +1,6 @@
 package org.zimmob.zimlx.util;
 
-public interface RevertibleAction {
+public interface IRevertibleAction {
     void revertLastItem();
 
     void consumeRevert();

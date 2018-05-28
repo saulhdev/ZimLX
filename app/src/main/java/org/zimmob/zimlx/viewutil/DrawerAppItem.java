@@ -16,14 +16,13 @@ import org.zimmob.zimlx.widget.Desktop;
 
 public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.ViewHolder> {
     private App app;
-    private LongPressCallBack onLongClickCallback;
 
     public DrawerAppItem(App app) {
         this.app = app;
-        onLongClickCallback = new LongPressCallBack() {
+        LongPressCallBack onLongClickCallback = new LongPressCallBack() {
             @Override
             public boolean readyForDrag(View view) {
-                return Setup.appSettings().getDesktopStyle() != Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
+                return Setup.appSettings().getDesktopStyle() == Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
             }
 
             @Override
@@ -42,9 +41,8 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
         return R.layout.item_app;
     }
 
-    @NonNull
     @Override
-    public ViewHolder getViewHolder(View v) {
+    public ViewHolder getViewHolder(@NonNull View v) {
         return new ViewHolder(v);
     }
 
@@ -53,7 +51,7 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
     }
 
     @Override
-    public void unbindView(DrawerAppItem.ViewHolder holder) {
+    public void unbindView(@NonNull DrawerAppItem.ViewHolder holder) {
         super.unbindView(holder);
         holder.appItemView.reset();
     }

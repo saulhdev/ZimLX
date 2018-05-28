@@ -2,7 +2,6 @@ package org.zimmob.zimlx.activity;
 
 import android.content.Intent;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -28,10 +27,8 @@ public class ThemeActivity extends AppCompatActivity {
         } else {
             setTheme(R.style.NormalActivity_Dark);
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().setStatusBarColor(dark(_appSettings.getPrimaryColor(), 0.8));
+        getWindow().setStatusBarColor(dark(_appSettings.getPrimaryColor()));
 
-        }
         super.onCreate(savedInstanceState);
     }
 
@@ -50,11 +47,11 @@ public class ThemeActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private int dark(int color, double factor) {
+    private int dark(int color) {
         int a = Color.alpha(color);
         int r = Color.red(color);
         int g = Color.green(color);
         int b = Color.blue(color);
-        return Color.argb(a, Math.max((int) (r * factor), 0), Math.max((int) (g * factor), 0), Math.max((int) (b * factor), 0));
+        return Color.argb(a, Math.max((int) (r * 0.8), 0), Math.max((int) (g * 0.8), 0), Math.max((int) (b * 0.8), 0));
     }
 }

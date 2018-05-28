@@ -2,12 +2,12 @@ package org.zimmob.zimlx.manager;
 
 import android.content.Context;
 
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
+import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
 
@@ -118,9 +118,9 @@ public abstract class Setup {
     public interface EventHandler {
         void showLauncherSettings(Context context);
 
-        void showPickAction(Context context, DialogListener.OnAddAppDrawerItemListener listener);
+        void showPickAction(Context context, IDialogListener.OnAddAppDrawerItemListener listener);
 
-        void showEditDialog(Context context, Item item, DialogListener.OnEditDialogListener listener);
+        void showEditDialog(Context context, Item item, IDialogListener.OnEditDialogListener listener);
 
         void showDeletePackageDialog(Context context, Item item);
     }

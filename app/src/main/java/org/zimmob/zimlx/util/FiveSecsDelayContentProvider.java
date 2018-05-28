@@ -74,9 +74,7 @@ public class FiveSecsDelayContentProvider extends ContentProvider {
      */
     private void checkCallingPackage() throws SecurityException {
         String callingPkg = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
-            callingPkg = getCallingPackage();
-        }
+        callingPkg = getCallingPackage();
         if ("org.kustom.wallpaper".equals(callingPkg)) return;
         if ("org.kustom.widget".equals(callingPkg)) return;
         throw new SecurityException("Unauthorized");

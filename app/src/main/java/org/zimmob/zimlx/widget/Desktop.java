@@ -25,8 +25,8 @@ import org.zimmob.zimlx.model.Item.Type;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
 import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
+import org.zimmob.zimlx.viewutil.IDesktopCallback;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
 import org.zimmob.zimlx.widget.CellContainer.DragState;
@@ -42,7 +42,7 @@ import in.championswimmer.sfg.lib.SimpleFingerGestures.OnFingerGestureListener;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
+public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
     private static final Companion _companion = new Companion();
     public static int _bottomInset;
     public static int _topInset;
@@ -59,13 +59,10 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
     private final List<CellContainer> _pages = new ArrayList<>();
     private final Point _previousDragPoint = new Point();
 
-    @Nullable
-    private Item _previousItem;
-    @Nullable
     private View _previousItemView;
     private int _previousPage;
 
-    public static boolean handleOnDropOver(HomeActivity home, Item dropItem, Item item, View itemView, CellContainer parent, int page, Config.ItemPosition itemPosition, DesktopCallback<?> callback) {
+    public static boolean handleOnDropOver(Item dropItem, Item item, View itemView, CellContainer parent, int page, Config.ItemPosition itemPosition, IDesktopCallback<?> callback) {
         if (item != null) {
             if (dropItem != null) {
                 Type type = item.getType();
@@ -119,10 +116,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
 
     public interface OnDesktopEditListener {
         void onDesktopEdit();
-
         void onFinishDesktopEdit();
     }
-
 
     @NonNull
     public final Dock getDock() {
@@ -173,7 +168,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
     }
 
     public final void setPageIndicator(@NonNull PagerIndicator pageIndicator) {
-
         _pageIndicator = pageIndicator;
     }
 
@@ -188,7 +182,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
     }
 
     public final void initDesktopNormal(@NonNull HomeActivity home) {
-
         setAdapter(new DesktopAdapter(this));
         if (Setup.appSettings().isDesktopShowIndicator() && _pageIndicator != null) {
             _pageIndicator.setViewPager(this);
@@ -241,7 +234,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
             desktop._pageIndicator.setViewPager(desktop);
         }
         desktop._home = home;
-
         for (int i = 0; i < _pageCount; i++) {
             for (int x = 0; x < columns; x++) {
                 for (int y = 0; y < rows; y++) {
@@ -307,7 +299,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
                 Object action;
                 HomeActivity launcher2;
                 DragOptionLayout dragNDropView2;
-                clearCachedOutlineBitmap(); //TESTING
                 for (CellContainer page : _pages) {
                     page.clearCachedOutlineBitmap();
                 }
@@ -347,7 +338,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
         View v = (View) args[1];
         _previousPage = getCurrentItem();
         _previousItemView = v;
-        _previousItem = item;
         getCurrentPage().removeView(v);
     }
 
@@ -357,7 +347,6 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
             if (adapter.getCount() >= _previousPage && _previousPage > -1) {
                 CellContainer cellContainer = _pages.get(_previousPage);
                 cellContainer.addViewToGrid(_previousItemView);
-                _previousItem = null;
                 _previousItemView = null;
                 _previousPage = -1;
             }
@@ -365,13 +354,11 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
     }
 
     public void consumeRevert() {
-        _previousItem = null;
         _previousItemView = null;
         _previousPage = -1;
     }
 
     public boolean addItemToPage(@NonNull Item item, int page) {
-
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
             HomeActivity.Companion.getDb().deleteItem(item, true);
@@ -403,7 +390,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
         item._locationInLauncher = 0;
         item.x = x;
         item.y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), (DesktopCallback) this, Setup.appSettings().getDesktopIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
             return false;
         }
@@ -411,6 +398,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
         return true;
     }
 
+    @Override
     public boolean onInterceptTouchEvent(@Nullable MotionEvent ev) {
         if (ev != null && ev.getActionMasked() == 0) {
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
@@ -447,6 +435,7 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
         }
     }
 
+    @Override
     protected void onPageScrolled(int position, float offset, int offsetPixels) {
         if (!isInEditMode()) {
             HomeActivity launcher = HomeActivity.Companion.getLauncher();
@@ -490,8 +479,8 @@ public class Desktop extends SmoothViewPager implements DesktopCallback<View> {
         _pageIndicator.invalidate();
     }
 
+    @Override
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
-
         if (VERSION.SDK_INT >= 20) {
             _companion.setTopInset(insets.getSystemWindowInsetTop());
             _companion.setBottomInset(insets.getSystemWindowInsetBottom());

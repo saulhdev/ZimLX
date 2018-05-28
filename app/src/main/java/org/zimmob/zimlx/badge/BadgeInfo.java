@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BadgeInfo {
-    public static final int MAX_COUNT = 999;
+    private static final int MAX_COUNT = 999;
     private int mTotalCount;
     private List<NotificationKeyData> mNotificationKeys;
     private NotificationInfo mNotificationInfo;

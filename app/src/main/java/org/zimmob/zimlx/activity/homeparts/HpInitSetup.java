@@ -7,7 +7,7 @@ import android.util.Log;
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;

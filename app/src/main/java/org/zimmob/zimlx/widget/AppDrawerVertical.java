@@ -25,6 +25,7 @@ import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class AppDrawerVertical extends CardView {
 
@@ -145,7 +146,7 @@ public class AppDrawerVertical extends CardView {
     public static class GridAppDrawerAdapter extends FastItemAdapter<DrawerAppItem> implements INameableAdapter {
 
         GridAppDrawerAdapter() {
-            getItemFilter().withFilterPredicate((IItemAdapter.Predicate<DrawerAppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(constraint.toString().toLowerCase()));
+            getItemFilter().withFilterPredicate((IItemAdapter.Predicate<DrawerAppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(Objects.requireNonNull(constraint).toString().toLowerCase()));
         }
 
         @Override

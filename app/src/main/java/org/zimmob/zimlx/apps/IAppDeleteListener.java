@@ -1,14 +1,13 @@
-package org.zimmob.zimlx.interfaces;
+package org.zimmob.zimlx.apps;
 
 import org.zimmob.zimlx.model.App;
 
 import java.util.List;
 
-public interface AppUpdateListener {
-
+public interface IAppDeleteListener {
     /**
      * @param apps list of apps
      * @return true, if the listener should be removed
      */
-    boolean onAppUpdated(List<App> apps);
+    boolean onAppDeleted(List<App> apps);
 }

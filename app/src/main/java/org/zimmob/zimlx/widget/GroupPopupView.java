@@ -15,15 +15,15 @@ import android.widget.TextView;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.dragndrop.DragAction;
+import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.dragndrop.DragAction;
-import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
+import org.zimmob.zimlx.viewutil.IDesktopCallback;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -80,7 +80,7 @@ public class GroupPopupView extends RevealFrameLayout {
     }
 
 
-    public boolean showWindowV(final Item item, final View itemView, final DesktopCallback callBack) {
+    public boolean showWindowV(final Item item, final View itemView, final IDesktopCallback callBack) {
         if (_isShowing || getVisibility() == View.VISIBLE) return false;
         _isShowing = true;
 
@@ -109,7 +109,7 @@ public class GroupPopupView extends RevealFrameLayout {
                     continue;
                 }
                 final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
-                AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, groupApp, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
+                AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
                 final View view = appItemView.getView();
 
                 view.setOnLongClickListener(view2 -> {
@@ -268,7 +268,7 @@ public class GroupPopupView extends RevealFrameLayout {
         _folderAnimator.start();
     }
 
-    private void removeItem(Context context, final DesktopCallback callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
+    private void removeItem(Context context, final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
 
         HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
@@ -277,13 +277,12 @@ public class GroupPopupView extends RevealFrameLayout {
 
      }
 
-    private void updateItem(final DesktopCallback callBack, final Item currentItem, Item dragOutItem, View currentView) {
+    private void updateItem(final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, View currentView) {
         if (currentItem.getGroupItems().size() == 1) {
             final App app = Setup.appLoader().findItemApp(currentItem.getGroupItems().get(0));
             if (app != null) {
                 //Creating a new app item fixed the folder crash bug
-                Item item = Item.newAppItem(app); //HomeActivity.Companion.getDb().getItem(currentItem.getGroupItems().get(0).getId());
-
+                Item item = Item.newAppItem(app);
                 item.setX(currentItem.getX());
                 item.setY(currentItem.getY());
 

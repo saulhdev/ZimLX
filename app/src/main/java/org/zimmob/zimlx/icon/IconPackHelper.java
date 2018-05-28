@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.icon;
 
 import android.content.res.Resources;
 import android.content.res.XmlResourceParser;
@@ -10,14 +10,15 @@ import android.graphics.Paint;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.util.Log;
 
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.model.App;
 
 import java.util.List;
 
-class IconPackHelper {
+public class IconPackHelper {
+
     public static void applyIconPack(AppManager appManager, final int iconSize, String iconPackName, List<App> apps) {
         Resources iconPackResources = null;
         int intResourceIcon;

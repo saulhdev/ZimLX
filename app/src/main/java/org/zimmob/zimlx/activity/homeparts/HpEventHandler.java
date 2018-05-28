@@ -3,11 +3,11 @@ package org.zimmob.zimlx.activity.homeparts;
 import android.content.Context;
 
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.DialogHelper;
+import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.util.LauncherAction;
-import org.zimmob.zimlx.viewutil.DialogHelper;
 
 public class HpEventHandler implements Setup.EventHandler {
     @Override
@@ -16,7 +16,7 @@ public class HpEventHandler implements Setup.EventHandler {
     }
 
     @Override
-    public void showPickAction(Context context, final DialogListener.OnAddAppDrawerItemListener listener) {
+    public void showPickAction(Context context, final IDialogListener.OnAddAppDrawerItemListener listener) {
         DialogHelper.addActionItemDialog(context, (dialog, itemView, position, text) -> {
             if (position == 0) {
                 listener.onAdd(Config.ACTION_LAUNCHER);
@@ -26,7 +26,7 @@ public class HpEventHandler implements Setup.EventHandler {
     }
 
     @Override
-    public void showEditDialog(Context context, Item item, final DialogListener.OnEditDialogListener listener) {
+    public void showEditDialog(Context context, Item item, final IDialogListener.OnEditDialogListener listener) {
         DialogHelper.editItemDialog("Edit Item", item.getLabel(), context, label -> listener.onRename(label));
     }
 

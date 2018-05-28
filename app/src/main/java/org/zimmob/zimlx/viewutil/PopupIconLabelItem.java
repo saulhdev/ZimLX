@@ -18,28 +18,6 @@ public final class PopupIconLabelItem extends AbstractItem<PopupIconLabelItem, P
     private final int _iconRes;
     private final int _labelRes;
 
-    public static final class ViewHolder_PopupIconLabelItem extends RecyclerView.ViewHolder {
-        @NonNull
-        private final CardView cardView;
-        private ImageView iconView;
-        private TextView labelView;
-
-        ViewHolder_PopupIconLabelItem(@NonNull View itemView) {
-            super(itemView);
-            this.cardView = (CardView) itemView;
-            this.labelView = itemView.findViewById(R.id.item_popup_label);
-            this.iconView = itemView.findViewById(R.id.item_popup_icon);
-        }
-
-        final TextView getLabelView() {
-            return this.labelView;
-        }
-
-        final ImageView getIconView() {
-            return this.iconView;
-        }
-    }
-
     public PopupIconLabelItem(int labelRes, int iconRes) {
         _labelRes = labelRes;
         _iconRes = iconRes;
@@ -89,4 +67,27 @@ public final class PopupIconLabelItem extends AbstractItem<PopupIconLabelItem, P
     public ViewHolder_PopupIconLabelItem getViewHolder(View v) {
         return new ViewHolder_PopupIconLabelItem(v);
     }
+
+    public static final class ViewHolder_PopupIconLabelItem extends RecyclerView.ViewHolder {
+        @NonNull
+        private final CardView cardView;
+        private ImageView iconView;
+        private TextView labelView;
+
+        ViewHolder_PopupIconLabelItem(@NonNull View itemView) {
+            super(itemView);
+            this.cardView = (CardView) itemView;
+            this.labelView = itemView.findViewById(R.id.item_popup_label);
+            this.iconView = itemView.findViewById(R.id.item_popup_icon);
+        }
+
+        final TextView getLabelView() {
+            return this.labelView;
+        }
+
+        final ImageView getIconView() {
+            return this.iconView;
+        }
+    }
+
 }

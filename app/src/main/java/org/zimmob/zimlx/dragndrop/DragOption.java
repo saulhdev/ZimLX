@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.activity.homeparts;
+package org.zimmob.zimlx.dragndrop;
 
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -8,10 +8,10 @@ import android.view.View;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.activity.homeparts.HpAppEditApplier;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
-import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
@@ -19,7 +19,7 @@ import org.zimmob.zimlx.widget.DragOptionLayout;
 
 import java.util.ArrayList;
 
-public class HpDragOption {
+public class DragOption {
     private final int uninstallItemIdentifier = 83;
     private final int infoItemIdentifier = 84;
     private final int editItemIdentifier = 85;
@@ -181,7 +181,7 @@ public class HpDragOption {
                     _home.getDesktop().getCurrentPage()
                             .touchPosToCoordinate(pos, x, y, item.getSpanX(), item.getSpanY(), false);
                     View itemView = _home.getDesktop().getCurrentPage().coordinateToChildView(pos);
-                    if (itemView != null && Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, _home.getDesktop())) {
+                    if (itemView != null && Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, _home.getDesktop())) {
                         _home.getDesktop().consumeRevert();
                         _home.getDock().consumeRevert();
                     } else {
@@ -253,7 +253,7 @@ public class HpDragOption {
                     _home.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
                     View itemView = _home.getDock().coordinateToChildView(pos);
                     if (itemView != null) {
-                        if (Desktop.handleOnDropOver(_home, item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Config.ItemPosition.Dock, _home.getDock())) {
+                        if (Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Config.ItemPosition.Dock, _home.getDock())) {
                             _home.getDesktop().consumeRevert();
                             _home.getDock().consumeRevert();
                         } else {
@@ -295,6 +295,7 @@ public class HpDragOption {
                 _home.getDock().clearCachedOutlineBitmap();
             }
         });
+
     }
 
     private void showItemPopup(@NonNull final DragOptionLayout dragNDropView, final HomeActivity home) {
@@ -324,13 +325,12 @@ public class HpDragOption {
             }
         }
 
-        float x = dragNDropView.getDragLocation().x - home._itemTouchX + Tool.toPx(10);
-        //float x = dragNDropView.getDragLocation().x - home._itemTouchX - Tool.toPx(2);
-        float y = dragNDropView.getDragLocation().y - home._itemTouchY - Tool.toPx((46 * itemList.size()));
+        float x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX + Tool.toPx(10);
+        float y = dragNDropView.getDragLocation().y - HomeActivity._itemTouchY - Tool.toPx((46 * itemList.size()));
 
         if ((x + Tool.toPx(200)) > dragNDropView.getWidth()) {
             dragNDropView.setPopupMenuShowDirection(false);
-            x = dragNDropView.getDragLocation().x - home._itemTouchX
+            x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX
                     + home.getDesktop().getCurrentPage().getCellWidth() - Tool.toPx(200) - Tool.toPx(10);
         } else {
             dragNDropView.setPopupMenuShowDirection(true);

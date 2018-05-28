@@ -1,6 +1,6 @@
-package org.zimmob.zimlx.interfaces;
+package org.zimmob.zimlx.util;
 
-public interface DialogListener {
+public interface IDialogListener {
 
     interface OnAddAppDrawerItemListener {
         void onAdd(int type);

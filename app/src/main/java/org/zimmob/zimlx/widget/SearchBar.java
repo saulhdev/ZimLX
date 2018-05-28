@@ -227,11 +227,11 @@ public class SearchBar extends FrameLayout {
                         .withOnLongClickListener(AppItemView.Builder.getLongClickDragAppListener(Item.newAppItem(app), DragAction.Action.APP, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
-                                if (finalI == -1) return false;
+                                if (finalI == -1) return true;
 
                                 _expanded = !_expanded;
                                 collapseInternal();
-                                return true;
+                                return false;
                             }
 
                             @Override

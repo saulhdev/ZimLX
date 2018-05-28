@@ -40,7 +40,7 @@ import org.zimmob.zimlx.BuildConfig;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.homeparts.HpAppDrawer;
 import org.zimmob.zimlx.activity.homeparts.HpDesktopPickAction;
-import org.zimmob.zimlx.activity.homeparts.HpDragOption;
+import org.zimmob.zimlx.dragndrop.DragOption;
 import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
 import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
 import org.zimmob.zimlx.config.Config;
@@ -48,14 +48,14 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.receiver.AppUpdateReceiver;
 import org.zimmob.zimlx.util.LauncherAction;
 import org.zimmob.zimlx.util.LauncherAction.Action;
 import org.zimmob.zimlx.receiver.ShortcutReceiver;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DialogHelper;
+import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.viewutil.MinibarAdapter;
 import org.zimmob.zimlx.viewutil.WidgetHost;
 import org.zimmob.zimlx.widget.AppDrawerController;
@@ -124,7 +124,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     protected void onCreate(Bundle savedInstanceState) {
-        //Companion.setLauncher(this);
         Companion.setResources(getResources());
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
         AppSettings appSettings = AppSettings.get();
@@ -150,14 +149,12 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         Companion.setDb(dataManager);
         setContentView(getLayoutInflater().inflate(R.layout.activity_home, null));
-        if (VERSION.SDK_INT >= 21) {
-            Window window = getWindow();
-            View decorView = window.getDecorView();
-            //decorView.setSystemUiVisibility(1536);
-            decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                    | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        }
+        Window window = getWindow();
+        View decorView = window.getDecorView();
+        //decorView.setSystemUiVisibility(1536);
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
         init();
     }
 
@@ -316,19 +313,16 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             ((MarginLayoutParams) layoutParams).topMargin = Desktop._topInset;
             findViewById = findViewById(R.id.rightDragHandle);
             layoutParams = findViewById.getLayoutParams();
-            Desktop desktop;
             ((MarginLayoutParams) layoutParams).topMargin = Desktop._topInset;
-            desktop = findViewById(R.id.desktop);
+            Desktop desktop = findViewById(R.id.desktop);
             desktop.setPadding(0, Desktop._topInset, 0, 0);
         }
-        appSettings = Setup.appSettings();
-
         if (!appSettings.getDockEnable()) {
             getDesktop().setPadding(0, 0, 0, Desktop._bottomInset);
         }
     }
 
-    private final void configureWidget(Intent data) {
+    private void configureWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = Objects.requireNonNull(extras).getInt("appWidgetId", -1);
         AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
@@ -342,7 +336,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
-    private final void createWidget(Intent data) {
+    private void createWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = Objects.requireNonNull(extras).getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
@@ -364,7 +358,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
-    private final void registerBroadcastReceiver() {
+    private void registerBroadcastReceiver() {
         registerReceiver(_appUpdateReceiver, Companion.getAppUpdateIntentFilter());
         if (_timeChangedReceiver != null) {
             registerReceiver(_timeChangedReceiver, Companion.getTimeChangesIntentFilter());
@@ -372,7 +366,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         registerReceiver(_shortcutReceiver, Companion.getShortcutIntentFilter());
     }
 
-    private final void handleLauncherPause(boolean wasHomePressed) {
+    private void handleLauncherPause(boolean wasHomePressed) {
         if (!Companion.getConsumeNextResume() || wasHomePressed) {
             onHandleLauncherPause();
         } else {
@@ -441,7 +435,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         getAppDrawerController().close(cx, cy, rad, finalRadius);
     }
 
-    private final Bundle getActivityAnimationOpts(View view) {
+    private Bundle getActivityAnimationOpts(View view) {
         Bundle bundle = null;
         if (view == null) {
             return null;
@@ -496,7 +490,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
-    private final void setToHomePage() {
+    private void setToHomePage() {
         Desktop desktop = findViewById(R.id.desktop);
         AppSettings appSettings = Setup.appSettings();
         desktop.setCurrentItem(appSettings.getDesktopPageCurrent());
@@ -535,7 +529,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
 
         SwipeListView minibar = findViewById(R.id.minibar);
-
         minibar.setAdapter(new MinibarAdapter(this, labels, icons));
         minibar.setOnItemClickListener((parent, view, i, id) -> {
             Action action = Action.valueOf(labels.get(i));
@@ -552,18 +545,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public final GroupPopupView getGroupPopup() {
-        GroupPopupView groupPopupView = findViewById(R.id.groupPopup);
-        return groupPopupView;
+        return findViewById(R.id.groupPopup);
     }
 
     public final View getBackground() {
-        View findViewById = findViewById(R.id.background);
-        return findViewById;
+        return findViewById(R.id.background);
     }
 
     public final SearchBar getSearchBar() {
-        SearchBar searchBar = findViewById(R.id.searchBar);
-        return searchBar;
+        return findViewById(R.id.searchBar);
     }
 
     public final void dimBackground() {
@@ -587,14 +577,12 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public final PagerIndicator getDesktopIndicator() {
-        PagerIndicator pagerIndicator = findViewById(R.id.desktopIndicator);
-        return pagerIndicator;
+        return findViewById(R.id.desktopIndicator);
     }
 
     @NonNull
     public final AppDrawerController getAppDrawerController() {
-        AppDrawerController appDrawerController = findViewById(R.id.appDrawerController);
-        return appDrawerController;
+        return findViewById(R.id.appDrawerController);
     }
 
     @NonNull
@@ -604,36 +592,32 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     @NonNull
     public final Desktop getDesktop() {
-        Desktop desktop = findViewById(R.id.desktop);
-        return desktop;
+        return findViewById(R.id.desktop);
     }
 
     @NonNull
     public final Dock getDock() {
-        Dock dock = findViewById(R.id.dock);
-        return dock;
+        return findViewById(R.id.dock);
     }
 
     @NonNull
     public final DragOptionLayout getDragNDropView() {
-        DragOptionLayout dragOptionLayout = findViewById(R.id.dragNDropView);
-        return dragOptionLayout;
+        return findViewById(R.id.dragNDropView);
     }
 
-    private final void init() {
+    private void init() {
         Companion.setAppWidgetHost(new WidgetHost(getApplicationContext(), R.id.app_widget_host));
-        Companion companion = Companion;
         AppWidgetManager instance = AppWidgetManager.getInstance(this);
 
-        companion.setAppWidgetManager(instance);
+        Companion.setAppWidgetManager(instance);
         WidgetHost appWidgetHost = Companion.getAppWidgetHost();
         Objects.requireNonNull(appWidgetHost).startListening();
         initViews();
-        HpDragOption hpDragOption = new HpDragOption();
+        DragOption dragOption = new DragOption();
         View findViewById = findViewById(R.id.leftDragHandle);
         View findViewById2 = findViewById(R.id.rightDragHandle);
         DragOptionLayout dragOptionLayout = findViewById(R.id.dragNDropView);
-        hpDragOption.initDragNDrop(this, findViewById, findViewById2, dragOptionLayout);
+        dragOption.initDragNDrop(this, findViewById, findViewById2, dragOptionLayout);
         registerBroadcastReceiver();
         initAppManager();
         initSettings();
@@ -674,7 +658,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         appDrawerBtnItem.x = 2;
                         Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
 
-                        addDockCamera(3);
+                        addDockCamera();
                         addDockApps();
 
                     }
@@ -752,7 +736,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     }
 
-    private void addDockCamera(int position) {
+    private void addDockCamera() {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
@@ -760,13 +744,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             App app = new App(this, info, packageManager);
             Log.i("HOME", app.getPackageName());
             Item item = Item.newAppItem(app);
-            item.x = position;
+            item.x = 3;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
     }
 
-    private final void initDock() {
+    private void initDock() {
         int iconSize = Setup.appSettings().getDockIconSize();
         Dock dock = findViewById(R.id.dock);
         dock.setHome(this);
@@ -1024,8 +1008,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             return _appWidgetManager;
         }
 
-        private final void setAppWidgetManager(@NonNull AppWidgetManager v) {
-
+        private void setAppWidgetManager(@NonNull AppWidgetManager v) {
             _appWidgetManager = v;
         }
 

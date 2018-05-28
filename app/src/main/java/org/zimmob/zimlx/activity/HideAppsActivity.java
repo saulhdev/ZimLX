@@ -1,6 +1,5 @@
 package org.zimmob.zimlx.activity;
 
-import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -13,9 +12,10 @@ import android.view.WindowManager;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.fragment.HideAppsFragment;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 public class HideAppsActivity extends ThemeActivity {
 
@@ -24,10 +24,8 @@ public class HideAppsActivity extends ThemeActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_hide_apps);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
-        }
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+        getWindow().setStatusBarColor(getColor(R.color.colorPrimaryDark));
         ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
@@ -36,7 +34,7 @@ public class HideAppsActivity extends ThemeActivity {
         setSupportActionBar(toolbar);
 
 
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
     }
 
@@ -49,7 +47,7 @@ public class HideAppsActivity extends ThemeActivity {
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getSupportFragmentManager());
-        adapter.addFragment(new HideAppsFragment(), "Skip");
+        adapter.addFragment(new HideAppsFragment());
         viewPager.setAdapter(adapter);
     }
 
@@ -88,9 +86,9 @@ public class HideAppsActivity extends ThemeActivity {
             return mFragmentTitleList.get(position);
         }
 
-        void addFragment(Fragment fragment, String title) {
+        void addFragment(Fragment fragment) {
             mFragmentList.add(fragment);
-            mFragmentTitleList.add(title);
+            mFragmentTitleList.add("Skip");
         }
     }
 }

@@ -284,7 +284,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                 }
                 break;
             case GROUP:
-                item.setItems(new ArrayList<Item>());
+                item.setItems(new ArrayList<>());
                 dataSplit = data.split(Config.INT_SEP);
                 for (String s : dataSplit) {
                     item.getItems().add(getItem(Integer.parseInt(s)));

@@ -21,7 +21,6 @@ import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
-    private int itemHeightPadding;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
     private int _rowCellCount, _columnCellCount;
@@ -44,7 +43,6 @@ public class AppDrawerPaged extends SmoothViewPager {
             super.onConfigurationChanged(newConfig);
             return;
         }
-
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setLandscapeValue();
             calculatePage();
@@ -77,7 +75,6 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     private void init(Context c) {
-        itemHeightPadding = Tool.dp2px(5, getContext());
         if (isInEditMode()) return;
         setOverScrollMode(OVER_SCROLL_NEVER);
         boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
@@ -102,7 +99,6 @@ public class AppDrawerPaged extends SmoothViewPager {
             setAdapter(new Adapter());
             if (_appDrawerIndicator != null)
                 _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
-
             return false;
         });
     }
@@ -121,29 +117,24 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     public class Adapter extends SmoothPagerAdapter {
+        int iconSize=Setup.appSettings().getDrawerIconSize();
 
         private View getItemView(int page, int x, int y) {
             int pagePos = y * _columnCellCount + x;
             final int pos = _rowCellCount * _columnCellCount * page + pagePos;
-
             if (pos >= _apps.size())
                 return null;
-
             final App app = _apps.get(pos);
-
-            return AppItemView
-                    .createDrawerAppItemView(getContext(), _home, app,
-                            Setup.appSettings().getDrawerIconSize(),
-                            new AppItemView.LongPressCallBack() {
-                                @Override
-                                public boolean readyForDrag(View view) {
-                                    return Setup.appSettings().getDesktopStyle() != Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
-                                }
-
-                                @Override
-                                public void afterDrag(View view) {
-                                }
-                            });
+            return AppItemView.createDrawerAppItemView(getContext(), app, iconSize,
+                new AppItemView.LongPressCallBack() {
+                    @Override
+                    public boolean readyForDrag(View view) {
+                        return Setup.appSettings().getDesktopStyle() == Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
+                    }
+                    @Override
+                    public void afterDrag(View view) {
+                    }
+                });
         }
 
         private Adapter() {
@@ -163,9 +154,7 @@ public class AppDrawerPaged extends SmoothViewPager {
                     for (int y = 0; y < _rowCellCount; y++) {
                         View view = getItemView(i, x, y);
                         if (view != null) {
-
                             CellContainer.LayoutParams lp = new CellContainer.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT, x, y, 1, 1);
-
                             view.setLayoutParams(lp);
                             cc.addViewToGrid(view);
                         }

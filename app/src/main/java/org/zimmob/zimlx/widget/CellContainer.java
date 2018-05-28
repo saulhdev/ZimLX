@@ -20,6 +20,7 @@ import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.ArrayList;
@@ -56,7 +57,7 @@ public class CellContainer extends ViewGroup {
     @Nullable
     private OnItemRearrangeListener _onItemRearrangeListener;
     private final Paint _outlinePaint = new Paint(1);
-    private PeekDirection _peekDirection;
+    private Config.PeekDirection _peekDirection;
     private Long _peekDownTime = (long) -1;
     private Point _preCoordinate = new Point(-1, -1);
     private Point _startCoordinate = new Point();
@@ -78,7 +79,6 @@ public class CellContainer extends ViewGroup {
         _bgPaint.setColor(-1);
         _bgPaint.setAlpha(0);
         _outlinePaint.setColor(-1);
-        _outlinePaint.setColor(Color.GREEN);
         _outlinePaint.setAlpha(0);
 
         init();
@@ -86,10 +86,6 @@ public class CellContainer extends ViewGroup {
 
     public interface OnItemRearrangeListener {
         void onItemRearrange(@NonNull Point point, @NonNull Point point2);
-    }
-
-    public enum PeekDirection {
-        UP, LEFT, RIGHT, DOWN
     }
 
     public final int getCellWidth() {
@@ -168,16 +164,18 @@ public class CellContainer extends ViewGroup {
         invalidate();
     }
 
-    private final void drawCachedOutlineBitmap(Canvas canvas, Rect cell) {
+    private void drawCachedOutlineBitmap(Canvas canvas, Rect cell) {
         if (_cachedOutlineBitmap != null) {
             Bitmap bitmap = _cachedOutlineBitmap;
             float centerX = (float) cell.centerX();
+
             Bitmap bitmap2 = _cachedOutlineBitmap;
-            float f = (float) 2;
-            centerX -= ((float) bitmap2.getWidth()) / f;
+            centerX -= ((float) bitmap2.getWidth()) / 2;
+
             float centerY = (float) cell.centerY();
             Bitmap bitmap3 = _cachedOutlineBitmap;
-            canvas.drawBitmap(bitmap, centerX, centerY - (((float) bitmap3.getWidth()) / f), _outlinePaint);
+
+            canvas.drawBitmap(bitmap, centerX, centerY - (((float) bitmap3.getWidth()) / 2), _outlinePaint);
         }
     }
 
@@ -223,18 +221,18 @@ public class CellContainer extends ViewGroup {
         return DragState.OutOffRange;
     }
 
-    private final PeekDirection getPeekDirectionFromCoordinate(Point from, Point to) {
+    private final Config.PeekDirection getPeekDirectionFromCoordinate(Point from, Point to) {
         if (from.y - to.y > 0) {
-            return PeekDirection.UP;
+            return Config.PeekDirection.UP;
         }
         if (from.y - to.y < 0) {
-            return PeekDirection.DOWN;
+            return Config.PeekDirection.DOWN;
         }
         if (from.x - to.x > 0) {
-            return PeekDirection.LEFT;
+            return Config.PeekDirection.LEFT;
         }
         if (from.x - to.x < 0) {
-            return PeekDirection.RIGHT;
+            return Config.PeekDirection.RIGHT;
         }
         return null;
     }
@@ -409,7 +407,6 @@ public class CellContainer extends ViewGroup {
     }
 
     public final void setOccupied(boolean b, @NonNull LayoutParams lp) {
-        Tool.print("Setting");
         int x = lp.getX() + lp.getXSpan();
         for (int x2 = lp.getX(); x2 < x; x2++) {
             int y = lp.getY() + lp.getYSpan();
@@ -419,7 +416,6 @@ public class CellContainer extends ViewGroup {
                         String.valueOf(b);
                 objArr[0] = stringBuilder;
                 objArr[1] = ")";
-                Tool.print(objArr);
                 boolean[][] zArr = _occupied;
                 zArr[x2][y2] = b;
             }

@@ -73,7 +73,7 @@ public class Item implements Parcelable {
                 parcel.readStringList(labels);
                 items = new ArrayList<>();
                 for (String s : labels) {
-                    items.add(HomeActivity.Companion.getLauncher()._db.getItem(Integer.parseInt(s)));
+                    items.add(HomeActivity._db.getItem(Integer.parseInt(s)));
                 }
                 break;
             case ACTION:

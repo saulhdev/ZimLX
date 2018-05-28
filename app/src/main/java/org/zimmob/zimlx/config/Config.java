@@ -1,5 +1,11 @@
 package org.zimmob.zimlx.config;
 
+import android.content.Context;
+import android.os.Build;
+
+import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.util.AppSettings;
+
 /**
  * Created by saul on 05-06-18.
  * Project ZimLX
@@ -49,4 +55,8 @@ public class Config {
 
     // doesn't work reliably yet
     public static final boolean ENABLE_ITEM_TOUCH_LISTENER = false;
+
+    public enum PeekDirection {
+        UP, LEFT, RIGHT, DOWN
+    }
 }

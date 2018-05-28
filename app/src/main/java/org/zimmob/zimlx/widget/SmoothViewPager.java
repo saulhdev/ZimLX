@@ -86,8 +86,10 @@ public class SmoothViewPager extends ViewGroup {
             android.R.attr.layout_gravity
     };
 
-    private Bitmap _cachedOutlineBitmap;
-    private final Paint _outlinePaint = new Paint(1);
+    /**
+     * Used to track what the expected number of items in the adapter should be.
+     * If the app changes this when we don't expect it, we'll throw a big obnoxious exception.
+     */
     private int mExpectedAdapterCount;
 
     static class ItemInfo {
@@ -98,11 +100,18 @@ public class SmoothViewPager extends ViewGroup {
         float offset;
     }
 
-    private static final Comparator<ItemInfo> COMPARATOR = (lhs, rhs) -> lhs.position - rhs.position;
+    private static final Comparator<ItemInfo> COMPARATOR = new Comparator<ItemInfo>() {
+        @Override
+        public int compare(ItemInfo lhs, ItemInfo rhs) {
+            return lhs.position - rhs.position;
+        }
+    };
 
-    private static final Interpolator sInterpolator = t -> {
-        t -= 1.0f;
-        return t * t * t * t * t + 1.0f;
+    private static final Interpolator sInterpolator = new Interpolator() {
+        public float getInterpolation(float t) {
+            t -= 1.0f;
+            return t * t * t * t * t + 1.0f;
+        }
     };
 
     private final ArrayList<ItemInfo> mItems = new ArrayList<>();
@@ -207,21 +216,23 @@ public class SmoothViewPager extends ViewGroup {
      * Indicates that the pager is in an idle, settled state. The current page
      * is fully in view and no animation is in progress.
      */
-    private static final int SCROLL_STATE_IDLE = 0;
+    public static final int SCROLL_STATE_IDLE = 0;
 
     /**
      * Indicates that the pager is currently being dragged by the user.
      */
-    private static final int SCROLL_STATE_DRAGGING = 1;
+    public static final int SCROLL_STATE_DRAGGING = 1;
 
     /**
      * Indicates that the pager is in the process of settling to a final position.
      */
-    private static final int SCROLL_STATE_SETTLING = 2;
+    public static final int SCROLL_STATE_SETTLING = 2;
 
-    private final Runnable mEndScrollRunnable = () -> {
-        setScrollState(SCROLL_STATE_IDLE);
-        populate();
+    private final Runnable mEndScrollRunnable = new Runnable() {
+        public void run() {
+            setScrollState(SCROLL_STATE_IDLE);
+            populate();
+        }
     };
 
     private int mScrollState = SCROLL_STATE_IDLE;
@@ -294,7 +305,7 @@ public class SmoothViewPager extends ViewGroup {
      * setting a PageTransformer on a ViewPager on earlier platform versions will
      * be ignored.</p>
      */
-    interface PageTransformer {
+    public interface PageTransformer {
         /**
          * Apply a property transformation to the given page.
          *
@@ -317,7 +328,7 @@ public class SmoothViewPager extends ViewGroup {
      * Used internally to tag special types of child views that should be added as
      * pager decorations by default.
      */
-    private interface Decor {
+    interface Decor {
     }
 
     public SmoothViewPager(Context context) {
@@ -330,7 +341,7 @@ public class SmoothViewPager extends ViewGroup {
         initViewPager();
     }
 
-    private void initViewPager() {
+    void initViewPager() {
         setWillNotDraw(false);
         setDescendantFocusability(FOCUS_AFTER_DESCENDANTS);
         setFocusable(true);
@@ -356,11 +367,6 @@ public class SmoothViewPager extends ViewGroup {
             ViewCompat.setImportantForAccessibility(this,
                     ViewCompat.IMPORTANT_FOR_ACCESSIBILITY_YES);
         }
-    }
-    public final void clearCachedOutlineBitmap() {
-        _outlinePaint.setAlpha(0);
-        _cachedOutlineBitmap = null;
-        invalidate();
     }
 
     @Override
@@ -391,7 +397,7 @@ public class SmoothViewPager extends ViewGroup {
      *
      * @param adapter Adapter to use
      */
-    void setAdapter(SmoothPagerAdapter adapter) {
+    public void setAdapter(SmoothPagerAdapter adapter) {
         if (mAdapter != null) {
             mAdapter.setViewPagerObserver(null);
             mAdapter.startUpdate(this);
@@ -492,11 +498,11 @@ public class SmoothViewPager extends ViewGroup {
         return mCurItem;
     }
 
-    private void setCurrentItemInternal(int item, boolean smoothScroll, boolean always) {
+    void setCurrentItemInternal(int item, boolean smoothScroll, boolean always) {
         setCurrentItemInternal(item, smoothScroll, always, 0);
     }
 
-    private void setCurrentItemInternal(int item, boolean smoothScroll, boolean always, int velocity) {
+    void setCurrentItemInternal(int item, boolean smoothScroll, boolean always, int velocity) {
         if (mAdapter == null || mAdapter.getCount() <= 0) {
             setScrollingCacheEnabled(false);
             return;
@@ -624,7 +630,7 @@ public class SmoothViewPager extends ViewGroup {
      * @param transformer         PageTransformer that will modify each page's animation properties
      */
     public void setPageTransformer(boolean reverseDrawingOrder, PageTransformer transformer) {
-        if (Build.VERSION.SDK_INT >= 25) {
+        if (Build.VERSION.SDK_INT >= 11) {
             final boolean hasTransformer = transformer != null;
             final boolean needsPopulate = hasTransformer != (mPageTransformer != null);
             mPageTransformer = transformer;
@@ -638,19 +644,21 @@ public class SmoothViewPager extends ViewGroup {
         }
     }
 
-    private void setChildrenDrawingOrderEnabledCompat(boolean enable) {
-        if (mSetChildrenDrawingOrderEnabled == null) {
-            try {
-                mSetChildrenDrawingOrderEnabled = ViewGroup.class.getDeclaredMethod(
-                        "setChildrenDrawingOrderEnabled", Boolean.TYPE);
-            } catch (NoSuchMethodException e) {
-                Log.e(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
+    void setChildrenDrawingOrderEnabledCompat(boolean enable) {
+        if (Build.VERSION.SDK_INT >= 7) {
+            if (mSetChildrenDrawingOrderEnabled == null) {
+                try {
+                    mSetChildrenDrawingOrderEnabled = ViewGroup.class.getDeclaredMethod(
+                            "setChildrenDrawingOrderEnabled", Boolean.TYPE);
+                } catch (NoSuchMethodException e) {
+                    Log.e(TAG, "Can't find setChildrenDrawingOrderEnabled", e);
+                }
             }
-        }
-        try {
-            mSetChildrenDrawingOrderEnabled.invoke(this, enable);
-        } catch (Exception e) {
-            Log.e(TAG, "Error changing children drawing order", e);
+            try {
+                mSetChildrenDrawingOrderEnabled.invoke(this, enable);
+            } catch (Exception e) {
+                Log.e(TAG, "Error changing children drawing order", e);
+            }
         }
     }
 
@@ -745,7 +753,7 @@ public class SmoothViewPager extends ViewGroup {
      *
      * @param d Drawable to display between pages
      */
-    private void setPageMarginDrawable(Drawable d) {
+    public void setPageMarginDrawable(Drawable d) {
         mMarginDrawable = d;
         if (d != null) refreshDrawableState();
         setWillNotDraw(d == null);
@@ -779,7 +787,7 @@ public class SmoothViewPager extends ViewGroup {
     // the screen has to travel, however, we don't want this duration to be effected in a
     // purely linear fashion. Instead, we use this method to moderate the effect that the distance
     // of travel has on the overall snap duration.
-    private float distanceInfluenceForSnapDuration(float f) {
+    float distanceInfluenceForSnapDuration(float f) {
         f -= 0.5f; // center the values about 0.
         f *= 0.3f * Math.PI / 2.0f;
         return (float) Math.sin(f);
@@ -802,7 +810,7 @@ public class SmoothViewPager extends ViewGroup {
      * @param y        the number of pixels to scroll by on the Y axis
      * @param velocity the velocity associated with a fling, if applicable. (0 otherwise)
      */
-    private void smoothScrollTo(int x, int y, int velocity) {
+    void smoothScrollTo(int x, int y, int velocity) {
         if (getChildCount() == 0) {
             // Nothing to do.
             setScrollingCacheEnabled(false);
@@ -860,7 +868,7 @@ public class SmoothViewPager extends ViewGroup {
         ViewCompat.postInvalidateOnAnimation(this);
     }
 
-    private ItemInfo addNewItem(int position, int index) {
+    ItemInfo addNewItem(int position, int index) {
         ItemInfo ii = new ItemInfo();
         ii.position = position;
         ii.object = mAdapter.instantiateItem(this, position);
@@ -873,7 +881,7 @@ public class SmoothViewPager extends ViewGroup {
         return ii;
     }
 
-    private void dataSetChanged() {
+    void dataSetChanged() {
         // This method only gets called if our observer is attached, so mAdapter is non-null.
 
         final int adapterCount = mAdapter.getCount();
@@ -944,11 +952,11 @@ public class SmoothViewPager extends ViewGroup {
         }
     }
 
-    private void populate() {
+    void populate() {
         populate(mCurItem);
     }
 
-    private void populate(int newCurrentItem) {
+    void populate(int newCurrentItem) {
         ItemInfo oldCurInfo = null;
         int focusDirection = View.FOCUS_FORWARD;
         if (mCurItem != newCurrentItem) {
@@ -1249,7 +1257,7 @@ public class SmoothViewPager extends ViewGroup {
         Parcelable adapterState;
         ClassLoader loader;
 
-        SavedState(Parcelable superState) {
+        public SavedState(Parcelable superState) {
             super(superState);
         }
 
@@ -1357,7 +1365,7 @@ public class SmoothViewPager extends ViewGroup {
         }
     }
 
-    private ItemInfo infoForChild(View child) {
+    ItemInfo infoForChild(View child) {
         for (int i = 0; i < mItems.size(); i++) {
             ItemInfo ii = mItems.get(i);
             if (mAdapter.isViewFromObject(child, ii.object)) {
@@ -1367,7 +1375,7 @@ public class SmoothViewPager extends ViewGroup {
         return null;
     }
 
-    private ItemInfo infoForAnyChild(View child) {
+    ItemInfo infoForAnyChild(View child) {
         ViewParent parent;
         while ((parent = child.getParent()) != this) {
             if (parent == null || !(parent instanceof View)) {
@@ -1378,7 +1386,7 @@ public class SmoothViewPager extends ViewGroup {
         return infoForChild(child);
     }
 
-    private ItemInfo infoForPosition(int position) {
+    ItemInfo infoForPosition(int position) {
         for (int i = 0; i < mItems.size(); i++) {
             ItemInfo ii = mItems.get(i);
             if (ii.position == position) {
@@ -1706,7 +1714,7 @@ public class SmoothViewPager extends ViewGroup {
      * @param offsetPixels Value in pixels indicating the offset from position.
      */
     @CallSuper
-    void onPageScrolled(int position, float offset, int offsetPixels) {
+    protected void onPageScrolled(int position, float offset, int offsetPixels) {
         // Offset any decor views if needed - keep them on-screen at all times.
         if (mDecorChildCount > 0) {
             final int scrollX = getScrollX();
@@ -2541,7 +2549,7 @@ public class SmoothViewPager extends ViewGroup {
      * @param y      Y coordinate of the active touch point
      * @return true if child views of v can be scrolled by delta of dx.
      */
-    private boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
+    protected boolean canScroll(View v, boolean checkV, int dx, int x, int y) {
         if (v instanceof ViewGroup) {
             final ViewGroup group = (ViewGroup) v;
             final int scrollX = v.getScrollX();
@@ -2582,7 +2590,7 @@ public class SmoothViewPager extends ViewGroup {
      * @param event The key event to execute.
      * @return Return true if the event was handled, else false.
      */
-    private boolean executeKeyEvent(KeyEvent event) {
+    public boolean executeKeyEvent(KeyEvent event) {
         boolean handled = false;
         if (event.getAction() == KeyEvent.ACTION_DOWN) {
             switch (event.getKeyCode()) {
@@ -2593,12 +2601,14 @@ public class SmoothViewPager extends ViewGroup {
                     handled = arrowScroll(FOCUS_RIGHT);
                     break;
                 case KeyEvent.KEYCODE_TAB:
-                    // The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
-                    // before Android 3.0. Ignore the tab key on those devices.
-                    if (event.hasNoModifiers()) {
-                        handled = arrowScroll(FOCUS_FORWARD);
-                    } else if (event.hasModifiers(KeyEvent.META_SHIFT_ON)) {
-                        handled = arrowScroll(FOCUS_BACKWARD);
+                    if (Build.VERSION.SDK_INT >= 11) {
+                        // The focus finder had a bug handling FOCUS_FORWARD and FOCUS_BACKWARD
+                        // before Android 3.0. Ignore the tab key on those devices.
+                        if (event.hasNoModifiers()) {
+                            handled = arrowScroll(FOCUS_FORWARD);
+                        } else if (event.hasModifiers(KeyEvent.META_SHIFT_ON)) {
+                            handled = arrowScroll(FOCUS_BACKWARD);
+                        }
                     }
                     break;
             }
@@ -2606,7 +2616,7 @@ public class SmoothViewPager extends ViewGroup {
         return handled;
     }
 
-    private boolean arrowScroll(int direction) {
+    public boolean arrowScroll(int direction) {
         View currentFocused = findFocus();
         if (currentFocused == this) {
             currentFocused = null;
@@ -2698,7 +2708,7 @@ public class SmoothViewPager extends ViewGroup {
         return outRect;
     }
 
-    private boolean pageLeft() {
+    boolean pageLeft() {
         if (mCurItem > 0) {
             setCurrentItem(mCurItem - 1, true);
             return true;
@@ -2706,7 +2716,7 @@ public class SmoothViewPager extends ViewGroup {
         return false;
     }
 
-    private boolean pageRight() {
+    boolean pageRight() {
         if (mAdapter != null && mCurItem < (mAdapter.getCount() - 1)) {
             setCurrentItem(mCurItem + 1, true);
             return true;
@@ -2927,19 +2937,19 @@ public class SmoothViewPager extends ViewGroup {
      * Layout parameters that should be supplied for views added to a
      * ViewPager.
      */
-    static class LayoutParams extends ViewGroup.LayoutParams {
+    public static class LayoutParams extends ViewGroup.LayoutParams {
         /**
          * true if this view is a decoration on the pager itself and not
          * a view supplied by the adapter.
          */
-        boolean isDecor;
+        public boolean isDecor;
 
         /**
          * Gravity setting for use on decor views only:
          * Where to position the view page within the overall ViewPager
          * container; constants are defined in {@link android.view.Gravity}.
          */
-        int gravity;
+        public int gravity;
 
         /**
          * Width as a 0-1 multiplier of the measured pager width
@@ -2962,11 +2972,11 @@ public class SmoothViewPager extends ViewGroup {
          */
         int childIndex;
 
-        LayoutParams() {
+        public LayoutParams() {
             super(FILL_PARENT, FILL_PARENT);
         }
 
-        LayoutParams(Context context, AttributeSet attrs) {
+        public LayoutParams(Context context, AttributeSet attrs) {
             super(context, attrs);
 
             final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);

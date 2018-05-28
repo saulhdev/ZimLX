@@ -13,12 +13,14 @@ import android.graphics.drawable.Drawable;
 public class App {
     private String label, packageName, className;
     private Drawable icon;
+    private int intIcon;
 
     public App(Context _context, ResolveInfo _info, PackageManager _pm) {
         this.label = _info.loadLabel(_pm).toString();
         this.icon = _info.loadIcon(_pm);
         this.packageName = _info.activityInfo.packageName;
         this.className = _info.activityInfo.name;
+        this.intIcon=_info.icon;
     }
 
     @Override

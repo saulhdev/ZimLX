@@ -62,7 +62,6 @@ public class DragOptionView extends CardView {
     private void init() {
         setCardElevation(Tool.dp2px(4, getContext()));
         setRadius(Tool.dp2px(2, getContext()));
-
         _dragOptions = (LinearLayout) ((LayoutInflater) Objects.requireNonNull(getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE))).inflate(R.layout.view_drag_option, this, false);
         addView(_dragOptions);
 

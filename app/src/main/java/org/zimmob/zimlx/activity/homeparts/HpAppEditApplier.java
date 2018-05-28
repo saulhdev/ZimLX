@@ -3,13 +3,13 @@ package org.zimmob.zimlx.activity.homeparts;
 import android.graphics.Point;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.Dock;
 
-public class HpAppEditApplier implements DialogListener.OnEditDialogListener {
+public class HpAppEditApplier implements IDialogListener.OnEditDialogListener {
     private HomeActivity _homeActivity;
     private Item _item;
 

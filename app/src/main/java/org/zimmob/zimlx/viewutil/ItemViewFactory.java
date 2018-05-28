@@ -32,20 +32,12 @@ public class ItemViewFactory {
     private static final int NO_FLAGS = 0x01;
     private static final int NO_LABEL = 0x02;
 
-    public static View getItemView(Context context, Item item, boolean showLabels, DesktopCallback callBack, int iconSize) {
+    public static View getItemView(Context context, Item item, boolean showLabels, IDesktopCallback callBack, int iconSize) {
         int flag = showLabels ? ItemViewFactory.NO_FLAGS : ItemViewFactory.NO_LABEL;
         return getItemView(context, callBack, item, iconSize, flag);
     }
 
-    /**
-     * @param context
-     * @param callBack
-     * @param item
-     * @param iconSize
-     * @param flags
-     * @return
-     */
-    private static View getItemView(final Context context, final DesktopCallback callBack, final Item item, int iconSize, int flags) {
+    private static View getItemView(final Context context, final IDesktopCallback callBack, final Item item, int iconSize, int flags) {
         View view = null;
         switch (item.getType()) {
             case APP:
@@ -60,7 +52,7 @@ public class ItemViewFactory {
                         .withOnLongClick(item, DragAction.Action.APP, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
-                                return true;
+                                return false;
                             }
 
                             @Override
@@ -80,7 +72,7 @@ public class ItemViewFactory {
                         .withOnLongClick(item, DragAction.Action.SHORTCUT, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
-                                return true;
+                                return false;
                             }
 
                             @Override
@@ -100,7 +92,7 @@ public class ItemViewFactory {
                         .withOnLongClick(item, DragAction.Action.GROUP, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
-                                return true;
+                                return false;
                             }
 
                             @Override
@@ -121,7 +113,7 @@ public class ItemViewFactory {
                         .withOnLongClick(item, DragAction.Action.ACTION, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
-                                return true;
+                                return false;
                             }
 
                             @Override

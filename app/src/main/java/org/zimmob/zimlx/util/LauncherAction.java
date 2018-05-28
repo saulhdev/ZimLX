@@ -14,7 +14,7 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.MinibarEditActivity;
 import org.zimmob.zimlx.activity.SettingsActivity;
-import org.zimmob.zimlx.viewutil.DialogHelper;
+import org.zimmob.zimlx.apps.AppManager;
 
 public class LauncherAction {
 

@@ -4,12 +4,12 @@ import android.graphics.Point;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.interfaces.DialogListener;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.util.Tool;
 
-public class HpDesktopPickAction implements DialogListener.OnAddAppDrawerItemListener {
+public class HpDesktopPickAction implements IDialogListener.OnAddAppDrawerItemListener {
     private HomeActivity _homeActivity;
 
     public HpDesktopPickAction(HomeActivity home) {

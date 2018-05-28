@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.viewutil;
+package org.zimmob.zimlx.util;
 
 import android.content.Context;
 import android.content.Intent;
@@ -12,14 +12,14 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.mikepenz.fastadapter.IAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -85,13 +85,13 @@ public class DialogHelper {
                     .withIconPadding(context, sizePad));
         }
         fastItemAdapter.set(items);
-        /*fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
+        fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
             if (onAppSelectedListener != null) {
                 onAppSelectedListener.onAppSelected(apps.get(position));
             }
             dialog.dismiss();
             return true;
-        });*/
+        });
         fastItemAdapter.withOnClickListener((v, adapter, item, position) -> {
             if (onAppSelectedListener != null) {
                 onAppSelectedListener.onAppSelected(apps.get(position));

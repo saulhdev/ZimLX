@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.widget;
 
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -25,9 +26,11 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallback;
 import org.zimmob.zimlx.viewutil.GroupIconDrawable;
+import org.zimmob.zimlx.viewutil.IDesktopCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
+
+import java.util.Objects;
 
 public class AppItemView extends View implements Drawable.Callback {
 
@@ -43,12 +46,9 @@ public class AppItemView extends View implements Drawable.Callback {
     private boolean _showLabel = true;
     private boolean _vibrateWhenLongPress;
     private float _labelHeight;
-    private float _labelWidth;
     private int _targetedWidth;
-    private int _fontSizeSp;
     private int _targetedHeightPadding;
     private float _heightPadding;
-    private boolean _fastAdapterItem;
 
     public AppItemView(Context context) {
         this(context, null);
@@ -56,31 +56,28 @@ public class AppItemView extends View implements Drawable.Callback {
 
     public AppItemView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         if (_typeface == null) {
             _typeface = Typeface.createFromAsset(getContext().getAssets(), "RobotoCondensed-Regular.ttf");
         }
-
         setWillNotDraw(false);
         setDrawingCacheEnabled(true);
         setWillNotCacheDrawing(false);
 
         _labelHeight = Tool.dp2px(14, getContext());
-        _labelWidth = Tool.dp2px(48, getContext());
-
         _textPaint.setTextSize(Tool.sp2px(getContext(), 13));
         _textPaint.setColor(Color.DKGRAY);
         _textPaint.setTypeface(_typeface);
     }
 
-    public static AppItemView createAppItemViewPopup(Context context, Item groupItem, App item, int iconSize, float fontSizeSp) {
+    public static AppItemView createAppItemViewPopup(Context context, Item groupItem, int iconSize, float fontSizeSp) {
         AppItemView.Builder b = new AppItemView.Builder(context, iconSize)
                 .withOnTouchGetPosition(groupItem, Setup.itemGestureCallback())
                 .setTextColor(Setup.appSettings().getFolderLabelColor())
                 .setFontSize(context, fontSizeSp);
         if (groupItem.getType() == Item.Type.SHORTCUT) {
             b.setShortcutItem(groupItem);
-        } else {
+        }
+        else {
             App app = Setup.appLoader().findItemApp(groupItem);
             if (app != null) {
                 b.setAppItem(groupItem, app);
@@ -89,7 +86,7 @@ public class AppItemView extends View implements Drawable.Callback {
         return b.getView();
     }
 
-    public static View createDrawerAppItemView(Context context, final HomeActivity home, App app, int iconSize, AppItemView.LongPressCallBack longPressCallBack) {
+    public static View createDrawerAppItemView(Context context, App app, int iconSize, AppItemView.LongPressCallBack longPressCallBack) {
         return new AppItemView.Builder(context, iconSize)
                 .setAppItem(app)
                 .withOnTouchGetPosition(null, null)
@@ -229,16 +226,12 @@ public class AppItemView extends View implements Drawable.Callback {
             view.setIconSize(Tool.dp2px(iconSize, view.getContext()));
         }
 
-        public static OnTouchListener getOnTouchGetPosition(Item item, ItemGestureListener.ItemGestureCallback itemGestureCallback) {
-            return Tool.getItemOnTouchListener(item, itemGestureCallback);
-        }
-
         public static OnLongClickListener getLongClickDragAppListener(final Item item, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
             return v -> {
                 if (Setup.appSettings().isDesktopLock()) {
                     return false;
                 }
-                if (eventAction != null && !eventAction.readyForDrag(v)) {
+                if (eventAction != null && eventAction.readyForDrag(v)) {
                     return false;
                 }
                 v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
@@ -251,7 +244,7 @@ public class AppItemView extends View implements Drawable.Callback {
             return _view;
         }
 
-        public Builder setAppItem(final App app) {
+        Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
             _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
@@ -272,7 +265,7 @@ public class AppItemView extends View implements Drawable.Callback {
             return this;
         }
 
-        public Builder setGroupItem(Context context, final DesktopCallback callback, final Item item, int iconSize) {
+        public Builder setGroupItem(Context context, final IDesktopCallback callback, final Item item, int iconSize) {
             _view.setLabel(item.getLabel());
             _view.setCurrentIcon(new GroupIconDrawable(context, item, iconSize));
             _view.setOnClickListener(v -> {
@@ -283,7 +276,6 @@ public class AppItemView extends View implements Drawable.Callback {
             return this;
         }
 
-
         public Builder setActionItem(Item item) {
             _view.setLabel(item.getLabel());
             _view.setCurrentIcon(ContextCompat.getDrawable(Setup.appContext(), R.drawable.ic_apps_white_48dp));
@@ -291,15 +283,16 @@ public class AppItemView extends View implements Drawable.Callback {
                 case Config.ACTION_LAUNCHER:
                     _view.setOnClickListener(view -> {
                         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                        HomeActivity.Companion.getLauncher().openAppDrawer(view);
+                        if (HomeActivity.Companion.getLauncher() != null) {
+                            Objects.requireNonNull(HomeActivity.Companion.getLauncher()).openAppDrawer(view);
+                        }
                     });
                     break;
             }
             return this;
         }
 
-
-        public Builder withOnLongClick(final App app, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
+        private Builder withOnLongClick(final App app, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
             withOnLongClick(Item.newAppItem(app), action, eventAction);
             return this;
         }
@@ -309,7 +302,7 @@ public class AppItemView extends View implements Drawable.Callback {
                 if (Setup.appSettings().isDesktopLock()) {
                     return false;
                 }
-                if (eventAction != null && !eventAction.readyForDrag(v)) {
+                if (eventAction != null && eventAction.readyForDrag(v)) {
                     return false;
                 }
                 if (_view._vibrateWhenLongPress) {
@@ -321,6 +314,7 @@ public class AppItemView extends View implements Drawable.Callback {
             return this;
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         public Builder withOnTouchGetPosition(Item item, ItemGestureListener.ItemGestureCallback itemGestureCallback) {
             _view.setOnTouchListener(Tool.getItemOnTouchListener(item, itemGestureCallback));
             return this;
@@ -347,7 +341,6 @@ public class AppItemView extends View implements Drawable.Callback {
         }
 
         public Builder setFastAdapterItem() {
-            _view._fastAdapterItem = true;
             return this;
         }
     }

@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.apps;
 
 import android.Manifest;
 import android.app.Activity;
@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
@@ -19,10 +18,11 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.interfaces.AppDeleteListener;
-import org.zimmob.zimlx.interfaces.AppUpdateListener;
+import org.zimmob.zimlx.icon.IconPackHelper;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.text.Collator;
@@ -43,8 +43,8 @@ public class AppManager {
     private PackageManager _packageManager;
     private List<App> _apps = new ArrayList<>();
     private List<App> _nonFilteredApps = new ArrayList<>();
-    private final List<AppUpdateListener> _updateListeners = new ArrayList<>();
-    private final List<AppDeleteListener> _deleteListeners = new ArrayList<>();
+    private final List<IAppUpdateListener> _updateListeners = new ArrayList<>();
+    private final List<IAppDeleteListener> _deleteListeners = new ArrayList<>();
     public boolean _recreateAfterGettingApps;
     private AsyncTask _task;
     private Context _context;
@@ -96,46 +96,6 @@ public class AppManager {
         }
     }
 
-    public void startPickIconPackIntent(final Activity activity) {
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory("com.anddoes.launcher.THEME");
-
-        FastItemAdapter<IconLabelItem> fastItemAdapter = new FastItemAdapter<>();
-
-        final List<ResolveInfo> resolveInfos = _packageManager.queryIntentActivities(intent, 0);
-        Collections.sort(resolveInfos, new ResolveInfo.DisplayNameComparator(_packageManager));
-        final MaterialDialog d = new MaterialDialog.Builder(activity)
-                .adapter(fastItemAdapter, null)
-                .title((activity.getString(R.string.dialog__icon_pack_title)))
-                .build();
-
-        fastItemAdapter.add(new IconLabelItem(activity, R.drawable.ic_launcher, R.string.label_default, -1)
-                .withIconGravity(Gravity.START)
-                .withOnClickListener(v -> {
-                    _recreateAfterGettingApps = true;
-                    AppSettings.get().setIconPack("");
-                    getAllApps();
-                    d.dismiss();
-                }));
-
-        for (int i = 0; i < resolveInfos.size(); i++) {
-            final int mI = i;
-            fastItemAdapter.add(new IconLabelItem(activity, resolveInfos.get(i).loadIcon(_packageManager), resolveInfos.get(i).loadLabel(_packageManager).toString(), -1)
-                    .withIconGravity(Gravity.START)
-                    .withOnClickListener(v -> {
-                        if (ActivityCompat.checkSelfPermission(_context, Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED) {
-                            _recreateAfterGettingApps = true;
-                            AppSettings.get().setIconPack(resolveInfos.get(mI).activityInfo.packageName);
-                            getAllApps();
-                            d.dismiss();
-                        } else {
-                            Tool.toast(_context, (activity.getString(R.string.dialog__icon_pack_info_toast)));
-                            ActivityCompat.requestPermissions(HomeActivity.Companion.getLauncher(), new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, HomeActivity.REQUEST_PERMISSION_STORAGE);
-                        }
-                    }));
-        }
-        d.show();
-    }
 
     private void onReceive() {
         getAllApps();
@@ -169,16 +129,16 @@ public class AppManager {
         onReceive();
     }
 
-    public void addUpdateListener(AppUpdateListener updateListener) {
+    public void addUpdateListener(IAppUpdateListener updateListener) {
         _updateListeners.add(updateListener);
     }
 
-    public void addDeleteListener(AppDeleteListener deleteListener) {
+    public void addDeleteListener(IAppDeleteListener deleteListener) {
         _deleteListeners.add(deleteListener);
     }
 
     private void notifyUpdateListeners(@NonNull List<App> apps) {
-        Iterator<AppUpdateListener> iter = _updateListeners.iterator();
+        Iterator<IAppUpdateListener> iter = _updateListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppUpdated(apps)) {
                 iter.remove();
@@ -187,7 +147,7 @@ public class AppManager {
     }
 
     private void notifyRemoveListeners(@NonNull List<App> apps) {
-        Iterator<AppDeleteListener> iter = _deleteListeners.iterator();
+        Iterator<IAppDeleteListener> iter = _deleteListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppDeleted(apps)) {
                 iter.remove();
@@ -325,7 +285,7 @@ public class AppManager {
         }
     }
 
-    public static abstract class AppUpdatedListener implements AppUpdateListener {
+    public static abstract class AppUpdatedListener implements IAppUpdateListener {
         private String listenerID;
 
         public AppUpdatedListener() {
@@ -334,13 +294,7 @@ public class AppManager {
 
         @Override
         public boolean equals(Object obj) {
-            if (obj instanceof AppUpdatedListener) {
-                if (!((AppUpdatedListener) obj).listenerID.equals(this.listenerID)) {
-                    return false;
-                }
-                return true;
-            }
-            return false;
+            return obj instanceof AppUpdatedListener && ((AppUpdatedListener) obj).listenerID.equals(this.listenerID);
         }
     }
 }

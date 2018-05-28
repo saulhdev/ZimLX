@@ -10,17 +10,17 @@ import android.view.View;
 import android.view.WindowInsets;
 
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
 import org.zimmob.zimlx.dragndrop.DragHandler;
+import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.DesktopCallback;
+import org.zimmob.zimlx.viewutil.IDesktopCallback;
 import org.zimmob.zimlx.viewutil.ItemViewFactory;
 
 import java.util.List;
 
-public final class Dock extends CellContainer implements DesktopCallback<View> {
+public final class Dock extends CellContainer implements IDesktopCallback<View> {
     private int _bottomInset;
     private final Point _coordinate = new Point();
     private HomeActivity _home;
@@ -129,11 +129,11 @@ public final class Dock extends CellContainer implements DesktopCallback<View> {
                                 if (dragNDropView2 != null) {
                                     dragNDropView2.showFolderPreviewAt(
                                             this,
-                                            ((float) getCellWidth())
-                                                    * (((float) _coordinate.x) + 0.5f),
+                                            ((float) getCellWidth()),
+                                                    //* (((float) _coordinate.x) + 0.5f),
                                             (((float) getCellHeight())
-                                                    * (((float) _coordinate.y) + 0.5f))
-                                                    - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0)));
+                                                    //* (((float) _coordinate.y) + 0.5f))
+                                                    - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0))));
                                     break;
                                 }
                             }
@@ -236,7 +236,7 @@ public final class Dock extends CellContainer implements DesktopCallback<View> {
         item._locationInLauncher = 1;
         item.x = x;
         item.y = y;
-        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), (DesktopCallback) this, Setup.appSettings().getDockIconSize());
+        View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
             return false;
         }

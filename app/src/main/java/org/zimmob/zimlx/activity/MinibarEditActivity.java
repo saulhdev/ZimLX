@@ -25,6 +25,7 @@ import org.zimmob.zimlx.util.LauncherAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -53,7 +54,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         setContentView(R.layout.activity_minibar_edit);
         ButterKnife.bind(this);
         setSupportActionBar(_toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         setTitle(R.string.minibar);
 
@@ -139,14 +140,13 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             return R.layout.item_minibar_edit;
         }
 
-        @NonNull
         @Override
-        public ViewHolder getViewHolder(View v) {
+        public ViewHolder getViewHolder(@NonNull View v) {
             return new ViewHolder(v);
         }
 
-        @Override
-        public void bindView(ViewHolder holder, List payloads) {
+
+        public void bindView(@NonNull ViewHolder holder, List payloads) {
             holder._tv.setText(item.label);
             holder._tv2.setText(item.description);
             holder._iv.setImageResource(item.icon);

@@ -259,4 +259,15 @@
     <string name="menu_hidden_apps">Hidden Apps</string>
     <string name="menu_add_apps_home">Add Apps to Home</string>
     <string name="menu_sort_apps">Sort Mode</string>
+
+    <!-- ICON PACK -->
+    <string name="app_edit_drop_target_label">Edit</string>
+    <string name="icon_pack_title">Icon pack</string>
+    <string name="icon_pack_picker">Select icon</string>
+    <string name="icon_pack_picker_search">Search icon</string>
+    <string name="icon_pack_suggestions">Suggestions</string>
+    <string name="icon_pack_all_icons">All icons</string>
+    <string name="icon_pack_reset">Reset</string>
+    <string name="icon_pack_system">System (Default)</string>
+    <string name="icon_pack_default" translatable="false">Default</string>
 </resources>

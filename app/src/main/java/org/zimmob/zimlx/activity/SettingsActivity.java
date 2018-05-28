@@ -20,12 +20,13 @@ import net.gsantner.opoc.util.PermissionChecker;
 
 import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
-import org.zimmob.zimlx.util.AppManager;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.LauncherAction;
-import org.zimmob.zimlx.viewutil.DialogHelper;
+import org.zimmob.zimlx.util.DialogHelper;
 
 import java.util.Locale;
 
@@ -324,7 +325,9 @@ public class SettingsActivity extends ThemeActivity {
                     return true;
                 }
                 case R.string.pref_key__icon_pack: {
-                    AppManager.getInstance(getActivity()).startPickIconPackIntent(getActivity());
+                    IconsHandler iconsHandler = new IconsHandler(getContext());
+                    iconsHandler.showDialog(getActivity());
+                    //AppManager.getInstance(getActivity()).startPickIconPackIntent(getActivity());
                     return true;
                 }
                 case R.string.pref_key__clear_database: {

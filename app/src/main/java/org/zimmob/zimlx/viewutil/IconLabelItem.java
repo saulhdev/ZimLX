@@ -1,14 +1,18 @@
 package org.zimmob.zimlx.viewutil;
 
+import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
@@ -22,6 +26,7 @@ import java.util.List;
 
 public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> {
 
+
     public Drawable _icon;
     public String _label;
     private View.OnLongClickListener _onLongClickListener;
@@ -33,8 +38,9 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private int _gravity = android.view.Gravity.CENTER_VERTICAL;
     private float _drawablePadding;
     private Typeface _typeface;
-    private boolean _matchParent = true;
+
     private int _width = -1;
+    private boolean _matchParent = true;
     private boolean _bold = false;
     private int _textGravity = Gravity.CENTER_VERTICAL;
     private int _maxTextLines = 1;
@@ -56,7 +62,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
         _label = label;
-        _icon = context.getResources().getDrawable(icon,null);
+        _icon = context.getResources().getDrawable(icon);
         _forceSize = forceSize;
     }
 
@@ -131,7 +137,9 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         _onLongClickListener = onLongClickListener;
         return this;
     }
-
+    public Bitmap getDrawingCache() {
+        return Tool.drawableToBitmap(_icon);
+    }
     @Override
     public ViewHolder getViewHolder(View v) {
         return new ViewHolder(v, this);
