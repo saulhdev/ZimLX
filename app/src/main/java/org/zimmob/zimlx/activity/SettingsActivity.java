@@ -22,10 +22,9 @@ import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
-import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
-import org.zimmob.zimlx.util.LauncherAction;
+import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.util.DialogHelper;
 
 import java.util.Locale;

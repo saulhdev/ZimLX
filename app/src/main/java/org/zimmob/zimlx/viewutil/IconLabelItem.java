@@ -1,33 +1,33 @@
 package org.zimmob.zimlx.viewutil;
 
-import android.app.Activity;
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
+
+import org.zimmob.zimlx.icon.IconProvider;
+import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.List;
 
-public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> {
-
+public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder>{
 
     public Drawable _icon;
+    public SimpleIconProvider _iconProvider = null;
     public String _label;
     private View.OnLongClickListener _onLongClickListener;
     private View.OnClickListener _onClickListener;
@@ -38,44 +38,65 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     private int _gravity = android.view.Gravity.CENTER_VERTICAL;
     private float _drawablePadding;
     private Typeface _typeface;
-
-    private int _width = -1;
     private boolean _matchParent = true;
+    private int _width = -1;
     private boolean _bold = false;
     private int _textGravity = Gravity.CENTER_VERTICAL;
     private int _maxTextLines = 1;
+    private boolean hideLabel = false;
 
     public IconLabelItem(Item item) {
-
+        _iconProvider = item != null ? item.getIconProvider() : null;
         _icon = item != null ? item.getIcon() : null;
         _label = item != null ? item.getLabel() : null;
     }
 
     public IconLabelItem(Context context, int icon, int label) {
-        _icon = context.getResources().getDrawable(icon,null);
+        _iconProvider = Setup.imageLoader().createIconProvider(icon);
+        if(icon!=0) {
+            _icon = context.getDrawable(icon);
+        }
         _label = context.getString(label);
+    }
+
+    public void setHideLabel(boolean hideLabel) {
+        this.hideLabel = hideLabel;
     }
 
     public IconLabelItem(Context context, int label) {
-        _label = context.getString(label);
+        this(context, 0, label);
+        //_label = context.getString(label);
     }
 
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
+        this(null);
         _label = label;
-        _icon = context.getResources().getDrawable(icon);
+        _icon = context.getDrawable(icon);
+        _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, int icon, int label, int forceSize) {
+        this(null);
         _label = context.getString(label);
-        _icon = context.getResources().getDrawable(icon,null);
+        _icon = context.getDrawable(icon);
+        _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, Drawable icon, String label, int forceSize) {
+        this(null);
         _label = label;
         _icon = icon;
+        _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _forceSize = forceSize;
+    }
+
+    public IconLabelItem(Context context, SimpleIconProvider iconProvider, String label, int forceSize) {
+        this(null);
+        this._label = label;
+        this._iconProvider = iconProvider;
+        this._forceSize = forceSize;
     }
 
     public IconLabelItem withIconGravity(int iconGravity) {
@@ -137,9 +158,15 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         _onLongClickListener = onLongClickListener;
         return this;
     }
-    public Bitmap getDrawingCache() {
-        return Tool.drawableToBitmap(_icon);
+
+    public void setIcon(Context context, int icon) {
+        this._icon=context.getDrawable(icon);
     }
+
+    public void setIcon(int resId) {
+        _iconProvider = Setup.imageLoader().createIconProvider(resId);
+    }
+
     @Override
     public ViewHolder getViewHolder(View v) {
         return new ViewHolder(v, this);
@@ -167,28 +194,31 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         holder.textView.setGravity(_gravity);
         holder.textView.setGravity(_textGravity);
         holder.textView.setCompoundDrawablePadding((int) _drawablePadding);
+
+        if (hideLabel) {
+            holder.textView.setText(null);
+            _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, Gravity.TOP);
+        } else {
+            _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, _iconGravity);
+        }
+
         holder.textView.setTypeface(_typeface);
         if (_bold)
             holder.textView.setTypeface(Typeface.DEFAULT_BOLD);
-
-        //Setup.logger().log(this, Log.INFO, null, "IconLabelItem - forceSize: %d", forceSize);
-
         holder.textView.setTextColor(_textColor);
         if (_onClickListener != null)
             holder.itemView.setOnClickListener(_onClickListener);
         if (_onLongClickListener != null)
             holder.itemView.setOnLongClickListener(_onLongClickListener);
-
         super.bindView(holder, payloads);
-    }
-
-    public void setIcon(Context context, int icon) {
-        this._icon = context.getResources().getDrawable(icon, null);
     }
 
     @Override
     public void unbindView(@NonNull ViewHolder holder) {
         super.unbindView(holder);
+        if (_iconProvider != null) {
+            _iconProvider.cancelLoad(IconProvider.IconTargetType.TextView, holder.textView);
+        }
         holder.textView.setText("");
         holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
     }

@@ -56,9 +56,9 @@ public class DesktopOptionView extends FrameLayout {
     public void updateHomeIcon(final boolean home) {
         post(() -> {
             if (home) {
-                _actionAdapters[0].getAdapterItem(2).setIcon(getContext(), R.drawable.ic_home_black_36dp);
+                _actionAdapters[0].getAdapterItem(1).setIcon(getContext(), R.drawable.ic_home_black_36dp);
             } else {
-                _actionAdapters[0].getAdapterItem(2).setIcon(getContext(),R.drawable.ic_home_white_36dp);
+                _actionAdapters[0].getAdapterItem(1).setIcon(getContext(),R.drawable.ic_home_white_36dp);
             }
             _actionAdapters[0].notifyAdapterItemChanged(1);
         });
@@ -129,12 +129,6 @@ public class DesktopOptionView extends FrameLayout {
                         Setup.appSettings().setDesktopLock(!Setup.appSettings().isDesktopLock());
                         updateLockIcon(Setup.appSettings().isDesktopLock());
                         break;
-                    case R.string.add_left:
-                        _desktopOptionViewListener.onAddPage(0);
-                        break;
-                    case R.string.add_right:
-                        _desktopOptionViewListener.onAddPage(1);
-                        break;
                     case R.string.settings:
                         _desktopOptionViewListener.onLaunchSettings();
                         break;
@@ -150,7 +144,7 @@ public class DesktopOptionView extends FrameLayout {
             @Override
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                int itemWidth = (getWidth() - 2 * paddingHorizontal) / 4;
+                int itemWidth = (getWidth() - 2 * paddingHorizontal) / 3;
                 initItems(typeface, clickListener, itemWidth);
             }
         });
@@ -158,10 +152,9 @@ public class DesktopOptionView extends FrameLayout {
 
     private void initItems(final Typeface typeface, final com.mikepenz.fastadapter.listeners.OnClickListener<IconLabelItem> clickListener, int itemWidth) {
         List<IconLabelItem> itemsTop = new ArrayList<>();
-        itemsTop.add(createItem(R.drawable.ic_add_to_queue_white_36dp, R.string.add_left, typeface, itemWidth));
         itemsTop.add(createItem(R.drawable.ic_delete_white_36dp, R.string.remove, typeface, itemWidth));
         itemsTop.add(createItem(R.drawable.ic_home_white_36dp, R.string.home, typeface, itemWidth));
-        itemsTop.add(createItem(R.drawable.ic_add_to_queue_white_36dp, R.string.add_right, typeface, itemWidth));
+        itemsTop.add(createItem(R.drawable.ic_settings_launcher_white_36dp, R.string.settings, typeface, itemWidth));
 
         _actionAdapters[0].set(itemsTop);
         _actionAdapters[0].withOnClickListener(clickListener);
@@ -170,7 +163,6 @@ public class DesktopOptionView extends FrameLayout {
         itemsBottom.add(createItem(R.drawable.ic_dashboard_white_36dp, R.string.widget, typeface, itemWidth));
         itemsBottom.add(createItem(R.drawable.ic_launch_white_36dp, R.string.action, typeface, itemWidth));
         itemsBottom.add(createItem(R.drawable.ic_lock_open_white_36dp, R.string.lock, typeface, itemWidth));
-        itemsBottom.add(createItem(R.drawable.ic_settings_launcher_white_36dp, R.string.settings, typeface, itemWidth));
         _actionAdapters[1].set(itemsBottom);
         _actionAdapters[1].withOnClickListener(clickListener);
 
@@ -208,8 +200,6 @@ public class DesktopOptionView extends FrameLayout {
 
     public interface DesktopOptionViewListener {
         void onRemovePage();
-
-        void onAddPage(int option);
 
         void onSetPageAsHome();
 

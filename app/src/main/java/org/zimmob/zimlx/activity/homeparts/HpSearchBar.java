@@ -37,7 +37,6 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
     @Override
     public void onInternetSearch(String string) {
         Intent intent = new Intent();
-
         if (Tool.isIntentActionAvailable(_home.getApplicationContext(), Intent.ACTION_WEB_SEARCH) && !Setup.appSettings().getSearchBarForceBrowser()) {
             intent.setAction(Intent.ACTION_WEB_SEARCH);
             intent.putExtra(SearchManager.QUERY, string);
@@ -59,18 +58,15 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
     public void onExpand() {
         _home.clearRoomForPopUp();
         _home.dimBackground();
-
         _searchBar._searchInput.setFocusable(true);
         _searchBar._searchInput.setFocusableInTouchMode(true);
         _searchBar._searchInput.post(() -> _searchBar._searchInput.requestFocus());
-
         Tool.showKeyboard(_home, _searchBar._searchInput);
     }
 
     @Override
     public void onCollapse() {
         _home.getDesktop().postDelayed(() -> _home.unClearRoomForPopUp(), 100);
-
         _home.unDimBackground();
         _searchBar._searchInput.clearFocus();
         Tool.hideKeyboard(_home, _searchBar._searchInput);

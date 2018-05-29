@@ -6,6 +6,7 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
@@ -36,6 +37,9 @@ public class Item implements Parcelable {
     // all items need these values
     private int _idValue;
     private String name = "";
+
+    public SimpleIconProvider iconProvider = null;
+
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
         @Override
@@ -89,6 +93,8 @@ public class Item implements Parcelable {
 
         if (Setup.appSettings().enableImageCaching()) {
             icon = Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue));
+            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue)));
+
         } else {
             switch (type) {
                 case APP:
@@ -97,7 +103,6 @@ public class Item implements Parcelable {
                     icon = app != null ? app.getIcon() : null;
                     break;
                 default:
-                    // TODO...
                     break;
             }
         }
@@ -122,6 +127,8 @@ public class Item implements Parcelable {
         item.spanX = 1;
         item.spanY = 1;
         item.intent = intent;
+        item.iconProvider = Setup.imageLoader().createIconProvider(icon);
+
         return item;
     }
 
@@ -278,6 +285,10 @@ public class Item implements Parcelable {
 
     public Drawable getIcon() {
         return icon;
+    }
+
+    public SimpleIconProvider getIconProvider() {
+        return iconProvider;
     }
 
     public enum Type {

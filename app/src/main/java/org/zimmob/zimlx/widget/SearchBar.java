@@ -213,7 +213,7 @@ public class SearchBar extends FrameLayout {
                             _searchInput.getText().clear();
                         })
                         .withTextColor(Color.WHITE)
-                        .withIconPadding(getContext(), 8)
+                        .withIconPadding(getContext(), 15)
                         .withBold(true)
                         .withMatchParent(true)
                         .withTextGravity(Gravity.END));
@@ -223,7 +223,11 @@ public class SearchBar extends FrameLayout {
                 final int finalI = i;
                 items.add(new IconLabelItem(getContext(), app.getIcon(), app.getLabel(), 36)
                         .withIconGravity(Setup.appSettings().getSearchGridSize() > 1 && Setup.appSettings().getSearchLabelLines() == 0 ? Gravity.TOP : Gravity.START)
-                        .withOnClickListener(v -> startApp(v.getContext(), app))
+                        .withOnClickListener(v -> {
+                                //TODO: save item to database every time it's clicked to track most used apps
+                                startApp(v.getContext(), app);
+                        })
+                        //TODO: fix IconProjection
                         .withOnLongClickListener(AppItemView.Builder.getLongClickDragAppListener(Item.newAppItem(app), DragAction.Action.APP, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
@@ -240,7 +244,7 @@ public class SearchBar extends FrameLayout {
                         }))
                         .withTextColor(Color.WHITE)
                         .withMatchParent(true)
-                        .withIconPadding(getContext(), 8)
+                        .withIconPadding(getContext(), 15)
                         .withMaxTextLines(Setup.appSettings().getSearchLabelLines()));
             }
             _adapter.set(items);

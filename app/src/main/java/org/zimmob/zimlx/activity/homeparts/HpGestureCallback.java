@@ -1,12 +1,10 @@
 package org.zimmob.zimlx.activity.homeparts;
 
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 
-import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.LauncherAction;
+import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.widget.Desktop;

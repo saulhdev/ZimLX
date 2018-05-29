@@ -7,7 +7,7 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.IDialogListener;
-import org.zimmob.zimlx.util.LauncherAction;
+import org.zimmob.zimlx.launcher.LauncherAction;
 
 public class HpEventHandler implements Setup.EventHandler {
     @Override

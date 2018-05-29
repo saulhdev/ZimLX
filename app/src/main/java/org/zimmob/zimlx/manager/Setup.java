@@ -1,9 +1,12 @@
 package org.zimmob.zimlx.manager;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.icon.BaseIconProvider;
+import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
@@ -56,6 +59,10 @@ public abstract class Setup {
         return get().getItemGestureCallback();
     }
 
+    public static ImageLoader imageLoader() {
+        return get().getImageLoader();
+    }
+
     public static DatabaseHelper dataManager() {
         return get().getDataManager();
     }
@@ -92,16 +99,18 @@ public abstract class Setup {
 
     protected abstract Logger getLogger();
 
+    public abstract ImageLoader getImageLoader();
+
+    public interface ImageLoader {
+        SimpleIconProvider createIconProvider(Drawable drawable);
+        SimpleIconProvider createIconProvider(int icon);
+    }
+
     public interface DataManager {
         void saveItem(Item item);
 
         void saveItem(Item item, Config.ItemState state);
 
-        /**
-         * @param item
-         * @param page
-         * @param desktop
-         */
         void saveItem(Item item, int page, Config.ItemPosition desktop);
 
         void deleteItem(Item item, boolean deleteSubItems);

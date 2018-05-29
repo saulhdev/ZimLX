@@ -9,6 +9,7 @@ import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.PagerIndicator;
@@ -124,7 +125,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getSearchLabelLines() {
-        return Integer.MAX_VALUE;
+        return 3;
     }
 
     public int getDesktopBackgroundColor() {

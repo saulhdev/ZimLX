@@ -1,11 +1,14 @@
 package org.zimmob.zimlx.activity.homeparts;
 
 import android.content.Context;
+import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
@@ -22,6 +25,7 @@ public final class HpInitSetup extends Setup {
     private final ItemGestureCallback _itemGestureCallback;
     private final Logger _logger;
     private final AppSettings _appSettings;
+    private final ImageLoader _imageLoader;
 
     public HpInitSetup(HomeActivity home) {
         _appSettings = AppSettings.get();
@@ -31,6 +35,18 @@ public final class HpInitSetup extends Setup {
         _eventHandler = new HpEventHandler();
 
         _logger = (source, priority, tag, msg, args) -> Log.println(priority, tag, String.format(msg, args));
+
+        _imageLoader = new ImageLoader() {
+            @NonNull
+            public SimpleIconProvider createIconProvider(@Nullable Drawable drawable) {
+                return new SimpleIconProvider(drawable);
+            }
+
+            @NonNull
+            public SimpleIconProvider createIconProvider(int icon) {
+                return new SimpleIconProvider(icon);
+            }
+        };
 
         _itemGestureCallback = (item, event) -> false;
     }
@@ -56,6 +72,12 @@ public final class HpInitSetup extends Setup {
     }
 
     @NonNull
+    public ImageLoader getImageLoader() {
+        return _imageLoader;
+    }
+
+
+    @NonNull
     public DatabaseHelper getDataManager() {
         return _dataManager;
     }
@@ -74,4 +96,5 @@ public final class HpInitSetup extends Setup {
     public Logger getLogger() {
         return _logger;
     }
+
 }

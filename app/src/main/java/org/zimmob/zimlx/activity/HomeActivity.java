@@ -51,8 +51,8 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.receiver.AppUpdateReceiver;
-import org.zimmob.zimlx.util.LauncherAction;
-import org.zimmob.zimlx.util.LauncherAction.Action;
+import org.zimmob.zimlx.launcher.LauncherAction;
+import org.zimmob.zimlx.launcher.LauncherAction.Action;
 import org.zimmob.zimlx.receiver.ShortcutReceiver;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.util.DialogHelper;
@@ -469,13 +469,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (!((SearchBar) findViewById(R.id.searchBar)).collapse()) {
             if ((findViewById(R.id.desktop)) != null) {
                 Desktop desktop = findViewById(R.id.desktop);
-
                 if (desktop.getInEditMode()) {
                     desktop = findViewById(R.id.desktop);
-
                     List pages = desktop.getPages();
                     Desktop desktop2 = findViewById(R.id.desktop);
-
                     ((CellContainer) pages.get(desktop2.getCurrentItem())).performClick();
                 } else {
                     AppDrawerController appDrawerController = findViewById(R.id.appDrawerController);
@@ -923,15 +920,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
         DialogHelper.alertDialog(this, getString(R.string.remove), "This page is not empty. Those item will also be removed.", (dialog, which) -> getDesktop().removeCurrentPage());
     }
-
-    @Override
-    public void onAddPage(int option) {
-        if (option == 0)
-            this.getDesktop().addPageLeft(true);
-        else if (option == 1)
-            getDesktop().addPageRight(true);
-    }
-
     @Override
     public void onSetPageAsHome() {
         AppSettings appSettings = Setup.appSettings();

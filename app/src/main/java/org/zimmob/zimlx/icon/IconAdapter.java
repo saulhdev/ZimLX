@@ -23,7 +23,7 @@ public class IconAdapter extends BaseAdapter {
     LayoutInflater mLayoutInflater;
     String mCurrentIconPack;
 
-    IconAdapter(Context context, Map<String, IconPackInfo> supportedPackages) {
+    public IconAdapter(Context context, Map<String, IconPackInfo> supportedPackages) {
         mLayoutInflater = LayoutInflater.from(context);
         mSupportedPackages = new ArrayList<>(supportedPackages.values());
         Collections.sort(mSupportedPackages, (lhs, rhs) ->

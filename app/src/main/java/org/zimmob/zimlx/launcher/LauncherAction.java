@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.launcher;
 
 
 import android.app.NotificationManager;
@@ -15,6 +15,9 @@ import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.MinibarEditActivity;
 import org.zimmob.zimlx.activity.SettingsActivity;
 import org.zimmob.zimlx.apps.AppManager;
+import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.DialogHelper;
+import org.zimmob.zimlx.util.Tool;
 
 public class LauncherAction {
 

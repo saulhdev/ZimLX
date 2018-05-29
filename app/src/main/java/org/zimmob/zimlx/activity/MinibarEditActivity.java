@@ -20,7 +20,7 @@ import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.LauncherAction;
+import org.zimmob.zimlx.launcher.LauncherAction;
 
 import java.util.ArrayList;
 import java.util.Collections;

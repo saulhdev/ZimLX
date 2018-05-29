@@ -278,7 +278,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                             item.setIcon(app != null ? app.getIcon() : null);
                             break;
                         default:
-                            // TODO...
                             break;
                     }
                 }
