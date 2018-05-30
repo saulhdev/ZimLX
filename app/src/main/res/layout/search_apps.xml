@@ -1,35 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="48dp"
-    android:layout_marginBottom="15dp"
+    android:layout_height="50dp"
+    android:layout_marginBottom="20dp"
     android:layout_marginTop="5dp"
     android:orientation="horizontal"
     android:visibility="visible"
     android:id="@+id/search_apps"
     android:weightSum="1">
-
-    <EditText
-        android:layout_width="match_parent"
+    <SearchView
+        android:id="@+id/search"
+        android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:ems="12"
-        android:inputType="text"
-        android:hint="@string/searchbar_search_apps"
-        android:textColorHint="@android:color/white"
-        android:text=""
-        android:textSize="20sp"
-        android:textColor="#FFE8DBDB" />
+        android:iconifiedByDefault="false">
+        <requestFocus />
+    </SearchView>
+
 
     <Button
         android:id="@+id/drawerMenu"
         android:layout_width="48dp"
-        android:layout_height="wrap_content"
-        android:gravity="center|center_horizontal"
-        android:layout_marginTop="0dp"
+        android:layout_height="match_parent"
+        android:layout_marginRight="5dp"
         android:layout_weight="1"
-        android:elevation="0dp"
-        android:text="@string/searchbar_button"
-        android:textSize="24sp"
-        android:textStyle="bold" />
+        android:background="@drawable/ic_more_horiz_white_24dp"
+        android:elevation="0dp"/>
 </LinearLayout>
