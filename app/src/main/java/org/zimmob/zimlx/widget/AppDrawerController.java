@@ -10,16 +10,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
 import android.view.animation.AccelerateDecelerateInterpolator;
-import android.widget.Button;
-import android.widget.PopupMenu;
 
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.util.DialogHelper;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -27,7 +24,7 @@ import io.codetail.widget.RevealFrameLayout;
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
-public class AppDrawerController extends RevealFrameLayout {
+public class AppDrawerController extends RevealFrameLayout{
     private AppDrawerPaged _drawerViewPaged;
     private AppDrawerVertical _drawerViewGrid;
     private int _drawerMode;
@@ -59,10 +56,6 @@ public class AppDrawerController extends RevealFrameLayout {
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (isOpen) return;
         isOpen = true;
-        LayoutInflater layoutInflater = LayoutInflater.from(getContext());
-        layoutInflater.inflate(R.layout.search_apps, this, true);
-        Button searchButton = findViewById(R.id.drawerMenu);
-        searchButton.setOnClickListener(this::showDrawerMenu);
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
         _appDrawerAnimator = io.codetail.animation.ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -107,7 +100,6 @@ public class AppDrawerController extends RevealFrameLayout {
             public void onAnimationRepeat(Animator p1) {
             }
         });
-
         _appDrawerAnimator.start();
     }
 
@@ -172,6 +164,7 @@ public class AppDrawerController extends RevealFrameLayout {
         if (isInEditMode()) return;
         LayoutInflater layoutInflater = LayoutInflater.from(getContext());
         _drawerMode = Setup.appSettings().getDrawerStyle();
+
         switch (_drawerMode) {
             case DRAWER_HORIZONTAL:
                 _drawerViewPaged = (AppDrawerPaged) layoutInflater.inflate(R.layout.view_app_drawer_paged, this, false);
@@ -192,34 +185,6 @@ public class AppDrawerController extends RevealFrameLayout {
                 addView(_drawerViewGrid, lp);
                 break;
         }
-    }
-
-    private void showDrawerMenu(View v){
-        PopupMenu popupMenu = new PopupMenu(getContext(), v);
-        popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
-        popupMenu.setOnMenuItemClickListener(item -> {
-            int menuItem = item.getItemId();
-            switch (menuItem){
-                case R.id.menu_settings:
-                break;
-
-                case R.id.menu_layout_mode:
-                    break;
-
-                case R.id.menu_hidden_apps:
-                    break;
-
-                case R.id.menu_add_apps_home:
-                    break;
-                case R.id.menu_sort_mode:
-                    DialogHelper.sortModeDialog(getContext());
-                    break;
-            }
-
-            return false;
-        });
-
-        popupMenu.show();
     }
 
     @Override
@@ -259,9 +224,8 @@ public class AppDrawerController extends RevealFrameLayout {
         }
     }
 
-    public void setHome(HomeActivity home) {
+    public void setHome(Launcher home) {
         if(_drawerMode==DRAWER_HORIZONTAL)
             _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
     }
-
 }

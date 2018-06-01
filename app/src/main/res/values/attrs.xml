@@ -7,4 +7,5 @@
         <attr name="wrapSelectorWheel" format="boolean" />
     </declare-styleable>
 
+    <attr name="allAppsNavBarScrimColor" format="color" />
 </resources>

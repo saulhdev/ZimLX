@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.model.App;
@@ -165,7 +165,6 @@ public class AppManager {
         protected Object doInBackground(Object[] p1) {
             _apps.clear();
             _nonFilteredApps.clear();
-
             Intent intent = new Intent(Intent.ACTION_MAIN, null);
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
@@ -215,8 +214,8 @@ public class AppManager {
                 break;
                 case Config.APP_SORT_ZA:
                     Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
-                            p2.loadLabel(_packageManager).toString(),
-                            p1.loadLabel(_packageManager).toString()));
+                            p1.loadLabel(_packageManager).toString(),
+                            p2.loadLabel(_packageManager).toString()));
                     break;
                 case Config.APP_SORT_LI:
                     Log.i("apps","sorting by Last Installed" );
@@ -243,8 +242,8 @@ public class AppManager {
 
             if (_recreateAfterGettingApps) {
                 _recreateAfterGettingApps = false;
-                if (_context instanceof HomeActivity)
-                    ((HomeActivity) _context).recreate();
+                if (_context instanceof Launcher)
+                    ((Launcher) _context).recreate();
             }
 
             super.onPostExecute(result);

@@ -9,7 +9,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowInsets;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
 import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.manager.Setup;
@@ -23,7 +23,7 @@ import java.util.List;
 public final class Dock extends CellContainer implements IDesktopCallback<View> {
     private int _bottomInset;
     private final Point _coordinate = new Point();
-    private HomeActivity _home;
+    private Launcher _home;
     private final Point _previousDragPoint = new Point();
     @Nullable
     private Item _previousItem;
@@ -42,11 +42,11 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         }
     }
 
-    public final void initDockItem(@NonNull HomeActivity home) {
+    public final void initDockItem(@NonNull Launcher home) {
 
         int columns = Setup.appSettings().getDockSize();
         setGridSize(columns, 1);
-        List<Item> dockItems = HomeActivity.Companion.getDb().getDock();
+        List<Item> dockItems = Launcher.Companion.getDb().getDock();
         _home = home;
         removeAllViews();
         for (Item item : dockItems) {
@@ -92,7 +92,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
      * @param y
      */
     public final void updateIconProjection(int x, int y) {
-        HomeActivity launcher;
+        Launcher launcher;
         DragOptionLayout dragNDropView;
         DragState state = peekItemAndSwap(x, y, _coordinate);
         if (!_coordinate.equals(_previousDragPoint)) {
@@ -114,7 +114,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
                 break;
             case CurrentOccupied:
                 Object action;
-                HomeActivity launcher2;
+                Launcher launcher2;
                 DragOptionLayout dragNDropView2;
                 clearCachedOutlineBitmap();
                 launcher = _home;
@@ -206,7 +206,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     public boolean addItemToPage(@NonNull Item item, int page) {
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
-            HomeActivity.Companion.getDb().deleteItem(item, true);
+            Launcher.Companion.getDb().deleteItem(item, true);
             return false;
         }
         item._locationInLauncher = 1;
@@ -262,7 +262,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         return _bottomInset;
     }
 
-    public void setHome(HomeActivity home) {
+    public void setHome(Launcher home) {
         _home = home;
     }
 }

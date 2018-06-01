@@ -12,7 +12,7 @@ import android.os.Parcelable;
 import android.util.Log;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -55,21 +55,21 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item = Item.newShortcutItem(newIntent, shortcutIconDrawable, name);
         }
-        Point preferredPos = HomeActivity.Companion
+        Point preferredPos = Launcher.Companion
                 .getLauncher()
                 .getDesktop()
                 .getPages()
-                .get(HomeActivity.Companion
+                .get(Launcher.Companion
                         .getLauncher()
                         .getDesktop()
                         .getCurrentItem()).findFreeSpace();
         if (preferredPos == null) {
-            Tool.toast(HomeActivity.Companion.getLauncher(), R.string.toast_not_enough_space);
+            Tool.toast(Launcher.Companion.getLauncher(), R.string.toast_not_enough_space);
         } else {
             item.setX(preferredPos.x);
             item.setY(preferredPos.y);
-            HomeActivity.Companion.getDb().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem(), Config.ItemPosition.Desktop);
-            boolean added = HomeActivity.Companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem());
+            Launcher.Companion.getDb().saveItem(item, Launcher.Companion.getLauncher().getDesktop().getCurrentItem(), Config.ItemPosition.Desktop);
+            boolean added = Launcher.Companion.getLauncher().getDesktop().addItemToPage(item, Launcher.Companion.getLauncher().getDesktop().getCurrentItem());
 
             Setup.logger().log(this, Log.INFO, null, "Shortcut installed - %s => Intent: %s (Item type: %s; x = %d, y = %d, added = %b)", name, newIntent, item.getType(), item.getX(), item.getY(), added);
         }

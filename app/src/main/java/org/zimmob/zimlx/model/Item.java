@@ -5,7 +5,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
@@ -77,7 +77,7 @@ public class Item implements Parcelable {
                 parcel.readStringList(labels);
                 items = new ArrayList<>();
                 for (String s : labels) {
-                    items.add(HomeActivity._db.getItem(Integer.parseInt(s)));
+                    items.add(Launcher._db.getItem(Integer.parseInt(s)));
                 }
                 break;
             case ACTION:
@@ -92,8 +92,8 @@ public class Item implements Parcelable {
         _locationInLauncher = parcel.readInt();
 
         if (Setup.appSettings().enableImageCaching()) {
-            icon = Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue));
-            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue)));
+            icon = Tool.getIcon(Launcher.Companion.getLauncher(), Integer.toString(_idValue));
+            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(Launcher.Companion.getLauncher(), Integer.toString(_idValue)));
 
         } else {
             switch (type) {

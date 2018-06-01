@@ -4,15 +4,13 @@ import android.app.ActivityOptions;
 import android.app.Notification;
 import android.app.PendingIntent;
 import android.content.Context;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.Icon;
 import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 
-import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.util.PackageUserKey;
 
 public class NotificationInfo {
@@ -69,7 +67,7 @@ public class NotificationInfo {
         if (intent == null) {
             return;
         }
-        HomeActivity launcher = HomeActivity.Companion.getLauncher();
+        Launcher launcher = Launcher.Companion.getLauncher();
         //final Launcher launcher = Launcher.getLauncher(view.getContext());
         Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
                 view, 0, 0, view.getWidth(), view.getHeight()).toBundle();

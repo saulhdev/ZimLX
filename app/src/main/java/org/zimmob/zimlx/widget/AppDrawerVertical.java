@@ -100,7 +100,6 @@ public class AppDrawerVertical extends CardView {
     }
 
     private void init() {
-
         itemHeightPadding = Tool.dp2px(10, getContext());
         scrollBar = rl.findViewById(R.id.dragScrollBar);
         scrollBar.setIndicator(new AlphabetIndicator(getContext()), true);
@@ -144,7 +143,6 @@ public class AppDrawerVertical extends CardView {
     }
 
     public static class GridAppDrawerAdapter extends FastItemAdapter<DrawerAppItem> implements INameableAdapter {
-
         GridAppDrawerAdapter() {
             getItemFilter().withFilterPredicate((IItemAdapter.Predicate<DrawerAppItem>) (item, constraint) -> !item.getApp().getLabel().toLowerCase().contains(Objects.requireNonNull(constraint).toString().toLowerCase()));
         }

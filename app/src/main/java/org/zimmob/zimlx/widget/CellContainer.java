@@ -3,7 +3,6 @@ package org.zimmob.zimlx.widget;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
@@ -19,7 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.jetbrains.annotations.Contract;
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.util.Tool;
 
@@ -356,7 +355,7 @@ public class CellContainer extends ViewGroup {
         }
 
         //Animating alpha and drawing projected image
-        HomeActivity home = HomeActivity.Companion.getLauncher();
+        Launcher home = Launcher.Companion.getLauncher();
         if (home != null && home.getDragNDropView().getDragExceedThreshold() && _currentOutlineCoordinate.x != -1 && _currentOutlineCoordinate.y != -1) {
             if (_outlinePaint.getAlpha() != 160)
                 _outlinePaint.setAlpha(Math.min(_outlinePaint.getAlpha() + 20, 160));

@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.activity;
+package org.zimmob.zimlx.launcher;
 
 import android.app.Activity;
 import android.app.ActivityOptions;
@@ -51,7 +51,6 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.receiver.AppUpdateReceiver;
-import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.launcher.LauncherAction.Action;
 import org.zimmob.zimlx.receiver.ShortcutReceiver;
 import org.zimmob.zimlx.util.Tool;
@@ -83,7 +82,7 @@ import java.util.Objects;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener {
+public class Launcher extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener {
 
     public static final Companion Companion = new Companion();
     private static final int REQUEST_CREATE_APPWIDGET = 0x6475;
@@ -102,7 +101,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public static float _itemTouchX;
     public static float _itemTouchY;
 
-    private static HomeActivity _launcher;
+    private static Launcher _launcher;
     private static final IntentFilter _shortcutIntentFilter = new IntentFilter();
     private static final IntentFilter _timeChangesIntentFilter = new IntentFilter();
     private final AppUpdateReceiver _appUpdateReceiver = new AppUpdateReceiver();
@@ -151,7 +150,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         setContentView(getLayoutInflater().inflate(R.layout.activity_home, null));
         Window window = getWindow();
         View decorView = window.getDecorView();
-        //decorView.setSystemUiVisibility(1536);
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -164,7 +162,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         boolean rotate = false;
         if (appSettings.getAppRestartRequired()) {
             appSettings.setAppRestartRequired(false);
-            PendingIntent restartIntentP = PendingIntent.getActivity(this, 123556, new Intent(this, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+            PendingIntent restartIntentP = PendingIntent.getActivity(this, 123556, new Intent(this, Launcher.class), PendingIntent.FLAG_CANCEL_CURRENT);
             AlarmManager mgr = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
             Objects.requireNonNull(mgr).set(AlarmManager.RTC, System.currentTimeMillis() + ((long) 100), restartIntentP);
             System.exit(0);
@@ -183,7 +181,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         try {
             system = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 1;
         } catch (SettingNotFoundException e) {
-            Log.d(HomeActivity.class.getSimpleName(), "Unable to read settings", e);
+            Log.d(Launcher.class.getSimpleName(), "Unable to read settings", e);
         }
         if (getResources().getBoolean(R.bool.isTablet)) {
             rotate = system;
@@ -205,7 +203,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         openAppDrawer$default(this, view, 0, 0, 6, null);
     }
 
-    private static void openAppDrawer$default(HomeActivity home, View view, int i, int i2, int i3, Object obj) {
+    private static void openAppDrawer$default(Launcher home, View view, int i, int i2, int i3, Object obj) {
         if ((i3 & 1) != 0) {
             view = home.findViewById(R.id.desktop);
         }
@@ -251,7 +249,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         updateDock$default(this, z, 0, 2, null);
     }
 
-    private static void updateDock$default(HomeActivity home, boolean z, long j, int i, Object obj) {
+    private static void updateDock$default(Launcher home, boolean z, long j, int i, Object obj) {
         if ((i & 2) != 0) {
             j = 0;
         }
@@ -494,7 +492,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void onBackPressed() {
-
         Tool.goneViews(100,  findViewById(R.id.search_apps));
         handleLauncherPause(false);
         ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
@@ -532,7 +529,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             if (action == Action.DeviceSettings || action == Action.LauncherSettings || action == Action.EditMinibar) {
                 _consumeNextResume = true;
             }
-            LauncherAction.RunAction(action, HomeActivity.this);
+            LauncherAction.RunAction(action, Launcher.this);
             if (action != Action.DeviceSettings && action != Action.LauncherSettings && action != Action.EditMinibar) {
                 getDrawerLayout().closeDrawers();
             }
@@ -648,7 +645,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             public boolean onAppUpdated(List<App> it) {
                 AppSettings appSettings = Setup.appSettings();
                 if (appSettings.getDesktopStyle() == 0) {
-                    getDesktop().initDesktopNormal(HomeActivity.this);
+                    getDesktop().initDesktopNormal(Launcher.this);
                     if (appSettings.isAppFirstLaunch()) {
                         appSettings.setAppFirstLaunch(false);
                         Item appDrawerBtnItem = Item.newActionItem(8);
@@ -660,9 +657,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
                     }
                 } else {
-                    getDesktop().initDesktopShowAll(HomeActivity.this, HomeActivity.this);
+                    getDesktop().initDesktopShowAll(Launcher.this, Launcher.this);
                 }
-                getDock().initDockItem(HomeActivity.this);
+                getDock().initDockItem(Launcher.this);
                 return true;
             }
         });
@@ -670,11 +667,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             AppSettings appSettings = Setup.appSettings();
 
             if (appSettings.getDesktopStyle() == 0) {
-                getDesktop().initDesktopNormal(HomeActivity.this);
+                getDesktop().initDesktopNormal(Launcher.this);
             } else {
-                getDesktop().initDesktopShowAll(HomeActivity.this, HomeActivity.this);
+                getDesktop().initDesktopShowAll(Launcher.this, Launcher.this);
             }
-            getDock().initDockItem(HomeActivity.this);
+            getDock().initDockItem(Launcher.this);
             setToHomePage();
             return false;
         });
@@ -956,11 +953,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
 
         @Nullable
-        public final HomeActivity getLauncher() {
+        public final Launcher getLauncher() {
             return _launcher;
         }
 
-        final void setLauncher(@Nullable HomeActivity v) {
+        final void setLauncher(@Nullable Launcher v) {
             _launcher = v;
         }
 

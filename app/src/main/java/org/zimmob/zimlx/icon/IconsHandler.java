@@ -1,6 +1,5 @@
 package org.zimmob.zimlx.icon;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,28 +17,19 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
-import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
-import android.view.Gravity;
-
-import com.afollestad.materialdialogs.MaterialDialog;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;

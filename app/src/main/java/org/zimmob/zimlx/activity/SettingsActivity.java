@@ -21,6 +21,7 @@ import net.gsantner.opoc.util.PermissionChecker;
 import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.icon.IconsHandler;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
@@ -274,7 +275,7 @@ public class SettingsActivity extends ThemeActivity {
         protected void onPreferenceChanged(SharedPreferences prefs, String key) {
             super.onPreferenceChanged(prefs, key);
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, key);
-            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            Launcher launcher = Launcher.Companion.getLauncher();
             switch (keyRes) {
                 case R.string.pref_key__desktop_indicator_style: {
                     launcher.getDesktopIndicator().setMode(_as.getDesktopIndicatorMode());
@@ -310,7 +311,7 @@ public class SettingsActivity extends ThemeActivity {
         @SuppressWarnings({"ConstantConditions", "ConstantIfStatement", "StatementWithEmptyBody"})
         public Boolean onPreferenceClicked(Preference preference) {
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, preference.getKey());
-            HomeActivity launcher = HomeActivity.Companion.getLauncher();
+            Launcher launcher = Launcher.Companion.getLauncher();
 
             switch (keyRes) {
                 case R.string.pref_key__minibar: {
@@ -334,7 +335,7 @@ public class SettingsActivity extends ThemeActivity {
                         if (launcher != null) {
                             launcher.recreate();
                         }
-                        DatabaseHelper db = (DatabaseHelper) HomeActivity._db;
+                        DatabaseHelper db = (DatabaseHelper) Launcher._db;
                         db.onUpgrade(db.getWritableDatabase(), 1, 1);
                         getActivity().finish();
                     });

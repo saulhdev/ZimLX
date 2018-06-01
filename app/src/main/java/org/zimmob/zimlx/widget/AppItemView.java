@@ -18,7 +18,7 @@ import android.view.HapticFeedbackConstants;
 import android.view.View;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -269,7 +269,7 @@ public class AppItemView extends View implements Drawable.Callback {
             _view.setLabel(item.getLabel());
             _view.setCurrentIcon(new GroupIconDrawable(context, item, iconSize));
             _view.setOnClickListener(v -> {
-                if (HomeActivity.Companion.getLauncher() != null && (HomeActivity.Companion.getLauncher()).getGroupPopup().showWindowV(item, v, callback)) {
+                if (Launcher.Companion.getLauncher() != null && (Launcher.Companion.getLauncher()).getGroupPopup().showWindowV(item, v, callback)) {
                     ((GroupIconDrawable) ((AppItemView) v).getCurrentIcon()).popUp();
                 }
             });
@@ -283,8 +283,8 @@ public class AppItemView extends View implements Drawable.Callback {
                 case Config.ACTION_LAUNCHER:
                     _view.setOnClickListener(view -> {
                         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                        if (HomeActivity.Companion.getLauncher() != null) {
-                            Objects.requireNonNull(HomeActivity.Companion.getLauncher()).openAppDrawer(view);
+                        if (Launcher.Companion.getLauncher() != null) {
+                            Objects.requireNonNull(Launcher.Companion.getLauncher()).openAppDrawer(view);
                         }
                     });
                     break;

@@ -7,7 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -269,7 +269,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
             case SHORTCUT:
                 item.setIntent(Tool.getIntentFromString(data));
                 if (Setup.appSettings().enableImageCaching()) {
-                    item.setIcon(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(id)));
+                    item.setIcon(Tool.getIcon(Launcher.Companion.getLauncher(), Integer.toString(id)));
                 } else {
                     switch (type) {
                         case APP:

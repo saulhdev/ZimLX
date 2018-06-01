@@ -18,9 +18,9 @@ public class NotificationKeyData {
         this.count = Math.max(1, count);
     }
 
-    /*public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
+    public static NotificationKeyData fromNotification(StatusBarNotification sbn) {
         Notification notif = sbn.getNotification();
-        return new NotificationKeyData(sbn.getKey(), notif.getShortcutId(), notif.number);
+        return new NotificationKeyData(sbn.getKey(), "", notif.number);
     }
 
     public static List<String> extractKeysOnly(@NonNull List<NotificationKeyData> notificationKeys) {
@@ -30,7 +30,7 @@ public class NotificationKeyData {
         }
         return keysOnly;
     }
-*/
+
     @Override
     public boolean equals(Object obj) {
         if (!(obj instanceof NotificationKeyData)) {

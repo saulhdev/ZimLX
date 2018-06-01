@@ -17,7 +17,7 @@ import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
@@ -133,8 +133,8 @@ public class DragOptionLayout extends FrameLayout {
         super.onDraw(canvas);
         if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
             return;
-        float x = _dragLocation.x - HomeActivity._itemTouchX;
-        float y = _dragLocation.y - HomeActivity._itemTouchY;
+        float x = _dragLocation.x - Launcher._itemTouchX;
+        float y = _dragLocation.y - Launcher._itemTouchY;
         if (_dragging) {
             canvas.save();
             _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
@@ -431,8 +431,8 @@ public class DragOptionLayout extends FrameLayout {
             if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
                 return;
 
-            float x = _dragLocation.x - HomeActivity._itemTouchX;
-            float y = _dragLocation.y - HomeActivity._itemTouchY;
+            float x = _dragLocation.x - Launcher._itemTouchX;
+            float y = _dragLocation.y - Launcher._itemTouchY;
             if (_dragging) {
                 canvas.save();
                 _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);

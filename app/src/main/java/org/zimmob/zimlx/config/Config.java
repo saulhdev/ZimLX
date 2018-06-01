@@ -59,4 +59,39 @@ public class Config {
     public enum PeekDirection {
         UP, LEFT, RIGHT, DOWN
     }
+
+    public static final boolean ATLEAST_NOUGAT =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
+
+    public static int boundToRange(int value, int lowerBound, int upperBound) {
+        return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+
+
+    /**
+     * The gesture is an application
+     */
+    public static final int ITEM_TYPE_APPLICATION = 0;
+
+    /**
+     * The gesture is an application created shortcut
+     */
+    public static final int ITEM_TYPE_SHORTCUT = 1;
+
+    public static final int ITEM_TYPE_FOLDER = 2;
+
+    /**
+     * The favorite is a widget
+     */
+    public static final int ITEM_TYPE_APPWIDGET = 4;
+
+    /**
+     * The favorite is a custom widget provided by the launcher
+     */
+    public static final int ITEM_TYPE_CUSTOM_APPWIDGET = 5;
+
+    /**
+     * The gesture is an application created deep shortcut
+     */
+    public static final int ITEM_TYPE_DEEP_SHORTCUT = 6;
 }

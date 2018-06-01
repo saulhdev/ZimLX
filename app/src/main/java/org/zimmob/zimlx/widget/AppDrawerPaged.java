@@ -8,24 +8,29 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.PopupMenu;
+import android.widget.SearchView;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
+import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class AppDrawerPaged extends SmoothViewPager {
+public class AppDrawerPaged extends SmoothViewPager implements SearchView.OnQueryTextListener{
     private List<App> _apps;
     public List<ViewGroup> _pages = new ArrayList<>();
-    private HomeActivity _home;
+    private Launcher _home;
     private int _rowCellCount, _columnCellCount;
     private PagerIndicator _appDrawerIndicator;
     private int _pageCount = 0;
+    private SearchView searchView;
+
 
     public AppDrawerPaged(Context c, AttributeSet attr) {
         super(c, attr);
@@ -77,6 +82,17 @@ public class AppDrawerPaged extends SmoothViewPager {
     private void init(Context c) {
         if (isInEditMode()) return;
         setOverScrollMode(OVER_SCROLL_NEVER);
+
+        //INIT DRAWER MENU BUTTON
+        //LayoutInflater layoutInflater = LayoutInflater.from(getContext());
+        //View searchBar = layoutInflater.inflate(R.layout.search_apps, this, false);
+        //Button searchButton = findViewById(R.id.menu_button);
+        //searchButton.setOnClickListener(this::showDrawerMenu);
+        //INIT SEARCH VIEW
+       // searchView = findViewById(R.id.search_view);
+        //searchView.setOnQueryTextListener(this);
+        //addView(searchBar, null);
+
         boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
 
         if (mPortrait) {
@@ -103,7 +119,47 @@ public class AppDrawerPaged extends SmoothViewPager {
         });
     }
 
-    public void withHome(HomeActivity home, PagerIndicator appDrawerIndicator) {
+    private void showDrawerMenu(View v){
+        PopupMenu popupMenu = new PopupMenu(getContext(), v);
+        popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
+        popupMenu.setOnMenuItemClickListener(item -> {
+            int menuItem = item.getItemId();
+            switch (menuItem){
+                case R.id.menu_settings:
+                    break;
+
+                case R.id.menu_layout_mode:
+                    break;
+
+                case R.id.menu_hidden_apps:
+                    break;
+
+                case R.id.menu_add_apps_home:
+                    break;
+                case R.id.menu_sort_mode:
+                    DialogHelper.sortModeDialog(getContext());
+                    break;
+            }
+
+            return false;
+        });
+
+        popupMenu.show();
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query){
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText){
+        String text= newText;
+
+        return false;
+    }
+
+    public void withHome(Launcher home, PagerIndicator appDrawerIndicator) {
         _home = home;
         _appDrawerIndicator = appDrawerIndicator;
         appDrawerIndicator.setMode(PagerIndicator.Mode.NORMAL);
@@ -136,8 +192,7 @@ public class AppDrawerPaged extends SmoothViewPager {
                     }
                 });
         }
-
-        private Adapter() {
+        protected Adapter() {
             _pages.clear();
             for (int i = 0; i < getCount(); i++) {
                 ViewGroup layout = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_paged_inner, null);
