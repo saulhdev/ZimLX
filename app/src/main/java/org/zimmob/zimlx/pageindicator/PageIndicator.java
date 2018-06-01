@@ -168,11 +168,11 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
                     float lineWidth = 90;
                     float pagesCount = _pager.getAdapter().getCount();
                     for (int i = 0; i < pagesCount; i++) {
-
                         float sStartX =getWidth()/pagesCount+ i * lineWidth+_pad*2;
-                        float syX = sStartX + lineWidth;
+                        float syX = sStartX + lineWidth-30;
                         canvas.drawLine(syX, 30, syX + lineWidth,30, _lineBgPaint);
-                        }
+                        canvas.drawLine(syX-lineWidth, 30, syX + lineWidth+30,30, _lineBgPaint);
+                    }
                     float currentStartX =getWidth()/pagesCount+ _scrollPagePosition * lineWidth+_pad*2;
                     float myX = currentStartX + lineWidth;
                     canvas.drawLine(myX, 30, myX + lineWidth,30, _linePaint);

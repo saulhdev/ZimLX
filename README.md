@@ -1,7 +1,7 @@
 ![GitHub release](https://raw.githubusercontent.com/otakuhqz/zimlx-metadata-latest/master/en-US/featureGraphic.png)
 
 # ZimLX
-Open Source and free homeActivity for Android based on OpenLauncher.
+Open Source and free Launcher for Android based on OpenLauncher.
 
 ## Donations
 Want to support me? https://paypal.me/saulhenriquez
@@ -13,7 +13,7 @@ Want to support me? https://paypal.me/saulhenriquez
 
 #### * Desktop
     -> Row and Columns config
-    -> Indicator Style Config
+    -> Three indicator Style mode
     -> Full screen mode
     -> Background color
 #### * Dock
