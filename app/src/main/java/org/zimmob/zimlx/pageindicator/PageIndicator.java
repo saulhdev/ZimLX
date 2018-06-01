@@ -15,15 +15,16 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
 import org.zimmob.zimlx.widget.SmoothViewPager;
-import org.zimmob.zimlx.widget.SmoothViewPager.OnPageChangeListener;
+
+import static org.zimmob.zimlx.config.Config.INDICATOR_ARROW;
+import static org.zimmob.zimlx.config.Config.INDICATOR_DOTS;
 
 /**
  * Created by saul on 04-25-18.
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class PagerIndicator extends View implements OnPageChangeListener {
-    private static final Companion _companion = new Companion();
+public class PageIndicator extends View implements SmoothViewPager.OnPageChangeListener {
     private static float _pad;
     private boolean _alphaFade;
     private boolean _alphaShow;
@@ -32,10 +33,7 @@ public class PagerIndicator extends View implements OnPageChangeListener {
     private final Runnable _delayShow;
     private Paint _dotPaint = new Paint(1);
     private float _dotSize;
-    private boolean _hasTriggedAlphaShow;
-    private int _currentPagerState;
-    private int _mode = Mode.NORMAL;
-    private float myX;
+    private int _mode = INDICATOR_DOTS;
     private SmoothViewPager _pager;
     private int _prePageCount;
     private int _previousPage = -1;
@@ -45,32 +43,44 @@ public class PagerIndicator extends View implements OnPageChangeListener {
     private float _scrollOffset;
     private int _scrollPagePosition;
 
-    /* compiled from: PagerIndicator.kt */
-    public static final class Companion {
-        private Companion() {
-        }
-
-        private final float getPad() {
-            return PagerIndicator._pad;
-        }
-
-        private final void setPad(float v) {
-            PagerIndicator._pad = v;
-        }
+    public PageIndicator(Context context) {
+        this(context, null);
     }
 
-    public static class Mode {
-        public static final int NORMAL = 0;
-        static final int ARROW = 1;
+    public PageIndicator(@NonNull Context context, AttributeSet attrs) {
+        super(context, attrs);
+        this.setPad((float) Tool.toPx(3));
+        setWillNotDraw(false);
+        _dotPaint.setColor(-1);
+        _dotPaint.setStrokeWidth((float) Tool.toPx(2));
+        _dotPaint.setAntiAlias(true);
+        _arrowPaint.setColor(-1);
+        _arrowPaint.setAntiAlias(true);
+        _arrowPaint.setStyle(Style.STROKE);
+        _arrowPaint.setStrokeWidth(this.getPad() / 1.5f);
+        _arrowPaint.setStrokeJoin(Join.ROUND);
+        _arrowPath = new Path();
+        _mode = Setup.appSettings().getDesktopIndicatorMode();
+        _delayShow = () -> {
+            _alphaFade = true;
+            _alphaShow = false;
+            invalidate();
+        };
+    }
+
+    private float getPad() {
+        return PageIndicator._pad;
+    }
+
+    private void setPad(float v) {
+        PageIndicator._pad = v;
     }
 
     protected void onDraw(Canvas canvas) {
         _dotSize = getHeight() - _pad * 1.25f;
-
         switch (_mode) {
-            case Mode.NORMAL: {
+            case INDICATOR_DOTS: {
                 if (_pager != null) {
-
                     _dotPaint.setAlpha(255);
                     float circlesWidth = _pager.getAdapter().getCount() * (_dotSize + _pad * 2);
                     canvas.translate(getWidth() / 2 - circlesWidth / 2, 0f);
@@ -79,7 +89,6 @@ public class PagerIndicator extends View implements OnPageChangeListener {
                         _scaleFactor = 1f;
                         _realPreviousPage = _pager.getCurrentItem();
                     }
-
                     for (int i = 0; i < _pager.getAdapter().getCount(); i++) {
                         float targetFactor = 1.5f;
                         float targetFactor2 = 1f;
@@ -108,32 +117,24 @@ public class PagerIndicator extends View implements OnPageChangeListener {
                 }
                 break;
             }
-            case Mode.ARROW: {
-
+            case INDICATOR_ARROW: {
                 if (_pager != null) {
                     _arrowPath.reset();
                     _arrowPath.moveTo(getWidth() / 2 - _dotSize * 1.5f, (float) (getHeight()) - _dotSize / 3 - _pad / 2);
                     _arrowPath.lineTo((getWidth() / 2f), _pad / 2);
-                    _arrowPath.
-                            lineTo(getWidth() / 2 + _dotSize * 1.5f, (float) (getHeight()) - _dotSize / 3 - _pad / 2);
-
+                    _arrowPath.lineTo(getWidth() / 2 + _dotSize * 1.5f, (float) (getHeight()) - _dotSize / 3 - _pad / 2);
                     canvas.drawPath(_arrowPath, _arrowPaint);
-
                     float lineWidth = getWidth() / _pager.getAdapter().getCount();
                     float currentStartX = _scrollPagePosition * lineWidth;
-
-                    myX = currentStartX + _scrollOffset * lineWidth;
-
+                    float myX = currentStartX + _scrollOffset * lineWidth;
                     if (myX % lineWidth != 0f)
                         invalidate();
-
                     if (_alphaFade) {
                         _dotPaint.setAlpha(Tool.clampInt(_dotPaint.getAlpha() - 10, 0, 255));
                         if (_dotPaint.getAlpha() == 0)
                             _alphaFade = false;
                         invalidate();
                     }
-
                     if (_alphaShow) {
                         _dotPaint.setAlpha(Tool.clampInt(_dotPaint.getAlpha() + 10, 0, 255));
                         if (_dotPaint.getAlpha() == 255) {
@@ -141,7 +142,6 @@ public class PagerIndicator extends View implements OnPageChangeListener {
                         }
                         invalidate();
                     }
-
                     canvas.drawLine(myX, (float) getHeight(), myX + lineWidth, (float) getHeight(), _dotPaint);
                 }
             }
@@ -149,37 +149,10 @@ public class PagerIndicator extends View implements OnPageChangeListener {
         }
     }
 
-    public PagerIndicator(Context context) {
-        this(context, null);
-    }
-
-    public PagerIndicator(@NonNull Context context, @NonNull AttributeSet attrs) {
-        super(context, attrs);
-        _companion.setPad((float) Tool.toPx(3));
-        setWillNotDraw(false);
-        _dotPaint.setColor(-1);
-        _dotPaint.setStrokeWidth((float) Tool.toPx(2));
-        _dotPaint.setAntiAlias(true);
-        _arrowPaint.setColor(-1);
-        _arrowPaint.setAntiAlias(true);
-        _arrowPaint.setStyle(Style.STROKE);
-        _arrowPaint.setStrokeWidth(_companion.getPad() / 1.5f);
-        _arrowPaint.setStrokeJoin(Join.ROUND);
-        _arrowPath = new Path();
-        _mode = Setup.appSettings().getDesktopIndicatorMode();
-        _delayShow = () -> {
-            _alphaFade = true;
-            _alphaShow = false;
-            invalidate();
-        };
-        _currentPagerState = -1;
-    }
-
     public final void setMode(int mode) {
         _mode = mode;
         invalidate();
     }
-
 
     public final void setViewPager(@Nullable SmoothViewPager pager) {
         if (pager == null && _pager != null) {
@@ -220,11 +193,10 @@ public class PagerIndicator extends View implements OnPageChangeListener {
     }
 
     public void onPageScrollStateChanged(int state) {
-        _currentPagerState = state;
     }
 
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        _dotSize = ((float) getHeight()) - (_companion.getPad() * 1.25f);
+        _dotSize = ((float) getHeight()) - (this.getPad() * 1.25f);
         super.onLayout(changed, left, top, right, bottom);
     }
 }
