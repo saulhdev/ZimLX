@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.widget;
+package org.zimmob.zimlx.pageindicator;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -14,6 +14,7 @@ import android.view.View;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
+import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SmoothViewPager.OnPageChangeListener;
 
 /**
