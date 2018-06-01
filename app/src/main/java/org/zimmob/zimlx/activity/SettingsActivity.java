@@ -21,7 +21,6 @@ import net.gsantner.opoc.util.PermissionChecker;
 import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.icon.IconsHandler;
-import org.zimmob.zimlx.launcher.Launcher;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
@@ -275,18 +274,18 @@ public class SettingsActivity extends ThemeActivity {
         protected void onPreferenceChanged(SharedPreferences prefs, String key) {
             super.onPreferenceChanged(prefs, key);
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, key);
-            Launcher launcher = Launcher.Companion.getLauncher();
+            HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
             switch (keyRes) {
                 case R.string.pref_key__desktop_indicator_style: {
-                    launcher.getDesktopIndicator().setMode(_as.getDesktopIndicatorMode());
+                    homeActivity.getDesktopIndicator().setMode(_as.getDesktopIndicatorMode());
                     break;
                 }
                 case R.string.pref_title__desktop_show_position_indicator: {
-                    launcher.updateDesktopIndicatorVisibility();
+                    homeActivity.updateDesktopIndicatorVisibility();
                     break;
                 }
                 case R.string.pref_key__dock_enable: {
-                    launcher.updateDock(true);
+                    homeActivity.updateDock(true);
                     break;
                 }
                 case R.string.pref_key__gesture_double_tap:
@@ -311,7 +310,7 @@ public class SettingsActivity extends ThemeActivity {
         @SuppressWarnings({"ConstantConditions", "ConstantIfStatement", "StatementWithEmptyBody"})
         public Boolean onPreferenceClicked(Preference preference) {
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, preference.getKey());
-            Launcher launcher = Launcher.Companion.getLauncher();
+            HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
 
             switch (keyRes) {
                 case R.string.pref_key__minibar: {
@@ -332,10 +331,10 @@ public class SettingsActivity extends ThemeActivity {
                 }
                 case R.string.pref_key__clear_database: {
                     DialogHelper.alertDialog(getContext(), getString(R.string.clear_user_data), getString(R.string.clear_user_data_are_you_sure), (dialog, which) -> {
-                        if (launcher != null) {
-                            launcher.recreate();
+                        if (homeActivity != null) {
+                            homeActivity.recreate();
                         }
-                        DatabaseHelper db = (DatabaseHelper) Launcher._db;
+                        DatabaseHelper db = (DatabaseHelper) HomeActivity._db;
                         db.onUpgrade(db.getWritableDatabase(), 1, 1);
                         getActivity().finish();
                     });
@@ -348,8 +347,8 @@ public class SettingsActivity extends ThemeActivity {
                     return true;
                 }
                 case R.string.pref_key__restart: {
-                    if (launcher != null) {
-                        launcher.recreate();
+                    if (homeActivity != null) {
+                        homeActivity.recreate();
                     }
                     getActivity().finish();
                     return true;

@@ -10,7 +10,7 @@ import android.os.Bundle;
 import android.service.notification.StatusBarNotification;
 import android.view.View;
 
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.util.PackageUserKey;
 
 public class NotificationInfo {
@@ -67,20 +67,20 @@ public class NotificationInfo {
         if (intent == null) {
             return;
         }
-        Launcher launcher = Launcher.Companion.getLauncher();
-        //final Launcher launcher = Launcher.getLauncher(view.getContext());
+        HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+        //final HomeActivity homeActivity = HomeActivity.getLauncher(view.getContext());
         Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
                 view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         try {
             intent.send(null, 0, null, null, null, null, activityOptions);
-            //launcher.getUserEventDispatcher().logNotificationLaunch(view, intent);
+            //homeActivity.getUserEventDispatcher().logNotificationLaunch(view, intent);
         } catch (PendingIntent.CanceledException e) {
             e.printStackTrace();
         }
         if (autoCancel) {
-            //launcher.getPopupDataProvider().cancelNotification(notificationKey);
+            //homeActivity.getPopupDataProvider().cancelNotification(notificationKey);
         }
-        //AbstractFloatingView.closeOpenContainer(launcher, AbstractFloatingView
+        //AbstractFloatingView.closeOpenContainer(homeActivity, AbstractFloatingView
         //        .TYPE_POPUP_CONTAINER_WITH_ARROW);
     }
 

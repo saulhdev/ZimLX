@@ -51,7 +51,7 @@
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/searchBar" />
 
-        <org.zimmob.zimlx.widget.PagerIndicator
+        <org.zimmob.zimlx.pageindicator.PageIndicator
             android:id="@+id/desktopIndicator"
             android:layout_width="0dp"
             android:layout_height="10dp"

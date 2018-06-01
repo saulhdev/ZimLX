@@ -9,7 +9,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
 
 import agency.tango.materialintroscreen.MaterialIntroActivity;
 import agency.tango.materialintroscreen.SlideFragment;
@@ -67,7 +66,7 @@ public class OnBoardActivity extends MaterialIntroActivity {
     private void setState() {
         getSharedPreferences("quickSettings", Context.MODE_PRIVATE).edit().putBoolean("firstStart", false).apply();
 
-        Intent intent = new Intent(this, Launcher.class);
+        Intent intent = new Intent(this, HomeActivity.class);
         intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
         startActivity(intent);
     }

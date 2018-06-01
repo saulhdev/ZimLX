@@ -14,7 +14,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
@@ -224,7 +224,7 @@ public class AppDrawerController extends RevealFrameLayout{
         }
     }
 
-    public void setHome(Launcher home) {
+    public void setHome(HomeActivity home) {
         if(_drawerMode==DRAWER_HORIZONTAL)
             _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
     }

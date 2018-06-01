@@ -4,25 +4,25 @@ import android.view.View;
 
 import net.gsantner.opoc.util.Callback;
 
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.pageindicator.PageIndicator;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.AppDrawerController;
 import org.zimmob.zimlx.widget.DragOptionView;
-import org.zimmob.zimlx.widget.PagerIndicator;
 
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
 public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
-    private Launcher _launcher;
-    private PagerIndicator _appDrawerIndicator;
+    private HomeActivity _homeActivity;
+    private PageIndicator _appDrawerIndicator;
     private DragOptionView _dragOptionPanel;
 
-    public HpAppDrawer(Launcher home, PagerIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
-        _launcher = home;
+    public HpAppDrawer(HomeActivity home, PageIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
+        _homeActivity = home;
         _appDrawerIndicator = appDrawerIndicator;
         _dragOptionPanel = dragOptionPanel;
     }
@@ -54,28 +54,28 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
         if (openingOrClosing) {
             if (startOrEnd) {
                 Tool.visibleViews(_appDrawerIndicator);
-                Tool.invisibleViews(_launcher.getDesktop());
-                _launcher.hideDesktopIndicator();
-                _launcher.updateDock(false);
-                _launcher.updateSearchBar(false);
+                Tool.invisibleViews(_homeActivity.getDesktop());
+                _homeActivity.hideDesktopIndicator();
+                _homeActivity.updateDock(false);
+                _homeActivity.updateSearchBar(false);
             }
         } else {
             if (startOrEnd) {
                 Tool.invisibleViews(_appDrawerIndicator);
-                Tool.visibleViews(_launcher.getDesktop());
-                _launcher.showDesktopIndicator();
+                Tool.visibleViews(_homeActivity.getDesktop());
+                _homeActivity.showDesktopIndicator();
                 if (Setup.appSettings().getDrawerStyle() == Config.DRAWER_HORIZONTAL)
-                    _launcher.updateDock(true, 200);
+                    _homeActivity.updateDock(true, 200);
                 else{
-                    _launcher.updateDock(true);
-                _launcher.updateSearchBar(!_dragOptionPanel._isDraggedFromDrawer);
+                    _homeActivity.updateDock(true);
+                _homeActivity.updateSearchBar(!_dragOptionPanel._isDraggedFromDrawer);
                 _dragOptionPanel._isDraggedFromDrawer = false;
                 }
             } else {
                 if (!Setup.appSettings().isDrawerRememberPosition()) {
-                    _launcher.getAppDrawerController().scrollToStart();
+                    _homeActivity.getAppDrawerController().scrollToStart();
                 }
-                _launcher.getAppDrawerController().getDrawer().setVisibility(View.INVISIBLE);
+                _homeActivity.getAppDrawerController().getDrawer().setVisibility(View.INVISIBLE);
             }
         }
     }

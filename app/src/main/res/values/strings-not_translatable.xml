@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="truly_launcher" translatable="false">The truly open source launcher that comes with awesome features!</string>
+    <string name="truly_launcher" translatable="false">The truly open source homeActivity that comes with awesome features!</string>
     <string name="pref_key__date_bar_date_format_custom__default_value_1" translatable="false"><![CDATA[EEEE\', \'dd\'.\']]></string>
     <string name="pref_key__date_bar_date_format_custom__default_value_2" translatable="false"><![CDATA[MMMM yyyy\', KW \'ww]]></string>
 

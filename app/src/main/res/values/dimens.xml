@@ -5,4 +5,5 @@
     <!-- Icon badges (with notification counts) -->
     <dimen name="badge_small_padding">0dp</dimen>
     <dimen name="badge_large_padding">3dp</dimen>
+
 </resources>

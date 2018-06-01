@@ -13,6 +13,7 @@ import android.provider.Settings;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.MinibarEditActivity;
 import org.zimmob.zimlx.activity.SettingsActivity;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DialogHelper;
@@ -25,15 +26,15 @@ public class LauncherAction {
     }
 
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Launcher.Companion.get_resources() != null ? Launcher.Companion.get_resources().getString(R.string.minibar_0) : null, R.drawable.ic_mode_edit_black_24dp, 98),
-            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Launcher.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
-            new ActionDisplayItem(Action.LockScreen, "LockScreen", Launcher.Companion.get_resources().getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
-            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Launcher.Companion.get_resources().getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
-            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.Companion.get_resources().getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
-            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.Companion.get_resources().getString(R.string.minibar_4), R.drawable.ic_android_minimal, 25),
-            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", Launcher.Companion.get_resources().getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
-            new ActionDisplayItem(Action.SearchBar, "SearchBar", Launcher.Companion.get_resources().getString(R.string.minibar_9), R.drawable.ic_search_light_24dp, 89),
-            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.Companion.get_resources().getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
+            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", HomeActivity.Companion.get_resources() != null ? HomeActivity.Companion.get_resources().getString(R.string.minibar_0) : null, R.drawable.ic_mode_edit_black_24dp, 98),
+            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", HomeActivity.Companion.get_resources().getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
+            new ActionDisplayItem(Action.LockScreen, "LockScreen", HomeActivity.Companion.get_resources().getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
+            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", HomeActivity.Companion.get_resources().getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
+            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", HomeActivity.Companion.get_resources().getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
+            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", HomeActivity.Companion.get_resources().getString(R.string.minibar_4), R.drawable.ic_android_minimal, 25),
+            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", HomeActivity.Companion.get_resources().getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
+            new ActionDisplayItem(Action.SearchBar, "SearchBar", HomeActivity.Companion.get_resources().getString(R.string.minibar_9), R.drawable.ic_search_light_24dp, 89),
+            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", HomeActivity.Companion.get_resources().getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
     };
 
     public static void RunAction(Action action, final Context context) {
@@ -71,11 +72,11 @@ public class LauncherAction {
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
             case AppDrawer:
-                Launcher.Companion.getLauncher().openAppDrawer();
+                HomeActivity.Companion.getLauncher().openAppDrawer();
                 break;
             case SearchBar: {
-                assert Launcher.Companion.getLauncher() != null;
-                Launcher.Companion.getLauncher().getSearchBar().getSearchButton().performClick();
+                assert HomeActivity.Companion.getLauncher() != null;
+                HomeActivity.Companion.getLauncher().getSearchBar().getSearchButton().performClick();
                 break;
             }
             case VolumeDialog:

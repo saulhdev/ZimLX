@@ -1,7 +1,7 @@
 ![GitHub release](https://raw.githubusercontent.com/otakuhqz/zimlx-metadata-latest/master/en-US/featureGraphic.png)
 
 # ZimLX
-Open Source and free launcher for Android based on OpenLauncher.
+Open Source and free homeActivity for Android based on OpenLauncher.
 
 ## Donations
 Want to support me? https://paypal.me/saulhenriquez

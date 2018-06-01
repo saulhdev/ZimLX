@@ -14,6 +14,7 @@ import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 
 public class SimpleIconProvider extends BaseIconProvider{
     private int drawableResource;
+
     protected Drawable drawable;
     
     public SimpleIconProvider(Drawable drawable) {

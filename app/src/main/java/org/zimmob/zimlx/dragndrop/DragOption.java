@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 import android.view.View;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.homeparts.HpAppEditApplier;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
@@ -30,7 +30,7 @@ public class DragOption {
     private PopupIconLabelItem editItem = new PopupIconLabelItem(R.string.edit, R.drawable.ic_edit_black_24dp).withIdentifier(editItemIdentifier);
     private PopupIconLabelItem removeItem = new PopupIconLabelItem(R.string.remove, R.drawable.ic_close_dark_24dp).withIdentifier(removeItemIdentifier);
 
-    public void initDragNDrop(Launcher _home, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
+    public void initDragNDrop(HomeActivity _home, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
         //dragHandle's drag event
         final Handler dragHandler = new Handler();
 
@@ -173,7 +173,7 @@ public class DragOption {
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
                     // add the item to the database
-                    Launcher._db.saveItem(item, _home.getDesktop()
+                    HomeActivity._db.saveItem(item, _home.getDesktop()
                             .getCurrentItem(), Config.ItemPosition.Desktop);
                 }
                 else {
@@ -246,7 +246,7 @@ public class DragOption {
                     _home.getDock().consumeRevert();
 
                     // add the item to the database
-                    Launcher._db.saveItem(item, 0, Config.ItemPosition.Dock);
+                    HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
                 }
                 else {
                     Point pos = new Point();
@@ -298,7 +298,7 @@ public class DragOption {
 
     }
 
-    private void showItemPopup(@NonNull final DragOptionLayout dragNDropView, final Launcher home) {
+    private void showItemPopup(@NonNull final DragOptionLayout dragNDropView, final HomeActivity home) {
         ArrayList<PopupIconLabelItem> itemList = new ArrayList<>();
         switch (dragNDropView.getDragItem().getType()) {
             case APP:
@@ -325,12 +325,12 @@ public class DragOption {
             }
         }
 
-        float x = dragNDropView.getDragLocation().x - Launcher._itemTouchX + Tool.toPx(10);
-        float y = dragNDropView.getDragLocation().y - Launcher._itemTouchY - Tool.toPx((46 * itemList.size()));
+        float x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX + Tool.toPx(10);
+        float y = dragNDropView.getDragLocation().y - HomeActivity._itemTouchY - Tool.toPx((46 * itemList.size()));
 
         if ((x + Tool.toPx(200)) > dragNDropView.getWidth()) {
             dragNDropView.setPopupMenuShowDirection(false);
-            x = dragNDropView.getDragLocation().x - Launcher._itemTouchX
+            x = dragNDropView.getDragLocation().x - HomeActivity._itemTouchX
                     + home.getDesktop().getCurrentPage().getCellWidth() - Tool.toPx(200) - Tool.toPx(10);
         } else {
             dragNDropView.setPopupMenuShowDirection(true);
@@ -338,7 +338,7 @@ public class DragOption {
 
         if (y < 0)
             y = dragNDropView.getDragLocation().y
-                    - Launcher._itemTouchY
+                    - HomeActivity._itemTouchY
                     + home.getDesktop().getCurrentPage().getCellHeight()
                     + Tool.toPx(4);
         else

@@ -8,7 +8,7 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.model.App;
@@ -242,8 +242,8 @@ public class AppManager {
 
             if (_recreateAfterGettingApps) {
                 _recreateAfterGettingApps = false;
-                if (_context instanceof Launcher)
-                    ((Launcher) _context).recreate();
+                if (_context instanceof HomeActivity)
+                    ((HomeActivity) _context).recreate();
             }
 
             super.onPostExecute(result);

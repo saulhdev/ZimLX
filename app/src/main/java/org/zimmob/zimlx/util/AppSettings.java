@@ -9,10 +9,11 @@ import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.widget.Desktop;
-import org.zimmob.zimlx.widget.PagerIndicator;
+import org.zimmob.zimlx.pageindicator.PageIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -339,7 +340,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getDesktopIndicatorMode() {
-        return getIntOfStringPref(R.string.pref_key__desktop_indicator_style, PagerIndicator.Mode.NORMAL);
+        return getIntOfStringPref(R.string.pref_key__desktop_indicator_style, Config.INDICATOR_DOTS);
     }
 
     public void setDesktopIndicatorMode(int mode) {

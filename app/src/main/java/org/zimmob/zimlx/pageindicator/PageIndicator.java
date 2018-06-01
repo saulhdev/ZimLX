@@ -2,10 +2,13 @@ package org.zimmob.zimlx.pageindicator;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Paint.Join;
 import android.graphics.Paint.Style;
 import android.graphics.Path;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -18,6 +21,7 @@ import org.zimmob.zimlx.widget.SmoothViewPager;
 
 import static org.zimmob.zimlx.config.Config.INDICATOR_ARROW;
 import static org.zimmob.zimlx.config.Config.INDICATOR_DOTS;
+import static org.zimmob.zimlx.config.Config.INDICATOR_LINE;
 
 /**
  * Created by saul on 04-25-18.
@@ -42,7 +46,9 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
     private float _scaleFactor2 = 1.5f;
     private float _scrollOffset;
     private int _scrollPagePosition;
-
+    private Paint _lineBgPaint =  new Paint(1);
+    private Paint _linePaint = new Paint(1);
+    private Paint _linePaint2 = new Paint(1);
     public PageIndicator(Context context) {
         this(context, null);
     }
@@ -54,6 +60,17 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
         _dotPaint.setColor(-1);
         _dotPaint.setStrokeWidth((float) Tool.toPx(2));
         _dotPaint.setAntiAlias(true);
+
+        _linePaint.setColor(-1);
+        _linePaint.setStrokeWidth((float) Tool.toPx(4));
+        _linePaint.setAntiAlias(true);
+        _lineBgPaint.setColor(Color.parseColor("#73ECEFF7"));
+        _lineBgPaint.setStrokeWidth((float) Tool.toPx(4));
+        _lineBgPaint.setAntiAlias(true);
+        _linePaint2.setColor(Color.BLACK);
+        _linePaint2.setStrokeWidth((float) Tool.toPx(4));
+        _linePaint2.setAntiAlias(true);
+
         _arrowPaint.setColor(-1);
         _arrowPaint.setAntiAlias(true);
         _arrowPaint.setStyle(Style.STROKE);
@@ -146,6 +163,23 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
                 }
             }
             break;
+            case INDICATOR_LINE: {
+                if (_pager != null) {
+                    float lineWidth = 90;
+                    float pagesCount = _pager.getAdapter().getCount();
+                    for (int i = 0; i < pagesCount; i++) {
+
+                        float sStartX =getWidth()/pagesCount+ i * lineWidth+_pad*2;
+                        float syX = sStartX + lineWidth;
+                        canvas.drawLine(syX, 30, syX + lineWidth,30, _lineBgPaint);
+                        }
+                    float currentStartX =getWidth()/pagesCount+ _scrollPagePosition * lineWidth+_pad*2;
+                    float myX = currentStartX + lineWidth;
+                    canvas.drawLine(myX, 30, myX + lineWidth,30, _linePaint);
+
+                }
+                break;
+            }
         }
     }
 

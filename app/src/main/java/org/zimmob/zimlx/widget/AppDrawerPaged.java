@@ -12,9 +12,11 @@ import android.widget.PopupMenu;
 import android.widget.SearchView;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
+import org.zimmob.zimlx.pageindicator.PageIndicator;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
@@ -25,9 +27,9 @@ import java.util.List;
 public class AppDrawerPaged extends SmoothViewPager implements SearchView.OnQueryTextListener{
     private List<App> _apps;
     public List<ViewGroup> _pages = new ArrayList<>();
-    private Launcher _home;
+    private HomeActivity _home;
     private int _rowCellCount, _columnCellCount;
-    private PagerIndicator _appDrawerIndicator;
+    private PageIndicator _appDrawerIndicator;
     private int _pageCount = 0;
     private SearchView searchView;
 
@@ -159,10 +161,10 @@ public class AppDrawerPaged extends SmoothViewPager implements SearchView.OnQuer
         return false;
     }
 
-    public void withHome(Launcher home, PagerIndicator appDrawerIndicator) {
+    public void withHome(HomeActivity home, PageIndicator appDrawerIndicator) {
         _home = home;
         _appDrawerIndicator = appDrawerIndicator;
-        appDrawerIndicator.setMode(PagerIndicator.Mode.NORMAL);
+        appDrawerIndicator.setMode(Config.INDICATOR_DOTS);
         if (getAdapter() != null)
             appDrawerIndicator.setViewPager(AppDrawerPaged.this);
     }

@@ -24,7 +24,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -171,19 +171,19 @@ public class Tool {
     }
 
     public static void startApp(Context context, App app) {
-        if (Launcher.Companion.getLauncher() != null)
-            Launcher.Companion.getLauncher().onStartApp(context, app, null);
+        if (HomeActivity.Companion.getLauncher() != null)
+            HomeActivity.Companion.getLauncher().onStartApp(context, app, null);
     }
 
     public static void startApp(Context context, Intent intent) {
-        if (Launcher.Companion.getLauncher() != null)
-            Launcher.Companion.getLauncher().onStartApp(context, intent, null);
+        if (HomeActivity.Companion.getLauncher() != null)
+            HomeActivity.Companion.getLauncher().onStartApp(context, intent, null);
     }
 
     public static final void startApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
-        Launcher launcher = Launcher.Companion.getLauncher();
-        if (launcher != null) {
-            launcher.onStartApp(context, app, view);
+        HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+        if (homeActivity != null) {
+            homeActivity.onStartApp(context, app, view);
         }
     }
 
@@ -321,8 +321,8 @@ public class Tool {
         final ItemGestureListener itemGestureListener = Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
 
-            Launcher.Companion.setItemTouchX((int) motionEvent.getX());
-            Launcher.Companion.setItemTouchY((int) motionEvent.getY());
+            HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
+            HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
             return false;
         };
     }

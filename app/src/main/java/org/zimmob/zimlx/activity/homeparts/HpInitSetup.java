@@ -7,7 +7,7 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import org.zimmob.zimlx.AppObject;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.apps.AppManager;
@@ -16,7 +16,7 @@ import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener.ItemGestureCallback;
 
-/* compiled from: Launcher.kt */
+/* compiled from: HomeActivity.kt */
 public final class HpInitSetup extends Setup {
     private final AppManager _appLoader;
     private final DatabaseHelper _dataManager;
@@ -27,7 +27,7 @@ public final class HpInitSetup extends Setup {
     private final AppSettings _appSettings;
     private final ImageLoader _imageLoader;
 
-    public HpInitSetup(Launcher home) {
+    public HpInitSetup(HomeActivity home) {
         _appSettings = AppSettings.get();
         _desktopGestureCallback = new HpGestureCallback(_appSettings);
         _dataManager = new DatabaseHelper(home);

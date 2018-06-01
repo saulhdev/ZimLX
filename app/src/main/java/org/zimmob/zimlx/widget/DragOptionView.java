@@ -14,7 +14,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.launcher.Launcher;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.dragndrop.DragAction;
@@ -34,7 +34,7 @@ public class DragOptionView extends CardView {
     private TextView _removeIcon;
     private TextView _infoIcon;
     private TextView _deleteIcon;
-    private Launcher _home;
+    private HomeActivity _home;
     private Long _animSpeed = 120L;
 
     public DragOptionView(Context context) {
@@ -47,7 +47,7 @@ public class DragOptionView extends CardView {
         init();
     }
 
-    public void setHome(Launcher home) {
+    public void setHome(HomeActivity home) {
         _home = home;
     }
 
@@ -81,10 +81,10 @@ public class DragOptionView extends CardView {
 
                     Setup.eventHandler().showEditDialog(getContext(), item, name -> {
                         Objects.requireNonNull(item).setLabel(name);
-                        Launcher.Companion.getDb().saveItem(item);
+                        HomeActivity.Companion.getDb().saveItem(item);
 
-                        Objects.requireNonNull(Launcher.Companion.getLauncher()).getDesktop().addItemToCell(item, item.getX(), item.getY());
-                        Launcher.Companion.getLauncher().getDesktop().removeItem(Launcher.Companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
+                        Objects.requireNonNull(HomeActivity.Companion.getLauncher()).getDesktop().addItemToCell(item, item.getX(), item.getY());
+                        HomeActivity.Companion.getLauncher().getDesktop().removeItem(HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
                     });
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -113,7 +113,7 @@ public class DragOptionView extends CardView {
                     Item item = DragHandler.INSTANCE.getDraggedObject(dragEvent);
 
                     // remove all items from the database
-                    Launcher.Companion.getDb().deleteItem(item, true);
+                    HomeActivity.Companion.getDb().deleteItem(item, true);
 
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
@@ -275,7 +275,7 @@ public class DragOptionView extends CardView {
                     Tool.visibleViews(Math.round(_animSpeed / 1.3f), _hideViews);
 
                 // the search view might be disabled
-                Objects.requireNonNull(Launcher.Companion.getLauncher()).updateSearchBar(true);
+                Objects.requireNonNull(HomeActivity.Companion.getLauncher()).updateSearchBar(true);
 
                 _isDraggedFromDrawer = false;
 
