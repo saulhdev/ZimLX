@@ -15,12 +15,36 @@ import org.zimmob.zimlx.util.PackageUserKey;
 import java.util.ArrayList;
 import java.util.List;
 
+
+/**
+ * Contains data to be used in an icon badge.
+ */
 public class BadgeInfo {
-    private static final int MAX_COUNT = 999;
-    private int mTotalCount;
-    private List<NotificationKeyData> mNotificationKeys;
-    private NotificationInfo mNotificationInfo;
+
+    public static final int MAX_COUNT = 999;
+
+    /** Used to link this BadgeInfo to icons on the workspace and all apps */
     private PackageUserKey mPackageUserKey;
+
+    /**
+     * The keys of the notifications that this badge represents. These keys can later be
+     * used to retrieve {@link NotificationInfo}'s.
+     */
+    private List<NotificationKeyData> mNotificationKeys;
+
+    /**
+     * The current sum of the counts in {@link #mNotificationKeys},
+     * updated whenever a key is added or removed.
+     */
+    private int mTotalCount;
+
+    /** This will only be initialized if the badge should display the notification icon. */
+    private NotificationInfo mNotificationInfo;
+
+    /**
+     * When retrieving the notification icon, we draw it into this shader, which can be clipped
+     * as necessary when drawn in a badge.
+     */
     private Shader mNotificationIcon;
 
     public BadgeInfo(PackageUserKey packageUserKey) {
@@ -28,6 +52,9 @@ public class BadgeInfo {
         mNotificationKeys = new ArrayList<>();
     }
 
+    /**
+     * Returns whether the notification was added or its count changed.
+     */
     public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKey) {
         int indexOfPrevKey = mNotificationKeys.indexOf(notificationKey);
         NotificationKeyData prevKey = indexOfPrevKey == -1 ? null
@@ -70,7 +97,7 @@ public class BadgeInfo {
 
     public void setNotificationToShow(@Nullable NotificationInfo notificationInfo) {
         mNotificationInfo = notificationInfo;
-       // mNotificationIcon = null;
+        mNotificationIcon = null;
     }
 
     public boolean hasNotificationToShow() {
@@ -82,8 +109,8 @@ public class BadgeInfo {
      *
      * The shader is cached until {@link #setNotificationToShow(NotificationInfo)} is called.
      */
-    public Shader getNotificationIconForBadge(Context context, int badgeColor,
-                                       int badgeSize, int badgePadding) {
+    public @Nullable Shader getNotificationIconForBadge(Context context, int badgeColor,
+                                                        int badgeSize, int badgePadding) {
         if (mNotificationInfo == null) {
             return null;
         }
