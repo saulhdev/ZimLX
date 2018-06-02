@@ -167,19 +167,45 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
                 if (_pager != null) {
                     float lineWidth = 90;
                     float pagesCount = _pager.getAdapter().getCount();
-                    for (int i = 0; i < pagesCount; i++) {
-                        float sStartX =getWidth()/pagesCount+ i * lineWidth+_pad*2;
-                        float syX = sStartX + lineWidth-30;
-                        canvas.drawLine(syX, 30, syX + lineWidth,30, _lineBgPaint);
-                        canvas.drawLine(syX-lineWidth, 30, syX + lineWidth+30,30, _lineBgPaint);
+                    float sep = (pagesCount-1)*30;
+                    float center =getWidth()/2;
+                    if (pagesCount % 2 == 0f){
+                        float lineInit= center-(pagesCount/2)*lineWidth-sep/2;
+                        float lineEnd=lineInit+90;
+                        for(int i=0; i < pagesCount;i++){
+                            canvas.drawLine(lineInit, 30, lineEnd,30, _lineBgPaint);
+                            lineInit=lineEnd+30;
+                            lineEnd+=120;
+                        }
+                        drawSelectedLine(_scrollPagePosition,pagesCount,canvas,center, lineWidth);
                     }
-                    float currentStartX =getWidth()/pagesCount+ _scrollPagePosition * lineWidth+_pad*2;
-                    float myX = currentStartX + lineWidth;
-                    canvas.drawLine(myX, 30, myX + lineWidth,30, _linePaint);
-
+                    else{
+                        float lineInit= center-((pagesCount-1)/2)*lineWidth - sep/2 -45;
+                        float lineEnd=lineInit+90;
+                        for(int i=0; i < pagesCount;i++){
+                            canvas.drawLine(lineInit, 30, lineEnd,30, _lineBgPaint);
+                            lineInit=lineEnd+30;
+                            lineEnd+=120;
+                        }
+                        drawSelectedLine(_scrollPagePosition,pagesCount,canvas,center, lineWidth);
+                    }
                 }
                 break;
             }
+        }
+    }
+
+    private void drawSelectedLine(int scrollPosition, float pagesCount, Canvas canvas, float center,float lineWidth) {
+        float sep = (pagesCount-1)*30;
+        if(scrollPosition>0){
+            float selectedInit=center-(pagesCount/2)*lineWidth - sep/2 + _scrollPagePosition*(lineWidth+30);
+            float selectedEnd = selectedInit + 90;
+            canvas.drawLine(selectedInit, 30, selectedEnd,30, _linePaint);
+        }
+        else {
+            float selectedInit = center - (pagesCount / 2) * lineWidth - sep / 2 + _scrollPagePosition * lineWidth;
+            float selectedEnd = selectedInit + 90;
+            canvas.drawLine(selectedInit, 30, selectedEnd, 30, _linePaint);
         }
     }
 
