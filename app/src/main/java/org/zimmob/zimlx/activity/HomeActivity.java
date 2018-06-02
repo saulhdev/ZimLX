@@ -69,7 +69,7 @@ import org.zimmob.zimlx.widget.DesktopOptionView;
 import org.zimmob.zimlx.widget.Dock;
 import org.zimmob.zimlx.widget.DragOptionLayout;
 import org.zimmob.zimlx.widget.DragOptionView;
-import org.zimmob.zimlx.folder.GroupPopupView;
+import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.widget.SearchBar;
 import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SwipeListView;
@@ -462,7 +462,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     private void onHandleLauncherPause() {
-        ((GroupPopupView) findViewById(R.id.groupPopup)).dismissPopup();
+        ((Folder) findViewById(R.id.groupPopup)).dismissPopup();
         ((CalendarDropDownView) findViewById(R.id.calendarDropDownView)).animateHide();
         ((DragOptionLayout) findViewById(R.id.dragNDropView)).hidePopupMenu();
         if (!((SearchBar) findViewById(R.id.searchBar)).collapse()) {
@@ -539,7 +539,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         ((FrameLayout) minibar.getParent()).setBackgroundColor(AppSettings.get().getMinibarBackgroundColor());
     }
 
-    public final GroupPopupView getGroupPopup() {
+    public final Folder getGroupPopup() {
         return findViewById(R.id.groupPopup);
     }
 

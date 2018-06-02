@@ -18,7 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.folder.GroupPopupView;
+import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -92,7 +92,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                                 return true;
                             }
                         case GROUP:
-                            if ((Item.Type.APP.equals(dropItem.getType()) || Type.SHORTCUT.equals(dropItem.getType())) && item.getGroupItems().size() < GroupPopupView.GroupDef._maxItem) {
+                            if ((Item.Type.APP.equals(dropItem.getType()) || Type.SHORTCUT.equals(dropItem.getType())) && item.getGroupItems().size() < Folder.GroupDef._maxItem) {
                                 parent.removeView(itemView);
                                 item.getGroupItems().add(dropItem);
                                 HomeActivity.Companion.getDb().saveItem(dropItem, page, itemPosition);
