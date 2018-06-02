@@ -69,7 +69,7 @@ import org.zimmob.zimlx.widget.DesktopOptionView;
 import org.zimmob.zimlx.widget.Dock;
 import org.zimmob.zimlx.widget.DragOptionLayout;
 import org.zimmob.zimlx.widget.DragOptionView;
-import org.zimmob.zimlx.widget.GroupPopupView;
+import org.zimmob.zimlx.folder.GroupPopupView;
 import org.zimmob.zimlx.widget.SearchBar;
 import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SwipeListView;

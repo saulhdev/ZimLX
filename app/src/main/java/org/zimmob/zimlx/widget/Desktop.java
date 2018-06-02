@@ -18,6 +18,7 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.folder.GroupPopupView;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
