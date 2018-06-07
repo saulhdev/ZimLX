@@ -1,5 +1,3 @@
-![GitHub release](https://raw.githubusercontent.com/otakuhqz/zimlx-metadata-latest/master/en-US/featureGraphic.png)
-
 # ZimLX
 
 <h1 align=center>
