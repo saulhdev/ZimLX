@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat
 
 buildscript {
     ext.version_setup_compileSdk = 26
-    ext.version_setup_minSdk = 19
+    ext.version_setup_minSdk = 21
     ext.version_setup_targetSdk = ext.version_setup_compileSdk
     ext.version_setup_buildTools = "27.0.3" // Specifying optional
 

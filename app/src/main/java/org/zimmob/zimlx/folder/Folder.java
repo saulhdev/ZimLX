@@ -8,6 +8,7 @@ import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewAnimationUtils;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.PopupWindow;
 import android.widget.TextView;
@@ -22,12 +23,10 @@ import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.GroupIconDrawable;
 import org.zimmob.zimlx.viewutil.IDesktopCallback;
 import org.zimmob.zimlx.widget.AppItemView;
 import org.zimmob.zimlx.widget.CellContainer;
 
-import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
 
 public class Folder extends RevealFrameLayout {
@@ -64,9 +63,7 @@ public class Folder extends RevealFrameLayout {
             _popupCard.setCardElevation(0f);
         }
         _cellContainer = _popupCard.findViewById(R.id.group);
-
         bringToFront();
-
         setOnClickListener(view -> {
             if (_dismissListener != null) {
                 _dismissListener.onDismiss();
@@ -77,21 +74,17 @@ public class Folder extends RevealFrameLayout {
         addView(_popupCard);
         _popupCard.setVisibility(View.INVISIBLE);
         setVisibility(View.INVISIBLE);
-
         _textView = _popupCard.findViewById(R.id.group_popup_label);
     }
 
-
     public boolean showWindowV(final Item item, final View itemView, final IDesktopCallback callBack) {
-        if (_isShowing || getVisibility() == View.VISIBLE) return false;
+        if (_isShowing || getVisibility() == VISIBLE) return false;
         _isShowing = true;
-
         String label = item.getLabel();
         _textView.setVisibility(label.isEmpty() ? GONE : VISIBLE);
         _textView.setText(label);
         _textView.setTextColor(Setup.appSettings().getFolderLabelColor());
         _textView.setTypeface(null, Typeface.BOLD);
-
         final Context c = itemView.getContext();
         int[] cellSize = Folder.GroupDef.getCellSize(item.getGroupItems().size());
         _cellContainer.setGridSize(cellSize[0], cellSize[1]);
@@ -100,30 +93,26 @@ public class Folder extends RevealFrameLayout {
         int textSize = Tool.dp2px(22, c);
         int contentPadding = Tool.dp2px(6, c);
 
-        for (int x2 = 0; x2 < cellSize[0]; x2++) {
-            for (int y2 = 0; y2 < cellSize[1]; y2++) {
-                if (y2 * cellSize[0] + x2 > item.getGroupItems().size() - 1) {
+        for (int x = 0; x < cellSize[0]; x++) {
+            for (int y = 0; y < cellSize[1]; y++) {
+                if (y * cellSize[0] + x > item.getGroupItems().size() - 1) {
                     continue;
                 }
                 final AppSettings AppSettings = Setup.appSettings();
-                final Item groupItem = item.getGroupItems().get(y2 * cellSize[0] + x2);
+                final Item groupItem = item.getGroupItems().get(y * cellSize[0] + x);
                 if (groupItem == null) {
                     continue;
                 }
-                final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
+                //final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
                 AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
                 final View view = appItemView.getView();
 
                 view.setOnLongClickListener(view2 -> {
                     if (Setup.appSettings().isDesktopLock()) return false;
-
                     removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
-
                     DragAction.Action action = groupItem.getType() == Item.Type.SHORTCUT ? DragAction.Action.SHORTCUT : DragAction.Action.APP;
-
                     // start the drag action
                     DragHandler.startDrag(view, groupItem, action, null);
-
                     dismissPopup();
                     updateItem(callBack, item, groupItem, itemView);
                     return true;
@@ -131,20 +120,21 @@ public class Folder extends RevealFrameLayout {
                 final App app = Setup.appLoader().findItemApp(groupItem);
                 if (app == null) {
                     removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
-                } else {
+                }
+                else {
                     view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(view, () -> {
                         dismissPopup();
                         setVisibility(View.INVISIBLE);
                         view.getContext().startActivity(groupItem.getIntent());
                     }, 1f));
                 }
-                _cellContainer.addViewToGrid(view, x2, y2, 1, 1);
+                _cellContainer.addViewToGrid(view, x, y, 1, 1);
             }
         }
 
         _dismissListener = () -> {
             if (((AppItemView) itemView).getCurrentIcon() != null) {
-                ((GroupIconDrawable) ((AppItemView) itemView).getCurrentIcon()).popBack();
+                ((FolderIcon) ((AppItemView) itemView).getCurrentIcon()).popBack();
             }
         };
 
@@ -205,8 +195,8 @@ public class Folder extends RevealFrameLayout {
         _popupCard.setX(x);
         _popupCard.setY(y);
 
-        setVisibility(View.VISIBLE);
-        _popupCard.setVisibility(View.VISIBLE);
+        setVisibility(VISIBLE);
+        _popupCard.setVisibility(VISIBLE);
         animateFolderOpen();
 
         return true;
@@ -272,18 +262,16 @@ public class Folder extends RevealFrameLayout {
 
     private void removeItem(Context context, final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
-
         HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
         HomeActivity.Companion.getDb().saveItem(currentItem);
-        currentView.setCurrentIcon(new GroupIconDrawable(context, currentItem, Setup.appSettings().getDesktopIconSize()));
-
+        currentView.setCurrentIcon(new FolderIcon(context, currentItem, Setup.appSettings().getDesktopIconSize()));
      }
 
     private void updateItem(final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, View currentView) {
         if (currentItem.getGroupItems().size() == 1) {
             final App app = Setup.appLoader().findItemApp(currentItem.getGroupItems().get(0));
             if (app != null) {
-                //Creating a new app item fixed the folder crash bug
+
                 Item item = Item.newAppItem(app);
                 item.setX(currentItem.getX());
                 item.setY(currentItem.getY());
@@ -291,7 +279,6 @@ public class Folder extends RevealFrameLayout {
                 HomeActivity.Companion.getDb().saveItem(item);
                 HomeActivity.Companion.getDb().saveItem(item, Config.ItemState.Visible);
                 HomeActivity.Companion.getDb().deleteItem(currentItem, true);
-
                 callBack.removeItem(currentView, false);
                 Tool.print("_______________________");
                 callBack.addItemToCell(item, item.getX(), item.getY());
@@ -301,6 +288,7 @@ public class Folder extends RevealFrameLayout {
             }
         }
     }
+
 
     public static class GroupDef {
         public static int _maxItem = 12;
@@ -321,4 +309,5 @@ public class Folder extends RevealFrameLayout {
             return new int[]{0, 0};
         }
     }
+
 }

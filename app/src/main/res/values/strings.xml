@@ -271,4 +271,7 @@
     <string name="icon_pack_reset">Reset</string>
     <string name="icon_pack_system">System (Default)</string>
     <string name="icon_pack_default" translatable="false">Default</string>
+
+    <string name="folder_name"></string>
+    <string name="folder_hint_text">Unnamed Folder</string>
 </resources>

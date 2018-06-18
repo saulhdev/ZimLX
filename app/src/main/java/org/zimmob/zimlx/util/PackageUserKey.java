@@ -1,8 +1,11 @@
 package org.zimmob.zimlx.util;
 
+import android.os.Build;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
+import org.zimmob.zimlx.model.App;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.ItemInfo;
 
 import java.util.Arrays;
@@ -12,12 +15,18 @@ public class PackageUserKey {
     public UserHandle mUser;
     private int mHashCode;
 
-    public static PackageUserKey fromItemInfo(ItemInfo info) {
-        return new PackageUserKey(info.getTargetComponent().getPackageName(), info.user);
+    public static PackageUserKey fromItemInfo(Item info) {
+        //return new PackageUserKey(info.getTargetComponent().getPackageName(), info.user);
+        return new PackageUserKey(info.getIntent().getPackage(), null);
     }
 
     public static PackageUserKey fromNotification(StatusBarNotification notification) {
-        return new PackageUserKey(notification.getPackageName(), notification.getUser());
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            return new PackageUserKey(notification.getPackageName(), notification.getUser());
+        }
+
+        return new PackageUserKey(notification.getPackageName(),null);
     }
 
     public PackageUserKey(String packageName, UserHandle user) {

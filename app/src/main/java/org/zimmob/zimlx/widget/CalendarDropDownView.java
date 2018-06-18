@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.widget;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
 import android.view.View;
@@ -68,7 +69,10 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        ((MarginLayoutParams) getLayoutParams()).topMargin = insets.getSystemWindowInsetTop();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
+            return insets;
+        }
         return insets;
     }
 

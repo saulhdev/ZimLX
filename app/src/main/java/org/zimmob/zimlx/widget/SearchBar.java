@@ -2,6 +2,7 @@ package org.zimmob.zimlx.widget;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.AttrRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -32,11 +33,11 @@ import com.mikepenz.fastadapter.IItemAdapter;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.CircleDrawable;
 import org.zimmob.zimlx.viewutil.IconLabelItem;
@@ -371,8 +372,10 @@ public class SearchBar extends FrameLayout {
 
     @Override
     public WindowInsets onApplyWindowInsets(WindowInsets insets) {
-        int topInset = insets.getSystemWindowInsetTop();
-        setPadding(getPaddingLeft(), topInset + Tool.dp2px(10, getContext()), getPaddingRight(), getPaddingBottom());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            int topInset = insets.getSystemWindowInsetTop();
+            setPadding(getPaddingLeft(), topInset + Tool.dp2px(10, getContext()), getPaddingRight(), getPaddingBottom());
+        }
         return insets;
     }
 

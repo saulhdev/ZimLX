@@ -15,10 +15,9 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.apps.AppManager;
-import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.IconLabelItem;
 
 import java.io.File;
@@ -158,14 +157,13 @@ public class DialogHelper {
     }
 
     public static void sortModeDialog(Context context){
+        int selected = AppSettings.get().getSortMode();
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.title(R.string.menu_sort_apps);
         builder.items(R.array.entries__sort_mode);
-        builder.itemsCallbackSingleChoice(-1,new MaterialDialog.ListCallbackSingleChoice(){
-            @Override
-            public boolean onSelection(MaterialDialog dialog, View itemView, int which, CharSequence text) {
-                return false;
-            }
+        builder.itemsCallbackSingleChoice(selected, (dialog, itemView, which, text) -> {
+            AppSettings.get().setSortMode(which);
+            return false;
         });
         builder.show();
     }

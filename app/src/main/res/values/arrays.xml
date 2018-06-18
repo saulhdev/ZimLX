@@ -45,12 +45,6 @@
         <item>@string/pref_sort_last_installed</item>
         <item>@string/pref_sort_most_used</item>
     </string-array>
-    <string-array name="values__sort_mode" translatable="false">
-        <item>az</item>
-        <item>za</item>
-        <item>li</item>
-        <item>mo</item>
-    </string-array>
 
     <string-array name="entries__folder_transition">
         <item>Zoom</item>

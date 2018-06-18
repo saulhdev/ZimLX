@@ -16,6 +16,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:textColorPrimary">@color/Light.TextColor</item>
         <item name="android:textColor">@color/Light.TextColor</item>
         <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
@@ -61,5 +63,6 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
     </style>
+
 
 </resources>

@@ -5,12 +5,12 @@ import android.view.View;
 import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.appdrawer.AppDrawerController;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.pageindicator.PageIndicator;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.widget.AppDrawerController;
 import org.zimmob.zimlx.widget.DragOptionView;
 
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
@@ -21,8 +21,8 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
     private PageIndicator _appDrawerIndicator;
     private DragOptionView _dragOptionPanel;
 
-    public HpAppDrawer(HomeActivity home, PageIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
-        _homeActivity = home;
+    public HpAppDrawer(HomeActivity launcher, PageIndicator appDrawerIndicator, DragOptionView dragOptionPanel) {
+        _homeActivity = launcher;
         _appDrawerIndicator = appDrawerIndicator;
         _dragOptionPanel = dragOptionPanel;
     }
@@ -59,7 +59,8 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
                 _homeActivity.updateDock(false);
                 _homeActivity.updateSearchBar(false);
             }
-        } else {
+        }
+        else {
             if (startOrEnd) {
                 Tool.invisibleViews(_appDrawerIndicator);
                 Tool.visibleViews(_homeActivity.getDesktop());

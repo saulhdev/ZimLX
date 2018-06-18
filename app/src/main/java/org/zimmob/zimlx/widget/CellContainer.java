@@ -48,15 +48,11 @@ public class CellContainer extends ViewGroup {
     private Rect[][] _cells;
     private Point _currentOutlineCoordinate = new Point(-1, -1);
     private Long _down = 0L;
-    @Nullable
-    private SimpleFingerGestures _gestures;
+    @Nullable private SimpleFingerGestures _gestures;
     private boolean _hideGrid = true;
     private final Paint _paint = new Paint(1);
     private boolean[][] _occupied;
-    @Nullable
-    private OnItemRearrangeListener _onItemRearrangeListener;
     private final Paint _outlinePaint = new Paint(1);
-    private Config.PeekDirection _peekDirection;
     private Long _peekDownTime = (long) -1;
     private Point _preCoordinate = new Point(-1, -1);
     private Point _startCoordinate = new Point();
@@ -112,7 +108,6 @@ public class CellContainer extends ViewGroup {
     }
 
     public final void setOnItemRearrangeListener(@Nullable OnItemRearrangeListener v) {
-        _onItemRearrangeListener = v;
     }
 
     @NonNull
@@ -203,10 +198,8 @@ public class CellContainer extends ViewGroup {
                 }
                 Long l = _peekDownTime;
                 if (l != null && l == -1) {
-                    _peekDirection = getPeekDirectionFromCoordinate(_startCoordinate, coordinate);
                     _peekDownTime = System.currentTimeMillis();
                     _preCoordinate = coordinate;
-
                 }
                 boolean[][] zArr = _occupied;
                 if (zArr[coordinate.x][coordinate.y]) {

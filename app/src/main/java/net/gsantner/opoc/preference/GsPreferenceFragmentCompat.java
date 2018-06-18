@@ -138,8 +138,6 @@ public abstract class GsPreferenceFragmentCompat<AS extends SharedPreferencesPro
         _cu = new ContextUtils(activity);
         getPreferenceManager().setSharedPreferencesName(getSharedPreferencesName());
         addPreferencesFromResource(getPreferenceResourceForInflation());
-
-
         if (activity != null && activity.getTheme() != null) {
             TypedArray array = activity.getTheme().obtainStyledAttributes(new int[]{android.R.attr.colorBackground});
             int bgcolor = array.getColor(0, 0xFFFFFFFF);

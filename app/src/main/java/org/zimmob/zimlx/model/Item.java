@@ -10,7 +10,9 @@ import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 
+import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
@@ -248,6 +250,9 @@ public class Item implements Parcelable {
     }
 
     public List<Item> getGroupItems() {
+        Collections.sort(items,(p1,p2)->Collator.getInstance().compare(
+                p1.name,p2.name
+        ));
         return items;
     }
 

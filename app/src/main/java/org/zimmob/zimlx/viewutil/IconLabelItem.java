@@ -65,7 +65,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int label) {
         this(context, 0, label);
-        //_label = context.getString(label);
+        _label = context.getString(label);
     }
 
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
@@ -160,7 +160,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     }
 
     public void setIcon(Context context, int icon) {
-        this._icon=context.getDrawable(icon);
+        this._icon=context.getResources().getDrawable(icon);
     }
 
     public void setIcon(int resId) {

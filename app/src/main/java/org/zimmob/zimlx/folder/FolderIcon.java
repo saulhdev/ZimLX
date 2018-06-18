@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.viewutil;
+package org.zimmob.zimlx.folder;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -7,13 +7,20 @@ import android.graphics.ColorFilter;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Region;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.Log;
+import android.util.Property;
+import android.view.ViewConfiguration;
 
+import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.badge.BadgeRenderer;
+import org.zimmob.zimlx.badge.FolderBadgeInfo;
+import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -25,7 +32,7 @@ import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE_SHADOW;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE_SHADOW;
 
-public class GroupIconDrawable extends Drawable {
+public class FolderIcon extends Drawable {
     private Drawable[] icons;
 
     private Paint paintIcon;
@@ -37,8 +44,31 @@ public class GroupIconDrawable extends Drawable {
     private int outline;
     private int iconSizeDiv2;
     private AppSettings appSettings = Setup.appSettings();
+    PreviewBackground mBackground = new PreviewBackground();
+    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
+    private BadgeRenderer mBadgeRenderer;
+    private Rect mTempBounds = new Rect();
+    private float mSlop;
+    private float mBadgeScale;
+    private Point mTempSpaceForBadgeOffset = new Point();
 
-    public GroupIconDrawable(Context context, Item item, int iconSize) {
+    private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
+            = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
+        @Override
+        public Float get(FolderIcon folderIcon) {
+            return folderIcon.mBadgeScale;
+        }
+
+        @Override
+        public void set(FolderIcon folderIcon, Float value) {
+            folderIcon.mBadgeScale = value;
+            folderIcon.invalidateSelf();
+        }
+    };
+
+
+
+    public FolderIcon(Context context, Item item, int iconSize) {
         final float size = Tool.dp2px(iconSize, context);
         final Drawable[] icons = new Drawable[4];
         for (int i = 0; i < 4; i++) {
@@ -79,6 +109,8 @@ public class GroupIconDrawable extends Drawable {
         this.paintIcon = new Paint();
         paintIcon.setAntiAlias(true);
         paintIcon.setFilterBitmap(true);
+
+        mSlop = ViewConfiguration.get(appSettings.getContext()).getScaledTouchSlop();
     }
 
     public void popUp() {
@@ -161,15 +193,22 @@ public class GroupIconDrawable extends Drawable {
         }
     }
 
-    /**
-     * @param canvas
-     * @param icon
-     * @param l
-     * @param t
-     * @param r
-     * @param b
-     * @param paint
-     */
+    public void drawBadge(Canvas canvas) {
+        if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
+            int offsetX = mBackground.getOffsetX();
+            int offsetY = mBackground.getOffsetY();
+            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
+            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
+
+            // If we are animating to the accepting state, animate the badge out.
+            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
+            mTempSpaceForBadgeOffset.set(50 - mTempBounds.right, mTempBounds.top);
+            IconPalette badgePalette = IconPalette.getFolderBadgePalette(HomeActivity.Companion.getResources());
+            mBadgeRenderer.draw(canvas, badgePalette, mBadgeInfo, mTempBounds,
+                    badgeScale, mTempSpaceForBadgeOffset);
+        }
+    }
+
     private void drawIcon(Canvas canvas, Drawable icon, float l, float t, float r, float b, Paint paint) {
         icon.setBounds((int) l, (int) t, (int) r, (int) b);
         icon.setFilterBitmap(true);

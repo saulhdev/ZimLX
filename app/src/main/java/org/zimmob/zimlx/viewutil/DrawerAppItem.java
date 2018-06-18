@@ -7,9 +7,9 @@ import android.view.View;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.appdrawer.AppDrawerVertical;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.widget.AppDrawerVertical;
 import org.zimmob.zimlx.widget.AppItemView;
 import org.zimmob.zimlx.widget.AppItemView.LongPressCallBack;
 import org.zimmob.zimlx.widget.Desktop;
@@ -64,9 +64,7 @@ public class DrawerAppItem extends AbstractItem<DrawerAppItem, DrawerAppItem.Vie
             super(itemView);
             appItemView = (AppItemView) itemView;
             appItemView.setTargetedWidth(AppDrawerVertical.itemWidth);
-
             appItemView.setTargetedHeightPadding(AppDrawerVertical.itemHeightPadding);
-
             builder = new AppItemView.Builder(appItemView, Setup.appSettings().getDrawerIconSize())
                     .withOnTouchGetPosition(null, null)
                     .setLabelVisibility(Setup.appSettings().isDrawerShowLabel())

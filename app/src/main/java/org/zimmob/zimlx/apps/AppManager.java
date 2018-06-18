@@ -14,6 +14,7 @@ import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.Tool;
 
 import java.text.Collator;
@@ -169,7 +170,7 @@ public class AppManager {
             intent.addCategory(Intent.CATEGORY_LAUNCHER);
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
             AppSettings appSettings = AppSettings.get();
-            String sort = appSettings.getSortMode();
+            int sort = appSettings.getSortMode();
             activitiesInfo = sortApplications(activitiesInfo, sort);
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(_context, info, _packageManager);
@@ -203,7 +204,7 @@ public class AppManager {
             return null;
         }
 
-        private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, String sort) {
+        private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, int sort) {
             List<ResolveInfo> sortedAtivities = activitiesInfo;
             switch (sort) {
                 default:
@@ -223,7 +224,7 @@ public class AppManager {
                     break;
                 case Config.APP_SORT_MU:
                     Log.i("apps","sorting by Most Used" );
-
+                    Collections.sort(sortedAtivities, new MostUsedComparator(_packageManager));
                     break;
             }
 
@@ -232,7 +233,6 @@ public class AppManager {
 
         @Override
         protected void onPostExecute(Object result) {
-
             notifyUpdateListeners(_apps);
 
             List<App> removed = Tool.getRemovedApps(tempApps, _apps);
@@ -250,7 +250,28 @@ public class AppManager {
         }
     }
 
-    static class InstallTimeComparator implements Comparator<ResolveInfo> {
+    public static class MostUsedComparator implements Comparator<ResolveInfo>{
+        private final PackageManager mPackageManager;
+
+        MostUsedComparator(PackageManager packageManager) {
+            mPackageManager = packageManager;
+        }
+
+        @Override
+        public int compare(ResolveInfo lhs, ResolveInfo rhs) {
+            int item1 = HomeActivity.Companion.getDb().getAppCount(lhs.activityInfo.packageName);
+            int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.activityInfo.packageName);
+            if (item1 < item2) {
+                return 1;
+            } else if (item2 < item1) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
+    }
+
+    public static class InstallTimeComparator implements Comparator<ResolveInfo> {
         private final PackageManager mPackageManager;
 
         InstallTimeComparator(PackageManager packageManager) {
@@ -262,9 +283,9 @@ public class AppManager {
             try {
                 long lhsInstallTime = mPackageManager.getPackageInfo(lhs.activityInfo.packageName, 0).firstInstallTime;
                 long rhsInstallTime = mPackageManager.getPackageInfo(rhs.activityInfo.packageName, 0).firstInstallTime;
-                if (lhsInstallTime < rhsInstallTime) {
+                if (lhsInstallTime > rhsInstallTime) {
                     return 1;
-                } else if (rhsInstallTime < lhsInstallTime) {
+                } else if (rhsInstallTime > lhsInstallTime) {
                     return -1;
                 } else {
                     return 0;

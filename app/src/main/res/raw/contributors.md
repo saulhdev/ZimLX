@@ -15,3 +15,5 @@ Also, to all those people who have helped this project, thank you.
  
 -->
 ## LIST OF CONTRIBUTORS
+<h6>Developer: <a href="https://github.com/otakuhqz"> Saul Henriquez</a> <br/><br/>
+    Graphic Designer:<a href="https://github.com/zularizal" > Zularizal</a> </h6>

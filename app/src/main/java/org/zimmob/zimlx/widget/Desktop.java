@@ -336,7 +336,6 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
     }
 
     public void setLastItem(@NonNull Object... args) {
-        Item item = (Item) args[0];
         View v = (View) args[1];
         _previousPage = getCurrentItem();
         _previousItemView = v;
@@ -388,7 +387,6 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
     }
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
-
         item._locationInLauncher = 0;
         item.x = x;
         item.y = y;
@@ -509,6 +507,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
             }
         }
 
+        @NonNull
         private OnFingerGestureListener getGestureListener() {
             return new DesktopGestureListener(_desktop, Setup.desktopGestureCallback());
         }

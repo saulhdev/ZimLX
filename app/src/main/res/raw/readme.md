@@ -1,6 +1,9 @@
-![GitHub release](https://raw.githubusercontent.com/otakuhqz/zimlx-metadata-latest/master/en-US/featureGraphic.png)
-
 # ZimLX
+
+<h1 align=center>
+<img src="Logo/logotype.png" width=50%>
+</h1>
+
 Open Source and free Launcher for Android based on OpenLauncher.
 
 ## Donations

@@ -122,6 +122,8 @@ public abstract class Setup {
         Item getItem(int id);
 
         void saveApp(String packageName);
+        void updateAppCount(String packageName);
+        int getAppCount(String packageaName);
     }
 
     public interface EventHandler {

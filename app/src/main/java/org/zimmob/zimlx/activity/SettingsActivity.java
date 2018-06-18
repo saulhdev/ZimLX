@@ -66,7 +66,7 @@ public class SettingsActivity extends ThemeActivity {
         // Custom code
         toolbar.setTitle(R.string.settings);
         setSupportActionBar(toolbar);
-        toolbar.setNavigationIcon(getDrawable(R.drawable.ic_arrow_back_white_24px));
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
         toolbar.setNavigationOnClickListener(v -> onBackPressed());
         toolbar.setBackgroundColor(_appSettings.getPrimaryColor());
         showFragment(SettingsFragmentMaster.TAG, false);
@@ -164,6 +164,7 @@ public class SettingsActivity extends ThemeActivity {
                 R.string.pref_key__drawer_card_color,
                 R.string.pref_key__drawer_label_color,
                 R.string.pref_key__drawer_fast_scroll_color,
+                R.string.pref_key__sort_mode,
                 R.string.pref_key__folder_shape,
                 R.string.pref_key__date_bar_date_format_custom_1,
                 R.string.pref_key__date_bar_date_format_custom_2,

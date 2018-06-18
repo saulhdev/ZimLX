@@ -254,9 +254,9 @@
                     android:title="@string/pref_title__drawer_style" />
 
                 <ListPreference
-                    android:defaultValue="az"
+                    android:defaultValue="0"
                     android:entries="@array/entries__sort_mode"
-                    android:entryValues="@array/values__sort_mode"
+                    android:entryValues="@array/values__zero_to_three"
                     android:key="pref_key__sort_mode"
                     android:summary="@string/pref_sort_summary"
                     android:title="@string/pref_sort_title" />

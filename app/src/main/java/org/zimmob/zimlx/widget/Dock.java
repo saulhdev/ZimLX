@@ -2,6 +2,7 @@ package org.zimmob.zimlx.widget;
 
 import android.content.Context;
 import android.graphics.Point;
+import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -25,11 +26,8 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     private final Point _coordinate = new Point();
     private HomeActivity _home;
     private final Point _previousDragPoint = new Point();
-    @Nullable
-    private Item _previousItem;
-    @Nullable
-    private View _previousItemView;
-    private float _startPosX;
+    @Nullable private Item _previousItem;
+    @Nullable private View _previousItemView;
     private float _startPosY;
 
     public Dock(@NonNull Context c, @Nullable AttributeSet attr) {
@@ -43,7 +41,6 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     }
 
     public final void initDockItem(@NonNull HomeActivity home) {
-
         int columns = Setup.appSettings().getDockSize();
         setGridSize(columns, 1);
         List<Item> dockItems = HomeActivity.Companion.getDb().getDock();
@@ -57,7 +54,6 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     }
 
     public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
-
         detectSwipe(ev);
         super.dispatchTouchEvent(ev);
         return true;
@@ -67,7 +63,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         switch (ev.getAction()) {
             case 0:
                 Tool.print("ACTION_DOWN");
-                _startPosX = ev.getX();
+                float _startPosX = ev.getX();
                 _startPosY = ev.getY();
                 break;
             case 1:
@@ -87,10 +83,6 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         }
     }
 
-    /**
-     * @param x
-     * @param y
-     */
     public final void updateIconProjection(int x, int y) {
         HomeActivity homeActivity;
         DragOptionLayout dragNDropView;
@@ -168,9 +160,10 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
 
     @NonNull
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
-
-        _bottomInset = insets.getSystemWindowInsetBottom();
-        setPadding(getPaddingLeft(), getPaddingTop(), getPaddingRight(), _bottomInset);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
+            return insets;
+        }
         return insets;
     }
 
@@ -215,7 +208,6 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     }
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
-
         LayoutParams positionToLayoutPrams = coordinateToLayoutParams(x, y, item.getSpanX(), item.getSpanY());
         if (positionToLayoutPrams == null) {
             return false;
@@ -232,7 +224,6 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     }
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
-
         item._locationInLauncher = 1;
         item.x = x;
         item.y = y;
@@ -244,16 +235,15 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         return true;
     }
 
-
     public void removeItem(final View view, boolean animate) {
-
         if (animate) {
             view.animate().setDuration(100).scaleX(0.0f).scaleY(0.0f).withEndAction(() -> {
                 if (view.getParent().equals(Dock.this)) {
                     removeView(view);
                 }
             });
-        } else if (this.equals(view.getParent())) {
+        }
+        else if (this.equals(view.getParent())) {
             removeView(view);
         }
     }

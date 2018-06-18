@@ -14,7 +14,7 @@ public interface IconProvider {
 
     void cancelLoad(IconTargetType type, Object target);
 
-    // temp. function, GroupIconDrawable will be optimised to support image loading via any external library like glide soon
+    // temp. function, FolderIcon will be optimised to support image loading via any external library like glide soon
     // otherwise, those two functions are in here for simple synchronous loading and app code compatibility
     boolean isGroupIconDrawable();
 

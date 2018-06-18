@@ -1,12 +1,6 @@
 package org.zimmob.zimlx.config;
 
-import android.content.Context;
-import android.content.res.Resources;
-import android.os.Build;
 import android.view.View;
-
-import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.util.AppSettings;
 
 /**
  * Created by saul on 05-06-18.
@@ -25,10 +19,10 @@ public class Config {
     public static final int FOLDER_SHAPE_SQUARE_SHADOW = 3;
 
     //SORT MODE
-    public static final String APP_SORT_AZ="az";
-    public static final String APP_SORT_ZA="za";
-    public static final String APP_SORT_LI="li";//last installer
-    public static final String APP_SORT_MU="mu";//most used
+    public static final int APP_SORT_AZ=0;
+    public static final int APP_SORT_ZA=1;
+    public static final int APP_SORT_LI=2;//last installer
+    public static final int APP_SORT_MU=3;//most used
 
     //INDICATOR MODE
     public static final int INDICATOR_DOTS= 0;
@@ -57,6 +51,11 @@ public class Config {
         UP, LEFT, RIGHT, DOWN
     }
 
+    public static boolean pointInView(View v, float localX, float localY, float slop) {
+        return localX >= -slop && localY >= -slop && localX < (v.getWidth() + slop) &&
+                localY < (v.getHeight() + slop);
+    }
+
     // doesn't work reliably yet
     public static final boolean ENABLE_ITEM_TOUCH_LISTENER = false;
 
@@ -64,5 +63,4 @@ public class Config {
     public static int boundToRange(int value, int lowerBound, int upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
-
 }

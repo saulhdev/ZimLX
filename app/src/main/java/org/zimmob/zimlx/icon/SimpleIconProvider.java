@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.GroupIconDrawable;
+import org.zimmob.zimlx.folder.FolderIcon;
 
 public class SimpleIconProvider extends BaseIconProvider{
     private int drawableResource;
@@ -31,7 +31,7 @@ public class SimpleIconProvider extends BaseIconProvider{
         if (drawable != null) {
             return drawable;
         } else if (drawableResource > 0) {
-            return Setup.appContext().getDrawable(drawableResource);
+            return Setup.appContext().getResources().getDrawable(drawableResource);
         }
         return null;
     }
@@ -86,7 +86,7 @@ public class SimpleIconProvider extends BaseIconProvider{
 
     @Override
     public boolean isGroupIconDrawable() {
-        return drawable != null && drawable instanceof GroupIconDrawable;
+        return drawable != null && drawable instanceof FolderIcon;
     }
 
     private Drawable scaleDrawable(Drawable drawable, int forceSize) {
