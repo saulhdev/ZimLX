@@ -181,7 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
             } while (cursor.moveToNext());
         }
         cursor.close();
-        Tool.print("database : dock size is ", dock.size());
+        Log.i("DB Helper","database : dock size is "+ dock.size());
         return dock;
     }
 
@@ -304,13 +304,13 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
 
 /**/
 
-private static final String TABLE_APP_COUNT="app_count";
+    private static final String TABLE_APP_COUNT="app_count";
     private static final String COLUMN_PACKAGE_NAME = "package_name";
     private static final String COLUMN_PACKAGE_COUNT = "package_count";
-
+    private static final String COLUMN_PACKAGE_ID = "count_id";
     private static final String SQL_CREATE_COUNT=
             "CREATE TABLE "+TABLE_APP_COUNT +" ("
-                    +COLUMN_TIME + " INTEGER PRIMARY KEY,"
+                    +COLUMN_PACKAGE_ID + " INTEGER PRIMARY KEY,"
                     +COLUMN_PACKAGE_NAME + " VARCHAR, "
                     +COLUMN_PACKAGE_COUNT+ " INTEGER)";
 
@@ -322,14 +322,40 @@ private static final String TABLE_APP_COUNT="app_count";
         db.insert(TABLE_APP_COUNT, null, itemValues);
     }
 
-    private void updateApp(String packageName){
+    public void updateAppCount(String packageName) {
+        String SQL_QUERY = "SELECT package_count FROM app_count WHERE package_name='" + packageName + "';";
+        Cursor cursor = db.rawQuery(SQL_QUERY, null);
+        int appCount = 0;
+        if (cursor != null){
+            if (cursor.moveToFirst()) {
+                appCount = cursor.getInt(0);
+            }
+        }
+        else{
+            saveApp(packageName);
+        }
+        cursor.close();
+        appCount++;
+        ContentValues cv = new ContentValues();
+        cv.put(COLUMN_PACKAGE_COUNT,appCount);
+        db.update(TABLE_APP_COUNT,cv,"package_name='"+packageName+"'",null);
 
     }
 
+    @Override
+    public int getAppCount(String packageName){
+        String SQL_QUERY="SELECT package_count FROM app_count WHERE package_name='"+packageName+"';";
+        Cursor cursor = db.rawQuery(SQL_QUERY, null);
+        int appCount=0;
+        if (cursor.moveToFirst()) {
+           appCount = cursor.getInt(0);
+        }
+        cursor.close();
+        return appCount;
+    }
 
-    private int getAppCount(){return 0;}
-    private void deleteApp(){
-
+    private void deleteApp(String packageName){
+        db.delete(TABLE_APP_COUNT,"package_name='"+packageName+"'",null);
     }
 
 

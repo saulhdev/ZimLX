@@ -13,7 +13,6 @@ import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.launcher.LauncherAction;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.widget.Desktop;
-import org.zimmob.zimlx.pageindicator.PageIndicator;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -380,11 +379,11 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         return (float) (getInt(R.string.pref_key__overall_animation_speed_modifier, 30) / 100.0);
     }
 
-    public String getSortMode() {
-        return getString(R.string.pref_key__sort_mode, "0");
+    public int getSortMode() {
+        return getIntOfStringPref(R.string.pref_key__sort_mode, Config.APP_SORT_AZ);
     }
 
-    public void setSortMode(String sort) {
-        setString(R.string.pref_key__sort_mode, sort);
+    public void setSortMode(int sort) {
+        setString(R.string.pref_key__sort_mode, String.valueOf(sort));
     }
 }
