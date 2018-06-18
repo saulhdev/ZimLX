@@ -16,12 +16,15 @@ Want to support me? https://paypal.me/saulhenriquez
         </td>
         <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/dock.png" width="256" />
         </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/minibar.png" width="256" />
+                        </td>
     </tr>
     <tr>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/minibar.png" width="256" />
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_blue.png" width="256" />
             </td>
             <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_green.png" width="256" />
-            </td>
+            </td><td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/vertical.png" width="256" />
+                             </td>
         </tr>
 <table>
 
