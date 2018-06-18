@@ -29,6 +29,7 @@ Want to support me? https://paypal.me/saulhenriquez
 #### * Minibar
     -> Minibar custom color
     -> Minibar Edit items
+   
 
 #### * Desktop
     -> Row and Columns config
