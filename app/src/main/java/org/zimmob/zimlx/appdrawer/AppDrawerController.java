@@ -19,6 +19,7 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.widget.SearchBar;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -58,6 +59,7 @@ public class AppDrawerController extends RevealFrameLayout{
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (isOpen) return;
         isOpen = true;
+
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
         _appDrawerAnimator = ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -73,18 +75,29 @@ public class AppDrawerController extends RevealFrameLayout{
                 animator.start();
                 switch (_drawerMode) {
                     case DRAWER_HORIZONTAL:
+                        _drawerViewPaged.loadApps();
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
                             _drawerViewPaged._pages.get(i).findViewById(R.id.group).setAlpha(1);
                         }
                         if (_drawerViewPaged._pages.size() > 0) {
                             View mGrid = _drawerViewPaged._pages.get(_drawerViewPaged.getCurrentItem()).findViewById(R.id.group);
                             mGrid.setAlpha(0);
-                            mGrid.animate().alpha(1).setDuration(150L).setStartDelay(Math.max(_drawerAnimationTime - 50, 1)).setInterpolator(new AccelerateDecelerateInterpolator());
+                            mGrid.animate()
+                                    .alpha(1)
+                                    .setDuration(150L)
+                                    .setStartDelay(Math.max(_drawerAnimationTime - 50, 1))
+                                    .setInterpolator(new AccelerateDecelerateInterpolator());
                         }
                         break;
                     case DRAWER_VERTICAL:
+                        _drawerViewGrid.loadApps();
                         _drawerViewGrid.recyclerView.setAlpha(0);
-                        _drawerViewGrid.recyclerView.animate().alpha(1).setDuration(150L).setStartDelay(Math.max(_drawerAnimationTime - 50, 1)).setInterpolator(new AccelerateDecelerateInterpolator());
+                        _drawerViewGrid.recyclerView
+                                .animate()
+                                .alpha(1)
+                                .setDuration(150L)
+                                .setStartDelay(Math.max(_drawerAnimationTime - 50, 1))
+                                .setInterpolator(new AccelerateDecelerateInterpolator());
                         break;
                 }
             }

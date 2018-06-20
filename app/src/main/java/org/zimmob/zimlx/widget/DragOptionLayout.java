@@ -326,7 +326,6 @@ public class DragOptionLayout extends FrameLayout {
     }
 
     private void convertPoint(@NonNull View toView) {
-
         int[] fromCoordinate = new int[2];
         int[] toCoordinate = new int[2];
         getLocationOnScreen(fromCoordinate);
@@ -412,7 +411,6 @@ public class DragOptionLayout extends FrameLayout {
     }
 
     public final class OverlayView extends View {
-
         OverlayView() {
             super(DragOptionLayout.this.getContext());
             setWillNotDraw(false);

@@ -206,7 +206,8 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                     }
                 }
                 pageCount++;
-            } else {
+            }
+            else {
                 return;
             }
         }
@@ -430,7 +431,8 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                     getCurrentPage().removeView(view);
                 }
             });
-        } else if (getCurrentPage().equals(view.getParent())) {
+        }
+        else if (getCurrentPage().equals(view.getParent())) {
             getCurrentPage().removeView(view);
         }
     }

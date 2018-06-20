@@ -67,7 +67,10 @@ public class Tool {
         for (View view : views) {
             if (view == null) continue;
             view.setVisibility(View.VISIBLE);
-            view.animate().alpha(1).setStartDelay(delay).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator());
+            view.animate().alpha(1)
+                    .setStartDelay(delay)
+                    .setDuration(duration)
+                    .setInterpolator(new AccelerateDecelerateInterpolator());
         }
     }
 
@@ -75,7 +78,11 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.INVISIBLE));
+            view.animate().alpha(0)
+                    .setStartDelay(0)
+                    .setDuration(200)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> view.setVisibility(View.INVISIBLE));
         }
     }
 
@@ -96,7 +103,11 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(delay).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.INVISIBLE));
+            view.animate().alpha(0)
+                    .setStartDelay(delay)
+                    .setDuration(duration)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> view.setVisibility(View.INVISIBLE));
         }
     }
 
@@ -104,7 +115,11 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(200).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.GONE));
+            view.animate().alpha(0)
+                    .setStartDelay(0)
+                    .setDuration(200)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
 
@@ -112,7 +127,11 @@ public class Tool {
         if (views == null) return;
         for (final View view : views) {
             if (view == null) continue;
-            view.animate().alpha(0).setStartDelay(0).setDuration(duration).setInterpolator(new AccelerateDecelerateInterpolator()).withEndAction(() -> view.setVisibility(View.GONE));
+            view.animate().alpha(0)
+                    .setStartDelay(0)
+                    .setDuration(duration)
+                    .setInterpolator(new AccelerateDecelerateInterpolator())
+                    .withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
 
@@ -143,11 +162,11 @@ public class Tool {
     }
 
     public static final boolean isPackageInstalled(@NonNull String packageName, @NonNull PackageManager packageManager) {
-
         try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
-        } catch (PackageManager.NameNotFoundException e) {
+        }
+        catch (PackageManager.NameNotFoundException e) {
             return false;
         }
     }

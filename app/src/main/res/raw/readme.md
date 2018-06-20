@@ -9,10 +9,30 @@ Open Source and free Launcher for Android based on OpenLauncher.
 ## Donations
 Want to support me? https://paypal.me/saulhenriquez
 
+## Screenshots
+<table>
+    <tr>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer.png" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/dock.png" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/minibar.png" width="256" />
+                        </td>
+    </tr>
+    <tr>
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_blue.png" width="256" />
+            </td>
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_green.png" width="256" />
+            </td><td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/vertical.png" width="256" />
+                             </td>
+        </tr>
+<table>
+
 ## Working Features
 #### * Minibar
     -> Minibar custom color
     -> Minibar Edit items
+   
 
 #### * Desktop
     -> Row and Columns config

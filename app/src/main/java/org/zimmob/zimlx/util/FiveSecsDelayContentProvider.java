@@ -14,7 +14,7 @@ public class FiveSecsDelayContentProvider extends ContentProvider {
     /**
      * Path used by Kustom to ask a 5 secs delay reset
      */
-    private final static String PATH_RESET_5SEC_DELAY = "reset5secs";
+    private final static String PATH_RESET_5SEC_DELAY = "reset2secs";
 
     @Override
     public boolean onCreate() {

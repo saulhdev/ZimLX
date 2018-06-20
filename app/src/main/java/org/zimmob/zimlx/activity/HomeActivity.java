@@ -135,7 +135,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         super.onCreate(savedInstanceState);
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
-
         }
         if (appSettings.isSearchBarTimeEnabled()) {
             _timeChangedReceiver = new BroadcastReceiver() {
@@ -241,7 +240,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             cx -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).getMarginStart();
             cy -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).topMargin;
             cy -= getAppDrawerController().getPaddingTop();
-        } else {
+        }
+        else {
             cx = x;
             cy = y;
             rad = 0;
@@ -249,6 +249,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         int finalRadius = Math.max(getAppDrawerController().getDrawer().getWidth(), getAppDrawerController().getDrawer().getHeight());
         getAppDrawerController().open(cx, cy, rad, finalRadius);
     }
+
     public final void updateDock(boolean z) {
         updateDock$default(this, z, 0, 2, null);
     }
@@ -378,7 +379,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void onDrawerClosed(@NonNull View drawerView) {
-
     }
 
     public final void onRemoveItem(@NonNull Item item) {
@@ -490,6 +490,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         AppSettings appSettings = Setup.appSettings();
         desktop.setCurrentItem(appSettings.getDesktopPageCurrent());
     }
+
     private final void handleLauncherPause(boolean wasHomePressed) {
         if (!Companion.getConsumeNextResume() || wasHomePressed) {
             onHandleLauncherPause();
@@ -497,6 +498,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Companion.setConsumeNextResume(false);
         }
     }
+
+    @Override
     public void onBackPressed() {
         handleLauncherPause(false);
         ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
@@ -579,7 +582,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         AppWidgetManager instance = AppWidgetManager.getInstance(this);
 
         companion.setAppWidgetManager(instance);
-        WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+        WidgetHost appWidgetHost = companion.getAppWidgetHost();
         Objects.requireNonNull(appWidgetHost).startListening();
 
         initViews();
@@ -592,13 +595,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         hpDragOption.initDragNDrop(this, findViewById, findViewById2, dragOptionLayout);
 
-
         registerBroadcastReceiver();
         initAppManager();
         initSettings();
         System.runFinalization();
         System.gc();
     }
+
     protected void initViews() {
         new HpSearchBar(this, findViewById(R.id.searchBar), findViewById(R.id.calendarDropDownView)).initSearchBar();
         initDock();
@@ -868,6 +871,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Log.i("Slide: ", "Works left and right");
     }
 
+    @Override
     protected void onDestroy() {
         WidgetHost appWidgetHost = Companion.getAppWidgetHost();
         if (appWidgetHost != null) {

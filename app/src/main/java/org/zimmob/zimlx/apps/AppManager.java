@@ -14,7 +14,6 @@ import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.util.Tool;
 
 import java.text.Collator;
@@ -56,7 +55,6 @@ public class AppManager {
 
     private App findApp(Intent intent) {
         if (intent == null || intent.getComponent() == null) return null;
-
         String packageName = intent.getComponent().getPackageName();
         String className = intent.getComponent().getClassName();
         for (App app : _apps) {
@@ -68,6 +66,7 @@ public class AppManager {
     }
 
     public List<App> getApps() {
+        getAllApps();
         return _apps;
     }
 
@@ -88,14 +87,9 @@ public class AppManager {
         }
     }
 
-
     private void onReceive() {
         getAllApps();
     }
-
-    // -----------------------
-    // AppLoader interface
-    // -----------------------
 
     public List<App> getAllApps(Context context, boolean includeHidden) {
         return includeHidden ? getNonFilteredApps() : getApps();
@@ -171,7 +165,9 @@ public class AppManager {
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
             AppSettings appSettings = AppSettings.get();
             int sort = appSettings.getSortMode();
-            activitiesInfo = sortApplications(activitiesInfo, sort);
+            if(appSettings.getDrawerStyle()==Config.DRAWER_HORIZONTAL)
+                activitiesInfo = sortApplications(activitiesInfo, sort);
+
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(_context, info, _packageManager);
                 _nonFilteredApps.add(app);
@@ -224,7 +220,7 @@ public class AppManager {
                     break;
                 case Config.APP_SORT_MU:
                     Log.i("apps","sorting by Most Used" );
-                    Collections.sort(sortedAtivities, new MostUsedComparator(_packageManager));
+                    Collections.sort(sortedAtivities, new MostUsedComparator());
                     break;
             }
 
@@ -251,10 +247,8 @@ public class AppManager {
     }
 
     public static class MostUsedComparator implements Comparator<ResolveInfo>{
-        private final PackageManager mPackageManager;
 
-        MostUsedComparator(PackageManager packageManager) {
-            mPackageManager = packageManager;
+        MostUsedComparator() {
         }
 
         @Override
@@ -263,9 +257,11 @@ public class AppManager {
             int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.activityInfo.packageName);
             if (item1 < item2) {
                 return 1;
-            } else if (item2 < item1) {
+            }
+            else if (item2 < item1) {
                 return -1;
-            } else {
+            }
+            else {
                 return 0;
             }
         }
@@ -285,12 +281,15 @@ public class AppManager {
                 long rhsInstallTime = mPackageManager.getPackageInfo(rhs.activityInfo.packageName, 0).firstInstallTime;
                 if (lhsInstallTime > rhsInstallTime) {
                     return 1;
-                } else if (rhsInstallTime > lhsInstallTime) {
+                }
+                else if (rhsInstallTime > lhsInstallTime) {
                     return -1;
-                } else {
+                }
+                else {
                     return 0;
                 }
-            } catch (PackageManager.NameNotFoundException e) {
+            }
+            catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 return 0;
             }

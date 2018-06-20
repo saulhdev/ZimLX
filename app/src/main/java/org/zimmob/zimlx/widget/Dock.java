@@ -34,6 +34,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         super(c, attr);
     }
 
+    @Override
     public void init() {
         if (!isInEditMode()) {
             super.init();
@@ -53,6 +54,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         }
     }
 
+    @Override
     public boolean dispatchTouchEvent(@NonNull MotionEvent ev) {
         detectSwipe(ev);
         super.dispatchTouchEvent(ev);

@@ -42,8 +42,10 @@ public class ShortcutReceiver extends BroadcastReceiver {
                     shortcutIconDrawable = resources.getDrawable(id);
                 }
             }
-        } catch (Exception ignore) {
-        } finally {
+        }
+        catch (Exception ignore) {
+        }
+        finally {
             if (shortcutIconDrawable == null)
                 shortcutIconDrawable = new BitmapDrawable(context.getResources(), (Bitmap) intent.getExtras().getParcelable(Intent.EXTRA_SHORTCUT_ICON));
         }

@@ -15,6 +15,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -107,8 +108,9 @@ public class DialogHelper {
                 Uri packageURI = Uri.parse("package:" + item.getIntent().getComponent().getPackageName());
                 Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
                 context.startActivity(uninstallIntent);
-            } catch (Exception e) {
-
+                HomeActivity.Companion.getDb().deleteApp(item.getIntent().getComponent().getPackageName());
+            }
+            catch (Exception e) {
             }
         }
     }
@@ -118,40 +120,37 @@ public class DialogHelper {
                 .title(R.string.pref_title__backup)
                 .positiveText(R.string.cancel)
                 .items(R.array.entries__backup_options)
-                .itemsCallback(new MaterialDialog.ListCallback() {
-                    @Override
-                    public void onSelection(MaterialDialog dialog, View itemView, int item, CharSequence text) {
-                        PackageManager m = context.getPackageManager();
-                        String s = context.getPackageName();
+                .itemsCallback((dialog, itemView, item, text) -> {
+                    PackageManager m = context.getPackageManager();
+                    String s = context.getPackageName();
 
-                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
-                            if (!directory.exists()) {
-                                directory.mkdir();
-                            }
-                            try {
-                                PackageInfo p = m.getPackageInfo(s, 0);
-                                s = p.applicationInfo.dataDir;
-                                Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
-                                Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
-                            }
+                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__backup))) {
+                        File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
+                        if (!directory.exists()) {
+                            directory.mkdir();
                         }
-                        if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
-                            File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
-                            try {
-                                PackageInfo p = m.getPackageInfo(s, 0);
-                                s = p.applicationInfo.dataDir;
-                                Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
-                                Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
-                            } catch (Exception e) {
-                                Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
-                            }
-                            System.exit(1);
+                        try {
+                            PackageInfo p = m.getPackageInfo(s, 0);
+                            s = p.applicationInfo.dataDir;
+                            Tool.copy(context, s + "/databases/home.db", directory + "/home.db");
+                            Tool.copy(context, s + "/shared_prefs/app.xml", directory + "/app.xml");
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
                         }
+                    }
+                    if (context.getResources().getStringArray(R.array.entries__backup_options)[item].equals(context.getResources().getString(R.string.dialog__backup_app_settings__restore))) {
+                        File directory = new File(Environment.getExternalStorageDirectory() + "/ZimLX/");
+                        try {
+                            PackageInfo p = m.getPackageInfo(s, 0);
+                            s = p.applicationInfo.dataDir;
+                            Tool.copy(context, directory + "/home.db", s + "/databases/home.db");
+                            Tool.copy(context, directory + "/app.xml", s + "/shared_prefs/app.xml");
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__success, Toast.LENGTH_SHORT).show();
+                        } catch (Exception e) {
+                            Toast.makeText(context, R.string.dialog__backup_app_settings__error, Toast.LENGTH_SHORT).show();
+                        }
+                        System.exit(1);
                     }
                 }).show();
     }

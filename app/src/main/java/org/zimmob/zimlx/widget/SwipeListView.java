@@ -19,25 +19,21 @@ public class SwipeListView extends ListView {
 
     public SwipeListView(Context context) {
         super(context);
-
         init();
     }
 
     public SwipeListView(Context context, AttributeSet attrs) {
         super(context, attrs);
-
         init();
     }
 
     public SwipeListView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-
         init();
     }
 
     private void init() {
         if (isInEditMode()) return;
-
         final float dis = Tool.dp2px(10, getContext());
         final float vDis = Tool.dp2px(30, getContext());
         mGestureDetector = new GestureDetector(getContext(), new GestureDetector.SimpleOnGestureListener() {

@@ -5,6 +5,7 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -94,7 +95,12 @@ public class AppDrawerPaged extends SmoothViewPager{
             setLandscapeValue();
         }
 
-        List<App> allApps = Setup.appLoader().getAllApps(c, false);
+        loadApps();
+    }
+
+    public void loadApps(){
+        Log.i("APP DRAWER","Loading Apps");
+        List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
             AppDrawerPaged.this._apps = allApps;
             calculatePage();
@@ -110,7 +116,7 @@ public class AppDrawerPaged extends SmoothViewPager{
                 _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
             return false;
         });
-       }
+    }
 
     public void withHome(HomeActivity home, PageIndicator appDrawerIndicator) {
         _home = home;

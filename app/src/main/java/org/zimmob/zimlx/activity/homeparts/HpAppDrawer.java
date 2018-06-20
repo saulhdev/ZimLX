@@ -61,7 +61,12 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
             }
         }
         else {
-            if (startOrEnd) {
+            if (!startOrEnd) {
+                if (!Setup.appSettings().isDrawerRememberPosition()) {
+                    _homeActivity.getAppDrawerController().scrollToStart();
+                }
+                _homeActivity.getAppDrawerController().getDrawer().setVisibility(View.INVISIBLE);
+            } else {
                 Tool.invisibleViews(_appDrawerIndicator);
                 Tool.visibleViews(_homeActivity.getDesktop());
                 _homeActivity.showDesktopIndicator();
@@ -69,14 +74,9 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
                     _homeActivity.updateDock(true, 200);
                 else{
                     _homeActivity.updateDock(true);
-                _homeActivity.updateSearchBar(!_dragOptionPanel._isDraggedFromDrawer);
-                _dragOptionPanel._isDraggedFromDrawer = false;
+                    _homeActivity.updateSearchBar(!_dragOptionPanel._isDraggedFromDrawer);
+                    _dragOptionPanel._isDraggedFromDrawer = false;
                 }
-            } else {
-                if (!Setup.appSettings().isDrawerRememberPosition()) {
-                    _homeActivity.getAppDrawerController().scrollToStart();
-                }
-                _homeActivity.getAppDrawerController().getDrawer().setVisibility(View.INVISIBLE);
             }
         }
     }

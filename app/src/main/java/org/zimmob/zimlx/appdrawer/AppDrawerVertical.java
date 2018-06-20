@@ -6,11 +6,10 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.widget.Button;
-import android.widget.PopupMenu;
 import android.widget.RelativeLayout;
 
 import com.mikepenz.fastadapter.IItemAdapter;
@@ -22,7 +21,6 @@ import com.turingtechnologies.materialscrollbar.INameableAdapter;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DrawerAppItem;
 
@@ -62,14 +60,11 @@ public class AppDrawerVertical extends CardView {
             @Override
             public void onGlobalLayout() {
                 getViewTreeObserver().removeOnGlobalLayoutListener(this);
-
                 rl = (RelativeLayout) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_vertical_inner, AppDrawerVertical.this, false);
                 recyclerView = rl.findViewById(R.id.vDrawerRV);
                 layoutManager = new GridLayoutManager(getContext(), Setup.appSettings().getDrawerColumnCount());
-
                 itemWidth = (getWidth() - recyclerView.getPaddingRight() - recyclerView.getPaddingRight()) / layoutManager.getSpanCount();
                 init();
-
                 if (!Setup.appSettings().isDrawerShowIndicator())
                     scrollBar.setVisibility(View.GONE);
             }
@@ -82,10 +77,10 @@ public class AppDrawerVertical extends CardView {
             super.onConfigurationChanged(newConfig);
             return;
         }
-
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setLandscapeValue();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        }
+        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitValue();
         }
         super.onConfigurationChanged(newConfig);
@@ -102,6 +97,7 @@ public class AppDrawerVertical extends CardView {
     }
 
     private void init() {
+        Log.i("APP VERTICAL","Init View");
         itemHeightPadding = Tool.dp2px(5, getContext());
         scrollBar = rl.findViewById(R.id.dragScrollBar);
         scrollBar.setIndicator(new AlphabetIndicator(getContext()), true);
@@ -118,6 +114,12 @@ public class AppDrawerVertical extends CardView {
         }
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setDrawingCacheEnabled(true);
+        loadApps();
+
+        addView(rl);
+    }
+
+    public void loadApps(){
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
             apps = allApps;
@@ -136,9 +138,7 @@ public class AppDrawerVertical extends CardView {
             gridDrawerAdapter.set(items);
             return false;
         });
-        addView(rl);
     }
-
 
     public static class GridAppDrawerAdapter extends FastItemAdapter<DrawerAppItem> implements INameableAdapter {
         GridAppDrawerAdapter() {

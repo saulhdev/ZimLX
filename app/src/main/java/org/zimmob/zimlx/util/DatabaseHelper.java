@@ -354,7 +354,8 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         return appCount;
     }
 
-    private void deleteApp(String packageName){
+    @Override
+    public void deleteApp(String packageName){
         db.delete(TABLE_APP_COUNT,"package_name='"+packageName+"'",null);
     }
 

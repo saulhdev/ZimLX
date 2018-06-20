@@ -225,7 +225,6 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
-
         ViewHolder(View itemView, IconLabelItem item) {
             super(itemView);
             textView = (TextView) itemView;

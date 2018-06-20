@@ -73,11 +73,8 @@ public class WidgetView extends AppWidgetHostView {
         try {
             super.onLayout(changed, left, top, right, bottom);
         } catch (final RuntimeException e) {
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    //switchToErrorView();
-                }
+            post(() -> {
+                //switchToErrorView();
             });
         }
 

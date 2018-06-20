@@ -142,7 +142,6 @@ public class AppItemView extends View implements Drawable.Callback {
         _targetedHeightPadding = padding;
     }
 
-
     public void reset() {
         _label = "";
         this.icon = null;
