@@ -39,6 +39,7 @@ Want to support me? https://paypal.me/saulhenriquez
     -> Three indicator Style mode
     -> Full screen mode
     -> Background color
+    
 #### * Dock
     -> Dock Size
     -> Background Size
@@ -46,7 +47,7 @@ Want to support me? https://paypal.me/saulhenriquez
 #### * App Drawer
     -> Row and Columns config
     -> Page Style
-    -> Sort Mode (AZ, ZA, Last Installed)
+    -> Sort Mode (AZ, ZA, Last Installed, Most Used)
     -> Hide Apps
     -> Label Size
     -> Background color
@@ -54,7 +55,6 @@ Want to support me? https://paypal.me/saulhenriquez
     -> Label Size
     -> Label color
     -> Cardview color
-
 
 #### * Appearance
     -> Theme Color Change
@@ -65,6 +65,7 @@ Want to support me? https://paypal.me/saulhenriquez
 #### * Folder
     -> Folder Shape
     -> Folder Background
+    
 #### * Gestures
     -> Gestures Config
 
@@ -77,7 +78,7 @@ Want to support me? https://paypal.me/saulhenriquez
     * Transitions
     * Page Style
     * Sort Mode Most Used
-    * Badge Icons
+    * Badge support
     * Notifications
 * Folder
     * Folder Preview
