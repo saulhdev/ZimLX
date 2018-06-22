@@ -122,7 +122,7 @@ public abstract class Setup {
         Item getItem(int id);
 
         void deleteApp(String packageName);
-        void saveApp(String packageName);
+        void saveAppCount(String packageName);
         void updateAppCount(String packageName);
         int getAppCount(String packageName);
     }

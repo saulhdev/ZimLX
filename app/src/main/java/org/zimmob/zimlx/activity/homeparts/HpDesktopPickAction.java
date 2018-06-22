@@ -12,8 +12,8 @@ import org.zimmob.zimlx.util.Tool;
 public class HpDesktopPickAction implements IDialogListener.OnAddAppDrawerItemListener {
     private HomeActivity _homeActivity;
 
-    public HpDesktopPickAction(HomeActivity home) {
-        _homeActivity = home;
+    public HpDesktopPickAction(HomeActivity launcher) {
+        _homeActivity = launcher;
     }
 
     public void onPickDesktopAction() {

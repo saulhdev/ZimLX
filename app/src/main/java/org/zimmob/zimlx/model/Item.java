@@ -134,9 +134,6 @@ public class Item implements Parcelable {
         return item;
     }
 
-    /**
-     * @return
-     */
     public static Item newGroupItem() {
         Item item = new Item();
         item.type = Type.GROUP;
@@ -167,10 +164,6 @@ public class Item implements Parcelable {
         return item;
     }
 
-    /**
-     * @param app
-     * @return
-     */
     private static Intent toIntent(App app) {
         Intent intent = new Intent(Intent.ACTION_MAIN);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);

@@ -28,7 +28,8 @@ public class MoreInfoActivity extends ThemeActivity {
             FragmentTransaction t = getSupportFragmentManager().beginTransaction();
             moreInfoFragment = MoreInfoFragment.newInstance();
             t.replace(R.id.more__fragment__placeholder_fragment, moreInfoFragment, MoreInfoFragment.TAG).commit();
-        } else {
+        }
+        else {
             moreInfoFragment = (MoreInfoFragment) getSupportFragmentManager().findFragmentByTag(MoreInfoFragment.TAG);
         }
     }

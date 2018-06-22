@@ -64,13 +64,10 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     private final void detectSwipe(MotionEvent ev) {
         switch (ev.getAction()) {
             case 0:
-                Tool.print("ACTION_DOWN");
                 float _startPosX = ev.getX();
                 _startPosY = ev.getY();
                 break;
             case 1:
-                Tool.print("ACTION_UP");
-                Tool.print((int) ev.getX(), (int) ev.getY());
                 if (_startPosY - ev.getY() > 150.0f && Setup.appSettings().getGestureDockSwipeUp()) {
                     Point p = new Point((int) ev.getX(), (int) ev.getY());
                     p = Tool.convertPoint(p, this, _home.getAppDrawerController());

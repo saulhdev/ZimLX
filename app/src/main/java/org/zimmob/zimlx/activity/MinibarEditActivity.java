@@ -20,7 +20,7 @@ import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.launcher.LauncherAction;
+import org.zimmob.zimlx.widget.Minibar;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -69,7 +69,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
 
         final ArrayList<String> minibarArrangement = AppSettings.get().getMinibarArrangement();
-        for (LauncherAction.ActionDisplayItem item : LauncherAction.actionDisplayItems) {
+        for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
             _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
 
@@ -120,11 +120,11 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
     public static class Item extends AbstractItem<Item, Item.ViewHolder> {
         final long id;
-        final LauncherAction.ActionDisplayItem item;
+        final Minibar.ActionDisplayItem item;
         boolean enable;
         boolean edited;
 
-        Item(long id, LauncherAction.ActionDisplayItem item, boolean enable) {
+        Item(long id, Minibar.ActionDisplayItem item, boolean enable) {
             this.id = id;
             this.item = item;
             this.enable = enable;

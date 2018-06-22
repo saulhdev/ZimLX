@@ -11,8 +11,8 @@ import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.homeparts.HpAppEditApplier;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.DragOptionLayout;
@@ -30,7 +30,7 @@ public class DragOption {
     private PopupIconLabelItem editItem = new PopupIconLabelItem(R.string.edit, R.drawable.ic_edit_black_24dp).withIdentifier(editItemIdentifier);
     private PopupIconLabelItem removeItem = new PopupIconLabelItem(R.string.remove, R.drawable.ic_close_dark_24dp).withIdentifier(removeItemIdentifier);
 
-    public void initDragNDrop(HomeActivity _home, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
+    public void initDragNDrop(HomeActivity launcher, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
         //dragHandle's drag event
         final Handler dragHandler = new Handler();
 
@@ -38,11 +38,11 @@ public class DragOption {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    int i = _home.getDesktop().getCurrentItem();
+                    int i = launcher.getDesktop().getCurrentItem();
                     if (i > 0) {
-                        _home.getDesktop().setCurrentItem(i - 1);
+                        launcher.getDesktop().setCurrentItem(i - 1);
                     } else if (i == 0) {
-                        _home.getDesktop().addPageLeft(true);
+                        launcher.getDesktop().addPageLeft(true);
                     }
                     dragHandler.postDelayed(this, 1000);
                 }
@@ -92,11 +92,11 @@ public class DragOption {
             Runnable runnable = new Runnable() {
                 @Override
                 public void run() {
-                    int i = _home.getDesktop().getCurrentItem();
-                    if (i < _home.getDesktop().getPageCount() - 1) {
-                        _home.getDesktop().setCurrentItem(i + 1);
-                    } else if (i == _home.getDesktop().getPageCount() - 1) {
-                        _home.getDesktop().addPageRight(true);
+                    int i = launcher.getDesktop().getCurrentItem();
+                    if (i < launcher.getDesktop().getPageCount() - 1) {
+                        launcher.getDesktop().setCurrentItem(i + 1);
+                    } else if (i == launcher.getDesktop().getPageCount() - 1) {
+                        launcher.getDesktop().addPageRight(true);
                     }
                     dragHandler.postDelayed(this, 1000);
                 }
@@ -143,11 +143,11 @@ public class DragOption {
         });
 
         //desktop's drag event
-        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(_home.getDesktop()) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(launcher.getDesktop()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 if (!DragAction.Action.SEARCH_RESULT.equals(action))
-                    showItemPopup(dragNDropView, _home);
+                    showItemPopup(dragNDropView, launcher);
 
                 return true;
             }
@@ -155,7 +155,7 @@ public class DragOption {
             @Override
             public void onStartDrag(@NonNull DragAction.Action action, @NonNull PointF location) {
                 super.onStartDrag(action, location);
-                _home.closeAppDrawer();
+                launcher.closeAppDrawer();
             }
 
             @Override
@@ -163,31 +163,31 @@ public class DragOption {
                 // this statement makes sure that adding an app multiple times from the app drawer works
                 // the app will get a new id every time
                 if (DragAction.Action.APP_DRAWER.equals(action)) {
-                    if (_home.getAppDrawerController().isOpen) return;
+                    if (launcher.getAppDrawerController().isOpen) return;
                     item.reset();
                 }
 
                 int x = (int) location.x;
                 int y = (int) location.y;
-                if (_home.getDesktop().addItemToPoint(item, x, y)) {
-                    _home.getDesktop().consumeRevert();
-                    _home.getDock().consumeRevert();
+                if (launcher.getDesktop().addItemToPoint(item, x, y)) {
+                    launcher.getDesktop().consumeRevert();
+                    launcher.getDock().consumeRevert();
                     // add the item to the database
-                    HomeActivity._db.saveItem(item, _home.getDesktop()
+                    HomeActivity._db.saveItem(item, launcher.getDesktop()
                             .getCurrentItem(), Config.ItemPosition.Desktop);
                 }
                 else {
                     Point pos = new Point();
-                    _home.getDesktop().getCurrentPage()
+                    launcher.getDesktop().getCurrentPage()
                             .touchPosToCoordinate(pos, x, y, item.getSpanX(), item.getSpanY(), false);
-                    View itemView = _home.getDesktop().getCurrentPage().coordinateToChildView(pos);
-                    if (itemView != null && Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, _home.getDesktop().getCurrentPage(), _home.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, _home.getDesktop())) {
-                        _home.getDesktop().consumeRevert();
-                        _home.getDock().consumeRevert();
+                    View itemView = launcher.getDesktop().getCurrentPage().coordinateToChildView(pos);
+                    if (itemView != null && Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, launcher.getDesktop().getCurrentPage(), launcher.getDesktop().getCurrentItem(), Config.ItemPosition.Desktop, launcher.getDesktop())) {
+                        launcher.getDesktop().consumeRevert();
+                        launcher.getDock().consumeRevert();
                     } else {
-                        Tool.toast(_home, R.string.toast_not_enough_space);
-                        _home.getDesktop().revertLastItem();
-                        _home.getDock().revertLastItem();
+                        Tool.toast(launcher, R.string.toast_not_enough_space);
+                        launcher.getDesktop().revertLastItem();
+                        launcher.getDock().revertLastItem();
                     }
 
                 }
@@ -196,12 +196,12 @@ public class DragOption {
             @Override
             public void onMove(DragAction.Action action, PointF location) {
                 if (action != DragAction.Action.SEARCH_RESULT && action != DragAction.Action.WIDGET)
-                    _home.getDesktop().updateIconProjection((int) location.x, (int) location.y);
+                    launcher.getDesktop().updateIconProjection((int) location.x, (int) location.y);
             }
 
             @Override
             public void onExit(@NonNull DragAction.Action action, @NonNull PointF location) {
-                for (CellContainer page : _home.getDesktop().getPages()) {
+                for (CellContainer page : launcher.getDesktop().getPages()) {
                     page.clearCachedOutlineBitmap();
                 }
                 dragNDropView.cancelFolderPreview();
@@ -209,15 +209,15 @@ public class DragOption {
 
             @Override
             public void onEnd() {
-                _home.getDesktopIndicator().hideDelay();
-                for (CellContainer page : _home.getDesktop().getPages()) {
+                launcher.getDesktopIndicator().hideDelay();
+                for (CellContainer page : launcher.getDesktop().getPages()) {
                     page.clearCachedOutlineBitmap();
                 }
             }
         });
 
         //dock's drag event
-        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(_home.getDock()) {
+        dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(launcher.getDock()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 boolean ok = !DragAction.Action.WIDGET.equals(action);
@@ -232,7 +232,7 @@ public class DragOption {
             @Override
             public void onDrop(@NonNull DragAction.Action action, @NonNull PointF location, @NonNull Item item) {
                 if (DragAction.Action.APP_DRAWER.equals(action)) {
-                    if (_home.getAppDrawerController().isOpen) {
+                    if (launcher.getAppDrawerController().isOpen) {
                         return;
                     }
                     item.reset();
@@ -241,30 +241,32 @@ public class DragOption {
                 int x = (int) location.x;
                 int y = (int) location.y;
 
-                if (_home.getDock().addItemToPoint(item, x, y)) {
-                    _home.getDesktop().consumeRevert();
-                    _home.getDock().consumeRevert();
+                if (launcher.getDock().addItemToPoint(item, x, y)) {
+                    launcher.getDesktop().consumeRevert();
+                    launcher.getDock().consumeRevert();
 
                     // add the item to the database
                     HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
                 }
                 else {
                     Point pos = new Point();
-                    _home.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
-                    View itemView = _home.getDock().coordinateToChildView(pos);
+                    launcher.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
+                    View itemView = launcher.getDock().coordinateToChildView(pos);
                     if (itemView != null) {
-                        if (Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, _home.getDock(), 0, Config.ItemPosition.Dock, _home.getDock())) {
-                            _home.getDesktop().consumeRevert();
-                            _home.getDock().consumeRevert();
-                        } else {
-                            Tool.toast(_home, R.string.toast_not_enough_space);
-                            _home.getDesktop().revertLastItem();
-                            _home.getDock().revertLastItem();
+                        if (Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, launcher.getDock(), 0, Config.ItemPosition.Dock, launcher.getDock())) {
+                            launcher.getDesktop().consumeRevert();
+                            launcher.getDock().consumeRevert();
                         }
-                    } else {
-                        Tool.toast(_home, R.string.toast_not_enough_space);
-                        _home.getDesktop().revertLastItem();
-                        _home.getDock().revertLastItem();
+                        else {
+                            Tool.toast(launcher, R.string.toast_not_enough_space);
+                            launcher.getDesktop().revertLastItem();
+                            launcher.getDock().revertLastItem();
+                        }
+                    }
+                    else {
+                        Tool.toast(launcher, R.string.toast_not_enough_space);
+                        launcher.getDesktop().revertLastItem();
+                        launcher.getDock().revertLastItem();
                     }
                 }
             }
@@ -272,7 +274,7 @@ public class DragOption {
             @Override
             public void onMove(@NonNull DragAction.Action action, @NonNull PointF location) {
                 if (action != DragAction.Action.SEARCH_RESULT) {
-                    _home.getDock().updateIconProjection((int) location.x, (int) location.y);
+                    launcher.getDock().updateIconProjection((int) location.x, (int) location.y);
                 }
             }
 
@@ -283,16 +285,16 @@ public class DragOption {
 
             @Override
             public void onExit(@NonNull DragAction.Action action, @NonNull PointF location) {
-                _home.getDock().clearCachedOutlineBitmap();
+                launcher.getDock().clearCachedOutlineBitmap();
                 dragNDropView.cancelFolderPreview();
             }
 
             @Override
             public void onEnd() {
                 if (DragAction.Action.WIDGET.equals(dragNDropView.getDragAction())) {
-                    _home.getDesktop().revertLastItem();
+                    launcher.getDesktop().revertLastItem();
                 }
-                _home.getDock().clearCachedOutlineBitmap();
+                launcher.getDock().clearCachedOutlineBitmap();
             }
         });
 

@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.appdrawer;
 
 import android.content.Context;
+import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
@@ -14,6 +15,7 @@ import android.widget.PopupMenu;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
@@ -27,6 +29,8 @@ import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.SmoothViewPager;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager{
@@ -94,10 +98,8 @@ public class AppDrawerPaged extends SmoothViewPager{
         } else {
             setLandscapeValue();
         }
-
         loadApps();
     }
-
     public void loadApps(){
         Log.i("APP DRAWER","Loading Apps");
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
@@ -118,6 +120,12 @@ public class AppDrawerPaged extends SmoothViewPager{
         });
     }
 
+    public void sortApps(){
+        Log.i("APP DRAWER","Sorting Apps");
+        Collections.sort(_apps, new SortMostUsed());
+        resetAdapter();
+    }
+
     public void withHome(HomeActivity home, PageIndicator appDrawerIndicator) {
         _home = home;
         _appDrawerIndicator = appDrawerIndicator;
@@ -129,6 +137,25 @@ public class AppDrawerPaged extends SmoothViewPager{
     public void resetAdapter() {
         setAdapter(null);
         setAdapter(new Adapter());
+    }
+
+    public static class SortMostUsed implements Comparator<App> {
+
+        public SortMostUsed() {
+        }
+
+        @Override
+        public int compare(App lhs, App rhs) {
+            int item1 = HomeActivity.Companion.getDb().getAppCount(lhs.getPackageName());
+            int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.getPackageName());
+            if (item1 < item2) {
+                return 1;
+            } else if (item2 < item1) {
+                return -1;
+            } else {
+                return 0;
+            }
+        }
     }
 
     public class Adapter extends SmoothPagerAdapter {

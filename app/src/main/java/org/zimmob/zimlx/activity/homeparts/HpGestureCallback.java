@@ -4,7 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 
 import org.zimmob.zimlx.util.AppSettings;
-import org.zimmob.zimlx.launcher.LauncherAction;
+import org.zimmob.zimlx.widget.Minibar;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
 import org.zimmob.zimlx.widget.Desktop;
@@ -21,19 +21,19 @@ public class HpGestureCallback implements DesktopGestureListener.DesktopGestureC
         Context context = _appSettings.getContext();
         PackageManager packageManager = context.getPackageManager();
         int gestureIndex;
-        LauncherAction.ActionItem gesture = null;
+        Minibar.ActionItem gesture = null;
         switch (event) {
             case SwipeUp: {
                 gestureIndex = _appSettings.getGestureSwipeUp();
                 if (gestureIndex != 0) {
-                    gesture = LauncherAction.getActionItem(gestureIndex - 1);
+                    gesture = Minibar.getActionItem(gestureIndex - 1);
                 }
                 break;
             }
             case SwipeDown:
                 gestureIndex = _appSettings.getGestureSwipeDown();
                 if (gestureIndex != 0) {
-                    gesture = LauncherAction.getActionItem(gestureIndex - 1);
+                    gesture = Minibar.getActionItem(gestureIndex - 1);
                 }
                 break;
             case SwipeLeft:
@@ -43,21 +43,21 @@ public class HpGestureCallback implements DesktopGestureListener.DesktopGestureC
             case Pinch: {
                 gestureIndex = _appSettings.getGesturePinch();
                 if (gestureIndex != 0) {
-                    gesture = LauncherAction.getActionItem(gestureIndex - 1);
+                    gesture = Minibar.getActionItem(gestureIndex - 1);
                 }
                 break;
             }
             case Unpinch: {
                 gestureIndex = _appSettings.getGestureUnpinch();
                 if (gestureIndex != 0) {
-                    gesture = LauncherAction.getActionItem(gestureIndex - 1);
+                    gesture = Minibar.getActionItem(gestureIndex - 1);
                 }
                 break;
             }
             case DoubleTap: {
                 gestureIndex = _appSettings.getGestureDoubleTap();
                 if (gestureIndex != 0) {
-                    gesture = LauncherAction.getActionItem(gestureIndex - 1);
+                    gesture = Minibar.getActionItem(gestureIndex - 1);
                 }
                 break;
             }
@@ -69,7 +69,7 @@ public class HpGestureCallback implements DesktopGestureListener.DesktopGestureC
             if (_appSettings.isGestureFeedback()) {
                 Tool.vibrate(desktop);
             }
-            LauncherAction.RunAction(gesture, desktop.getContext());
+            Minibar.RunAction(gesture, desktop.getContext());
             return true;
         }
         return false;

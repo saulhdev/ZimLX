@@ -102,7 +102,7 @@ public class AppManager {
     public App createApp(Intent intent) {
         try {
             ResolveInfo info = _packageManager.resolveActivity(intent, 0);
-            App app = new App(getContext(), info, _packageManager);
+            App app = new App(info, _packageManager);
             if (_apps != null && !_apps.contains(app))
                 _apps.add(app);
             return app;
@@ -165,11 +165,11 @@ public class AppManager {
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
             AppSettings appSettings = AppSettings.get();
             int sort = appSettings.getSortMode();
-            if(appSettings.getDrawerStyle()==Config.DRAWER_HORIZONTAL)
+            if (appSettings.getDrawerStyle() == Config.DRAWER_HORIZONTAL)
                 activitiesInfo = sortApplications(activitiesInfo, sort);
 
             for (ResolveInfo info : activitiesInfo) {
-                App app = new App(_context, info, _packageManager);
+                App app = new App(info, _packageManager);
                 _nonFilteredApps.add(app);
             }
 
@@ -190,7 +190,7 @@ public class AppManager {
             }
             else {
                 for (ResolveInfo info : activitiesInfo)
-                    _apps.add(new App(_context, info, _packageManager));
+                    _apps.add(new App(info, _packageManager));
             }
 
             if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
@@ -205,26 +205,28 @@ public class AppManager {
             switch (sort) {
                 default:
                 case Config.APP_SORT_AZ:
+                    Log.i("apps", "sorting by AZ");
                     Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
                             p1.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
-                break;
+                    break;
                 case Config.APP_SORT_ZA:
+                    Log.i("apps", "sorting by ZA");
                     Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
                             p1.loadLabel(_packageManager).toString(),
                             p2.loadLabel(_packageManager).toString()));
                     break;
                 case Config.APP_SORT_LI:
-                    Log.i("apps","sorting by Last Installed" );
+                    Log.i("apps", "sorting by Last Installed");
                     Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
                     break;
                 case Config.APP_SORT_MU:
-                    Log.i("apps","sorting by Most Used" );
+                    Log.i("apps", "sorting by Most Used");
                     Collections.sort(sortedAtivities, new MostUsedComparator());
                     break;
             }
 
-            return  sortedAtivities;
+            return sortedAtivities;
         }
 
         @Override
@@ -246,9 +248,9 @@ public class AppManager {
         }
     }
 
-    public static class MostUsedComparator implements Comparator<ResolveInfo>{
+    public static class MostUsedComparator implements Comparator<ResolveInfo> {
 
-        MostUsedComparator() {
+        public MostUsedComparator() {
         }
 
         @Override
@@ -257,11 +259,9 @@ public class AppManager {
             int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.activityInfo.packageName);
             if (item1 < item2) {
                 return 1;
-            }
-            else if (item2 < item1) {
+            } else if (item2 < item1) {
                 return -1;
-            }
-            else {
+            } else {
                 return 0;
             }
         }
@@ -279,13 +279,11 @@ public class AppManager {
             try {
                 long lhsInstallTime = mPackageManager.getPackageInfo(lhs.activityInfo.packageName, 0).firstInstallTime;
                 long rhsInstallTime = mPackageManager.getPackageInfo(rhs.activityInfo.packageName, 0).firstInstallTime;
-                if (lhsInstallTime > rhsInstallTime) {
+                if (lhsInstallTime < rhsInstallTime) {
                     return 1;
-                }
-                else if (rhsInstallTime > lhsInstallTime) {
+                } else if (rhsInstallTime < lhsInstallTime) {
                     return -1;
-                }
-                else {
+                } else {
                     return 0;
                 }
             }

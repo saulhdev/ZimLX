@@ -246,7 +246,7 @@
 
 
                 <ListPreference
-                    android:defaultValue="1"
+                    android:defaultValue="0"
                     android:entries="@array/entries__drawer_styles"
                     android:entryValues="@array/values__zero_to_one"
                     android:key="@string/pref_key__drawer_style"
@@ -254,7 +254,7 @@
                     android:title="@string/pref_title__drawer_style" />
 
                 <ListPreference
-                    android:defaultValue="0"
+                    android:defaultValue="3"
                     android:entries="@array/entries__sort_mode"
                     android:entryValues="@array/values__zero_to_three"
                     android:key="pref_key__sort_mode"
@@ -392,7 +392,7 @@
             android:title="@string/pref_title__folder">
             <PreferenceCategory android:title="@string/pref_title__folder_options">
                 <ListPreference
-                    android:defaultValue="1"
+                    android:defaultValue="2"
                     android:entries="@array/entries__folder_shape"
                     android:entryValues="@array/values__zero_to_three"
                     android:key="@string/pref_key__folder_shape"

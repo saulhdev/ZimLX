@@ -29,6 +29,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     public Drawable _icon;
     public SimpleIconProvider _iconProvider = null;
     public String _label;
+    @Nullable public String _searchInfo;
     private View.OnLongClickListener _onLongClickListener;
     private View.OnClickListener _onClickListener;
 
@@ -97,6 +98,11 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         this._label = label;
         this._iconProvider = iconProvider;
         this._forceSize = forceSize;
+    }
+
+    public IconLabelItem(Context context, Drawable icon, String label, @Nullable String searchInfo, int forceSize) {
+        this(context, icon, label, forceSize);
+        _searchInfo = searchInfo;
     }
 
     public IconLabelItem withIconGravity(int iconGravity) {

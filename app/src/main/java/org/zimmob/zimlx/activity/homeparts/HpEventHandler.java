@@ -7,12 +7,12 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.IDialogListener;
-import org.zimmob.zimlx.launcher.LauncherAction;
+import org.zimmob.zimlx.widget.Minibar;
 
 public class HpEventHandler implements Setup.EventHandler {
     @Override
     public void showLauncherSettings(Context context) {
-        LauncherAction.RunAction(LauncherAction.Action.LauncherSettings, context);
+        Minibar.RunAction(Minibar.Action.LauncherSettings, context);
     }
 
     @Override

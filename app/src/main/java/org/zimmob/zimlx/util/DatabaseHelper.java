@@ -63,6 +63,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         onCreate(db);
     }
 
+    @Override
     public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         onUpgrade(db, oldVersion, newVersion);
     }
@@ -302,8 +303,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         return item;
     }
 
-/**/
-
     private static final String TABLE_APP_COUNT="app_count";
     private static final String COLUMN_PACKAGE_NAME = "package_name";
     private static final String COLUMN_PACKAGE_COUNT = "package_count";
@@ -314,11 +313,11 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
                     +COLUMN_PACKAGE_NAME + " VARCHAR, "
                     +COLUMN_PACKAGE_COUNT+ " INTEGER)";
 
-    public void saveApp(String packageName){
+    public void saveAppCount(String packageName){
         ContentValues itemValues = new ContentValues();
         itemValues.put(COLUMN_PACKAGE_NAME, packageName);
         itemValues.put(COLUMN_PACKAGE_COUNT, 0);
-        Log.i("Save App",packageName);
+        Log.i("APP COUNT","Save App"+packageName);
         db.insert(TABLE_APP_COUNT, null, itemValues);
     }
 
@@ -326,18 +325,19 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
         String SQL_QUERY = "SELECT package_count FROM app_count WHERE package_name='" + packageName + "';";
         Cursor cursor = db.rawQuery(SQL_QUERY, null);
         int appCount = 0;
-        if (cursor != null){
-            if (cursor.moveToFirst()) {
+        if (cursor.moveToFirst()) {
+                Log.i("APP COUNT", String.format("Cursor qty: %d", cursor.getInt(0)));
                 appCount = cursor.getInt(0);
-            }
         }
         else{
-            saveApp(packageName);
+            saveAppCount(packageName);
         }
+
         cursor.close();
         appCount++;
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PACKAGE_COUNT,appCount);
+        Log.i("APP COUNT", String.format("Update App: %s, Count: %d", packageName, appCount));
         db.update(TABLE_APP_COUNT,cv,"package_name='"+packageName+"'",null);
 
     }

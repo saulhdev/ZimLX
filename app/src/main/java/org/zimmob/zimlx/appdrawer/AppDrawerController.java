@@ -75,7 +75,8 @@ public class AppDrawerController extends RevealFrameLayout{
                 animator.start();
                 switch (_drawerMode) {
                     case DRAWER_HORIZONTAL:
-                        _drawerViewPaged.loadApps();
+                        //_drawerViewPaged.loadApps();
+                        _drawerViewPaged.sortApps();
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
                             _drawerViewPaged._pages.get(i).findViewById(R.id.group).setAlpha(1);
                         }
@@ -90,7 +91,6 @@ public class AppDrawerController extends RevealFrameLayout{
                         }
                         break;
                     case DRAWER_VERTICAL:
-                        _drawerViewGrid.loadApps();
                         _drawerViewGrid.recyclerView.setAlpha(0);
                         _drawerViewGrid.recyclerView
                                 .animate()

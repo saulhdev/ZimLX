@@ -178,7 +178,8 @@ public class ContextUtils {
         String src = null;
         try {
             src = _context.getPackageManager().getInstallerPackageName(getPackageName());
-        } catch (Exception ignored) {
+        }
+        catch (Exception ignored) {
         }
         if (TextUtils.isEmpty(src)) {
             src = "Sideloaded";
@@ -241,7 +242,8 @@ public class ContextUtils {
         try {
             Class<?> c = Class.forName(pkg);
             return c.getField(fieldName).get(null);
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
             return null;
         }

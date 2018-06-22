@@ -47,8 +47,8 @@ import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragOption;
 import org.zimmob.zimlx.folder.Folder;
-import org.zimmob.zimlx.launcher.LauncherAction;
-import org.zimmob.zimlx.launcher.LauncherAction.Action;
+import org.zimmob.zimlx.widget.Minibar;
+import org.zimmob.zimlx.widget.Minibar.Action;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
@@ -75,7 +75,6 @@ import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SwipeListView;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
 
@@ -723,7 +722,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
         for (ResolveInfo info : phoneInfo) {
-            App app = new App(this, info, packageManager);
+            App app = new App(info, packageManager);
             Item item = Item.newAppItem(app);
             item.x = 0;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
@@ -731,7 +730,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
         for (ResolveInfo info : messagingInfo) {
-            App app = new App(this, info, packageManager);
+            App app = new App(info, packageManager);
             Item item = Item.newAppItem(app);
             item.x = 1;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
@@ -739,19 +738,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
         for (ResolveInfo info : browserInfo) {
-            App app = new App(this, info, packageManager);
+            App app = new App(info, packageManager);
             Item item = Item.newAppItem(app);
             item.x = 4;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
-
-        //start apps count
-        List<App> allApps = Setup.appLoader().getAllApps(this, false);
-        Log.i("InitSetup","Loading count apps: "+allApps.size());
-        for (App app: allApps) {
-            Companion.getDb().saveApp(app.getPackageName());
-        }
-
     }
 
     private void addDockCamera() {
@@ -759,7 +750,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo info : activitiesInfo) {
-            App app = new App(this, info, packageManager);
+            App app = new App(info, packageManager);
             Log.i("HOME", app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = 3;
@@ -769,13 +760,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void initMinibar() {
-        final ArrayList<LauncherAction.ActionDisplayItem> items = new ArrayList<>();
+        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
         final ArrayList<String> labels = new ArrayList<>();
         final ArrayList<Integer> icons = new ArrayList<>();
 
         for (String act : AppSettings.get().getMinibarArrangement()) {
             if (act.length() > 1) {
-                LauncherAction.ActionDisplayItem item = LauncherAction.getActionItemFromString(act);
+                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
                 if (item != null) {
                     items.add(item);
                     labels.add(item.label);
@@ -791,7 +782,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             if (action == Action.DeviceSettings || action == Action.LauncherSettings || action == Action.EditMinibar) {
                 _consumeNextResume = true;
             }
-            LauncherAction.RunAction(action, HomeActivity.this);
+            Minibar.RunAction(action, HomeActivity.this);
             if (action != Action.DeviceSettings && action != Action.LauncherSettings && action != Action.EditMinibar) {
                 getDrawerLayout().closeDrawers();
             }
@@ -835,7 +826,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         ComponentName component = intent.getComponent();
 
         if (BuildConfig.APPLICATION_ID.equals(Objects.requireNonNull(component).getPackageName())) {
-            LauncherAction.RunAction(Action.LauncherSettings, context);
+            Minibar.RunAction(Action.LauncherSettings, context);
             Companion.setConsumeNextResume(true);
         } else {
             try {
@@ -849,7 +840,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     public final void onStartApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
         if (BuildConfig.APPLICATION_ID.equals(app.getPackageName())) {
-            LauncherAction.RunAction(Action.LauncherSettings, context);
+            Minibar.RunAction(Action.LauncherSettings, context);
             Companion.setConsumeNextResume(true);
         }
         else {

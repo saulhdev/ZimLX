@@ -57,10 +57,10 @@ public class SearchBar extends FrameLayout {
 
     private static final long ANIM_TIME = 200;
     public TextView _searchClock;
-    private AppCompatImageView _switchButton;
-    private AppCompatImageView _searchButton;
+    public AppCompatImageView _switchButton;
+    public AppCompatImageView _searchButton;
     public AppCompatEditText _searchInput;
-    private RecyclerView _searchRecycler;
+    public RecyclerView _searchRecycler;
     private CircleDrawable _icon;
     private CardView _searchCardContainer;
     private FastItemAdapter<IconLabelItem> _adapter = new FastItemAdapter<>();
@@ -222,18 +222,15 @@ public class SearchBar extends FrameLayout {
             for (int i = 0; i < apps.size(); i++) {
                 final App app = apps.get(i);
                 final int finalI = i;
-                items.add(new IconLabelItem(getContext(), app.getIcon(), app.getLabel(), 36)
+                items.add(new IconLabelItem(getContext(), app.getIcon(), app.getLabel(),app.getUniversalLabel(), 36)
                         .withIconGravity(Setup.appSettings().getSearchGridSize() > 1 && Setup.appSettings().getSearchLabelLines() == 0 ? Gravity.TOP : Gravity.START)
                         .withOnClickListener(v -> {
-                                //TODO: save item to database every time it's clicked to track most used apps
-                                startApp(v.getContext(), app);
+                            startApp(v.getContext(), app);
                         })
-                        //TODO: fix IconProjection
                         .withOnLongClickListener(AppItemView.Builder.getLongClickDragAppListener(Item.newAppItem(app), DragAction.Action.APP, new AppItemView.LongPressCallBack() {
                             @Override
                             public boolean readyForDrag(View view) {
                                 if (finalI == -1) return true;
-
                                 _expanded = !_expanded;
                                 collapseInternal();
                                 return false;
@@ -253,10 +250,24 @@ public class SearchBar extends FrameLayout {
             return false;
         });
         _adapter.getItemFilter().withFilterPredicate((IItemAdapter.Predicate<IconLabelItem>) (item, constraint) -> {
-            if (item._label.equals(getContext().getString(R.string.search_online)))
+            if (item._label.equals(getContext().getString(R.string.search_online))) {
                 return false;
-            String s = constraint.toString();
-            return s.isEmpty() || !item._label.toLowerCase().contains(s.toLowerCase());
+            }
+
+            if (constraint.length() == 0) {
+                return true;
+            }
+
+            String s = constraint.toString().toLowerCase();
+            if (item._label.toLowerCase().contains(s)) {
+                return true;
+            }
+
+            if (item._searchInfo != null && item._searchInfo.toLowerCase().contains(s)) {
+                return true;
+            }
+
+            return false;
         });
 
         final LayoutParams recyclerParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);

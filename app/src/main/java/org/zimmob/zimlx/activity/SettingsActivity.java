@@ -24,7 +24,7 @@ import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
-import org.zimmob.zimlx.launcher.LauncherAction;
+import org.zimmob.zimlx.widget.Minibar;
 import org.zimmob.zimlx.util.DialogHelper;
 
 import java.util.Locale;
@@ -315,7 +315,7 @@ public class SettingsActivity extends ThemeActivity {
 
             switch (keyRes) {
                 case R.string.pref_key__minibar: {
-                    LauncherAction.RunAction(LauncherAction.Action.EditMinibar, getActivity());
+                    Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
                     return true;
                 }
                 case R.string.pref_key__hidden_apps: {
