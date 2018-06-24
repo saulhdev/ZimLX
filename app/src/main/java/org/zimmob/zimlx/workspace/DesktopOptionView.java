@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.widget;
+package org.zimmob.zimlx.workspace;
 
 import android.content.Context;
 import android.graphics.Color;
