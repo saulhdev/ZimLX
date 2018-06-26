@@ -165,7 +165,7 @@ public class PageIndicator extends View implements SmoothViewPager.OnPageChangeL
             break;
             case INDICATOR_LINE: {
                 if (_pager != null) {
-                    float lineWidth = 90;
+                    float lineWidth = 70;
                     float pagesCount = _pager.getAdapter().getCount();
                     float sep = (pagesCount-1)*30;
                     float center =getWidth()/2;
