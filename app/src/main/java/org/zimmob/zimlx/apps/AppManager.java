@@ -165,8 +165,8 @@ public class AppManager {
             List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
             AppSettings appSettings = AppSettings.get();
             int sort = appSettings.getSortMode();
-            if (appSettings.getDrawerStyle() == Config.DRAWER_HORIZONTAL)
-                activitiesInfo = sortApplications(activitiesInfo, sort);
+            activitiesInfo = sortApplications(activitiesInfo, sort);
+
 
             for (ResolveInfo info : activitiesInfo) {
                 App app = new App(info, _packageManager);
@@ -187,8 +187,7 @@ public class AppManager {
                         _apps.add(_nonFilteredApps.get(i));
                     }
                 }
-            }
-            else {
+            } else {
                 for (ResolveInfo info : activitiesInfo)
                     _apps.add(new App(info, _packageManager));
             }
@@ -217,12 +216,25 @@ public class AppManager {
                             p2.loadLabel(_packageManager).toString()));
                     break;
                 case Config.APP_SORT_LI:
-                    Log.i("apps", "sorting by Last Installed");
-                    Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
+                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
+                        Log.i("apps", "sorting by Last Installed");
+                        Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
+                    } else {
+                        Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                                p1.loadLabel(_packageManager).toString(),
+                                p2.loadLabel(_packageManager).toString()));
+                    }
+
                     break;
                 case Config.APP_SORT_MU:
-                    Log.i("apps", "sorting by Most Used");
-                    Collections.sort(sortedAtivities, new MostUsedComparator());
+                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
+                        Log.i("apps", "sorting by Most Used");
+                        Collections.sort(sortedAtivities, new MostUsedComparator());
+                    } else {
+                        Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                                p1.loadLabel(_packageManager).toString(),
+                                p2.loadLabel(_packageManager).toString()));
+                    }
                     break;
             }
 
@@ -286,8 +298,7 @@ public class AppManager {
                 } else {
                     return 0;
                 }
-            }
-            catch (PackageManager.NameNotFoundException e) {
+            } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
                 return 0;
             }

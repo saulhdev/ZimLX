@@ -92,6 +92,8 @@ ext.getGitHash = { ->
         return 'unknown'
     }
 }
+@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
+// Returns the build date in a RFC3339 compatible format. TZ is always converted to UTC
 static String getBuildDate() {
     final SimpleDateFormat RFC3339_LIKE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
     RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
