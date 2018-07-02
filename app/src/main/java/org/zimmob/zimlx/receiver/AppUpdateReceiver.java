@@ -8,8 +8,8 @@ import org.zimmob.zimlx.manager.Setup;
 
 public class AppUpdateReceiver extends BroadcastReceiver {
     @Override
-    public void onReceive(Context p1, Intent p2) {
-        Setup.appLoader().onAppUpdated(p1, p2);
+    public void onReceive(Context context, Intent intent) {
+        Setup.appLoader().onAppUpdated(context, intent);
     }
 }
 

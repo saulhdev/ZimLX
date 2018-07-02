@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -15,7 +14,6 @@ import android.widget.TextView;
 import com.mikepenz.fastadapter.items.AbstractItem;
 
 import org.zimmob.zimlx.R;
-
 import org.zimmob.zimlx.icon.IconProvider;
 import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
@@ -24,12 +22,13 @@ import org.zimmob.zimlx.util.Tool;
 
 import java.util.List;
 
-public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder>{
-
+public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.ViewHolder> {
+    public static final String TAG = "IconLabelItem";
     public Drawable _icon;
     public SimpleIconProvider _iconProvider = null;
     public String _label;
-    @Nullable public String _searchInfo;
+    @Nullable
+    public String _searchInfo;
     private View.OnLongClickListener _onLongClickListener;
     private View.OnClickListener _onClickListener;
 
@@ -54,7 +53,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     public IconLabelItem(Context context, int icon, int label) {
         _iconProvider = Setup.imageLoader().createIconProvider(icon);
-        if(icon!=0) {
+        if (icon != 0) {
             _icon = context.getDrawable(icon);
         }
         _label = context.getString(label);
@@ -166,11 +165,15 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     }
 
     public void setIcon(Context context, int icon) {
-        this._icon=context.getResources().getDrawable(icon);
+        this._icon = context.getResources().getDrawable(icon);
     }
 
     public void setIcon(int resId) {
         _iconProvider = Setup.imageLoader().createIconProvider(resId);
+    }
+
+    public void setIcon(Drawable icon) {
+        _icon = icon;
     }
 
     @Override
@@ -200,12 +203,27 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         holder.textView.setGravity(_gravity);
         holder.textView.setGravity(_textGravity);
         holder.textView.setCompoundDrawablePadding((int) _drawablePadding);
-
-        if (hideLabel) {
+        /*if (hideLabel) {
             holder.textView.setText(null);
             _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, Gravity.TOP);
         } else {
             _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, _iconGravity);
+        }
+        */
+
+        switch (_iconGravity) {
+            case Gravity.START:
+                holder.textView.setCompoundDrawablesWithIntrinsicBounds(_icon, null, null, null);
+                break;
+            case Gravity.END:
+                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, _icon, null);
+                break;
+            case Gravity.TOP:
+                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, _icon, null, null);
+                break;
+            case Gravity.BOTTOM:
+                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, _icon);
+                break;
         }
 
         holder.textView.setTypeface(_typeface);
@@ -231,6 +249,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         TextView textView;
+
         ViewHolder(View itemView, IconLabelItem item) {
             super(itemView);
             textView = (TextView) itemView;

@@ -9,7 +9,7 @@ import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.util.Tool;
 
-public class HpDesktopPickAction implements IDialogListener.OnAddAppDrawerItemListener {
+public class HpDesktopPickAction implements IDialogListener.OnActionDialogListener {
     private HomeActivity _homeActivity;
 
     public HpDesktopPickAction(HomeActivity launcher) {

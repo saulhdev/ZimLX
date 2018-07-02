@@ -16,7 +16,7 @@ public class HpEventHandler implements Setup.EventHandler {
     }
 
     @Override
-    public void showPickAction(Context context, final IDialogListener.OnAddAppDrawerItemListener listener) {
+    public void showPickAction(Context context, final IDialogListener.OnActionDialogListener listener) {
         DialogHelper.addActionItemDialog(context, (dialog, itemView, position, text) -> {
             if (position == 0) {
                 listener.onAdd(Config.ACTION_LAUNCHER);
