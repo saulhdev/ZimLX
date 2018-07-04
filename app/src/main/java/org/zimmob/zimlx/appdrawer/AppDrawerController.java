@@ -17,9 +17,13 @@ import net.gsantner.opoc.util.Callback;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.SearchBar;
+
+import java.util.logging.Logger;
 
 import io.codetail.animation.ViewAnimationUtils;
 import io.codetail.widget.RevealFrameLayout;
@@ -28,6 +32,7 @@ import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
 public class AppDrawerController extends RevealFrameLayout{
+    private final Logger LOG = Logger.getLogger(AppDrawerController.class.getName());
     private AppDrawerPaged _drawerViewPaged;
     private AppDrawerVertical _drawerViewGrid;
     private int _drawerMode;
@@ -75,8 +80,9 @@ public class AppDrawerController extends RevealFrameLayout{
                 animator.start();
                 switch (_drawerMode) {
                     case DRAWER_HORIZONTAL:
-                        //_drawerViewPaged.loadApps();
-                        _drawerViewPaged.sortApps();
+                        if(AppSettings.get().getSortMode()== Config.APP_SORT_MU){
+                            _drawerViewPaged.sortApps();
+                        }
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
                             _drawerViewPaged._pages.get(i).findViewById(R.id.group).setAlpha(1);
                         }
