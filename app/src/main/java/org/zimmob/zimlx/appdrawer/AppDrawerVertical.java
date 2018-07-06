@@ -6,7 +6,6 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewTreeObserver;
@@ -26,8 +25,11 @@ import org.zimmob.zimlx.viewutil.DrawerAppItem;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppDrawerVertical extends CardView {
+    private final Logger LOG = Logger.getLogger(AppDrawerVertical.class.getName());
 
     public static int itemWidth;
     public static int itemHeightPadding;
@@ -79,8 +81,7 @@ public class AppDrawerVertical extends CardView {
         }
         if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
             setLandscapeValue();
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitValue();
         }
         super.onConfigurationChanged(newConfig);
@@ -97,8 +98,8 @@ public class AppDrawerVertical extends CardView {
     }
 
     private void init() {
-        Log.i("APP VERTICAL","Init View");
-        itemHeightPadding = Tool.dp2px(5, getContext());
+        LOG.log(Level.INFO, "Init View");
+        itemHeightPadding = Tool.dp2px(15, getContext());
         scrollBar = rl.findViewById(R.id.dragScrollBar);
         scrollBar.setIndicator(new AlphabetIndicator(getContext()), true);
         scrollBar.setClipToPadding(true);
@@ -116,13 +117,15 @@ public class AppDrawerVertical extends CardView {
         recyclerView.setDrawingCacheEnabled(true);
         loadApps();
 
+        AppDrawerSearch appDrawerSearch = new AppDrawerSearch(getContext());
         addView(rl);
+        addView(appDrawerSearch);
     }
 
-    public void loadApps(){
+    public void loadApps() {
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
-            apps = allApps;
+            AppDrawerVertical.apps = allApps;
             ArrayList<DrawerAppItem> items = new ArrayList<>();
             for (int i = 0; i < apps.size(); i++) {
                 items.add(new DrawerAppItem(apps.get(i)));

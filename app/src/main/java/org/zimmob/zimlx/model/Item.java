@@ -114,8 +114,6 @@ public class Item implements Parcelable {
         Item item = new Item();
         item.type = Type.APP;
         item.name = app.getLabel();
-        item.spanX = 1;
-        item.spanY = 1;
         item.icon = app.getIcon();
         item.intent = toIntent(app);
         return item;
@@ -243,8 +241,8 @@ public class Item implements Parcelable {
     }
 
     public List<Item> getGroupItems() {
-        Collections.sort(items,(p1,p2)->Collator.getInstance().compare(
-                p1.name,p2.name
+        Collections.sort(items, (p1, p2) -> Collator.getInstance().compare(
+                p1.name, p2.name
         ));
         return items;
     }

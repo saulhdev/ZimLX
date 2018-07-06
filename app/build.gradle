@@ -14,18 +14,18 @@ android {
         flavorDimensions "versionCode"
         multiDexEnabled false
 
-
         buildConfigField "boolean", "IS_TEST_BUILD", "false"
         buildConfigField "boolean", "IS_GPLAY_BUILD", "false"
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
         buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
-        resValue "string", "manifest_package_id", "org.zimob.zimlx"
+        resValue "string", "manifest_package_id", "org.zimmob.zimlx"
+
+        resValue 'string', 'app_name', "ZimLX"
 
         applicationId "org.zimmob.zimlx"
-        resValue 'string', 'app_name', "ZimLX"
-        versionCode 20180604
-        versionName '0.2.4'
+        versionCode 20170701
+        versionName '0.2.5'
 
     }
     productFlavors {

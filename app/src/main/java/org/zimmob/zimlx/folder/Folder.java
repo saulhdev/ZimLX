@@ -103,7 +103,7 @@ public class Folder extends RevealFrameLayout {
                 if (groupItem == null) {
                     continue;
                 }
-                //final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
+                final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
                 AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
                 final View view = appItemView.getView();
 
@@ -120,8 +120,7 @@ public class Folder extends RevealFrameLayout {
                 final App app = Setup.appLoader().findItemApp(groupItem);
                 if (app == null) {
                     removeItem(c, callBack, item, groupItem, (AppItemView) itemView);
-                }
-                else {
+                } else {
                     view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(view, () -> {
                         dismissPopup();
                         setVisibility(View.INVISIBLE);
@@ -265,7 +264,7 @@ public class Folder extends RevealFrameLayout {
         HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
         HomeActivity.Companion.getDb().saveItem(currentItem);
         currentView.setCurrentIcon(new FolderIcon(context, currentItem, Setup.appSettings().getDesktopIconSize()));
-     }
+    }
 
     private void updateItem(final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, View currentView) {
         if (currentItem.getGroupItems().size() == 1) {

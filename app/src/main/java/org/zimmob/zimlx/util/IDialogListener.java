@@ -2,7 +2,7 @@ package org.zimmob.zimlx.util;
 
 public interface IDialogListener {
 
-    interface OnAddAppDrawerItemListener {
+    interface OnActionDialogListener {
         void onAdd(int type);
     }
 

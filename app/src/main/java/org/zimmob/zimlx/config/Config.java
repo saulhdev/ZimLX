@@ -19,18 +19,20 @@ public class Config {
     public static final int FOLDER_SHAPE_SQUARE_SHADOW = 3;
 
     //SORT MODE
-    public static final int APP_SORT_AZ=0;
-    public static final int APP_SORT_ZA=1;
-    public static final int APP_SORT_LI=2;//last installer
-    public static final int APP_SORT_MU=3;//most used
+    public static final int APP_SORT_AZ = 0;
+    public static final int APP_SORT_ZA = 1;
+    public static final int APP_SORT_LI = 2;//last installer
+    public static final int APP_SORT_MU = 3;//most used
 
     //INDICATOR MODE
-    public static final int INDICATOR_DOTS= 0;
+    public static final int INDICATOR_DOTS = 0;
     public static final int INDICATOR_ARROW = 1;
     public static final int INDICATOR_LINE = 2;
 
     public static final int ACTION_LAUNCHER = 8;
     public static final int NO_SCALE = -1;
+
+    public static final boolean DEBUG_MODE = true;
 
     // separates a list of integers
     public static final String INT_SEP = "#";

@@ -25,7 +25,6 @@ import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
@@ -47,8 +46,6 @@ import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragOption;
 import org.zimmob.zimlx.folder.Folder;
-import org.zimmob.zimlx.widget.Minibar;
-import org.zimmob.zimlx.widget.Minibar.Action;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
@@ -70,6 +67,8 @@ import org.zimmob.zimlx.widget.DesktopOptionView;
 import org.zimmob.zimlx.widget.Dock;
 import org.zimmob.zimlx.widget.DragOptionLayout;
 import org.zimmob.zimlx.widget.DragOptionView;
+import org.zimmob.zimlx.widget.Minibar;
+import org.zimmob.zimlx.widget.Minibar.Action;
 import org.zimmob.zimlx.widget.SearchBar;
 import org.zimmob.zimlx.widget.SmoothViewPager;
 import org.zimmob.zimlx.widget.SwipeListView;
@@ -77,6 +76,8 @@ import org.zimmob.zimlx.widget.SwipeListView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * Created by saul on 04-25-18.
@@ -84,6 +85,7 @@ import java.util.Objects;
  * henriquez.saul@gmail.com
  */
 public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener {
+    private final Logger LOG = Logger.getLogger(HomeActivity.class.getName());
 
     public static final Companion Companion = new Companion();
     private static final int REQUEST_CREATE_APPWIDGET = 0x6475;
@@ -91,7 +93,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private static final int REQUEST_PICK_APPWIDGET = 0x2678;
 
     private static Resources resources;
-    private static final IntentFilter _appUpdateIntentFilter = new IntentFilter();
 
     private static WidgetHost _appWidgetHost;
 
@@ -102,7 +103,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public static float _itemTouchX;
     public static float _itemTouchY;
 
-    private static HomeActivity _homeActivity;
+    private static HomeActivity launcher;
+    private static final IntentFilter _appUpdateIntentFilter = new IntentFilter();
     private static final IntentFilter _shortcutIntentFilter = new IntentFilter();
     private static final IntentFilter _timeChangesIntentFilter = new IntentFilter();
     private final AppUpdateReceiver _appUpdateReceiver = new AppUpdateReceiver();
@@ -181,20 +183,17 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         boolean system = false;
         try {
             system = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 1;
-        }
-        catch (SettingNotFoundException e) {
-            Log.d(HomeActivity.class.getSimpleName(), "Unable to read settings", e);
+        } catch (SettingNotFoundException e) {
+            LOG.log(Level.INFO, "Unable to read settings", e);
         }
         if (getResources().getBoolean(R.bool.isTablet)) {
             rotate = system;
-        }
-        else if (user && system) {
+        } else if (user && system) {
             rotate = true;
         }
         if (rotate) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
-        }
-        else {
+        } else {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
         }
     }
@@ -239,8 +238,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             cx -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).getMarginStart();
             cy -= ((MarginLayoutParams) getAppDrawerController().getDrawer().getLayoutParams()).topMargin;
             cy -= getAppDrawerController().getPaddingTop();
-        }
-        else {
+        } else {
             cx = x;
             cy = y;
             rad = 0;
@@ -447,8 +445,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 top = (int) ((AppItemView) view).getDrawIconTop();
             }
             opts = ActivityOptions.makeClipRevealAnimation(view, left, top, width, height);
-        }
-        else if (VERSION.SDK_INT < 21) {
+        } else if (VERSION.SDK_INT < 21) {
             opts = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
         if (opts != null) {
@@ -469,14 +466,12 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                     List pages = desktop.getPages();
                     Desktop desktop2 = findViewById(R.id.desktop);
                     ((CellContainer) pages.get(desktop2.getCurrentItem())).performClick();
-                }
-                else {
+                } else {
                     AppDrawerController appDrawerController = findViewById(R.id.appDrawerController);
                     View drawer = appDrawerController.getDrawer();
                     if (drawer.getVisibility() == View.VISIBLE) {
                         closeAppDrawer();
-                    }
-                    else {
+                    } else {
                         setToHomePage();
                     }
                 }
@@ -513,7 +508,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Tool.goneViews(100, (PageIndicator) findViewById(R.id.desktopIndicator));
     }
 
-    public final Folder getFolder(){
+    public final Folder getFolder() {
         return findViewById(R.id.groupPopup);
     }
 
@@ -637,15 +632,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         initMinibar();
     }
 
-    private void initAppDrawer(){
+    private void initAppDrawer() {
         HomeActivity launcher = this;
-        AppDrawerController drawerController= findViewById(R.id.appDrawerController);
-        PageIndicator  indicator= findViewById(R.id.appDrawerIndicator);
-        DragOptionView optionPanel= findViewById(R.id.dragOptionPanel);
+        AppDrawerController drawerController = findViewById(R.id.appDrawerController);
+        PageIndicator indicator = findViewById(R.id.appDrawerIndicator);
+        DragOptionView optionPanel = findViewById(R.id.dragOptionPanel);
 
         HpAppDrawer hpInit = new HpAppDrawer(launcher, indicator, optionPanel);
         hpInit.initAppDrawer(drawerController);
-   }
+    }
 
     private void initSettings() {
         updateHomeLayout();
@@ -667,6 +662,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
             @Override
             public boolean onAppUpdated(List<App> it) {
+                if (getDesktop() == null) {
+                    return false;
+                }
                 AppSettings appSettings = Setup.appSettings();
                 if (appSettings.getDesktopStyle() == 0) {
                     getDesktop().initDesktopNormal(HomeActivity.this);
@@ -720,27 +718,33 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         browser.addCategory(Intent.CATEGORY_DEFAULT);
 
         PackageManager packageManager = this.getPackageManager();
-        List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
-        for (ResolveInfo info : phoneInfo) {
-            App app = new App(info, packageManager);
-            Item item = Item.newAppItem(app);
-            item.x = 0;
-            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+        if (!Config.DEBUG_MODE) {
+            List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
+            if (phoneInfo != null || phoneInfo.size() > 0) {
+                ResolveInfo dockApp = phoneInfo.get(0);
+                App app = new App(dockApp, packageManager);
+                Item item = Item.newAppItem(app);
+                item.setX(0);
+                LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+            }
         }
-
         List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
-        for (ResolveInfo info : messagingInfo) {
-            App app = new App(info, packageManager);
+        if (messagingInfo != null || messagingInfo.size() > 0) {
+            ResolveInfo dockApp = messagingInfo.get(0);
+            App app = new App(dockApp, packageManager);
             Item item = Item.newAppItem(app);
-            item.x = 1;
+            item.setX(1);
+            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
-
         List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
-        for (ResolveInfo info : browserInfo) {
-            App app = new App(info, packageManager);
+        if (browserInfo != null || browserInfo.size() > 0) {
+            ResolveInfo dockApp = browserInfo.get(0);
+            App app = new App(dockApp, packageManager);
             Item item = Item.newAppItem(app);
-            item.x = 4;
+            item.setX(4);
+            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
     }
@@ -751,7 +755,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo info : activitiesInfo) {
             App app = new App(info, packageManager);
-            Log.i("HOME", app.getPackageName());
+            LOG.log(Level.INFO, app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = 3;
             Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
@@ -842,8 +846,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (BuildConfig.APPLICATION_ID.equals(app.getPackageName())) {
             Minibar.RunAction(Action.LauncherSettings, context);
             Companion.setConsumeNextResume(true);
-        }
-        else {
+        } else {
             try {
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -851,15 +854,14 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 Companion.getDb().updateAppCount(app.getPackageName());
                 context.startActivity(intent, getActivityAnimationOpts(view));
                 Companion.setConsumeNextResume(true);
-            }
-            catch (Exception e) {
+            } catch (Exception e) {
                 Tool.toast(context, R.string.toast_app_uninstalled);
             }
         }
     }
 
     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-        Log.i("Slide: ", "Works left and right");
+        LOG.log(Level.INFO, "Slide Works left and right");
     }
 
     @Override
@@ -963,11 +965,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         @Nullable
         public final HomeActivity getLauncher() {
-            return _homeActivity;
+            return launcher;
         }
 
         final void setLauncher(@Nullable HomeActivity v) {
-            _homeActivity = v;
+            launcher = v;
         }
 
         @Nullable

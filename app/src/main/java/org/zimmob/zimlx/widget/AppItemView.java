@@ -20,12 +20,12 @@ import android.view.View;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.dragndrop.DragAction;
+import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.folder.FolderIcon;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.dragndrop.DragAction;
-import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.IDesktopCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener;
@@ -76,8 +76,7 @@ public class AppItemView extends View implements Drawable.Callback {
                 .setFontSize(context, fontSizeSp);
         if (groupItem.getType() == Item.Type.SHORTCUT) {
             b.setShortcutItem(groupItem);
-        }
-        else {
+        } else {
             App app = Setup.appLoader().findItemApp(groupItem);
             if (app != null) {
                 b.setAppItem(groupItem, app);
@@ -102,16 +101,16 @@ public class AppItemView extends View implements Drawable.Callback {
         return Tool.drawableToBitmap(icon);
     }
 
+    public View getView() {
+        return this;
+    }
+
     public Drawable getCurrentIcon() {
         return this.icon;
     }
 
     public void setCurrentIcon(Drawable icon) {
         this.icon = icon;
-    }
-
-    public View getView() {
-        return this;
     }
 
     public String getLabel() {
@@ -182,8 +181,7 @@ public class AppItemView extends View implements Drawable.Callback {
 
                 canvas.drawText(_label.substring(0, _label.length() - charsToTruncate) + ELLIPSIS,
                         MIN_ICON_TEXT_MARGIN, getHeight() - _heightPadding, _textPaint);
-            }
-            else {
+            } else {
                 canvas.drawText(_label, (getWidth() - _textContainer.width()) / 2f, getHeight() - _heightPadding, _textPaint);
             }
         }
@@ -243,6 +241,41 @@ public class AppItemView extends View implements Drawable.Callback {
             return _view;
         }
 
+        public Builder setAppItem(final App app) {
+            _view.setLabel(app.getLabel());
+            _view.setCurrentIcon(app.getIcon());
+            _view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
+                        @Override
+                        public void run() {
+                            Tool.startApp(_view.getContext(), app, _view);
+                        }
+                    }, 0.85f);
+                }
+            });
+            return this;
+        }
+
+        public Builder setAppItem(final Item item, final App app) {
+            _view.setLabel(item.getLabel());
+            _view.setCurrentIcon(app.getIcon());
+            _view.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
+                        @Override
+                        public void run() {
+                            Tool.startApp(_view.getContext(), app, _view);
+                        }
+                    }, 0.85f);
+                }
+            });
+            return this;
+        }
+
+        /*
         Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
             _view.setCurrentIcon(app.getIcon());
@@ -255,7 +288,7 @@ public class AppItemView extends View implements Drawable.Callback {
             _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
-        }
+        }*/
 
         public Builder setShortcutItem(final Item item) {
             _view.setLabel(item.getLabel());
@@ -291,7 +324,7 @@ public class AppItemView extends View implements Drawable.Callback {
             return this;
         }
 
-        private Builder withOnLongClick(final App app, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
+        public Builder withOnLongClick(final App app, final DragAction.Action action, @Nullable final LongPressCallBack eventAction) {
             withOnLongClick(Item.newAppItem(app), action, eventAction);
             return this;
         }

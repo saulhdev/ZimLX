@@ -100,11 +100,11 @@ public class SearchBar extends FrameLayout {
 
     private void init() {
         int dp1 = Tool.dp2px(1, getContext());
-        int iconMarginOutside = dp1 * 16;
-        int iconMarginTop = dp1 * 13;
-        int searchTextHorizontalMargin = dp1 * 8;
+        int iconMarginOutside = dp1 * 20;
+        int iconMarginTop = dp1 * 20;
+        int searchTextHorizontalMargin = dp1 * 4;
         int searchTextMarginTop = dp1 * 4;
-        int iconSize = dp1 * 24;
+        int iconSize = dp1 * 30;
         int iconPadding = dp1 * 6; // CircleDrawable uses 6dp as well!!
 
         _searchClock = (TextView) LayoutInflater.from(getContext()).inflate(R.layout.view_search_clock, this, false);
@@ -155,7 +155,7 @@ public class SearchBar extends FrameLayout {
         _searchCardContainer.setVisibility(View.GONE);
         _searchCardContainer.setRadius(0);
         _searchCardContainer.setCardElevation(0);
-        _searchCardContainer.setContentPadding(dp1 * 4, dp1 * 4, dp1 * 4, dp1 * 4);
+        _searchCardContainer.setContentPadding(dp1 * 8, dp1 * 4, dp1 * 4, dp1 * 4);
 
         _searchInput = new AppCompatEditText(getContext());
         _searchInput.setBackground(null);
@@ -189,7 +189,7 @@ public class SearchBar extends FrameLayout {
         LayoutParams inputCardParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         //(switchButton != null ? iconMarginOutside + iconSize : 0) + searchTextHorizontalMargin
         //iconMarginOutside + iconSize + searchTextHorizontalMargin
-        inputCardParams.setMargins(0, searchTextMarginTop, 0, 0);
+        inputCardParams.setMargins(10, searchTextMarginTop, 10, 0);
 
         LayoutParams inputParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         inputParams.setMargins(iconMarginOutside + iconSize, 0, 0, 0);
@@ -222,7 +222,7 @@ public class SearchBar extends FrameLayout {
             for (int i = 0; i < apps.size(); i++) {
                 final App app = apps.get(i);
                 final int finalI = i;
-                items.add(new IconLabelItem(getContext(), app.getIcon(), app.getLabel(),app.getUniversalLabel(), 36)
+                items.add(new IconLabelItem(getContext(), app.getIcon(), app.getLabel(), app.getUniversalLabel(), 36)
                         .withIconGravity(Setup.appSettings().getSearchGridSize() > 1 && Setup.appSettings().getSearchLabelLines() == 0 ? Gravity.TOP : Gravity.START)
                         .withOnClickListener(v -> {
                             startApp(v.getContext(), app);
@@ -412,7 +412,6 @@ public class SearchBar extends FrameLayout {
             }
             throw new RuntimeException("ID not found!");
         }
-
 
         int getId() {
             return id;

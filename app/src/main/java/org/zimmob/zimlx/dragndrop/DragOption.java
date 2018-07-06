@@ -175,8 +175,7 @@ public class DragOption {
                     // add the item to the database
                     HomeActivity._db.saveItem(item, launcher.getDesktop()
                             .getCurrentItem(), Config.ItemPosition.Desktop);
-                }
-                else {
+                } else {
                     Point pos = new Point();
                     launcher.getDesktop().getCurrentPage()
                             .touchPosToCoordinate(pos, x, y, item.getSpanX(), item.getSpanY(), false);
@@ -247,8 +246,7 @@ public class DragOption {
 
                     // add the item to the database
                     HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
-                }
-                else {
+                } else {
                     Point pos = new Point();
                     launcher.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
                     View itemView = launcher.getDock().coordinateToChildView(pos);
@@ -256,14 +254,12 @@ public class DragOption {
                         if (Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, launcher.getDock(), 0, Config.ItemPosition.Dock, launcher.getDock())) {
                             launcher.getDesktop().consumeRevert();
                             launcher.getDock().consumeRevert();
-                        }
-                        else {
+                        } else {
                             Tool.toast(launcher, R.string.toast_not_enough_space);
                             launcher.getDesktop().revertLastItem();
                             launcher.getDock().revertLastItem();
                         }
-                    }
-                    else {
+                    } else {
                         Tool.toast(launcher, R.string.toast_not_enough_space);
                         launcher.getDesktop().revertLastItem();
                         launcher.getDock().revertLastItem();
