@@ -16,7 +16,6 @@ import org.zimmob.zimlx.util.DatabaseHelper;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener.DesktopGestureCallback;
 import org.zimmob.zimlx.viewutil.ItemGestureListener.ItemGestureCallback;
 
-/* compiled from: HomeActivity.kt */
 public final class HpInitSetup extends Setup {
     private final AppManager _appLoader;
     private final DatabaseHelper _dataManager;

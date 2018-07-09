@@ -42,6 +42,7 @@ import org.zimmob.zimlx.activity.homeparts.HpDesktopPickAction;
 import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
 import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
 import org.zimmob.zimlx.appdrawer.AppDrawerController;
+import org.zimmob.zimlx.appdrawer.AppDrawerSearch;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragOption;
@@ -601,9 +602,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         initDock();
         ((AppDrawerController) findViewById(R.id.appDrawerController)).init();
         ((AppDrawerController) findViewById(R.id.appDrawerController)).setHome(this);
+
         ((DragOptionView) findViewById(R.id.dragOptionPanel)).setHome(this);
         ((Desktop) findViewById(R.id.desktop)).init();
         Desktop desktop = findViewById(R.id.desktop);
+
 
         desktop.setDesktopEditListener(this);
         ((DesktopOptionView) findViewById(R.id.desktopEditOptionPanel)).setDesktopOptionViewListener(this);

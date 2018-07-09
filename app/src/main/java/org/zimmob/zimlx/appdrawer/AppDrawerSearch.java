@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.SearchView.OnQueryTextListener;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -42,7 +43,7 @@ public class AppDrawerSearch extends LinearLayout {
 
         //INIT BUTTON
         menuButton = new Button(context);
-        LayoutParams buttonsParams = new LayoutParams(dp1 * 48, dp1 * 48);
+        LayoutParams buttonsParams = new LayoutParams(dp1 * 40, dp1 * 40);
         buttonsParams.weight = 0.1f;
         buttonsParams.setMargins(0, 0, dp1 * 5, 0);
         menuButton.setLayoutParams(buttonsParams);
@@ -52,7 +53,7 @@ public class AppDrawerSearch extends LinearLayout {
         //INIT SEARCH VIEW
         LayoutParams searchParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
         searchParams.weight = 0.9f;
-        searchView = new android.support.v7.widget.SearchView(context);
+        searchView = new SearchView(context);
         searchView.setLayoutParams(searchParams);
         searchView.setQueryHint(context.getText(R.string.search_hint));
         searchView.setActivated(true);
@@ -62,7 +63,7 @@ public class AppDrawerSearch extends LinearLayout {
         searchEditText.setTextColor(getResources().getColor(R.color.white));
         searchEditText.setHintTextColor(getResources().getColor(R.color.white));
 
-        searchView.setOnQueryTextListener(new android.support.v7.widget.SearchView.OnQueryTextListener() {
+        searchView.setOnQueryTextListener(new OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
                 return false;
@@ -80,13 +81,14 @@ public class AppDrawerSearch extends LinearLayout {
         });
 
         //INIT LAYOUT
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, dp1 * 50);
-        layoutParams.setMargins(0, dp1 * 1, 0, dp1 * 24);
+        LayoutParams layoutParams = new LayoutParams(LayoutParams.MATCH_PARENT, dp1 * 40);
+        layoutParams.setMargins(0, dp1 * 1, 0, dp1 * 1);
         this.setLayoutMode(LinearLayout.HORIZONTAL);
         this.setWeightSum(1);
         this.setLayoutParams(layoutParams);
         this.addView(searchView);
         this.addView(menuButton);
+        this.setId(R.id.id_search_layout);
     }
 
     private void showDrawerMenu(View v) {

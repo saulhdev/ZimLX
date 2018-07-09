@@ -118,8 +118,8 @@ public class AppDrawerVertical extends CardView {
         loadApps();
 
         AppDrawerSearch appDrawerSearch = new AppDrawerSearch(getContext());
-        addView(rl);
         addView(appDrawerSearch);
+        addView(rl);
     }
 
     public void loadApps() {

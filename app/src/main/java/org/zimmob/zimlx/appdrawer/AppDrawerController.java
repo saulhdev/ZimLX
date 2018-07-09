@@ -7,7 +7,6 @@ import android.content.Context;
 import android.graphics.Color;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.widget.Button;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.WindowInsets;
@@ -21,7 +20,6 @@ import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.widget.SearchBar;
 
 import java.util.logging.Logger;
 
@@ -31,7 +29,7 @@ import io.codetail.widget.RevealFrameLayout;
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
-public class AppDrawerController extends RevealFrameLayout{
+public class AppDrawerController extends RevealFrameLayout {
     private final Logger LOG = Logger.getLogger(AppDrawerController.class.getName());
     private AppDrawerPaged _drawerViewPaged;
     private AppDrawerVertical _drawerViewGrid;
@@ -40,6 +38,7 @@ public class AppDrawerController extends RevealFrameLayout{
     private Callback.a2<Boolean, Boolean> _appDrawerCallback;
     private Animator _appDrawerAnimator;
     private Long _drawerAnimationTime = 250L;
+    private AppDrawerSearch appDrawerSearch;
 
     public AppDrawerController(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -64,7 +63,9 @@ public class AppDrawerController extends RevealFrameLayout{
     public void open(int cx, int cy, int startRadius, int finalRadius) {
         if (isOpen) return;
         isOpen = true;
-
+        if (_drawerMode == DRAWER_HORIZONTAL) {
+            Tool.visibleViews(appDrawerSearch);
+        }
         _drawerAnimationTime = (long) (240 * Setup.appSettings().getOverallAnimationSpeedModifier());
         _appDrawerAnimator = ViewAnimationUtils.createCircularReveal(getChildAt(0), cx, cy, startRadius, finalRadius);
         _appDrawerAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
@@ -80,7 +81,7 @@ public class AppDrawerController extends RevealFrameLayout{
                 animator.start();
                 switch (_drawerMode) {
                     case DRAWER_HORIZONTAL:
-                        if(AppSettings.get().getSortMode()== Config.APP_SORT_MU){
+                        if (AppSettings.get().getSortMode() == Config.APP_SORT_MU) {
                             _drawerViewPaged.sortApps();
                         }
                         for (int i = 0; i < _drawerViewPaged._pages.size(); i++) {
@@ -126,6 +127,9 @@ public class AppDrawerController extends RevealFrameLayout{
     }
 
     public void close(int cx, int cy, int startRadius, int finalRadius) {
+        if (_drawerMode == DRAWER_HORIZONTAL) {
+            Tool.goneViews(appDrawerSearch);
+        }
         if (!isOpen) {
             return;
         }
@@ -191,6 +195,9 @@ public class AppDrawerController extends RevealFrameLayout{
                 RevealFrameLayout.LayoutParams marginParams = new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
                 marginParams.topMargin = 0;
                 addView(_drawerViewPaged, marginParams);
+                appDrawerSearch = new AppDrawerSearch(getContext());
+                addView(appDrawerSearch);
+                Tool.goneViews(appDrawerSearch);
                 layoutInflater.inflate(R.layout.view_drawer_indicator, this, true);
                 break;
             case DRAWER_VERTICAL:
@@ -246,7 +253,7 @@ public class AppDrawerController extends RevealFrameLayout{
     }
 
     public void setHome(HomeActivity home) {
-        if(_drawerMode==DRAWER_HORIZONTAL)
+        if (_drawerMode == DRAWER_HORIZONTAL)
             _drawerViewPaged.withHome(home, findViewById(R.id.appDrawerIndicator));
     }
 

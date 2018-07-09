@@ -1,7 +1,6 @@
 package org.zimmob.zimlx.appdrawer;
 
 import android.content.Context;
-import android.content.pm.ResolveInfo;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.support.v7.widget.CardView;
@@ -10,17 +9,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.PopupMenu;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.pageindicator.PageIndicator;
-import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.SmoothPagerAdapter;
 import org.zimmob.zimlx.widget.AppItemView;
@@ -33,7 +28,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
-public class AppDrawerPaged extends SmoothViewPager{
+public class AppDrawerPaged extends SmoothViewPager {
     private List<App> _apps;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
@@ -61,8 +56,7 @@ public class AppDrawerPaged extends SmoothViewPager{
             setLandscapeValue();
             calculatePage();
             setAdapter(new Adapter());
-        }
-        else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
             setPortraitValue();
             calculatePage();
             setAdapter(new Adapter());
@@ -92,7 +86,6 @@ public class AppDrawerPaged extends SmoothViewPager{
         if (isInEditMode()) return;
         setOverScrollMode(OVER_SCROLL_NEVER);
         boolean mPortrait = c.getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT;
-
         if (mPortrait) {
             setPortraitValue();
         } else {
@@ -100,8 +93,9 @@ public class AppDrawerPaged extends SmoothViewPager{
         }
         loadApps();
     }
-    public void loadApps(){
-        Log.i("APP DRAWER","Loading Apps");
+
+    public void loadApps() {
+        Log.i("APP DRAWER", "Loading Apps");
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
             AppDrawerPaged.this._apps = allApps;
@@ -120,8 +114,8 @@ public class AppDrawerPaged extends SmoothViewPager{
         });
     }
 
-    public void sortApps(){
-        Log.i("APP DRAWER","Sorting Apps");
+    public void sortApps() {
+        Log.i("APP DRAWER", "Sorting Apps");
         Collections.sort(_apps, new SortMostUsed());
         resetAdapter();
     }
@@ -140,7 +134,6 @@ public class AppDrawerPaged extends SmoothViewPager{
     }
 
     public static class SortMostUsed implements Comparator<App> {
-
         public SortMostUsed() {
         }
 
@@ -159,24 +152,8 @@ public class AppDrawerPaged extends SmoothViewPager{
     }
 
     public class Adapter extends SmoothPagerAdapter {
-        int iconSize=Setup.appSettings().getDrawerIconSize();
+        int iconSize = Setup.appSettings().getDrawerIconSize();
 
-        private View getItemView(int page, int x, int y) {
-            int pagePos = y * _columnCellCount + x;
-            final int pos = _rowCellCount * _columnCellCount * page + pagePos;
-            if (pos >= _apps.size())
-                return null;
-            final App app = _apps.get(pos);
-            return AppItemView.createDrawerAppItemView(getContext(), app, iconSize, new AppItemView.LongPressCallBack() {
-                        @Override
-                        public boolean readyForDrag(View view) {
-                            return Setup.appSettings().getDesktopStyle() == Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
-                        }
-                        @Override
-                        public void afterDrag(View view) {
-                        }
-                    });
-        }
         protected Adapter() {
             _pages.clear();
             for (int i = 0; i < getCount(); i++) {
@@ -202,6 +179,24 @@ public class AppDrawerPaged extends SmoothViewPager{
                 }
                 _pages.add(layout);
             }
+        }
+
+        private View getItemView(int page, int x, int y) {
+            int pagePos = y * _columnCellCount + x;
+            final int pos = _rowCellCount * _columnCellCount * page + pagePos;
+            if (pos >= _apps.size())
+                return null;
+            final App app = _apps.get(pos);
+            return AppItemView.createDrawerAppItemView(getContext(), app, iconSize, new AppItemView.LongPressCallBack() {
+                @Override
+                public boolean readyForDrag(View view) {
+                    return Setup.appSettings().getDesktopStyle() == Desktop.DesktopMode.INSTANCE.getSHOW_ALL_APPS();
+                }
+
+                @Override
+                public void afterDrag(View view) {
+                }
+            });
         }
 
         @Override
