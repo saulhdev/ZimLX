@@ -129,7 +129,6 @@
 
 
     <string name="app_license_name" translatable="false">Apache 2.0</string>
-    <string name="app_community_url" translatable="false">https://matrix.to/#/#openlauncher:matrix.org</string>
     <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
     <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
     <string name="app_web_url" translatable="false">https://github.com/otakuhqz/zimlx</string>

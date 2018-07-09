@@ -66,10 +66,6 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                     return true;
                 }
 
-                case R.string.pref_key__more_info__join_community: {
-                    _cu.openWebpageInExternalBrowser(getString(R.string.app_community_url));
-                    return true;
-                }
                 case R.string.pref_key__more_info__donate: {
                     _cu.openWebpageInExternalBrowser(getString(R.string.app_donate_url));
                     return true;
@@ -88,7 +84,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                 }
                 case R.string.pref_key__more_info__android_contribution_guide: {
                     _cu.openWebpageInExternalBrowser(
-                            String.format("https://gsantner.net/android-contribution-guide/?packageid=%s&name=%s&web=%s",
+                            String.format("https://paypal.me/saulhenriquez",
                                     _cu.context().getPackageName(), getString(R.string.app_name), getString(R.string.app_web_url).replace("=", "%3D")));
                     return true;
                 }
