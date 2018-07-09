@@ -62,7 +62,6 @@ task copyRepoFiles(type: Copy) {
     rename { String fileName -> fileName.replace(fileName, fileName.toLowerCase()) }
 }
 
-
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
 // Returns used android languages as a buildConfig array: {'de', 'it', ..}"
 static String findUsedAndroidLocales() {
