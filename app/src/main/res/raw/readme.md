@@ -6,9 +6,6 @@
 
 Open Source and free Launcher for Android based on OpenLauncher.
 
-## Donations
-Want to support me? https://paypal.me/saulhenriquez
-
 ## Screenshots
 <table>
     <tr>
@@ -46,8 +43,8 @@ Want to support me? https://paypal.me/saulhenriquez
 
 #### * App Drawer
     -> Row and Columns config
-    -> Page Style
-    -> Sort Mode (AZ, ZA, Last Installed, Most Used)
+    -> Vertical and Horizontal Layout
+    -> Four Sort Modes: AZ, ZA, Last Installed, Most Used (In vertical layout only AZ ZA are enabled) 
     -> Hide Apps
     -> Label Size
     -> Background color
@@ -76,8 +73,6 @@ Want to support me? https://paypal.me/saulhenriquez
     * Transitions
 * App Drawer
     * Transitions
-    * Page Style
-    * Sort Mode Most Used
     * Badge support
     * Notifications
 * Folder
@@ -87,6 +82,9 @@ Want to support me? https://paypal.me/saulhenriquez
     * Font Type
     * Font Size
 * Multi language support and more cool stuff.
+
+## Donations
+Want to support me? https://paypal.me/saulhenriquez
 
 ## Collaborate
 If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com
