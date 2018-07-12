@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="truly_launcher" translatable="false">The truly open source homeActivity that comes with awesome features!</string>
+    <string name="truly_launcher" translatable="false">The truly open source Launcher that comes with awesome features!</string>
     <string name="pref_key__date_bar_date_format_custom__default_value_1" translatable="false"><![CDATA[EEEE\', \'dd\'.\']]></string>
     <string name="pref_key__date_bar_date_format_custom__default_value_2" translatable="false"><![CDATA[MMMM yyyy\', KW \'ww]]></string>
 
@@ -52,6 +52,8 @@
     <string name="pref_key__drawer_card_color" translatable="false">pref_key__drawer_card_color</string>
     <string name="pref_key__drawer_label_color" translatable="false">pref_key__drawer_label_color</string>
     <string name="pref_key__drawer_fast_scroll_color" translatable="false">pref_key__drawer_fast_scroll_color</string>
+    <string name="pref_key__drawer_sort_mode" translatable="false">pref_key__drawer_sort_mode</string>
+
     <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
     <string name="pref_key__desktop_rotate" translatable="false">pref_key__desktop_rotate</string>
     <string name="pref_key__drawer_enter" translatable="false">pref_key__drawer_enter</string>
@@ -96,7 +98,6 @@
     <string name="pref_key__date_bar_date_format_custom_1" translatable="false">pref_key__date_bar_date_format_custom_1</string>
     <string name="pref_key__date_bar_date_format_custom_2" translatable="false">pref_key__date_bar_date_format_custom_2</string>
     <string name="pref_key__date_bar_date_text_color" translatable="false">pref_key__date_bar_date_text_color</string>
-    <string name="pref_key__sort_mode" translatable="false">pref_key__sort_mode</string>
 
     <string name="pref_key__font_size" translatable="false">pref_key__font_size</string>
     <string name="pref_key__font_type" translatable="false">pref_key__font_type</string>
