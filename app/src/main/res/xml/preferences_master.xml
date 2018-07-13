@@ -177,8 +177,8 @@
                     android:key="@string/pref_key__dock_size"
                     android:summary="@string/pref_summary__dock_size"
                     android:title="@string/pref_title__dock_size"
-                    app:maxValue="10"
-                    app:minValue="2" />
+                    app:maxValue="6"
+                    app:minValue="1" />
 
             </PreferenceCategory>
 
@@ -209,7 +209,6 @@
             android:icon="@drawable/ic_apps_dark_24dp"
             android:key="@string/pref_key__cat_app_drawer"
             android:title="@string/pref_title__app_drawer">
-
             <PreferenceCategory android:title="@string/pref_title__size">
 
                 <org.zimmob.zimlx.preference.NumberPickerPreference
@@ -257,7 +256,7 @@
                     android:defaultValue="3"
                     android:entries="@array/entries__sort_mode"
                     android:entryValues="@array/values__zero_to_three"
-                    android:key="pref_key__sort_mode"
+                    android:key="pref_key__drawer_sort_mode"
                     android:summary="@string/pref_sort_summary"
                     android:title="@string/pref_sort_title" />
 
@@ -331,7 +330,9 @@
                     app:cpv_showAlphaSlider="true" />
 
             </PreferenceCategory>
+
         </PreferenceScreen>
+
         <PreferenceScreen
             android:icon="@drawable/ic_style_black_24dp"
             android:key="@string/pref_key__cat_appearance"
