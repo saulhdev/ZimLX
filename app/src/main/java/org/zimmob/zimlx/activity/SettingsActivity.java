@@ -24,6 +24,7 @@ import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
+import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.Minibar;
 import org.zimmob.zimlx.util.DialogHelper;
 
@@ -35,12 +36,12 @@ import butterknife.ButterKnife;
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
 import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
 
-
 /**
  * Created by saul on 04-25-18.
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
+
 public class SettingsActivity extends ThemeActivity {
     static class RESULT {
         static final int NOCHANGE = -1;
@@ -72,7 +73,8 @@ public class SettingsActivity extends ThemeActivity {
         showFragment(SettingsFragmentMaster.TAG, false);
     }
 
-    private void showFragment(String tag, boolean addToBackStack) {
+
+    public void showFragment(String tag, boolean addToBackStack) {
         String toolbarTitle = getString(R.string.settings);
         GsPreferenceFragmentCompat prefFrag = (GsPreferenceFragmentCompat) getSupportFragmentManager().findFragmentByTag(tag);
         if (prefFrag == null) {
@@ -164,7 +166,7 @@ public class SettingsActivity extends ThemeActivity {
                 R.string.pref_key__drawer_card_color,
                 R.string.pref_key__drawer_label_color,
                 R.string.pref_key__drawer_fast_scroll_color,
-                R.string.pref_key__sort_mode,
+                R.string.pref_key__drawer_sort_mode,
                 R.string.pref_key__folder_shape,
                 R.string.pref_key__date_bar_date_format_custom_1,
                 R.string.pref_key__date_bar_date_format_custom_2,
@@ -317,7 +319,7 @@ public class SettingsActivity extends ThemeActivity {
                 case R.string.pref_key__minibar: {
                     Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
                     return true;
-                }
+            }
                 case R.string.pref_key__hidden_apps: {
                     Intent intent = new Intent(getActivity(), HideAppsActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);
@@ -327,7 +329,6 @@ public class SettingsActivity extends ThemeActivity {
                 case R.string.pref_key__icon_pack: {
                     IconsHandler iconsHandler = new IconsHandler(getContext());
                     iconsHandler.showDialog(getActivity());
-                    //AppManager.getInstance(getActivity()).startPickIconPackIntent(getActivity());
                     return true;
                 }
                 case R.string.pref_key__clear_database: {
@@ -337,6 +338,9 @@ public class SettingsActivity extends ThemeActivity {
                         }
                         DatabaseHelper db = (DatabaseHelper) HomeActivity._db;
                         db.onUpgrade(db.getWritableDatabase(), 1, 1);
+                        homeActivity.addAppDrawerItem();
+                        homeActivity.addDockCamera();
+                        homeActivity.addDockApps();
                         getActivity().finish();
                     });
                     return true;

@@ -42,7 +42,6 @@ import org.zimmob.zimlx.activity.homeparts.HpDesktopPickAction;
 import org.zimmob.zimlx.activity.homeparts.HpInitSetup;
 import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
 import org.zimmob.zimlx.appdrawer.AppDrawerController;
-import org.zimmob.zimlx.appdrawer.AppDrawerSearch;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragOption;
@@ -673,10 +672,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                     getDesktop().initDesktopNormal(HomeActivity.this);
                     if (appSettings.isAppFirstLaunch()) {
                         appSettings.setAppFirstLaunch(false);
-                        Item appDrawerBtnItem = Item.newActionItem(8);
-                        appDrawerBtnItem.x = 2;
-                        Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
-
+                        addAppDrawerItem();
                         addDockCamera();
                         addDockApps();
 
@@ -703,7 +699,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         AppManager.getInstance(this).init();
     }
 
-    private void addDockApps() {
+    public void addAppDrawerItem() {
+        Item appDrawerBtnItem = Item.newActionItem(8);
+        appDrawerBtnItem.x = 2;
+        Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
+    }
+
+    public void addDockApps() {
 
         //PHONE
         Intent phone = new Intent(Intent.ACTION_MAIN, null);
@@ -721,16 +723,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         browser.addCategory(Intent.CATEGORY_DEFAULT);
 
         PackageManager packageManager = this.getPackageManager();
-        if (!Config.DEBUG_MODE) {
-            List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
-            if (phoneInfo != null || phoneInfo.size() > 0) {
-                ResolveInfo dockApp = phoneInfo.get(0);
-                App app = new App(dockApp, packageManager);
-                Item item = Item.newAppItem(app);
-                item.setX(0);
-                LOG.log(Level.INFO, "Loading App: " + item.getLabel());
-                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
-            }
+        List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
+        if (phoneInfo != null || phoneInfo.size() > 0) {
+            ResolveInfo dockApp = phoneInfo.get(0);
+            App app = new App(dockApp, packageManager);
+            Item item = Item.newAppItem(app);
+            item.setX(0);
+            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+
         }
         List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
         if (messagingInfo != null || messagingInfo.size() > 0) {
@@ -752,7 +753,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
-    private void addDockCamera() {
+    public void addDockCamera() {
         Intent intent = new Intent(MediaStore.INTENT_ACTION_STILL_IMAGE_CAMERA);
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
