@@ -24,9 +24,8 @@ import org.zimmob.zimlx.icon.IconsHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
-import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.widget.Minibar;
 import org.zimmob.zimlx.util.DialogHelper;
+import org.zimmob.zimlx.widget.Minibar;
 
 import java.util.Locale;
 
@@ -72,7 +71,6 @@ public class SettingsActivity extends ThemeActivity {
         toolbar.setBackgroundColor(_appSettings.getPrimaryColor());
         showFragment(SettingsFragmentMaster.TAG, false);
     }
-
 
     public void showFragment(String tag, boolean addToBackStack) {
         String toolbarTitle = getString(R.string.settings);
@@ -319,7 +317,7 @@ public class SettingsActivity extends ThemeActivity {
                 case R.string.pref_key__minibar: {
                     Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
                     return true;
-            }
+                }
                 case R.string.pref_key__hidden_apps: {
                     Intent intent = new Intent(getActivity(), HideAppsActivity.class);
                     intent.addFlags(Intent.FLAG_ACTIVITY_NO_ANIMATION);

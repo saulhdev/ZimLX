@@ -153,6 +153,12 @@ public class AppDrawerVertical extends CardView {
         }
 
         @Override
+        public void filter(CharSequence constraint) {
+            getItemAdapter().filter(constraint);
+        }
+
+
+        @Override
         public Character getCharacterForElement(int element) {
             if (apps != null && element < apps.size() && apps.get(element) != null && apps.get(element).getLabel().length() > 0)
                 return apps.get(element).getLabel().charAt(0);

@@ -15,10 +15,10 @@ import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.dragndrop.DragHandler;
+import org.zimmob.zimlx.manager.Setup;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
 
 import java.util.Objects;

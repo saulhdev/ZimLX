@@ -26,8 +26,10 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     private final Point _coordinate = new Point();
     private HomeActivity _home;
     private final Point _previousDragPoint = new Point();
-    @Nullable private Item _previousItem;
-    @Nullable private View _previousItemView;
+    @Nullable
+    private Item _previousItem;
+    @Nullable
+    private View _previousItemView;
     private float _startPosY;
 
     public Dock(@NonNull Context c, @Nullable AttributeSet attr) {
@@ -98,7 +100,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         _previousDragPoint.set(_coordinate.x, _coordinate.y);
         switch (state) {
             case CurrentNotOccupied:
-                projectImageOutlineAt(_coordinate, DragHandler._cachedDragBitmap);
+                projectImageOutlineAt(_coordinate, DragHandler.cachedDragBitmap);
                 break;
             case OutOffRange:
             case ItemViewNotFound:
@@ -121,7 +123,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
                                     dragNDropView2.showFolderPreviewAt(
                                             this,
                                             ((float) getCellWidth()),
-                                                    //* (((float) _coordinate.x) + 0.5f),
+                                            //* (((float) _coordinate.x) + 0.5f),
                                             (((float) getCellHeight())
                                                     //* (((float) _coordinate.y) + 0.5f))
                                                     - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0))));
@@ -241,8 +243,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
                     removeView(view);
                 }
             });
-        }
-        else if (this.equals(view.getParent())) {
+        } else if (this.equals(view.getParent())) {
             removeView(view);
         }
     }

@@ -724,14 +724,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         PackageManager packageManager = this.getPackageManager();
         List<ResolveInfo> phoneInfo = packageManager.queryIntentActivities(phone, 0);
-        if (phoneInfo != null || phoneInfo.size() > 0) {
-            ResolveInfo dockApp = phoneInfo.get(0);
-            App app = new App(dockApp, packageManager);
-            Item item = Item.newAppItem(app);
-            item.setX(0);
-            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
-            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
-
+        if (!Config.DEBUG_MODE) {
+            if (phoneInfo != null || phoneInfo.size() > 0) {
+                ResolveInfo dockApp = phoneInfo.get(1);
+                App app = new App(dockApp, packageManager);
+                Item item = Item.newAppItem(app);
+                item.setX(0);
+                LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+            }
         }
         List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
         if (messagingInfo != null || messagingInfo.size() > 0) {

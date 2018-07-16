@@ -187,13 +187,10 @@ public class SearchBar extends FrameLayout {
             return false;
         });
         LayoutParams inputCardParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        //(switchButton != null ? iconMarginOutside + iconSize : 0) + searchTextHorizontalMargin
-        //iconMarginOutside + iconSize + searchTextHorizontalMargin
         inputCardParams.setMargins(10, searchTextMarginTop, 10, 0);
 
         LayoutParams inputParams = new LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         inputParams.setMargins(iconMarginOutside + iconSize, 0, 0, 0);
-
 
         _searchCardContainer.addView(_switchButton, switchButtonParams);
         _searchCardContainer.addView(_searchInput, inputParams);
@@ -241,7 +238,7 @@ public class SearchBar extends FrameLayout {
                             }
                         }))
                         .withTextColor(Color.WHITE)
-                        .withMatchParent(true)
+                        .withMatchParent(false)
                         .withIconPadding(getContext(), 15)
                         .withMaxTextLines(Setup.appSettings().getSearchLabelLines()));
             }
@@ -328,6 +325,7 @@ public class SearchBar extends FrameLayout {
             _searchRecycler.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, false));
         } else {
             _searchRecycler.setLayoutManager(new GridLayoutManager(getContext(), gridSize, GridLayoutManager.VERTICAL, false));
+
         }
         _searchRecycler.getLayoutManager().setAutoMeasureEnabled(false);
     }

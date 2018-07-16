@@ -85,7 +85,6 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     }
 
     public IconLabelItem(Context context, Drawable icon, String label, int forceSize) {
-        this(null);
         _label = label;
         _icon = icon;
         _iconProvider = Setup.imageLoader().createIconProvider(icon);
@@ -203,13 +202,12 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         holder.textView.setGravity(_gravity);
         holder.textView.setGravity(_textGravity);
         holder.textView.setCompoundDrawablePadding((int) _drawablePadding);
-        /*if (hideLabel) {
+        if (hideLabel) {
             holder.textView.setText(null);
             _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, Gravity.TOP);
         } else {
             _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, _iconGravity);
         }
-        */
 
         switch (_iconGravity) {
             case Gravity.START:

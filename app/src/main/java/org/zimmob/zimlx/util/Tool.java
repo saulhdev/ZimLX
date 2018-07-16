@@ -165,8 +165,7 @@ public class Tool {
         try {
             packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
             return true;
-        }
-        catch (PackageManager.NameNotFoundException e) {
+        } catch (PackageManager.NameNotFoundException e) {
             return false;
         }
     }
@@ -339,11 +338,26 @@ public class Tool {
     public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
-
             HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
             HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
+            if (itemGestureListener != null) {
+                return itemGestureListener.onTouchEvent(motionEvent);
+            }
             return false;
         };
+
+
+        /*final ItemGestureListener itemGestureListener =
+                Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
+        return (view, motionEvent) -> {
+            HomeActivity._itemTouchX = motionEvent.getX();
+            HomeActivity._itemTouchY = motionEvent.getY();
+
+            if (itemGestureListener != null) {
+                return itemGestureListener.onTouchEvent(motionEvent);
+            }
+            return false;
+        };*/
     }
 
     public static void copy(Context context, String stringIn, String stringOut) {

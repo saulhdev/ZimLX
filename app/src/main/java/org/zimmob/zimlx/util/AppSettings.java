@@ -10,9 +10,9 @@ import net.gsantner.opoc.preference.SharedPreferencesPropertyBackend;
 import org.zimmob.zimlx.AppObject;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.widget.Minibar;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.widget.Desktop;
+import org.zimmob.zimlx.widget.Minibar;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -20,11 +20,11 @@ import java.util.Arrays;
 import java.util.Locale;
 
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
-import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
 
 public class AppSettings extends SharedPreferencesPropertyBackend {
-
+    //TODO: Hacer la configuracion inicial
+    //TODO: Remover opciones sin usar o no programadas
     public AppSettings(Context context) {
         super(context);
     }
@@ -381,10 +381,14 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public int getSortMode() {
-        return getIntOfStringPref(R.string.pref_key__sort_mode, Config.APP_SORT_MU);
+        return getIntOfStringPref(R.string.pref_key__drawer_sort_mode, Config.APP_SORT_MU);
     }
 
     public void setSortMode(int sort) {
-        setString(R.string.pref_key__sort_mode, String.valueOf(sort));
+        setString(R.string.pref_key__drawer_sort_mode, String.valueOf(sort));
+    }
+
+    public void setDrawerStyle(int drawerStyle) {
+        setString(R.string.pref_key__drawer_style, String.valueOf(drawerStyle));
     }
 }

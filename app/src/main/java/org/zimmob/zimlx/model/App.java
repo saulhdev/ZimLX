@@ -3,7 +3,6 @@ package org.zimmob.zimlx.model;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -27,7 +26,8 @@ public class App implements Comparator<App> {
     private Drawable icon;
     public SimpleIconProvider _iconProvider;
     private int intIcon;
-    @Nullable public String _universalLabel;
+    @Nullable
+    public String _universalLabel;
 
     public App(ResolveInfo info, PackageManager pm) {
         this.label = info.loadLabel(pm).toString();
@@ -36,7 +36,7 @@ public class App implements Comparator<App> {
 
         _iconProvider = Setup.imageLoader().createIconProvider(info.loadIcon(pm));
         this.className = info.activityInfo.name;
-        this.intIcon=info.icon;
+        this.intIcon = info.icon;
 
         try {
             updateUniversalLabel(pm, info);
@@ -100,20 +100,22 @@ public class App implements Comparator<App> {
     public void setIconProvider(@NonNull SimpleIconProvider baseIconProvider) {
 
     }
+
     public String getComponentName() {
         return "ComponentInfo{" + packageName + "/" + className + "}";
     }
 
     /**
-     +     * App label for root locale.
-     +     * @see Locale#ROOT
-     +     */
+     * +     * App label for root locale.
+     * +     * @see Locale#ROOT
+     * +
+     */
     @Nullable
     public String getUniversalLabel() {
-                return _universalLabel;
-           }
+        return _universalLabel;
+    }
 
-           public void setUniversalLabel(@Nullable String universalLabel) {
-                _universalLabel = universalLabel;
-           }
+    public void setUniversalLabel(@Nullable String universalLabel) {
+        _universalLabel = universalLabel;
+    }
 }

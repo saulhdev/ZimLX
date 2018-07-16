@@ -1,5 +1,7 @@
 package org.zimmob.zimlx.appdrawer;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -13,14 +15,22 @@ import android.widget.LinearLayout;
 import android.widget.PopupMenu;
 
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.SettingsActivity;
-import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 
+import java.util.Objects;
+import java.util.logging.Logger;
+
+import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
+import static org.zimmob.zimlx.config.Config.DRAWER_VERTICAL;
+
 public class AppDrawerSearch extends LinearLayout {
+    private final Logger LOG = Logger.getLogger(AppDrawerSearch.class.getName());
+
     private SearchView searchView;
     private Button menuButton;
     private Context context;
@@ -58,7 +68,7 @@ public class AppDrawerSearch extends LinearLayout {
         searchView.setQueryHint(context.getText(R.string.search_hint));
         searchView.setActivated(true);
         searchView.setIconifiedByDefault(false);
-        searchView.clearFocus();
+        searchView.requestFocus();
         EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(getResources().getColor(R.color.white));
         searchEditText.setHintTextColor(getResources().getColor(R.color.white));
@@ -71,10 +81,12 @@ public class AppDrawerSearch extends LinearLayout {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                if (drawerMode == Config.DRAWER_HORIZONTAL) {
-                    //AppDrawerPaged.Adapter .filter(newText);
+                //TODO: Implement App Drawer Search in both vertical and horizontal;
+                if (drawerMode == DRAWER_HORIZONTAL) {
+                    //AppDrawerPaged.Adapter adapter = new AppDrawerPaged.Adapter();
                 } else {
-                    //AppDrawerVertical.GridAppDrawerAdapter.filter(newText);
+
+
                 }
                 return false;
             }
@@ -94,18 +106,34 @@ public class AppDrawerSearch extends LinearLayout {
     private void showDrawerMenu(View v) {
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
+        if (Setup.appSettings().getDrawerStyle() == DRAWER_HORIZONTAL) {
+            popupMenu.getMenu().getItem(1).setTitle(R.string.horizontal_paged_drawer);
+        }
         popupMenu.setOnMenuItemClickListener(item -> {
             int menuItem = item.getItemId();
             switch (menuItem) {
                 case R.id.menu_settings:
+                    //TODO: Open App Drawer Setting instead of general setting
                     Intent settings = new Intent(context, SettingsActivity.class);
-                    settings.putExtra("option", R.string.pref_key__cat_app_drawer);
                     context.startActivity(settings);
                     break;
 
                 case R.id.menu_layout_mode:
+                    //TODO: Autorefresh drawer on layout change
+                    if (Setup.appSettings().getDrawerStyle() == DRAWER_HORIZONTAL) {
+                        Setup.appSettings().setDrawerStyle(DRAWER_VERTICAL);
+                        item.setTitle(R.string.horizontal_paged_drawer);
+                    } else {
+                        Setup.appSettings().setDrawerStyle(DRAWER_HORIZONTAL);
+                        item.setTitle(R.string.vertical_scroll_drawer);
+                        PendingIntent restartIntentP = PendingIntent.getActivity(context, 123556, new Intent(context, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
+                        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+                        Objects.requireNonNull(mgr).set(AlarmManager.RTC, 1000, restartIntentP);
+                    }
+
                     break;
 
+                //TODO: Remover opciones sin programar
                 case R.id.menu_hidden_apps:
                     break;
 

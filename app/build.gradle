@@ -16,7 +16,7 @@ android {
         versionProps.load(new FileInputStream(versionPropsFile))
 
         def name = versionProps['VERSION_NAME']
-        def code = versionProps['VERSION_CODE'].toInteger()
+        def code = versionProps['VERSION_CODE'].toInteger() + 1
 
         versionProps['VERSION_CODE'] = code.toString()
         versionProps.store(versionPropsFile.newWriter(), null)

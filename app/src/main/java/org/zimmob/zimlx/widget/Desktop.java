@@ -18,13 +18,13 @@ import android.view.animation.AccelerateDecelerateInterpolator;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.dragndrop.DragAction.Action;
+import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.model.Item.Type;
-import org.zimmob.zimlx.dragndrop.DragAction.Action;
-import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.pageindicator.PageIndicator;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.viewutil.DesktopGestureListener;
@@ -118,6 +118,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
 
     public interface OnDesktopEditListener {
         void onDesktopEdit();
+
         void onFinishDesktopEdit();
     }
 
@@ -206,8 +207,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                     }
                 }
                 pageCount++;
-            }
-            else {
+            } else {
                 return;
             }
         }
@@ -293,7 +293,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
         _previousDragPoint.set(_coordinate.x, _coordinate.y);
         switch (state) {
             case CurrentNotOccupied:
-                getCurrentPage().projectImageOutlineAt(_coordinate, DragHandler._cachedDragBitmap);
+                getCurrentPage().projectImageOutlineAt(_coordinate, DragHandler.cachedDragBitmap);
                 break;
             case OutOffRange:
             case ItemViewNotFound:
@@ -431,8 +431,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                     getCurrentPage().removeView(view);
                 }
             });
-        }
-        else if (getCurrentPage().equals(view.getParent())) {
+        } else if (getCurrentPage().equals(view.getParent())) {
             getCurrentPage().removeView(view);
         }
     }

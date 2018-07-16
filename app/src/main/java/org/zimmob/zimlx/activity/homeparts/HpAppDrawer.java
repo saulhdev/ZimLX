@@ -59,8 +59,7 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
                 _homeActivity.updateDock(false);
                 _homeActivity.updateSearchBar(false);
             }
-        }
-        else {
+        } else {
             if (!startOrEnd) {
                 if (!Setup.appSettings().isDrawerRememberPosition()) {
                     _homeActivity.getAppDrawerController().scrollToStart();
@@ -72,7 +71,7 @@ public class HpAppDrawer implements Callback.a2<Boolean, Boolean> {
                 _homeActivity.showDesktopIndicator();
                 if (Setup.appSettings().getDrawerStyle() == Config.DRAWER_HORIZONTAL)
                     _homeActivity.updateDock(true, 200);
-                else{
+                else {
                     _homeActivity.updateDock(true);
                     _homeActivity.updateSearchBar(!_dragOptionPanel._isDraggedFromDrawer);
                     _dragOptionPanel._isDraggedFromDrawer = false;

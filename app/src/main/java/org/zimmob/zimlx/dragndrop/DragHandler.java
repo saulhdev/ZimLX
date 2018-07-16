@@ -23,10 +23,10 @@ public final class DragHandler {
     private static final String DRAG_DROP_EXTRA = "DRAG_DROP_EXTRA";
     private static final String DRAG_DROP_INTENT = "DRAG_DROP_INTENT";
     public static final DragHandler INSTANCE = new DragHandler();
-    public static Bitmap _cachedDragBitmap;
+    public static Bitmap cachedDragBitmap;
 
     public static <T extends Parcelable> void startDrag(View view, Item item, DragAction.Action action, @Nullable final AppItemView.LongPressCallBack eventAction) {
-        _cachedDragBitmap = loadBitmapFromView(view);
+        cachedDragBitmap = loadBitmapFromView(view);
 
         if (HomeActivity.Companion.getLauncher() != null)
             HomeActivity.Companion.getLauncher().getDragNDropView().startDragNDropOverlay(view, item, action);

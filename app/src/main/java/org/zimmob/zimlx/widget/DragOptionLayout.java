@@ -17,12 +17,11 @@ import android.widget.FrameLayout;
 
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
-import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
 import org.zimmob.zimlx.dragndrop.DragHandler;
+import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 
 import java.util.HashMap;
 import java.util.List;
@@ -131,16 +130,16 @@ public class DragOptionLayout extends FrameLayout {
     @Override
     protected void onDraw(@Nullable Canvas canvas) {
         super.onDraw(canvas);
-        if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
+        if (canvas == null || DragHandler.cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
             return;
-        float x = _dragLocation.x - HomeActivity._itemTouchX;
-        float y = _dragLocation.y - HomeActivity._itemTouchY;
+        float x = _dragLocation.x - 175;// HomeActivity._itemTouchX;
+        float y = _dragLocation.y - 225;// HomeActivity._itemTouchY;
         if (_dragging) {
             canvas.save();
             _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
-            canvas.scale(_overlayIconScale, _overlayIconScale, x + DragHandler._cachedDragBitmap
-                    .getWidth() / 2, y + DragHandler._cachedDragBitmap.getHeight() / 2);
-            canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
+            canvas.scale(_overlayIconScale, _overlayIconScale, x + DragHandler.cachedDragBitmap
+                    .getWidth() / 2, y + DragHandler.cachedDragBitmap.getHeight() / 2);
+            canvas.drawBitmap(DragHandler.cachedDragBitmap, x, y, _paint);
             canvas.restore();
         }
         if (_dragging)
@@ -274,7 +273,8 @@ public class DragOptionLayout extends FrameLayout {
                     convertPoint(((DropTargetListener) dropTarget.getKey()).getView());
                     DropTargetListener dropTargetListener = (DropTargetListener) dropTarget.getKey();
 
-                    dropTargetListener.onStartDrag(_dragAction, _dragLocationConverted);
+                    //dropTargetListener.onStartDrag(_dragAction, _dragLocationConverted);
+                    dropTargetListener.onStartDrag(_dragAction, _dragLocation);
                 }
             }
         }
@@ -295,8 +295,7 @@ public class DragOptionLayout extends FrameLayout {
                         dropTargetListener = dropTarget2.getKey();
                         dropTargetListener.onEnter(_dragAction, _dragLocationConverted);
                     }
-                }
-                else if (!dropTarget2.getValue().getPreviousOutside()) {
+                } else if (!dropTarget2.getValue().getPreviousOutside()) {
                     dropTarget2.getValue().setPreviousOutside(true);
                     dropTargetListener = dropTarget2.getKey();
                     dropTargetListener.onExit(_dragAction, _dragLocationConverted);
@@ -426,19 +425,19 @@ public class DragOptionLayout extends FrameLayout {
 
         protected void onDraw(@Nullable Canvas canvas) {
             super.onDraw(canvas);
-            if (canvas == null || DragHandler._cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
+            if (canvas == null || DragHandler.cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
                 return;
 
-            float x = _dragLocation.x - HomeActivity._itemTouchX;
-            float y = _dragLocation.y - HomeActivity._itemTouchY;
+            float x = _dragLocation.x - 175;//- HomeActivity._itemTouchX;
+            float y = _dragLocation.y - 225;// HomeActivity._itemTouchY;
             if (_dragging) {
                 canvas.save();
                 _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);
                 canvas.scale(_overlayIconScale,
-                        _overlayIconScale, x + DragHandler._cachedDragBitmap.getWidth() / 2,
-                        y + DragHandler._cachedDragBitmap.getHeight() / 2);
+                        _overlayIconScale, x + DragHandler.cachedDragBitmap.getWidth() / 2,
+                        y + DragHandler.cachedDragBitmap.getHeight() / 2);
 
-                canvas.drawBitmap(DragHandler._cachedDragBitmap, x, y, _paint);
+                canvas.drawBitmap(DragHandler.cachedDragBitmap, x, y, _paint);
                 canvas.restore();
             }
 
