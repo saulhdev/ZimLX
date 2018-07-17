@@ -63,22 +63,9 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         this.hideLabel = hideLabel;
     }
 
-    public IconLabelItem(Context context, int label) {
-        this(context, 0, label);
-        _label = context.getString(label);
-    }
-
     public IconLabelItem(Context context, int icon, String label, int forceSize) {
         this(null);
         _label = label;
-        _icon = context.getDrawable(icon);
-        _iconProvider = Setup.imageLoader().createIconProvider(icon);
-        _forceSize = forceSize;
-    }
-
-    public IconLabelItem(Context context, int icon, int label, int forceSize) {
-        this(null);
-        _label = context.getString(label);
         _icon = context.getDrawable(icon);
         _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _forceSize = forceSize;
@@ -89,13 +76,6 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         _icon = icon;
         _iconProvider = Setup.imageLoader().createIconProvider(icon);
         _forceSize = forceSize;
-    }
-
-    public IconLabelItem(Context context, SimpleIconProvider iconProvider, String label, int forceSize) {
-        this(null);
-        this._label = label;
-        this._iconProvider = iconProvider;
-        this._forceSize = forceSize;
     }
 
     public IconLabelItem(Context context, Drawable icon, String label, @Nullable String searchInfo, int forceSize) {

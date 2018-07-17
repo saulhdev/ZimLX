@@ -290,13 +290,13 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     public final void updateSearchClock() {
         SearchBar searchBar = findViewById(R.id.searchBar);
-        TextView textView = searchBar._searchClock;
+        TextView textView = searchBar.searchClock;
         if (textView.getText() != null) {
             try {
                 searchBar = findViewById(R.id.searchBar);
                 searchBar.updateClock();
             } catch (Exception e) {
-                ((SearchBar) findViewById(R.id.searchBar))._searchClock.setText(R.string.bad_format);
+                ((SearchBar) findViewById(R.id.searchBar)).searchClock.setText(R.string.bad_format);
             }
         }
     }

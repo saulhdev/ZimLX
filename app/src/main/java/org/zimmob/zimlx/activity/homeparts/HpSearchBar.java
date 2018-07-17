@@ -13,7 +13,7 @@ import org.zimmob.zimlx.widget.SearchBar;
 
 public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
     private HomeActivity _home;
-    private SearchBar _searchBar;
+    private SearchBar searchBar;
     private CalendarDropDownView _calendarDropDownView;
 
     /**
@@ -22,15 +22,15 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
      * @param calendarDropDownView
      */
     public HpSearchBar(HomeActivity home, SearchBar searchBar, CalendarDropDownView calendarDropDownView) {
-        _home = home;
-        _searchBar = searchBar;
-        _calendarDropDownView = calendarDropDownView;
+        this._home = home;
+        this.searchBar = searchBar;
+        this._calendarDropDownView = calendarDropDownView;
     }
 
 
     public void initSearchBar() {
-        _searchBar.setCallback(this);
-        _searchBar._searchClock.setOnClickListener(this);
+        searchBar.setCallback(this);
+        searchBar.searchClock.setOnClickListener(this);
         _home.updateSearchClock();
     }
 
@@ -58,18 +58,18 @@ public class HpSearchBar implements SearchBar.CallBack, View.OnClickListener {
     public void onExpand() {
         _home.clearRoomForPopUp();
         _home.dimBackground();
-        _searchBar._searchInput.setFocusable(true);
-        _searchBar._searchInput.setFocusableInTouchMode(true);
-        _searchBar._searchInput.post(() -> _searchBar._searchInput.requestFocus());
-        Tool.showKeyboard(_home, _searchBar._searchInput);
+        searchBar.searchInput.setFocusable(true);
+        searchBar.searchInput.setFocusableInTouchMode(true);
+        searchBar.searchInput.post(() -> searchBar.searchInput.requestFocus());
+        Tool.showKeyboard(_home, searchBar.searchInput);
     }
 
     @Override
     public void onCollapse() {
         _home.getDesktop().postDelayed(() -> _home.unClearRoomForPopUp(), 100);
         _home.unDimBackground();
-        _searchBar._searchInput.clearFocus();
-        Tool.hideKeyboard(_home, _searchBar._searchInput);
+        searchBar.searchInput.clearFocus();
+        Tool.hideKeyboard(_home, searchBar.searchInput);
     }
 
     @Override
