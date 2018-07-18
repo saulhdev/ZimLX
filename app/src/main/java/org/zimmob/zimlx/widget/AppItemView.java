@@ -44,6 +44,7 @@ public class AppItemView extends View implements Drawable.Callback {
     private Typeface _typeface;
     private float _iconSize;
     private boolean _showLabel = true;
+    private int maxTextLines = 2;
     private boolean _vibrateWhenLongPress;
     private float _labelHeight;
     private int _targetedWidth;
@@ -93,6 +94,7 @@ public class AppItemView extends View implements Drawable.Callback {
                 .setLabelVisibility(Setup.appSettings().isDrawerShowLabel())
                 .setTextColor(Setup.appSettings().getDrawerLabelColor())
                 .setFontSize(context, Setup.appSettings().getDrawerLabelFontSize())
+                .setMaxTextLines(2)
                 .getView();
     }
 
@@ -244,41 +246,6 @@ public class AppItemView extends View implements Drawable.Callback {
         public Builder setAppItem(final App app) {
             _view.setLabel(app.getLabel());
             _view.setCurrentIcon(app.getIcon());
-            _view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                        @Override
-                        public void run() {
-                            Tool.startApp(_view.getContext(), app, _view);
-                        }
-                    }, 0.85f);
-                }
-            });
-            return this;
-        }
-
-        public Builder setAppItem(final Item item, final App app) {
-            _view.setLabel(item.getLabel());
-            _view.setCurrentIcon(app.getIcon());
-            _view.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Tool.createScaleInScaleOutAnim(_view, new Runnable() {
-                        @Override
-                        public void run() {
-                            Tool.startApp(_view.getContext(), app, _view);
-                        }
-                    }, 0.85f);
-                }
-            });
-            return this;
-        }
-
-        /*
-        Builder setAppItem(final App app) {
-            _view.setLabel(app.getLabel());
-            _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
         }
@@ -288,7 +255,7 @@ public class AppItemView extends View implements Drawable.Callback {
             _view.setCurrentIcon(app.getIcon());
             _view.setOnClickListener(v -> Tool.createScaleInScaleOutAnim(_view, () -> Tool.startApp(_view.getContext(), app, _view), 0.85f));
             return this;
-        }*/
+        }
 
         public Builder setShortcutItem(final Item item) {
             _view.setLabel(item.getLabel());
@@ -364,6 +331,11 @@ public class AppItemView extends View implements Drawable.Callback {
 
         public Builder setLabelVisibility(boolean visible) {
             _view._showLabel = visible;
+            return this;
+        }
+
+        public Builder setMaxTextLines(int maxTextLines) {
+            _view.maxTextLines = maxTextLines;
             return this;
         }
 
