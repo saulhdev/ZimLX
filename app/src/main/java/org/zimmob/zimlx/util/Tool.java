@@ -345,19 +345,6 @@ public class Tool {
             }
             return false;
         };
-
-
-        /*final ItemGestureListener itemGestureListener =
-                Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
-        return (view, motionEvent) -> {
-            HomeActivity._itemTouchX = motionEvent.getX();
-            HomeActivity._itemTouchY = motionEvent.getY();
-
-            if (itemGestureListener != null) {
-                return itemGestureListener.onTouchEvent(motionEvent);
-            }
-            return false;
-        };*/
     }
 
     public static void copy(Context context, String stringIn, String stringOut) {
