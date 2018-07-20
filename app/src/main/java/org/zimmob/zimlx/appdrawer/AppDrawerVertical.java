@@ -35,7 +35,7 @@ public class AppDrawerVertical extends CardView {
     public static int itemHeightPadding;
 
     public RecyclerView recyclerView;
-    public GridAppDrawerAdapter gridDrawerAdapter;
+    public static GridAppDrawerAdapter gridDrawerAdapter;
     private DragScrollBar scrollBar;
 
     private static List<App> apps;
@@ -143,8 +143,39 @@ public class AppDrawerVertical extends CardView {
         });
     }
 
+    public static void Filter(CharSequence s) {
+        List<App> tmpApps = apps;
+        List<App> filterApps = apps;
+        String appName = s.toString().toLowerCase();
+        if (s.length() > 0) {
+            if (filterApps.size() != 0) {
+                AppDrawerVertical.apps = filterApps;
+                ArrayList<DrawerAppItem> items = new ArrayList<>();
+                for (int i = 0; i < apps.size(); i++) {
+                    App filteredApp = apps.get(i);
+
+                    if (filteredApp.getLabel().toLowerCase().contains(appName)) {
+                        items.add(new DrawerAppItem(filteredApp));
+                    }
+                }
+                gridDrawerAdapter.set(items);
+            }
+        } else {
+            if (filterApps.size() != 0) {
+                AppDrawerVertical.apps = tmpApps;
+                ArrayList<DrawerAppItem> items = new ArrayList<>();
+                for (int i = 0; i < apps.size(); i++) {
+                    items.add(new DrawerAppItem(apps.get(i)));
+                }
+                gridDrawerAdapter.set(items);
+            }
+
+        }
+
+    }
+
     public static class GridAppDrawerAdapter extends FastItemAdapter<DrawerAppItem> implements INameableAdapter {
-        GridAppDrawerAdapter() {
+        public GridAppDrawerAdapter() {
             getItemFilter().withFilterPredicate((IItemAdapter.Predicate<DrawerAppItem>) (item, constraint) ->
                     !item.getApp()
                             .getLabel()
@@ -153,10 +184,10 @@ public class AppDrawerVertical extends CardView {
         }
 
         @Override
-        public void filter(CharSequence constraint) {
-            getItemAdapter().filter(constraint);
-        }
+        public void filter(CharSequence app) {
+            getItemAdapter().filter(app);
 
+        }
 
         @Override
         public Character getCharacterForElement(int element) {

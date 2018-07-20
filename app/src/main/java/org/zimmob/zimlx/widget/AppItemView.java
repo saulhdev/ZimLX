@@ -94,7 +94,7 @@ public class AppItemView extends View implements Drawable.Callback {
                 .setLabelVisibility(Setup.appSettings().isDrawerShowLabel())
                 .setTextColor(Setup.appSettings().getDrawerLabelColor())
                 .setFontSize(context, Setup.appSettings().getDrawerLabelFontSize())
-                .setMaxTextLines(2)
+                .setMaxTextLines(Setup.appSettings().getSearchLabelLines())
                 .getView();
     }
 
