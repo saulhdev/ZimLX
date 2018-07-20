@@ -22,6 +22,7 @@ import android.os.Parcelable;
 import android.view.View;
 import android.view.ViewGroup;
 
+import org.zimmob.zimlx.widget.AppItemView;
 import org.zimmob.zimlx.widget.SmoothViewPager;
 
 /**

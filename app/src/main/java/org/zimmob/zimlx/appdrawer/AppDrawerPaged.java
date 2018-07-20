@@ -34,7 +34,7 @@ public class AppDrawerPaged extends SmoothViewPager {
     private int _rowCellCount, _columnCellCount;
     private PageIndicator _appDrawerIndicator;
     private int _pageCount = 0;
-    public static Companion Companion = null;
+    public static Companion Companion=null;
     public static Adapter gridAdapter;
 
     public AppDrawerPaged(Context c, AttributeSet attr) {
@@ -117,30 +117,24 @@ public class AppDrawerPaged extends SmoothViewPager {
 
     }
 
-    public void loadAppsFiltered(List<App> fApps) {
-        List<App> allApps = fApps;
-        if (allApps.size() != 0) {
-            AppDrawerPaged.this.apps = allApps;
-            calculatePage();
-            setAdapter(new Adapter());
-            if (_appDrawerIndicator != null)
-                _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
-        }
-    }
-
     public void Filter(CharSequence s) {
-        List<App> tmpApps = AppDrawerPaged.apps;
-        List<App> filteredApps = new ArrayList<>();
+        List<App> tmpApps = apps;
+        List<App> filteredApps= new ArrayList<>();
         String appName = s.toString().toLowerCase();
         if (s.length() > 0) {
-            for (int i = 0; i < apps.size(); i++) {
-                App filteredApp = apps.get(i);
-                if (filteredApp.getLabel().toLowerCase().contains(appName)) {
-                    filteredApps.add(filteredApp);
+            if (apps.size() != 0) {
+                for (int i = 0; i < apps.size(); i++) {
+                    App filteredApp = apps.get(i);
+                    if (filteredApp.getLabel().toLowerCase().contains(appName)) {
+                        filteredApps.add(filteredApp);
+                    }
                 }
+                apps=filteredApps;
+                calculatePage();
+                setAdapter(new Adapter());
+                if (_appDrawerIndicator != null)
+                    _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
             }
-            loadAppsFiltered(filteredApps);
-
         } else {
             loadApps();
         }
@@ -260,7 +254,7 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     public class Companion {
-        public void FilterApps(CharSequence s) {
+        public void FilterApps(CharSequence s){
             Filter(s);
         }
     }

@@ -44,7 +44,7 @@ public class FolderIcon extends Drawable {
     private int outline;
     private int iconSizeDiv2;
     private AppSettings appSettings = Setup.appSettings();
-    PreviewBackground mBackground = new PreviewBackground();
+    private PreviewBackground mBackground = new PreviewBackground();
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
     private Rect mTempBounds = new Rect();
@@ -190,22 +190,6 @@ public class FolderIcon extends Drawable {
         } else if (paintIcon.getAlpha() != 255) {
             paintIcon.setAlpha(Tool.clampInt(paintIcon.getAlpha() + 25, 0, 255));
             invalidateSelf();
-        }
-    }
-
-    public void drawBadge(Canvas canvas) {
-        if ((mBadgeInfo != null && mBadgeInfo.hasBadge()) || mBadgeScale > 0) {
-            int offsetX = mBackground.getOffsetX();
-            int offsetY = mBackground.getOffsetY();
-            int previewSize = (int) (mBackground.previewSize * mBackground.mScale);
-            mTempBounds.set(offsetX, offsetY, offsetX + previewSize, offsetY + previewSize);
-
-            // If we are animating to the accepting state, animate the badge out.
-            float badgeScale = Math.max(0, mBadgeScale - mBackground.getScaleProgress());
-            mTempSpaceForBadgeOffset.set(50 - mTempBounds.right, mTempBounds.top);
-            IconPalette badgePalette = IconPalette.getFolderBadgePalette(HomeActivity.Companion.getResources());
-            mBadgeRenderer.draw(canvas, badgePalette, mBadgeInfo, mTempBounds,
-                    badgeScale, mTempSpaceForBadgeOffset);
         }
     }
 

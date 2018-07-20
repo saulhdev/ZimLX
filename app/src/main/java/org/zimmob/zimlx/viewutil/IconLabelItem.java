@@ -78,6 +78,13 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         _forceSize = forceSize;
     }
 
+    public IconLabelItem(Context context, SimpleIconProvider iconProvider, String label, @Nullable String searchInfo, int forceSize) {
+        _label = label;
+        _iconProvider = iconProvider;
+        _forceSize = forceSize;
+        _searchInfo = searchInfo;
+    }
+
     public IconLabelItem(Context context, Drawable icon, String label, @Nullable String searchInfo, int forceSize) {
         this(context, icon, label, forceSize);
         _searchInfo = searchInfo;
@@ -184,26 +191,10 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         holder.textView.setCompoundDrawablePadding((int) _drawablePadding);
         if (hideLabel) {
             holder.textView.setText(null);
-            _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, Gravity.TOP);
+            _iconProvider.loadIconIntoTextView(holder.textView, _forceSize, Gravity.TOP);
         } else {
-            _iconProvider.loadIcon(IconProvider.IconTargetType.TextView, _forceSize, holder.textView, _iconGravity);
+            _iconProvider.loadIconIntoTextView(holder.textView, _forceSize, _iconGravity);
         }
-
-        switch (_iconGravity) {
-            case Gravity.START:
-                holder.textView.setCompoundDrawablesWithIntrinsicBounds(_icon, null, null, null);
-                break;
-            case Gravity.END:
-                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, _icon, null);
-                break;
-            case Gravity.TOP:
-                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, _icon, null, null);
-                break;
-            case Gravity.BOTTOM:
-                holder.textView.setCompoundDrawablesWithIntrinsicBounds(null, null, null, _icon);
-                break;
-        }
-
         holder.textView.setTypeface(_typeface);
         if (_bold)
             holder.textView.setTypeface(Typeface.DEFAULT_BOLD);

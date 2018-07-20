@@ -6,7 +6,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.SearchView;
-import android.support.v7.widget.SearchView.OnQueryTextListener;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.Button;
@@ -73,22 +74,25 @@ public class AppDrawerSearch extends LinearLayout {
         searchEditText.setTextColor(getResources().getColor(R.color.white));
         searchEditText.setHintTextColor(getResources().getColor(R.color.white));
 
-        searchView.setOnQueryTextListener(new OnQueryTextListener() {
+        //TODO: Implement App Drawer Search in both vertical and horizontal;
+        searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
-            public boolean onQueryTextSubmit(String query) {
-                return false;
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
             }
 
             @Override
-            public boolean onQueryTextChange(String newText) {
-                //TODO: Implement App Drawer Search in both vertical and horizontal;
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (drawerMode == DRAWER_HORIZONTAL) {
-                    //AppDrawerPaged.Adapter adapter = new AppDrawerPaged.Adapter();
+                    AppDrawerPaged.Companion.FilterApps(s);
                 } else {
-
-
+                    AppDrawerVertical.Filter(s);
                 }
-                return false;
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
             }
         });
 

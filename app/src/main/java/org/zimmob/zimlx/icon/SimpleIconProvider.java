@@ -12,7 +12,7 @@ import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.folder.FolderIcon;
 
-public class SimpleIconProvider extends BaseIconProvider{
+public class SimpleIconProvider implements IconProvider{
     private int drawableResource;
 
     protected Drawable drawable;
@@ -34,6 +34,10 @@ public class SimpleIconProvider extends BaseIconProvider{
             return Setup.appContext().getResources().getDrawable(drawableResource);
         }
         return null;
+    }
+
+    public void loadIconIntoTextView(TextView tv, int forceSize, int gravity) {
+        loadIcon(IconProvider.IconTargetType.TextView, forceSize, tv, gravity);
     }
 
     @Override
