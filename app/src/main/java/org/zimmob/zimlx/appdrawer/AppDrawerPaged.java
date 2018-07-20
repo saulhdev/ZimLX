@@ -28,13 +28,13 @@ import java.util.Comparator;
 import java.util.List;
 
 public class AppDrawerPaged extends SmoothViewPager {
-    private List<App> apps;
+    private static List<App> apps;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
     private int _rowCellCount, _columnCellCount;
     private PageIndicator _appDrawerIndicator;
     private int _pageCount = 0;
-
+    public static Companion Companion=null;
     public static Adapter gridAdapter;
 
     public AppDrawerPaged(Context c, AttributeSet attr) {
@@ -57,6 +57,7 @@ public class AppDrawerPaged extends SmoothViewPager {
             setLandscapeValue();
         }
         loadApps();
+        Companion = new Companion();
     }
 
     @Override
@@ -116,7 +117,27 @@ public class AppDrawerPaged extends SmoothViewPager {
 
     }
 
-    public static void Filter(CharSequence s) {
+    public void Filter(CharSequence s) {
+        List<App> tmpApps = apps;
+        List<App> filteredApps= new ArrayList<>();
+        String appName = s.toString().toLowerCase();
+        if (s.length() > 0) {
+            if (apps.size() != 0) {
+                for (int i = 0; i < apps.size(); i++) {
+                    App filteredApp = apps.get(i);
+                    if (filteredApp.getLabel().toLowerCase().contains(appName)) {
+                        filteredApps.add(filteredApp);
+                    }
+                }
+                apps=filteredApps;
+                calculatePage();
+                setAdapter(new Adapter());
+                if (_appDrawerIndicator != null)
+                    _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
+            }
+        } else {
+            loadApps();
+        }
     }
 
     public void sortApps() {
@@ -229,6 +250,12 @@ public class AppDrawerPaged extends SmoothViewPager {
             ViewGroup layout = _pages.get(pos);
             container.addView(layout);
             return layout;
+        }
+    }
+
+    public class Companion {
+        public void FilterApps(CharSequence s){
+            Filter(s);
         }
     }
 }

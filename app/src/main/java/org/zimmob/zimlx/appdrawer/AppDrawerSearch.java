@@ -84,7 +84,7 @@ public class AppDrawerSearch extends LinearLayout {
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
                 if (drawerMode == DRAWER_HORIZONTAL) {
-                    AppDrawerPaged.Filter(s);
+                    AppDrawerPaged.Companion.FilterApps(s);
                 } else {
                     AppDrawerVertical.Filter(s);
                 }
