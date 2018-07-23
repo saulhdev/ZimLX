@@ -24,7 +24,6 @@ import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
 
 public class AppSettings extends SharedPreferencesPropertyBackend {
     //TODO: Hacer la configuracion inicial
-    //TODO: Remover opciones sin usar o no programadas
     public AppSettings(Context context) {
         super(context);
     }
