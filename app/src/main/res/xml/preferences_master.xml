@@ -29,14 +29,14 @@
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/pref_title__appearance">
-
+                <!--
                 <ListPreference
                     android:defaultValue="0"
                     android:entries="@array/entries__desktop_transition"
                     android:entryValues="@array/values__zero_to_four"
                     android:key="@string/pref_key__desktop_transition"
                     android:title="@string/pref_title__desktop_transition" />
-
+                -->
 
                 <ListPreference
                     android:defaultValue="2"
@@ -228,7 +228,7 @@
             </PreferenceCategory>
 
             <PreferenceCategory android:title="@string/pref_title__appearance">
-
+                <!--
                 <ListPreference
                     android:defaultValue="0"
                     android:entries="@array/entries__drawer_enter"
@@ -242,7 +242,7 @@
                     android:entryValues="@array/values__zero_to_four"
                     android:key="@string/pref_key__drawer_transition"
                     android:title="@string/pref_title__drawer_transition" />
-
+-->
 
                 <ListPreference
                     android:defaultValue="0"
@@ -354,6 +354,7 @@
                     android:summary="@string/pref_summary__theme"
                     android:title="@string/pref_title__theme" />
             </PreferenceCategory>
+            <!--
             <PreferenceCategory android:title="@string/pref_title__fonts">
 
                 <org.zimmob.zimlx.preference.NumberPickerPreference
@@ -369,7 +370,7 @@
                     android:summary="@string/pref_summary__font_type"
                     android:title="@string/pref_title__font_type" />
 
-            </PreferenceCategory>
+            </PreferenceCategory>   -->
             <PreferenceCategory android:title="@string/pref_title__icons">
                 <org.zimmob.zimlx.preference.NumberPickerPreference
                     android:defaultValue="48"
@@ -398,6 +399,7 @@
                     android:entryValues="@array/values__zero_to_three"
                     android:key="@string/pref_key__folder_shape"
                     android:title="@string/pref_title__folder_shape" />
+                <!--
                 <ListPreference
                     android:defaultValue="0"
                     android:entries="@array/entries__folder_preview"
@@ -411,6 +413,8 @@
                     android:key="@string/pref_key__folder_transition"
                     android:summary="@string/pref_summary__folder_transition"
                     android:title="@string/pref_title__folder_transition" />
+                -->
+
             </PreferenceCategory>
             <PreferenceCategory android:title="@string/pref_title__icons">
                 <CheckBoxPreference
