@@ -26,16 +26,22 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class AppDrawerPaged extends SmoothViewPager {
-    private static List<App> apps;
+    private final Logger LOG = Logger.getLogger(AppDrawerPaged.class.getName());
+
+    private List<App> apps;
+    private List<App> apps2;
+    private List<App> tmpApps;
     public List<ViewGroup> _pages = new ArrayList<>();
     private HomeActivity _home;
     private int _rowCellCount, _columnCellCount;
     private PageIndicator _appDrawerIndicator;
     private int _pageCount = 0;
-    public static Companion Companion=null;
-    public static Adapter gridAdapter;
+    public static Companion companion = null;
+    public int searchLength;
 
     public AppDrawerPaged(Context c, AttributeSet attr) {
         super(c, attr);
@@ -57,7 +63,7 @@ public class AppDrawerPaged extends SmoothViewPager {
             setLandscapeValue();
         }
         loadApps();
-        Companion = new Companion();
+        companion = new Companion();
     }
 
     @Override
@@ -101,6 +107,8 @@ public class AppDrawerPaged extends SmoothViewPager {
         List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
         if (allApps.size() != 0) {
             AppDrawerPaged.this.apps = allApps;
+            AppDrawerPaged.this.apps2 = allApps;
+
             calculatePage();
             setAdapter(new Adapter());
             if (_appDrawerIndicator != null)
@@ -108,6 +116,7 @@ public class AppDrawerPaged extends SmoothViewPager {
         }
         Setup.appLoader().addUpdateListener(apps -> {
             AppDrawerPaged.this.apps = apps;
+            AppDrawerPaged.this.apps2 = apps;
             calculatePage();
             setAdapter(new Adapter());
             if (_appDrawerIndicator != null)
@@ -118,30 +127,47 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     public void Filter(CharSequence s) {
-        List<App> tmpApps = apps;
-        List<App> filteredApps= new ArrayList<>();
+        List<App> filteredApps = new ArrayList<>();
         String appName = s.toString().toLowerCase();
+
         if (s.length() > 0) {
-            if (apps.size() != 0) {
+            if (searchLength <= s.length()) {
                 for (int i = 0; i < apps.size(); i++) {
                     App filteredApp = apps.get(i);
                     if (filteredApp.getLabel().toLowerCase().contains(appName)) {
                         filteredApps.add(filteredApp);
                     }
                 }
-                apps=filteredApps;
-                calculatePage();
+                tmpApps = apps;
+            } else {
+                tmpApps = apps2;
+                for (int i = 0; i < tmpApps.size(); i++) {
+                    App filteredApp = tmpApps.get(i);
+                    if (filteredApp.getLabel().toLowerCase().contains(appName)) {
+                        filteredApps.add(filteredApp);
+                    }
+
+                }
+            }
+            apps = filteredApps;
+            setAdapter(new Adapter());
+            if (_appDrawerIndicator != null)
+                _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
+
+        } else {
+            List<App> allApps = Setup.appLoader().getAllApps(getContext(), false);
+            if (allApps.size() > 0) {
+                AppDrawerPaged.this.apps = allApps;
                 setAdapter(new Adapter());
                 if (_appDrawerIndicator != null)
                     _appDrawerIndicator.setViewPager(AppDrawerPaged.this);
             }
-        } else {
-            loadApps();
         }
+        searchLength = s.length();
     }
 
     public void sortApps() {
-        Collections.sort(apps, new SortMostUsed());
+        Collections.sort(apps, new SortByMostUsed());
         resetAdapter();
     }
 
@@ -158,7 +184,7 @@ public class AppDrawerPaged extends SmoothViewPager {
         setAdapter(new Adapter());
     }
 
-    public static class SortMostUsed implements Comparator<App> {
+    public static class SortByMostUsed implements Comparator<App> {
         @Override
         public int compare(App lhs, App rhs) {
             int item1 = HomeActivity.Companion.getDb().getAppCount(lhs.getPackageName());
@@ -199,6 +225,22 @@ public class AppDrawerPaged extends SmoothViewPager {
                         }
                     }
                 }
+                _pages.add(layout);
+            }
+            LOG.log(Level.INFO, "GET COUNT: " + getCount());
+            if (getCount() == 0) {
+                ViewGroup layout = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_paged_inner, null);
+                if (!Setup.appSettings().isDrawerShowCardView()) {
+                    //((CardView) layout.getChildAt(0)).setCardBackgroundColor(Color.TRANSPARENT);
+                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Color.BLACK);
+                    ((CardView) layout.getChildAt(0)).setCardElevation(4);
+                } else {
+                    ((CardView) layout.getChildAt(0)).setCardBackgroundColor(Setup.appSettings().getDrawerCardColor());
+                    ((CardView) layout.getChildAt(0)).setCardElevation(Tool.dp2px(4, getContext()));
+                }
+                CellContainer cc = layout.findViewById(R.id.group);
+                cc.setGridSize(_columnCellCount, _rowCellCount);
+
                 _pages.add(layout);
             }
         }
@@ -254,9 +296,10 @@ public class AppDrawerPaged extends SmoothViewPager {
     }
 
     public class Companion {
-        public void FilterApps(CharSequence s){
+        public void FilterApps(CharSequence s) {
             Filter(s);
         }
+
     }
 }
 
