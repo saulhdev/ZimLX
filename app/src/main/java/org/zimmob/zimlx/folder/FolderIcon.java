@@ -17,10 +17,8 @@ import android.util.Log;
 import android.util.Property;
 import android.view.ViewConfiguration;
 
-import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.badge.BadgeRenderer;
 import org.zimmob.zimlx.badge.FolderBadgeInfo;
-import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
@@ -35,6 +33,7 @@ import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE_SHADOW;
 public class FolderIcon extends Drawable {
     private Drawable[] icons;
 
+    // The number of icons to display in the
     private Paint paintIcon;
     private boolean needAnimate;
     private boolean needAnimateScale;
@@ -66,8 +65,6 @@ public class FolderIcon extends Drawable {
         }
     };
 
-
-
     public FolderIcon(Context context, Item item, int iconSize) {
         final float size = Tool.dp2px(iconSize, context);
         final Drawable[] icons = new Drawable[4];
@@ -90,16 +87,6 @@ public class FolderIcon extends Drawable {
         }
     }
 
-    @Override
-    public int getIntrinsicHeight() {
-        return (int) iconSize;
-    }
-
-    @Override
-    public int getIntrinsicWidth() {
-        return (int) iconSize;
-    }
-
     private void init(Drawable[] icons, float size) {
         this.icons = icons;
         this.iconSize = size;
@@ -111,6 +98,16 @@ public class FolderIcon extends Drawable {
         paintIcon.setFilterBitmap(true);
 
         mSlop = ViewConfiguration.get(appSettings.getContext()).getScaledTouchSlop();
+    }
+
+    @Override
+    public int getIntrinsicHeight() {
+        return (int) iconSize;
+    }
+
+    @Override
+    public int getIntrinsicWidth() {
+        return (int) iconSize;
     }
 
     public void popUp() {
