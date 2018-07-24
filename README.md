@@ -9,26 +9,26 @@ Open Source and free Launcher for Android based on OpenLauncher.
 ## Screenshots
 <table>
     <tr>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_paged.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_paged.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_vertical.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_vertical.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop.jpg" width="256" />
                         </td>
     </tr>
     <tr>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_option.png" width="256" />
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_option.jpg" width="256" />
             </td>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_grid.png" width="256" />
-            </td><td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_list.png" width="256" />
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_grid.jpg" width="256" />
+            </td><td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_list.jpg" width="256" />
                              </td>
         </tr>
     <tr>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/folder_view.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/folder_view.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_desktop.png" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_desktop.jpg" width="256" />
                         </td>
     </tr>
 <table>
