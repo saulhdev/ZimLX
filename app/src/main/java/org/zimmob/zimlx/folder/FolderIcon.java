@@ -1,5 +1,7 @@
 package org.zimmob.zimlx.folder;
 
+import android.animation.Animator;
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -30,10 +32,8 @@ import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_CIRCLE_SHADOW;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE;
 import static org.zimmob.zimlx.config.Config.FOLDER_SHAPE_SQUARE_SHADOW;
 
-public class FolderIcon extends Drawable {
+public class FolderIcon extends Drawable implements IFolderListener {
     private Drawable[] icons;
-
-    // The number of icons to display in the
     private Paint paintIcon;
     private boolean needAnimate;
     private boolean needAnimateScale;
@@ -44,23 +44,23 @@ public class FolderIcon extends Drawable {
     private int iconSizeDiv2;
     private AppSettings appSettings = Setup.appSettings();
     private PreviewBackground mBackground = new PreviewBackground();
-    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
-    private BadgeRenderer mBadgeRenderer;
     private Rect mTempBounds = new Rect();
     private float mSlop;
-    private float mBadgeScale;
-    private Point mTempSpaceForBadgeOffset = new Point();
 
+    private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
+    private BadgeRenderer mBadgeRenderer;
+    private static float mBadgeScale;
+    private Point mTempSpaceForBadgeOffset = new Point();
     private static final Property<FolderIcon, Float> BADGE_SCALE_PROPERTY
             = new Property<FolderIcon, Float>(Float.TYPE, "badgeScale") {
         @Override
         public Float get(FolderIcon folderIcon) {
-            return folderIcon.mBadgeScale;
+            return mBadgeScale;
         }
 
         @Override
         public void set(FolderIcon folderIcon, Float value) {
-            folderIcon.mBadgeScale = value;
+            mBadgeScale = value;
             folderIcon.invalidateSelf();
         }
     };
@@ -98,6 +98,7 @@ public class FolderIcon extends Drawable {
         paintIcon.setFilterBitmap(true);
 
         mSlop = ViewConfiguration.get(appSettings.getContext()).getScaledTouchSlop();
+
     }
 
     @Override
@@ -140,7 +141,6 @@ public class FolderIcon extends Drawable {
         switch (mode) {
             case FOLDER_SHAPE_CIRCLE:
                 paintBackground.setColor(Color.parseColor("#A4101947"));
-
                 //create circle
                 clip.addCircle(iconSize / 2, iconSize / 2, iconSize / 2 - outline, Path.Direction.CW);
                 canvas.clipPath(clip, Region.Op.REPLACE);
@@ -157,7 +157,6 @@ public class FolderIcon extends Drawable {
 
             case FOLDER_SHAPE_SQUARE:
                 paintBackground.setColor(Color.parseColor("#A4101947"));
-
                 rect = new Rect(0, 0, (int) iconSize, (int) iconSize);
                 RectF rectF = new RectF(rect);
                 canvas.drawRoundRect(rectF, 20, 20, paintBackground);
@@ -180,7 +179,6 @@ public class FolderIcon extends Drawable {
         if (icons[3] != null)
             drawIcon(canvas, icons[3], iconSizeDiv2 + padding, iconSizeDiv2 + padding, iconSize - padding, iconSize - padding, paintIcon);
         canvas.restore();
-
         if (needAnimate) {
             paintIcon.setAlpha(Tool.clampInt(paintIcon.getAlpha() - 25, 0, 255));
             invalidateSelf();
@@ -210,4 +208,31 @@ public class FolderIcon extends Drawable {
         return PixelFormat.TRANSPARENT;
     }
 
+    public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
+        updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
+        mBadgeInfo = badgeInfo;
+    }
+
+    private void updateBadgeScale(boolean wasBadged, boolean isBadged) {
+        float newBadgeScale = isBadged ? 1f : 0f;
+        // Animate when a badge is first added or when it is removed.
+        if ((wasBadged ^ isBadged)) {// && isShown()) {
+            createBadgeScaleAnimator(newBadgeScale).start();
+        } else {
+            mBadgeScale = newBadgeScale;
+            //invalidate();
+        }
+    }
+
+    public Animator createBadgeScaleAnimator(float... badgeScales) {
+        return ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, badgeScales);
+    }
+
+    public boolean hasBadge() {
+        return mBadgeInfo != null && mBadgeInfo.hasBadge();
+    }
+
+    @Override
+    public void onItemsChanged(boolean animate) {
+    }
 }

@@ -103,7 +103,6 @@ public class Folder extends RevealFrameLayout {
                 if (groupItem == null) {
                     continue;
                 }
-                final App groupApp = groupItem.getType() != Item.Type.SHORTCUT ? Setup.appLoader().findItemApp(groupItem) : null;
                 AppItemView appItemView = AppItemView.createAppItemViewPopup(getContext(), groupItem, AppSettings.getDesktopIconSize(), AppSettings.getDrawerLabelFontSize());
                 final View view = appItemView.getView();
 
@@ -279,7 +278,6 @@ public class Folder extends RevealFrameLayout {
                 HomeActivity.Companion.getDb().saveItem(item, Config.ItemState.Visible);
                 HomeActivity.Companion.getDb().deleteItem(currentItem, true);
                 callBack.removeItem(currentView, false);
-                Tool.print("_______________________");
                 callBack.addItemToCell(item, item.getX(), item.getY());
             }
             if (HomeActivity.Companion.getLauncher() != null) {
@@ -287,7 +285,6 @@ public class Folder extends RevealFrameLayout {
             }
         }
     }
-
 
     public static class GroupDef {
         public static int _maxItem = 12;

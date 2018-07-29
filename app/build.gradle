@@ -11,7 +11,7 @@ android {
     def versionPropsFile = file('../version.properties')
 
     if (versionPropsFile.canRead()) {
-        def Properties versionProps = new Properties()
+        Properties versionProps = new Properties()
 
         versionProps.load(new FileInputStream(versionPropsFile))
 
@@ -121,6 +121,7 @@ dependencies {
     implementation 'de.psdev.licensesdialog:licensesdialog:1.8.3'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2@aar'
+    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation('com.github.ozodrukh:CircularReveal:2.1.0') {
         transitive = true
     }

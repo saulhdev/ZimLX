@@ -6,4 +6,20 @@
     <dimen name="badge_small_padding">0dp</dimen>
     <dimen name="badge_large_padding">3dp</dimen>
 
+    <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>
+
+    <dimen name="notification_padding_start">16.0dip</dimen>
+    <dimen name="notification_padding_end">12.0dip</dimen>
+    <dimen name="notification_footer_icon_row_padding">15.0dip</dimen>
+    <dimen name="notification_header_height">36dp</dimen>
+    <dimen name="notification_main_height">84dp</dimen>
+    <dimen name="notification_footer_height">32dp</dimen>
+    <dimen name="notification_empty_footer_height">6dp</dimen>
+    <dimen name="notification_header_text_size">13.0sp</dimen>
+    <dimen name="notification_header_count_text_size">12.0sp</dimen>
+    <dimen name="notification_main_text_size">14.0sp</dimen>
+    <dimen name="notification_icon_size">24.0dip</dimen>
+    <dimen name="notification_footer_icon_size">18.0dip</dimen>
+    <dimen name="notification_main_text_padding_end">52.0dip</dimen>
+    <dimen name="notification_elevation">2.0dip</dimen>
 </resources>
