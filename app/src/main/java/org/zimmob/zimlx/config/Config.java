@@ -1,6 +1,9 @@
 package org.zimmob.zimlx.config;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -8,10 +11,14 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
+import org.zimmob.zimlx.model.LauncherModel;
 import org.zimmob.zimlx.util.AppSettings;
+import org.zimmob.zimlx.util.LooperExecutor;
 
 /**
  * Created by saul on 05-06-18.
@@ -122,6 +129,30 @@ public class Config {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static void restartLauncher(final Context context) {
+        new LooperExecutor(LauncherModel.getWorkerLooper()).execute(() -> {
+            try {
+                Thread.sleep(WAIT_BEFORE_RESTART);
+            } catch (Exception e) {
+                Log.e("SettingsActivity", "Error waiting", e);
+            }
+
+            Intent intent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .setPackage(context.getPackageName())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Create a pending intent so the application is restarted after Process.killProcess() was called.
+            // We use an AlarmManager to call this intent in 50ms
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pendingIntent);
+
+            // Kill the application
+            android.os.Process.killProcess(android.os.Process.myPid());
+        });
     }
 
     public static void killLauncher() {

@@ -12,6 +12,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
+import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -91,11 +92,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private static final int REQUEST_CREATE_APPWIDGET = 0x6475;
     public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
     private static final int REQUEST_PICK_APPWIDGET = 0x2678;
-
+    private static final int REQUEST_BIND_APPWIDGET = 1;
     private static Resources resources;
 
     private static WidgetHost _appWidgetHost;
-
+    private LauncherApps.PinItemRequest mRequest;
     private static AppWidgetManager _appWidgetManager;
     private static boolean _consumeNextResume;
 
