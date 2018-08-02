@@ -1,7 +1,5 @@
 package org.zimmob.zimlx.appdrawer;
 
-import android.app.AlarmManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -18,12 +16,12 @@ import android.widget.PopupMenu;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.SettingsActivity;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 
-import java.util.Objects;
 import java.util.logging.Logger;
 
 import static org.zimmob.zimlx.config.Config.DRAWER_HORIZONTAL;
@@ -38,13 +36,12 @@ public class AppDrawerSearch extends LinearLayout {
     int drawerMode = 0;
 
     public AppDrawerSearch(Context context) {
-        super(context);
-        this.context = context;
-        init();
+        this(context, null);
     }
 
     public AppDrawerSearch(@NonNull Context context, AttributeSet attrs) {
         super(context);
+        this.context = context;
         init();
     }
 
@@ -69,11 +66,10 @@ public class AppDrawerSearch extends LinearLayout {
         searchView.setQueryHint(context.getText(R.string.search_hint));
         searchView.setActivated(true);
         searchView.setIconifiedByDefault(false);
-        searchView.requestFocus();
         EditText searchEditText = searchView.findViewById(android.support.v7.appcompat.R.id.search_src_text);
         searchEditText.setTextColor(getResources().getColor(R.color.white));
         searchEditText.setHintTextColor(getResources().getColor(R.color.white));
-
+        searchEditText.clearFocus();
         //TODO: Implement App Drawer Search in both vertical and horizontal;
         searchEditText.addTextChangedListener(new TextWatcher() {
             @Override
@@ -111,8 +107,11 @@ public class AppDrawerSearch extends LinearLayout {
         PopupMenu popupMenu = new PopupMenu(getContext(), v);
         popupMenu.getMenuInflater().inflate(R.menu.drawer_menu, popupMenu.getMenu());
         if (Setup.appSettings().getDrawerStyle() == DRAWER_HORIZONTAL) {
+            popupMenu.getMenu().getItem(1).setTitle(R.string.vertical_scroll_drawer);
+        } else {
             popupMenu.getMenu().getItem(1).setTitle(R.string.horizontal_paged_drawer);
         }
+
         popupMenu.setOnMenuItemClickListener(item -> {
             int menuItem = item.getItemId();
             switch (menuItem) {
@@ -126,14 +125,12 @@ public class AppDrawerSearch extends LinearLayout {
                     //TODO: Autorefresh drawer on layout change
                     if (Setup.appSettings().getDrawerStyle() == DRAWER_HORIZONTAL) {
                         Setup.appSettings().setDrawerStyle(DRAWER_VERTICAL);
-                        item.setTitle(R.string.horizontal_paged_drawer);
                     } else {
                         Setup.appSettings().setDrawerStyle(DRAWER_HORIZONTAL);
-                        item.setTitle(R.string.vertical_scroll_drawer);
-                        PendingIntent restartIntentP = PendingIntent.getActivity(context, 123556, new Intent(context, HomeActivity.class), PendingIntent.FLAG_CANCEL_CURRENT);
-                        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                        Objects.requireNonNull(mgr).set(AlarmManager.RTC, 1000, restartIntentP);
                     }
+                    Config.restartLauncher(getContext());
+                    //Config.killLauncher();
+                    HomeActivity.Companion.getLauncher().openAppDrawer();
 
                     break;
 
