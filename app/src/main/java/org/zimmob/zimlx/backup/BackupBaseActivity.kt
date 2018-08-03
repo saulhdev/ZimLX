@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import org.zimmob.zimlx.R
+import org.zimmob.zimlx.util.AppSettings
 
 @SuppressLint("Registered")
 open class BackupBaseActivity : AppCompatActivity() {
@@ -20,6 +21,7 @@ open class BackupBaseActivity : AppCompatActivity() {
         super.setContentView(R.layout.activity_settings)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(AppSettings.get().primaryColor)
         setSupportActionBar(toolbar)
     }
 

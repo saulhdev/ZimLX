@@ -16,6 +16,7 @@ import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
 
+import org.zimmob.zimlx.backup.RestoreBackupActivity;
 import org.zimmob.zimlx.model.LauncherModel;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.LooperExecutor;
@@ -153,6 +154,12 @@ public class Config {
             // Kill the application
             android.os.Process.killProcess(android.os.Process.myPid());
         });
+    }
+
+    public static void checkRestoreSuccess(Context context) {
+        context.startActivity(new Intent(context, RestoreBackupActivity.class)
+                .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
+
     }
 
     public static void killLauncher() {
