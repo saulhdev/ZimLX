@@ -20,7 +20,7 @@ import net.gsantner.opoc.util.ContextUtils;
 import org.jetbrains.annotations.Contract;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.backup.BackupListActivity;
-import org.zimmob.zimlx.icon.IconsHandler;
+import org.zimmob.zimlx.icon.IconPackHandler;
 import org.zimmob.zimlx.preference.ColorPreferenceCompat;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DatabaseHelper;
@@ -325,7 +325,7 @@ public class SettingsActivity extends ThemeActivity {
                     return true;
                 }
                 case R.string.pref_key__icon_pack: {
-                    IconsHandler iconsHandler = new IconsHandler(getContext());
+                    IconPackHandler iconsHandler = new IconPackHandler(getContext());
                     iconsHandler.showDialog(getActivity());
                     return true;
                 }
@@ -344,9 +344,6 @@ public class SettingsActivity extends ThemeActivity {
                     return true;
                 }
                 case R.string.pref_key__backup: {
-                    //if (new PermissionChecker(getActivity()).doIfExtStoragePermissionGranted()) {
-                    //DialogHelper.backupDialog(getActivity());
-                    //}
                     startActivity(new Intent(getActivity(), BackupListActivity.class));
 
                     return true;

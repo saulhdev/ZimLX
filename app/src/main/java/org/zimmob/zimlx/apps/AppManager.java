@@ -10,7 +10,7 @@ import android.util.Log;
 
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.icon.IconsHandler;
+import org.zimmob.zimlx.icon.IconPackHandler;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
@@ -193,7 +193,7 @@ public class AppManager {
             }
 
             if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
-                IconsHandler iconsHandler = new IconsHandler(_context);
+                IconPackHandler iconsHandler = new IconPackHandler(_context);
                 iconsHandler.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), _apps);
             }
             return null;

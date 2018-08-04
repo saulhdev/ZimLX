@@ -269,7 +269,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     }
 
     public String getIconPack() {
-        return getString(R.string.pref_key__icon_pack, "");
+        return getString(R.string.pref_key__icon_pack, "0");
     }
 
     public void setIconPack(String value) {

@@ -34,13 +34,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class IconsHandler {
+public class IconPackHandler {
     private static final String TAG = "IconsHandler";
-    private static String[] LAUNCHER_INTENTS = new String[] {
+    private static String[] LAUNCHER_INTENTS = new String[]{
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",
             "com.teslacoilsw.launcher.THEME",
             "com.gau.go.launcherex.theme",
+            "com.dlto.atom.launcher.THEME",
+            "com.novalauncher.THEME",
             "org.adw.launcher.THEMES",
             "org.adw.launcher.icons.ACTION_PICK_ICON"
     };
@@ -62,7 +64,7 @@ public class IconsHandler {
     private float mFactor = 1.0f;
     private boolean mDialogShowing;
 
-    public IconsHandler(Context context) {
+    public IconPackHandler(Context context) {
         mContext = context;
         mPackageManager = context.getPackageManager();
         mDefaultIconPack = context.getString(R.string.icon_pack_default);
@@ -235,7 +237,7 @@ public class IconsHandler {
             try {
                 iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
             } catch (Exception e) {
-                Log.e("IconPackHelper",e.getMessage());
+                Log.e("IconPackHelper", e.getMessage());
             }
             if (iconPackResources != null) {
                 if (getResource(iconPackResources, iconPackName, "iconback", null) != null)
@@ -380,7 +382,7 @@ public class IconsHandler {
 
     public void showDialog(final Activity activity) {
         loadAvailableIconPacks();
-        final IconAdapter iconAdapter = new IconAdapter(mContext, mIconPacks);
+        final IconPackAdapter iconAdapter = new IconPackAdapter(mContext, mIconPacks);
 
         AlertDialog.Builder builder = new AlertDialog.Builder(activity)
                 .setTitle(R.string.icon_pack_title)

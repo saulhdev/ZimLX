@@ -82,12 +82,10 @@
             android:label="@string/backups"
             android:parentActivityName=".activity.SettingsActivity"
             android:theme="@style/NormalActivity.Light" />
-
         <activity
             android:name=".backup.NewBackupActivity"
             android:label="@string/title_activity_new_backup"
             android:theme="@style/NormalActivity.Light" />
-
         <activity
             android:name=".backup.RestoreBackupActivity"
             android:label="@string/restore_backup"

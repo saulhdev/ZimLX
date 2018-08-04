@@ -18,12 +18,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 
-public class IconAdapter extends BaseAdapter {
+public class IconPackAdapter extends BaseAdapter {
     ArrayList<IconPackInfo> mSupportedPackages;
     LayoutInflater mLayoutInflater;
     String mCurrentIconPack;
 
-    public IconAdapter(Context context, Map<String, IconPackInfo> supportedPackages) {
+    public IconPackAdapter(Context context, Map<String, IconPackInfo> supportedPackages) {
         mLayoutInflater = LayoutInflater.from(context);
         mSupportedPackages = new ArrayList<>(supportedPackages.values());
         Collections.sort(mSupportedPackages, (lhs, rhs) ->
@@ -59,11 +59,11 @@ public class IconAdapter extends BaseAdapter {
             convertView = mLayoutInflater.inflate(R.layout.target_edit_iconpack_chooser, null);
         }
         IconPackInfo info = mSupportedPackages.get(position);
-        TextView txtView = (TextView) convertView.findViewById(R.id.title);
+        TextView txtView = convertView.findViewById(R.id.title);
         txtView.setText(info.label);
-        ImageView imgView = (ImageView) convertView.findViewById(R.id.icon);
+        ImageView imgView = convertView.findViewById(R.id.icon);
         imgView.setImageDrawable(info.icon);
-        RadioButton radioButton = (RadioButton) convertView.findViewById(R.id.radio);
+        RadioButton radioButton = convertView.findViewById(R.id.radio);
         radioButton.setChecked(info.packageName.equals(mCurrentIconPack));
         return convertView;
     }
