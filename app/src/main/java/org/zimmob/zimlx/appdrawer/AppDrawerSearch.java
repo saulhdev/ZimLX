@@ -130,7 +130,7 @@ public class AppDrawerSearch extends LinearLayout {
                     }
                     Config.restartLauncher(getContext());
                     //Config.killLauncher();
-                    HomeActivity.Companion.getLauncher().openAppDrawer();
+                    HomeActivity.companion.getLauncher().openAppDrawer();
 
                     break;
 

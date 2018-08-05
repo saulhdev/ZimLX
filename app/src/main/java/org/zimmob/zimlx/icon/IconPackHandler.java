@@ -237,7 +237,7 @@ public class IconPackHandler {
             try {
                 iconPackResources = appManager.getPackageManager().getResourcesForApplication(iconPackName);
             } catch (Exception e) {
-                Log.e("IconPackHelper", e.getMessage());
+                Log.e(TAG, e.getMessage());
             }
             if (iconPackResources != null) {
                 if (getResource(iconPackResources, iconPackName, "iconback", null) != null)
@@ -274,7 +274,7 @@ public class IconPackHandler {
                 if (intResourceUpon != 0)
                     upon = BitmapFactory.decodeResource(iconPackResources, intResourceUpon, uniformOptions);
             } catch (Exception e) {
-                System.out.println(e);
+                Log.e(TAG, e.getMessage());
             }
         }
 
@@ -348,14 +348,14 @@ public class IconPackHandler {
                                 resource = xrp.getAttributeValue(0);
                             }
                         } catch (Exception e) {
-                            System.out.println(e);
+                            Log.e(TAG, e.getMessage());
                         }
                     }
                     xrp.next();
                 }
             }
         } catch (Exception e) {
-            System.out.println(e);
+            Log.e(TAG, e.getMessage());
         }
         return resource;
     }

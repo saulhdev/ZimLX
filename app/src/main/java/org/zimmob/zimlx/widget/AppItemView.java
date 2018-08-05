@@ -268,7 +268,7 @@ public class AppItemView extends View implements Drawable.Callback {
             _view.setLabel(item.getLabel());
             _view.setCurrentIcon(new FolderIcon(context, item, iconSize));
             _view.setOnClickListener(v -> {
-                if (HomeActivity.Companion.getLauncher() != null && (HomeActivity.Companion.getLauncher()).getFolder().showWindowV(item, v, callback)) {
+                if (HomeActivity.companion.getLauncher() != null && (HomeActivity.companion.getLauncher()).getFolder().showWindowV(item, v, callback)) {
                     ((FolderIcon) ((AppItemView) v).getCurrentIcon()).popUp();
                 }
             });
@@ -282,8 +282,8 @@ public class AppItemView extends View implements Drawable.Callback {
                 case Config.ACTION_LAUNCHER:
                     _view.setOnClickListener(view -> {
                         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
-                        if (HomeActivity.Companion.getLauncher() != null) {
-                            Objects.requireNonNull(HomeActivity.Companion.getLauncher()).openAppDrawer(view);
+                        if (HomeActivity.companion.getLauncher() != null) {
+                            Objects.requireNonNull(HomeActivity.companion.getLauncher()).openAppDrawer(view);
                         }
                     });
                     break;

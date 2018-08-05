@@ -250,9 +250,11 @@
     <string name="search_hint">Search Apps</string>
     <string name="search_online">Search online&#8230;</string>
     <string name="bad_format">Bad Format</string>
-
     <string name="searchbar_search_apps">Search Apps</string>
     <string name="searchbar_button" translatable="false">...</string>
+
+    <string name="test_title">Test</string>
+    <string name="visibility">Visibility</string>
 
     <!-- Dialog Menu -->
     <string name="menu_settings">Drawer Settings</string>
@@ -275,7 +277,6 @@
     <string name="folder_name"></string>
     <string name="folder_hint_text">Unnamed Folder</string>
     <string name="title_activity_new_backup">NewBackup</string>
-
 
     <!-- BACKUPS -->
     <string name="backups">Backups</string>

@@ -189,17 +189,17 @@ public class Tool {
     }
 
     public static void startApp(Context context, App app) {
-        if (HomeActivity.Companion.getLauncher() != null)
-            HomeActivity.Companion.getLauncher().onStartApp(context, app, null);
+        if (HomeActivity.companion.getLauncher() != null)
+            HomeActivity.companion.getLauncher().onStartApp(context, app, null);
     }
 
     public static void startApp(Context context, Intent intent) {
-        if (HomeActivity.Companion.getLauncher() != null)
-            HomeActivity.Companion.getLauncher().onStartApp(context, intent, null);
+        if (HomeActivity.companion.getLauncher() != null)
+            HomeActivity.companion.getLauncher().onStartApp(context, intent, null);
     }
 
     public static final void startApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
-        HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+        HomeActivity homeActivity = HomeActivity.companion.getLauncher();
         if (homeActivity != null) {
             homeActivity.onStartApp(context, app, view);
         }
@@ -338,8 +338,8 @@ public class Tool {
     public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
-            HomeActivity.Companion.setItemTouchX((int) motionEvent.getX());
-            HomeActivity.Companion.setItemTouchY((int) motionEvent.getY());
+            HomeActivity.companion.setItemTouchX((int) motionEvent.getX());
+            HomeActivity.companion.setItemTouchY((int) motionEvent.getY());
             if (itemGestureListener != null) {
                 return itemGestureListener.onTouchEvent(motionEvent);
             }

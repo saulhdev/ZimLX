@@ -128,7 +128,6 @@
     <string name="pref_default__search_bar_base_uri" translatable="false">
     <![CDATA[https://duckduckgo.com/?kae=c&k1=-1&kaj=m&kv=l&kp=-1&q={query}]]></string>
 
-
     <string name="app_license_name" translatable="false">Apache 2.0</string>
     <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
     <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
@@ -136,4 +135,7 @@
     <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
     <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
     <string name="app_contribution_info_url" translatable="false">https://github.com/otakuhqz/zimlx/blob/master/README.md#contributions</string>
+
+    <string name="test_package" translatable="false">com.example.test</string>
+
 </resources>

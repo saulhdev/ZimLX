@@ -39,6 +39,7 @@ public class Item implements Parcelable {
     // all items need these values
     private int _idValue;
     private String name = "";
+    private String packageName = "";
 
     public SimpleIconProvider iconProvider = null;
 
@@ -67,6 +68,7 @@ public class Item implements Parcelable {
         _idValue = parcel.readInt();
         type = Type.valueOf(parcel.readString());
         name = parcel.readString();
+        packageName = parcel.readString();
         x = parcel.readInt();
         y = parcel.readInt();
         switch (type) {
@@ -94,8 +96,8 @@ public class Item implements Parcelable {
         _locationInLauncher = parcel.readInt();
 
         if (Setup.appSettings().enableImageCaching()) {
-            icon = Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue));
-            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(_idValue)));
+            icon = Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(_idValue));
+            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(_idValue)));
 
         } else {
             switch (type) {
@@ -116,6 +118,8 @@ public class Item implements Parcelable {
         item.name = app.getLabel();
         item.icon = app.getIcon();
         item.intent = toIntent(app);
+        item.packageName = app.getPackageName();
+        item.iconProvider = Setup.imageLoader().createIconProvider(app.getIcon());
         return item;
     }
 
@@ -230,6 +234,10 @@ public class Item implements Parcelable {
 
     public String getLabel() {
         return name;
+    }
+
+    public String getPackageName() {
+        return packageName;
     }
 
     public void setLabel(String label) {

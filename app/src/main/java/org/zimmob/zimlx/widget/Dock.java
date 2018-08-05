@@ -46,7 +46,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     public final void initDockItem(@NonNull HomeActivity home) {
         int columns = Setup.appSettings().getDockSize();
         setGridSize(columns, 1);
-        List<Item> dockItems = HomeActivity.Companion.getDb().getDock();
+        List<Item> dockItems = HomeActivity.companion.getDb().getDock();
         _home = home;
         removeAllViews();
         for (Item item : dockItems) {
@@ -200,7 +200,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
     public boolean addItemToPage(@NonNull Item item, int page) {
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
-            HomeActivity.Companion.getDb().deleteItem(item, true);
+            HomeActivity.companion.getDb().deleteItem(item, true);
             return false;
         }
         item._locationInLauncher = 1;

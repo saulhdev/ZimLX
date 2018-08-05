@@ -267,8 +267,8 @@ public class AppManager {
 
         @Override
         public int compare(ResolveInfo lhs, ResolveInfo rhs) {
-            int item1 = HomeActivity.Companion.getDb().getAppCount(lhs.activityInfo.packageName);
-            int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.activityInfo.packageName);
+            int item1 = HomeActivity.companion.getDb().getAppCount(lhs.activityInfo.packageName);
+            int item2 = HomeActivity.companion.getDb().getAppCount(rhs.activityInfo.packageName);
             if (item1 < item2) {
                 return 1;
             } else if (item2 < item1) {

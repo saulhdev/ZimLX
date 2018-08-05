@@ -270,7 +270,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements Setup.DataManage
             case SHORTCUT:
                 item.setIntent(Tool.getIntentFromString(data));
                 if (Setup.appSettings().enableImageCaching()) {
-                    item.setIcon(Tool.getIcon(HomeActivity.Companion.getLauncher(), Integer.toString(id)));
+                    item.setIcon(Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(id)));
                 } else {
                     switch (type) {
                         case APP:

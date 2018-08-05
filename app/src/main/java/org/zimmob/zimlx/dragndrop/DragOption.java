@@ -146,9 +146,13 @@ public class DragOption {
         dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(launcher.getDesktop()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
-                if (!DragAction.Action.SEARCH_RESULT.equals(action))
+                if (!DragAction.Action.SEARCH_RESULT.equals(action)) {
+                    //if (dragNDropView.getDragItem().getType() == Item.Type.APP) {
+                    //    launcher.openDialog(new EditAppDialog(HomeActivity.companion.getLauncher(),dragNDropView.getDragItem(),launcher));
+                    //} else {
                     showItemPopup(dragNDropView, launcher);
-
+                    //}
+                }
                 return true;
             }
 
@@ -302,14 +306,14 @@ public class DragOption {
             case APP:
             case SHORTCUT:
             case GROUP: {
-                if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
-                    itemList.add(uninstallItem);
-                    itemList.add(infoItem);
-                } else {
+                //if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
+                //    itemList.add(uninstallItem);
+                //    itemList.add(infoItem);
+                //} else {
                     itemList.add(editItem);
                     itemList.add(removeItem);
                     itemList.add(infoItem);
-                }
+                //}
                 break;
             }
             case ACTION: {

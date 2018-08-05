@@ -260,8 +260,8 @@ public class Folder extends RevealFrameLayout {
 
     private void removeItem(Context context, final IDesktopCallback callBack, final Item currentItem, Item dragOutItem, AppItemView currentView) {
         currentItem.getGroupItems().remove(dragOutItem);
-        HomeActivity.Companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
-        HomeActivity.Companion.getDb().saveItem(currentItem);
+        HomeActivity.companion.getDb().saveItem(dragOutItem, Config.ItemState.Visible);
+        HomeActivity.companion.getDb().saveItem(currentItem);
         currentView.setCurrentIcon(new FolderIcon(context, currentItem, Setup.appSettings().getDesktopIconSize()));
     }
 
@@ -274,14 +274,14 @@ public class Folder extends RevealFrameLayout {
                 item.setX(currentItem.getX());
                 item.setY(currentItem.getY());
 
-                HomeActivity.Companion.getDb().saveItem(item);
-                HomeActivity.Companion.getDb().saveItem(item, Config.ItemState.Visible);
-                HomeActivity.Companion.getDb().deleteItem(currentItem, true);
+                HomeActivity.companion.getDb().saveItem(item);
+                HomeActivity.companion.getDb().saveItem(item, Config.ItemState.Visible);
+                HomeActivity.companion.getDb().deleteItem(currentItem, true);
                 callBack.removeItem(currentView, false);
                 callBack.addItemToCell(item, item.getX(), item.getY());
             }
-            if (HomeActivity.Companion.getLauncher() != null) {
-                HomeActivity.Companion.getLauncher().getDesktop().requestLayout();
+            if (HomeActivity.companion.getLauncher() != null) {
+                HomeActivity.companion.getLauncher().getDesktop().requestLayout();
             }
         }
     }

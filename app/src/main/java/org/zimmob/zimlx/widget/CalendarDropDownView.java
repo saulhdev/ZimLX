@@ -46,11 +46,11 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     public void animateShow() {
         if (stateOpened) return;
-        assert HomeActivity.Companion.getLauncher() != null;
-        Tool.invisibleViews(HomeActivity.Companion.getLauncher().getSearchBar());
-        HomeActivity.Companion.getLauncher().dimBackground();
-        HomeActivity.Companion.getLauncher().clearRoomForPopUp();
-        HomeActivity.Companion.getLauncher().getBackground().setOnClickListener(this);
+        assert HomeActivity.companion.getLauncher() != null;
+        Tool.invisibleViews(HomeActivity.companion.getLauncher().getSearchBar());
+        HomeActivity.companion.getLauncher().dimBackground();
+        HomeActivity.companion.getLauncher().clearRoomForPopUp();
+        HomeActivity.companion.getLauncher().getBackground().setOnClickListener(this);
         calendarView.setSelectedDate(Calendar.getInstance());
         stateOpened = true;
         animate().scaleY(1).setDuration(200).withEndAction(() -> Tool.visibleViews(200, calendarView));
@@ -58,10 +58,10 @@ public class CalendarDropDownView extends CardView implements View.OnClickListen
 
     public void animateHide() {
         if (!stateOpened) return;
-        Tool.visibleViews(HomeActivity.Companion.getLauncher().getSearchBar());
-        HomeActivity.Companion.getLauncher().unDimBackground();
-        HomeActivity.Companion.getLauncher().unClearRoomForPopUp();
-        HomeActivity.Companion.getLauncher().getBackground().setOnClickListener(null);
+        Tool.visibleViews(HomeActivity.companion.getLauncher().getSearchBar());
+        HomeActivity.companion.getLauncher().unDimBackground();
+        HomeActivity.companion.getLauncher().unClearRoomForPopUp();
+        HomeActivity.companion.getLauncher().getBackground().setOnClickListener(null);
         stateOpened = false;
         Tool.invisibleViews(200, calendarView);
         animate().scaleY(0).setStartDelay(200).setDuration(200);

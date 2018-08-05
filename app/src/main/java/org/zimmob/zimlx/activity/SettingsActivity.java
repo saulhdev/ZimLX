@@ -275,7 +275,7 @@ public class SettingsActivity extends ThemeActivity {
         protected void onPreferenceChanged(SharedPreferences prefs, String key) {
             super.onPreferenceChanged(prefs, key);
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, key);
-            HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+            HomeActivity homeActivity = HomeActivity.companion.getLauncher();
             switch (keyRes) {
                 case R.string.pref_key__desktop_indicator_style: {
                     homeActivity.getDesktopIndicator().setMode(_as.getDesktopIndicatorMode());
@@ -311,7 +311,7 @@ public class SettingsActivity extends ThemeActivity {
         @SuppressWarnings({"ConstantConditions", "ConstantIfStatement", "StatementWithEmptyBody"})
         public Boolean onPreferenceClicked(Preference preference) {
             int keyRes = _cu.getResId(ContextUtils.ResType.STRING, preference.getKey());
-            HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+            HomeActivity homeActivity = HomeActivity.companion.getLauncher();
 
             switch (keyRes) {
                 case R.string.pref_key__minibar: {

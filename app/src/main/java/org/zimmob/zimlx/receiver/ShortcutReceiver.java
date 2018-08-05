@@ -57,21 +57,21 @@ public class ShortcutReceiver extends BroadcastReceiver {
         } else {
             item = Item.newShortcutItem(newIntent, shortcutIconDrawable, name);
         }
-        Point preferredPos = HomeActivity.Companion
+        Point preferredPos = HomeActivity.companion
                 .getLauncher()
                 .getDesktop()
                 .getPages()
-                .get(HomeActivity.Companion
+                .get(HomeActivity.companion
                         .getLauncher()
                         .getDesktop()
                         .getCurrentItem()).findFreeSpace();
         if (preferredPos == null) {
-            Tool.toast(HomeActivity.Companion.getLauncher(), R.string.toast_not_enough_space);
+            Tool.toast(HomeActivity.companion.getLauncher(), R.string.toast_not_enough_space);
         } else {
             item.setX(preferredPos.x);
             item.setY(preferredPos.y);
-            HomeActivity.Companion.getDb().saveItem(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem(), Config.ItemPosition.Desktop);
-            boolean added = HomeActivity.Companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.Companion.getLauncher().getDesktop().getCurrentItem());
+            HomeActivity.companion.getDb().saveItem(item, HomeActivity.companion.getLauncher().getDesktop().getCurrentItem(), Config.ItemPosition.Desktop);
+            boolean added = HomeActivity.companion.getLauncher().getDesktop().addItemToPage(item, HomeActivity.companion.getLauncher().getDesktop().getCurrentItem());
 
             Setup.logger().log(this, Log.INFO, null, "Shortcut installed - %s => Intent: %s (Item type: %s; x = %d, y = %d, added = %b)", name, newIntent, item.getType(), item.getX(), item.getY(), added);
         }

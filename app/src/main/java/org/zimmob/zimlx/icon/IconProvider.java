@@ -19,4 +19,6 @@ public interface IconProvider {
     boolean isGroupIconDrawable();
 
     Drawable getDrawableSynchronously(int forceSize);
+
+    Drawable scaleDrawable(Drawable drawable, int forceSize);
 }

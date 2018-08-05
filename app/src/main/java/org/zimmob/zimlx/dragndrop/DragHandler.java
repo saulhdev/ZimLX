@@ -28,8 +28,8 @@ public final class DragHandler {
     public static <T extends Parcelable> void startDrag(View view, Item item, DragAction.Action action, @Nullable final AppItemView.LongPressCallBack eventAction) {
         cachedDragBitmap = loadBitmapFromView(view);
 
-        if (HomeActivity.Companion.getLauncher() != null)
-            HomeActivity.Companion.getLauncher().getDragNDropView().startDragNDropOverlay(view, item, action);
+        if (HomeActivity.companion.getLauncher() != null)
+            HomeActivity.companion.getLauncher().getDragNDropView().startDragNDropOverlay(view, item, action);
 
         if (eventAction != null)
             eventAction.afterDrag(view);

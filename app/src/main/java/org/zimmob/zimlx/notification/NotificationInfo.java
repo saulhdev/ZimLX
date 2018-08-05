@@ -70,7 +70,7 @@ public class NotificationInfo {
         if (intent == null) {
             return;
         }
-        HomeActivity homeActivity = HomeActivity.Companion.getLauncher();
+        HomeActivity homeActivity = HomeActivity.companion.getLauncher();
         //Bundle activityOptions = ActivityOptions.makeClipRevealAnimation(
         //        view, 0, 0, view.getWidth(), view.getHeight()).toBundle();
         //try {

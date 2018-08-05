@@ -5,21 +5,26 @@ import android.graphics.Point;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.EditAppDialog;
 import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.Dock;
 
 public class HpAppEditApplier implements IDialogListener.OnEditDialogListener {
-    private HomeActivity _homeActivity;
+    private HomeActivity launcher;
     private Item _item;
 
     public HpAppEditApplier(HomeActivity home) {
-        _homeActivity = home;
+        launcher = home;
     }
 
     public void onEditItem(final Item item) {
         _item = item;
-        Setup.eventHandler().showEditDialog(_homeActivity, item, this);
+        if (_item.getType() == Item.Type.APP)
+            launcher.openDialog(new EditAppDialog(HomeActivity.companion.getLauncher(), _item, launcher));
+
+        else
+            Setup.eventHandler().showEditDialog(launcher, _item, this);
     }
 
     @Override
@@ -30,14 +35,14 @@ public class HpAppEditApplier implements IDialogListener.OnEditDialogListener {
 
         switch (_item._locationInLauncher) {
             case Item.LOCATION_DESKTOP: {
-                Desktop desktop = _homeActivity.getDesktop();
+                Desktop desktop = launcher.getDesktop();
                 desktop.removeItem(desktop.getCurrentPage().coordinateToChildView(point), false);
                 desktop.addItemToCell(_item, _item.x, _item.y);
                 break;
             }
             case Item.LOCATION_DOCK: {
-                Dock dock = _homeActivity.getDock();
-                _homeActivity.getDock().removeItem(dock.coordinateToChildView(point), false);
+                Dock dock = launcher.getDock();
+                launcher.getDock().removeItem(dock.coordinateToChildView(point), false);
                 dock.addItemToCell(_item, _item.x, _item.y);
                 break;
             }

@@ -26,7 +26,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class AppDrawerPaged extends SmoothViewPager {
@@ -187,8 +186,8 @@ public class AppDrawerPaged extends SmoothViewPager {
     public static class SortByMostUsed implements Comparator<App> {
         @Override
         public int compare(App lhs, App rhs) {
-            int item1 = HomeActivity.Companion.getDb().getAppCount(lhs.getPackageName());
-            int item2 = HomeActivity.Companion.getDb().getAppCount(rhs.getPackageName());
+            int item1 = HomeActivity.companion.getDb().getAppCount(lhs.getPackageName());
+            int item2 = HomeActivity.companion.getDb().getAppCount(rhs.getPackageName());
             if (item1 < item2) {
                 return 1;
             } else if (item2 < item1) {
@@ -227,7 +226,6 @@ public class AppDrawerPaged extends SmoothViewPager {
                 }
                 _pages.add(layout);
             }
-            LOG.log(Level.INFO, "GET COUNT: " + getCount());
             if (getCount() == 0) {
                 ViewGroup layout = (ViewGroup) LayoutInflater.from(getContext()).inflate(R.layout.view_app_drawer_paged_inner, null);
                 if (!Setup.appSettings().isDrawerShowCardView()) {

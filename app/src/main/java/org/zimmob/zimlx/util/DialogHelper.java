@@ -8,7 +8,6 @@ import android.net.Uri;
 import android.os.Environment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -108,7 +107,7 @@ public class DialogHelper {
                 Uri packageURI = Uri.parse("package:" + item.getIntent().getComponent().getPackageName());
                 Intent uninstallIntent = new Intent(Intent.ACTION_DELETE, packageURI);
                 context.startActivity(uninstallIntent);
-                HomeActivity.Companion.getDb().deleteApp(item.getIntent().getComponent().getPackageName());
+                HomeActivity.companion.getDb().deleteApp(item.getIntent().getComponent().getPackageName());
             }
             catch (Exception e) {
             }

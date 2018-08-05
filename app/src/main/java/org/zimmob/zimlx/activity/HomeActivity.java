@@ -3,16 +3,17 @@ package org.zimmob.zimlx.activity;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlarmManager;
+import android.app.Dialog;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ActivityInfo;
-import android.content.pm.LauncherApps;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
@@ -26,11 +27,13 @@ import android.provider.Settings.SettingNotFoundException;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewGroup.MarginLayoutParams;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -47,6 +50,7 @@ import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragOption;
 import org.zimmob.zimlx.folder.Folder;
+import org.zimmob.zimlx.icon.EditIconActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
@@ -85,18 +89,31 @@ import java.util.logging.Logger;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener {
+public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener, DialogInterface.OnDismissListener {
     private final Logger LOG = Logger.getLogger(HomeActivity.class.getName());
+    public static final String TAG = "Launcher";
+    public static final Companion companion = new Companion();
+    public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
+    private static final int REQUEST_CREATE_SHORTCUT = 1;
+    private static final int REQUEST_CREATE_APPWIDGET = 5;
+    private static final int REQUEST_PICK_APPWIDGET = 9;
+    private static final int REQUEST_PICK_WALLPAPER = 10;
+    private static final int REQUEST_BIND_APPWIDGET = 11;
+    private static final int REQUEST_BIND_PENDING_APPWIDGET = 14;
+    private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
+    private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
+    private static final int REQUEST_EDIT_ICON = 14;
 
-    public static final Companion Companion = new Companion();
-    private static final int REQUEST_CREATE_APPWIDGET = 0x6475;
-    public static final int REQUEST_PERMISSION_STORAGE = 0x3648;
-    private static final int REQUEST_PICK_APPWIDGET = 0x2678;
-    private static final int REQUEST_BIND_APPWIDGET = 1;
+    private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
+
+    private static final int SOFT_INPUT_MODE_DEFAULT =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
+    private static final int SOFT_INPUT_MODE_ALL_APPS =
+            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
+
     private static Resources resources;
 
     private static WidgetHost _appWidgetHost;
-    private LauncherApps.PinItemRequest mRequest;
     private static AppWidgetManager _appWidgetManager;
     private static boolean _consumeNextResume;
 
@@ -115,21 +132,23 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private final ShortcutReceiver _shortcutReceiver = new ShortcutReceiver();
     private BroadcastReceiver _timeChangedReceiver;
     private AppSettings appSettings;
-    private SearchBar searchBar;
 
     static {
-        Companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIME_TICK");
-        Companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIMEZONE_CHANGED");
-        Companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIME_SET");
-        Companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_ADDED");
-        Companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_REMOVED");
-        Companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_CHANGED");
-        Companion.getAppUpdateIntentFilter().addDataScheme("package");
-        Companion.getShortcutIntentFilter().addAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIME_TICK");
+        companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIMEZONE_CHANGED");
+        companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIME_SET");
+        companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_ADDED");
+        companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_REMOVED");
+        companion.getAppUpdateIntentFilter().addAction("android.intent.action.PACKAGE_CHANGED");
+        companion.getAppUpdateIntentFilter().addDataScheme("package");
+        companion.getShortcutIntentFilter().addAction("com.android.launcher.action.INSTALL_SHORTCUT");
     }
 
+    private LauncherDialog mCurrentDialog;
+    private boolean mHasFocus;
+
     protected void onCreate(Bundle savedInstanceState) {
-        Companion.setResources(getResources());
+        companion.setResources(getResources());
         ContextUtils contextUtils = new ContextUtils(getApplicationContext());
         appSettings = AppSettings.get();
 
@@ -148,10 +167,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 }
             };
         }
-        Companion.setLauncher(this);
+        companion.setLauncher(this);
         DataManager dataManager = Setup.dataManager();
 
-        Companion.setDb(dataManager);
+        companion.setDb(dataManager);
         setContentView(getLayoutInflater().inflate(R.layout.activity_home, null));
         Window window = getWindow();
         View decorView = window.getDecorView();
@@ -173,8 +192,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             System.exit(0);
             return;
         }
-        Companion.setLauncher(this);
-        WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+        companion.setLauncher(this);
+        WidgetHost appWidgetHost = companion.getAppWidgetHost();
         if (appWidgetHost != null) {
             appWidgetHost.startListening();
         }
@@ -187,6 +206,10 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         } catch (SettingNotFoundException e) {
             LOG.log(Level.INFO, "Unable to read settings", e);
         }
+        if (mCurrentDialog != null) {
+            mCurrentDialog.onResume();
+        }
+
         if (getResources().getBoolean(R.bool.isTablet)) {
             rotate = system;
         } else if (user && system) {
@@ -326,7 +349,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private void configureWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = Objects.requireNonNull(extras).getInt("appWidgetId", -1);
-        AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
+        AppWidgetProviderInfo appWidgetInfo = companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
         if (appWidgetInfo.configure != null) {
             Intent intent = new Intent("android.appwidget.action.APPWIDGET_CONFIGURE");
             intent.setComponent(appWidgetInfo.configure);
@@ -340,7 +363,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private void createWidget(Intent data) {
         Bundle extras = data.getExtras();
         int appWidgetId = Objects.requireNonNull(extras).getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
-        AppWidgetProviderInfo appWidgetInfo = Companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
+        AppWidgetProviderInfo appWidgetInfo = companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
         Item item = Item.newWidgetItem(appWidgetId);
         Desktop desktop = getDesktop();
         List<CellContainer> pages = desktop.getPages();
@@ -360,15 +383,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     private void registerBroadcastReceiver() {
-        registerReceiver(_appUpdateReceiver, Companion.getAppUpdateIntentFilter());
+        registerReceiver(_appUpdateReceiver, companion.getAppUpdateIntentFilter());
         if (_timeChangedReceiver != null) {
-            registerReceiver(_timeChangedReceiver, Companion.getTimeChangesIntentFilter());
+            registerReceiver(_timeChangedReceiver, companion.getTimeChangesIntentFilter());
         }
-        registerReceiver(_shortcutReceiver, Companion.getShortcutIntentFilter());
+        registerReceiver(_shortcutReceiver, companion.getShortcutIntentFilter());
     }
 
     public final void onUninstallItem(@NonNull Item item) {
-        Companion.setConsumeNextResume(true);
+        companion.setConsumeNextResume(true);
         Setup.eventHandler().showDeletePackageDialog(this, item);
     }
 
@@ -395,7 +418,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             default:
                 break;
         }
-        Companion.getDb().deleteItem(item, true);
+        companion.getDb().deleteItem(item, true);
     }
 
     public final void onInfoItem(@NonNull Item item) {
@@ -446,8 +469,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 top = (int) ((AppItemView) view).getDrawIconTop();
             }
             opts = ActivityOptions.makeClipRevealAnimation(view, left, top, width, height);
-        } else if (VERSION.SDK_INT < 21) {
-            opts = ActivityOptions.makeScaleUpAnimation(view, 0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
         }
         if (opts != null) {
             bundle = opts.toBundle();
@@ -465,8 +486,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 if (desktop.getInEditMode()) {
                     desktop = findViewById(R.id.desktop);
                     List pages = desktop.getPages();
-                    Desktop desktop2 = findViewById(R.id.desktop);
-                    ((CellContainer) pages.get(desktop2.getCurrentItem())).performClick();
+                    //Desktop desktop2 = findViewById(R.id.desktop);
+                    ((CellContainer) pages.get(desktop.getCurrentItem())).performClick();
                 } else {
                     AppDrawerController appDrawerController = findViewById(R.id.appDrawerController);
                     View drawer = appDrawerController.getDrawer();
@@ -486,11 +507,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         desktop.setCurrentItem(appSettings.getDesktopPageCurrent());
     }
 
-    private final void handleLauncherPause(boolean wasHomePressed) {
-        if (!Companion.getConsumeNextResume() || wasHomePressed) {
+    private void handleLauncherPause(boolean wasHomePressed) {
+        if (!companion.getConsumeNextResume() || wasHomePressed) {
             onHandleLauncherPause();
         } else {
-            Companion.setConsumeNextResume(false);
+            companion.setConsumeNextResume(false);
         }
     }
 
@@ -571,9 +592,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     private void init() {
-        Companion.setAppWidgetHost(new WidgetHost(getApplicationContext(), R.id.app_widget_host));
+        companion.setAppWidgetHost(new WidgetHost(getApplicationContext(), R.id.app_widget_host));
         HomeActivity.Companion companion;
-        companion = Companion;
+        companion = HomeActivity.companion;
         AppWidgetManager instance = AppWidgetManager.getInstance(this);
 
         companion.setAppWidgetManager(instance);
@@ -665,9 +686,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Setup.appLoader().addUpdateListener(new AppManager.AppUpdatedListener() {
             @Override
             public boolean onAppUpdated(List<App> it) {
-                if (getDesktop() == null) {
-                    return false;
-                }
                 AppSettings appSettings = Setup.appSettings();
                 if (appSettings.getDesktopStyle() == 0) {
                     getDesktop().initDesktopNormal(HomeActivity.this);
@@ -703,7 +721,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public void addAppDrawerItem() {
         Item appDrawerBtnItem = Item.newActionItem(8);
         appDrawerBtnItem.x = 2;
-        Companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
+        companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
     }
 
     public void addDockApps() {
@@ -732,7 +750,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 Item item = Item.newAppItem(app);
                 item.setX(0);
                 LOG.log(Level.INFO, "Loading App: " + item.getLabel());
-                Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+                companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
             }
         }
         List<ResolveInfo> messagingInfo = packageManager.queryIntentActivities(messaging, 0);
@@ -742,7 +760,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Item item = Item.newAppItem(app);
             item.setX(1);
             LOG.log(Level.INFO, "Loading App: " + item.getLabel());
-            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+            companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
         List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
         if (browserInfo != null || browserInfo.size() > 0) {
@@ -751,7 +769,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             Item item = Item.newAppItem(app);
             item.setX(4);
             LOG.log(Level.INFO, "Loading App: " + item.getLabel());
-            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+            companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
     }
 
@@ -764,7 +782,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             LOG.log(Level.INFO, app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = 3;
-            Companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
+            companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
     }
@@ -824,7 +842,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         } else if (resultCode == 0 && data != null) {
             int appWidgetId = data.getIntExtra("appWidgetId", -1);
             if (appWidgetId != -1) {
-                WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+                WidgetHost appWidgetHost = companion.getAppWidgetHost();
                 if (appWidgetHost != null) {
                     appWidgetHost.deleteAppWidgetId(appWidgetId);
                 }
@@ -837,11 +855,11 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         if (BuildConfig.APPLICATION_ID.equals(Objects.requireNonNull(component).getPackageName())) {
             Minibar.RunAction(Action.LauncherSettings, context);
-            Companion.setConsumeNextResume(true);
+            companion.setConsumeNextResume(true);
         } else {
             try {
                 context.startActivity(intent, getActivityAnimationOpts(view));
-                Companion.setConsumeNextResume(true);
+                companion.setConsumeNextResume(true);
             } catch (Exception e) {
                 Tool.toast(context, R.string.toast_app_uninstalled);
             }
@@ -851,15 +869,15 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public final void onStartApp(@NonNull Context context, @NonNull App app, @Nullable View view) {
         if (BuildConfig.APPLICATION_ID.equals(app.getPackageName())) {
             Minibar.RunAction(Action.LauncherSettings, context);
-            Companion.setConsumeNextResume(true);
+            companion.setConsumeNextResume(true);
         } else {
             try {
                 Intent intent = new Intent("android.intent.action.MAIN");
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 intent.setClassName(app.getPackageName(), app.getClassName());
-                Companion.getDb().updateAppCount(app.getPackageName());
+                companion.getDb().updateAppCount(app.getPackageName());
                 context.startActivity(intent, getActivityAnimationOpts(view));
-                Companion.setConsumeNextResume(true);
+                companion.setConsumeNextResume(true);
             } catch (Exception e) {
                 Tool.toast(context, R.string.toast_app_uninstalled);
             }
@@ -872,17 +890,17 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     @Override
     protected void onDestroy() {
-        WidgetHost appWidgetHost = Companion.getAppWidgetHost();
+        WidgetHost appWidgetHost = companion.getAppWidgetHost();
         if (appWidgetHost != null) {
             appWidgetHost.stopListening();
         }
-        Companion.setAppWidgetHost(null);
+        companion.setAppWidgetHost(null);
         unregisterReceiver(_appUpdateReceiver);
         if (_timeChangedReceiver != null) {
             unregisterReceiver(_timeChangedReceiver);
         }
         unregisterReceiver(_shortcutReceiver);
-        Companion.setLauncher(null);
+        companion.setLauncher(null);
         super.onDestroy();
     }
 
@@ -943,8 +961,35 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     @Override
     public void onLaunchSettings() {
-        Companion.setConsumeNextResume(true);
+        companion.setConsumeNextResume(true);
         Setup.eventHandler().showLauncherSettings(this);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        Log.i(TAG, "Testing Dialog");
+
+        boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
+                Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT)
+                != Intent.FLAG_ACTIVITY_BROUGHT_TO_FRONT);
+
+        boolean isActionMain = Intent.ACTION_MAIN.equals(intent.getAction());
+        if (isActionMain) {
+            closeSystemDialogs();
+            final View v = getWindow().peekDecorView();
+            if (v != null && v.getWindowToken() != null) {
+                InputMethodManager imm = (InputMethodManager) getSystemService(
+                        INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            }
+        }
+
+        dismissDialog();
+    }
+
+    public void closeSystemDialogs() {
+        getWindow().closeAllPanels();
     }
 
     @Override
@@ -958,16 +1003,39 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     private void pickWidget() {
-        Companion.setConsumeNextResume(true);
-        int appWidgetId = Objects.requireNonNull(Companion.getAppWidgetHost()).allocateAppWidgetId();
+        companion.setConsumeNextResume(true);
+        int appWidgetId = Objects.requireNonNull(companion.getAppWidgetHost()).allocateAppWidgetId();
         Intent pickIntent = new Intent("android.appwidget.action.APPWIDGET_PICK");
         pickIntent.putExtra("appWidgetId", appWidgetId);
         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
     }
 
-    public static final class Companion {
-        private Companion() {
+    public void openDialog(LauncherDialog dialog) {
+        dismissDialog();
+        mCurrentDialog = dialog;
+        mCurrentDialog.setOnDismissListener(this);
+        mCurrentDialog.show();
+    }
+
+    private void dismissDialog() {
+        if (mCurrentDialog != null) {
+            mCurrentDialog.dismiss();
+            mCurrentDialog = null;
         }
+    }
+
+    @Override
+    public void onDismiss(DialogInterface dialogInterface) {
+        mCurrentDialog = null;
+    }
+
+    public void startEditIcon() {
+        Intent intent = new Intent(this, EditIconActivity.class);
+        //intent.putExtra("itemInfo", info);
+        startActivityForResult(intent, REQUEST_EDIT_ICON);
+    }
+
+    public static final class Companion {
 
         @Nullable
         public final HomeActivity getLauncher() {
@@ -1043,4 +1111,22 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         }
     }
 
+    public static class LauncherDialog extends Dialog {
+
+        public LauncherDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        public LauncherDialog(@NonNull Context context, int themeResId) {
+            super(context, themeResId);
+        }
+
+        protected LauncherDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
+            super(context, cancelable, cancelListener);
+        }
+
+        public void onResume() {
+
+        }
+    }
 }

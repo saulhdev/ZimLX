@@ -81,10 +81,10 @@ public class DragOptionView extends CardView {
 
                     Setup.eventHandler().showEditDialog(getContext(), item, name -> {
                         Objects.requireNonNull(item).setLabel(name);
-                        HomeActivity.Companion.getDb().saveItem(item);
+                        HomeActivity.companion.getDb().saveItem(item);
 
-                        Objects.requireNonNull(HomeActivity.Companion.getLauncher()).getDesktop().addItemToCell(item, item.getX(), item.getY());
-                        HomeActivity.Companion.getLauncher().getDesktop().removeItem(HomeActivity.Companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
+                        Objects.requireNonNull(HomeActivity.companion.getLauncher()).getDesktop().addItemToCell(item, item.getX(), item.getY());
+                        HomeActivity.companion.getLauncher().getDesktop().removeItem(HomeActivity.companion.getLauncher().getDesktop().getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY())), false);
                     });
                     return true;
                 case DragEvent.ACTION_DRAG_ENDED:
@@ -113,7 +113,7 @@ public class DragOptionView extends CardView {
                     Item item = DragHandler.INSTANCE.getDraggedObject(dragEvent);
 
                     // remove all items from the database
-                    HomeActivity.Companion.getDb().deleteItem(item, true);
+                    HomeActivity.companion.getDb().deleteItem(item, true);
 
                     _home.getDesktop().consumeRevert();
                     _home.getDock().consumeRevert();
@@ -275,7 +275,7 @@ public class DragOptionView extends CardView {
                     Tool.visibleViews(Math.round(_animSpeed / 1.3f), _hideViews);
 
                 // the search view might be disabled
-                Objects.requireNonNull(HomeActivity.Companion.getLauncher()).updateSearchBar(true);
+                Objects.requireNonNull(HomeActivity.companion.getLauncher()).updateSearchBar(true);
 
                 _isDraggedFromDrawer = false;
 

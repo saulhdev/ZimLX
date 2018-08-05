@@ -8,9 +8,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.folder.FolderIcon;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.folder.FolderIcon;
 
 public class SimpleIconProvider implements IconProvider{
     private int drawableResource;
@@ -93,7 +93,7 @@ public class SimpleIconProvider implements IconProvider{
         return drawable != null && drawable instanceof FolderIcon;
     }
 
-    private Drawable scaleDrawable(Drawable drawable, int forceSize) {
+    public Drawable scaleDrawable(Drawable drawable, int forceSize) {
         if (drawable != null && forceSize != Config.NO_SCALE) {
             forceSize = Tool.dp2px(forceSize, Setup.appContext());
             drawable = new BitmapDrawable(Setup.appContext().getResources(), Bitmap.createScaledBitmap(Tool.drawableToBitmap(drawable), forceSize, forceSize, true));

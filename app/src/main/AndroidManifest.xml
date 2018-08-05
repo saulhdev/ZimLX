@@ -92,6 +92,11 @@
             android:parentActivityName=".backup.BackupListActivity"
             android:theme="@style/NormalActivity.Light" />
 
+        <activity
+            android:name=".icon.EditIconActivity"
+            android:parentActivityName=".activity.HomeActivity"
+            android:theme="@style/NormalActivity.Light" />
+
         <receiver
             android:name=".receiver.DeviceAdminReceiver"
             android:permission="android.permission.BIND_DEVICE_ADMIN">
