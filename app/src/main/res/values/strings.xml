@@ -328,5 +328,8 @@
 
     <string name="units_metric">Metric</string>
     <string name="units_imperial">Imperial</string>
+    <string name="edit_icon_reset">Reset</string>
+    <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_deep_shortcut">Shortcuts</string>
 
 </resources>

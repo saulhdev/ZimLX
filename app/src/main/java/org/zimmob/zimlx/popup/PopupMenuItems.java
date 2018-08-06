@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.dragndrop;
+package org.zimmob.zimlx.popup;
 
 import android.graphics.Point;
 import android.graphics.PointF;
@@ -10,16 +10,16 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.homeparts.HpAppEditApplier;
 import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.dragndrop.DragAction;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.DragOptionLayout;
 
 import java.util.ArrayList;
 
-public class DragOption {
+public class PopupMenuItems {
     private final int uninstallItemIdentifier = 83;
     private final int infoItemIdentifier = 84;
     private final int editItemIdentifier = 85;
@@ -306,14 +306,10 @@ public class DragOption {
             case APP:
             case SHORTCUT:
             case GROUP: {
-                //if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
-                //    itemList.add(uninstallItem);
-                //    itemList.add(infoItem);
-                //} else {
-                    itemList.add(editItem);
-                    itemList.add(removeItem);
-                    itemList.add(infoItem);
-                //}
+                itemList.add(editItem);
+                itemList.add(removeItem);
+                itemList.add(infoItem);
+
                 break;
             }
             case ACTION: {

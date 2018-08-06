@@ -48,7 +48,6 @@ import org.zimmob.zimlx.activity.homeparts.HpSearchBar;
 import org.zimmob.zimlx.appdrawer.AppDrawerController;
 import org.zimmob.zimlx.apps.AppManager;
 import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.dragndrop.DragOption;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.icon.EditIconActivity;
 import org.zimmob.zimlx.manager.Setup;
@@ -56,6 +55,7 @@ import org.zimmob.zimlx.manager.Setup.DataManager;
 import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.pageindicator.PageIndicator;
+import org.zimmob.zimlx.popup.PopupMenuItems;
 import org.zimmob.zimlx.receiver.AppUpdateReceiver;
 import org.zimmob.zimlx.receiver.ShortcutReceiver;
 import org.zimmob.zimlx.util.AppSettings;
@@ -602,7 +602,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         Objects.requireNonNull(appWidgetHost).startListening();
 
         initViews();
-        DragOption hpDragOption = new DragOption();
+        PopupMenuItems hpDragOption = new PopupMenuItems();
         View findViewById = findViewById(R.id.leftDragHandle);
 
         View findViewById2 = findViewById(R.id.rightDragHandle);
@@ -1029,9 +1029,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         mCurrentDialog = null;
     }
 
-    public void startEditIcon() {
+    public void startEditIcon(Item item) {
         Intent intent = new Intent(this, EditIconActivity.class);
-        //intent.putExtra("itemInfo", info);
+        intent.putExtra("itemInfo", item);
         startActivityForResult(intent, REQUEST_EDIT_ICON);
     }
 

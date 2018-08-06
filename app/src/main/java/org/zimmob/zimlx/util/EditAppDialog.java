@@ -44,13 +44,12 @@ public class EditAppDialog extends HomeActivity.LauncherDialog implements View.O
 
         ImageView icon = findViewById(R.id.icon);
         iconProvider = item.getIconProvider();
-
         if (iconProvider != null)
             icon.setImageDrawable(iconProvider.scaleDrawable(item.icon, 64));
 
         else
             icon.setImageDrawable(item.icon);
-        icon.setOnClickListener(view -> launcher.startEditIcon());
+        icon.setOnClickListener(view -> launcher.startEditIcon(item));
 
         ImageButton reset = findViewById(R.id.reset_title);
         reset.setOnClickListener(v -> EditAppDialog.this.title.setText(item.getLabel()));
@@ -60,11 +59,19 @@ public class EditAppDialog extends HomeActivity.LauncherDialog implements View.O
     @Override
     public void onResume() {
         ImageView icon = findViewById(R.id.icon);
-        icon.setImageDrawable(item.getIconProvider().scaleDrawable(item.icon, 64));
+        iconProvider = item.getIconProvider();
+        if (iconProvider != null)
+            icon.setImageDrawable(iconProvider.scaleDrawable(item.icon, 64));
+
+        else
+            icon.setImageDrawable(item.icon);
+
+        /*icon.setImageDrawable(item.getIconProvider().scaleDrawable(item.icon, 64));
 
         TextView packageName = findViewById(R.id.package_name);
         packageName.setText(item.getPackageName());
         visibility = findViewById(R.id.visibility);
+        */
     }
 
     @Override

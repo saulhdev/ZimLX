@@ -20,8 +20,8 @@ import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import org.zimmob.zimlx.dragndrop.DragAction.Action;
 import org.zimmob.zimlx.dragndrop.DragHandler;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.popup.PopupIconLabelItem;
 import org.zimmob.zimlx.util.Tool;
-import org.zimmob.zimlx.viewutil.PopupIconLabelItem;
 
 import java.util.HashMap;
 import java.util.List;

@@ -88,6 +88,10 @@ public class IconPackHandler {
         }
     }
 
+    public Map<String, IconPackInfo> getIconPacks() {
+        return mIconPacks;
+    }
+
     private File getIconsCacheDir() {
         return new File(mContext.getCacheDir().getPath() + "/icons/");
     }

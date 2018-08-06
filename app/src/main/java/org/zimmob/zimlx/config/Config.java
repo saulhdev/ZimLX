@@ -11,10 +11,13 @@ import android.graphics.Canvas;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.PowerManager;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.util.Log;
 import android.view.View;
+import android.view.accessibility.AccessibilityEvent;
+import android.view.accessibility.AccessibilityManager;
 
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
 import org.zimmob.zimlx.model.LauncherModel;
@@ -164,5 +167,21 @@ public class Config {
 
     public static void killLauncher() {
         System.exit(0);
+    }
+
+    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
+        AccessibilityManager accessibilityManager = (AccessibilityManager)
+                target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        if (accessibilityManager.isEnabled()) {
+            AccessibilityEvent event = AccessibilityEvent.obtain(type);
+            target.onInitializeAccessibilityEvent(event);
+            event.getText().add(text);
+            accessibilityManager.sendAccessibilityEvent(event);
+        }
+    }
+
+    public static boolean isPowerSaverOn(Context context) {
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isPowerSaveMode();
     }
 }
