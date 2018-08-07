@@ -81,8 +81,6 @@ import org.zimmob.zimlx.widget.SwipeListView;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 /**
  * Created by saul on 04-25-18.
@@ -90,26 +88,12 @@ import java.util.logging.Logger;
  * henriquez.saul@gmail.com
  */
 public class HomeActivity extends Activity implements OnDesktopEditListener, DesktopOptionView.DesktopOptionViewListener, DrawerLayout.DrawerListener, DialogInterface.OnDismissListener {
-    private final Logger LOG = Logger.getLogger(HomeActivity.class.getName());
     public static final String TAG = "Launcher";
     public static final Companion companion = new Companion();
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
-    private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPWIDGET = 9;
-    private static final int REQUEST_PICK_WALLPAPER = 10;
-    private static final int REQUEST_BIND_APPWIDGET = 11;
-    private static final int REQUEST_BIND_PENDING_APPWIDGET = 14;
-    private static final int REQUEST_RECONFIGURE_APPWIDGET = 12;
-    private static final int REQUEST_PERMISSION_CALL_PHONE = 13;
-    private static final int REQUEST_EDIT_ICON = 14;
-
-    private static final float BOUNCE_ANIMATION_TENSION = 1.3f;
-
-    private static final int SOFT_INPUT_MODE_DEFAULT =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
-    private static final int SOFT_INPUT_MODE_ALL_APPS =
-            WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
+    public static final int REQUEST_EDIT_ICON = 14;
 
     private static Resources resources;
 
@@ -204,7 +188,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         try {
             system = Settings.System.getInt(getContentResolver(), Settings.System.ACCELEROMETER_ROTATION) == 1;
         } catch (SettingNotFoundException e) {
-            LOG.log(Level.INFO, "Unable to read settings", e);
+            Log.e(TAG, "Unable to read settings", e);
         }
         if (mCurrentDialog != null) {
             mCurrentDialog.onResume();
@@ -749,7 +733,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                 App app = new App(dockApp, packageManager);
                 Item item = Item.newAppItem(app);
                 item.setX(0);
-                LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+                Log.i(TAG, "Loading App: " + item.getLabel());
                 companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
             }
         }
@@ -759,7 +743,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             App app = new App(dockApp, packageManager);
             Item item = Item.newAppItem(app);
             item.setX(1);
-            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+            Log.i(TAG, "Loading App: " + item.getLabel());
             companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
         List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
@@ -768,7 +752,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             App app = new App(dockApp, packageManager);
             Item item = Item.newAppItem(app);
             item.setX(4);
-            LOG.log(Level.INFO, "Loading App: " + item.getLabel());
+            Log.i(TAG, "Loading App: " + item.getLabel());
             companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
     }
@@ -779,7 +763,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
         for (ResolveInfo info : activitiesInfo) {
             App app = new App(info, packageManager);
-            LOG.log(Level.INFO, app.getPackageName());
+            Log.i(TAG, app.getPackageName());
             Item item = Item.newAppItem(app);
             item.x = 3;
             companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
@@ -791,7 +775,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
         final ArrayList<String> labels = new ArrayList<>();
         final ArrayList<Integer> icons = new ArrayList<>();
-
         for (String act : AppSettings.get().getMinibarArrangement()) {
             if (act.length() > 1) {
                 Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
@@ -885,7 +868,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     }
 
     public void onDrawerSlide(@NonNull View drawerView, float slideOffset) {
-        LOG.log(Level.INFO, "Slide Works left and right");
+        Log.i(TAG, "Slide Works left and right");
     }
 
     @Override

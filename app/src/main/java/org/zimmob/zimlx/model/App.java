@@ -22,10 +22,11 @@ import java.util.Locale;
  * henriquez.saul@gmail.com
  */
 public class App implements Comparator<App> {
+    private static final String TAG = App.class.getSimpleName();
     private String label, packageName, className;
     private Drawable icon;
     public SimpleIconProvider _iconProvider;
-    private int intIcon;
+    private CharSequence iconRes;
     @Nullable
     public String _universalLabel;
 
@@ -36,7 +37,7 @@ public class App implements Comparator<App> {
 
         _iconProvider = Setup.imageLoader().createIconProvider(info.loadIcon(pm));
         this.className = info.activityInfo.name;
-        this.intIcon = info.icon;
+        this.iconRes = info.loadLabel(pm);
 
         try {
             updateUniversalLabel(pm, info);
@@ -89,6 +90,10 @@ public class App implements Comparator<App> {
         return icon;
     }
 
+    public CharSequence getIconRes() {
+        return this.iconRes;
+    }
+
     public void setIcon(Drawable icon) {
         this.icon = icon;
     }
@@ -98,7 +103,7 @@ public class App implements Comparator<App> {
     }
 
     public void setIconProvider(@NonNull SimpleIconProvider baseIconProvider) {
-
+        this._iconProvider = baseIconProvider;
     }
 
     public String getComponentName() {

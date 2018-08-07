@@ -1,5 +1,7 @@
 package org.zimmob.zimlx.popup;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Handler;
@@ -11,7 +13,9 @@ import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.activity.homeparts.HpAppEditApplier;
 import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.dragndrop.DragAction;
+import org.zimmob.zimlx.icon.EditIconActivity;
 import org.zimmob.zimlx.model.Item;
+import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.widget.CellContainer;
 import org.zimmob.zimlx.widget.Desktop;
@@ -20,6 +24,8 @@ import org.zimmob.zimlx.widget.DragOptionLayout;
 import java.util.ArrayList;
 
 public class PopupMenuItems {
+    private static final String TAG = PopupMenuItems.class.getSimpleName();
+
     private final int uninstallItemIdentifier = 83;
     private final int infoItemIdentifier = 84;
     private final int editItemIdentifier = 85;
@@ -147,11 +153,7 @@ public class PopupMenuItems {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
                 if (!DragAction.Action.SEARCH_RESULT.equals(action)) {
-                    //if (dragNDropView.getDragItem().getType() == Item.Type.APP) {
-                    //    launcher.openDialog(new EditAppDialog(HomeActivity.companion.getLauncher(),dragNDropView.getDragItem(),launcher));
-                    //} else {
                     showItemPopup(dragNDropView, launcher);
-                    //}
                 }
                 return true;
             }
@@ -304,12 +306,21 @@ public class PopupMenuItems {
         ArrayList<PopupIconLabelItem> itemList = new ArrayList<>();
         switch (dragNDropView.getDragItem().getType()) {
             case APP:
-            case SHORTCUT:
+            case SHORTCUT: {
+                if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
+                    itemList.add(editItem);
+                    itemList.add(uninstallItem);
+                    itemList.add(infoItem);
+                } else {
+                    itemList.add(editItem);
+                    itemList.add(removeItem);
+                    itemList.add(infoItem);
+                }
+                break;
+            }
             case GROUP: {
                 itemList.add(editItem);
                 itemList.add(removeItem);
-                itemList.add(infoItem);
-
                 break;
             }
             case ACTION: {
@@ -351,7 +362,14 @@ public class PopupMenuItems {
                         break;
                     }
                     case editItemIdentifier: {
-                        new HpAppEditApplier(home).onEditItem(dragItem);
+                        if (dragItem.getType() != Item.Type.GROUP) {
+                            Context context = AppSettings.get().getContext();
+                            Intent intent = new Intent(context, EditIconActivity.class);
+                            intent.putExtra("itemInfo", dragItem);
+                            context.startActivity(intent);
+                        } else {
+                            new HpAppEditApplier(home).onEditItem(dragItem);
+                        }
                         break;
                     }
                     case removeItemIdentifier: {

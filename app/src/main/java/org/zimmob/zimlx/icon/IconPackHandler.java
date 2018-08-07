@@ -35,7 +35,7 @@ import java.util.List;
 import java.util.Map;
 
 public class IconPackHandler {
-    private static final String TAG = "IconsHandler";
+    private static final String TAG = IconPackHandler.class.getSimpleName();
     private static String[] LAUNCHER_INTENTS = new String[]{
             "com.fede.launcher.THEME_ICONPACK",
             "com.anddoes.launcher.THEME",

@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Item implements Parcelable {
-
+    private static final String TAG = Item.class.getSimpleName();
     public static final int LOCATION_DESKTOP = 0;
     public static final int LOCATION_DOCK = 1;
     public Type type;
@@ -189,6 +189,7 @@ public class Item implements Parcelable {
         out.writeInt(_idValue);
         out.writeString(type.toString());
         out.writeString(name);
+        out.writeString(packageName);
         out.writeInt(x);
         out.writeInt(y);
         switch (type) {

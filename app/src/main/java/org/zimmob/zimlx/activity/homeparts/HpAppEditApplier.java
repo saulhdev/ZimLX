@@ -5,7 +5,6 @@ import android.graphics.Point;
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.util.EditAppDialog;
 import org.zimmob.zimlx.util.IDialogListener;
 import org.zimmob.zimlx.widget.Desktop;
 import org.zimmob.zimlx.widget.Dock;
@@ -20,11 +19,7 @@ public class HpAppEditApplier implements IDialogListener.OnEditDialogListener {
 
     public void onEditItem(final Item item) {
         _item = item;
-        if (_item.getType() == Item.Type.APP)
-            launcher.openDialog(new EditAppDialog(HomeActivity.companion.getLauncher(), _item, launcher));
-
-        else
-            Setup.eventHandler().showEditDialog(launcher, _item, this);
+        Setup.eventHandler().showEditDialog(launcher, item, this);
     }
 
     @Override

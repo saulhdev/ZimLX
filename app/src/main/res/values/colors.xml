@@ -40,4 +40,5 @@
     <color name="color_navigationbar_settings">#ff000000</color>
     <color name="color_navigationbar_settings_dark">#ff000000</color>
     <color name="color_navigationbar_settings_black">#ff000000</color>
+    <color name="button_background">#205dec</color>
 </resources>
