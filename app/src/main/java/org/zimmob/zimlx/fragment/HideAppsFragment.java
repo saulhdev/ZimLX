@@ -19,12 +19,13 @@ import android.widget.TextView;
 import android.widget.ViewSwitcher;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.apps.AppManager;
+import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.util.AppSettings;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 
 @SuppressWarnings("ResultOfMethodCallIgnored")
@@ -35,7 +36,7 @@ public class HideAppsFragment extends Fragment {
     private AsyncWorkerList taskList = new AsyncWorkerList();
     private Typeface tf;
 
-    private static final String TAG = "RequestActivity";
+    private static final String TAG = HideAppsFragment.class.getSimpleName();
     private static final boolean DEBUG = true;
 
     private ViewSwitcher viewSwitcher;
@@ -43,7 +44,7 @@ public class HideAppsFragment extends Fragment {
     private AppAdapter appInfoAdapter;
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.request, container, false);
         switcherLoad = rootView.findViewById(R.id.viewSwitcherLoadingMain);
 
@@ -99,22 +100,20 @@ public class HideAppsFragment extends Fragment {
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState) {
+    public void onSaveInstanceState(@NonNull Bundle savedInstanceState) {
         if (DEBUG) Log.v(TAG, "onSaveInstanceState");
         super.onSaveInstanceState(savedInstanceState);
     }
 
     private void confirmSelection() {
         Thread actionSend_Thread = new Thread() {
-
             @Override
             public void run() {
                 AppSettings.get().setHiddenAppsList(listActivitiesHidden);
-                getActivity().finish();
+                Objects.requireNonNull(getActivity()).finish();
             }
         };
         if (!actionSend_Thread.isAlive()) {
-            //Prevents the thread to be executed twice (or more) times.
             actionSend_Thread.start();
         }
     }
@@ -126,7 +125,7 @@ public class HideAppsFragment extends Fragment {
 
     @SuppressWarnings("unchecked")
     private void populateView() {
-        grid = getActivity().findViewById(R.id.app_grid);
+        grid = Objects.requireNonNull(getActivity()).findViewById(R.id.app_grid);
 
         assert grid != null;
         grid.setFastScrollEnabled(true);
@@ -168,7 +167,10 @@ public class HideAppsFragment extends Fragment {
         public View getView(int position, View convertView, @NonNull ViewGroup parent) {
             ViewHolder holder;
             if (convertView == null) {
-                convertView = ((LayoutInflater) getActivity().getSystemService(Context.LAYOUT_INFLATER_SERVICE)).inflate(R.layout.request_item_list, parent, false);
+                convertView = ((LayoutInflater)
+                        Objects.requireNonNull(getActivity())
+                                .getSystemService(Context.LAYOUT_INFLATER_SERVICE))
+                        .inflate(R.layout.request_item_list, parent, false);
                 holder = new ViewHolder();
                 holder.apkIcon = convertView.findViewById(R.id.IVappIcon);
                 holder.apkName = convertView.findViewById(R.id.TVappName);
@@ -182,7 +184,7 @@ public class HideAppsFragment extends Fragment {
 
             App appInfo = getItem(position);
 
-            holder.apkPackage.setText(appInfo.getComponentName());
+            holder.apkPackage.setText(Objects.requireNonNull(appInfo).getComponentName());
             holder.apkName.setText(appInfo.getLabel());
             holder.apkIcon.setImageDrawable(appInfo.getIcon());
 

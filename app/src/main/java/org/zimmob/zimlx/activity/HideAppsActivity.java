@@ -11,8 +11,8 @@ import android.view.MenuItem;
 import android.view.WindowManager;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.fragment.HideAppsFragment;
 import org.zimmob.zimlx.apps.AppManager;
+import org.zimmob.zimlx.fragment.HideAppsFragment;
 
 import java.util.ArrayList;
 import java.util.Objects;
@@ -25,14 +25,13 @@ public class HideAppsActivity extends ThemeActivity {
         setContentView(R.layout.activity_hide_apps);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        getWindow().setStatusBarColor(getColor(R.color.colorPrimaryDark));
+        getWindow().setStatusBarColor(getResources().getColor(R.color.colorPrimaryDark));
         ViewPager viewPager = findViewById(R.id.viewpager);
         setupViewPager(viewPager);
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle(getString(R.string.pref_title__hide_apps));
         setSupportActionBar(toolbar);
-
 
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);

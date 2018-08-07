@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
@@ -17,6 +18,8 @@ import org.zimmob.zimlx.model.App;
 import org.zimmob.zimlx.model.Item;
 import org.zimmob.zimlx.util.AppSettings;
 
+import java.util.ArrayList;
+
 import butterknife.BindView;
 
 public class EditIconActivity extends AppCompatActivity {
@@ -25,11 +28,13 @@ public class EditIconActivity extends AppCompatActivity {
     public Toolbar toolbar;
     private EditText title;
     private Switch visibility;
+    private Button buttonApply;
     private HomeActivity launcher;
     private Context context;
     private Item mInfo;
     private IconProvider iconProvider;
-
+    private ArrayList<String> listActivitiesHidden = new ArrayList();
+    private App myApp;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,12 +53,18 @@ public class EditIconActivity extends AppCompatActivity {
 
         TextView packageName = findViewById(R.id.package_name);
         packageName.setText(mInfo.getPackageName());
+
         visibility = findViewById(R.id.visibility);
+
+        buttonApply = findViewById(R.id.button_apply);
+        buttonApply.setOnClickListener(v -> {
+            saveChanges();
+        });
 
         ImageView icon = findViewById(R.id.icon);
         iconProvider = mInfo.getIconProvider();
         if (mInfo.getType() == Item.Type.APP) {
-            App myApp = Setup.appLoader().findItemApp(mInfo);
+            myApp = Setup.appLoader().findItemApp(mInfo);
             icon.setImageDrawable(myApp.getIcon());
         } else {
             icon.setImageDrawable(mInfo.getIcon());
@@ -65,6 +76,27 @@ public class EditIconActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         super.onBackPressed();
+    }
+
+    private void saveChanges() {
+        if (visibility.isChecked()) {
+            listActivitiesHidden.add(myApp.getComponentName());
+        }
+        if (listActivitiesHidden.size() > 0)
+            confirmSelection();
+        onBackPressed();
+    }
+
+    private void confirmSelection() {
+        Thread actionSend_Thread = new Thread() {
+            @Override
+            public void run() {
+                AppSettings.get().setHiddenAppsList(listActivitiesHidden);
+            }
+        };
+        if (!actionSend_Thread.isAlive()) {
+            actionSend_Thread.start();
+        }
     }
 
 }

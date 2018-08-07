@@ -155,6 +155,7 @@
         <Button
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:id="@+id/button_apply"
             android:layout_marginBottom="15dp"
             android:background="@color/button_background"
             android:text="@string/button_apply"
