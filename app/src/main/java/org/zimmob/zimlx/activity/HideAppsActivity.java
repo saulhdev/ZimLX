@@ -39,7 +39,7 @@ public class HideAppsActivity extends ThemeActivity {
 
     @Override
     protected void onDestroy() {
-        AppManager.getInstance(this)._recreateAfterGettingApps = true;
+        AppManager.getInstance(this).recreateAfterGettingApps = true;
         AppManager.getInstance(this).init();
         super.onDestroy();
     }

@@ -31,33 +31,33 @@ public class AppManager {
         return _ref == null ? (_ref = new AppManager(context)) : _ref;
     }
 
-    private PackageManager _packageManager;
-    private List<App> _apps = new ArrayList<>();
-    private List<App> _nonFilteredApps = new ArrayList<>();
-    private final List<IAppUpdateListener> _updateListeners = new ArrayList<>();
-    private final List<IAppDeleteListener> _deleteListeners = new ArrayList<>();
-    public boolean _recreateAfterGettingApps;
-    private AsyncTask _task;
+    private final List<IAppUpdateListener> updateListeners = new ArrayList<>();
+    private final List<IAppDeleteListener> deleteListeners = new ArrayList<>();
+    public boolean recreateAfterGettingApps;
+    private PackageManager packageManager;
+    private List<App> apps = new ArrayList<>();
+    private List<App> nonFilteredApps = new ArrayList<>();
+    private AsyncTask task;
     private Context _context;
 
-    public PackageManager getPackageManager() {
-        return _packageManager;
+    private AppManager(Context c) {
+        _context = c;
+        packageManager = c.getPackageManager();
     }
 
     public Context getContext() {
         return _context;
     }
 
-    private AppManager(Context c) {
-        _context = c;
-        _packageManager = c.getPackageManager();
+    public PackageManager getPackageManager() {
+        return packageManager;
     }
 
     private App findApp(Intent intent) {
         if (intent == null || intent.getComponent() == null) return null;
         String packageName = intent.getComponent().getPackageName();
         String className = intent.getComponent().getClassName();
-        for (App app : _apps) {
+        for (App app : apps) {
             if (app.getClassName().equals(className) && app.getPackageName().equals(packageName)) {
                 return app;
             }
@@ -67,11 +67,11 @@ public class AppManager {
 
     public List<App> getApps() {
         getAllApps();
-        return _apps;
+        return apps;
     }
 
     public List<App> getNonFilteredApps() {
-        return _nonFilteredApps;
+        return nonFilteredApps;
     }
 
     public void init() {
@@ -79,11 +79,11 @@ public class AppManager {
     }
 
     private void getAllApps() {
-        if (_task == null || _task.getStatus() == AsyncTask.Status.FINISHED)
-            _task = new AsyncGetApps().execute();
-        else if (_task.getStatus() == AsyncTask.Status.RUNNING) {
-            _task.cancel(false);
-            _task = new AsyncGetApps().execute();
+        if (task == null || task.getStatus() == AsyncTask.Status.FINISHED)
+            task = new AsyncGetApps().execute();
+        else if (task.getStatus() == AsyncTask.Status.RUNNING) {
+            task.cancel(false);
+            task = new AsyncGetApps().execute();
         }
     }
 
@@ -101,10 +101,10 @@ public class AppManager {
 
     public App createApp(Intent intent) {
         try {
-            ResolveInfo info = _packageManager.resolveActivity(intent, 0);
-            App app = new App(info, _packageManager);
-            if (_apps != null && !_apps.contains(app))
-                _apps.add(app);
+            ResolveInfo info = packageManager.resolveActivity(intent, 0);
+            App app = new App(info, packageManager);
+            if (apps != null && !apps.contains(app))
+                apps.add(app);
             return app;
         } catch (Exception e) {
             return null;
@@ -116,15 +116,15 @@ public class AppManager {
     }
 
     public void addUpdateListener(IAppUpdateListener updateListener) {
-        _updateListeners.add(updateListener);
+        updateListeners.add(updateListener);
     }
 
     public void addDeleteListener(IAppDeleteListener deleteListener) {
-        _deleteListeners.add(deleteListener);
+        deleteListeners.add(deleteListener);
     }
 
     private void notifyUpdateListeners(@NonNull List<App> apps) {
-        Iterator<IAppUpdateListener> iter = _updateListeners.iterator();
+        Iterator<IAppUpdateListener> iter = updateListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppUpdated(apps)) {
                 iter.remove();
@@ -133,7 +133,7 @@ public class AppManager {
     }
 
     private void notifyRemoveListeners(@NonNull List<App> apps) {
-        Iterator<IAppDeleteListener> iter = _deleteListeners.iterator();
+        Iterator<IAppDeleteListener> iter = deleteListeners.iterator();
         while (iter.hasNext()) {
             if (iter.next().onAppDeleted(apps)) {
                 iter.remove();
@@ -141,123 +141,21 @@ public class AppManager {
         }
     }
 
-    private class AsyncGetApps extends AsyncTask {
-        private List<App> tempApps;
+    public interface IAppDeleteListener {
+        /**
+         * @param apps list of apps
+         * @return true, if the listener should be removed
+         */
+        boolean onAppDeleted(List<App> apps);
+    }
 
-        @Override
-        protected void onPreExecute() {
-            tempApps = new ArrayList<>(_apps);
-            super.onPreExecute();
-        }
+    public interface IAppUpdateListener {
 
-        @Override
-        protected void onCancelled() {
-            tempApps = null;
-            super.onCancelled();
-        }
-
-        @Override
-        protected Object doInBackground(Object[] p1) {
-            _apps.clear();
-            _nonFilteredApps.clear();
-            Intent intent = new Intent(Intent.ACTION_MAIN, null);
-            intent.addCategory(Intent.CATEGORY_LAUNCHER);
-            List<ResolveInfo> activitiesInfo = _packageManager.queryIntentActivities(intent, 0);
-            AppSettings appSettings = AppSettings.get();
-            int sort = appSettings.getSortMode();
-            activitiesInfo = sortApplications(activitiesInfo, sort);
-
-
-            for (ResolveInfo info : activitiesInfo) {
-                App app = new App(info, _packageManager);
-                _nonFilteredApps.add(app);
-            }
-
-            List<String> hiddenList = AppSettings.get().getHiddenAppsList();
-            if (hiddenList != null) {
-                for (int i = 0; i < _nonFilteredApps.size(); i++) {
-                    boolean shouldGetAway = false;
-                    for (String hidItemRaw : hiddenList) {
-                        if ((_nonFilteredApps.get(i).getPackageName() + "/" + _nonFilteredApps.get(i).getClassName()).equals(hidItemRaw)) {
-                            shouldGetAway = true;
-                            break;
-                        }
-                    }
-                    if (!shouldGetAway) {
-                        _apps.add(_nonFilteredApps.get(i));
-                    }
-                }
-            } else {
-                for (ResolveInfo info : activitiesInfo)
-                    _apps.add(new App(info, _packageManager));
-            }
-
-            if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), _packageManager)) {
-                IconPackHandler iconsHandler = new IconPackHandler(_context);
-                iconsHandler.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), _apps);
-            }
-            return null;
-        }
-
-        private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, int sort) {
-            List<ResolveInfo> sortedAtivities = activitiesInfo;
-            switch (sort) {
-                default:
-                case Config.APP_SORT_AZ:
-                    Log.i("apps", "sorting by AZ");
-                    Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
-                            p1.loadLabel(_packageManager).toString(),
-                            p2.loadLabel(_packageManager).toString()));
-                    break;
-                case Config.APP_SORT_ZA:
-                    Log.i("apps", "sorting by ZA");
-                    Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
-                            p1.loadLabel(_packageManager).toString(),
-                            p2.loadLabel(_packageManager).toString()));
-                    break;
-                case Config.APP_SORT_LI:
-                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
-                        Log.i("apps", "sorting by Last Installed");
-                        Collections.sort(sortedAtivities, new InstallTimeComparator(_packageManager));
-                    } else {
-                        Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
-                                p1.loadLabel(_packageManager).toString(),
-                                p2.loadLabel(_packageManager).toString()));
-                    }
-
-                    break;
-                case Config.APP_SORT_MU:
-                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
-                        Log.i("apps", "sorting by Most Used");
-                        Collections.sort(sortedAtivities, new MostUsedComparator());
-                    } else {
-                        Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
-                                p1.loadLabel(_packageManager).toString(),
-                                p2.loadLabel(_packageManager).toString()));
-                    }
-                    break;
-            }
-
-            return sortedAtivities;
-        }
-
-        @Override
-        protected void onPostExecute(Object result) {
-            notifyUpdateListeners(_apps);
-
-            List<App> removed = Tool.getRemovedApps(tempApps, _apps);
-            if (removed.size() > 0) {
-                notifyRemoveListeners(removed);
-            }
-
-            if (_recreateAfterGettingApps) {
-                _recreateAfterGettingApps = false;
-                if (_context instanceof HomeActivity)
-                    ((HomeActivity) _context).recreate();
-            }
-
-            super.onPostExecute(result);
-        }
+        /**
+         * @param apps list of apps
+         * @return true, if the listener should be removed
+         */
+        boolean onAppUpdated(List<App> apps);
     }
 
     public static class MostUsedComparator implements Comparator<ResolveInfo> {
@@ -315,6 +213,127 @@ public class AppManager {
         @Override
         public boolean equals(Object obj) {
             return obj instanceof AppUpdatedListener && ((AppUpdatedListener) obj).listenerID.equals(this.listenerID);
+        }
+    }
+
+    private class AsyncGetApps extends AsyncTask {
+        private List<App> tempApps;
+
+        @Override
+        protected void onPreExecute() {
+            tempApps = new ArrayList<>(apps);
+            super.onPreExecute();
+        }
+
+        @Override
+        protected void onCancelled() {
+            tempApps = null;
+            super.onCancelled();
+        }
+
+        @Override
+        protected Object doInBackground(Object[] p1) {
+            apps.clear();
+            nonFilteredApps.clear();
+            Intent intent = new Intent(Intent.ACTION_MAIN, null);
+            intent.addCategory(Intent.CATEGORY_LAUNCHER);
+            List<ResolveInfo> activitiesInfo = packageManager.queryIntentActivities(intent, 0);
+            AppSettings appSettings = AppSettings.get();
+            int sort = appSettings.getSortMode();
+            activitiesInfo = sortApplications(activitiesInfo, sort);
+
+
+            for (ResolveInfo info : activitiesInfo) {
+                App app = new App(info, packageManager);
+                nonFilteredApps.add(app);
+            }
+            String myApp;
+            List<String> hiddenList = AppSettings.get().getHiddenAppsList();
+            if (hiddenList != null) {
+                for (int i = 0; i < nonFilteredApps.size(); i++) {
+                    boolean shouldGetAway = false;
+                    for (String hidItemRaw : hiddenList) {
+                        myApp = "ComponentInfo{" + nonFilteredApps.get(i).getPackageName() + "/" + nonFilteredApps.get(i).getClassName() + "}";
+
+                        if (myApp.equals(hidItemRaw)) {
+                            shouldGetAway = true;
+                            break;
+                        }
+                    }
+                    if (!shouldGetAway) {
+                        apps.add(nonFilteredApps.get(i));
+                    }
+                }
+            } else {
+                for (ResolveInfo info : activitiesInfo)
+                    apps.add(new App(info, packageManager));
+            }
+
+            if (!appSettings.getIconPack().isEmpty() && Tool.isPackageInstalled(appSettings.getIconPack(), packageManager)) {
+                IconPackHandler iconsHandler = new IconPackHandler(_context);
+                iconsHandler.applyIconPack(AppManager.this, Tool.dp2px(appSettings.getIconSize(), _context), appSettings.getIconPack(), apps);
+            }
+            return null;
+        }
+
+        private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, int sort) {
+            List<ResolveInfo> sortedAtivities = activitiesInfo;
+            switch (sort) {
+                default:
+                case Config.APP_SORT_AZ:
+                    Log.i("apps", "sorting by AZ");
+                    Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                            p1.loadLabel(packageManager).toString(),
+                            p2.loadLabel(packageManager).toString()));
+                    break;
+                case Config.APP_SORT_ZA:
+                    Log.i("apps", "sorting by ZA");
+                    Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                            p1.loadLabel(packageManager).toString(),
+                            p2.loadLabel(packageManager).toString()));
+                    break;
+                case Config.APP_SORT_LI:
+                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
+                        Log.i("apps", "sorting by Last Installed");
+                        Collections.sort(sortedAtivities, new InstallTimeComparator(packageManager));
+                    } else {
+                        Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                                p1.loadLabel(packageManager).toString(),
+                                p2.loadLabel(packageManager).toString()));
+                    }
+
+                    break;
+                case Config.APP_SORT_MU:
+                    if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
+                        Log.i("apps", "Sorting by Most Used");
+                        Collections.sort(sortedAtivities, new MostUsedComparator());
+                    } else {
+                        Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                                p1.loadLabel(packageManager).toString(),
+                                p2.loadLabel(packageManager).toString()));
+                    }
+                    break;
+            }
+
+            return sortedAtivities;
+        }
+
+        @Override
+        protected void onPostExecute(Object result) {
+            notifyUpdateListeners(apps);
+
+            List<App> removed = Tool.getRemovedApps(tempApps, apps);
+            if (removed.size() > 0) {
+                notifyRemoveListeners(removed);
+            }
+
+            if (recreateAfterGettingApps) {
+                recreateAfterGettingApps = false;
+                if (_context instanceof HomeActivity)
+                    ((HomeActivity) _context).recreate();
+            }
+
+            super.onPostExecute(result);
         }
     }
 }
