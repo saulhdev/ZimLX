@@ -43,7 +43,7 @@ public class FolderIcon extends Drawable implements IFolderListener {
     private int outline;
     private int iconSizeDiv2;
     private AppSettings appSettings = Setup.appSettings();
-    private PreviewBackground mBackground = new PreviewBackground();
+    public PreviewBackground mBackground = new PreviewBackground();
     private Rect mTempBounds = new Rect();
     private float mSlop;
 

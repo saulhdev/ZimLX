@@ -138,6 +138,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         contextUtils.setAppLanguage(appSettings.getLanguage());
         super.onCreate(savedInstanceState);
+
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
         }
@@ -161,6 +162,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+
         init();
     }
 
