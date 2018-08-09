@@ -5,4 +5,29 @@
         <attr name="maxValue" format="integer|reference" />
         <attr name="wrapSelectorWheel" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="InvariantDeviceProfile">
+        <attr name="name" format="string" />
+        <attr name="minWidthDps" format="float" />
+        <attr name="minHeightDps" format="float" />
+
+        <attr name="numRows" format="integer" />
+        <attr name="numColumns" format="integer" />
+        <!-- numFolderRows & numFolderColumns defaults to numRows & numColumns, if not specified -->
+        <attr name="numFolderRows" format="integer" />
+        <attr name="numFolderColumns" format="integer" />
+        <!-- minAllAppsPredictionColumns defaults to numColumns, if not specified -->
+        <attr name="minAllAppsPredictionColumns" format="integer" />
+        <!-- numHotseatIcons defaults to numColumns, if not specified -->
+        <attr name="numHotseatIcons" format="integer" />
+
+        <attr name="iconSize" format="float" />
+        <!-- landscapeIconSize defaults to iconSize, if not specified -->
+        <attr name="landscapeIconSize" format="float" />
+        <attr name="iconTextSize" format="float" />
+
+        <attr name="defaultLayoutId" format="reference" />
+        <attr name="demoModeLayoutId" format="reference" />
+    </declare-styleable>
+
 </resources>

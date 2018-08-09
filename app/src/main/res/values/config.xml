@@ -1,0 +1,177 @@
+<resources>
+    <!-- Dynamic Grid -->
+    <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
+    <integer name="config_dynamic_grid_overview_icon_zone_percentage">22</integer>
+
+    <!-- Miscellaneous -->
+    <bool name="config_largeHeap">false</bool>
+    <bool name="is_tablet">false</bool>
+    <bool name="is_large_tablet">false</bool>
+    <bool name="allow_rotation">false</bool>
+
+    <integer name="extracted_color_gradient_alpha">153</integer>
+
+    <!-- A string pointer to the original app name string. This allows derived projects to
+     easily override the app name without providing all translations -->
+    <string name="derived_app_name" translatable="false">@string/app_name_pixel_launcher</string>
+
+    <!-- String representing the intent for search on the apps market. To specify a query, add
+    q=<query> to the data to the intent -->
+    <string name="market_search_intent" translatable="false">market://search?c=apps</string>
+
+    <!-- String representing the intent to delete a package.-->
+    <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
+
+    <!-- Values for icon shape overrides. These should correspond to entries defined
+     in icon_shape_override_paths_names -->
+    <string-array name="icon_shape_override_paths_values" translatable="false">
+        <item></item>
+        <item>M50,0L100,0 100,100 0,100 0,0z</item>
+        <item>M50,0L70,0 A30,30,0,0 1 100,30 L100,70 A30,30,0,0 1 70,100 L30,100 A30,30,0,0 1 0,70 L 0,30 A30,30,0,0 1 30,0z</item>
+        <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
+        <item>M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
+        <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
+        <item>M50,0A50,30 0,0,1 100,30V70A50,30 0,0,1 0,70V30A50,30 0,0,1 50,0z</item>
+    </string-array>
+
+    <string-array name="icon_shape_override_paths_names" translatable="false">
+        <!-- Option to not change the icon shape on home screen. [CHAR LIMIT=50] -->
+        <item>@string/icon_shape_system_default</item>
+        <item>@string/icon_shape_square</item>
+        <item>@string/icon_shape_rounded_square</item>
+        <item>@string/icon_shape_squircle</item>
+        <item>@string/icon_shape_circle</item>
+        <item>@string/icon_shape_teardrop</item>
+        <item>@string/icon_shape_cylinder</item>
+    </string-array>
+
+    <!-- DragController -->
+    <item name="drag_event_parity" type="id" />
+
+    <!-- AllApps & Launcher transitions -->
+    <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
+    <integer name="config_workspaceScrimAlpha">30</integer>
+    <integer name="config_allAppsTransitionTime">100</integer>
+    <integer name="config_overviewTransitionTime">250</integer>
+
+    <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
+    <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
+    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
+    <integer name="config_workspaceOverviewShrinkPercentage">70</integer>
+
+    <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
+         Note: This should be less than the config_overlayTransitionTime as they happen together. -->
+    <integer name="config_overlayRevealTime">220</integer>
+    <integer name="config_overlaySlideRevealTime">320</integer>
+    <integer name="config_overlayTransitionTime">300</integer>
+    <integer name="config_overlayItemsAlphaStagger">60</integer>
+
+    <!-- This constant stores the ratio of the all apps button drawable which
+         is used for internal (baked-in) padding -->
+    <integer name="config_allAppsButtonPaddingPercent">17</integer>
+
+    <!-- The duration of the animation from search hint to text entry -->
+    <integer name="config_searchHintAnimationDuration">50</integer>
+
+    <!-- View tag key used to store SpringAnimation data. -->
+    <item name="spring_animation_tag" type="id" />
+
+    <!-- Workspace -->
+    <!-- The duration (in ms) of the fade animation on the object outlines, used when
+         we are dragging objects around on the home screen. -->
+    <integer name="config_dragOutlineFadeTime">900</integer>
+
+    <!-- The alpha value at which to show the most recent drop visualization outline. -->
+    <integer name="config_dragOutlineMaxAlpha">128</integer>
+
+    <!-- Parameters controlling the animation for when an item is dropped on the home screen,
+         and it animates from its old position to the new one. -->
+    <integer name="config_dropAnimMinDuration">100</integer>
+    <integer name="config_dropAnimMaxDuration">500</integer>
+
+    <!-- The duration of the UserFolder opening and closing animation -->
+    <integer name="config_folderExpandDuration">120</integer>
+    <integer name="config_materialFolderExpandDuration">200</integer>
+    <integer name="config_materialFolderExpandStagger">60</integer>
+    <integer name="config_folderDelay">30</integer>
+
+    <!-- The distance at which the animation should take the max duration -->
+    <integer name="config_dropAnimMaxDist">800</integer>
+
+    <!-- The duration of the caret animation -->
+    <integer name="config_caretAnimationDuration">200</integer>
+
+    <!-- Hotseat -->
+    <bool name="hotseat_transpose_layout_with_orientation">true</bool>
+
+    <!-- Name of a subclass of com.android.launcher3.AppFilter used to
+         filter the activities shown in the launcher. Can be empty. -->
+    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
+
+    <!-- Name of an icon provider class. -->
+    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.CustomIconProvider</string>
+
+    <!-- Name of a drawable factory class. -->
+    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
+
+    <!-- Name of a user event dispatcher class. -->
+    <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
+
+    <!-- Name of a custom shortcut class. -->
+    <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
+
+    <!-- Name of a color extraction implementation class. -->
+    <string name="color_extraction_impl_class" translatable="false"></string>
+
+    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
+    <string name="instant_app_resolver_class" translatable="false"></string>
+
+    <!-- Package name of the default wallpaper picker. -->
+    <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
+
+    <!-- View ID to use for QSB widget -->
+    <item name="qsb_widget" type="id" />
+
+    <!-- View ID used by cell layout to jail its content -->
+    <item name="cell_layout_jail_id" type="id" />
+
+    <!-- View ID used by PreviewImageView to cache its instance -->
+    <item name="preview_image_id" type="id" />
+
+    <!-- Popup items -->
+    <integer name="config_popupOpenCloseDuration">150</integer>
+    <integer name="config_popupArrowOpenDuration">80</integer>
+    <integer name="config_removeNotificationViewDuration">300</integer>
+
+    <!-- Accessibility actions -->
+    <item name="action_remove" type="id" />
+    <item name="action_uninstall" type="id" />
+    <item name="action_info" type="id" />
+    <item name="action_add_to_workspace" type="id" />
+    <item name="action_move" type="id" />
+    <item name="action_move_to_workspace" type="id" />
+    <item name="action_move_screen_backwards" type="id" />
+    <item name="action_move_screen_forwards" type="id" />
+    <item name="action_resize" type="id" />
+    <item name="action_deep_shortcuts" type="id" />
+    <item name="action_dismiss_notification" type="id" />
+
+    <!-- QSB IDs. DO not change -->
+    <item name="search_container_workspace" type="id" />
+    <item name="search_container_hotseat" type="id" />
+    <item name="search_container_all_apps" type="id" />
+
+    <string-array name="theme_override_values" translatable="false">
+        <item></item>
+        <item>0</item>
+        <item>2</item>
+        <item>4</item>
+    </string-array>
+
+    <string-array name="theme_override_names" translatable="false">
+        <item>@string/theme_automatic</item>
+        <item>@string/theme_default</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_transparent</item>
+    </string-array>
+</resources>
