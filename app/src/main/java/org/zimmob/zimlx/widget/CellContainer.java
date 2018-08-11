@@ -79,6 +79,7 @@ public class CellContainer extends ViewGroup {
         init();
     }
 
+
     public interface OnItemRearrangeListener {
         void onItemRearrange(@NonNull Point point, @NonNull Point point2);
     }
@@ -316,6 +317,7 @@ public class CellContainer extends ViewGroup {
         return null;
     }
 
+
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
@@ -397,6 +399,31 @@ public class CellContainer extends ViewGroup {
     public final void addViewToGrid(@NonNull View view) {
         addView(view);
     }
+
+    /**
+     * Computes a bounding rectangle for a range of cells
+     *
+     * @param cellX      X coordinate of upper left corner expressed as a cell position
+     * @param cellY      Y coordinate of upper left corner expressed as a cell position
+     * @param cellHSpan  Width in cells
+     * @param cellVSpan  Height in cells
+     * @param resultRect Rect into which to put the results
+     */
+    public void cellToRect(int cellX, int cellY, int cellHSpan, int cellVSpan, Rect resultRect) {
+        final int cellWidth = _cellWidth;
+        final int cellHeight = _cellHeight;
+
+        final int hStartPadding = getPaddingLeft();
+        final int vStartPadding = getPaddingTop();
+
+        int width = cellHSpan * cellWidth;
+        int height = cellVSpan * cellHeight;
+        int x = hStartPadding + cellX * cellWidth;
+        int y = vStartPadding + cellY * cellHeight;
+
+        resultRect.set(x, y, x + width, y + height);
+    }
+
 
     public final void setOccupied(boolean b, @NonNull LayoutParams lp) {
         int x = lp.getX() + lp.getXSpan();

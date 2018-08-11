@@ -71,8 +71,8 @@ public class ItemInfo {
             return null;
         }
     }
-
-    /*public void writeToValues(ContentWriter writer) {
+/*
+    public void writeToValues(ContentWriter writer) {
         writer.put(LauncherSettings.Favorites.ITEM_TYPE, itemType)
                 .put(LauncherSettings.Favorites.CONTAINER, container)
                 .put(LauncherSettings.Favorites.SCREEN, screenId)
@@ -82,7 +82,7 @@ public class ItemInfo {
                 .put(LauncherSettings.Favorites.SPANY, spanY)
                 .put(LauncherSettings.Favorites.RANK, rank);
     }
-
+/*
     public void readFromValues(ContentValues values) {
         itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
         container = values.getAsLong(LauncherSettings.Favorites.CONTAINER);

@@ -46,7 +46,7 @@ public class FolderIcon extends Drawable implements IFolderListener {
     public PreviewBackground mBackground = new PreviewBackground();
     private Rect mTempBounds = new Rect();
     private float mSlop;
-
+    public static final int NUM_ITEMS_IN_PREVIEW = 9;
     private FolderBadgeInfo mBadgeInfo = new FolderBadgeInfo();
     private BadgeRenderer mBadgeRenderer;
     private static float mBadgeScale;

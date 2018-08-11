@@ -29,5 +29,18 @@
         <attr name="defaultLayoutId" format="reference" />
         <attr name="demoModeLayoutId" format="reference" />
     </declare-styleable>
+    <declare-styleable name="CellLayout">
+        <attr name="containerType" format="integer">
+            <enum name="workspace" value="0" />
+            <enum name="hotseat" value="1" />
+            <enum name="folder" value="2" />
+        </attr>
+    </declare-styleable>
 
+    <!-- PagedView specific attributes. These attributes are used to customize
+         a PagedView view in XML files. -->
+    <declare-styleable name="PagedView">
+        <!-- The page indicator for this workspace -->
+        <attr name="pageIndicator" format="reference" />
+    </declare-styleable>
 </resources>

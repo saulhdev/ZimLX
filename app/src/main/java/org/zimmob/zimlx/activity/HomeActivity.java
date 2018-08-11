@@ -40,6 +40,7 @@ import android.widget.TextView;
 import net.gsantner.opoc.util.ContextUtils;
 
 import org.zimmob.zimlx.BuildConfig;
+import org.zimmob.zimlx.DeviceProfile;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.activity.homeparts.HpAppDrawer;
 import org.zimmob.zimlx.activity.homeparts.HpDesktopPickAction;
@@ -61,6 +62,7 @@ import org.zimmob.zimlx.receiver.ShortcutReceiver;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.util.Utilities;
 import org.zimmob.zimlx.viewutil.MinibarAdapter;
 import org.zimmob.zimlx.viewutil.WidgetHost;
 import org.zimmob.zimlx.widget.AppItemView;
@@ -117,6 +119,8 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private BroadcastReceiver _timeChangedReceiver;
     private AppSettings appSettings;
 
+    protected DeviceProfile mDeviceProfile;
+
     static {
         companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIME_TICK");
         companion.getTimeChangesIntentFilter().addAction("android.intent.action.TIMEZONE_CHANGED");
@@ -138,7 +142,17 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
         contextUtils.setAppLanguage(appSettings.getLanguage());
         super.onCreate(savedInstanceState);
+        /*LauncherAppState app = LauncherAppState.getInstance(this);
 
+        // Load configuration-specific DeviceProfile
+        mDeviceProfile = app.getInvariantDeviceProfile().getDeviceProfile(this);
+        if (isInMultiWindowModeCompat()) {
+            Display display = getWindowManager().getDefaultDisplay();
+            Point mwSize = new Point();
+            display.getSize(mwSize);
+            mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
+        }
+        */
         if (!Setup.wasInitialised()) {
             Setup.init(new HpInitSetup(this));
         }
@@ -331,6 +345,14 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         if (!appSettings.getDockEnable()) {
             getDesktop().setPadding(0, 0, 0, Desktop._bottomInset);
         }
+    }
+
+    public DeviceProfile getDeviceProfile() {
+        return mDeviceProfile;
+    }
+
+    public boolean isInMultiWindowModeCompat() {
+        return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
     }
 
     private void configureWidget(Intent data) {
