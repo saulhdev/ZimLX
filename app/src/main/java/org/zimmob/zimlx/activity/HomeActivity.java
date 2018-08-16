@@ -96,7 +96,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPWIDGET = 9;
     public static final int REQUEST_EDIT_ICON = 14;
-
+    private static final int REQUEST_BIND_APPWIDGET = 1;
     private static Resources resources;
 
     private static WidgetHost _appWidgetHost;
@@ -1014,7 +1014,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         companion.setConsumeNextResume(true);
         int appWidgetId = Objects.requireNonNull(companion.getAppWidgetHost()).allocateAppWidgetId();
         Intent pickIntent = new Intent("android.appwidget.action.APPWIDGET_PICK");
-        pickIntent.putExtra("appWidgetId", appWidgetId);
+        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
     }
 

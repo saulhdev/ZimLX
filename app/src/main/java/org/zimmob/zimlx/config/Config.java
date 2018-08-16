@@ -23,6 +23,7 @@ import org.zimmob.zimlx.backup.RestoreBackupActivity;
 import org.zimmob.zimlx.model.LauncherModel;
 import org.zimmob.zimlx.util.AppSettings;
 import org.zimmob.zimlx.util.LooperExecutor;
+import org.zimmob.zimlx.util.Utilities;
 
 /**
  * Created by saul on 05-06-18.
@@ -55,6 +56,7 @@ public class Config {
     public static final int NO_SCALE = -1;
 
     public static final boolean DEBUG_MODE = true;
+    public static final String KEY_ALTERNATE_ICON_PREFIX = "alternateIcon_";
 
     // separates a list of integers
     public static final String INT_SEP = "#";
@@ -183,5 +185,13 @@ public class Config {
     public static boolean isPowerSaverOn(Context context) {
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
+    }
+
+    public static Boolean getBackportAdaptiveIcons() {
+        return Utilities.ATLEAST_NOUGAT;
+    }
+
+    public static String setAlternateIcon(String alternateIcon) {
+        return KEY_ALTERNATE_ICON_PREFIX + alternateIcon;
     }
 }

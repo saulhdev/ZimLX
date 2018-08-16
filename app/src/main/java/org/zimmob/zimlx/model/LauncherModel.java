@@ -4,6 +4,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
+import android.os.UserHandle;
 
 import org.zimmob.zimlx.DeferredHandler;
 import org.zimmob.zimlx.util.Thunk;
@@ -40,6 +41,10 @@ public class LauncherModel {
 
     }
 
+    public void onPackageChanged(String packageName, UserHandle user) {
+        //int op = PackageUpdatedTask.OP_UPDATE;
+        //enqueueItemUpdatedTask(new PackageUpdatedTask(op, new String[]{packageName},user));
+    }
 
     /**
      * @return the looper for the worker thread which can be used to start background tasks.
@@ -47,4 +52,6 @@ public class LauncherModel {
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
     }
+
+
 }

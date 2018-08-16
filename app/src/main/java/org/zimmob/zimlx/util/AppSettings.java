@@ -390,4 +390,20 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public void setDrawerStyle(int drawerStyle) {
         setString(R.string.pref_key__drawer_style, String.valueOf(drawerStyle));
     }
+
+    public Boolean getUsePixelIcons() {
+        return getBool(R.string.pref_key__icon_pixel_style, true);
+    }
+
+    public String getOverrideIconShape() {
+        return getString(R.string.pref_key__override_icon_shape, "");
+    }
+
+    public void setOverrideIconShape(String iconShape) {
+        setString(R.string.pref_key__override_icon_shape, iconShape);
+    }
+
+    public Boolean enablePlanes() {
+        return getBool(R.string.pref_key__override_icon_shape, true);
+    }
 }

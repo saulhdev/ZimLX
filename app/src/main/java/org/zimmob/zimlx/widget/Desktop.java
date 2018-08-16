@@ -35,6 +35,7 @@ import org.zimmob.zimlx.widget.CellContainer.DragState;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import in.championswimmer.sfg.lib.SimpleFingerGestures;
 import in.championswimmer.sfg.lib.SimpleFingerGestures.OnFingerGestureListener;
@@ -92,7 +93,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                                 return true;
                             }
                         case GROUP:
-                            if ((Item.Type.APP.equals(dropItem.getType()) || Type.SHORTCUT.equals(dropItem.getType())) && item.getGroupItems().size() < Folder.GroupDef._maxItem) {
+                            if ((Item.Type.APP.equals(dropItem.getType()) || Type.SHORTCUT.equals(dropItem.getType())) && item.getGroupItems().size() < Folder.GroupDef.maxItem) {
                                 parent.removeView(itemView);
                                 item.getGroupItems().add(dropItem);
                                 HomeActivity.companion.getDb().saveItem(dropItem, page, itemPosition);
@@ -290,7 +291,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                 }
             }
         }
-        _previousDragPoint.set(_coordinate.x, _coordinate.y);
+        Objects.requireNonNull(_previousDragPoint).set(_coordinate.x, _coordinate.y);
         switch (state) {
             case CurrentNotOccupied:
                 getCurrentPage().projectImageOutlineAt(_coordinate, DragHandler.cachedDragBitmap);
@@ -324,11 +325,11 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                 homeActivity2 = HomeActivity.companion.getLauncher();
                 if (homeActivity2 != null) {
                     dragNDropView2 = homeActivity2.getDragNDropView();
-                    if (dragNDropView2 != null) {
+                    //if (dragNDropView2 != null) {
                         /*if (Setup.appSettings().isDesktopShowLabel()) {
                         }*/
-                        dragNDropView2.showFolderPreviewAt(this, ((float) getCurrentPage().getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCurrentPage().getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDesktopShowLabel() ? Tool.toPx(7) : 0)));
-                    }
+                    dragNDropView2.showFolderPreviewAt(this, ((float) getCurrentPage().getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCurrentPage().getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDesktopShowLabel() ? Tool.toPx(7) : 0)));
+                    //}
                 }
                 break;
             default:
@@ -525,7 +526,6 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
         private final Desktop _desktop;
         private float _scaleFactor = 1.0f;
         private float _translateFactor;
-
         private DesktopAdapter(Desktop desktop) {
             _desktop = desktop;
             _desktop.getPages().clear();
@@ -638,7 +638,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
             }
         }
 
-        private final void exitDesktopEditMode() {
+        private void exitDesktopEditMode() {
             _scaleFactor = 1.0f;
             _translateFactor = 0.0f;
             for (CellContainer v : _desktop.getPages()) {

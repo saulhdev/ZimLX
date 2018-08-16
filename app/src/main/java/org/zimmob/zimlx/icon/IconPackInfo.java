@@ -8,6 +8,7 @@ public class IconPackInfo {
     String packageName;
     CharSequence label;
     Drawable icon;
+    IconPack iconPack;
 
     public IconPackInfo(ResolveInfo r, PackageManager packageManager) {
         packageName = r.activityInfo.packageName;
@@ -19,5 +20,16 @@ public class IconPackInfo {
         this.label = label;
         this.icon = icon;
         this.packageName = packageName;
+    }
+
+    IconPackInfo(IconPack ip, Drawable ic, CharSequence lb) {
+        this.iconPack = ip;
+        this.packageName = iconPack.getPackageName();
+        this.icon = ic;
+        this.label = lb;
+    }
+
+    IconPack getIconPack() {
+        return iconPack;
     }
 }

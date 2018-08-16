@@ -10,12 +10,11 @@ import org.zimmob.zimlx.util.Tool;
 
 public class SwipeListView extends ListView {
     private GestureDetector mGestureDetector;
+    private OnSwipeRight onSwipeRight;
 
     public void setOnSwipeRight(OnSwipeRight onSwipeRight) {
         this.onSwipeRight = onSwipeRight;
     }
-
-    private OnSwipeRight onSwipeRight;
 
     public SwipeListView(Context context) {
         super(context);

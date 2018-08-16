@@ -41,8 +41,6 @@ public class NotificationInfo {
             icon = mBadgeIcon == Notification.BADGE_ICON_SMALL ? null : notification.getLargeIcon();
         }
 
-
-
         if (icon == null) {
             // Use the small icon.
             //icon = notification.getSmallIcon();

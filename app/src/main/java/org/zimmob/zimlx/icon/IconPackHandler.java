@@ -437,7 +437,6 @@ public class IconPackHandler {
 
         private IconPackLoader(String packageName) {
             mIconPackPackageName = packageName;
-            //mIconCache = LauncherAppState.getInstance(mContext).getIconCache();
         }
 
         @Override

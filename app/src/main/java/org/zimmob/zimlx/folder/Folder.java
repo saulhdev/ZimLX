@@ -287,7 +287,7 @@ public class Folder extends RevealFrameLayout {
     }
 
     public static class GroupDef {
-        public static int _maxItem = 12;
+        public static int maxItem = 12;
 
         static int[] getCellSize(int count) {
             if (count <= 1)

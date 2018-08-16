@@ -38,6 +38,9 @@ public class IconPackAdapter extends BaseAdapter {
         mCurrentIconPack = AppSettings.get().getIconPack();
     }
 
+    IconPackAdapter(Context context, ArrayList<IconPackInfo> iconPacks) {
+        mSupportedPackages = iconPacks;
+    }
     @Override
     public int getCount() {
         return mSupportedPackages.size();

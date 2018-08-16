@@ -1,14 +1,17 @@
 package org.zimmob.zimlx.model;
 
+import android.content.ComponentName;
 import android.content.Intent;
 import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.os.UserHandle;
 
 import org.zimmob.zimlx.activity.HomeActivity;
 import org.zimmob.zimlx.icon.SimpleIconProvider;
 import org.zimmob.zimlx.manager.Setup;
 import org.zimmob.zimlx.util.Tool;
+import org.zimmob.zimlx.util.Utilities;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -40,9 +43,10 @@ public class Item implements Parcelable {
     private int _idValue;
     private String name = "";
     private String packageName = "";
-
+    private String className = "";
     public SimpleIconProvider iconProvider = null;
-
+    private ComponentName componentName;
+    private UserHandle user;
 
     public static final Creator<Item> CREATOR = new Creator<Item>() {
         @Override
@@ -73,6 +77,9 @@ public class Item implements Parcelable {
         y = parcel.readInt();
         switch (type) {
             case APP:
+                className = parcel.readString();
+                intent = Tool.getIntentFromString(parcel.readString());
+                break;
             case SHORTCUT:
                 intent = Tool.getIntentFromString(parcel.readString());
                 break;
@@ -120,6 +127,9 @@ public class Item implements Parcelable {
         item.intent = toIntent(app);
         item.packageName = app.getPackageName();
         item.iconProvider = Setup.imageLoader().createIconProvider(app.getIcon());
+        item.componentName = new ComponentName(app.getPackageName(), app.getClassName());
+        item.user = Utilities.myUserHandle();
+        item.className = app.getClassName();
         return item;
     }
 
@@ -132,7 +142,6 @@ public class Item implements Parcelable {
         item.spanY = 1;
         item.intent = intent;
         item.iconProvider = Setup.imageLoader().createIconProvider(icon);
-
         return item;
     }
 
@@ -194,6 +203,9 @@ public class Item implements Parcelable {
         out.writeInt(y);
         switch (type) {
             case APP:
+                out.writeString(className);
+                out.writeString(Tool.getIntentAsString(intent));
+                break;
             case SHORTCUT:
                 out.writeString(Tool.getIntentAsString(intent));
                 break;
@@ -235,6 +247,10 @@ public class Item implements Parcelable {
 
     public String getLabel() {
         return name;
+    }
+
+    public String getClassName() {
+        return className;
     }
 
     public String getPackageName() {
@@ -294,6 +310,14 @@ public class Item implements Parcelable {
 
     public SimpleIconProvider getIconProvider() {
         return iconProvider;
+    }
+
+    public ComponentName getComponentName() {
+        return componentName;
+    }
+
+    public UserHandle getUser() {
+        return user;
     }
 
     public enum Type {

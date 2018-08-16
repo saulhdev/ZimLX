@@ -48,6 +48,18 @@ public class IconPalette {
         secondaryColor = getLowContrastColor(backgroundColor);
     }
 
+    private IconPalette(int i) {
+        dominantColor = i;
+        backgroundColor = dominantColor;
+        ColorMatrix colorMatrix = new ColorMatrix();
+        Themes.setColorScaleOnMatrix(backgroundColor, colorMatrix);
+        backgroundColorMatrixFilter = new ColorMatrixColorFilter(colorMatrix);
+        Themes.setColorScaleOnMatrix(getMutedColor(dominantColor, 0.54f), colorMatrix);
+        saturatedBackgroundColorMatrixFilter = new ColorMatrixColorFilter(colorMatrix);
+        textColor = getTextColorForBackground(backgroundColor);
+        secondaryColor = getLowContrastColor(backgroundColor);
+    }
+
     /**
      * Returns a color suitable for the progress bar color of preload icon.
      */
@@ -70,6 +82,9 @@ public class IconPalette {
         return new IconPalette(dominantColor, desaturateBackground);
     }
 
+    public static IconPalette fromDominantColor(int i) {
+        return new IconPalette(i);
+    }
     /**
      * Returns an IconPalette based on the badge_color in colors.xml.
      * If that color is Color.TRANSPARENT, then returns null instead.

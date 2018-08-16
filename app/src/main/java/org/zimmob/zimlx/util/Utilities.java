@@ -37,6 +37,8 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.os.UserHandle;
+import android.preference.PreferenceManager;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -58,8 +60,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -365,6 +369,7 @@ public final class Utilities {
         return bestColor;
     }
 
+
     /*
      * Finds a system apk which had a broadcast receiver listening to a particular action.
      * @param action intent action used to find the apk
@@ -650,6 +655,25 @@ public final class Utilities {
         }
     }
 
+    public static boolean hasAlternativeIcon(Context context, ComponentName componentName) {
+        return getAlternativeIconList(context).contains(componentName.flattenToString());
+    }
+
+    public static List<String> getAlternativeIconList(Context context) {
+        List<String> apps = new ArrayList<>();
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(context);
+
+        for (String key : prefs.getAll().keySet()) {
+            if (key.startsWith("alternateIcon_")) {
+                String regex = "^" + "alternateIcon_";
+                apps.add(key.replaceFirst(regex, ""));
+            }
+        }
+
+        return apps;
+    }
+
+
     /**
      * Returns a HashSet with a single element. We use this instead of Collections.singleton()
      * because HashSet ensures all operations, such as remove, are supported.
@@ -660,4 +684,7 @@ public final class Utilities {
         return hashSet;
     }
 
+    public static UserHandle myUserHandle() {
+        return android.os.Process.myUserHandle();
+    }
 }

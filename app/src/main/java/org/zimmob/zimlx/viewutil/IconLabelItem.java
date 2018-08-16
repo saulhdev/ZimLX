@@ -162,8 +162,9 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
         _icon = icon;
     }
 
+    @NonNull
     @Override
-    public ViewHolder getViewHolder(View v) {
+    public ViewHolder getViewHolder(@NonNull View v) {
         return new ViewHolder(v, this);
     }
 
@@ -178,7 +179,7 @@ public class IconLabelItem extends AbstractItem<IconLabelItem, IconLabelItem.Vie
     }
 
     @Override
-    public void bindView(IconLabelItem.ViewHolder holder, List payloads) {
+    public void bindView(@NonNull IconLabelItem.ViewHolder holder, List payloads) {
         if (_matchParent)
             holder.itemView.getLayoutParams().width = RecyclerView.LayoutParams.MATCH_PARENT;
         if (_width != -1)

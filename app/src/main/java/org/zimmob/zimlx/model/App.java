@@ -23,33 +23,32 @@ import java.util.Locale;
  */
 public class App implements Comparator<App> {
     private static final String TAG = App.class.getSimpleName();
-    private String label, packageName, className;
-    private Drawable icon;
-    public SimpleIconProvider _iconProvider;
-    private CharSequence iconRes;
+    private String label;
+    private String packageName;
+    private String className;
     @Nullable
-    public String _universalLabel;
+    private String universalLabel;
+    private Drawable icon;
+    private SimpleIconProvider iconProvider;
+    private int iconRes;
 
     public App(ResolveInfo info, PackageManager pm) {
         this.label = info.loadLabel(pm).toString();
         this.icon = info.loadIcon(pm);
         this.packageName = info.activityInfo.packageName;
-
-        _iconProvider = Setup.imageLoader().createIconProvider(info.loadIcon(pm));
+        this.iconProvider = Setup.imageLoader().createIconProvider(info.loadIcon(pm));
         this.className = info.activityInfo.name;
-        this.iconRes = info.loadLabel(pm);
-
+        this.iconRes = info.getIconResource();
         try {
             updateUniversalLabel(pm, info);
-            Log.d("AppModel", "Universal label " + getUniversalLabel());
+            Log.d(TAG, "Universal label " + getUniversalLabel());
         } catch (Exception e) {
-            Log.e("AppModel", "Cannot resolve universal label for " + label, e);
+            Log.e(TAG, "Cannot resolve universal label for " + label, e);
         }
     }
 
     private void updateUniversalLabel(PackageManager pm, ResolveInfo info) throws PackageManager.NameNotFoundException {
         ApplicationInfo appInfo = info.activityInfo.applicationInfo;
-
         Configuration config = new Configuration();
         config.locale = Locale.ROOT;
 
@@ -90,7 +89,7 @@ public class App implements Comparator<App> {
         return icon;
     }
 
-    public CharSequence getIconRes() {
+    public int getIconRes() {
         return this.iconRes;
     }
 
@@ -99,11 +98,11 @@ public class App implements Comparator<App> {
     }
 
     public SimpleIconProvider getIconProvider() {
-        return _iconProvider;
+        return iconProvider;
     }
 
     public void setIconProvider(@NonNull SimpleIconProvider baseIconProvider) {
-        this._iconProvider = baseIconProvider;
+        this.iconProvider = baseIconProvider;
     }
 
     public String getComponentName() {
@@ -117,10 +116,10 @@ public class App implements Comparator<App> {
      */
     @Nullable
     public String getUniversalLabel() {
-        return _universalLabel;
+        return universalLabel;
     }
 
     public void setUniversalLabel(@Nullable String universalLabel) {
-        _universalLabel = universalLabel;
+        this.universalLabel = universalLabel;
     }
 }

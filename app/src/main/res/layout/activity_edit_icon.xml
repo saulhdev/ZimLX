@@ -137,12 +137,24 @@
             android:text="@string/download_icon_theme"
             android:textStyle="bold" />
 
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/downloadIconPack"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="64dp"
+            android:layout_height="72dp"
+            android:orientation="vertical"
             android:layout_marginBottom="10dp"
-            android:padding="5dp" />
+            android:padding="5dp">
+
+            <Button
+                android:id="@+id/play_store"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/transparent"
+                android:drawableLeft="@drawable/play_store"
+                android:text="Google Play"
+                android:textAlignment="textStart"
+                android:textAllCaps="false"
+                android:textStyle="bold" />
+        </LinearLayout>
     </LinearLayout>
 
     <LinearLayout
@@ -153,13 +165,14 @@
         android:gravity="bottom">
 
         <Button
+            android:id="@+id/button_apply"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/button_apply"
             android:layout_marginBottom="15dp"
             android:background="@color/button_background"
             android:text="@string/button_apply"
             android:textColor="@color/white"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            tools:textAllCaps="false" />
     </LinearLayout>
 </LinearLayout>
