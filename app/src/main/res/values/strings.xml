@@ -371,4 +371,7 @@
     <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
     <string name="workspace_new_page">New home screen page</string>
     <string name="all_icons">All icons</string>
+
+    <!-- Text to show user in place of a gadget when we can't display it properly -->
+    <string name="gadget_error_text">Problem loading widget</string>
 </resources>

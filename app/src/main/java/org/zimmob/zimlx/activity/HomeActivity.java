@@ -94,7 +94,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     public static final Companion companion = new Companion();
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
-    private static final int REQUEST_PICK_APPWIDGET = 9;
+    public static final int REQUEST_PICK_APPWIDGET = 0x2678;
     public static final int REQUEST_EDIT_ICON = 14;
     private static final int REQUEST_BIND_APPWIDGET = 1;
     private static Resources resources;
@@ -255,7 +255,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             cy += view.getHeight() / 2f;
             if (view instanceof AppItemView) {
                 AppItemView appItemView = (AppItemView) view;
-                if (appItemView != null && appItemView.getShowLabel()) {
+                if (appItemView.getShowLabel()) {
                     cy -= Tool.dp2px(14, this) / 2f;
                 }
                 rad = (int) (appItemView.getIconSize() / 2f - Tool.toPx(4));
@@ -371,17 +371,17 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private void createWidget(Intent data) {
         Bundle extras = data.getExtras();
-        int appWidgetId = Objects.requireNonNull(extras).getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
+        int appWidgetId = extras.getInt(AppWidgetManager.EXTRA_APPWIDGET_ID, -1);
         AppWidgetProviderInfo appWidgetInfo = companion.getAppWidgetManager().getAppWidgetInfo(appWidgetId);
         Item item = Item.newWidgetItem(appWidgetId);
         Desktop desktop = getDesktop();
         List<CellContainer> pages = desktop.getPages();
-        item.spanX = (appWidgetInfo.minWidth - 1) / pages.get(desktop.getCurrentItem()).getCellWidth() + 1;
-        item.spanY = (appWidgetInfo.minHeight - 1) / pages.get(desktop.getCurrentItem()).getCellHeight() + 1;
+        item.setSpanX((appWidgetInfo.minWidth - 1) / pages.get(desktop.getCurrentItem()).getCellWidth() + 1);
+        item.setSpanY((appWidgetInfo.minHeight - 1) / pages.get(desktop.getCurrentItem()).getCellHeight() + 1);
         Point point = desktop.getCurrentPage().findFreeSpace(item.getSpanX(), item.getSpanY());
         if (point != null) {
-            item.x = point.x;
-            item.y = point.y;
+            item.setX(point.x);
+            item.setY(point.y);
 
             // add item to database
             _db.saveItem(item, desktop.getCurrentItem(), Config.ItemPosition.Desktop);
@@ -416,12 +416,12 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
         View coordinateToChildView;
         switch (item._locationInLauncher) {
             case 0:
-                coordinateToChildView = desktop.getCurrentPage().coordinateToChildView(new Point(item.x, item.y));
+                coordinateToChildView = desktop.getCurrentPage().coordinateToChildView(new Point(item.getX(), item.getY()));
                 desktop.removeItem(coordinateToChildView, true);
                 break;
             case 1:
                 Dock dock = getDock();
-                coordinateToChildView = dock.coordinateToChildView(new Point(item.x, item.y));
+                coordinateToChildView = dock.coordinateToChildView(new Point(item.getX(), item.getY()));
                 dock.removeItem(coordinateToChildView, true);
                 break;
             default:
@@ -703,7 +703,6 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
                         addAppDrawerItem();
                         addDockCamera();
                         addDockApps();
-
                     }
                 } else {
                     getDesktop().initDesktopShowAll(HomeActivity.this, HomeActivity.this);
@@ -729,7 +728,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     public void addAppDrawerItem() {
         Item appDrawerBtnItem = Item.newActionItem(8);
-        appDrawerBtnItem.x = 2;
+        appDrawerBtnItem.setX(2);
         companion.getDb().saveItem(appDrawerBtnItem, 0, Config.ItemPosition.Dock);
     }
 
@@ -772,7 +771,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
         List<ResolveInfo> browserInfo = packageManager.queryIntentActivities(browser, 0);
-        if (browserInfo != null || browserInfo.size() > 0) {
+        if (browserInfo != null || Objects.requireNonNull(browserInfo).size() > 0) {
             ResolveInfo dockApp = browserInfo.get(0);
             App app = new App(dockApp, packageManager);
             Item item = Item.newAppItem(app);
@@ -790,7 +789,7 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
             App app = new App(info, packageManager);
             Log.i(TAG, app.getPackageName());
             Item item = Item.newAppItem(app);
-            item.x = 3;
+            item.setX(3);
             companion.getDb().saveItem(item, 0, Config.ItemPosition.Dock);
         }
 
@@ -843,9 +842,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         if (resultCode == -1) {
             if (requestCode == REQUEST_PICK_APPWIDGET) {
-                configureWidget(Objects.requireNonNull(data));
+                configureWidget(data);
             } else if (requestCode == REQUEST_CREATE_APPWIDGET) {
-                createWidget(Objects.requireNonNull(data));
+                createWidget(data);
             }
         } else if (resultCode == 0 && data != null) {
             int appWidgetId = data.getIntExtra("appWidgetId", -1);
@@ -1012,9 +1011,9 @@ public class HomeActivity extends Activity implements OnDesktopEditListener, Des
 
     private void pickWidget() {
         companion.setConsumeNextResume(true);
-        int appWidgetId = Objects.requireNonNull(companion.getAppWidgetHost()).allocateAppWidgetId();
+        int appWidgetId = companion.getAppWidgetHost().allocateAppWidgetId();
         Intent pickIntent = new Intent("android.appwidget.action.APPWIDGET_PICK");
-        pickIntent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, appWidgetId);
+        pickIntent.putExtra("appWidgetId", appWidgetId);
         startActivityForResult(pickIntent, REQUEST_PICK_APPWIDGET);
     }
 

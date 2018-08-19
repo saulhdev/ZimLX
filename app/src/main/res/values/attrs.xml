@@ -43,4 +43,9 @@
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
     </declare-styleable>
+
+    <attr name="materialPanelBgColor" format="color" />
+
+    <!-- Fallback attr for pre-API 25 support -->
+    <attr name="colorSecondary" format="reference|color" />
 </resources>

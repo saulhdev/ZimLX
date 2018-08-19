@@ -6,6 +6,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.os.Handler;
 import android.support.annotation.NonNull;
+import android.util.Log;
 import android.view.View;
 
 import org.zimmob.zimlx.R;
@@ -37,9 +38,7 @@ public class PopupMenuItems {
     private PopupIconLabelItem removeItem = new PopupIconLabelItem(R.string.remove, R.drawable.ic_close_dark_24dp).withIdentifier(removeItemIdentifier);
 
     public void initDragNDrop(HomeActivity launcher, View leftDragHandle, View rightDragHandle, DragOptionLayout dragNDropView) {
-        //dragHandle's drag event
         final Handler dragHandler = new Handler();
-
         dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(leftDragHandle) {
             Runnable runnable = new Runnable() {
                 @Override
@@ -148,7 +147,6 @@ public class PopupMenuItems {
             }
         });
 
-        //desktop's drag event
         dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(launcher.getDesktop()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
@@ -161,6 +159,7 @@ public class PopupMenuItems {
             @Override
             public void onStartDrag(@NonNull DragAction.Action action, @NonNull PointF location) {
                 super.onStartDrag(action, location);
+                Log.i(TAG, "Starting Drag");
                 launcher.closeAppDrawer();
             }
 
@@ -225,8 +224,7 @@ public class PopupMenuItems {
         dragNDropView.registerDropTarget(new DragOptionLayout.DropTargetListener(launcher.getDock()) {
             @Override
             public boolean onStart(@NonNull DragAction.Action action, @NonNull PointF location, boolean isInside) {
-                boolean ok = !DragAction.Action.WIDGET.equals(action);
-                return ok;
+                return !DragAction.Action.WIDGET.equals(action);
             }
 
             @Override
@@ -254,7 +252,7 @@ public class PopupMenuItems {
                     HomeActivity._db.saveItem(item, 0, Config.ItemPosition.Dock);
                 } else {
                     Point pos = new Point();
-                    launcher.getDock().touchPosToCoordinate(pos, x, y, item.spanX, item.spanY, false);
+                    launcher.getDock().touchPosToCoordinate(pos, x, y, item.getSpanX(), item.getSpanY(), false);
                     View itemView = launcher.getDock().coordinateToChildView(pos);
                     if (itemView != null) {
                         if (Desktop.handleOnDropOver(item, (Item) itemView.getTag(), itemView, launcher.getDock(), 0, Config.ItemPosition.Dock, launcher.getDock())) {
@@ -304,9 +302,11 @@ public class PopupMenuItems {
 
     private void showItemPopup(@NonNull final DragOptionLayout dragNDropView, final HomeActivity home) {
         ArrayList<PopupIconLabelItem> itemList = new ArrayList<>();
+        assert dragNDropView.getDragItem() != null;
         switch (dragNDropView.getDragItem().getType()) {
             case APP:
             case SHORTCUT: {
+                assert dragNDropView.getDragAction() != null;
                 if (dragNDropView.getDragAction().equals(DragAction.Action.APP_DRAWER)) {
                     itemList.add(editItem);
                     itemList.add(uninstallItem);

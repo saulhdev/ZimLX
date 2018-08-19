@@ -132,8 +132,8 @@ public class DragOptionLayout extends FrameLayout {
         super.onDraw(canvas);
         if (canvas == null || DragHandler.cachedDragBitmap == null || _dragLocation.equals(-1f, -1f))
             return;
-        float x = _dragLocation.x - 175;// HomeActivity._itemTouchX;
-        float y = _dragLocation.y - 225;// HomeActivity._itemTouchY;
+        float x = _dragLocation.x - 175;
+        float y = _dragLocation.y - 225;
         if (_dragging) {
             canvas.save();
             _overlayIconScale = Tool.clampFloat(_overlayIconScale + 0.05f, 1f, 1.1f);

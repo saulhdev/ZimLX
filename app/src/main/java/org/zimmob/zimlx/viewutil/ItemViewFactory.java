@@ -128,7 +128,7 @@ public class ItemViewFactory {
             case WIDGET:
                 if (HomeActivity.companion.getAppWidgetHost() == null) break;
                 final AppWidgetProviderInfo appWidgetInfo = HomeActivity.companion.getAppWidgetManager().getAppWidgetInfo(item.getWidgetValue());
-                final WidgetView widgetView = (WidgetView) HomeActivity.companion.getAppWidgetHost().createView(context, item.getWidgetValue(), appWidgetInfo);
+                WidgetView widgetView = (WidgetView) HomeActivity.companion.getAppWidgetHost().createView(context, item.getWidgetValue(), appWidgetInfo);
 
                 widgetView.setAppWidget(item.getWidgetValue(), appWidgetInfo);
                 widgetView.post(() -> updateWidgetOption(item));

@@ -78,8 +78,8 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                                 Item group = Item.newGroupItem();
                                 group.getGroupItems().add(item);
                                 group.getGroupItems().add(dropItem);
-                                group.x = item.getX();
-                                group.y = item.getY();
+                                group.setX(item.getX());
+                                group.setY(item.getY());
                                 HomeActivity.companion.getDb().saveItem(dropItem, page, itemPosition);
                                 HomeActivity.companion.getDb().saveItem(item, Config.ItemState.Hidden);
                                 HomeActivity.companion.getDb().saveItem(dropItem, Config.ItemState.Hidden);
@@ -203,7 +203,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                 int size2 = items.size();
                 for (int j = 0; j < size2; j++) {
                     Item item = (Item) items.get(j);
-                    if (item.x + item.spanX <= columns && item.y + item.spanY <= rows) {
+                    if (item.getX() + item.getSpanX() <= columns && item.getY() + item.getSpanY() <= rows) {
                         addItemToPage(item, pageCount);
                     }
                 }
@@ -245,8 +245,8 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
                     int pos = columns * rows * i + pagePos;
                     if (pos < apps.size()) {
                         Item appItem = (Item) apps.get(pos);
-                        appItem.x = x;
-                        appItem.y = y;
+                        appItem.setX(x);
+                        appItem.setY(y);
                         addItemToPage(appItem, i);
                     }
                 }
@@ -368,18 +368,18 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
             return false;
         }
         item._locationInLauncher = 0;
-        _pages.get(page).addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
+        _pages.get(page).addViewToGrid(itemView, item.getX(), item.getY(), item.getSpanX(), item.getSpanY());
         return true;
     }
 
     public boolean addItemToPoint(@NonNull Item item, int x, int y) {
-        CellContainer.LayoutParams positionToLayoutPrams = getCurrentPage().coordinateToLayoutParams(x, y, item.spanX, item.spanY);
+        CellContainer.LayoutParams positionToLayoutPrams = getCurrentPage().coordinateToLayoutParams(x, y, item.getSpanX(), item.getSpanY());
         if (positionToLayoutPrams == null) {
             return false;
         }
         item._locationInLauncher = 0;
-        item.x = positionToLayoutPrams.getX();
-        item.y = positionToLayoutPrams.getY();
+        item.setX(positionToLayoutPrams.getX());
+        item.setY(positionToLayoutPrams.getY());
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView != null) {
             itemView.setLayoutParams(positionToLayoutPrams);
@@ -390,13 +390,13 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
         item._locationInLauncher = 0;
-        item.x = x;
-        item.y = y;
+        item.setX(x);
+        item.setY(y);
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDesktopShowLabel(), this, Setup.appSettings().getDesktopIconSize());
         if (itemView == null) {
             return false;
         }
-        getCurrentPage().addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
+        getCurrentPage().addViewToGrid(itemView, item.getX(), item.getY(), item.getSpanX(), item.getSpanY());
         return true;
     }
 
@@ -513,7 +513,7 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
             int size = pageData.size();
             for (int i = 0; i < size; i++) {
                 Item item = (Item) pageData.get(i);
-                if (item.x == point.x && item.y == point.y && item.spanX == 1 && item.spanY == 1) {
+                if (item.getX() == point.x && item.getY() == point.y && item.getSpanX() == 1 && item.getSpanY() == 1) {
                     return (Item) pageData.get(i);
                 }
             }
@@ -550,8 +550,8 @@ public class Desktop extends SmoothViewPager implements IDesktopCallback<View> {
             layout.setOnItemRearrangeListener((from, to) -> {
                 Item itemFromCoordinate = Desktop._companion.getItemFromCoordinate(from, getCurrentItem());
                 if (itemFromCoordinate != null) {
-                    itemFromCoordinate.x = to.x;
-                    itemFromCoordinate.y = to.y;
+                    itemFromCoordinate.setX(to.x);
+                    itemFromCoordinate.setY(to.y);
                 }
             });
             layout.setOnTouchListener((v, event) -> {

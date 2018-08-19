@@ -26,19 +26,19 @@ public class HpAppEditApplier implements IDialogListener.OnEditDialogListener {
     public void onRename(String name) {
         _item.setLabel(name);
         Setup.dataManager().saveItem(_item);
-        Point point = new Point(_item.x, _item.y);
+        Point point = new Point(_item.getX(), _item.getY());
 
         switch (_item._locationInLauncher) {
             case Item.LOCATION_DESKTOP: {
                 Desktop desktop = launcher.getDesktop();
                 desktop.removeItem(desktop.getCurrentPage().coordinateToChildView(point), false);
-                desktop.addItemToCell(_item, _item.x, _item.y);
+                desktop.addItemToCell(_item, _item.getX(), _item.getY());
                 break;
             }
             case Item.LOCATION_DOCK: {
                 Dock dock = launcher.getDock();
                 launcher.getDock().removeItem(dock.coordinateToChildView(point), false);
-                dock.addItemToCell(_item, _item.x, _item.y);
+                dock.addItemToCell(_item, _item.getX(), _item.getY());
                 break;
             }
         }

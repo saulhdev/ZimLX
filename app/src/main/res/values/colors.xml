@@ -41,4 +41,7 @@
     <color name="color_navigationbar_settings_dark">#ff000000</color>
     <color name="color_navigationbar_settings_black">#ff000000</color>
     <color name="button_background">#205dec</color>
+
+    <!-- Widgets view -->
+    <color name="widgets_view_item_text_color">#C4C4C4</color>
 </resources>

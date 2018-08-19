@@ -2,7 +2,6 @@ package org.zimmob.zimlx.widget;
 
 import android.content.Context;
 import android.graphics.Point;
-import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
@@ -22,7 +21,7 @@ import org.zimmob.zimlx.viewutil.ItemViewFactory;
 import java.util.List;
 
 public final class Dock extends CellContainer implements IDesktopCallback<View> {
-    private int _bottomInset;
+    private int _bottomInset = 0;
     private final Point _coordinate = new Point();
     private HomeActivity _home;
     private final Point _previousDragPoint = new Point();
@@ -63,10 +62,10 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         return true;
     }
 
-    private final void detectSwipe(MotionEvent ev) {
+    private void detectSwipe(MotionEvent ev) {
         switch (ev.getAction()) {
             case 0:
-                float _startPosX = ev.getX();
+                //float _startPosX = ev.getX();
                 _startPosY = ev.getY();
                 break;
             case 1:
@@ -84,7 +83,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
         }
     }
 
-    public final void updateIconProjection(int x, int y) {
+    public void updateIconProjection(int x, int y) {
         HomeActivity homeActivity;
         DragOptionLayout dragNDropView;
         DragState state = peekItemAndSwap(x, y, _coordinate);
@@ -92,9 +91,7 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
             homeActivity = _home;
             if (homeActivity != null) {
                 dragNDropView = homeActivity.getDragNDropView();
-                if (dragNDropView != null) {
-                    dragNDropView.cancelFolderPreview();
-                }
+                dragNDropView.cancelFolderPreview();
             }
         }
         _previousDragPoint.set(_coordinate.x, _coordinate.y);
@@ -113,36 +110,30 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
                 homeActivity = _home;
                 if (homeActivity != null) {
                     dragNDropView = homeActivity.getDragNDropView();
-                    if (dragNDropView != null) {
-                        action = dragNDropView.getDragAction();
-                        if (!Action.WIDGET.equals(action) || !Action.ACTION.equals(action) && (coordinateToChildView(_coordinate) instanceof AppItemView)) {
-                            homeActivity2 = _home;
-                            if (homeActivity2 != null) {
-                                dragNDropView2 = homeActivity2.getDragNDropView();
-                                if (dragNDropView2 != null) {
-                                    dragNDropView2.showFolderPreviewAt(
-                                            this,
-                                            ((float) getCellWidth()),
-                                            //* (((float) _coordinate.x) + 0.5f),
-                                            (((float) getCellHeight())
-                                                    //* (((float) _coordinate.y) + 0.5f))
-                                                    - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0))));
-                                    break;
-                                }
-                            }
+                    action = dragNDropView.getDragAction();
+                    if (!Action.WIDGET.equals(action) || !Action.ACTION.equals(action) && (coordinateToChildView(_coordinate) instanceof AppItemView)) {
+                        homeActivity2 = _home;
+                        if (homeActivity2 != null) {
+                            dragNDropView2 = homeActivity2.getDragNDropView();
+                            dragNDropView2.showFolderPreviewAt(
+                                    this,
+                                    ((float) getCellWidth()),
+                                    //* (((float) _coordinate.x) + 0.5f),
+                                    (((float) getCellHeight())
+                                            //* (((float) _coordinate.y) + 0.5f))
+                                            - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0))));
                             break;
                         }
+                        break;
                     }
                 }
-                action = null;
+                //action = null;
                 homeActivity2 = _home;
                 if (homeActivity2 != null) {
                     dragNDropView2 = homeActivity2.getDragNDropView();
-                    if (dragNDropView2 != null) {
-                        /*if (Setup.appSettings().isDockShowLabel()) {
-                        }*/
-                        dragNDropView2.showFolderPreviewAt(this, ((float) getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0)));
-                    }
+                    /*if (Setup.appSettings().isDockShowLabel()) {
+                    }*/
+                    dragNDropView2.showFolderPreviewAt(this, ((float) getCellWidth()) * (((float) _coordinate.x) + 0.5f), (((float) getCellHeight()) * (((float) _coordinate.y) + 0.5f)) - ((float) (Setup.appSettings().isDockShowLabel() ? Tool.toPx(7) : 0)));
                 }
                 break;
             default:
@@ -161,17 +152,17 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
 
     @NonNull
     public WindowInsets onApplyWindowInsets(@NonNull WindowInsets insets) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+        //if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
             setPadding(0, insets.getSystemWindowInsetTop(), 0, insets.getSystemWindowInsetBottom());
             return insets;
-        }
-        return insets;
+        //}
+        //return insets;
     }
 
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         if (!isInEditMode()) {
             int height;
-            int height2 = View.getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
+            //int height2 = View.getDefaultSize(getSuggestedMinimumHeight(), heightMeasureSpec);
             int iconSize = Setup.appSettings().getDockIconSize();
             if (Setup.appSettings().isDockShowLabel()) {
                 height = Tool.dp2px(((16 + iconSize) + 14) + 10, getContext()) + _bottomInset;
@@ -214,8 +205,8 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
             return false;
         }
         item._locationInLauncher = 1;
-        item.x = positionToLayoutPrams.getX();
-        item.y = positionToLayoutPrams.getY();
+        item.setX(positionToLayoutPrams.getX());
+        item.setY(positionToLayoutPrams.getY());
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView != null) {
             itemView.setLayoutParams(positionToLayoutPrams);
@@ -226,13 +217,13 @@ public final class Dock extends CellContainer implements IDesktopCallback<View> 
 
     public boolean addItemToCell(@NonNull Item item, int x, int y) {
         item._locationInLauncher = 1;
-        item.x = x;
-        item.y = y;
+        item.setX(x);
+        item.setY(y);
         View itemView = ItemViewFactory.getItemView(getContext(), item, Setup.appSettings().isDockShowLabel(), this, Setup.appSettings().getDockIconSize());
         if (itemView == null) {
             return false;
         }
-        addViewToGrid(itemView, item.x, item.y, item.spanX, item.spanY);
+        addViewToGrid(itemView, item.getX(), item.getY(), item.getSpanX(), item.getSpanY());
         return true;
     }
 

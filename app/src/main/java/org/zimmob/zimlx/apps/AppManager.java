@@ -112,7 +112,11 @@ public class AppManager {
     }
 
     public void onAppUpdated(Context p1, Intent p2) {
-        onReceive();
+        onReceive(p1, p2);
+    }
+
+    public void onReceive(Context p1, Intent p2) {
+        getAllApps();
     }
 
     public void addUpdateListener(IAppUpdateListener updateListener) {
@@ -277,27 +281,27 @@ public class AppManager {
         }
 
         private List<ResolveInfo> sortApplications(List<ResolveInfo> activitiesInfo, int sort) {
-            List<ResolveInfo> sortedAtivities = activitiesInfo;
+            List<ResolveInfo> sortedActivities = activitiesInfo;
             switch (sort) {
                 default:
                 case Config.APP_SORT_AZ:
                     Log.i("apps", "sorting by AZ");
-                    Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                    Collections.sort(sortedActivities, (p1, p2) -> Collator.getInstance().compare(
                             p1.loadLabel(packageManager).toString(),
                             p2.loadLabel(packageManager).toString()));
                     break;
                 case Config.APP_SORT_ZA:
                     Log.i("apps", "sorting by ZA");
-                    Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                    Collections.sort(sortedActivities, (p2, p1) -> Collator.getInstance().compare(
                             p1.loadLabel(packageManager).toString(),
                             p2.loadLabel(packageManager).toString()));
                     break;
                 case Config.APP_SORT_LI:
                     if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
                         Log.i("apps", "sorting by Last Installed");
-                        Collections.sort(sortedAtivities, new InstallTimeComparator(packageManager));
+                        Collections.sort(sortedActivities, new InstallTimeComparator(packageManager));
                     } else {
-                        Collections.sort(sortedAtivities, (p1, p2) -> Collator.getInstance().compare(
+                        Collections.sort(sortedActivities, (p1, p2) -> Collator.getInstance().compare(
                                 p1.loadLabel(packageManager).toString(),
                                 p2.loadLabel(packageManager).toString()));
                     }
@@ -306,33 +310,29 @@ public class AppManager {
                 case Config.APP_SORT_MU:
                     if (AppSettings.get().getDrawerStyle() == Config.DRAWER_HORIZONTAL) {
                         Log.i("apps", "Sorting by Most Used");
-                        Collections.sort(sortedAtivities, new MostUsedComparator());
+                        Collections.sort(sortedActivities, new MostUsedComparator());
                     } else {
-                        Collections.sort(sortedAtivities, (p2, p1) -> Collator.getInstance().compare(
+                        Collections.sort(sortedActivities, (p2, p1) -> Collator.getInstance().compare(
                                 p1.loadLabel(packageManager).toString(),
                                 p2.loadLabel(packageManager).toString()));
                     }
                     break;
             }
-
-            return sortedAtivities;
+            return sortedActivities;
         }
 
         @Override
         protected void onPostExecute(Object result) {
             notifyUpdateListeners(apps);
-
             List<App> removed = Tool.getRemovedApps(tempApps, apps);
             if (removed.size() > 0) {
                 notifyRemoveListeners(removed);
             }
-
             if (recreateAfterGettingApps) {
                 recreateAfterGettingApps = false;
                 if (_context instanceof HomeActivity)
                     ((HomeActivity) _context).recreate();
             }
-
             super.onPostExecute(result);
         }
     }

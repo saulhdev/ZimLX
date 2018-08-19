@@ -241,4 +241,7 @@
     <dimen name="all_apps_extra_search_padding">8dp</dimen>
 
     <dimen name="icon_preview_size">48dp</dimen>
+
+    <!-- Theme -->
+    <dimen name="quantum_panel_outer_padding">4dp</dimen>
 </resources>

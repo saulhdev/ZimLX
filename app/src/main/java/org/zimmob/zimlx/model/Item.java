@@ -23,10 +23,10 @@ public class Item implements Parcelable {
     private static final String TAG = Item.class.getSimpleName();
     public static final int LOCATION_DESKTOP = 0;
     public static final int LOCATION_DOCK = 1;
-    public Type type;
-    public Drawable icon;
-    public int x = 0;
-    public int y = 0;
+    private Type type;
+    private Drawable icon;
+    private int x = 0;
+    private int y = 0;
     //Needed for folder to optimize the folder open position
     public int _locationInLauncher;
     // intent for shortcuts and apps
@@ -34,17 +34,16 @@ public class Item implements Parcelable {
     // list of items for groups
     private List<Item> items;
     // int value for launcher action
-    private int _actionValue;
+    private int actionValue;
     // widget specific values
-    private int _widgetValue;
-    public int spanX = 1;
-    public int spanY = 1;
-    // all items need these values
-    private int _idValue;
+    private int widgetValue;
+    private int spanX = 1;
+    private int spanY = 1;
+    private int idValue;
     private String name = "";
     private String packageName = "";
     private String className = "";
-    public SimpleIconProvider iconProvider = null;
+    private SimpleIconProvider iconProvider = null;
     private ComponentName componentName;
     private UserHandle user;
 
@@ -62,25 +61,23 @@ public class Item implements Parcelable {
 
     public Item() {
         Random random = new Random();
-        _idValue = random.nextInt();
+        idValue = random.nextInt();
     }
 
-    /**
-     * @param parcel
-     */
     public Item(Parcel parcel) {
-        _idValue = parcel.readInt();
+        idValue = parcel.readInt();
         type = Type.valueOf(parcel.readString());
         name = parcel.readString();
-        packageName = parcel.readString();
         x = parcel.readInt();
         y = parcel.readInt();
         switch (type) {
             case APP:
+                packageName = parcel.readString();
                 className = parcel.readString();
                 intent = Tool.getIntentFromString(parcel.readString());
                 break;
             case SHORTCUT:
+                packageName = parcel.readString();
                 intent = Tool.getIntentFromString(parcel.readString());
                 break;
             case GROUP:
@@ -92,10 +89,10 @@ public class Item implements Parcelable {
                 }
                 break;
             case ACTION:
-                _actionValue = parcel.readInt();
+                actionValue = parcel.readInt();
                 break;
             case WIDGET:
-                _widgetValue = parcel.readInt();
+                widgetValue = parcel.readInt();
                 spanX = parcel.readInt();
                 spanY = parcel.readInt();
                 break;
@@ -103,8 +100,8 @@ public class Item implements Parcelable {
         _locationInLauncher = parcel.readInt();
 
         if (Setup.appSettings().enableImageCaching()) {
-            icon = Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(_idValue));
-            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(_idValue)));
+            icon = Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(idValue));
+            iconProvider = Setup.imageLoader().createIconProvider(Tool.getIcon(HomeActivity.companion.getLauncher(), Integer.toString(idValue)));
 
         } else {
             switch (type) {
@@ -161,14 +158,14 @@ public class Item implements Parcelable {
         item.type = Type.ACTION;
         item.spanX = 1;
         item.spanY = 1;
-        item._actionValue = action;
+        item.actionValue = action;
         return item;
     }
 
     public static Item newWidgetItem(int widgetValue) {
         Item item = new Item();
         item.type = Type.WIDGET;
-        item._widgetValue = widgetValue;
+        item.widgetValue = widgetValue;
         item.spanX = 1;
         item.spanY = 1;
 
@@ -185,7 +182,7 @@ public class Item implements Parcelable {
     @Override
     public boolean equals(Object object) {
         Item itemObject = (Item) object;
-        return object != null && _idValue == itemObject._idValue;
+        return object != null && idValue == itemObject.idValue;
     }
 
     @Override
@@ -195,14 +192,14 @@ public class Item implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel out, int flags) {
-        out.writeInt(_idValue);
+        out.writeInt(idValue);
         out.writeString(type.toString());
         out.writeString(name);
-        out.writeString(packageName);
         out.writeInt(x);
         out.writeInt(y);
         switch (type) {
             case APP:
+                out.writeString(packageName);
                 out.writeString(className);
                 out.writeString(Tool.getIntentAsString(intent));
                 break;
@@ -212,15 +209,15 @@ public class Item implements Parcelable {
             case GROUP:
                 List<String> labels = new ArrayList<>();
                 for (Item i : items) {
-                    labels.add(Integer.toString(i._idValue));
+                    labels.add(Integer.toString(i.idValue));
                 }
                 out.writeStringList(labels);
                 break;
             case ACTION:
-                out.writeInt(_actionValue);
+                out.writeInt(actionValue);
                 break;
             case WIDGET:
-                out.writeInt(_widgetValue);
+                out.writeInt(widgetValue);
                 out.writeInt(spanX);
                 out.writeInt(spanY);
                 break;
@@ -230,15 +227,15 @@ public class Item implements Parcelable {
 
     public void reset() {
         Random random = new Random();
-        _idValue = random.nextInt();
+        idValue = random.nextInt();
     }
 
     public Integer getId() {
-        return _idValue;
+        return idValue;
     }
 
     public void setItemId(int id) {
-        _idValue = id;
+        idValue = id;
     }
 
     public Intent getIntent() {
@@ -312,10 +309,6 @@ public class Item implements Parcelable {
         return iconProvider;
     }
 
-    public ComponentName getComponentName() {
-        return componentName;
-    }
-
     public UserHandle getUser() {
         return user;
     }
@@ -353,18 +346,18 @@ public class Item implements Parcelable {
     }
 
     public int getActionValue() {
-        return _actionValue;
+        return actionValue;
     }
 
     public void setActionValue(int actionValue) {
-        _actionValue = actionValue;
+        this.actionValue = actionValue;
     }
 
     public int getWidgetValue() {
-        return _widgetValue;
+        return widgetValue;
     }
 
     public void setWidgetValue(int widgetValue) {
-        _widgetValue = widgetValue;
+        this.widgetValue = widgetValue;
     }
 }
