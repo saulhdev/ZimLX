@@ -52,8 +52,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
-import org.zimmob.zimlx.LauncherFiles;
-import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.config.Config;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -556,12 +555,12 @@ public final class Utilities {
 
     public static SharedPreferences getPrefs(Context context) {
         return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+                Config.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
         return context.getSharedPreferences(
-                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+                Config.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static boolean isPowerSaverOn(Context context) {
@@ -586,7 +585,7 @@ public final class Utilities {
             try {
                 c.close();
             } catch (IOException e) {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                if (Config.IS_DOGFOOD_BUILD) {
                     Log.d(TAG, "Error closing", e);
                 }
             }

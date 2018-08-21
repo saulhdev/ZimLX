@@ -29,14 +29,13 @@ import android.view.WindowManager;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.config.Config;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.util.Utilities;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class InvariantDeviceProfile {
 
@@ -292,12 +291,8 @@ public class InvariantDeviceProfile {
 
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
-            public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
-                return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps));
-            }
-        });
+        Collections.sort(pointsByNearness, (a, b) -> Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                dist(width, height, b.minWidthDps, b.minHeightDps)));
 
         return pointsByNearness;
     }
@@ -336,7 +331,7 @@ public class InvariantDeviceProfile {
     }
 
     public int getAllAppsButtonRank() {
-        if (FeatureFlags.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
+        if (Config.IS_DOGFOOD_BUILD && Config.NO_ALL_APPS_ICON) {
             throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
         }
         return numHotseatIcons / 2;

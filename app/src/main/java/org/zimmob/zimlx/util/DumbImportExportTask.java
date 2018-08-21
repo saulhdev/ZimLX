@@ -10,8 +10,8 @@ import android.support.v4.content.ContextCompat;
 import android.util.Log;
 import android.widget.Toast;
 
-import org.zimmob.zimlx.LauncherFiles;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.config.Config;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,38 +20,38 @@ import java.io.FileOutputStream;
 public class DumbImportExportTask {
     public static void exportDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
-        File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
+        File db = contextWrapper.getDatabasePath(Config.LAUNCHER_DB);
         File backup = getDbBackupFile();
         exportFile(db, backup, activity);
     }
 
     public static void importDB(Activity activity) {
         ContextWrapper contextWrapper = new ContextWrapper(activity);
-        File db = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB);
+        File db = contextWrapper.getDatabasePath(Config.LAUNCHER_DB);
         File backup = getDbBackupFile();
         importFile(db, backup, activity);
     }
 
     public static void exportPrefs(Activity activity) {
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
+        File prefs = new File(dir, "shared_prefs/" + Config.SHARED_PREFERENCES_KEY + ".xml");
         File backup = getSettingsBackupFile();
         exportFile(prefs, backup, activity);
     }
 
     @NonNull
     public static File getDbBackupFile() {
-        return new File(getFolder(), LauncherFiles.LAUNCHER_DB);
+        return new File(getFolder(), Config.LAUNCHER_DB);
     }
 
     @NonNull
     public static File getSettingsBackupFile() {
-        return new File(getFolder(), LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml");
+        return new File(getFolder(), Config.OLD_SHARED_PREFERENCES_KEY + ".xml");
     }
 
     public static void importPrefs(Activity activity) {
         String dir = new ContextWrapper(activity).getCacheDir().getParent();
-        File prefs = new File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml");
+        File prefs = new File(dir, "shared_prefs/" + Config.SHARED_PREFERENCES_KEY + ".xml");
         File backup = getSettingsBackupFile();
         importFile(prefs, backup, activity);
     }
@@ -67,9 +67,9 @@ public class DumbImportExportTask {
         }
 
         if (copy(file, backup)) {
-            if (file.getName().equals(LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
+            if (file.getName().equals(Config.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
                 Toast.makeText(activity, activity.getString(R.string.settings_export_success), Toast.LENGTH_LONG).show();
-            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+            } else if (file.getName().equals(Config.LAUNCHER_DB)) {
                 Toast.makeText(activity, activity.getString(R.string.db_export_success), Toast.LENGTH_LONG).show();
             }
         } else {
@@ -93,9 +93,9 @@ public class DumbImportExportTask {
         }
 
         if (copy(backup, file)) {
-            if (file.getName().equals(LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
+            if (file.getName().equals(Config.OLD_SHARED_PREFERENCES_KEY + ".xml")) {
                 Toast.makeText(activity, activity.getString(R.string.settings_import_success), Toast.LENGTH_LONG).show();
-            } else if (file.getName().equals(LauncherFiles.LAUNCHER_DB)) {
+            } else if (file.getName().equals(Config.LAUNCHER_DB)) {
                 Toast.makeText(activity, activity.getString(R.string.db_import_success), Toast.LENGTH_LONG).show();
             }
         } else {

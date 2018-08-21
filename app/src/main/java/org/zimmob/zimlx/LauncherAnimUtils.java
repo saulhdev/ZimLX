@@ -133,8 +133,8 @@ public class LauncherAnimUtils {
         return ofPropertyValuesHolder(target, target, values);
     }
 
-    public static ObjectAnimator ofPropertyValuesHolder(Object target,
-                                                        View view, PropertyValuesHolder... values) {
+    private static ObjectAnimator ofPropertyValuesHolder(Object target,
+                                                         View view, PropertyValuesHolder... values) {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);
