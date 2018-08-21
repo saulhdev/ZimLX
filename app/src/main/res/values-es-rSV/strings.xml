@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="derived_app_name">\@string/app_name_pixel_launcher</string>
+    <string name="icon_pack_default" translatable="false">Default</string>
+    <string name="intro3_title">Configuracion</string>
+    <string name="pref_title__about">Acerca de</string>
+    <string name="pref_title__color">Colores</string>
+    <string name="pref_title__appearance">Apariencia</string>
+    <string name="pref_title__notifications">Notificaciones</string>
+    <string name="pref_title__font_size">Tamaño de Fuente</string>
+    <string name="pref_title__font_type">Fuente</string>
+    <string name="pref_title__desktop_fullscreen">Pantalla Completa</string>
+    <string name="pref_title__desktop_show_label">Mostrar Etiquetas</string>
+    <string name="pref_title__desktop_rotate">Rotar</string>
+    <string name="pref_title__desktop_folder_color_text">Texto de Folder</string>
+    <string name="pref_title__language">Idioma</string>
+    <string name="pref_title__restart">Reiniciar</string>
+    <string name="pref_title__theme">Tema</string>
+    <string name="pref_sort_title">Ordenar</string>
+    <string name="pref_sort_most_used">Mas Usados</string>
+    <string name="help">Ayuda</string>
+    <string name="columns">Columnas</string>
+    <string name="rows">Filas</string>
+    <string name="pref_title__date_bar_text_color">Color de Texto</string>
+    <string name="title_folder_circle">Curcular</string>
+    <string name="cancel">Cancelar</string>
+    <string name="app_edit_drop_target_label">Editar</string>
+</resources>

@@ -235,8 +235,8 @@
     <string name="action">Action</string>
     <string name="lock">Lock</string>
     <string name="widget">Widget</string>
-    <string name="add_left">Add</string>
-    <string name="add_right">Add</string>
+    <string name="add_left">Add Left</string>
+    <string name="add_right">Add Right</string>
     <!-- Toasts -->
     <string name="toast_not_enough_space">Not enough space.</string>
     <string name="toast_app_uninstalled">App uninstalled.</string>
