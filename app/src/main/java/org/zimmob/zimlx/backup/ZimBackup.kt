@@ -13,7 +13,6 @@ import android.support.v4.content.FileProvider
 import android.util.Log
 import org.json.JSONArray
 import org.zimmob.zimlx.BuildConfig
-import org.zimmob.zimlx.LauncherFiles
 import org.zimmob.zimlx.R
 import org.zimmob.zimlx.config.Config
 import org.zimmob.zimlx.util.DumbImportExportTask
@@ -61,7 +60,7 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
     open fun restore(contents: Int): Boolean {
         try {
             val contextWrapper = ContextWrapper(context)
-            val dbFile = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB)
+            val dbFile = contextWrapper.getDatabasePath(Config.LAUNCHER_DB)
             val dir = contextWrapper.cacheDir.parent
             val settingsFile = File(dir, "shared_prefs/" + "app.xml")
 
