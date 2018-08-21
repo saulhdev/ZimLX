@@ -25,4 +25,24 @@
     <string name="title_folder_circle">Curcular</string>
     <string name="cancel">Cancelar</string>
     <string name="app_edit_drop_target_label">Editar</string>
+    <string name="pref_title__clear_database">Limpiar base de datos</string>
+    <string name="remove">Remover</string>
+    <string name="edit">Editar</string>
+    <string name="uninstall">Desinstalar</string>
+    <string name="toast_app_uninstalled">App Desinstalado</string>
+    <string name="backup_import_title">Restaurar</string>
+    <string name="local_backups">Copia Local</string>
+    <string name="new_backup">Crear</string>
+    <string name="restore_backup">Restaurar</string>
+    <string name="backup_name">Nombre</string>
+    <string name="label_default">Default</string>
+    <string name="licenses">Licencias</string>
+    <string name="source_code">Codigo Fuente</string>
+    <string name="donate">Donar</string>
+    <string name="contribute">Contribuir</string>
+    <string name="desktop_indicator_mode_normal">Normal</string>
+    <string name="desktop_indicator_mode_arrow">Flecha</string>
+    <string name="desktop_indicator_mode_lines">Línea</string>
+    <string name="more">Mas</string>
+    <string name="rate_the_app">Calificar esta App</string>
 </resources>
