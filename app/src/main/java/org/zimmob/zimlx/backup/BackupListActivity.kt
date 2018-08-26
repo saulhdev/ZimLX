@@ -14,6 +14,7 @@ import android.support.v7.widget.RecyclerView
 import android.view.View
 import android.widget.TextView
 import org.zimmob.zimlx.R
+import org.zimmob.zimlx.Utilities
 
 class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
 
@@ -40,6 +41,7 @@ class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
         setContentView(R.layout.activity_backup_list)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
+
         restoreBackup.setOnClickListener {
             bottomSheet.dismiss()
             openRestore(currentPosition)
@@ -59,7 +61,7 @@ class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-        //Config.checkRestoreSuccess(this)
+        Utilities.checkRestoreSuccess(this)
     }
 
     private fun loadLocalBackups() {

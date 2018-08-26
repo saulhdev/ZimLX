@@ -21,7 +21,7 @@ import android.view.View;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
-import org.zimmob.zimlx.activity.HomeActivity;
+import org.zimmob.zimlx.Launcher;
 
 /**
  * Periodically sends accessibility events to announce ongoing state changed. Based on the
@@ -35,15 +35,6 @@ public class DragViewStateAnnouncer implements Runnable {
 
     private DragViewStateAnnouncer(View view) {
         mTargetView = view;
-    }
-
-    public static DragViewStateAnnouncer createFor(View v) {
-        if (((AccessibilityManager) v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE))
-                .isEnabled()) {
-            return new DragViewStateAnnouncer(v);
-        } else {
-            return null;
-        }
     }
 
     public void announce(CharSequence msg) {
@@ -61,9 +52,18 @@ public class DragViewStateAnnouncer implements Runnable {
         mTargetView.sendAccessibilityEvent(AccessibilityEvent.TYPE_VIEW_SELECTED);
     }
 
+    public static DragViewStateAnnouncer createFor(View v) {
+        if (((AccessibilityManager) v.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE))
+                .isEnabled()) {
+            return new DragViewStateAnnouncer(v);
+        } else {
+            return null;
+        }
+    }
+
     public void completeAction(int announceResId) {
         cancel();
-        HomeActivity launcher = HomeActivity.companion.getLauncher();
-        //launcher.getDragLayer().announceForAccessibility(launcher.getText(announceResId));
+        Launcher launcher = Launcher.getLauncher(mTargetView.getContext());
+        launcher.getDragLayer().announceForAccessibility(launcher.getText(announceResId));
     }
 }

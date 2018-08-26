@@ -5,8 +5,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 
-import org.zimmob.zimlx.util.Utilities;
-
 /**
  * Helper for identifying when a stylus touches a view while the primary stylus button is pressed.
  * This can occur in {@value MotionEvent#ACTION_DOWN} or {@value MotionEvent#ACTION_MOVE}.
@@ -14,9 +12,23 @@ import org.zimmob.zimlx.util.Utilities;
 public class StylusEventHelper {
 
     private final float mSlop;
+
     private boolean mIsButtonPressed;
     private View mView;
     private StylusButtonListener mListener;
+
+    /**
+     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
+     * pressed.
+     *
+     * @param event The event to check.
+     * @return Whether a stylus button press occurred.
+     */
+    private static boolean isStylusButtonPressed(MotionEvent event) {
+        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
+                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
+                == MotionEvent.BUTTON_SECONDARY);
+    }
 
     /**
      * Constructs a helper for listening to stylus button presses and releases. Ensure that {
@@ -30,19 +42,6 @@ public class StylusEventHelper {
         mListener = listener;
         mView = view;
         mSlop = ViewConfiguration.get(mView.getContext()).getScaledTouchSlop();
-    }
-
-    /**
-     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
-     * pressed.
-     *
-     * @param event The event to check.
-     * @return Whether a stylus button press occurred.
-     */
-    private static boolean isStylusButtonPressed(MotionEvent event) {
-        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
-                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
-                == MotionEvent.BUTTON_SECONDARY);
     }
 
     public boolean onMotionEvent(MotionEvent event) {

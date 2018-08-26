@@ -2,11 +2,12 @@ package org.zimmob.zimlx.badge;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 
 import org.zimmob.zimlx.notification.NotificationInfo;
 import org.zimmob.zimlx.notification.NotificationKeyData;
@@ -15,76 +16,45 @@ import org.zimmob.zimlx.util.PackageUserKey;
 import java.util.ArrayList;
 import java.util.List;
 
-
-/**
- * Contains data to be used in an icon badge.
- */
 public class BadgeInfo {
-
-    public static final int MAX_COUNT = 999;
-
-    /** Used to link this BadgeInfo to icons on the workspace and all apps */
-    private PackageUserKey mPackageUserKey;
-
-    /**
-     * The keys of the notifications that this badge represents. These keys can later be
-     * used to retrieve {@link NotificationInfo}'s.
-     */
-    private List<NotificationKeyData> mNotificationKeys;
-
-    /**
-     * The current sum of the counts in {@link #mNotificationKeys},
-     * updated whenever a key is added or removed.
-     */
-    private int mTotalCount;
-
-    /** This will only be initialized if the badge should display the notification icon. */
-    private NotificationInfo mNotificationInfo;
-
-    /**
-     * When retrieving the notification icon, we draw it into this shader, which can be clipped
-     * as necessary when drawn in a badge.
-     */
     private Shader mNotificationIcon;
+    private NotificationInfo mNotificationInfo;
+    private List<NotificationKeyData> mNotificationKeys = new ArrayList<>();
+    private PackageUserKey mPackageUserKey;
+    private int mTotalCount;
 
     public BadgeInfo(PackageUserKey packageUserKey) {
         mPackageUserKey = packageUserKey;
-        mNotificationKeys = new ArrayList<>();
     }
 
-    /**
-     * Returns whether the notification was added or its count changed.
-     */
-    public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKey) {
-        int indexOfPrevKey = mNotificationKeys.indexOf(notificationKey);
-        NotificationKeyData prevKey = indexOfPrevKey == -1 ? null
-                : mNotificationKeys.get(indexOfPrevKey);
-        if (prevKey != null) {
-            if (prevKey.count == notificationKey.count) {
-                return false;
+    public boolean addOrUpdateNotificationKey(NotificationKeyData notificationKeyData) {
+        NotificationKeyData notificationKeyData2 = null;
+        int indexOf = mNotificationKeys.indexOf(notificationKeyData);
+        if (indexOf != -1) {
+            notificationKeyData2 = mNotificationKeys.get(indexOf);
+        }
+        if (notificationKeyData2 == null) {
+            boolean add = mNotificationKeys.add(notificationKeyData);
+            if (add) {
+                mTotalCount += notificationKeyData.count;
             }
-            // Notification was updated with a new count.
-            mTotalCount -= prevKey.count;
-            mTotalCount += notificationKey.count;
-            prevKey.count = notificationKey.count;
+            return add;
+        } else if (notificationKeyData2.count == notificationKeyData.count) {
+            return false;
+        } else {
+            mTotalCount -= notificationKeyData2.count;
+            mTotalCount += notificationKeyData.count;
+            notificationKeyData2.count = notificationKeyData.count;
             return true;
         }
-        boolean added = mNotificationKeys.add(notificationKey);
-        if (added) {
-            mTotalCount += notificationKey.count;
-        }
-        return added;
     }
 
-    /**
-     * Returns whether the notification was removed (false if it didn't exist).
-     */
-    public boolean removeNotificationKey(NotificationKeyData notificationKey) {
-        boolean removed = mNotificationKeys.remove(notificationKey);
-        if (removed) {
-            mTotalCount -= notificationKey.count;
+    public boolean removeNotificationKey(NotificationKeyData notificationKeyData) {
+        boolean remove = mNotificationKeys.remove(notificationKeyData);
+        if (remove) {
+            mTotalCount -= notificationKeyData.count;
         }
-        return removed;
+        return remove;
     }
 
     public List<NotificationKeyData> getNotificationKeys() {
@@ -92,10 +62,10 @@ public class BadgeInfo {
     }
 
     public int getNotificationCount() {
-        return Math.min(mTotalCount, MAX_COUNT);
+        return Math.min(mTotalCount, 999);
     }
 
-    public void setNotificationToShow(@Nullable NotificationInfo notificationInfo) {
+    public void setNotificationToShow(NotificationInfo notificationInfo) {
         mNotificationInfo = notificationInfo;
         mNotificationIcon = null;
     }
@@ -104,27 +74,19 @@ public class BadgeInfo {
         return mNotificationInfo != null;
     }
 
-    /**
-     * Returns a shader to set on a Paint that will draw the notification icon in a badge.
-     *
-     * The shader is cached until {@link #setNotificationToShow(NotificationInfo)} is called.
-     */
-    public @Nullable Shader getNotificationIconForBadge(Context context, int badgeColor,
-                                                        int badgeSize, int badgePadding) {
+    public Shader getNotificationIconForBadge(Context context, int i, int i2, int i3) {
         if (mNotificationInfo == null) {
             return null;
         }
         if (mNotificationIcon == null) {
-            Drawable icon = mNotificationInfo.getIconForBackground(context, badgeColor)
-                    .getConstantState().newDrawable();
-            int iconSize = badgeSize - badgePadding * 2;
-            icon.setBounds(0, 0, iconSize, iconSize);
-            Bitmap iconBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);
-            Canvas canvas = new Canvas(iconBitmap);
-            canvas.translate(badgePadding, badgePadding);
-            icon.draw(canvas);
-            mNotificationIcon = new BitmapShader(iconBitmap, Shader.TileMode.CLAMP,
-                    Shader.TileMode.CLAMP);
+            Drawable newDrawable = mNotificationInfo.getIconForBackground(context, i).getConstantState().newDrawable();
+            int i4 = i2 - (i3 * 2);
+            newDrawable.setBounds(0, 0, i4, i4);
+            Bitmap createBitmap = Bitmap.createBitmap(i2, i2, Config.ARGB_8888);
+            Canvas canvas = new Canvas(createBitmap);
+            canvas.translate((float) i3, (float) i3);
+            newDrawable.draw(canvas);
+            mNotificationIcon = new BitmapShader(createBitmap, TileMode.CLAMP, TileMode.CLAMP);
         }
         return mNotificationIcon;
     }
@@ -133,17 +95,13 @@ public class BadgeInfo {
         return mNotificationInfo != null && mNotificationInfo.isIconLarge();
     }
 
-    /**
-     * Whether newBadge represents the same PackageUserKey as this badge, and icons with
-     * this badge should be invalidated. So, for instance, if a badge has 3 notifications
-     * and one of those notifications is updated, this method should return false because
-     * the badge still says "3" and the contents of those notifications are only retrieved
-     * upon long-click. This method always returns true when adding or removing notifications,
-     * or if the badge has a notification icon to show.
-     */
-    public boolean shouldBeInvalidated(BadgeInfo newBadge) {
-        return mPackageUserKey.equals(newBadge.mPackageUserKey)
-                && (getNotificationCount() != newBadge.getNotificationCount()
-                || hasNotificationToShow());
+    public boolean shouldBeInvalidated(BadgeInfo badgeInfo) {
+        if (!mPackageUserKey.equals(badgeInfo.mPackageUserKey)) {
+            return false;
+        }
+        if (getNotificationCount() == badgeInfo.getNotificationCount()) {
+            return hasNotificationToShow();
+        }
+        return true;
     }
 }

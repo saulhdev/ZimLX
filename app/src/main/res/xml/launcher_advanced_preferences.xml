@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <Preference
+        android:icon="@drawable/ic_import_export"
+        android:key="backups"
+        android:summary="@string/backup_pref_summary"
+        android:title="@string/backups">
+
+        <intent
+            android:targetClass="org.zimmob.zimlx.backup.BackupListActivity"
+            android:targetPackage="@string/application_id" />
+    </Preference>
+
+</android.support.v7.preference.PreferenceScreen>

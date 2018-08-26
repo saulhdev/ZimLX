@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merge xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <FrameLayout
+        android:id="@+id/search_container"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/all_apps_search_bar_height"
+        android:layout_gravity="center|top"
+        android:orientation="horizontal"
+        android:paddingBottom="@dimen/all_apps_search_bar_round_margin_bottom"
+        android:paddingTop="@dimen/all_apps_search_bar_margin_top"
+        android:saveEnabled="false">
+
+        <org.zimmob.zimlx.ExtendedEditText
+            android:id="@+id/search_box_input"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="bottom"
+            android:background="@drawable/bg_search_bar_round"
+            android:focusableInTouchMode="true"
+            android:hint="@string/all_apps_search_bar_hint"
+            android:imeOptions="actionSearch|flagNoExtractUi"
+            android:inputType="text|textNoSuggestions|textCapWords"
+            android:maxLines="1"
+            android:paddingLeft="15dp"
+            android:scrollHorizontally="true"
+            android:textColor="?attr/roundSearchBarTextColor"
+            android:textColorHint="?attr/roundSearchBarHintColor"
+            android:textSize="15sp" />
+    </FrameLayout>
+
+    <View
+        android:id="@+id/search_bar_divider"
+        android:layout_width="match_parent"
+        android:layout_height="1.2dp"
+        android:background="?attr/roundSearchBarDividerColor"
+        android:focusable="false"
+        android:importantForAccessibility="no" />
+</merge>

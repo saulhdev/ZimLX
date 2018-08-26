@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <org.zimmob.zimlx.preferences.GoogleNowPreference
+        android:defaultValue="false"
+        android:key="pref_showGoogleNowTab"
+        android:persistent="true"
+        android:title="@string/show_google_now_tab_pref_title" />
+
+    <SwitchPreference
+        android:key="pref_enableBackportShortcuts"
+        android:summary="@string/shortcut_backport_warning"
+        android:title="@string/pref_backport_shortcuts" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="pref_enableScreenRotation"
+        android:persistent="true"
+        android:title="@string/enable_screen_rotation" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_pinchToOverview"
+        android:persistent="true"
+        android:summary="@string/pinch_to_overview_pref_summary"
+        android:title="@string/pinch_to_overview_pref_title" />
+
+    <ListPreference
+        android:defaultValue="1"
+        android:entries="@array/pullDownActionTexts"
+        android:entryValues="@array/pullDownActionValues"
+        android:key="pref_pulldownAction"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/pull_down_action_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_forceLightStatusBar"
+        android:persistent="true"
+        android:summaryOff="@string/light_statusbar_pref_off"
+        android:summaryOn="@string/light_statusbar_pref_force"
+        android:title="@string/light_statusbar_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_showTopShadow"
+        android:persistent="true"
+        android:title="@string/show_top_shadow_title" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_keepScrollState"
+        android:persistent="true"
+        android:summary="@string/keep_scroll_state_pref_summary"
+        android:title="@string/keep_scroll_state_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_homeOpensDrawer"
+        android:persistent="true"
+        android:summary="@string/home_opens_drawer_pref_summary"
+        android:title="@string/home_opens_drawer_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_showHidden"
+        android:persistent="true"
+        android:summaryOff="@string/show_hidden_pref_off"
+        android:summaryOn="@string/show_hidden_pref_on"
+        android:title="@string/show_hidden_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_lockDesktop"
+        android:persistent="true"
+        android:title="@string/lock_desktop" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_useSystemFonts"
+        android:persistent="true"
+        android:title="@string/use_system_fonts_title" />
+</android.support.v7.preference.PreferenceScreen>

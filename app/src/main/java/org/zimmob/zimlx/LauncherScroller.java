@@ -29,17 +29,6 @@ import android.view.animation.Interpolator;
  * you can modify the Interpolator post-construction.
  */
 public class LauncherScroller {
-    private static final int DEFAULT_DURATION = 250;
-    private static final int SCROLL_MODE = 0;
-    private static final int FLING_MODE = 1;
-    private static final float INFLEXION = 0.35f; // Tension lines cross at (INFLEXION, 1)
-    private static final float START_TENSION = 0.5f;
-    private static final float END_TENSION = 1.0f;
-    private static final float P1 = START_TENSION * INFLEXION;
-    private static final float P2 = 1.0f - END_TENSION * (1.0f - INFLEXION);
-    private static final int NB_SAMPLES = 100;
-    private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
-    private static final float[] SPLINE_TIME = new float[NB_SAMPLES + 1];
     private static float DECELERATION_RATE = (float) (Math.log(0.78) / Math.log(0.9));
     private static float sViscousFluidScale;
     private static float sViscousFluidNormalize;
@@ -72,9 +61,8 @@ public class LauncherScroller {
                 if (dy > alpha) y_max = y;
                 else y_min = y;
             }
-            SPLINE_TIME[i] = coef * ((1.0f - y) * P1 + y * P2) + y * y * y;
         }
-        SPLINE_POSITION[NB_SAMPLES] = SPLINE_TIME[NB_SAMPLES] = 1.0f;
+        SPLINE_POSITION[NB_SAMPLES] = 1.0f;
 
         // This controls the viscous fluid effect (how much of it)
         sViscousFluidScale = 8.0f;
@@ -103,7 +91,19 @@ public class LauncherScroller {
     private float mDeltaY;
     private boolean mFinished;
     private TimeInterpolator mInterpolator;
+
+    private static final int DEFAULT_DURATION = 250;
+    private static final int SCROLL_MODE = 0;
+    private static final int FLING_MODE = 1;
     private boolean mFlywheel;
+    private static final float INFLEXION = 0.35f; // Tension lines cross at (INFLEXION, 1)
+    private static final float START_TENSION = 0.5f;
+    private static final float END_TENSION = 1.0f;
+    private static final float P1 = START_TENSION * INFLEXION;
+    private static final float P2 = 1.0f - END_TENSION * (1.0f - INFLEXION);
+
+    private static final int NB_SAMPLES = 100;
+    private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
     private float mVelocity;
     private float mCurrVelocity;
     private int mDistance;
@@ -111,6 +111,19 @@ public class LauncherScroller {
     private float mDeceleration;
     // A context-specific coefficient adjusted to physical values.
     private float mPhysicalCoeff;
+
+    static float viscousFluid(float x) {
+        x *= sViscousFluidScale;
+        if (x < 1.0f) {
+            x -= (1.0f - (float) Math.exp(-x));
+        } else {
+            float start = 0.36787944117f;   // 1/e == exp(-1)
+            x = 1.0f - (float) Math.exp(1.0f - x);
+            x = start + x * (1.0f - start);
+        }
+        x *= sViscousFluidNormalize;
+        return x;
+    }
 
     /**
      * Create a Scroller with the default duration and interpolator.
@@ -142,35 +155,6 @@ public class LauncherScroller {
         mFlywheel = flywheel;
 
         mPhysicalCoeff = computeDeceleration(0.84f); // look and feel tuning
-    }
-
-    static float viscousFluid(float x) {
-        x *= sViscousFluidScale;
-        if (x < 1.0f) {
-            x -= (1.0f - (float) Math.exp(-x));
-        } else {
-            float start = 0.36787944117f;   // 1/e == exp(-1)
-            x = 1.0f - (float) Math.exp(1.0f - x);
-            x = start + x * (1.0f - start);
-        }
-        x *= sViscousFluidNormalize;
-        return x;
-    }
-
-    public void setInterpolator(TimeInterpolator interpolator) {
-        mInterpolator = interpolator;
-    }
-
-    /**
-     * The amount of friction applied to flings. The default value
-     * is {@link ViewConfiguration#getScrollFriction}.
-     *
-     * @param friction A scalar dimension-less value representing the coefficient of
-     *                 friction.
-     */
-    public final void setFriction(float friction) {
-        mDeceleration = computeDeceleration(friction);
-        mFlingFriction = friction;
     }
 
     private float computeDeceleration(float friction) {
@@ -237,65 +221,12 @@ public class LauncherScroller {
     }
 
     /**
-     * Returns the start X offset in the scroll.
-     *
-     * @return The start X offset as an absolute distance from the origin.
-     */
-    public final int getStartX() {
-        return mStartX;
-    }
-
-    /**
-     * Returns the start Y offset in the scroll.
-     *
-     * @return The start Y offset as an absolute distance from the origin.
-     */
-    public final int getStartY() {
-        return mStartY;
-    }
-
-    /**
      * Returns where the scroll will end. Valid only for "fling" scrolls.
      *
      * @return The final X offset as an absolute distance from the origin.
      */
     public final int getFinalX() {
         return mFinalX;
-    }
-
-    /**
-     * Sets the final position (X) for this scroller.
-     *
-     * @param newX The new X offset as an absolute distance from the origin.
-     * @see #extendDuration(int)
-     * @see #setFinalY(int)
-     */
-    public void setFinalX(int newX) {
-        mFinalX = newX;
-        mDeltaX = mFinalX - mStartX;
-        mFinished = false;
-    }
-
-    /**
-     * Returns where the scroll will end. Valid only for "fling" scrolls.
-     *
-     * @return The final Y offset as an absolute distance from the origin.
-     */
-    public final int getFinalY() {
-        return mFinalY;
-    }
-
-    /**
-     * Sets the final position (Y) for this scroller.
-     *
-     * @param newY The new Y offset as an absolute distance from the origin.
-     * @see #extendDuration(int)
-     * @see #setFinalX(int)
-     */
-    public void setFinalY(int newY) {
-        mFinalY = newY;
-        mDeltaY = mFinalY - mStartY;
-        mFinished = false;
     }
 
     /**
@@ -498,6 +429,10 @@ public class LauncherScroller {
         return mFlingFriction * mPhysicalCoeff * Math.exp(DECELERATION_RATE / decelMinusOne * l);
     }
 
+    public void setInterpolator(TimeInterpolator interpolator) {
+        mInterpolator = interpolator;
+    }
+
     /**
      * Stops the animation. Contrary to {@link #forceFinished(boolean)},
      * aborting the animating cause the scroller to move to the final x and y
@@ -512,21 +447,6 @@ public class LauncherScroller {
     }
 
     /**
-     * Extend the scroll animation. This allows a running animation to scroll
-     * further and longer, when used with {@link #setFinalX(int)} or {@link #setFinalY(int)}.
-     *
-     * @param extend Additional time to scroll in milliseconds.
-     * @see #setFinalX(int)
-     * @see #setFinalY(int)
-     */
-    public void extendDuration(int extend) {
-        int passed = timePassed();
-        mDuration = passed + extend;
-        mDurationReciprocal = 1.0f / mDuration;
-        mFinished = false;
-    }
-
-    /**
      * Returns the time elapsed since the beginning of the scrolling.
      *
      * @return The elapsed time in milliseconds.
@@ -536,10 +456,14 @@ public class LauncherScroller {
     }
 
     /**
-     * @hide
+     * Sets the final position (X) for this scroller.
+     *
+     * @param newX The new X offset as an absolute distance from the origin.
      */
-    public boolean isScrollingInDirection(float xvel, float yvel) {
-        return !mFinished && Math.signum(xvel) == Math.signum(mFinalX - mStartX) &&
-                Math.signum(yvel) == Math.signum(mFinalY - mStartY);
+    public void setFinalX(int newX) {
+        mFinalX = newX;
+        mDeltaX = mFinalX - mStartX;
+        mFinished = false;
     }
+
 }

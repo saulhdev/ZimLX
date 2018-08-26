@@ -19,7 +19,6 @@ package org.zimmob.zimlx;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewPropertyAnimator;
 import android.view.ViewTreeObserver;
@@ -33,19 +32,17 @@ import org.zimmob.zimlx.util.Thunk;
  */
 public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         implements ValueAnimator.AnimatorUpdateListener {
-    private static final String TAG = "FirstFrameAnimatorHlpr";
-    private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
     private static final int IDEAL_FRAME_DURATION = 16;
     @Thunk
     static long sGlobalFrameCounter;
-    private static ViewTreeObserver.OnDrawListener sGlobalDrawListener;
-    private static boolean sVisible;
-    private final View mTarget;
     private long mStartFrame;
     private long mStartTime = -1;
     private boolean mHandlingOnAnimationUpdate;
     private boolean mAdjustedSecondFrameTime;
+    private static ViewTreeObserver.OnDrawListener sGlobalDrawListener;
+    private static boolean sVisible;
+    private View mTarget;
 
     public FirstFrameAnimatorHelper(ValueAnimator animator, View target) {
         mTarget = target;
@@ -57,6 +54,13 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         vpa.setListener(this);
     }
 
+    // only used for ViewPropertyAnimators
+    public void onAnimationStart(Animator animation) {
+        final ValueAnimator va = (ValueAnimator) animation;
+        va.addUpdateListener(FirstFrameAnimatorHelper.this);
+        onAnimationUpdate(va);
+    }
+
     public static void setIsVisible(boolean visible) {
         sVisible = visible;
     }
@@ -66,26 +70,12 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
         sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-            private long mTime = System.currentTimeMillis();
-
             public void onDraw() {
                 sGlobalFrameCounter++;
-                if (DEBUG) {
-                    long newTime = System.currentTimeMillis();
-                    Log.d(TAG, "TICK " + (newTime - mTime));
-                    mTime = newTime;
-                }
             }
         };
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
         sVisible = true;
-    }
-
-    // only used for ViewPropertyAnimators
-    public void onAnimationStart(Animator animation) {
-        final ValueAnimator va = (ValueAnimator) animation;
-        va.addUpdateListener(FirstFrameAnimatorHelper.this);
-        onAnimationUpdate(va);
     }
 
     public void onAnimationUpdate(final ValueAnimator animation) {
@@ -123,26 +113,15 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                     currentPlayTime > IDEAL_FRAME_DURATION) {
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
-            } else {
-                if (frameNum > 1) {
-                    mTarget.post(new Runnable() {
-                        public void run() {
-                            animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
-                        }
-                    });
-                }
-                if (DEBUG) print(animation);
+            } else if (frameNum > 1) {
+                mTarget.post(new Runnable() {
+                    public void run() {
+                        animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
+                    }
+                });
             }
             mHandlingOnAnimationUpdate = false;
-        } else {
-            if (DEBUG) print(animation);
         }
     }
 
-    public void print(ValueAnimator animation) {
-        float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
-        Log.d(TAG, sGlobalFrameCounter +
-                "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-                mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
-    }
 }

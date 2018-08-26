@@ -35,59 +35,11 @@ import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
 import org.zimmob.zimlx.graphics.IconPalette;
-import org.zimmob.zimlx.util.Utilities;
-
 
 public class FastBitmapDrawable extends Drawable {
 
-    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
-
-        @Override
-        public float getInterpolation(float input) {
-            if (input < 0.05f) {
-                return input / 0.05f;
-            } else if (input < 0.3f) {
-                return 1;
-            } else {
-                return (1 - input) / 0.7f;
-            }
-        }
-    };
-    public static final int CLICK_FEEDBACK_DURATION = 2000;
-    public static final int FAST_SCROLL_HIGHLIGHT_DURATION = 225;
-    public static final int FAST_SCROLL_UNHIGHLIGHT_DURATION = 150;
-    public static final int FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION = 225;
-    public static final int FAST_SCROLL_INACTIVE_DURATION = 275;
-    // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
-    // reduce the value space to a smaller value V, which reduces the number of cached
-    // ColorMatrixColorFilters that we need to keep to V^2
-    private static final int REDUCED_FILTER_VALUE_SPACE = 48;
-    // A cache of ColorFilters for optimizing brightness and saturation animations
-    private static final SparseArray<ColorFilter> sCachedFilter = new SparseArray<>();
-    // Temporary matrices used for calculation
-    private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
-    private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
-    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private Bitmap mBitmap;
-    private State mState = State.NORMAL;
-    // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
-    // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
-    private int mDesaturation = 0;
-    private int mBrightness = 0;
-    private int mAlpha = 255;
-    private int mPrevUpdateKey = Integer.MAX_VALUE;
-    // Animators for the fast bitmap drawable's properties
-    private AnimatorSet mPropertyAnimator;
-    private IconPalette mIconPalette;
-    private boolean mEnableStates = true;
-
     protected FastBitmapDrawable() {
 
-    }
-
-    public FastBitmapDrawable(Bitmap b) {
-        mBitmap = b;
-        setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
     /**
@@ -119,18 +71,58 @@ public class FastBitmapDrawable extends Drawable {
         return 0;
     }
 
-    /**
-     * Returns the start delay when animating between certain fast scroll states.
-     */
-    public static int getStartDelayForStateChange(State fromState, State toState) {
-        switch (toState) {
-            case FAST_SCROLL_UNHIGHLIGHTED:
-                switch (fromState) {
-                    case NORMAL:
-                        return FAST_SCROLL_UNHIGHLIGHT_DURATION / 4;
-                }
+    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
+
+        @Override
+        public float getInterpolation(float input) {
+            if (input < 0.05f) {
+                return input / 0.05f;
+            } else if (input < 0.3f) {
+                return 1;
+            } else {
+                return (1 - input) / 0.7f;
+            }
         }
-        return 0;
+    };
+    public static final int CLICK_FEEDBACK_DURATION = 2000;
+    public static final int FAST_SCROLL_HIGHLIGHT_DURATION = 225;
+    public static final int FAST_SCROLL_UNHIGHLIGHT_DURATION = 150;
+    public static final int FAST_SCROLL_UNHIGHLIGHT_FROM_NORMAL_DURATION = 225;
+    public static final int FAST_SCROLL_INACTIVE_DURATION = 275;
+
+    // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
+    // reduce the value space to a smaller value V, which reduces the number of cached
+    // ColorMatrixColorFilters that we need to keep to V^2
+    private static final int REDUCED_FILTER_VALUE_SPACE = 48;
+
+    // A cache of ColorFilters for optimizing brightness and saturation animations
+    private static final SparseArray<ColorFilter> sCachedFilter = new SparseArray<>();
+
+    // Temporary matrices used for calculation
+    private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
+    private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
+
+    private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    private Bitmap mBitmap;
+    private State mState = State.NORMAL;
+
+    // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
+    // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
+    private int mDesaturation = 0;
+    private int mBrightness = 0;
+    private int mAlpha = 255;
+    private int mPrevUpdateKey = Integer.MAX_VALUE;
+
+    // Animators for the fast bitmap drawable's properties
+    private AnimatorSet mPropertyAnimator;
+
+    private IconPalette mIconPalette;
+
+    private boolean mEnableStates = true;
+
+    public FastBitmapDrawable(Bitmap b) {
+        mBitmap = b;
+        setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
     @Override
@@ -155,29 +147,39 @@ public class FastBitmapDrawable extends Drawable {
         return PixelFormat.TRANSLUCENT;
     }
 
+    /**
+     * Returns the start delay when animating between certain fast scroll states.
+     */
+    public static int getStartDelayForStateChange(State fromState, State toState) {
+        switch (toState) {
+            case FAST_SCROLL_UNHIGHLIGHTED:
+                switch (fromState) {
+                    case NORMAL:
+                        return FAST_SCROLL_UNHIGHLIGHT_DURATION / 4;
+                }
+        }
+        return 0;
+    }
+
     @Override
     public void setFilterBitmap(boolean filterBitmap) {
         mPaint.setFilterBitmap(filterBitmap);
         mPaint.setAntiAlias(filterBitmap);
     }
 
-    public boolean getEnableStates() {
-        return mEnableStates;
+    @Override
+    public void setAlpha(int alpha) {
+        mAlpha = alpha;
+        mPaint.setAlpha(alpha);
     }
 
-    public void setEnableStates(boolean enableStates) {
-        mEnableStates = enableStates;
+    public boolean getEnableStates() {
+        return mEnableStates;
     }
 
     @Override
     public int getAlpha() {
         return mAlpha;
-    }
-
-    @Override
-    public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        mPaint.setAlpha(alpha);
     }
 
     @Override
@@ -264,6 +266,10 @@ public class FastBitmapDrawable extends Drawable {
         return mState;
     }
 
+    public void setEnableStates(boolean enableStates) {
+        mEnableStates = enableStates;
+    }
+
     public float getDesaturation() {
         return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
     }
@@ -291,6 +297,33 @@ public class FastBitmapDrawable extends Drawable {
         if (mBrightness != newBrightness) {
             mBrightness = newBrightness;
             updateFilter();
+        }
+    }
+
+    /**
+     * The possible states that a FastBitmapDrawable can be in.
+     */
+    public enum State {
+
+        NORMAL(0f, 0f, 1f, new DecelerateInterpolator()),
+        PRESSED(0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
+        FAST_SCROLL_HIGHLIGHTED(0f, 0f, 1.15f, new DecelerateInterpolator()),
+        FAST_SCROLL_UNHIGHLIGHTED(0f, 0f, 1f, new DecelerateInterpolator()),
+        DISABLED(1f, 0.5f, 1f, new DecelerateInterpolator());
+
+        public final float desaturation;
+        public final float brightness;
+        /**
+         * Used specifically by the view drawing this FastBitmapDrawable.
+         */
+        public final float viewScale;
+        public final TimeInterpolator interpolator;
+
+        State(float desaturation, float brightness, float viewScale, TimeInterpolator interpolator) {
+            this.desaturation = desaturation;
+            this.brightness = brightness;
+            this.viewScale = viewScale;
+            this.interpolator = interpolator;
         }
     }
 
@@ -356,33 +389,6 @@ public class FastBitmapDrawable extends Drawable {
         if (animator != null) {
             animator.removeAllListeners();
             animator.cancel();
-        }
-    }
-
-    /**
-     * The possible states that a FastBitmapDrawable can be in.
-     */
-    public enum State {
-
-        NORMAL(0f, 0f, 1f, new DecelerateInterpolator()),
-        PRESSED(0f, 100f / 255f, 1f, CLICK_FEEDBACK_INTERPOLATOR),
-        FAST_SCROLL_HIGHLIGHTED(0f, 0f, 1.15f, new DecelerateInterpolator()),
-        FAST_SCROLL_UNHIGHLIGHTED(0f, 0f, 1f, new DecelerateInterpolator()),
-        DISABLED(1f, 0.5f, 1f, new DecelerateInterpolator());
-
-        public final float desaturation;
-        public final float brightness;
-        /**
-         * Used specifically by the view drawing this FastBitmapDrawable.
-         */
-        public final float viewScale;
-        public final TimeInterpolator interpolator;
-
-        State(float desaturation, float brightness, float viewScale, TimeInterpolator interpolator) {
-            this.desaturation = desaturation;
-            this.brightness = brightness;
-            this.viewScale = viewScale;
-            this.interpolator = interpolator;
         }
     }
 }

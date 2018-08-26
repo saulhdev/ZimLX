@@ -10,33 +10,22 @@ import android.graphics.Canvas;
 import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.HapticFeedbackConstants;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.config.Config;
-import org.zimmob.zimlx.manager.Setup;
-import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.viewutil.ItemGestureListener;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -134,7 +123,7 @@ public class Tool {
                     .withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
-
+/*
     public static final void createScaleInScaleOutAnim(@NonNull final View view, @NonNull final Runnable endAction, float runActionAtPercent) {
         final long animTime = (long) (Setup.appSettings().getOverallAnimationSpeedModifier() * ((float) ItemTouchHelper.Callback.DEFAULT_DRAG_ANIMATION_DURATION));
         ViewPropertyAnimator duration = view.animate().scaleX(0.85f).scaleY(0.85f).setDuration(animTime);
@@ -145,7 +134,7 @@ public class Tool {
             duration1.setInterpolator(new AccelerateDecelerateInterpolator());
             new Handler().postDelayed(() -> endAction.run(), animTime);
         }, (long) (animTime * runActionAtPercent));
-    }
+    }*/
 
     public static void toast(Context context, String str) {
         Toast.makeText(context, str, Toast.LENGTH_SHORT).show();
@@ -188,7 +177,7 @@ public class Tool {
         return Math.max(min, Math.min(max, target));
     }
 
-    public static void startApp(Context context, App app) {
+    /*public static void startApp(Context context, App app) {
         if (HomeActivity.companion.getLauncher() != null)
             HomeActivity.companion.getLauncher().onStartApp(context, app, null);
     }
@@ -203,7 +192,7 @@ public class Tool {
         if (homeActivity != null) {
             homeActivity.onStartApp(context, app, view);
         }
-    }
+    }*/
 
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable == null) {
@@ -335,7 +324,7 @@ public class Tool {
         }
     }
 
-    public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
+    /*public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
             HomeActivity.companion.setItemTouchX((int) motionEvent.getX());
@@ -345,7 +334,7 @@ public class Tool {
             }
             return false;
         };
-    }
+    }*/
 
     public static void copy(Context context, String stringIn, String stringOut) {
         try {
@@ -377,7 +366,7 @@ public class Tool {
         }
     }
 
-    public static <A extends App> List<A> getRemovedApps(List<A> oldApps, List<A> newApps) {
+    /*public static <A extends App> List<A> getRemovedApps(List<A> oldApps, List<A> newApps) {
         List<A> removed = new ArrayList<>();
         // if this is the first call to this function and we did not know any app yet, we return an empty list
         if (oldApps.size() == 0) {
@@ -393,5 +382,5 @@ public class Tool {
         }
 //        }
         return removed;
-    }
+    }*/
 }

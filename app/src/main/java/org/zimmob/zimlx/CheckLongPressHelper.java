@@ -31,6 +31,19 @@ public class CheckLongPressHelper {
     private int mLongPressTimeout = DEFAULT_LONG_PRESS_TIMEOUT;
     private CheckForLongPress mPendingCheckForLongPress;
 
+    class CheckForLongPress implements Runnable {
+        public void run() {
+            if ((mView.getParent() != null) && mView.hasWindowFocus()
+                    && !mHasPerformedLongPress) {
+                boolean handled = mView.performLongClick();
+                if (handled) {
+                    mView.setPressed(false);
+                    mHasPerformedLongPress = true;
+                }
+            }
+        }
+    }
+
     public CheckLongPressHelper(View v) {
         mView = v;
     }
@@ -61,18 +74,5 @@ public class CheckLongPressHelper {
 
     public boolean hasPerformedLongPress() {
         return mHasPerformedLongPress;
-    }
-
-    class CheckForLongPress implements Runnable {
-        public void run() {
-            if ((mView.getParent() != null) && mView.hasWindowFocus()
-                    && !mHasPerformedLongPress) {
-                boolean handled = mView.performLongClick();
-                if (handled) {
-                    mView.setPressed(false);
-                    mHasPerformedLongPress = true;
-                }
-            }
-        }
     }
 }

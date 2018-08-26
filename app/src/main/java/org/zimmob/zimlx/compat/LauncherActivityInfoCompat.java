@@ -33,7 +33,7 @@ public class LauncherActivityInfoCompat {
     }
 
     public static LauncherActivityInfoCompat create(Context context, UserHandle user, Intent intent) {
-        LauncherApps launcherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        LauncherApps launcherApps = (LauncherApps) context.getSystemService("launcherapps");
         LauncherActivityInfo info = launcherApps.resolveActivity(intent, user);
         return new LauncherActivityInfoCompat(info);
     }

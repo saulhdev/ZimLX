@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerOptions"
+        android:title="@string/pref_category_drawer">
+
+        <ListPreference
+            android:defaultValue="@string/generalDefault"
+            android:dependency="pref_verticalDrawerLayout"
+            android:entries="@array/numColsTexts"
+            android:entryValues="@array/numColsValues"
+            android:key="pref_numColsDrawer"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/num_cols_drawer_pref_title" />
+
+        <ListPreference
+            android:defaultValue="@string/generalDefault"
+            android:dependency="pref_verticalDrawerLayout"
+            android:entries="@array/numRowsTexts"
+            android:entryValues="@array/numRowsValues"
+            android:key="pref_numRowsDrawer"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/pref_num_rows_drawer" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="pref_verticalDrawerLayout"
+            android:persistent="true"
+            android:title="@string/vertical_drawer_layout_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_useRoundSearchBar"
+            android:persistent="true"
+            android:title="@string/use_round_searhbar" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:persistent="true"
+            android:title="@string/all_apps_opacity_pref_title"
+            app:defaultSeekbarValue="1"
+            app:maxValue="1"
+            app:minValue="0"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerIcon"
+        android:title="@string/pref_category_icons">
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="pref_verticalDrawerLayout"
+            android:disableDependentsState="true"
+            android:key="pref_hideAllAppsAppLabels"
+            android:persistent="true"
+            android:title="@string/hide_all_apps_icon_labels_pref_title" />
+
+        <SwitchPreference
+            android:key="pref_allAppsCustomLabelColor"
+            android:title="@string/pref_all_apps_custom_label_color" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/white"
+            android:key="pref_workspaceLabelColor"
+            android:title="@string/pref_all_apps_label_color"
+            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_showAlphaSlider="true" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsIconScale"
+            android:persistent="true"
+            android:title="@string/icon_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.5"
+            app:minValue="0.3"
+            app:steps="120"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsIconTextScale"
+            android:persistent="true"
+            android:title="@string/icon_text_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="1.5"
+            app:minValue="0.3"
+            app:steps="120"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsIconPaddingScale"
+            android:persistent="true"
+            android:title="@string/icon_text_padding_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:maxValue="2.0"
+            app:minValue="0.1"
+            app:steps="190"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_iconLabelsInTwoLines"
+            android:persistent="true"
+            android:title="@string/pref_iconLabelsInTwoLines" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_drawerMisc"
+        android:title="@string/pref_category_misc">
+
+        <Preference
+            android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
+            android:key="pref_hiddenApps"
+            android:summary="@string/hide_app_sum"
+            android:title="@string/hide_app" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_enablePhysics"
+            android:persistent="true"
+            android:title="@string/enable_spring_pref_title" />
+
+    </android.support.v7.preference.PreferenceCategory>
+</android.support.v7.preference.PreferenceScreen>

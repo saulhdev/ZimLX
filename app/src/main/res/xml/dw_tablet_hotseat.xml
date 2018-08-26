@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
     <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
     <!-- Messaging, Email, Browser, [All Apps], Music, Gallery, Camera -->
     <resolve
@@ -46,19 +46,17 @@
         <favorite launcher:uri="http://www.example.com/" />
     </resolve>
 
-    <!-- All Apps -->
-
     <favorite
         launcher:container="-101"
-        launcher:screen="4"
+        launcher:screen="3"
         launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MUSIC;end"
-        launcher:x="4"
+        launcher:x="3"
         launcher:y="0" />
 
     <resolve
         launcher:container="-101"
-        launcher:screen="5"
-        launcher:x="5"
+        launcher:screen="4"
+        launcher:x="4"
         launcher:y="0">
         <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_GALLERY;end" />
         <favorite launcher:uri="#Intent;type=images/*;end" />
@@ -66,11 +64,20 @@
 
     <resolve
         launcher:container="-101"
-        launcher:screen="6"
-        launcher:x="6"
+        launcher:screen="5"
+        launcher:x="5"
         launcher:y="0">
         <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
         <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
+    </resolve>
+
+    <resolve
+        launcher:container="-101"
+        launcher:screen="6"
+        launcher:x="6"
+        launcher:y="0">
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
+        <favorite launcher:uri="market://details?id=com.android.launcher" />
     </resolve>
 
 </favorites>

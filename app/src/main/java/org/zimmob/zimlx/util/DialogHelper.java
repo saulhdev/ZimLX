@@ -1,28 +1,10 @@
 package org.zimmob.zimlx.util;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageInfo;
-import android.content.pm.PackageManager;
-import android.net.Uri;
-import android.os.Environment;
-import android.support.v7.widget.LinearLayoutManager;
-import android.view.Gravity;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.MaterialDialog;
-import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 
 import org.zimmob.zimlx.R;
-import org.zimmob.zimlx.activity.HomeActivity;
-import org.zimmob.zimlx.apps.AppManager;
-import org.zimmob.zimlx.model.App;
-import org.zimmob.zimlx.model.Item;
-import org.zimmob.zimlx.viewutil.IconLabelItem;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Created by saul on 04-25-18.
@@ -58,7 +40,7 @@ public class DialogHelper {
                 .show();
     }
 
-    public static void addActionItemDialog(final Context context, MaterialDialog.ListCallback callback) {
+    /*public static void addActionItemDialog(final Context context, MaterialDialog.ListCallback callback) {
         MaterialDialog.Builder builder = new MaterialDialog.Builder(context);
         builder.title(R.string.desktop_action)
                 .items(R.array.entries__desktop_actions)
@@ -169,10 +151,9 @@ public class DialogHelper {
     public interface OnAppSelectedListener {
         void onAppSelected(App app);
     }
-
+*/
     public interface OnItemEditListener {
         void itemLabel(String label);
     }
-
 
 }

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <shortcut
+        android:enabled="true"
+        android:icon="@drawable/ic_shortcut_home"
+        android:shortcutId="setDefault"
+        android:shortcutLongLabel="@string/set_default_launcher"
+        android:shortcutShortLabel="@string/set_default_launcher"
+        tools:ignore="UnusedAttribute">
+
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetClass="org.zimmob.zimlx.BlankActivity"
+            android:targetPackage="org.zimmob.zimlx.plah">
+
+            <extra
+                android:name="action"
+                android:value="setDefaultLauncher" />
+        </intent>
+    </shortcut>
+</shortcuts>

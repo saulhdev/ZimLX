@@ -67,6 +67,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     }
 
     open class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+
         open fun bind(position: Int) {
 
         }

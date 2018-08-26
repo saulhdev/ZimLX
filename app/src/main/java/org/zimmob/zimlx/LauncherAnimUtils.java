@@ -21,28 +21,14 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.view.View;
-import android.view.ViewTreeObserver;
 
 import java.util.HashSet;
 import java.util.WeakHashMap;
 
 public class LauncherAnimUtils {
-    public static final Property<Drawable, Integer> DRAWABLE_ALPHA =
-            new Property<Drawable, Integer>(Integer.TYPE, "drawableAlpha") {
-                @Override
-                public Integer get(Drawable drawable) {
-                    return drawable.getAlpha();
-                }
-
-                @Override
-                public void set(Drawable drawable, Integer alpha) {
-                    drawable.setAlpha(alpha);
-                }
-            };
-    static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<Animator, Object>();
+    static WeakHashMap<Animator, Object> sAnimators = new WeakHashMap<>();
     static Animator.AnimatorListener sEndAnimListener = new Animator.AnimatorListener() {
         public void onAnimationStart(Animator animation) {
             sAnimators.put(animation, null);
@@ -64,33 +50,8 @@ public class LauncherAnimUtils {
         a.addListener(sEndAnimListener);
     }
 
-    // Helper method. Assumes a draw is pending, and that if the animation's duration is 0
-    // it should be cancelled
-    public static void startAnimationAfterNextDraw(final Animator animator, final View view) {
-        view.getViewTreeObserver().addOnDrawListener(new ViewTreeObserver.OnDrawListener() {
-            private boolean mStarted = false;
-
-            public void onDraw() {
-                if (mStarted) return;
-                mStarted = true;
-                // Use this as a signal that the animation was cancelled
-                if (animator.getDuration() == 0) {
-                    return;
-                }
-                animator.start();
-
-                final ViewTreeObserver.OnDrawListener listener = this;
-                view.post(new Runnable() {
-                    public void run() {
-                        view.getViewTreeObserver().removeOnDrawListener(listener);
-                    }
-                });
-            }
-        });
-    }
-
     public static void onDestroyActivity() {
-        HashSet<Animator> animators = new HashSet<Animator>(sAnimators.keySet());
+        HashSet<Animator> animators = new HashSet<>(sAnimators.keySet());
         for (Animator a : animators) {
             if (a.isRunning()) {
                 a.cancel();
@@ -133,8 +94,8 @@ public class LauncherAnimUtils {
         return ofPropertyValuesHolder(target, target, values);
     }
 
-    private static ObjectAnimator ofPropertyValuesHolder(Object target,
-                                                         View view, PropertyValuesHolder... values) {
+    public static ObjectAnimator ofPropertyValuesHolder(Object target,
+                                                        View view, PropertyValuesHolder... values) {
         ObjectAnimator anim = ObjectAnimator.ofPropertyValuesHolder(target, values);
         cancelOnDestroyActivity(anim);
         new FirstFrameAnimatorHelper(anim, view);

@@ -1,37 +1,30 @@
 package org.zimmob.zimlx.badge;
 
-import org.zimmob.zimlx.config.Config;
+import org.zimmob.zimlx.Utilities;
 
 public class FolderBadgeInfo extends BadgeInfo {
-    private static final int MIN_COUNT = 0;
-
     private int mNumNotifications;
 
     public FolderBadgeInfo() {
         super(null);
     }
 
-    public void addBadgeInfo(BadgeInfo badgeToAdd) {
-        if (badgeToAdd == null) {
-            return;
+    public void addBadgeInfo(BadgeInfo badgeInfo) {
+        if (badgeInfo != null) {
+            mNumNotifications += badgeInfo.getNotificationKeys().size();
+            mNumNotifications = Utilities.boundToRange(mNumNotifications, 0, 999);
         }
-        mNumNotifications += badgeToAdd.getNotificationKeys().size();
-        mNumNotifications = Config.boundToRange(
-                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
-    public void subtractBadgeInfo(BadgeInfo badgeToSubtract) {
-        if (badgeToSubtract == null) {
-            return;
+    public void subtractBadgeInfo(BadgeInfo badgeInfo) {
+        if (badgeInfo != null) {
+            mNumNotifications -= badgeInfo.getNotificationKeys().size();
+            mNumNotifications = Utilities.boundToRange(mNumNotifications, 0, 999);
         }
-        mNumNotifications -= badgeToSubtract.getNotificationKeys().size();
-        mNumNotifications = Config.boundToRange(
-                mNumNotifications, MIN_COUNT, BadgeInfo.MAX_COUNT);
     }
 
     @Override
     public int getNotificationCount() {
-        // This forces the folder badge to always show up as a dot.
         return 0;
     }
 

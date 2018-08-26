@@ -9,36 +9,40 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import org.zimmob.zimlx.R
-import org.zimmob.zimlx.util.AppSettings
+import org.zimmob.zimlx.blur.BlurWallpaperProvider
+import org.zimmob.zimlx.config.FeatureFlags
 
 @SuppressLint("Registered")
 open class BackupBaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        FeatureFlags.applyDarkTheme(this)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         super.setContentView(R.layout.activity_settings)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        toolbar.setBackgroundColor(AppSettings.get().primaryColor)
         setSupportActionBar(toolbar)
+
+        if (FeatureFlags.currentTheme != 2)
+            BlurWallpaperProvider.applyBlurBackground(this)
     }
 
     override fun setContentView(v: View) {
-        val contentParent = findViewById<ViewGroup>(R.id.settings__activity__fragment_placeholder)
+        val contentParent = findViewById<ViewGroup>(R.id.content)
         contentParent.removeAllViews()
         contentParent.addView(v)
     }
 
     override fun setContentView(resId: Int) {
-        val contentParent = findViewById<ViewGroup>(R.id.settings__activity__fragment_placeholder)
+        val contentParent = findViewById<ViewGroup>(R.id.content)
         contentParent.removeAllViews()
         LayoutInflater.from(this).inflate(resId, contentParent)
     }
 
     override fun setContentView(v: View, lp: ViewGroup.LayoutParams) {
-        val contentParent = findViewById<ViewGroup>(R.id.settings__activity__fragment_placeholder)
+        val contentParent = findViewById<ViewGroup>(R.id.content)
         contentParent.removeAllViews()
         contentParent.addView(v, lp)
     }

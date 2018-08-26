@@ -16,9 +16,9 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:gravity="center"
     android:background="@drawable/quantum_panel_dark"
     android:elevation="2dp"
-    android:gravity="center"
-    android:text="@string/gadget_error_text"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
+    android:text="@string/gadget_error_text"
     android:textColor="@color/widgets_view_item_text_color" />

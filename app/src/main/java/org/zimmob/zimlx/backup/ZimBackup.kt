@@ -12,10 +12,8 @@ import android.os.Environment
 import android.support.v4.content.FileProvider
 import android.util.Log
 import org.json.JSONArray
-import org.zimmob.zimlx.BuildConfig
-import org.zimmob.zimlx.R
-import org.zimmob.zimlx.config.Config
-import org.zimmob.zimlx.util.DumbImportExportTask
+import org.zimmob.zimlx.*
+import org.zimmob.zimlx.preferences.blockingEdit
 import java.io.*
 import java.nio.charset.StandardCharsets
 import java.text.SimpleDateFormat
@@ -60,9 +58,9 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
     open fun restore(contents: Int): Boolean {
         try {
             val contextWrapper = ContextWrapper(context)
-            val dbFile = contextWrapper.getDatabasePath(Config.LAUNCHER_DB)
+            val dbFile = contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB)
             val dir = contextWrapper.cacheDir.parent
-            val settingsFile = File(dir, "shared_prefs/" + "app.xml")
+            val settingsFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
 
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
             val inStream = FileInputStream(pfd.fileDescriptor)
@@ -129,13 +127,13 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
 
         override fun restore(contents: Int): Boolean {
             if (contents or ZimBackup.INCLUDE_HOMESCREEN != 0) {
-                val file = context.getDatabasePath("home.db")
+                val file = context.getDatabasePath(LauncherFiles.LAUNCHER_DB)
                 val backup = DumbImportExportTask.getDbBackupFile()
                 if (!restoreFile(backup, file)) return false
             }
             if (contents or ZimBackup.INCLUDE_SETTINGS != 0) {
                 val dir = context.cacheDir.parent
-                val file = File(dir, "shared_prefs/" + "app.xml")
+                val file = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
                 val backup = DumbImportExportTask.getSettingsBackupFile()
                 if (!restoreFile(backup, file)) return false
             }
@@ -154,8 +152,10 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
     }
 
     class MetaLoader(val backup: ZimBackup) {
+
         var callback: Callback? = null
         var meta: Meta? = null
+
         fun loadMeta() {
             LoadMetaTask().execute()
         }
@@ -212,7 +212,7 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
     }
 
     companion object {
-        const val TAG = "ZimBackup"
+        const val TAG = "LawnchairBackup"
 
         const val INCLUDE_HOMESCREEN = 1 shl 0
         const val INCLUDE_SETTINGS = 1 shl 1
@@ -221,13 +221,13 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
         const val BUFFER = 2018
 
         const val EXTENSION = "shed"
-        const val MIME_TYPE = "application/vnd.zim.backup"
+        const val MIME_TYPE = "application/vnd.lawnchair.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
 
         fun getFolder(): File {
-            val folder = File(Environment.getExternalStorageDirectory(), "ZimLX/backup")
+            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
             Log.d(TAG, "path: $folder")
             if (!folder.exists()) {
                 folder.mkdirs()
@@ -250,26 +250,26 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
         }
 
         private fun prepareConfig(context: Context) {
-            /*Config.getPrefs(context).blockingEdit {
+            Utilities.getPrefs(context).blockingEdit {
                 restoreSuccess = true
-            }*/
+            }
         }
 
         private fun cleanupConfig(context: Context) {
-            /*Config.getPrefs(context).blockingEdit {
+            Utilities.getPrefs(context).blockingEdit {
                 restoreSuccess = false
-            }*/
+            }
         }
 
         fun create(context: Context, name: String, location: Uri, contents: Int): Boolean {
             val contextWrapper = ContextWrapper(context)
             val files: MutableList<File> = ArrayList()
             if (contents or INCLUDE_HOMESCREEN != 0) {
-                files.add(contextWrapper.getDatabasePath("home.db"))
+                files.add(contextWrapper.getDatabasePath(LauncherFiles.LAUNCHER_DB))
             }
             if (contents or INCLUDE_SETTINGS != 0) {
                 val dir = contextWrapper.cacheDir.parent
-                files.add(File(dir, "shared_prefs/" + "app.xml"))
+                files.add(File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml"))
             }
 
             prepareConfig(context)
@@ -285,7 +285,7 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
                 if (contents or INCLUDE_WALLPAPER != 0) {
                     val wallpaperManager = WallpaperManager.getInstance(context)
                     val wallpaperDrawable = wallpaperManager.drawable
-                    val wallpaperBitmap = Config.drawableToBitmap(wallpaperDrawable)
+                    val wallpaperBitmap = Utilities.drawableToBitmap(wallpaperDrawable)
                     if (wallpaperBitmap != null) {
                         val wallpaperEntry = ZipEntry(WALLPAPER_FILE_NAME)
                         out.putNextEntry(wallpaperEntry)

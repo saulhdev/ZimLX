@@ -14,7 +14,8 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import org.zimmob.zimlx.R
-import org.zimmob.zimlx.config.Config
+import org.zimmob.zimlx.Utilities
+import org.zimmob.zimlx.preferences.blockingEdit
 
 class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callback {
 
@@ -67,8 +68,8 @@ class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callbac
             }
             intent.hasExtra(EXTRA_SUCCESS) -> {
                 inProgress = true
-                showMessage(R.drawable.ic_check_white_24dp, R.string.restore_success)
-                //Config.getPrefs(this).blockingEdit { restoreSuccess = false }
+                showMessage(R.drawable.ic_check, R.string.restore_success)
+                Utilities.getPrefs(this).blockingEdit { restoreSuccess = false }
                 Handler().postDelayed({ finish() }, 2000)
                 return
             }
@@ -114,7 +115,7 @@ class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callbac
             backupWallpaper.isEnabled = includeWallpaper
             backupWallpaper.isChecked = includeWallpaper
         } else {
-            showMessage(R.drawable.ic_close_dark_24dp, R.string.restore_read_meta_fail)
+            showMessage(R.drawable.ic_close, R.string.restore_read_meta_fail)
         }
     }
 
@@ -177,9 +178,9 @@ class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callbac
                 progressText.text = getString(R.string.backup_restarting)
 
                 if (result and ZimBackup.INCLUDE_SETTINGS == 0) {
-                    /*Config.getPrefs(this@RestoreBackupActivity).blockingEdit {
+                    Utilities.getPrefs(this@RestoreBackupActivity).blockingEdit {
                         restoreSuccess = true
-                    }*/
+                    }
                 }
 
                 Handler().postDelayed({
@@ -188,12 +189,12 @@ class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callbac
                                 RestoreBackupActivity::class.java).putExtra(EXTRA_SUCCESS, true)
                         startActivity(intent)
                     }
-                    Config.killLauncher()
+                    Utilities.killLauncher()
                 }, 500)
             } else {
                 inProgress = false
 
-                showMessage(R.drawable.ic_close_dark_24dp, R.string.restore_failed)
+                showMessage(R.drawable.ic_close, R.string.restore_failed)
             }
         }
 
