@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.Window
 import org.zimmob.zimlx.R
+import org.zimmob.zimlx.Utilities
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.config.FeatureFlags
 
@@ -23,6 +24,7 @@ open class BackupBaseActivity : AppCompatActivity() {
         super.setContentView(R.layout.activity_settings)
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(Utilities.getPrefs(this).primaryColor)
         setSupportActionBar(toolbar)
 
         if (FeatureFlags.currentTheme != 2)

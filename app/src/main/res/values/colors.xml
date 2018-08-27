@@ -118,4 +118,9 @@
 
     <color name="white">#ffffff</color>
     <color name="drawer_background_transparentish">#B0101010</color>
+
+    <color name="Light.Background">#f9f9f9</color>
+    <color name="Light.TextColor">#616161</color>
+    <color name="Light.TextColorSecondary">#9e9e9e</color>
+    <color name="button_background">#205dec</color>
 </resources>

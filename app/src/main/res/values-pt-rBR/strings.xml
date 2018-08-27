@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d atalhos e notificações de %2$d para %3$s</string>
     <string name="notifications_header">Notificações</string>
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Sobre</string>
-    <string name="about_pref_summary">Conheça a equipe por trás do Lawnchair</string>
+    <string name="about_pref_summary">Conheça a equipe por trás do ZimLX</string>
     <string name="changelog_title">Novidades da versão #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Pacote de Ícones</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Widgets encostam nas bordas</string>
     <string name="full_width_widgets_pref_summary">Permite que os widgets encostem nas bordas laterais</string>
     <string name="notification_access_pref_title">Visualização e emblemas de notificação</string>
-    <string name="notification_access_pref_summary">Permitir o Lawnchair acessar as suas notificações para exibir prévias</string>
+    <string name="notification_access_pref_summary">Permitir o ZimLX acessar as suas notificações para exibir prévias</string>
     <string name="general_pref_title">Geral</string>
     <string name="dock_pref_title">Barra de aplicativos</string>
     <string name="app_drawer_pref_title">Gaveta de aplicativos</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Personalizar sua gaveta de aplicativos</string>
     <string name="pixel_ui_pref_summary">Habilitar funções exclusivas do Pixel Launcher</string>
     <string name="backup_pref_title">Backup</string>
-    <string name="behavior_pref_summary">Adicione funções extras ao Lawnchair</string>
+    <string name="behavior_pref_summary">Adicione funções extras ao ZimLX</string>
     <string name="backup_pref_summary">Fazer backup das suas configurações</string>
     <string name="debug_pref_summary">Refazer imagem dos ícones</string>
     <string name="show_pixel_bar_pref_title">Mostrar a barra superior do Pixel</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Usar ícones redondos</string>
     <string name="pixel_style_icons_pref_summary">Quando habilitados, ícones circulares serão usados quando possível</string>
     <string name="show_google_now_tab_pref_title">Mostrar página do Google Now</string>
-    <string name="restart_lawnchair_pref_title">Reiniciar o Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Pode ser útil se algumas configurações não forem aplicadas corretamente</string>
+    <string name="restart_ZimLX_pref_title">Reiniciar o ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Pode ser útil se algumas configurações não forem aplicadas corretamente</string>
     <string name="rebuild_icondb_pref_title">Reconstruir o banco de dados dos ícones</string>
     <string name="pinch_to_overview_pref_title">Pince para visão geral</string>
     <string name="pinch_to_overview_pref_summary">Pinçar na tela inicial para abrir a visão geral</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Importar banco de dados</string>
     <string name="export_prefs_title">Exportar configurações</string>
     <string name="import_prefs_title">Importar configurações</string>
-    <string name="notification_listener_label">Lawnchair - Notificações dinâmicas</string>
-    <string name="color_extraction_label">Lawnchair - Extração de cor</string>
+    <string name="notification_listener_label">ZimLX - Notificações dinâmicas</string>
+    <string name="color_extraction_label">ZimLX - Extração de cor</string>
     <string name="test_title">Teste</string>
     <string name="visibility">Visibilidade</string>
     <string name="default_text">Padrão</string>
@@ -418,7 +418,7 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed não habilitado</string>
     <string name="lawnfeed_not_enabled">Parece que você está tentando abrir a página do Google Now, mas você não ativou a opção nas configurações de comportamento.\n\nVocê quer habilitá-lo agora?</string>
     <string name="lawnfeed_outdated_title">Atualização do Lawnfeed necessária</string>
-    <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do Lawnchair.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
+    <string name="lawnfeed_outdated">Uma nova versão do Lawnfeed é necessária nesta versão do ZimLX.\n\nAntes de instalar a atualização, você provavelmente precisará desinstalar a versão atual do Lawnfeed.\n\nVocê deseja baixá-la agora?</string>
     <string name="title_storage_permission_required">Permissão de armazenamento recusada</string>
     <string name="content_storage_permission_required">No Android 8.1 e acima, a permissão de armazenamento é necessária para que os aplicativos acessem o papel de parede. Sem a permissão indicada, a Lawchair pode falhar ou mostrar comportamentos inesperados.</string>
     <string name="disable_popup">Lembrar minha escolha</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Falha na restauração</string>
     <string name="restore_read_meta_fail">Arquivo de backup inválido</string>
     <string name="backup_share_title">Compartilhar backup</string>
-    <string name="backup_share_text">Arquivo de backup do Lawnchair</string>
+    <string name="backup_share_text">Arquivo de backup do ZimLX</string>
     <string name="read_external_storage_required">Permissão de armazenamento é necessária para criar backup</string>
     <string name="local_backups">Backups locais</string>
     <string name="backup_location_device_storage">Armazenamento do dispositivo</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Menu</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Diversos</string>
-    <string name="blur_oom">Lawnchair ficou sem memória tentando desfocar seu papel de parede! Reduzir a resolução do papel de parede poderia resolver isso.</string>
+    <string name="blur_oom">ZimLX ficou sem memória tentando desfocar seu papel de parede! Reduzir a resolução do papel de parede poderia resolver isso.</string>
     <string name="legacy_backup">Arquivo de backup legado</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Licenças Open Source</string>
@@ -488,7 +488,7 @@
     <string name="about_role_special_snowflake">Gestor de PR / Moderador</string>
     <string name="about_role_mod_support">Moderador / Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
-    <string name="about_bio_deletescape">Programador Android &amp; entusiasta, adora memes (até demais). Criador do projeto Lawnchair.</string>
+    <string name="about_bio_deletescape">Programador Android &amp; entusiasta, adora memes (até demais). Criador do projeto ZimLX.</string>
     <string name="about_bio_divadsn">18 anos, transforma cafeína e pizza em código. Também conhecido como Codebucket.</string>
     <string name="about_bio_recoded">Programador e designer gráfico.</string>
     <string name="about_bio_josh">Designer gráfico independente.</string>

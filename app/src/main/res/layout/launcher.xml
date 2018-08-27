@@ -87,12 +87,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:visibility="invisible"
             android:background="@color/colorPrimary">
 
             <org.zimmob.zimlx.minibar.SwipeListView
                 android:id="@+id/minibar"
                 android:layout_width="74dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_gravity="center_vertical|start"
                 android:clipToPadding="true"
                 android:divider="@android:color/transparent"

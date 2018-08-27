@@ -309,9 +309,9 @@
     <string name="notifications_header">Notifications</string>
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
 
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">About</string>
-    <string name="about_pref_summary">Get to know about the Lawnchair team</string>
+    <string name="about_pref_summary">Get to know about the ZimLX team</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Icon pack</string>
     <string name="icon_pack_preference_summary">Select an icon pack</string>
@@ -343,7 +343,7 @@
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="notification_access_pref_title">Notification badges and preview</string>
-    <string name="notification_access_pref_summary">Allow Lawnchair to access your notifications to enable this feature</string>
+    <string name="notification_access_pref_summary">Allow ZimLX to access your notifications to enable this feature</string>
     <string name="general_pref_title">Desktop</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">App drawer</string>
@@ -355,7 +355,7 @@
     <string name="app_drawer_pref_summary">Customize your app drawer</string>
     <string name="pixel_ui_pref_summary">Theme different elements</string>
     <string name="backup_pref_title">Backup &amp; restore</string>
-    <string name="behavior_pref_summary">Change the behavior of Lawnchair</string>
+    <string name="behavior_pref_summary">Change the behavior of ZimLX</string>
     <string name="backup_pref_summary">Backup\/restore your settings and database</string>
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
     <string name="show_pixel_bar_pref_title">Show Pixel searchbar</string>
@@ -367,8 +367,8 @@
     <string name="pixel_style_icons_pref_title">Use Pixel icons</string>
     <string name="pixel_style_icons_pref_summary">When enabled circular icons will be used where possible</string>
     <string name="show_google_now_tab_pref_title">Show Google Now page</string>
-    <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="restart_ZimLX_pref_title">Restart ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Can be helpful if some settings are not properly applied</string>
     <string name="rebuild_icondb_pref_title">Rebuild icon database</string>
     <string name="pinch_to_overview_pref_title">Pinch to overview</string>
     <string name="pinch_to_overview_pref_summary">Pinch on the desktop to open the overview</string>
@@ -386,8 +386,8 @@
     <string name="import_db_title">Database</string>
     <string name="export_prefs_title">Settings</string>
     <string name="import_prefs_title">Settings</string>
-    <string name="notification_listener_label">Lawnchair - Notification badges</string>
-    <string name="color_extraction_label">Lawnchair - Color extraction</string>
+    <string name="notification_listener_label">ZimLX - Notification badges</string>
+    <string name="color_extraction_label">ZimLX - Color extraction</string>
     <string name="test_package" translatable="false">com.example.test</string>
     <string name="default_text">Default</string>
     <string name="edit_icon_reset">Reset</string>
@@ -495,9 +495,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed not enabled</string>
     <string name="lawnfeed_not_enabled">It looks like you\'re trying to open the Google Now page, but you haven\'t enabled the option in the behavior settings.\n\nDo you want to enable it now?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed update required</string>
-    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of Lawnchair.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
+    <string name="lawnfeed_outdated">A newer version of Lawnfeed is required in order to work with this version of ZimLX.\n\nBefore installing the update you will probably need to uninstall the current version of Lawnfeed.\n\nDo you want to download it now?</string>
     <string name="title_storage_permission_required">Storage Permission Required</string>
-    <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission Lawnchair might crash or show unexpected behaviours.</string>
+    <string name="content_storage_permission_required">On Android 8.1 and above the storage permission is required for apps to access the wallpaper. Without said permission ZimLX might crash or show unexpected behaviours.</string>
     <string name="disable_popup">Don\'t show again</string>
 
     <string name="backups">Backups</string>
@@ -528,7 +528,7 @@
     <string name="restore_failed">Restore failed</string>
     <string name="restore_read_meta_fail">Invalid backup file</string>
     <string name="backup_share_title">Share backup</string>
-    <string name="backup_share_text">Lawnchair backup file</string>
+    <string name="backup_share_text">ZimLX backup file</string>
     <string name="read_external_storage_required">Storage permission is required to create backup</string>
     <string name="local_backups">Local backups</string>
     <string name="backup_location_device_storage">Device storage</string>
@@ -542,7 +542,7 @@
     <string name="pref_category_drawer">Drawer</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Miscellaneous</string>
-    <string name="blur_oom">Lawnchair ran out of memory trying to blur your wallpaper! Lowering the wallpaper resoultion could possibly fix this.</string>
+    <string name="blur_oom">ZimLX ran out of memory trying to blur your wallpaper! Lowering the wallpaper resoultion could possibly fix this.</string>
     <string name="legacy_backup">Legacy backup file</string>
 
     <!-- About screen -->
@@ -569,7 +569,7 @@
     <string name="about_role_special_snowflake">PR Manager / Moderator</string>
     <string name="about_role_mod_support">Moderator / Support</string>
     <string name="about_role_family_member">Family Member</string>
-    <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the Lawnchair project.</string>
+    <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the ZimLX project.</string>
     <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
     <string name="about_bio_recoded">Mild coder and graphics designer.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>
@@ -664,5 +664,13 @@
     <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
     <string name="contributors">Contributors</string>
     <string name="changelog">Changelog</string>
+    <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_summary__language">Change language of this app.</string>
+    <string name="pref_title__language">Language</string>
 
+    <string name="choose_new_icon">Choose a new icon</string>
+    <string name="open_icon_theme">Open an icon theme</string>
+    <string name="download_icon_theme">Download new icon theme</string>
+    <string name="button_apply">Apply</string>
+    <string name="edit_icon">Edit Icon</string>
 </resources>

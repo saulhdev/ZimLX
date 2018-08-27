@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d accesos directos y %2$d notificaciones para %3$s</string>
     <string name="notifications_header">Notificaciones</string>
     <string name="widgets_bottom_sheet_title">Widgets de %1$s</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Acerca de</string>
-    <string name="about_pref_summary">Conoce acerca del equipo de Lawnchair</string>
+    <string name="about_pref_summary">Conoce acerca del equipo de ZimLX</string>
     <string name="changelog_title">Registro de cambios de la build #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Pack de Iconos</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Widgets de ancho completo</string>
     <string name="full_width_widgets_pref_summary">Permitir a los widgets mostrarse sobre el ancho completo</string>
     <string name="notification_access_pref_title">Insignia en notificaciones y vista previa</string>
-    <string name="notification_access_pref_summary">Deberá permitir a Lawnchair el acceso a notificaciones para poder habilitar esta función</string>
+    <string name="notification_access_pref_summary">Deberá permitir a ZimLX el acceso a notificaciones para poder habilitar esta función</string>
     <string name="general_pref_title">Escritorio</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">Cajón de aplicaciones</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Personaliza tu cajón de aplicaciones</string>
     <string name="pixel_ui_pref_summary">Aplicar temas a elementos varios</string>
     <string name="backup_pref_title">Copia de seguridad</string>
-    <string name="behavior_pref_summary">Cambiar el comportamiento de Lawnchair</string>
+    <string name="behavior_pref_summary">Cambiar el comportamiento de ZimLX</string>
     <string name="backup_pref_summary">Copia de seguridad de tu base de datos y ajustes</string>
     <string name="debug_pref_summary">Reiniciar o reconstruir la base de datos de iconos</string>
     <string name="show_pixel_bar_pref_title">Mostrar la barra superior al estilo Pixel</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Usar iconos al estilo Pixel</string>
     <string name="pixel_style_icons_pref_summary">Si esta opción está habilitada, se utilizarán iconos circulares siempre que sea posible</string>
     <string name="show_google_now_tab_pref_title">Mostrar página de Google Now</string>
-    <string name="restart_lawnchair_pref_title">Reiniciar Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Puede ser útil si algunos ajustes no se aplican correctamente</string>
+    <string name="restart_ZimLX_pref_title">Reiniciar ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Puede ser útil si algunos ajustes no se aplican correctamente</string>
     <string name="rebuild_icondb_pref_title">Reconstruir la base de datos de iconos</string>
     <string name="pinch_to_overview_pref_title">Pellizcar para vista general</string>
     <string name="pinch_to_overview_pref_summary">Pellizcar en la pantalla principal para abrir la vista general</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Importar base de datos</string>
     <string name="export_prefs_title">Exportar configuración</string>
     <string name="import_prefs_title">Importar configuración</string>
-    <string name="notification_listener_label">Lawnchair - Insignia en notificaciones</string>
-    <string name="color_extraction_label">Lawnchair - Extracción de colores</string>
+    <string name="notification_listener_label">ZimLX - Insignia en notificaciones</string>
+    <string name="color_extraction_label">ZimLX - Extracción de colores</string>
     <string name="test_title">Prueba</string>
     <string name="visibility">Visibilidad</string>
     <string name="default_text">Por defecto</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed no está habilitado</string>
     <string name="lawnfeed_not_enabled">Parece que estás intentando abrir la página de Google Now, pero no has activado la opción en Ajustes/Comportamiento.\n\n¿Quieres activarla ahora?</string>
     <string name="lawnfeed_outdated_title">Actualización de Lawnfeed requerida</string>
-    <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de Lawnchair.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
+    <string name="lawnfeed_outdated">Una nueva versión de Lawnfeed es necesaria para que funcione con esta versión de ZimLX.\n\nAntes de instalar la actualización, probablemente necesitará desinstalar la versión actual de Lawnfeed.\n\n¿Desea descargarla ahora?</string>
     <string name="title_storage_permission_required">Permiso de almacenamiento requerido</string>
-    <string name="content_storage_permission_required">En Android 8.1 y versiones superiores, se requiere permiso de almacenamiento para que las aplicaciones accedan al fondo de pantalla. Sin dicho permiso Lawnchair podría bloquearse o mostrar comportamientos inesperados.</string>
+    <string name="content_storage_permission_required">En Android 8.1 y versiones superiores, se requiere permiso de almacenamiento para que las aplicaciones accedan al fondo de pantalla. Sin dicho permiso ZimLX podría bloquearse o mostrar comportamientos inesperados.</string>
     <string name="disable_popup">No volver a mostrar</string>
     <string name="backups">Copias de seguridad</string>
     <string name="new_backup">Crear</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Error en la restauración</string>
     <string name="restore_read_meta_fail">Copia de seguridad no válida</string>
     <string name="backup_share_title">Compartir copia de seguridad</string>
-    <string name="backup_share_text">Archivo de copia de seguridad de Lawnchair</string>
+    <string name="backup_share_text">Archivo de copia de seguridad de ZimLX</string>
     <string name="read_external_storage_required">Se requiere permiso de almacenamiento para crear la copia de seguridad</string>
     <string name="local_backups">Copias de seguridad locales</string>
     <string name="backup_location_device_storage">Almacenamiento del dispositivo</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Cajón de Aplicaciones</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Varios</string>
-    <string name="blur_oom">¡Lawnchair agotó la memoria intentando desenfocar tu fondo de pantalla! Bajar la resolución del fondo de pantalla podría solucionar este problema.</string>
+    <string name="blur_oom">¡ZimLX agotó la memoria intentando desenfocar tu fondo de pantalla! Bajar la resolución del fondo de pantalla podría solucionar este problema.</string>
     <string name="legacy_backup">Copia de seguridad Legacy</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Licencias de código abierto</string>
@@ -488,7 +488,7 @@
     <string name="about_role_special_snowflake">Gerente de Relaciones Públicas / Moderador</string>
     <string name="about_role_mod_support">Moderador / Soporte</string>
     <string name="about_role_family_member">Familiar</string>
-    <string name="about_bio_deletescape">Desarrollador Android &amp; entusiasta, ama los memes (demasiado en realidad). Fundador del proyecto Lawnchair.</string>
+    <string name="about_bio_deletescape">Desarrollador Android &amp; entusiasta, ama los memes (demasiado en realidad). Fundador del proyecto ZimLX.</string>
     <string name="about_bio_divadsn">18 años de edad, convierten pizza y cafeína en código. Anteriormente también conocido como Codebucket.</string>
     <string name="about_bio_recoded">Programador y diseñador.</string>
     <string name="about_bio_josh">Diseñador gráfico independiente.</string>

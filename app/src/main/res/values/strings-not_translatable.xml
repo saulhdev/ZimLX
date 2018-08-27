@@ -26,6 +26,15 @@
     <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
     <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
     <string name="app_contribution_info_url" translatable="false">https://github.com/otakuhqz/zimlx/blob/master/README.md#contributions</string>
+    <string name="pref_title__minibar" translatable="false">@string/minibar</string>
+    <string name="pref_title__minibar_background_color" translatable="false">@string/minibar</string>
+    <string name="pref_key__minibar" translatable="false">pref_key__minibar</string>
+    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
+    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <string name="pref_key__minibar_background_color" translatable="false">pref_key__minibar_background_color</string>
 
+    <!-- PREFERENCES ADVANCED-->
+    <string name="pref_key__language" translatable="false">pref_key__language</string>
+    <string name="pref_key__backup" translatable="false">pref_key__backup</string>
 
 </resources>

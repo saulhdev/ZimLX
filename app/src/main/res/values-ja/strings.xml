@@ -240,9 +240,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d のショートカットと %3$s の %2$d 通知</string>
     <string name="notifications_header">通知</string>
     <string name="widgets_bottom_sheet_title">%1$s ウィジェット</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">アプリについて</string>
-    <string name="about_pref_summary">Lawnchair チームについてもっと知りましょう</string>
+    <string name="about_pref_summary">ZimLX チームについてもっと知りましょう</string>
     <string name="changelog_title">ビルド #%d のための変更履歴</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">アイコンパック</string>
@@ -275,7 +275,7 @@
     <string name="full_width_width_widgets_pref_title">全幅ウィジェット</string>
     <string name="full_width_widgets_pref_summary">ウィジェットがパディングなしで幅全体にまたがることを許可する</string>
     <string name="notification_access_pref_title">通知バッジとプレビュー</string>
-    <string name="notification_access_pref_summary">Lawnchairがこの機能を有効にするために通知にアクセスできるようにする</string>
+    <string name="notification_access_pref_summary">ZimLXがこの機能を有効にするために通知にアクセスできるようにする</string>
     <string name="general_pref_title">デスクトップ</string>
     <string name="dock_pref_title">ドック</string>
     <string name="app_drawer_pref_title">アプリドロワー</string>
@@ -287,7 +287,7 @@
     <string name="app_drawer_pref_summary">アプリドロワーをカスタマイズします</string>
     <string name="pixel_ui_pref_summary">Pixel Launcherの特徴的な機能を有効にします</string>
     <string name="backup_pref_title">バックアップとリストア</string>
-    <string name="behavior_pref_summary">Lawnchairの動作設定を変更します</string>
+    <string name="behavior_pref_summary">ZimLXの動作設定を変更します</string>
     <string name="backup_pref_summary">データベースと設定をバックアップ</string>
     <string name="debug_pref_summary">再起動またはアイコンデータベースの再構築</string>
     <string name="show_pixel_bar_pref_title">Pixelのトップバーを表示する</string>
@@ -299,8 +299,8 @@
     <string name="pixel_style_icons_pref_title">Pixel アイコンを使用する</string>
     <string name="pixel_style_icons_pref_summary">有効になっている場合は可能な限り円形のアイコンが使用されます</string>
     <string name="show_google_now_tab_pref_title">Google Now ページを表示する</string>
-    <string name="restart_lawnchair_pref_title"> Lawnchair を再起動</string>
-    <string name="restart_lawnchair_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
+    <string name="restart_ZimLX_pref_title"> ZimLX を再起動</string>
+    <string name="restart_ZimLX_pref_summary">一部の設定が正しく適用されない場合に役立ちます</string>
     <string name="rebuild_icondb_pref_title">アイコンデータベースを再構築する</string>
     <string name="pinch_to_overview_pref_title">概要にピンチ</string>
     <string name="pinch_to_overview_pref_summary">ホーム画面をピンチして概要を開きます</string>
@@ -318,8 +318,8 @@
     <string name="import_db_title">データベース</string>
     <string name="export_prefs_title">設定</string>
     <string name="import_prefs_title">設定</string>
-    <string name="notification_listener_label">Lawnchair - 通知バッジ</string>
-    <string name="color_extraction_label">Lawnchair - 色の抽出</string>
+    <string name="notification_listener_label">ZimLX - 通知バッジ</string>
+    <string name="color_extraction_label">ZimLX - 色の抽出</string>
     <string name="test_title">テスト</string>
     <string name="visibility">可視性</string>
     <string name="default_text">デフォルト</string>
@@ -417,9 +417,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeedが有効になっていません</string>
     <string name="lawnfeed_not_enabled">Google Now ページを開こうとしましたが、動作設定でこのオプションが有効になっていません。\n\n今すぐ有効にしますか？</string>
     <string name="lawnfeed_outdated_title">Lawnfeedの更新が必要です</string>
-    <string name="lawnfeed_outdated">このバージョンのLawnchairを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
+    <string name="lawnfeed_outdated">このバージョンのZimLXを使用するには、新しいバージョンのLawnfeedが必要です。\n\nアップデートをインストールする前に、現在のバージョンのLawnfeedをアンインストールする必要があります。\n\n今すぐダウンロードしますか？</string>
     <string name="title_storage_permission_required">ストレージへのアクセス許可</string>
-    <string name="content_storage_permission_required">Android 8.1以上ではアプリで壁紙を設定する時にストレージへのアクセス許可が必要です。アクセス許可をしていない場合、Lawnchairがクラッシュしたり予期しない動作をします。</string>
+    <string name="content_storage_permission_required">Android 8.1以上ではアプリで壁紙を設定する時にストレージへのアクセス許可が必要です。アクセス許可をしていない場合、ZimLXがクラッシュしたり予期しない動作をします。</string>
     <string name="disable_popup">今後表示しない</string>
     <string name="backups">バックアップ</string>
     <string name="new_backup">バックアップを作成</string>
@@ -449,7 +449,7 @@
     <string name="restore_failed">バックアップから復元に失敗しました</string>
     <string name="restore_read_meta_fail">バックアップファイルが無効です</string>
     <string name="backup_share_title">共有名</string>
-    <string name="backup_share_text">Lawnchairバックアップファイル</string>
+    <string name="backup_share_text">ZimLXバックアップファイル</string>
     <string name="read_external_storage_required">バックアップを作成するにはストレージへのアクセス許可が必要です</string>
     <string name="local_backups">ローカルバックアップ</string>
     <string name="backup_location_device_storage">Documentsフォルダー</string>
@@ -462,7 +462,7 @@
     <string name="pref_category_drawer">ドロワー</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">その他</string>
-    <string name="blur_oom">Lawnchairはメモリー不足の為のため壁紙にぼかしを適用出来ません！　壁紙の解像度を下げると解決される可能性があります。</string>
+    <string name="blur_oom">ZimLXはメモリー不足の為のため壁紙にぼかしを適用出来ません！　壁紙の解像度を下げると解決される可能性があります。</string>
     <string name="legacy_backup">旧バージョン式バックアップ ファイル</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">オープンソース・ライセンス</string>
@@ -488,5 +488,5 @@
     <string name="about_role_mod_support">仲介者 / サポート</string>
     <string name="about_role_family_member">仲間たち</string>
     <string name="about_bio_deletescape">Android開発者でファンですが、実はちょっとバイオ系の方が好きです。
-Lawnchairプロジェクトの創始者です。</string>
+ZimLXプロジェクトの創始者です。</string>
 </resources>

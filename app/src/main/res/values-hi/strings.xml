@@ -241,7 +241,7 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d शॉर्टकट और %3$s के लिए %2$d सूचना</string>
     <string name="notifications_header">सूचनाएँ</string>
     <string name="widgets_bottom_sheet_title">%1$s विजेट</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">हमारे बारे में</string>
     <string name="about_pref_summary">लॉनचेयर टीम के बारे में जानिए</string>
     <string name="changelog_title">#%d इस बिल्डमें किये गए बदलाव</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">पूर्ण चौड़ाई विजेट</string>
     <string name="full_width_widgets_pref_summary">पैडिंग बिना पूरी चौड़ाई से अधिक अवधि के लिए विजेट की अनुमति दें</string>
     <string name="notification_access_pref_title">अधिसूचना बैज और पूर्वावलोकन</string>
-    <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+    <string name="notification_access_pref_summary">Allow ZimLX to access your notification to enable this features</string>
     <string name="general_pref_title">सामान्य</string>
     <string name="dock_pref_title">डॉक</string>
     <string name="app_drawer_pref_title">एप्लिकेशन ड्रॉअर</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">अपना एप्लिकेशन ड्रॉअर कस्टमाइज़ करें</string>
     <string name="pixel_ui_pref_summary">पिक्सेल लांचर विशेष सुविधाओं को प्रारंभ करें</string>
     <string name="backup_pref_title">बैकअप</string>
-    <string name="behavior_pref_summary">Lawnchair के व्यवहार में परिवर्तन</string>
+    <string name="behavior_pref_summary">ZimLX के व्यवहार में परिवर्तन</string>
     <string name="backup_pref_summary">बैकअप आपके डेटाबेस और सेटिंग्स</string>
     <string name="debug_pref_summary">पुनरारंभ करें या चिह्न डेटाबेस का पुन: निर्माण</string>
     <string name="show_pixel_bar_pref_title">पिक्सेल बार दिखाएँ</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">पिक्सेल आइकोंसका उपयोग करें</string>
     <string name="pixel_style_icons_pref_summary">अगर यह सक्षम हो तो जहा संभव हो गोल आइकोन का उपयोग किया जाएगा</string>
     <string name="show_google_now_tab_pref_title">गूगल नाऊ को दिखाएँ</string>
-    <string name="restart_lawnchair_pref_title">लोवन्चैर को रीस्टार्ट करे</string>
-    <string name="restart_lawnchair_pref_summary">अगर कुछ सेटिंग्स ठीक से लागू नहीं हैं, तो यह उपयोगी हो सकता हैं</string>
+    <string name="restart_ZimLX_pref_title">लोवन्चैर को रीस्टार्ट करे</string>
+    <string name="restart_ZimLX_pref_summary">अगर कुछ सेटिंग्स ठीक से लागू नहीं हैं, तो यह उपयोगी हो सकता हैं</string>
     <string name="rebuild_icondb_pref_title">आइकोन डेटाबेस को पुन: निर्माण करे</string>
     <string name="pinch_to_overview_pref_title">अवलोकन करने के लिए चुटकी भरे</string>
     <string name="pinch_to_overview_pref_summary">अवलोकन को खोलने के लिए होम स्क्रीन पर चुटकी भरे</string>

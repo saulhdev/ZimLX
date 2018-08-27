@@ -52,10 +52,10 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
         ActivityUtils au = new ActivityUtils(getActivity());
         if (isAdded() && preference.hasKey()) {
             switch (keyToStringResId(preference)) {
-                case R.string.pref_key__more_info__app: {
+                /*case R.string.pref_key__more_info__app: {
                     _cu.openWebpageInExternalBrowser(getString(R.string.app_web_url));
                     return true;
-                }
+                }*/
                 case R.string.pref_key__more_info__settings: {
                     au.animateToActivity(SettingsActivity.class, false, 124);
                     return true;

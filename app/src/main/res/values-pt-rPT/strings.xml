@@ -245,9 +245,9 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="shortcuts_menu_with_notifications_description">%1$d atalhos e %2$d notificações para %3$s</string>
     <string name="notifications_header">Notificações</string>
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Acerca</string>
-    <string name="about_pref_summary">Conhecer a equipa Lawnchair</string>
+    <string name="about_pref_summary">Conhecer a equipa ZimLX</string>
     <string name="changelog_title">Alterações da versão #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Pacote de ícones</string>
@@ -280,7 +280,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="full_width_width_widgets_pref_title">Widget grandes</string>
     <string name="full_width_widgets_pref_summary">Permitir que widgets os abranjam toda a largura sem deslocação</string>
     <string name="notification_access_pref_title">Crachás de notificação e pré-visualização</string>
-    <string name="notification_access_pref_summary">Ative o acesso do Lawnchair às notificações para usar esta funcionalidade</string>
+    <string name="notification_access_pref_summary">Ative o acesso do ZimLX às notificações para usar esta funcionalidade</string>
     <string name="general_pref_title">Ecrã inicial</string>
     <string name="dock_pref_title">Doca</string>
     <string name="app_drawer_pref_title">Menu de aplicações</string>
@@ -292,7 +292,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="app_drawer_pref_summary">Personalizar menu de aplicações</string>
     <string name="pixel_ui_pref_summary">Ativar recursos exclusivos do Pixel Launcher</string>
     <string name="backup_pref_title">Backup e restauro</string>
-    <string name="behavior_pref_summary">Alterar comportamento do Lawnchair</string>
+    <string name="behavior_pref_summary">Alterar comportamento do ZimLX</string>
     <string name="backup_pref_summary">Backup e restauro de definições e das bases de dados</string>
     <string name="debug_pref_summary">Reiniciar ou reconstruir base de dados de ícones</string>
     <string name="show_pixel_bar_pref_title">Mostrar barra de pesquisa Pixel</string>
@@ -304,8 +304,8 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="pixel_style_icons_pref_title">Usar ícones estilo Pixel</string>
     <string name="pixel_style_icons_pref_summary">Se ativa, serão usados ícones redondos onde for possível</string>
     <string name="show_google_now_tab_pref_title">Mostrar página Google Now</string>
-    <string name="restart_lawnchair_pref_title">Reiniciar Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Pode ser útil se algumas definições não forem aplicadas corretamente</string>
+    <string name="restart_ZimLX_pref_title">Reiniciar ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Pode ser útil se algumas definições não forem aplicadas corretamente</string>
     <string name="rebuild_icondb_pref_title">Reconstruir a Base de Dados de Ícones</string>
     <string name="pinch_to_overview_pref_title">Apertar para visão geral</string>
     <string name="pinch_to_overview_pref_summary">Pinchar no ambiente de trabalho para abrir a vista geral</string>
@@ -323,8 +323,8 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="import_db_title">Base de dados</string>
     <string name="export_prefs_title">Definições</string>
     <string name="import_prefs_title">Definições</string>
-    <string name="notification_listener_label">Lawnchair - crachás de notificação</string>
-    <string name="color_extraction_label">Lawnchair - extração de cor</string>
+    <string name="notification_listener_label">ZimLX - crachás de notificação</string>
+    <string name="color_extraction_label">ZimLX - extração de cor</string>
     <string name="test_title">Testar</string>
     <string name="visibility">Visibilidade</string>
     <string name="default_text">Predefinição</string>
@@ -422,9 +422,9 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="lawnfeed_not_enabled_title">Lawnfeed não está ativado</string>
     <string name="lawnfeed_not_enabled">Parece que está a tentar abrir a página do Google Now, mas esta opção não está ativada nas definições de comportamento.\n\nAtivar agora?</string>
     <string name="lawnfeed_outdated_title">Requer atualização de Lawnfeed</string>
-    <string name="lawnfeed_outdated">Necessita de instalar uma nova versão Lawnfeed para poder trabalhar com esta versão do Lawnchair.\n\nPode ser necessário desinstalar a versão atual para poder instalar a nova.\n\nDeseja descarregar agora a atualização?</string>
+    <string name="lawnfeed_outdated">Necessita de instalar uma nova versão Lawnfeed para poder trabalhar com esta versão do ZimLX.\n\nPode ser necessário desinstalar a versão atual para poder instalar a nova.\n\nDeseja descarregar agora a atualização?</string>
     <string name="title_storage_permission_required">Necessita da permissão Armazenamento</string>
-    <string name="content_storage_permission_required">No Android 8.1 e acima, necessita da permissão Armazenamento para poder aceder ao papel de parede. Sem esta permissão, o Lawnchair pode apresentar comportamentos indesejados.</string>
+    <string name="content_storage_permission_required">No Android 8.1 e acima, necessita da permissão Armazenamento para poder aceder ao papel de parede. Sem esta permissão, o ZimLX pode apresentar comportamentos indesejados.</string>
     <string name="disable_popup">Não voltar a mostrar</string>
     <string name="backups">Backups</string>
     <string name="new_backup">Criar</string>
@@ -454,7 +454,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="restore_failed">Erro ao restaurar</string>
     <string name="restore_read_meta_fail">Ficheiro inválido</string>
     <string name="backup_share_title">Partilhar backup</string>
-    <string name="backup_share_text">Ficheiro de backup do Lawnchair</string>
+    <string name="backup_share_text">Ficheiro de backup do ZimLX</string>
     <string name="read_external_storage_required">Necessita da permissão Armazenamento para criar o backup</string>
     <string name="local_backups">Backups locais</string>
     <string name="backup_location_device_storage">Armazenamento do dispositivo</string>
@@ -467,7 +467,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="pref_category_drawer">Menu</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Outras</string>
-    <string name="blur_oom">Lawnchair ficou sem memória a tentar desfocar o papel de parede! Pode tentar baixar a resolução para ver se resulta.</string>
+    <string name="blur_oom">ZimLX ficou sem memória a tentar desfocar o papel de parede! Pode tentar baixar a resolução para ver se resulta.</string>
     <string name="legacy_backup">Ficheiro backup legado</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Licenças Open Source</string>
@@ -492,7 +492,7 @@ Pode removê-lo ou pesquisar a aplicação e instalá-la manualmente.    </strin
     <string name="about_role_special_snowflake">Gestor de PR/Moderador</string>
     <string name="about_role_mod_support">Moderador/Suporte</string>
     <string name="about_role_family_member">Membro da família</string>
-    <string name="about_bio_deletescape">Programador e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto Lawnchair.</string>
+    <string name="about_bio_deletescape">Programador e entusiasta de sistemas Android, adora memes (demasiado). Criador do projeto ZimLX.</string>
     <string name="about_bio_divadsn">Com 118 anos, transforma cafeína e piza em código. Também conhecido como Codebucket.</string>
     <string name="about_bio_recoded">Programador e designer.</string>
     <string name="about_bio_josh">Designer como trabalhador independente.</string>

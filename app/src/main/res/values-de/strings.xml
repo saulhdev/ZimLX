@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d Verknüpfungen und %2$d Benachrichtigungen für %3$s</string>
     <string name="notifications_header">Benachrichtigungen</string>
     <string name="widgets_bottom_sheet_title">%1$s Widgets</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Über</string>
-    <string name="about_pref_summary">Lerne das Lawnchair-Team kennen</string>
+    <string name="about_pref_summary">Lerne das ZimLX-Team kennen</string>
     <string name="changelog_title">Changelog für Build #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Iconpack</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Widgets mit voller Breite</string>
     <string name="full_width_widgets_pref_summary">Widgets erlauben auf die volle Breite vergrößert zu werden</string>
     <string name="notification_access_pref_title">Benachrichtigungsanzeige und -vorschau</string>
-    <string name="notification_access_pref_summary">Für diese Funktion benötigt Lawnchair Zugriff auf Benachrichtigungen</string>
+    <string name="notification_access_pref_summary">Für diese Funktion benötigt ZimLX Zugriff auf Benachrichtigungen</string>
     <string name="general_pref_title">Startbildschirm</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">App-Liste</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Personalisiere deine App-Liste</string>
     <string name="pixel_ui_pref_summary">Passe das Design diverser Elemente an</string>
     <string name="backup_pref_title">Sicherung &amp; Wiederherstellung</string>
-    <string name="behavior_pref_summary">Ändere das Verhalten von Lawnchair</string>
+    <string name="behavior_pref_summary">Ändere das Verhalten von ZimLX</string>
     <string name="backup_pref_summary">Sichere deine Datenbank und die Einstellungen</string>
     <string name="debug_pref_summary">Starte oder bilde die Icon-Datenbank neu</string>
     <string name="show_pixel_bar_pref_title">Pixel-Leiste anzeigen</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Pixel-Icons verwenden</string>
     <string name="pixel_style_icons_pref_summary">Wenn möglich runde Icons verwenden</string>
     <string name="show_google_now_tab_pref_title">Google Now-Seite anzeigen</string>
-    <string name="restart_lawnchair_pref_title">Lawnchair neu starten</string>
-    <string name="restart_lawnchair_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
+    <string name="restart_ZimLX_pref_title">ZimLX neu starten</string>
+    <string name="restart_ZimLX_pref_summary">Hilfreich, wenn Einstellungen nicht korrekt angewendet wurden</string>
     <string name="rebuild_icondb_pref_title">Icon-Datenbank neu generieren</string>
     <string name="pinch_to_overview_pref_title">Zoomgeste für Übersicht</string>
     <string name="pinch_to_overview_pref_summary">Zoomgeste auf dem Startbildschirm öffnet die Übersicht</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Datenbank</string>
     <string name="export_prefs_title">Einstellungen</string>
     <string name="import_prefs_title">Einstellungen</string>
-    <string name="notification_listener_label">Lawnchair-Benachrichtigungsplaketten</string>
-    <string name="color_extraction_label">Lawnchair-Farbextraktion</string>
+    <string name="notification_listener_label">ZimLX-Benachrichtigungsplaketten</string>
+    <string name="color_extraction_label">ZimLX-Farbextraktion</string>
     <string name="test_title">Test</string>
     <string name="visibility">Sichtbarkeit</string>
     <string name="default_text">Standard</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed nicht aktiviert</string>
     <string name="lawnfeed_not_enabled">Es sieht aus, als würdest du versuchen die Google Now-Seite zu öffnen, aber du hast die Option nicht in den Verhaltens-Optionen aktiviert.\n\nMöchtest du sie jetzt aktivieren?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed-Update erforderlich</string>
-    <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von Lawnchair zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
+    <string name="lawnfeed_outdated">Eine neuere Version von Lawnfeed ist erforderlich, um mit dieser Version von ZimLX zu funktionieren.\n\nVor der Installation des Updates müssen Sie wahrscheinlich die aktuelle Version von Lawnfeed deinstallieren.\n\nMöchten sie es jetzt herunterladen?</string>
     <string name="title_storage_permission_required">Speicherzugriff erforderlich</string>
-    <string name="content_storage_permission_required">Auf Android 8.1 und neuer ist Speicherzugriff benötigt für Apps um auf das Hintergrundbild zuzugreifen. Ohne diese Berechtigung kann es sein das Lawnchair abstürzt oder sich unerwartet verhaltet.</string>
+    <string name="content_storage_permission_required">Auf Android 8.1 und neuer ist Speicherzugriff benötigt für Apps um auf das Hintergrundbild zuzugreifen. Ohne diese Berechtigung kann es sein das ZimLX abstürzt oder sich unerwartet verhaltet.</string>
     <string name="disable_popup">Nicht mehr anzeigen</string>
     <string name="backups">Sicherungen</string>
     <string name="new_backup">Erstellen</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Wiederherstellung fehlgeschlagen</string>
     <string name="restore_read_meta_fail">Fehlerhafte Sicherungsdatei</string>
     <string name="backup_share_title">Sicherung teilen</string>
-    <string name="backup_share_text">Lawnchair Sicherungsdatei</string>
+    <string name="backup_share_text">ZimLX Sicherungsdatei</string>
     <string name="read_external_storage_required">Speicherzugriff ist notwendig um eine Sicherung zu erstellen</string>
     <string name="local_backups">Lokale Sicherungen</string>
     <string name="backup_location_device_storage">Gerätespeicher</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Ordner</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Verschiedenes</string>
-    <string name="blur_oom">Lawnchair hat wegen der Unschärfe deine Hintergrundbildes nicht mehr genug freien Speicher! Möglichweise kannst du durch eine Reduzierung der Auflösung das Problem beheben.</string>
+    <string name="blur_oom">ZimLX hat wegen der Unschärfe deine Hintergrundbildes nicht mehr genug freien Speicher! Möglichweise kannst du durch eine Reduzierung der Auflösung das Problem beheben.</string>
     <string name="legacy_backup">Sicherungsdatei (alt)</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Open Source-Lizenzen</string>

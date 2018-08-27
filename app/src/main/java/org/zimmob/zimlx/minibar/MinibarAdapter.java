@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.viewutil;
+package org.zimmob.zimlx.minibar;
 
 import android.content.Context;
 import android.view.LayoutInflater;

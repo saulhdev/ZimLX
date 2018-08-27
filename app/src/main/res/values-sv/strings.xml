@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d genvägar och %2$d aviseringar för %3$s</string>
     <string name="notifications_header">Aviseringar</string>
     <string name="widgets_bottom_sheet_title">%1$s widgetar</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Mer om</string>
-    <string name="about_pref_summary">Lär känna Lawnchair-teamet</string>
+    <string name="about_pref_summary">Lär känna ZimLX-teamet</string>
     <string name="changelog_title">Ändringar för version #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Ikonpaket</string>
@@ -274,7 +274,7 @@
     <string name="full_width_width_widgets_pref_title">Full bredd för widgetar</string>
     <string name="full_width_widgets_pref_summary">Tillåt widgetar att sträcka sig över hela bredden utan spaltfyllnad</string>
     <string name="notification_access_pref_title">Aviseringsprickar och förhandsgranskning</string>
-    <string name="notification_access_pref_summary">Tillåt Lawnchair att komma åt dina aviseringar för att aktivera denna funktion</string>
+    <string name="notification_access_pref_summary">Tillåt ZimLX att komma åt dina aviseringar för att aktivera denna funktion</string>
     <string name="general_pref_title">Allmänt</string>
     <string name="dock_pref_title">Docka</string>
     <string name="app_drawer_pref_title">Applista</string>
@@ -286,7 +286,7 @@
     <string name="app_drawer_pref_summary">Anpassa applistan</string>
     <string name="pixel_ui_pref_summary">Aktivera exklusiva funktioner från Översikt för Pixel</string>
     <string name="backup_pref_title">Säkerhetskopia</string>
-    <string name="behavior_pref_summary">Ändra beteendet för Lawnchair</string>
+    <string name="behavior_pref_summary">Ändra beteendet för ZimLX</string>
     <string name="backup_pref_summary">Säkerhetskopiera din databas och inställningar</string>
     <string name="debug_pref_summary">Starta om eller återskapa ikondatabasen</string>
     <string name="show_pixel_bar_pref_title">Visa övre Pixelrad</string>
@@ -296,8 +296,8 @@
     <string name="pixel_style_icons_pref_title">Använd Pixel ikoner</string>
     <string name="pixel_style_icons_pref_summary">När aktiverad kommer cirkulära ikoner användas där möjligt</string>
     <string name="show_google_now_tab_pref_title">Visa Google-appen</string>
-    <string name="restart_lawnchair_pref_title">Starta om Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
+    <string name="restart_ZimLX_pref_title">Starta om ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Kan vara användbart om vissa inställningar inte tillämpas korrekt</string>
     <string name="rebuild_icondb_pref_title">Återskapa ikondatabasen</string>
     <string name="pinch_to_overview_pref_title">Nyp för översikt</string>
     <string name="pinch_to_overview_pref_summary">Nyp på startskärmen för att öppna översikten</string>
@@ -315,8 +315,8 @@
     <string name="import_db_title">Databas</string>
     <string name="export_prefs_title">Inställningar</string>
     <string name="import_prefs_title">Importera inställningar</string>
-    <string name="notification_listener_label">Lawnchair - aviseringsprickar</string>
-    <string name="color_extraction_label">Lawnchair - Färgutvinning</string>
+    <string name="notification_listener_label">ZimLX - aviseringsprickar</string>
+    <string name="color_extraction_label">ZimLX - Färgutvinning</string>
     <string name="test_title">Test</string>
     <string name="visibility">Synlighet</string>
     <string name="default_text">Standard</string>
@@ -410,7 +410,7 @@
     <!-- Strings for popup dialogs -->
     <string name="lawnfeed_not_enabled">Det ser ut som du försöker öppna sidan Google Nu, men du inte har aktiverat alternativet i beteende inställningar.\n\nVill aktivera det nu?</string>
     <string name="lawnfeed_outdated_title">Uppdatering av Lawnfeed krävs</string>
-    <string name="lawnfeed_outdated">En nyare version av Lawnfeed krävs för att fungera med denna versionen av Lawnchair.\n\nInnan uppdateringen installeras behöver du förmodligen avinstallera nuvarande version av Lawnfeed.\n\nVill du ladda ner den nu?</string>
+    <string name="lawnfeed_outdated">En nyare version av Lawnfeed krävs för att fungera med denna versionen av ZimLX.\n\nInnan uppdateringen installeras behöver du förmodligen avinstallera nuvarande version av Lawnfeed.\n\nVill du ladda ner den nu?</string>
     <string name="disable_popup">Visa inte igen</string>
     <!-- Preference Category Pixel Searchbar Title -->
     <!-- Preference Category Icons Title -->

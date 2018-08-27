@@ -243,7 +243,7 @@ Waitin\' t\' install</string>
     <string name="shortcuts_menu_with_notifications_description">%1$d swashbuckles and %2$d eyepatches for %3$s</string>
     <string name="notifications_header">Ravens</string>
     <string name="widgets_bottom_sheet_title">%1$s flags</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">\'Bout</string>
     <string name="about_pref_summary">Explore \'bout th\' crew</string>
     <string name="changelog_title">Log o\' changes for build #%d</string>
@@ -302,9 +302,9 @@ Waitin\' t\' install</string>
     <string name="pixel_style_icons_pref_title">Use pixel treasures</string>
     <string name="pixel_style_icons_pref_summary">Round stuff \'nd things</string>
     <string name="show_google_now_tab_pref_title">Th\' Google ship</string>
-    <string name="restart_lawnchair_pref_title">lets do it again mate
+    <string name="restart_ZimLX_pref_title">lets do it again mate
 </string>
-    <string name="restart_lawnchair_pref_summary">Use this if yer\' settin\'s aren\'t stickin\'</string>
+    <string name="restart_ZimLX_pref_summary">Use this if yer\' settin\'s aren\'t stickin\'</string>
     <string name="rebuild_icondb_pref_title">Rebuild Database o\' Icon</string>
     <string name="pinch_to_overview_pref_title">Climb the crows nest</string>
     <string name="pinch_to_overview_pref_summary">Pinch yee screen to see the horizon</string>
@@ -322,8 +322,8 @@ Waitin\' t\' install</string>
     <string name="import_db_title">Base o\' th\' data</string>
     <string name="export_prefs_title">Changin\' stuff pannel</string>
     <string name="import_prefs_title">Changin\' stuff pannel</string>
-    <string name="notification_listener_label">Lawnchair - Black spot icons</string>
-    <string name="color_extraction_label">Lawnchair - Color plundrin\'</string>
+    <string name="notification_listener_label">ZimLX - Black spot icons</string>
+    <string name="color_extraction_label">ZimLX - Color plundrin\'</string>
     <string name="test_title">Test</string>
     <string name="visibility">How well yee can see</string>
     <string name="default_text">Ye Basics</string>
@@ -420,7 +420,7 @@ Waitin\' t\' install</string>
     <!-- Strings for popup dialogs -->
     <string name="lawnfeed_not_enabled_title">Lawnfeed ain\'t here me hearty</string>
     <string name="lawnfeed_outdated_title">Lawnfeed needs to be worked on</string>
-    <string name="lawnfeed_outdated">A newer version o\' Lawnfeed be required in order t\' duty wit\' this version o\' Lawnchair.\n\nBefore installing thar update ye will probably need t\' uninstall thar current version o\' Lawnfeed.\n\nDo ye want t\' download it now?</string>
+    <string name="lawnfeed_outdated">A newer version o\' Lawnfeed be required in order t\' duty wit\' this version o\' ZimLX.\n\nBefore installing thar update ye will probably need t\' uninstall thar current version o\' Lawnfeed.\n\nDo ye want t\' download it now?</string>
     <string name="title_storage_permission_required">Let me plunder ye\' storage</string>
     <string name="content_storage_permission_required">On Android 8.1 and up th\' storage permis\'n be a must fer\' apps to touch ye, paint. Without said permis\'n ye may crash into isles.</string>
     <string name="disable_popup">Go away you scurvy dog</string>

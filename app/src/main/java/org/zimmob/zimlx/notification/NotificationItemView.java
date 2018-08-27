@@ -123,7 +123,6 @@ public class NotificationItemView extends PopupItemView {
         return animations;
     }
 
-
     public void updateHeader(int notificationCount, @Nullable IconPalette palette) {
         mHeaderCount.setText(notificationCount <= 1 ? "" : String.valueOf(notificationCount));
         if (palette != null) {

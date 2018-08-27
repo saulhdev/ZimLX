@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d snelkoppelingen en %2$d notificaties voor %3$s</string>
     <string name="notifications_header">Notificaties</string>
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Over</string>
-    <string name="about_pref_summary">Leer het Lawnchair-team kennen</string>
+    <string name="about_pref_summary">Leer het ZimLX-team kennen</string>
     <string name="changelog_title">Changelog voor build #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Icoon pakket</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Volledige breedte widgets</string>
     <string name="full_width_widgets_pref_summary">Widgets toestaan de volledige breedte te omvatten</string>
     <string name="notification_access_pref_title">Notificatie icoon en voorvertoning</string>
-    <string name="notification_access_pref_summary">Geef Lawnchair toestemming tot je notificaties om deze functie in te schakelen</string>
+    <string name="notification_access_pref_summary">Geef ZimLX toestemming tot je notificaties om deze functie in te schakelen</string>
     <string name="general_pref_title">Bureaublad</string>
     <string name="dock_pref_title">Favorietenbalk</string>
     <string name="app_drawer_pref_title">App-overzicht</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Pas je app-overzicht aan</string>
     <string name="pixel_ui_pref_summary">Verschillende elementen thematiseren</string>
     <string name="backup_pref_title">Back-up &amp; herstel</string>
-    <string name="behavior_pref_summary">Wijzig het gedrag van Lawnchair</string>
+    <string name="behavior_pref_summary">Wijzig het gedrag van ZimLX</string>
     <string name="backup_pref_summary">Je instellingen back-uppen/herstellen</string>
     <string name="debug_pref_summary">Herstart of herbouw icoon database</string>
     <string name="show_pixel_bar_pref_title">Bovenste Pixel balk tonen</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Gebruik Pixel iconen</string>
     <string name="pixel_style_icons_pref_summary">Wanneer ingeschakeld zullen ronde iconen worden gebruikt waar mogelijk</string>
     <string name="show_google_now_tab_pref_title">Google Now pagina weergeven</string>
-    <string name="restart_lawnchair_pref_title">Lawnchair herstarten</string>
-    <string name="restart_lawnchair_pref_summary">Kan nuttig zijn als sommige instellingen niet goed zijn toegepast</string>
+    <string name="restart_ZimLX_pref_title">ZimLX herstarten</string>
+    <string name="restart_ZimLX_pref_summary">Kan nuttig zijn als sommige instellingen niet goed zijn toegepast</string>
     <string name="rebuild_icondb_pref_title">Icoon database herbouwen</string>
     <string name="pinch_to_overview_pref_title">Knijpen om naar overzicht te gaan</string>
     <string name="pinch_to_overview_pref_summary">Knijpen op het startscherm om het overzicht te openen</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Importeer database</string>
     <string name="export_prefs_title">Instellingen exporteren</string>
     <string name="import_prefs_title">Instellingen importeren</string>
-    <string name="notification_listener_label">Lawnchair - Notificatie icoon</string>
-    <string name="color_extraction_label">Lawnchair - Kleurextractie</string>
+    <string name="notification_listener_label">ZimLX - Notificatie icoon</string>
+    <string name="color_extraction_label">ZimLX - Kleurextractie</string>
     <string name="test_title">Test</string>
     <string name="visibility">Zichtbaarheid</string>
     <string name="default_text">Standaard</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed uitgeschakeld</string>
     <string name="lawnfeed_not_enabled">Het lijkt erop dat je de Google Now pagina wilt openen, maar deze niet hebt ingeschakeld in de gedragsinstellingen.\n\nWil je het nu inschakelen?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed vereist een update</string>
-    <string name="lawnfeed_outdated">Een nieuwe versie van Lawnfeed is vereist om te werken met deze versie van Lawnchair.\n\nVoordat de update van Lawnfeed geïnstalleerd wordt, dien je de huidige versie van Lawnfeed te verwijderen.\n\nWil je de nieuwe versie van Lawnfeed nu downloaden?</string>
+    <string name="lawnfeed_outdated">Een nieuwe versie van Lawnfeed is vereist om te werken met deze versie van ZimLX.\n\nVoordat de update van Lawnfeed geïnstalleerd wordt, dien je de huidige versie van Lawnfeed te verwijderen.\n\nWil je de nieuwe versie van Lawnfeed nu downloaden?</string>
     <string name="title_storage_permission_required">Opslag Toestemming Vereist</string>
-    <string name="content_storage_permission_required">Op Android 8.1 en hoger is de opslag toestemming vereist voor apps om toegang te krijgen tot de achtergrond. Zonder de genoemde toestemming zou Lawnchair vast kunnen lopen of onverwachte gedragingen vertonen.</string>
+    <string name="content_storage_permission_required">Op Android 8.1 en hoger is de opslag toestemming vereist voor apps om toegang te krijgen tot de achtergrond. Zonder de genoemde toestemming zou ZimLX vast kunnen lopen of onverwachte gedragingen vertonen.</string>
     <string name="disable_popup">Niet meer weergeven</string>
     <string name="backups">Back-ups</string>
     <string name="new_backup">Maken</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Herstel mislukt</string>
     <string name="restore_read_meta_fail">Ongeldig back-up bestand</string>
     <string name="backup_share_title">Back-up delen</string>
-    <string name="backup_share_text">Lawnchair back-up bestand</string>
+    <string name="backup_share_text">ZimLX back-up bestand</string>
     <string name="read_external_storage_required">Opslagmachtiging is vereist om back-up te maken</string>
     <string name="local_backups">Lokale back-ups</string>
     <string name="backup_location_device_storage">Apparaat opslag</string>
@@ -461,7 +461,7 @@
     <!-- Preference Category Drawer Title -->
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Diverse</string>
-    <string name="blur_oom">Lawnchair had geen geheugen meer over tijdens het vervagen van uw achtergrond. U kunt proberen de resolutie van de achtergrond verlagen om dit probleem te verhelpen.</string>
+    <string name="blur_oom">ZimLX had geen geheugen meer over tijdens het vervagen van uw achtergrond. U kunt proberen de resolutie van de achtergrond verlagen om dit probleem te verhelpen.</string>
     <string name="legacy_backup">Oudere back-up bestand</string>
     <!-- About screen -->
 </resources>

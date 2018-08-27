@@ -1044,7 +1044,7 @@ public final class Utilities {
                         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
                         settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
 
-                        // Restart Lawnchair to enable Lawnfeed
+                        // Restart ZimLX to enable Lawnfeed
                         LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
                     }
                 })
@@ -1075,7 +1075,7 @@ public final class Utilities {
                     @Override
                     public void onClick(DialogInterface dialogInterface, int i) {
                         // Open website with download link for Lawnfeed
-                        openURLinBrowser(context, "https://lawnchair.info/getlawnfeed.html");
+                        openURLinBrowser(context, "https://ZimLX.info/getlawnfeed.html");
                     }
                 })
                 .setNegativeButton(android.R.string.no, null)

@@ -3,8 +3,8 @@
 
     <Preference
         android:key="kill"
-        android:summary="@string/restart_lawnchair_pref_summary"
-        android:title="@string/restart_lawnchair_pref_title" />
+        android:summary="@string/restart_ZimLX_pref_summary"
+        android:title="@string/restart_ZimLX_pref_title" />
     <Preference
         android:key="rebuild_icondb"
         android:title="@string/rebuild_icondb_pref_title" />

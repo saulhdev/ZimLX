@@ -79,6 +79,7 @@ import android.view.accessibility.AccessibilityManager;
 import android.view.animation.OvershootInterpolator;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Advanceable;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -107,6 +108,7 @@ import org.zimmob.zimlx.iconpack.EditIconActivity;
 import org.zimmob.zimlx.keyboard.CustomActionsPopup;
 import org.zimmob.zimlx.keyboard.ViewGroupFocusHelper;
 import org.zimmob.zimlx.minibar.Minibar;
+import org.zimmob.zimlx.minibar.MinibarAdapter;
 import org.zimmob.zimlx.minibar.SwipeListView;
 import org.zimmob.zimlx.model.WidgetsModel;
 import org.zimmob.zimlx.notification.NotificationListener;
@@ -115,6 +117,7 @@ import org.zimmob.zimlx.popup.PopupContainerWithArrow;
 import org.zimmob.zimlx.popup.PopupDataProvider;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceProvider;
+import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.settings.Settings;
 import org.zimmob.zimlx.shortcuts.DeepShortcutManager;
 import org.zimmob.zimlx.shortcuts.ShortcutKey;
@@ -227,6 +230,9 @@ public class Launcher extends Activity
             }
         }
     };
+
+    private static boolean _consumeNextResume;
+
     /**
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
      * multiple calls to bind the same list.)
@@ -489,7 +495,7 @@ public class Launcher extends Activity
         window.setStatusBarColor(0);
         window.setNavigationBarColor(0);
 
-        initMinibar();
+        //initMinibar();
 
         Settings.init(this);
     }
@@ -498,7 +504,8 @@ public class Launcher extends Activity
         final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
         final ArrayList<String> labels = new ArrayList<>();
         final ArrayList<Integer> icons = new ArrayList<>();
-        /*for (String act : AppSettings.get().getMinibarArrangement()) {
+        AppSettings appSettings = new AppSettings(this);
+        for (String act : appSettings.getMinibarArrangement()) {
             if (act.length() > 1) {
                 Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
                 if (item != null) {
@@ -507,14 +514,13 @@ public class Launcher extends Activity
                     icons.add(item.icon);
                 }
             }
-        }*/
-
+        }
         SwipeListView minibar = findViewById(R.id.minibar);
-        minibar.setAdapter(new org.zimmob.zimlx.viewutil.MinibarAdapter(this, labels, icons));
+        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
         minibar.setOnItemClickListener((parent, view, i, id) -> {
             Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
             if (action == Minibar.Action.DeviceSettings || action == Minibar.Action.LauncherSettings || action == Minibar.Action.EditMinibar) {
-                //consumeNextResume = true;
+                _consumeNextResume = true;
             }
             Minibar.RunAction(action, this);
             if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
@@ -522,9 +528,17 @@ public class Launcher extends Activity
             }
         });
         // frame layout spans the entire side while the minibar container has gaps at the top and bottom
-        //((FrameLayout) minibar.getParent()).setBackgroundColor(AppSettings.get().getMinibarBackgroundColor());
+        ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
+
     }
 
+    private boolean getConsumeNextResume() {
+        return _consumeNextResume;
+    }
+
+    private void setConsumeNextResume(boolean v) {
+        _consumeNextResume = v;
+    }
     private void setScreenOrientation() {
         if (Utilities.getPrefs(this).getEnableScreenRotation()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -1868,6 +1882,7 @@ public class Launcher extends Activity
         showWorkspace(true);
     }
 
+    @SuppressLint("WrongConstant")
     public void onPullDownAction(int pullDownAction) {
         switch (pullDownAction) {
             case FeatureFlags.PULLDOWN_NOTIFICATIONS:
@@ -1884,10 +1899,12 @@ public class Launcher extends Activity
         }
     }
 
-    @SuppressLint("PrivateApi")
+    @SuppressLint({"PrivateApi", "WrongConstant"})
     private void openNotifications() {
         try {
-            Class.forName("android.app.StatusBarManager").getMethod("expandNotificationsPanel").invoke(getSystemService("statusbar"));
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandNotificationsPanel")
+                    .invoke(getSystemService("statusbar"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -1896,7 +1913,9 @@ public class Launcher extends Activity
     @SuppressWarnings("ResourceType")
     public void closeNotifications() {
         try {
-            Class.forName("android.app.StatusBarManager").getMethod("collapsePanels").invoke(getSystemService("statusbar"));
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("collapsePanels")
+                    .invoke(getSystemService("statusbar"));
         } catch (Exception ex) {
             ex.printStackTrace();
         }

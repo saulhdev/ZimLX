@@ -243,9 +243,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d ярлыки и %2$d уведомления для %3$s</string>
     <string name="notifications_header">Уведомления</string>
     <string name="widgets_bottom_sheet_title">%1$s виджетов</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">О программе</string>
-    <string name="about_pref_summary">Узнайте о команде Lawnchair</string>
+    <string name="about_pref_summary">Узнайте о команде ZimLX</string>
     <string name="changelog_title">Изменения в сборке #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Набор значков</string>
@@ -278,7 +278,7 @@
     <string name="full_width_width_widgets_pref_title">Виджеты занимают весь размер</string>
     <string name="full_width_widgets_pref_summary">Разрешить виджетам занимать место без отступов</string>
     <string name="notification_access_pref_title">Значки уведомлений и предварительный просмотр</string>
-    <string name="notification_access_pref_summary">Разрешить Lawnchair доступ к вашим уведомлениям для включения этой функции</string>
+    <string name="notification_access_pref_summary">Разрешить ZimLX доступ к вашим уведомлениям для включения этой функции</string>
     <string name="general_pref_title">Рабочий стол</string>
     <string name="dock_pref_title">Док-бар</string>
     <string name="app_drawer_pref_title">Меню приложений</string>
@@ -290,7 +290,7 @@
     <string name="app_drawer_pref_summary">Настроить меню приложений</string>
     <string name="pixel_ui_pref_summary">Настройка элементов темы</string>
     <string name="backup_pref_title">Резервное копирование</string>
-    <string name="behavior_pref_summary">Изменить поведение Lawnchair</string>
+    <string name="behavior_pref_summary">Изменить поведение ZimLX</string>
     <string name="backup_pref_summary">Резервное копирование базы данных и настроек</string>
     <string name="debug_pref_summary">Перезапустить или создать заново базу данных иконок</string>
     <string name="show_pixel_bar_pref_title">Показать строку поиска Pixel</string>
@@ -302,8 +302,8 @@
     <string name="pixel_style_icons_pref_title">Использовать значки Pixel</string>
     <string name="pixel_style_icons_pref_summary">Когда включено, приложение использует круглые значки, где это возможно</string>
     <string name="show_google_now_tab_pref_title">Показывать страницу Google Now</string>
-    <string name="restart_lawnchair_pref_title">Перезапустить Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
+    <string name="restart_ZimLX_pref_title">Перезапустить ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Может быть полезно, если некоторые параметры не применяются должным образом</string>
     <string name="rebuild_icondb_pref_title">Перестроение базы данных значков</string>
     <string name="pinch_to_overview_pref_title">Щипок для обзора</string>
     <string name="pinch_to_overview_pref_summary">Щипок на главном экране для открытия обзора</string>
@@ -321,8 +321,8 @@
     <string name="import_db_title">База данных</string>
     <string name="export_prefs_title">Настройки</string>
     <string name="import_prefs_title">Настройки</string>
-    <string name="notification_listener_label">Lawnchair - значки уведомлений</string>
-    <string name="color_extraction_label">Lawnchair - извлечение цвета</string>
+    <string name="notification_listener_label">ZimLX - значки уведомлений</string>
+    <string name="color_extraction_label">ZimLX - извлечение цвета</string>
     <string name="test_title">Тест</string>
     <string name="visibility">Видимость</string>
     <string name="default_text">По умолчанию</string>
@@ -420,9 +420,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed не включен</string>
     <string name="lawnfeed_not_enabled">Похоже, вы пытаетесь открыть страницу Google Now, но не включили её в настройках.\n\nХотите включить её прямо сейчас?</string>
     <string name="lawnfeed_outdated_title">Требуется обновление Lawnfeed</string>
-    <string name="lawnfeed_outdated">Для работы с этой версией Lawnchair, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
+    <string name="lawnfeed_outdated">Для работы с этой версией ZimLX, требуется новая версия Lawnfeed.\n\nПеред установкой обновления, вам вероятно будет нужно удалить текущую версию Lawnfeed.\n\nХотите скачать обновление сейчас?</string>
     <string name="title_storage_permission_required">Нужно разрешение на доступ к памяти устройства</string>
-    <string name="content_storage_permission_required">На Android 8.1 и выше для доступа к обоям требуется разрешение на доступ к памяти устройства. Без указанного разрешения Lawnchair может неожиданно завершить работу или показать неожиданное поведение.</string>
+    <string name="content_storage_permission_required">На Android 8.1 и выше для доступа к обоям требуется разрешение на доступ к памяти устройства. Без указанного разрешения ZimLX может неожиданно завершить работу или показать неожиданное поведение.</string>
     <string name="disable_popup">Не показывать снова</string>
     <string name="backups">Резервные копии</string>
     <string name="new_backup">Создать</string>
@@ -452,7 +452,7 @@
     <string name="restore_failed">Не удалось восстановить</string>
     <string name="restore_read_meta_fail">Недопустимый файл резервной копии</string>
     <string name="backup_share_title">Поделиться резервной копией</string>
-    <string name="backup_share_text">Файл резервной копии Lawnchair</string>
+    <string name="backup_share_text">Файл резервной копии ZimLX</string>
     <string name="read_external_storage_required">Для резервного копирования трамбуется разрешение на хранение</string>
     <string name="local_backups">Локальные резервные копии</string>
     <string name="backup_location_device_storage">Память устройства</string>
@@ -465,7 +465,7 @@
     <string name="pref_category_drawer">Меню приложений</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Разное</string>
-    <string name="blur_oom">Произошла ошибка при попытке Lawnchair размыть ваши обои! Уменьшение разрешения обоев могло бы исправить это.</string>
+    <string name="blur_oom">Произошла ошибка при попытке ZimLX размыть ваши обои! Уменьшение разрешения обоев могло бы исправить это.</string>
     <string name="legacy_backup">Устаревший файл резервной копии</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Open Source лицензии</string>
@@ -490,7 +490,7 @@
     <string name="about_role_special_snowflake">PR-менеджер / Модератор</string>
     <string name="about_role_mod_support">Модератор / Поддержка</string>
     <string name="about_role_family_member">Член семьи</string>
-    <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта Lawnchair.</string>
+    <string name="about_bio_deletescape">Android-разработчик и энтузиаст, любит мемы (даже слишком, пожалуй). Основатель проекта ZimLX.</string>
     <string name="about_bio_divadsn">18 лет, превращает кофеин и пиццу в код. Также ранее известный, как Codebucket.</string>
     <string name="about_bio_recoded">Немного кодер и графичский дизайнер.</string>
     <string name="about_bio_josh">Внештатный графический дизайнер.</string>

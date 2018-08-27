@@ -245,9 +245,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d pintasan dan %2$d notifikasi untuk %3$s</string>
     <string name="notifications_header">Notifikasi</string>
     <string name="widgets_bottom_sheet_title">%1$s widget</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Tentang</string>
-    <string name="about_pref_summary">Mengenal tim Lawnchair</string>
+    <string name="about_pref_summary">Mengenal tim ZimLX</string>
     <string name="changelog_title">Catatan perubahan pada tubuh #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Paket Ikon</string>
@@ -280,7 +280,7 @@
     <string name="full_width_width_widgets_pref_title">Widget lebar penuh</string>
     <string name="full_width_widgets_pref_summary">Izinkan widget untuk menjangkau seluruh lebar tanpa bantalan</string>
     <string name="notification_access_pref_title">Pratinjau dan lencana notifikasi</string>
-    <string name="notification_access_pref_summary">Izinkan Lawnchair mengakses notifikasi anda untuk mengaktifkan fitur ini</string>
+    <string name="notification_access_pref_summary">Izinkan ZimLX mengakses notifikasi anda untuk mengaktifkan fitur ini</string>
     <string name="general_pref_title">Desktop</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">Laci Aplikasi</string>
@@ -292,7 +292,7 @@
     <string name="app_drawer_pref_summary">Kustomisasi laci aplikasi anda</string>
     <string name="pixel_ui_pref_summary">Tema elemen yang berbeda</string>
     <string name="backup_pref_title">Mencadangkan &amp; Mengembalikan</string>
-    <string name="behavior_pref_summary">Ubah perilaku Lawnchair</string>
+    <string name="behavior_pref_summary">Ubah perilaku ZimLX</string>
     <string name="backup_pref_summary">Cadangkan\/pulihkan setelan dan database anda</string>
     <string name="debug_pref_summary">Mulai ulang atau membangun kembali database ikon</string>
     <string name="show_pixel_bar_pref_title">Tampilkan bilah atas Pixel</string>
@@ -304,8 +304,8 @@
     <string name="pixel_style_icons_pref_title">Gunakan ikon Pixel</string>
     <string name="pixel_style_icons_pref_summary">Saat diaktifkan ikon bulat akan digunakan bila memungkinkan</string>
     <string name="show_google_now_tab_pref_title">Tampilkan halaman Google Now</string>
-    <string name="restart_lawnchair_pref_title">Mulai ulang Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Dapat membantu jika beberapa setelan tidak diterapkan dengan benar</string>
+    <string name="restart_ZimLX_pref_title">Mulai ulang ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Dapat membantu jika beberapa setelan tidak diterapkan dengan benar</string>
     <string name="rebuild_icondb_pref_title">Membangun kembali database ikon</string>
     <string name="pinch_to_overview_pref_title">Cubit untuk melihat Ikhtisar</string>
     <string name="pinch_to_overview_pref_summary">Cubit di Beranda untuk membuka Ikhtisar</string>
@@ -323,8 +323,8 @@
     <string name="import_db_title">Database</string>
     <string name="export_prefs_title">Setelan</string>
     <string name="import_prefs_title">Impor Setelan</string>
-    <string name="notification_listener_label">Lawnchair - Lencana Notifikasi</string>
-    <string name="color_extraction_label">Lawnchair - Ekstraksi warna</string>
+    <string name="notification_listener_label">ZimLX - Lencana Notifikasi</string>
+    <string name="color_extraction_label">ZimLX - Ekstraksi warna</string>
     <string name="test_title">Tes</string>
     <string name="visibility">Keterlihatan</string>
     <string name="default_text">Standar</string>
@@ -422,9 +422,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed tidak diaktifkan</string>
     <string name="lawnfeed_not_enabled">Sepertinya anda mencoba membuka laman Google Now, namun anda belum mengaktifkan pilihan tersebut di setelan tindakan.\n\nApakah anda ingin mengaktifkannya sekarang?</string>
     <string name="lawnfeed_outdated_title">Dibutuhkan pembaharuan Lawfeed</string>
-    <string name="lawnfeed_outdated">Dibutuhkan versi baru dari Lawnfeed agar dapat berjalan dengan Lawnchair versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
+    <string name="lawnfeed_outdated">Dibutuhkan versi baru dari Lawnfeed agar dapat berjalan dengan ZimLX versi ini.\n\nSebelum memasang pembaruan anda harus mencopot Lawnfeed versi saat ini.\n\nApakah anda ingin mengunduhnya sekarang?</string>
     <string name="title_storage_permission_required">Izin akses penyimpanan diperlukan</string>
-    <string name="content_storage_permission_required">Di Android 8.1 keatas izin penyimpanan diperlukan aplikasi untuk mengakses wallpaper. Tanpa izin Lawnchair mungkin crash atau menunjukkan perilaku tak terduga.</string>
+    <string name="content_storage_permission_required">Di Android 8.1 keatas izin penyimpanan diperlukan aplikasi untuk mengakses wallpaper. Tanpa izin ZimLX mungkin crash atau menunjukkan perilaku tak terduga.</string>
     <string name="disable_popup">Jangan tampilkan lagi</string>
     <string name="backups">Cadangan</string>
     <string name="new_backup">Membuat</string>
@@ -454,7 +454,7 @@
     <string name="restore_failed">Gagal memulihkan</string>
     <string name="restore_read_meta_fail">File cadangan tidak valid</string>
     <string name="backup_share_title">Berbagi cadangan</string>
-    <string name="backup_share_text">Lawnchair file cadangan</string>
+    <string name="backup_share_text">ZimLX file cadangan</string>
     <string name="read_external_storage_required">Izin penyimpanan yang diperlukan untuk membuat cadangan</string>
     <string name="local_backups">Cadangan lokal</string>
     <string name="backup_location_device_storage">Perangkat penyimpanan</string>
@@ -467,7 +467,7 @@
     <string name="pref_category_drawer">Laci</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Lain-lain</string>
-    <string name="blur_oom">Lawnchair kehabisan memori saat berusaha memburamkan wallpaper anda! Menurunkan resolusi wallpaper mungkin bisa memperbaiki ini.</string>
+    <string name="blur_oom">ZimLX kehabisan memori saat berusaha memburamkan wallpaper anda! Menurunkan resolusi wallpaper mungkin bisa memperbaiki ini.</string>
     <string name="legacy_backup">Berkas cadangan lawas</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Lisensi sumber terbuka</string>
@@ -492,7 +492,7 @@
     <string name="about_role_special_snowflake">PR Manager / Moderator</string>
     <string name="about_role_mod_support">Moderator / Pendukung</string>
     <string name="about_role_family_member">Anggota Keluarga</string>
-    <string name="about_bio_deletescape">Pengembang Android &amp; entusias, pecinta memes (sebenarnya sedikit terlalu berlebihan). Penggagas Lawnchair project.</string>
+    <string name="about_bio_deletescape">Pengembang Android &amp; entusias, pecinta memes (sebenarnya sedikit terlalu berlebihan). Penggagas ZimLX project.</string>
     <string name="about_bio_divadsn">18 tahun, mengubah kafein dan pizza menjadi kode. Juga sebelumnya dikenal sebagai Codebucket.</string>
     <string name="about_bio_recoded">Desainer grafis dan coder ringan.</string>
     <string name="about_bio_josh">Desainer grafis freelance.</string>

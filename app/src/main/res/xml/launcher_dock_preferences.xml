@@ -89,7 +89,7 @@
             android:title="@string/hotseat_uses_extracted_colors_pref_title" />
 
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_isHotseatTransparent"
             android:persistent="true"
             android:title="@string/transparent_hotseat_pref_title" />

@@ -3,53 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <android.support.v7.preference.PreferenceCategory
-        android:key="prefCat_desktopQsb"
-        android:title="@string/pref_category_pixel_searchbar">
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="pref_showPixelBar"
-            android:persistent="true"
-            android:title="@string/show_pixel_bar_pref_title" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="pref_enableWhiteGoogleIcon"
-            android:persistent="true"
-            android:title="@string/white_google_icon_pref_title" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_showPixelBar"
-            android:disableDependentsState="true"
-            android:key="pref_fullWidthSearchbar"
-            android:persistent="true"
-            android:title="@string/use_wide_searchbar_pref_title" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:dependency="pref_fullWidthSearchbar"
-            android:key="pref_showSearchPill"
-            android:persistent="true"
-            android:title="@string/show_search_pill_title" />
-
-        <SwitchPreference
-            android:defaultValue="true"
-            android:dependency="pref_fullWidthSearchbar"
-            android:key="pref_showDateOrWeather"
-            android:persistent="true"
-            android:title="@string/show_date_or_weather_title" />
-
-        <SwitchPreference
-            android:defaultValue="false"
-            android:dependency="pref_showPixelBar"
-            android:key="pref_showMic"
-            android:persistent="true"
-            android:title="@string/show_mic_pref_title" />
-
-    </android.support.v7.preference.PreferenceCategory>
-
-    <android.support.v7.preference.PreferenceCategory
         android:key="prefCat_desktopOptions"
         android:title="@string/pref_category_homescreen">
 
@@ -111,6 +64,53 @@
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopQsb"
+        android:title="@string/pref_category_pixel_searchbar">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_showPixelBar"
+            android:persistent="true"
+            android:title="@string/show_pixel_bar_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_enableWhiteGoogleIcon"
+            android:persistent="true"
+            android:title="@string/white_google_icon_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="pref_showPixelBar"
+            android:disableDependentsState="true"
+            android:key="pref_fullWidthSearchbar"
+            android:persistent="true"
+            android:title="@string/use_wide_searchbar_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="pref_fullWidthSearchbar"
+            android:key="pref_showSearchPill"
+            android:persistent="true"
+            android:title="@string/show_search_pill_title" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:dependency="pref_fullWidthSearchbar"
+            android:key="pref_showDateOrWeather"
+            android:persistent="true"
+            android:title="@string/show_date_or_weather_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
+            android:dependency="pref_showPixelBar"
+            android:key="pref_showMic"
+            android:persistent="true"
+            android:title="@string/show_mic_pref_title" />
+
+    </android.support.v7.preference.PreferenceCategory>
+
+    <android.support.v7.preference.PreferenceCategory
         android:key="prefCat_desktopMisc"
         android:title="@string/pref_category_misc">
 
@@ -141,12 +141,6 @@
             android:persistent="true"
             android:summary="@string/center_wallpaper_pref_summary"
             android:title="@string/center_wallpaper_pref_title" />
-
-        <Preference
-            android:key="notification_access"
-            android:summary="@string/notification_access_pref_summary"
-            android:title="@string/notification_access_pref_title">
-            <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
-        </Preference>
     </android.support.v7.preference.PreferenceCategory>
+
 </android.support.v7.preference.PreferenceScreen>

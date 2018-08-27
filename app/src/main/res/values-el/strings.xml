@@ -242,9 +242,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d συντομεύσεις και %2$d ειδοποιήσεις για %3$s</string>
     <string name="notifications_header">Ειδοποιήσεις</string>
     <string name="widgets_bottom_sheet_title">Γραφικό στοιχείο %1$s.</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Σχετικά με</string>
-    <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του Lawnchair</string>
+    <string name="about_pref_summary">Ενημέρωση σχετικά με την ομάδα του ZimLX</string>
     <string name="changelog_title">Αρχείο καταγραφής αλλαγών της έκδοσης #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Πακέτο εικονιδίων</string>
@@ -277,7 +277,7 @@
     <string name="full_width_width_widgets_pref_title">Γραφικά στοιχεία σε πλήρες πλάτος</string>
     <string name="full_width_widgets_pref_summary">Να επιτραπεί στα γραφικά στοιχεία να εκτείνονται σε ολόκληρο το πλάτος χωρίς κενά περιθώρια</string>
     <string name="notification_access_pref_title">Εικονίδια ειδοποιήσεων και προεπισκόπηση</string>
-    <string name="notification_access_pref_summary">Επιτρέψτε στον Lawnchair να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
+    <string name="notification_access_pref_summary">Επιτρέψτε στον ZimLX να αποκτήσει πρόσβαση στης ειδοποιήσεις σας για να ενεργοποιηθεί αυτό το χαρακτηριστικό</string>
     <string name="general_pref_title">Επιφάνεια Εργασίας</string>
     <string name="dock_pref_title">Μπάρα Εφαρμογών</string>
     <string name="app_drawer_pref_title">Συρτάρι Εφαρμογών</string>
@@ -289,7 +289,7 @@
     <string name="app_drawer_pref_summary">Διαμόρφωση του συρταριού εφαρμογών</string>
     <string name="pixel_ui_pref_summary">Παραμετροποίηση διαφόρων στοιχείων του εκκινητή</string>
     <string name="backup_pref_title">Αντίγραφα Ασφαλείας</string>
-    <string name="behavior_pref_summary">Αλλαγή της συμπεριφοράς του Lawnchair</string>
+    <string name="behavior_pref_summary">Αλλαγή της συμπεριφοράς του ZimLX</string>
     <string name="backup_pref_summary">Δημιουργία αντιγράφων ασφαλείας της βάσης δεδομένων και των ρυθμίσεων</string>
     <string name="debug_pref_summary">Επανεκκίνηση ή αναδόμηση της βάσης δεδομένων των εικονιδίων</string>
     <string name="show_pixel_bar_pref_title">Εμφάνιση επάνω μπάρας γραφικών Pixel</string>
@@ -301,8 +301,8 @@
     <string name="pixel_style_icons_pref_title">Χρήση κυκλικών εικονιδίων Pixel</string>
     <string name="pixel_style_icons_pref_summary">Όταν ενεργοποιηθούν τα κυκλικά εικονίδια, θα χρησιμοποιηθούν, όπου είναι δυνατόν</string>
     <string name="show_google_now_tab_pref_title">Εμφάνιση σελίδας Google Now</string>
-    <string name="restart_lawnchair_pref_title">Κάντε επανεκκίνηση του Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
+    <string name="restart_ZimLX_pref_title">Κάντε επανεκκίνηση του ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Μπορεί να είναι χρήσιμη, εάν ορισμένες ρυθμίσεις δεν εφαρμόζονται σωστά</string>
     <string name="rebuild_icondb_pref_title">Αναδόμηση βάσης δεδομένων των εικονιδίων</string>
     <string name="pinch_to_overview_pref_title">Τσιμπήστε για επισκόπηση</string>
     <string name="pinch_to_overview_pref_summary">Τσιμπήστε στην αρχική οθόνη για να ανοίξει η επισκόπηση αρχικών οθονών</string>
@@ -320,8 +320,8 @@
     <string name="import_db_title">Βάσης δεδομένων</string>
     <string name="export_prefs_title">Ρυθμίσεων</string>
     <string name="import_prefs_title">Ρυθμίσεων</string>
-    <string name="notification_listener_label">Εκκινητής Lawnchair - Εικονίδια ειδοποιήσεων</string>
-    <string name="color_extraction_label">Εκκινητής Lawnchair - Εξαγωγή χρώματος</string>
+    <string name="notification_listener_label">Εκκινητής ZimLX - Εικονίδια ειδοποιήσεων</string>
+    <string name="color_extraction_label">Εκκινητής ZimLX - Εξαγωγή χρώματος</string>
     <string name="test_title">Δοκιμή</string>
     <string name="visibility">Ορατότητα</string>
     <string name="default_text">Προεπιλογή</string>
@@ -419,9 +419,9 @@
     <string name="lawnfeed_not_enabled_title">Το Lawnfeed δεν είναι ενεργοποιημένο</string>
     <string name="lawnfeed_not_enabled">Μοιάζει με προσπαθείτε να ανοίξετε το πλαϊνό πάνελ Google Now, αλλά δεν έχετε ενεργοποιήσει την επιλογή στις ρυθμίσεις.\n\nΘέλετε να την ενεργοποιήσετε τώρα;</string>
     <string name="lawnfeed_outdated_title">Απαιτείται ενημέρωση του Lawnfeed</string>
-    <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των Lawnchair.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
+    <string name="lawnfeed_outdated">Απαιτείται μια νεότερη έκδοση του Lawnfeed προκειμένου να λειτουργήσει με αυτήν την έκδοση των ZimLX.\n\nΠριν την εγκατάσταση της ενημέρωσης θα πρέπει πιθανώς να γίνει απεγκατάσταση της τρέχουσας έκδοσης του Lawnfeed.\n\nΘέλετε να κατεβάσετε την ενημέρωση τώρα;</string>
     <string name="title_storage_permission_required">Απαιτείται άδεια πρόσβασης στον αποθηκευτικό χώρο</string>
-    <string name="content_storage_permission_required">Στο Android 8.1 και άνω απαιτείται άδεια αποθήκευσης για τις εφαρμογές για να αποκτήσετε πρόσβαση στην ταπετσαρία. Χωρίς την άδεια ο Lawnchair μπορεί να διακοπεί ή να δείξει απροσδόκητες συμπεριφορές.</string>
+    <string name="content_storage_permission_required">Στο Android 8.1 και άνω απαιτείται άδεια αποθήκευσης για τις εφαρμογές για να αποκτήσετε πρόσβαση στην ταπετσαρία. Χωρίς την άδεια ο ZimLX μπορεί να διακοπεί ή να δείξει απροσδόκητες συμπεριφορές.</string>
     <string name="disable_popup">Να μην εμφανιστεί ξανά</string>
     <string name="backups">Αντίγραφα Ασφαλείας</string>
     <string name="new_backup">Δημιουργία</string>
@@ -451,7 +451,7 @@
     <string name="restore_failed">Επαναφορά απέτυχε</string>
     <string name="restore_read_meta_fail">Μη έγκυρο αρχείο αντιγράφου ασφαλείας</string>
     <string name="backup_share_title">Κοινή χρήση αντιγράφου ασφαλείας</string>
-    <string name="backup_share_text">Αρχείο αντιγράφου ασφαλείας Lawnchair</string>
+    <string name="backup_share_text">Αρχείο αντιγράφου ασφαλείας ZimLX</string>
     <string name="read_external_storage_required">Άδεια αποθήκευσης απαιτείται για να δημιουργήσετε αντίγραφο ασφαλείας</string>
     <string name="local_backups">Τοπικά αντίγραφα ασφαλείας</string>
     <string name="backup_location_device_storage">Αποθηκευτικός χώρος συσκευής</string>
@@ -462,7 +462,7 @@
     <!-- Preference Category Drawer Title -->
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Διάφορα</string>
-    <string name="blur_oom">Ο Lawnchair εξάντλησε τη μνήμη του τηλεφώνου προσπαθώντας να θολώσει την ταπετσαρία σας! Χαμηλώνοντας την ανάλυση της ταπετσαρίας ενδεχομένως να διορθώσει αυτό το πρόβλημα.</string>
+    <string name="blur_oom">Ο ZimLX εξάντλησε τη μνήμη του τηλεφώνου προσπαθώντας να θολώσει την ταπετσαρία σας! Χαμηλώνοντας την ανάλυση της ταπετσαρίας ενδεχομένως να διορθώσει αυτό το πρόβλημα.</string>
     <string name="legacy_backup">Αρχείο αντιγράφων ασφαλείας παλαιού τύπου</string>
     <!-- About screen -->
 </resources>

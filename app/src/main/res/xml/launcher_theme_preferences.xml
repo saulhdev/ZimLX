@@ -46,6 +46,13 @@
         android:key="prefCat_uiTheme"
         android:title="@string/pixel_ui_pref_title">
 
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimary"
+            android:key="pref_primary_color"
+            android:title="@string/pref_title__primary_color"
+            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_showAlphaSlider="true" />
+
         <SwitchPreference
             android:defaultValue="false"
             android:key="pref_enableDynamicUi"
@@ -60,14 +67,6 @@
             android:persistent="true"
             android:summary="%s"
             android:title="@string/theme_pref_title" />
-
-        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-            android:defaultValue="@color/colorPrimary"
-            android:key="pref_primary_color"
-            android:title="@string/pref_title__primary_color"
-            app:cpv_dialogTitle="@string/pref_title__primary_color"
-            app:cpv_showAlphaSlider="true" />
-
 
         <org.zimmob.zimlx.preferences.BitSetPreference
             android:entries="@array/themeModeTexts"

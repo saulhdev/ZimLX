@@ -242,9 +242,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d comenzi rapide şi notifificări %2$d pentru %3$s</string>
     <string name="notifications_header">Notificări</string>
     <string name="widgets_bottom_sheet_title">Widget-uri %1$s</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Despre</string>
-    <string name="about_pref_summary">Aflați despre echipa Lawnchair</string>
+    <string name="about_pref_summary">Aflați despre echipa ZimLX</string>
     <string name="changelog_title">Jurnalul de modificări pentru a versiunea #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Set de pictograme</string>
@@ -277,7 +277,7 @@
     <string name="full_width_width_widgets_pref_title">Widget-uri de lăţime completă</string>
     <string name="full_width_widgets_pref_summary">Permite widget-urilor să se întindă pe toată lățimea fără să umple</string>
     <string name="notification_access_pref_title">Insigne de notificări și previzualizare</string>
-    <string name="notification_access_pref_summary">Permite Lawnchair accesul la notificări ca să activezi această funcție</string>
+    <string name="notification_access_pref_summary">Permite ZimLX accesul la notificări ca să activezi această funcție</string>
     <string name="general_pref_title">General</string>
     <string name="dock_pref_title">Doc</string>
     <string name="app_drawer_pref_title">Listă aplicații</string>
@@ -289,7 +289,7 @@
     <string name="app_drawer_pref_summary">Personalizați lista aplicațiilor</string>
     <string name="pixel_ui_pref_summary">Activați caracteristicile exclusive ale lansatorului Pixel</string>
     <string name="backup_pref_title">Copie de rezervă</string>
-    <string name="behavior_pref_summary">Modificați comportamentul Lawnchair</string>
+    <string name="behavior_pref_summary">Modificați comportamentul ZimLX</string>
     <string name="backup_pref_summary">Faceţi o copie de rezervă pentru baza de date și setări</string>
     <string name="debug_pref_summary">Reporniți sau reconstruiți baza de date a pictogramelor</string>
     <string name="show_pixel_bar_pref_title">Arată bara de sus în stilul Pixel</string>
@@ -301,8 +301,8 @@
     <string name="pixel_style_icons_pref_title">Utilizează pictograme în stil Pixel</string>
     <string name="pixel_style_icons_pref_summary">Când este activă această opțiune, se vor folosi pictograme rotunde acolo unde este posibil</string>
     <string name="show_google_now_tab_pref_title">Arată pagina Google Now</string>
-    <string name="restart_lawnchair_pref_title">Reporniţi Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Poate fi de ajutor în cazul în care unele setări nu sunt aplicate corect</string>
+    <string name="restart_ZimLX_pref_title">Reporniţi ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Poate fi de ajutor în cazul în care unele setări nu sunt aplicate corect</string>
     <string name="rebuild_icondb_pref_title">Reconstruiți bază de date pictograme</string>
     <string name="pinch_to_overview_pref_title">Ciupiți pentru prezentare generală</string>
     <string name="pinch_to_overview_pref_summary">Ciupiţi pe ecranul de start pentru a deschide prezentarea generală</string>
@@ -320,8 +320,8 @@
     <string name="import_db_title">Bază de date</string>
     <string name="export_prefs_title">Setări</string>
     <string name="import_prefs_title">Setări</string>
-    <string name="notification_listener_label">Lawnchair - insigne notificări</string>
-    <string name="color_extraction_label">Lawnchair - extragere de culoare</string>
+    <string name="notification_listener_label">ZimLX - insigne notificări</string>
+    <string name="color_extraction_label">ZimLX - extragere de culoare</string>
     <string name="test_title">Test</string>
     <string name="visibility">Vizibilitate</string>
     <string name="default_text">Implicit</string>
@@ -419,9 +419,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed nu este activat</string>
     <string name="lawnfeed_not_enabled">Se pare că încercați să deschideți pagina Google Now, dar nu ați activat opțiunea din setările de comportament.\n\nDoriți să o activați acum?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed necesită actualizare</string>
-    <string name="lawnfeed_outdated">O versiune mai nouă a programului Lawnfeed este necesară pentru a funcţiona cu această versiune de Lawnchair.\n\nÎnainte de a instala actualizarea, probabil va trebui să dezinstalați versiunea curentă Lawnfeed.\n\nDoriți să o descărcați acum?</string>
+    <string name="lawnfeed_outdated">O versiune mai nouă a programului Lawnfeed este necesară pentru a funcţiona cu această versiune de ZimLX.\n\nÎnainte de a instala actualizarea, probabil va trebui să dezinstalați versiunea curentă Lawnfeed.\n\nDoriți să o descărcați acum?</string>
     <string name="title_storage_permission_required">Permisiune de stocare necesară</string>
-    <string name="content_storage_permission_required">În Android 8.1+ este necesară permisiunea de stocare pentru a accesa imaginea de fundal. Fără permisiunea menționată Lawnchair ar putea să se închidă sau să prezinte comportamente neaşteptate.</string>
+    <string name="content_storage_permission_required">În Android 8.1+ este necesară permisiunea de stocare pentru a accesa imaginea de fundal. Fără permisiunea menționată ZimLX ar putea să se închidă sau să prezinte comportamente neaşteptate.</string>
     <string name="disable_popup">Nu se mai afișează</string>
     <string name="backups">Copii de rezervă</string>
     <string name="new_backup">Creare</string>
@@ -451,7 +451,7 @@
     <string name="restore_failed">Restabilire eșuată</string>
     <string name="restore_read_meta_fail">Fiş. rez. incorect</string>
     <string name="backup_share_title">Distribuire copie de rezervă</string>
-    <string name="backup_share_text">Fişier copie de rezervă Lawnchair</string>
+    <string name="backup_share_text">Fişier copie de rezervă ZimLX</string>
     <string name="read_external_storage_required">Permisiunea de stocare este necesară pentru a crea copia de rezervă</string>
     <string name="local_backups">Copii de rezervă locale</string>
     <string name="backup_location_device_storage">Stocare dispozitiv</string>
@@ -464,7 +464,7 @@
     <string name="pref_category_drawer">Listă aplicaţii</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Diverse</string>
-    <string name="blur_oom">Lawnchair a rămas fără memorie încercând să blureze imaginea de fundal! Scăderea rezoluției imaginii de fundal ar putea remedia acest lucru.</string>
+    <string name="blur_oom">ZimLX a rămas fără memorie încercând să blureze imaginea de fundal! Scăderea rezoluției imaginii de fundal ar putea remedia acest lucru.</string>
     <string name="legacy_backup">Fișier vechi copie de rezervă</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Licențe Open Source</string>
@@ -489,7 +489,7 @@
     <string name="about_role_special_snowflake">PR Manager / Moderator</string>
     <string name="about_role_mod_support">Moderator / Suport</string>
     <string name="about_role_family_member">Membru al familiei</string>
-    <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului Lawnchair.</string>
+    <string name="about_bio_deletescape">Dezvoltator și entuziast Android, iubeşte memele (un pic prea mult de fapt). Fondator al proiectului ZimLX.</string>
     <string name="about_bio_divadsn">Are 18 ani, transformă cofeina și pizza în cod. De asemenea, anterior cunoscut sub numele de Codebucket.</string>
     <string name="about_bio_recoded">Coder mediu și designer grafic.</string>
     <string name="about_bio_josh">Freelance graphic designer.</string>

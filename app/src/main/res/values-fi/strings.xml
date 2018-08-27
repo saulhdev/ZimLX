@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d pikakuvaketta ja %2$d ilmoitusta %3$s</string>
     <string name="notifications_header">Ilmoitukset</string>
     <string name="widgets_bottom_sheet_title">%1$s widgettiä</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Tietoja</string>
-    <string name="about_pref_summary">Opi tuntemaan Lawnchair tiimi</string>
+    <string name="about_pref_summary">Opi tuntemaan ZimLX tiimi</string>
     <string name="changelog_title">Muutosloki buildille #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Kuvakepaketti</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Koko leveyden widgetit</string>
     <string name="full_width_widgets_pref_summary">Salli widgettien kattaa koko leveys ilman välejä</string>
     <string name="notification_access_pref_title">Ilmoitusten merkit ja esikatselu</string>
-    <string name="notification_access_pref_summary">Allow Lawnchair to access your notification to enable this features</string>
+    <string name="notification_access_pref_summary">Allow ZimLX to access your notification to enable this features</string>
     <string name="general_pref_title">Työpöytä</string>
     <string name="dock_pref_title">Telakka</string>
     <string name="app_drawer_pref_title">Sovellusvalikko</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Muokkaa sovellusvalikkoa</string>
     <string name="pixel_ui_pref_summary">Eri elementtien teemat</string>
     <string name="backup_pref_title">Varmuuskopiointi</string>
-    <string name="behavior_pref_summary">Muuta Lawnchairin toimintaa</string>
+    <string name="behavior_pref_summary">Muuta ZimLXin toimintaa</string>
     <string name="backup_pref_summary">Varmuuskopioi tietokantasi ja asetukset</string>
     <string name="debug_pref_summary">Käynnistä tai rakenna uudelleen kuvaketietokanta</string>
     <string name="show_pixel_bar_pref_title">Näytä Pixel yläpalkki</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Käytä Pixel-kuvakkeita</string>
     <string name="pixel_style_icons_pref_summary">Kun käytössä pyöreitä kuvakkeita käytetään siellä missä se on mahdollista</string>
     <string name="show_google_now_tab_pref_title">Näytä Google Now sivu</string>
-    <string name="restart_lawnchair_pref_title">Käynnistä Lawnchair uudelleen</string>
-    <string name="restart_lawnchair_pref_summary">Voi olla hyödyllistä, jos jotkin asetukset eivät toimi oikein</string>
+    <string name="restart_ZimLX_pref_title">Käynnistä ZimLX uudelleen</string>
+    <string name="restart_ZimLX_pref_summary">Voi olla hyödyllistä, jos jotkin asetukset eivät toimi oikein</string>
     <string name="rebuild_icondb_pref_title">Rakenna kuvaketietokanta uudelleen</string>
     <string name="pinch_to_overview_pref_title">Nipistämällä yleisnäkymään</string>
     <string name="pinch_to_overview_pref_summary">Nipistä aloitusnäytöllä avataksesi yleisnäkymän</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Tietokanta</string>
     <string name="export_prefs_title">Asetukset</string>
     <string name="import_prefs_title">Asetukset</string>
-    <string name="notification_listener_label">Lawnchair - Ilmoituksen merkit</string>
-    <string name="color_extraction_label">Lawnchair - Värin poiminta</string>
+    <string name="notification_listener_label">ZimLX - Ilmoituksen merkit</string>
+    <string name="color_extraction_label">ZimLX - Värin poiminta</string>
     <string name="test_title">Testi</string>
     <string name="visibility">Näkyvyys</string>
     <string name="default_text">Oletus</string>
@@ -417,10 +417,10 @@
     <!-- Strings for popup dialogs -->
     <string name="lawnfeed_not_enabled_title">Lawnfeed ei ole käytössä</string>
     <string name="lawnfeed_outdated_title">Lawnfeed päivitys vaaditaan</string>
-    <string name="lawnfeed_outdated">Työskennelläksesi tällä Lawnchairin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
+    <string name="lawnfeed_outdated">Työskennelläksesi tällä ZimLXin versiolla tarvitset uudemman version Lawnfeedistä.\n\nEnnen päivityksen asentamista voit joutua poistamaan Lawnfeedin nykyisen version asennuksen.\n\nHaluatko ladata sen nyt?</string>
     <string name="title_storage_permission_required">Tallennustilan käyttöoikeus vaaditaan</string>
     <string name="content_storage_permission_required">Android 8.1 ja uudemissa versiossa sovellukset vaativat
-tallenustilan käyttöoikeudet jotta voit vaihtaa taustakuvaa. Jos käyttöoikeuksia ei anneta saattaa Lawnchair kaatua tai toimia ei toivotulla tavalla.</string>
+tallenustilan käyttöoikeudet jotta voit vaihtaa taustakuvaa. Jos käyttöoikeuksia ei anneta saattaa ZimLX kaatua tai toimia ei toivotulla tavalla.</string>
     <string name="disable_popup">Älä Näytä uudelleen</string>
     <string name="backups">Varmuuskopiot</string>
     <string name="new_backup">Luo</string>
@@ -450,7 +450,7 @@ tallenustilan käyttöoikeudet jotta voit vaihtaa taustakuvaa. Jos käyttöoikeu
     <string name="restore_failed">Palautus epäonnistui</string>
     <string name="restore_read_meta_fail">Virheellinen varmuuskopiotiedosto</string>
     <string name="backup_share_title">Jaa varmuuskopio</string>
-    <string name="backup_share_text">Lawnchair varmuuskopiotiedosto</string>
+    <string name="backup_share_text">ZimLX varmuuskopiotiedosto</string>
     <string name="read_external_storage_required">Oikeudet tallennustilan käyttöön tarvitaan varmuuskopion luomiseksi</string>
     <string name="local_backups">Paikalliset varmuuskopiot</string>
     <string name="backup_location_device_storage">Laitteen tallennustila</string>
@@ -460,6 +460,6 @@ tallenustilan käyttöoikeudet jotta voit vaihtaa taustakuvaa. Jos käyttöoikeu
     <!-- Preference Category Drawer Title -->
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Sekalaiset</string>
-    <string name="blur_oom">Lawnchairilta loppui resurssit taustakuvan sumentamiseen! Taustakuvan resoluution pienentäminen voi auttaa ongelman ratkaisussa.</string>
+    <string name="blur_oom">ZimLXilta loppui resurssit taustakuvan sumentamiseen! Taustakuvan resoluution pienentäminen voi auttaa ongelman ratkaisussa.</string>
     <!-- About screen -->
 </resources>

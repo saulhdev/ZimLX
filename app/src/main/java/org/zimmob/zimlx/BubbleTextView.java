@@ -43,7 +43,6 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewParent;
-import android.widget.TextView;
 
 import org.zimmob.zimlx.IconCache.IconLoadRequest;
 import org.zimmob.zimlx.badge.BadgeInfo;
@@ -60,7 +59,7 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView
+public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         implements BaseRecyclerViewFastScrollBar.FastScrollFocusableView {
 
     private static final Property BADGE_SCALE_PROPERTY = new C02921(Float.TYPE, "badgeScale");
@@ -525,7 +524,7 @@ public class BubbleTextView extends TextView
         float density = getResources().getDisplayMetrics().density;
         getPaint().setShadowLayer(density * AMBIENT_SHADOW_RADIUS, 0, 0, AMBIENT_SHADOW_COLOR);
         super.draw(canvas);
-        canvas.save(Canvas.CLIP_SAVE_FLAG);
+        canvas.save(Canvas.ALL_SAVE_FLAG);
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight(), Region.Op.INTERSECT);

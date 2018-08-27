@@ -29,6 +29,27 @@ import android.view.animation.Interpolator;
  * you can modify the Interpolator post-construction.
  */
 public class LauncherScroller {
+    private int mMode;
+
+    private int mStartX;
+    private int mStartY;
+    private int mFinalX;
+    private int mFinalY;
+
+    private int mMinX;
+    private int mMaxX;
+    private int mMinY;
+    private int mMaxY;
+
+    private int mCurrX;
+    private int mCurrY;
+    private long mStartTime;
+    private int mDuration;
+    private float mDurationReciprocal;
+    private float mDeltaX;
+    private float mDeltaY;
+    private boolean mFinished;
+    private TimeInterpolator mInterpolator;
     private static float DECELERATION_RATE = (float) (Math.log(0.78) / Math.log(0.9));
     private static float sViscousFluidScale;
     private static float sViscousFluidNormalize;
@@ -73,24 +94,6 @@ public class LauncherScroller {
     }
 
     private final float mPpi;
-    private int mMode;
-    private int mStartX;
-    private int mStartY;
-    private int mFinalX;
-    private int mFinalY;
-    private int mMinX;
-    private int mMaxX;
-    private int mMinY;
-    private int mMaxY;
-    private int mCurrX;
-    private int mCurrY;
-    private long mStartTime;
-    private int mDuration;
-    private float mDurationReciprocal;
-    private float mDeltaX;
-    private float mDeltaY;
-    private boolean mFinished;
-    private TimeInterpolator mInterpolator;
 
     private static final int DEFAULT_DURATION = 250;
     private static final int SCROLL_MODE = 0;
@@ -104,13 +107,15 @@ public class LauncherScroller {
 
     private static final int NB_SAMPLES = 100;
     private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
+
+    private float mDeceleration;
     private float mVelocity;
+
+    // A context-specific coefficient adjusted to physical values.
+    private float mPhysicalCoeff;
     private float mCurrVelocity;
     private int mDistance;
     private float mFlingFriction = ViewConfiguration.getScrollFriction();
-    private float mDeceleration;
-    // A context-specific coefficient adjusted to physical values.
-    private float mPhysicalCoeff;
 
     static float viscousFluid(float x) {
         x *= sViscousFluidScale;

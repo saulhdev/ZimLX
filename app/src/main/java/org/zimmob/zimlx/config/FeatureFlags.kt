@@ -55,6 +55,8 @@ object FeatureFlags {
     const val KEY_PREF_SHOW_TOP_SHADOW = "pref_showTopShadow"
     const val KEY_PREF_THEME = "pref_theme"
     const val KEY_PREF_PRIMARY_COLOR = "pref_primary_color"
+    const val KEY_PREF_MINIBAR_COLOR = "pref_minibar_color"
+    const val KEY_PREF_MINIBAR_ITEMS = "pref_minibar_items"
     const val KEY_PREF_THEME_MODE = "pref_themeMode"
     const val KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat"
     const val KEY_PREF_PLANE = "pref_plane"

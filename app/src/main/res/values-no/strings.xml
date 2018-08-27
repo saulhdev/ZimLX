@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d snarveier og %2$d varsler for %3$s</string>
     <string name="notifications_header">Varsler</string>
     <string name="widgets_bottom_sheet_title">%1$s moduler</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Om</string>
-    <string name="about_pref_summary">Bli kjent med Lawnchair teamet</string>
+    <string name="about_pref_summary">Bli kjent med ZimLX teamet</string>
     <string name="changelog_title">Endringslogg for versjon #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Ikon-pakke</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Full bredde moduler</string>
     <string name="full_width_widgets_pref_summary">Tillat moduler å spenne hele bredden uten utfylling</string>
     <string name="notification_access_pref_title">Varselsmerker og forhåndsvisning</string>
-    <string name="notification_access_pref_summary">Gi Lawnchair tilgang til varslene dine for å aktivere denne funksjonen</string>
+    <string name="notification_access_pref_summary">Gi ZimLX tilgang til varslene dine for å aktivere denne funksjonen</string>
     <string name="general_pref_title">Startskjerm</string>
     <string name="dock_pref_title">Dokk</string>
     <string name="app_drawer_pref_title">Alle apper</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Tilpass Alle apper</string>
     <string name="pixel_ui_pref_summary">Forskjellige temaelementer</string>
     <string name="backup_pref_title">Sikkerhetskopiering</string>
-    <string name="behavior_pref_summary">Endre oppførselen til Lawnchair</string>
+    <string name="behavior_pref_summary">Endre oppførselen til ZimLX</string>
     <string name="backup_pref_summary">Sikkerhetskopier innstillinger og database</string>
     <string name="debug_pref_summary">Start om og bygg opp ikondatabasen på nytt</string>
     <string name="show_pixel_bar_pref_title">Vis Pixel søkefelt</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Bruk Pixel-ikoner</string>
     <string name="pixel_style_icons_pref_summary">Når aktivert, brukes runde ikoner hvor det er mulig</string>
     <string name="show_google_now_tab_pref_title">Vis Google Nå-siden</string>
-    <string name="restart_lawnchair_pref_title">Start Lawnchair på nytt</string>
-    <string name="restart_lawnchair_pref_summary">Kan være nyttig dersom noen innstillinger ikke settes riktig</string>
+    <string name="restart_ZimLX_pref_title">Start ZimLX på nytt</string>
+    <string name="restart_ZimLX_pref_summary">Kan være nyttig dersom noen innstillinger ikke settes riktig</string>
     <string name="rebuild_icondb_pref_title">Gjenoppbygg ikon-database</string>
     <string name="pinch_to_overview_pref_title">Knip for oversikt</string>
     <string name="pinch_to_overview_pref_summary">Knip på startskjermen for å åpne oversikt</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Database</string>
     <string name="export_prefs_title">Innstillinger</string>
     <string name="import_prefs_title">Innstillinger</string>
-    <string name="notification_listener_label">Lawnchair - varselsmerker</string>
-    <string name="color_extraction_label">Lawnchair - fargeuthenting</string>
+    <string name="notification_listener_label">ZimLX - varselsmerker</string>
+    <string name="color_extraction_label">ZimLX - fargeuthenting</string>
     <string name="test_title">Test</string>
     <string name="visibility">Synlighet</string>
     <string name="default_text">Standard</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed ikke aktivert</string>
     <string name="lawnfeed_not_enabled">Det ser ut som om du prøver å åpne Google Now siden, men du har ikke aktivert valget i innstillingene under Oppførsel.\n\nAktivere nå?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed oppdatering kreves</string>
-    <string name="lawnfeed_outdated">En nyere versjon av Lawnfeed kreves for å brukes med denne versjonen av Lawnchair.\n\nFør installasjon av den nyere versjonen vil du trolig måtte avinstallere gjeldene versjon.\n\nLaste ned nå?</string>
+    <string name="lawnfeed_outdated">En nyere versjon av Lawnfeed kreves for å brukes med denne versjonen av ZimLX.\n\nFør installasjon av den nyere versjonen vil du trolig måtte avinstallere gjeldene versjon.\n\nLaste ned nå?</string>
     <string name="title_storage_permission_required">Lagringstillatelse kreves</string>
-    <string name="content_storage_permission_required">På Android 8.1 og nyere er lagringstillatelsen påkrevd for at apper skal kunne ha tilgang til bakgrunner. Uten denne tillatelsen kan Lawnchair krasje eller vise uventet oppførsel.</string>
+    <string name="content_storage_permission_required">På Android 8.1 og nyere er lagringstillatelsen påkrevd for at apper skal kunne ha tilgang til bakgrunner. Uten denne tillatelsen kan ZimLX krasje eller vise uventet oppførsel.</string>
     <string name="disable_popup">Ikke vis igjen</string>
     <string name="backups">Sikkerhetskopier</string>
     <string name="new_backup">Opprett</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Gjenoppretting mislyktes</string>
     <string name="restore_read_meta_fail">Ugyldig sikkerhetskopifil</string>
     <string name="backup_share_title">Del sikkerhetskopi</string>
-    <string name="backup_share_text">Lawnchair sikkerhetskopifil</string>
+    <string name="backup_share_text">ZimLX sikkerhetskopifil</string>
     <string name="read_external_storage_required">Lagringstillatelse kreves for å opprette sikkerhetskopi</string>
     <string name="local_backups">Lokale sikkerhetskopier</string>
     <string name="backup_location_device_storage">Enhetslagring</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Alle apper</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Diverse</string>
-    <string name="blur_oom">Lawnchair gikk tom for minne ved å gjøre bakgrunnen uskarp! Å redusere oppløsningen på bakgrunnsbildet kan hjelpe.</string>
+    <string name="blur_oom">ZimLX gikk tom for minne ved å gjøre bakgrunnen uskarp! Å redusere oppløsningen på bakgrunnsbildet kan hjelpe.</string>
     <string name="legacy_backup">Foreldet sikkerhetskopifil</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Åpen kildekode-lisenser</string>
@@ -487,7 +487,7 @@
     <string name="about_role_special_snowflake">PR Manager / Moderator</string>
     <string name="about_role_mod_support">Moderator / Støtte</string>
     <string name="about_role_family_member">Familiemedlem</string>
-    <string name="about_bio_deletescape">Android utvikler &amp; entusiast, elsker memer (litt for mye faktisk). Grunnlegger av Lawnchair prosjektet.</string>
+    <string name="about_bio_deletescape">Android utvikler &amp; entusiast, elsker memer (litt for mye faktisk). Grunnlegger av ZimLX prosjektet.</string>
     <string name="about_bio_divadsn">18 år gammel, forvandler koffein og pizza til kode. Tidligere kjent som Codebucket.</string>
     <string name="about_bio_recoded">Programmerer og grafisk designer.</string>
     <string name="about_bio_josh">Frilans grafisk designer.</string>

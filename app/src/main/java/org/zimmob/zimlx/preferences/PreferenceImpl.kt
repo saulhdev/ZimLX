@@ -6,16 +6,15 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.graphics.Color
 import android.view.View
-import org.zimmob.zimlx.BuildConfig
-import org.zimmob.zimlx.Launcher
-import org.zimmob.zimlx.LauncherFiles
-import org.zimmob.zimlx.Utilities
+import org.zimmob.zimlx.*
 import org.zimmob.zimlx.config.FeatureFlags
 import org.zimmob.zimlx.dynamicui.ExtractedColors
 import java.io.File
+import java.util.*
 import kotlin.reflect.KProperty
 
 open class PreferenceImpl(context: Context) : IPreferenceProvider {
+
     val context = context.applicationContext!!
 
     override var restoreSuccess by MutableBooleanPref("pref_restoreSuccess", false)
@@ -200,7 +199,9 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     override val themeMode by IntPref(FeatureFlags.KEY_PREF_THEME_MODE, (1 shl 30) - 1)
     override val theme by StringPref(FeatureFlags.KEY_PREF_THEME, "0")
-    override val primaryColor by IntPref(FeatureFlags.KEY_PREF_PRIMARY_COLOR, Color.BLUE)
+    override val primaryColor by IntPref(FeatureFlags.KEY_PREF_PRIMARY_COLOR, R.color.colorPrimary)
+    override val minibarColor by IntPref(FeatureFlags.KEY_PREF_MINIBAR_COLOR, R.color.colorPrimary)
+
     override val enableVibrancy: Boolean
         get() = true
     override val useRoundSearchBar by BooleanPref(FeatureFlags.KEY_PREF_ROUND_SEARCH_BAR, false)
@@ -274,6 +275,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
                     .apply()
         }
     }
+
 
     // ----------------
     // Helper functions and class

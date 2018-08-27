@@ -212,7 +212,7 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
     }
 
     companion object {
-        const val TAG = "LawnchairBackup"
+        const val TAG = "ZimLXBackup"
 
         const val INCLUDE_HOMESCREEN = 1 shl 0
         const val INCLUDE_SETTINGS = 1 shl 1
@@ -221,13 +221,13 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
         const val BUFFER = 2018
 
         const val EXTENSION = "shed"
-        const val MIME_TYPE = "application/vnd.lawnchair.backup"
+        const val MIME_TYPE = "application/vnd.ZimLX.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
 
         fun getFolder(): File {
-            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
+            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "ZimLX/backup")
             Log.d(TAG, "path: $folder")
             if (!folder.exists()) {
                 folder.mkdirs()

@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d genveje og %2$d notifikationer til %3$s</string>
     <string name="notifications_header">Underretninger</string>
     <string name="widgets_bottom_sheet_title">%1$s widgets</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Om</string>
-    <string name="about_pref_summary">Lær dit Lawnchair team at kende</string>
+    <string name="about_pref_summary">Lær dit ZimLX team at kende</string>
     <string name="changelog_title">Ændringslog for version #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Ikon pakke</string>
@@ -274,7 +274,7 @@
     <string name="full_width_width_widgets_pref_title">Fuld bredde widgets</string>
     <string name="full_width_widgets_pref_summary">Tillad widgets at spænde over hele bredden uden polstring</string>
     <string name="notification_access_pref_title">Notifikations tegn og forhåndsvisning</string>
-    <string name="notification_access_pref_summary">Tillad Lawnchair adgang til dine notifikationer for at aktivere denne egenskab</string>
+    <string name="notification_access_pref_summary">Tillad ZimLX adgang til dine notifikationer for at aktivere denne egenskab</string>
     <string name="general_pref_title">General</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">App liste</string>
@@ -294,8 +294,8 @@
     <string name="pixel_style_icons_pref_title">Brug Pixel ikoner</string>
     <string name="pixel_style_icons_pref_summary">Når aktiverede cirkulære ikoner anvendes, hvor det er muligt</string>
     <string name="show_google_now_tab_pref_title">Vis Google Nu side</string>
-    <string name="restart_lawnchair_pref_title">Genstart Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
+    <string name="restart_ZimLX_pref_title">Genstart ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Kan være nyttigt, hvis nogle indstillinger ikke anvendes korrekt</string>
     <string name="rebuild_icondb_pref_title">Genopret ikon database</string>
     <string name="pinch_to_overview_pref_title">Træk sammen for oversigt</string>
     <string name="pinch_to_overview_pref_summary">Træk sammen på hjemmeskærmen for at vise oversigt</string>
@@ -313,7 +313,7 @@
     <string name="import_db_title">Database</string>
     <string name="export_prefs_title">Indstillinger</string>
     <string name="import_prefs_title">Indstillinger</string>
-    <string name="notification_listener_label">Lawnchair - Notifikationsskilte</string>
+    <string name="notification_listener_label">ZimLX - Notifikationsskilte</string>
     <string name="color_extraction_label">Lawnchar - Farveudtræk</string>
     <string name="test_title">Test</string>
     <string name="visibility">Synlighed</string>
@@ -387,7 +387,7 @@
     <string name="hide_app_apply">Anvend</string>
     <string name="hide_app_reset">Nulstil</string>
     <!-- Strings for popup dialogs -->
-    <string name="lawnfeed_outdated">En nyere version af Lawnfeed er nødvendig for at arbejde med denne version af Lawnchair. \n\nFør du installerer denne opdatering, vil du sandsynligvis blive nødt til at afinstallere den aktuelle version af Lawnfeed.\n\n Ønsker du at hente den nu?</string>
+    <string name="lawnfeed_outdated">En nyere version af Lawnfeed er nødvendig for at arbejde med denne version af ZimLX. \n\nFør du installerer denne opdatering, vil du sandsynligvis blive nødt til at afinstallere den aktuelle version af Lawnfeed.\n\n Ønsker du at hente den nu?</string>
     <!-- Preference Category Pixel Searchbar Title -->
     <!-- Preference Category Icons Title -->
     <!-- Preference Category Drawer Title -->

@@ -201,10 +201,11 @@ public class SettingsActivity extends AppCompatActivity implements
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
-            if (preference.getKey() != null && "pref_about".equals(preference.getKey())) {
-                ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, preference);
+            if (preference.getKey() == "pref_key__cat_about") {
+                startActivity(new Intent(getActivity(), MoreInfoActivity.class));
                 return true;
             }
+
             return super.onPreferenceTreeClick(preference);
         }
 
@@ -339,11 +340,10 @@ public class SettingsActivity extends AppCompatActivity implements
                             Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();
                         }
                         break;
-                    case "pref_key__cat_about": {
-                        startActivity(new Intent(getActivity(), MoreInfoActivity.class));
-                        return true;
-                    }
 
+                    case "pref_key__cat_about":
+                        startActivity(new Intent(getActivity(), MoreInfoActivity.class));
+                        break;
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();

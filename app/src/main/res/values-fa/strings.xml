@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d میانبر و %2$d اعلان برای %3$s</string>
     <string name="notifications_header">اعلانات</string>
     <string name="widgets_bottom_sheet_title">%1$s ابزارک</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">درباره</string>
-    <string name="about_pref_summary">درمورد تیم Lawnchair بدانید</string>
+    <string name="about_pref_summary">درمورد تیم ZimLX بدانید</string>
     <string name="changelog_title">تغییرات بیلد #%d</string>
     <string name="week_day_format">%1$s، %2$s</string>
     <string name="icon_pack_preference_title">آیکون پک</string>

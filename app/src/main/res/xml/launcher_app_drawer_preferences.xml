@@ -107,7 +107,7 @@
             app:summaryMultiplier="100" />
 
         <SwitchPreference
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_iconLabelsInTwoLines"
             android:persistent="true"
             android:title="@string/pref_iconLabelsInTwoLines" />

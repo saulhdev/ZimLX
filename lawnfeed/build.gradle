@@ -8,13 +8,13 @@ android {
         travis {
             storeFile file("../app/debug.jks")
             storePassword System.getenv("STORE_PASSWORD")
-            keyAlias "Lawnchair"
+            keyAlias "ZimLX"
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
 
     defaultConfig {
-        applicationId "ch.deletescape.lawnchair.lawnfeed"
+        applicationId "ch.deletescape.ZimLX.lawnfeed"
         minSdkVersion 21
         targetSdkVersion 27
 

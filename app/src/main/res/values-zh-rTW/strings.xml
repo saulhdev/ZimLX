@@ -240,9 +240,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d 捷徑和 %3$s 的 %2$d 通知</string>
     <string name="notifications_header">通知</string>
     <string name="widgets_bottom_sheet_title">%1$s 小工具</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">關於</string>
-    <string name="about_pref_summary">瞭解 Lawnchair 團隊</string>
+    <string name="about_pref_summary">瞭解 ZimLX 團隊</string>
     <string name="changelog_title">更新日誌 #%d</string>
     <string name="week_day_format">%1$s：%2$s</string>
     <string name="icon_pack_preference_title">圖示包</string>
@@ -275,7 +275,7 @@
     <string name="full_width_width_widgets_pref_title">全寬小工具</string>
     <string name="full_width_widgets_pref_summary">允許小工具填滿桌面寬度</string>
     <string name="notification_access_pref_title">未讀計數和預覽</string>
-    <string name="notification_access_pref_summary">允許 Lawnchair 訪問您的通知許可權以啟用此功能</string>
+    <string name="notification_access_pref_summary">允許 ZimLX 訪問您的通知許可權以啟用此功能</string>
     <string name="general_pref_title">桌面</string>
     <string name="dock_pref_title">Dock 欄</string>
     <string name="app_drawer_pref_title">應用程式抽屜</string>
@@ -287,7 +287,7 @@
     <string name="app_drawer_pref_summary">自訂您的應用程式抽屜</string>
     <string name="pixel_ui_pref_summary">為不同元素應用主題</string>
     <string name="backup_pref_title">備份 &amp; 恢復</string>
-    <string name="behavior_pref_summary">改變 Lawnchair 的特性</string>
+    <string name="behavior_pref_summary">改變 ZimLX 的特性</string>
     <string name="backup_pref_summary">備份 / 恢復您的設定和資料庫</string>
     <string name="debug_pref_summary">重新啟動或重建圖示資料庫</string>
     <string name="show_pixel_bar_pref_title">顯示 Pixel 頂欄</string>
@@ -299,8 +299,8 @@
     <string name="pixel_style_icons_pref_title">使用 Pixel 圖示</string>
     <string name="pixel_style_icons_pref_summary">儘可能使用圓形圖示</string>
     <string name="show_google_now_tab_pref_title">顯示 Google Now 頁面</string>
-    <string name="restart_lawnchair_pref_title">重新啟動 Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">如果某些設置未正確應用，可能會有所幫助</string>
+    <string name="restart_ZimLX_pref_title">重新啟動 ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">如果某些設置未正確應用，可能會有所幫助</string>
     <string name="rebuild_icondb_pref_title">重建圖示快取</string>
     <string name="pinch_to_overview_pref_title">捏合來概覽</string>
     <string name="pinch_to_overview_pref_summary">在主螢幕捏合來概覽</string>
@@ -318,8 +318,8 @@
     <string name="import_db_title">匯入資料庫</string>
     <string name="export_prefs_title">匯出設定</string>
     <string name="import_prefs_title">匯入設定</string>
-    <string name="notification_listener_label">Lawnchair - 未讀計數</string>
-    <string name="color_extraction_label">Lawnchair - 顏色提取</string>
+    <string name="notification_listener_label">ZimLX - 未讀計數</string>
+    <string name="color_extraction_label">ZimLX - 顏色提取</string>
     <string name="test_title">測試</string>
     <string name="visibility">可見性</string>
     <string name="default_text">預設</string>
@@ -417,10 +417,10 @@
     <string name="lawnfeed_not_enabled_title">未啟用 Lawnfeed</string>
     <string name="lawnfeed_not_enabled">您好像正在嘗試開啟 Google 即時頁面，但您尚未在功能設定中啟用該選項。\n\n您想現在開啟嗎？</string>
     <string name="lawnfeed_outdated_title">需要更新 Lawnfeed</string>
-    <string name="lawnfeed_outdated">需要新版本的 Lawnfeed 才能使用此版本的 Lawnchair。\n\n在安裝更新之前，您可能需要解除安裝當前版本的
+    <string name="lawnfeed_outdated">需要新版本的 Lawnfeed 才能使用此版本的 ZimLX。\n\n在安裝更新之前，您可能需要解除安裝當前版本的
  Lawnfeed。\n\n您想現在下載嗎？</string>
     <string name="title_storage_permission_required">需要儲存權限</string>
-    <string name="content_storage_permission_required">在 Android 8.1 及以上版本中，應用程式存取桌布需要存儲權限。 沒有上述權限許可，Lawnchair 可能會發生錯誤或顯示意外的行為。</string>
+    <string name="content_storage_permission_required">在 Android 8.1 及以上版本中，應用程式存取桌布需要存儲權限。 沒有上述權限許可，ZimLX 可能會發生錯誤或顯示意外的行為。</string>
     <string name="disable_popup">不再提示</string>
     <string name="backups">備份</string>
     <string name="new_backup">新建</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">還原失敗</string>
     <string name="restore_read_meta_fail">無效的備份文件</string>
     <string name="backup_share_title">分享備份</string>
-    <string name="backup_share_text">Lawnchair 備份檔案</string>
+    <string name="backup_share_text">ZimLX 備份檔案</string>
     <string name="read_external_storage_required">新建備份區要儲存權限</string>
     <string name="local_backups">本機備份</string>
     <string name="backup_location_device_storage">裝置儲存空間</string>
@@ -461,7 +461,7 @@
     <!-- Preference Category Drawer Title -->
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">其他設定</string>
-    <string name="blur_oom">在記憶體用盡時，Lawnchair　將會試著模糊你的桌布！降低桌布的解析度有可能解決這個問題</string>
+    <string name="blur_oom">在記憶體用盡時，ZimLX　將會試著模糊你的桌布！降低桌布的解析度有可能解決這個問題</string>
     <string name="legacy_backup">遺留的備份檔案</string>
     <!-- About screen -->
 </resources>

@@ -113,6 +113,19 @@
             </intent-filter>
         </activity>
         <activity
+            android:name=".settings.ui.MoreInfoActivity"
+            android:parentActivityName=".settings.ui.SettingsActivity"
+            android:theme="@style/NormalActivity.Light">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value=".settings.ui.SettingsActivity" />
+        </activity>
+        <activity
+            android:name=".minibar.MinibarEditActivity"
+            android:label="Edit Item"
+            android:parentActivityName=".Launcher"
+            android:theme="@style/NormalActivity.Light" />
+        <activity
             android:name=".kustomsupport.AutoFinishTransparentActivity"
             android:theme="@style/Theme.Transparent" />
 

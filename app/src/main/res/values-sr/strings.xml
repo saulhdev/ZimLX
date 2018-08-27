@@ -242,9 +242,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d пречице и обавештења о %2$d за %3$s</string>
     <string name="notifications_header">Обавештења</string>
     <string name="widgets_bottom_sheet_title">%1$s виџета</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">О апликацији</string>
-    <string name="about_pref_summary">Упознајте Lawnchair тим</string>
+    <string name="about_pref_summary">Упознајте ZimLX тим</string>
     <string name="changelog_title">Промене за изградњу #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Пакет икона</string>
@@ -277,7 +277,7 @@
     <string name="full_width_width_widgets_pref_title">Пуна ширина виџета</string>
     <string name="full_width_widgets_pref_summary">Дозволи допуњавању виџета преко целе ширине без подлоге</string>
     <string name="notification_access_pref_title">Значке обавештења и приказ</string>
-    <string name="notification_access_pref_summary">Дозволи да Lawnchair приступи вашим обавештењима да бисте омогућили ову функцију</string>
+    <string name="notification_access_pref_summary">Дозволи да ZimLX приступи вашим обавештењима да бисте омогућили ову функцију</string>
     <string name="general_pref_title">Главно</string>
     <string name="dock_pref_title">Док</string>
     <string name="app_drawer_pref_title">Апликације Drawer-а</string>
@@ -289,7 +289,7 @@
     <string name="app_drawer_pref_summary">Прилагоди твоје апликације drawer-а</string>
     <string name="pixel_ui_pref_summary">Омогућите ексклузивне функције Pixel Launcher-а</string>
     <string name="backup_pref_title">Резервна копија</string>
-    <string name="behavior_pref_summary">Промените понашање Lawnchair</string>
+    <string name="behavior_pref_summary">Промените понашање ZimLX</string>
     <string name="backup_pref_summary">Израдите резервне копије базе података и поставки</string>
     <string name="debug_pref_summary">Рестартујте или обновите базу икона</string>
     <string name="show_pixel_bar_pref_title">Прикажи горње траке за Pixel</string>
@@ -301,8 +301,8 @@
     <string name="pixel_style_icons_pref_title">Користи Pixel иконе</string>
     <string name="pixel_style_icons_pref_summary">Када се омогућавају кружне иконе користиће се тамо где је то могуће</string>
     <string name="show_google_now_tab_pref_title">Прикажи Google Now страницу</string>
-    <string name="restart_lawnchair_pref_title">Поново покрени Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Може бити корисно ако нека подешавања нису правилно примењена</string>
+    <string name="restart_ZimLX_pref_title">Поново покрени ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Може бити корисно ако нека подешавања нису правилно примењена</string>
     <string name="rebuild_icondb_pref_title">Обнови базу података икона</string>
     <string name="pinch_to_overview_pref_title">Уштини за преглед</string>
     <string name="pinch_to_overview_pref_summary">Уштини на почетни екран да бисте отворили преглед</string>
@@ -320,8 +320,8 @@
     <string name="import_db_title">База података</string>
     <string name="export_prefs_title">Подешавања</string>
     <string name="import_prefs_title">Подешавања</string>
-    <string name="notification_listener_label">Lawnchair - Значке нотификације</string>
-    <string name="color_extraction_label">Lawnchair - Екстракције боје</string>
+    <string name="notification_listener_label">ZimLX - Значке нотификације</string>
+    <string name="color_extraction_label">ZimLX - Екстракције боје</string>
     <string name="test_title">Тест</string>
     <string name="visibility">Видљивост</string>
     <string name="default_text">Подразумевано</string>
@@ -451,7 +451,7 @@
     <string name="restore_failed">Враћање у претходно стање није успело</string>
     <string name="restore_read_meta_fail">Неважећа датотека резервне копије</string>
     <string name="backup_share_title">Подели резервну копију</string>
-    <string name="backup_share_text">Резервна копија датотеке Lawnchair</string>
+    <string name="backup_share_text">Резервна копија датотеке ZimLX</string>
     <string name="read_external_storage_required">Дозвола за складиштење је потребна за креирање резервне копије</string>
     <string name="local_backups">Локалне резервне копије</string>
     <string name="backup_location_device_storage">Меморија уређаја</string>
@@ -464,7 +464,7 @@
     <string name="pref_category_drawer">Фиока</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Разно</string>
-    <string name="blur_oom">Lawnchair је остао без меморије покушавајући да замути позадину! Смањивање резолуције позадине могло би да реши ово.</string>
+    <string name="blur_oom">ZimLX је остао без меморије покушавајући да замути позадину! Смањивање резолуције позадине могло би да реши ово.</string>
     <string name="legacy_backup">Наслеђене датотеке резервне копије</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Лиценца отвореног кода</string>
@@ -489,7 +489,7 @@
     <string name="about_role_special_snowflake">ПР менаџер / модератор</string>
     <string name="about_role_mod_support">Модератор / Подршка</string>
     <string name="about_role_family_member">Члан породице</string>
-    <string name="about_bio_deletescape">Програмер за Андроид &amp; ентузијасти, воле меме (мало превише). Оснивач пројекта Lawnchair.</string>
+    <string name="about_bio_deletescape">Програмер за Андроид &amp; ентузијасти, воле меме (мало превише). Оснивач пројекта ZimLX.</string>
     <string name="about_bio_divadsn">18 година, претвара кофеин и пицу у код. Такође раније познат као Codebucket.</string>
     <string name="about_bio_recoded">Благи кодер и графички дизајнер.</string>
     <string name="about_bio_josh">Самостални графички дизајнер.</string>

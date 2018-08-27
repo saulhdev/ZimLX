@@ -47,6 +47,7 @@ public class IconPickerActivity extends AppCompatActivity implements IconGridAda
         recyclerView.setAdapter(mAdapter);
         new PagerSnapHelper().attachToRecyclerView(recyclerView);
 
+
         BlurWallpaperProvider.Companion.applyBlurBackground(this);
         new LoadIconTask(this).execute();
     }

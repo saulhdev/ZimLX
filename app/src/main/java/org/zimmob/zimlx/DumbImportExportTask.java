@@ -102,7 +102,7 @@ public class DumbImportExportTask {
 
     @NonNull
     private static File getFolder() {
-        File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup");
+        File folder = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "ZimLX/backup");
         if (!folder.exists()) {
             folder.mkdirs();
         }

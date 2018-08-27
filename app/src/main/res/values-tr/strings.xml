@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%3$s için %1$d kısayol ve %2$d bildirim</string>
     <string name="notifications_header">Bildirimler</string>
     <string name="widgets_bottom_sheet_title">%1$s widget</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Hakkında</string>
-    <string name="about_pref_summary">Lawnchair ekibi hakkında bilgi sahibi olun</string>
+    <string name="about_pref_summary">ZimLX ekibi hakkında bilgi sahibi olun</string>
     <string name="changelog_title">Bu yapıdaki değişiklikler #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Simge paketi</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Widget\'lara tam genişlik</string>
     <string name="full_width_widgets_pref_summary">Widget\'ların dolgu olmadan tüm genişliğe yayılmasına izin ver</string>
     <string name="notification_access_pref_title">Bildirim rozetleri ve önizleme</string>
-    <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için Lawnchair\'ın bildiriminize erişmesine izin verin</string>
+    <string name="notification_access_pref_summary">Bu özellikleri etkinleştirmek için ZimLX\'ın bildiriminize erişmesine izin verin</string>
     <string name="general_pref_title">Ana ekran</string>
     <string name="dock_pref_title">Alt Panel</string>
     <string name="app_drawer_pref_title">Uygulama çekmecesi</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Uygulama çekmecenizi özelleştirin</string>
     <string name="pixel_ui_pref_summary">Farklı tema öğeleri</string>
     <string name="backup_pref_title">Yedekle ve geri yükle</string>
-    <string name="behavior_pref_summary">Lawnchair hareketlerini değiştir</string>
+    <string name="behavior_pref_summary">ZimLX hareketlerini değiştir</string>
     <string name="backup_pref_summary">Veritabanınızı ve ayarlarınızı yedekleyin\/geri yükleyin</string>
     <string name="debug_pref_summary">Simge veritabanını yeniden başlat veya yeniden oluştur</string>
     <string name="show_pixel_bar_pref_title">Pixel arama çubuğunu göster</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Pixel simgeleri kullan</string>
     <string name="pixel_style_icons_pref_summary">Etkinleştirildiğinde, mümkün olduğunca dairesel simgeler kullanılacaktır</string>
     <string name="show_google_now_tab_pref_title">Google Now sayfasını göster</string>
-    <string name="restart_lawnchair_pref_title">Lawnchair\'ı Yeniden Başlat</string>
-    <string name="restart_lawnchair_pref_summary">Bazı ayarlar doğru uygulanmadığında yardımcı olabilir</string>
+    <string name="restart_ZimLX_pref_title">ZimLX\'ı Yeniden Başlat</string>
+    <string name="restart_ZimLX_pref_summary">Bazı ayarlar doğru uygulanmadığında yardımcı olabilir</string>
     <string name="rebuild_icondb_pref_title">Simge veritabanını yeniden oluştur</string>
     <string name="pinch_to_overview_pref_title">Gözden geçirmek için sıkıştır</string>
     <string name="pinch_to_overview_pref_summary">Son kullanılanları açmak için ana ekranı sıkıştırın</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Veritabanı</string>
     <string name="export_prefs_title">Ayarlar</string>
     <string name="import_prefs_title">Ayarlar</string>
-    <string name="notification_listener_label">Lawnchair - Bildirim rozetleri</string>
-    <string name="color_extraction_label">Lawnchair - Renk çıkarma</string>
+    <string name="notification_listener_label">ZimLX - Bildirim rozetleri</string>
+    <string name="color_extraction_label">ZimLX - Renk çıkarma</string>
     <string name="test_title">Test</string>
     <string name="visibility">Görünürlük</string>
     <string name="default_text">Varsayılan</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed etkin değil</string>
     <string name="lawnfeed_not_enabled">Google Now sayfasını açmaya çalışıyorsunuz gibi gözüküyor, fakat davranış ayarlarındaki seçeneği etkinleştirmemişsiniz.\n\nEtkinleştirmek ister misiniz?</string>
     <string name="lawnfeed_outdated_title">Lawnfeed güncellemesi gerekli</string>
-    <string name="lawnfeed_outdated">Lawnchair\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
+    <string name="lawnfeed_outdated">ZimLX\'in bu sürümüyle çalışabilmesi için Lawnfeed\'in daha yeni bir sürümü gerekiyor.\n\nGüncellemeyi yüklemeden önce muhtemelen Lawnfeed\'in mevcut sürümünü kaldırmanız gerekecektir.\n\nŞimdi indirmek istiyor musunuz?</string>
     <string name="title_storage_permission_required">Depolama İzni Gerekiyor</string>
-    <string name="content_storage_permission_required">Android 8.1 ve üzeri sürümlerde, uygulamalar duvar kağıdına erişmek için depolama iznine ihtiyaç duyar. Söz konusu izin olmadan Lawnchair bozulmasına veya beklenmeyen davranışlar gösterebilir.</string>
+    <string name="content_storage_permission_required">Android 8.1 ve üzeri sürümlerde, uygulamalar duvar kağıdına erişmek için depolama iznine ihtiyaç duyar. Söz konusu izin olmadan ZimLX bozulmasına veya beklenmeyen davranışlar gösterebilir.</string>
     <string name="disable_popup">Tekrar gösterme</string>
     <string name="backups">Yedeklemeler</string>
     <string name="new_backup">Oluştur</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">Geri yükleme başarısız oldu</string>
     <string name="restore_read_meta_fail">Geçersiz yedek dosyası</string>
     <string name="backup_share_title">Yedeklemeyi paylaş</string>
-    <string name="backup_share_text">Lawnchair yedekleme dosyası</string>
+    <string name="backup_share_text">ZimLX yedekleme dosyası</string>
     <string name="read_external_storage_required">Yedekleme oluşturmak için depolama izni gerekiyor</string>
     <string name="local_backups">Yerel yedekleme</string>
     <string name="backup_location_device_storage">Cihaz depolaması</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Uygulama çekmecesi</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Çeşitli</string>
-    <string name="blur_oom">Lawnchair, duvar kağıdınızı bulanıklaştırmaya çalışan bellek bitti! Duvar kağıdı çözünürlüğünü düşürmek bunu düzeltebilir.</string>
+    <string name="blur_oom">ZimLX, duvar kağıdınızı bulanıklaştırmaya çalışan bellek bitti! Duvar kağıdı çözünürlüğünü düşürmek bunu düzeltebilir.</string>
     <string name="legacy_backup">Eski yedekleme dosyası</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Açık Kaynak Lisansları</string>
@@ -488,7 +488,7 @@
     <string name="about_role_special_snowflake">Halkla İlişkiler Yöneticisi / Moderatör</string>
     <string name="about_role_mod_support">Moderatör / Destek</string>
     <string name="about_role_family_member">Aile Üyesi</string>
-    <string name="about_bio_deletescape">Android geliştiricisi ve meraklısı. Lawnchair projesinin kurucusu.</string>
+    <string name="about_bio_deletescape">Android geliştiricisi ve meraklısı. ZimLX projesinin kurucusu.</string>
     <string name="about_bio_divadsn">18 yaşında, kafeini ve pizzayı kod haline getiriyor. Ayrıca daha önce Codebucket olarak da bilinir.</string>
     <string name="about_bio_recoded">Hafif kodlayıcı ve grafik tasarımcısı.</string>
     <string name="about_bio_josh">Serbest grafik tasarımcısı.</string>

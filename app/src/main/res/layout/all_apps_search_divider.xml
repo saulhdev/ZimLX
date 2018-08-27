@@ -13,11 +13,11 @@
      limitations under the License.
 -->
 <ImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:focusable="false"
     android:layout_width="match_parent"
     android:layout_height="9dp"
-    android:focusable="false"
-    android:importantForAccessibility="no"
     android:paddingBottom="@dimen/all_apps_divider_margin_vertical"
     android:paddingLeft="@dimen/container_fastscroll_thumb_max_width"
     android:paddingRight="@dimen/container_fastscroll_thumb_max_width"
+    android:importantForAccessibility="no"
     android:scaleType="fitXY" />

@@ -36,6 +36,10 @@
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_title__inputs">
+        <org.zimmob.zimlx.settings.ui.SubPreference
+            android:icon="@drawable/ic_notifications_paused"
+            android:title="@string/pref_title__notifications"
+            app:content="@xml/launcher_notification_preferences" />
 
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_behavior"
@@ -52,19 +56,21 @@
             app:content="@xml/launcher_debug_preferences"
             app:longClickContent="@xml/launcher_hidden_preferences" />
 
-        <Preference
+        <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_more_horiz"
             android:summary="@string/pref_summary__advanced"
             android:title="@string/pref_title__advanced"
             app:content="@xml/launcher_advanced_preferences"
             app:longClickContent="@xml/launcher_hidden_preferences" />
 
-        <PreferenceScreen
+        <Preference
             android:icon="@drawable/ic_information"
-            android:key="@string/pref_key__cat_about"
+            android:key="pref_key__cat_about"
             android:title="@string/about_title">
-
-        </PreferenceScreen>
+            <intent
+                android:targetClass="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
+                android:targetPackage="@string/application_id" />
+        </Preference>
     </PreferenceCategory>
 
 </android.support.v7.preference.PreferenceScreen>

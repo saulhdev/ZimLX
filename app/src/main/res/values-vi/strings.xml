@@ -240,9 +240,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d lối tắt và %2$d thông báo của %3$s</string>
     <string name="notifications_header">Thông báo</string>
     <string name="widgets_bottom_sheet_title">%1$s tiện ích con</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Thông tin</string>
-    <string name="about_pref_summary">Tìm hiểu về đội ngũ Lawnchair</string>
+    <string name="about_pref_summary">Tìm hiểu về đội ngũ ZimLX</string>
     <string name="changelog_title">Những thay đổi của bản xây dựng #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Gói Biểu Tượng</string>
@@ -275,7 +275,7 @@
     <string name="full_width_width_widgets_pref_title">Lấp đầy chiều rộng tiện ích con</string>
     <string name="full_width_widgets_pref_summary">Cho phép tiện ích con lấp đầy chiều rộng mà không có lề</string>
     <string name="notification_access_pref_title">Huy hiệu và xem trước thông báo</string>
-    <string name="notification_access_pref_summary">Cho phép Lawnchair truy cập vào thông báo của bạn để kích hoạt tính năng này</string>
+    <string name="notification_access_pref_summary">Cho phép ZimLX truy cập vào thông báo của bạn để kích hoạt tính năng này</string>
     <string name="general_pref_title">Màn hình chính</string>
     <string name="dock_pref_title">Thanh Dock</string>
     <string name="app_drawer_pref_title">Ngăn chứa ứng dụng</string>
@@ -287,7 +287,7 @@
     <string name="app_drawer_pref_summary">Tùy chỉnh ngăn chứa ứng dụng</string>
     <string name="pixel_ui_pref_summary">Áp dụng chủ đề lên các yếu tố khác</string>
     <string name="backup_pref_title">Sao lưu &amp; khôi phục</string>
-    <string name="behavior_pref_summary">Thay đổi hành vi của Lawnchair</string>
+    <string name="behavior_pref_summary">Thay đổi hành vi của ZimLX</string>
     <string name="backup_pref_summary">Sao lưu dữ liệu cài đặt</string>
     <string name="debug_pref_summary">Khởi động lại hoặc xây dựng lại dữ liệu biểu tượng</string>
     <string name="show_pixel_bar_pref_title">Hiển thị thanh tiện ích Pixel</string>
@@ -297,8 +297,8 @@
     <string name="pixel_style_icons_pref_title">Sử dụng các biểu tượng của Pixel</string>
     <string name="pixel_style_icons_pref_summary">Sử dụng các biểu tượng hình tròn nếu có thể</string>
     <string name="show_google_now_tab_pref_title">Hiển thị trang Google Now</string>
-    <string name="restart_lawnchair_pref_title">Khởi động lại Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Có thể hữu ích nếu một số cài đặt không có tác dụng</string>
+    <string name="restart_ZimLX_pref_title">Khởi động lại ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Có thể hữu ích nếu một số cài đặt không có tác dụng</string>
     <string name="rebuild_icondb_pref_title">Dựng lại dữ liệu các biểu tượng</string>
     <string name="pinch_to_overview_pref_title">Cử chỉ thu nhỏ để xem tổng quan</string>
     <string name="pinch_to_overview_pref_summary">Cử chỉ thu nhỏ ngoài màn hình chính để xem tổng quan</string>
@@ -316,8 +316,8 @@
     <string name="import_db_title">Cơ sở dữ liệu</string>
     <string name="export_prefs_title">Cài đặt</string>
     <string name="import_prefs_title">Cài đặt</string>
-    <string name="notification_listener_label">Lawnchair - Huy hiệu thông báo</string>
-    <string name="color_extraction_label">Lawnchair - Chiết xuất màu sắc</string>
+    <string name="notification_listener_label">ZimLX - Huy hiệu thông báo</string>
+    <string name="color_extraction_label">ZimLX - Chiết xuất màu sắc</string>
     <string name="test_title">Kiểm tra</string>
     <string name="visibility">Kiểu hiển thị</string>
     <string name="default_text">Mặc định</string>
@@ -411,9 +411,9 @@
     <!-- Strings for popup dialogs -->
     <string name="lawnfeed_not_enabled">Dường như bạn đang cố mở Google Now, nhưng bạn chưa bật tùy chọn này trong cài đặt hành vi.\n\nBạn có muốn bật nó bây giờ không?</string>
     <string name="lawnfeed_outdated_title">Cần cập nhật Lawnfeed</string>
-    <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của Lawnchair.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
+    <string name="lawnfeed_outdated">Bạn cần một phiên bản mới hơn của Lawnfeed để làm việc với phiên bản này của ZimLX.\n\nTrước khi cài đặt bản cập nhật, bạn có thể cần phải gỡ bỏ cài đặt phiên bản Lawnfeed hiện tại.\n\nBạn có muốn tải xuống bây giờ không?</string>
     <string name="title_storage_permission_required">Yêu cầu cấp quyền bộ nhớ</string>
-    <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép Lawnchair có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
+    <string name="content_storage_permission_required">Trên Android 8.1 trở lên, quyền lưu trữ là bắt buộc đối với các ứng dụng để truy cập vào hình nền. Nếu không có lời cho phép ZimLX có thể sụp đổ hoặc hiển thị hành vi bất ngờ.</string>
     <string name="disable_popup">Không hiển thị lại</string>
     <!-- Preference Category Pixel Searchbar Title -->
     <!-- Preference Category Icons Title -->

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -12,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 
 import org.zimmob.zimlx.EditableItemInfo;
 import org.zimmob.zimlx.LauncherSettings;
@@ -32,7 +34,7 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
 
     private static final int REQUEST_PICK_ICON = 0;
     private EditableItemInfo mInfo;
-
+    private Button buttonPlayStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.applyDarkTheme(this);
@@ -48,6 +50,11 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
             finish();
             return;
         }
+        buttonPlayStore = findViewById(R.id.play_store);
+        buttonPlayStore.setOnClickListener(v -> {
+            openPlayStore();
+        });
+
         ComponentName component = mInfo.getComponentName();
         List<IconPackInfo> iconPacks = new ArrayList<>(loadAvailableIconPacks().values());
         Collections.sort(iconPacks, new Comparator<IconPackInfo>() {
@@ -81,6 +88,11 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
         iconPackRecyclerView.setAdapter(iconPackAdapter);
     }
 
+    private void openPlayStore() {
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+        intent.setData(Uri.parse("https://play.google.com/store/search?q=iconpack&c=apps"));
+        startActivity(intent);
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_edit_icon, menu);

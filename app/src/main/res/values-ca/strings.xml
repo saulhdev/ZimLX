@@ -241,9 +241,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d dreceres i %2$d notificacions per %3$s</string>
     <string name="notifications_header">Notificacions</string>
     <string name="widgets_bottom_sheet_title">%1$s ginys</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">Quant a</string>
-    <string name="about_pref_summary">Coneixeu l\'equip de Lawnchair</string>
+    <string name="about_pref_summary">Coneixeu l\'equip de ZimLX</string>
     <string name="changelog_title">Registre de canvis per a la compilació #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Paquet d\'icones</string>
@@ -276,7 +276,7 @@
     <string name="full_width_width_widgets_pref_title">Ginys d\'amplada completa</string>
     <string name="full_width_widgets_pref_summary">Permet que els ginys apareguin ocupant tota l\'amplada</string>
     <string name="notification_access_pref_title">Distintius de notificació i previsualització</string>
-    <string name="notification_access_pref_summary">Permet a Lawnchair accedir a les vostres notificacions per activar aquesta característica</string>
+    <string name="notification_access_pref_summary">Permet a ZimLX accedir a les vostres notificacions per activar aquesta característica</string>
     <string name="general_pref_title">General</string>
     <string name="dock_pref_title">Barra d\'aplicacions</string>
     <string name="app_drawer_pref_title">Calaix d\'aplicacions</string>
@@ -288,7 +288,7 @@
     <string name="app_drawer_pref_summary">Personalitzeu el calaix de d\'aplicacions</string>
     <string name="pixel_ui_pref_summary">Personalitza diferents elements</string>
     <string name="backup_pref_title">Còpia de seguretat i restauració</string>
-    <string name="behavior_pref_summary">Canvia el comportament del Lawnchair</string>
+    <string name="behavior_pref_summary">Canvia el comportament del ZimLX</string>
     <string name="backup_pref_summary">Còpia de seguretat/restauració de la configuració i la base de dades</string>
     <string name="debug_pref_summary">Reinicia o reconstrueix la base de dades d\'icones</string>
     <string name="show_pixel_bar_pref_title">Mostra la barra superior de Pixel</string>
@@ -300,8 +300,8 @@
     <string name="pixel_style_icons_pref_title">Utilitza icones Pixel</string>
     <string name="pixel_style_icons_pref_summary">Quan s\'activin les icones circulars, es faran servir quan sigui possible</string>
     <string name="show_google_now_tab_pref_title">Mostrar la pàgina de Google Now</string>
-    <string name="restart_lawnchair_pref_title">Reinicia el Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Pot ser útil si algunes configuracions no s\'apliquen correctament</string>
+    <string name="restart_ZimLX_pref_title">Reinicia el ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Pot ser útil si algunes configuracions no s\'apliquen correctament</string>
     <string name="rebuild_icondb_pref_title">Reconstrueix la base de dades d\'icones</string>
     <string name="pinch_to_overview_pref_title">Prem per previsualitzar</string>
     <string name="pinch_to_overview_pref_summary">Premeu a la pàgina d\'inici per obrir la vista general</string>
@@ -319,8 +319,8 @@
     <string name="import_db_title">Base de dades</string>
     <string name="export_prefs_title">Configuració</string>
     <string name="import_prefs_title">Configuració</string>
-    <string name="notification_listener_label">Lawnchair - Insígnies de notificació</string>
-    <string name="color_extraction_label">Lawnchair - Extracció de color</string>
+    <string name="notification_listener_label">ZimLX - Insígnies de notificació</string>
+    <string name="color_extraction_label">ZimLX - Extracció de color</string>
     <string name="test_title">Prova</string>
     <string name="visibility">Visibilitat</string>
     <string name="default_text">Per defecte</string>
@@ -418,9 +418,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed no està activat</string>
     <string name="lawnfeed_not_enabled">Sembla que esteu intentant obrir la pàgina de Google Now, però no heu activat l\'opció en la configuració del comportament.\n\n Voleu activar-la ara?</string>
     <string name="lawnfeed_outdated_title">Cal actualitzar Lawnfeed</string>
-    <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de Lawnchair.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
+    <string name="lawnfeed_outdated">Cal una versió més actual de Lawnfeed per funcionar amb aquesta versió de ZimLX.\n\nAbans d\'instal·lar l\'actualització, probablement haureu de desinstal·lar la versió actual de Lawnfeed.\n\nVoleu baixar-la ara?</string>
     <string name="title_storage_permission_required">Cal permís d\'emmagatzematge</string>
-    <string name="content_storage_permission_required">A Android 8.1 i versions superiors, es requereix permís d\'emmagatzematge perquè les aplicacions accedeixin al fons de pantalla. Sense aquest permís Lawnchair podria bloquejar o mostrar comportaments inesperats.</string>
+    <string name="content_storage_permission_required">A Android 8.1 i versions superiors, es requereix permís d\'emmagatzematge perquè les aplicacions accedeixin al fons de pantalla. Sense aquest permís ZimLX podria bloquejar o mostrar comportaments inesperats.</string>
     <string name="disable_popup">No tornis a mostrar-ho</string>
     <string name="backups">Còpies de seguretat</string>
     <string name="new_backup">Crea</string>
@@ -450,7 +450,7 @@
     <string name="restore_failed">La restauració ha fallat</string>
     <string name="restore_read_meta_fail">Fitxer de còpia de seguretat no vàlid</string>
     <string name="backup_share_title">Comparteix la còpia de seguretat</string>
-    <string name="backup_share_text">Fitxer de còpia de seguretat del Lawnchair</string>
+    <string name="backup_share_text">Fitxer de còpia de seguretat del ZimLX</string>
     <string name="read_external_storage_required">Cal el permís d\'emmagatzematge per crear una còpia de seguretat</string>
     <string name="local_backups">Còpies de seguretat locals</string>
     <string name="backup_location_device_storage">Emmagatzematge del dispositiu</string>
@@ -463,7 +463,7 @@
     <string name="pref_category_drawer">Calaix d\'aplicacions</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Miscel·lània</string>
-    <string name="blur_oom">El Lawnchair s\'ha quedat sense memòria intentant el desenfocament del fons de pantalla! La baixada de la resolució del fons de pantalla podria solucionar-ho.</string>
+    <string name="blur_oom">El ZimLX s\'ha quedat sense memòria intentant el desenfocament del fons de pantalla! La baixada de la resolució del fons de pantalla podria solucionar-ho.</string>
     <string name="legacy_backup">Fitxer de còpia de seguretat heretat</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Llicències de codi obert</string>
@@ -488,7 +488,7 @@
     <string name="about_role_special_snowflake">Administrador de relacions públiques / Moderador</string>
     <string name="about_role_mod_support">Moderador / Suport</string>
     <string name="about_role_family_member">Membre de la família</string>
-    <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, estima els memes (una mica massa en realitat). Fundador del projecte Lawnchair.</string>
+    <string name="about_bio_deletescape">Desenvolupador i entusiasta d\'Android, estima els memes (una mica massa en realitat). Fundador del projecte ZimLX.</string>
     <string name="about_bio_divadsn">18 anys, converteixo la cafeïna i la pizza en codi. També conegut anteriorment com Codebucket.</string>
     <string name="about_bio_recoded">Programador i dissenyador.</string>
     <string name="about_bio_josh">Dissenyador autònom.</string>

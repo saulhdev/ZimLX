@@ -243,9 +243,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d קיצורי דרך ו %2$d התראות עבור %3$s</string>
     <string name="notifications_header">התראות</string>
     <string name="widgets_bottom_sheet_title">%1$s ווידג\'טים</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">אודות</string>
-    <string name="about_pref_summary">הכר את צוות Lawnchair</string>
+    <string name="about_pref_summary">הכר את צוות ZimLX</string>
     <string name="changelog_title">רשימת שינויים לגירסא #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">ערכת סמלים</string>
@@ -278,7 +278,7 @@
     <string name="full_width_width_widgets_pref_title">וויד\'גטים ברוחב מלא</string>
     <string name="full_width_widgets_pref_summary">אפשר לווידג\'טים להתפרש על כל רוחב המסך</string>
     <string name="notification_access_pref_title">תגיות להתראות ותצוגה מקדימה</string>
-    <string name="notification_access_pref_summary">אפשר ל-Lawnchair לגשת להודעות שלך כדי להפוך תכונה זו לזמינה</string>
+    <string name="notification_access_pref_summary">אפשר ל-ZimLX לגשת להודעות שלך כדי להפוך תכונה זו לזמינה</string>
     <string name="general_pref_title">כללי</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">מגירת יישומים</string>
@@ -290,7 +290,7 @@
     <string name="app_drawer_pref_summary">התאמה אישית של מגירת היישומים</string>
     <string name="pixel_ui_pref_summary">אפשר תכונות ייחודיות של מפעיל Pixel</string>
     <string name="backup_pref_title">גיבוי</string>
-    <string name="behavior_pref_summary">שנה את ההתנהגות של Lawnchair</string>
+    <string name="behavior_pref_summary">שנה את ההתנהגות של ZimLX</string>
     <string name="backup_pref_summary">גיבוי מסד הנתונים וההגדרות שלך</string>
     <string name="debug_pref_summary">הפעל מחדש או בנה מחדש מסד נתונים של סמלים</string>
     <string name="show_pixel_bar_pref_title">הצג שורה עליונה בסגנון Pixel</string>
@@ -302,8 +302,8 @@
     <string name="pixel_style_icons_pref_title">שימוש בסמלי Pixel</string>
     <string name="pixel_style_icons_pref_summary">כאשר מופעל, סמלים מעוגלים יוצגו היכן שהדבר אפשרי</string>
     <string name="show_google_now_tab_pref_title">הצגת עמוד Google Now</string>
-    <string name="restart_lawnchair_pref_title">הפעל מחדש את Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">יכול להיות שימושי אם חלק מההגדרות לא מיושמות היטב</string>
+    <string name="restart_ZimLX_pref_title">הפעל מחדש את ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">יכול להיות שימושי אם חלק מההגדרות לא מיושמות היטב</string>
     <string name="rebuild_icondb_pref_title">בנה מחדש את מסד הנתונים של הסמלים</string>
     <string name="pinch_to_overview_pref_title">צבוט בכדי לסקור</string>
     <string name="pinch_to_overview_pref_summary">צביטה במסך הבית כדי להגיע לסקירה</string>
@@ -321,8 +321,8 @@
     <string name="import_db_title">מסד נתונים</string>
     <string name="export_prefs_title">הגדרות</string>
     <string name="import_prefs_title">הגדרות</string>
-    <string name="notification_listener_label">Lawnchair - תגיות התראות</string>
-    <string name="color_extraction_label">Lawnchair - שליפת צבעים</string>
+    <string name="notification_listener_label">ZimLX - תגיות התראות</string>
+    <string name="color_extraction_label">ZimLX - שליפת צבעים</string>
     <string name="test_title">בדיקה</string>
     <string name="visibility">נראות</string>
     <string name="default_text">ברירת מחדל</string>
@@ -420,9 +420,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed אינו מופעל</string>
     <string name="lawnfeed_not_enabled">נראה שאתה מנסה לפתוח את הדף של Google Now, אך לא הפעלת את האפשרות בהגדרות.\n\nהאם ברצונך להפעיל אותה עכשיו?</string>
     <string name="lawnfeed_outdated_title">עדכון ל-Lawnfeed נדרש</string>
-    <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של Lawnchair.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
+    <string name="lawnfeed_outdated">גרסה חדשה יותר של Lawnfeed נדרשת כדי לעבוד עם גרסה זו של ZimLX.\n\nלפני שתוכל להתקין את העדכון, כנראה שתצטרך להסיר את הגרסה הקודמת של Lawnfeed.\n\nהאם ברצונך להוריד אותה עכשיו?</string>
     <string name="title_storage_permission_required">דרושה הרשאה לאחסון</string>
-    <string name="content_storage_permission_required">ב- 8.1 אנדרואיד ומעלה הרשאת האחסון נדרשת על ידי יישומים לגישה לטפט. ללא הרשאה זו Lawnchair עלול לקרוס או להתנהג באופן בלתי צפוי.</string>
+    <string name="content_storage_permission_required">ב- 8.1 אנדרואיד ומעלה הרשאת האחסון נדרשת על ידי יישומים לגישה לטפט. ללא הרשאה זו ZimLX עלול לקרוס או להתנהג באופן בלתי צפוי.</string>
     <string name="disable_popup">אל תציג שוב</string>
     <string name="backups">גיבויים</string>
     <string name="new_backup">יצירה</string>
@@ -452,7 +452,7 @@
     <string name="restore_failed">שחזור נכשל</string>
     <string name="restore_read_meta_fail">קובץ גיבוי לא חוקי</string>
     <string name="backup_share_title">שתף גיבוי</string>
-    <string name="backup_share_text">קובץ גיבוי של Lawnchair</string>
+    <string name="backup_share_text">קובץ גיבוי של ZimLX</string>
     <string name="read_external_storage_required">הרשאת אחסון נדרשת ליצור גיבוי</string>
     <string name="local_backups">גיבויים מקומיים</string>
     <string name="backup_location_device_storage">אחסון המכשיר</string>
@@ -465,7 +465,7 @@
     <string name="pref_category_drawer">מגירה</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">שונות</string>
-    <string name="blur_oom">ל-Lawnchair נגמר הזיכרון בניסיון לטשטש את הטפט שלך! הורדת הרזולוציה של הטפט יכולה לתקן את זה.</string>
+    <string name="blur_oom">ל-ZimLX נגמר הזיכרון בניסיון לטשטש את הטפט שלך! הורדת הרזולוציה של הטפט יכולה לתקן את זה.</string>
     <string name="legacy_backup">קובץ גיבוי מדור קודם</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">רישיונות קוד פתוח</string>

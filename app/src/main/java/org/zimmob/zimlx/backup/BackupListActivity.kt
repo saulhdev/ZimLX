@@ -41,7 +41,6 @@ class BackupListActivity : BackupBaseActivity(), BackupListAdapter.Callbacks {
         setContentView(R.layout.activity_backup_list)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         restoreBackup.setOnClickListener {
             bottomSheet.dismiss()
             openRestore(currentPosition)

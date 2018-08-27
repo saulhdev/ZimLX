@@ -141,7 +141,7 @@ class ProxyImpl(val context: Context) : ILauncherClientProxy.Stub() {
     }
 
     override fun init(callback: ILauncherClientProxyCallback): Int {
-        allowed = "ch.deletescape.lawnchair.plah" == callingPackage || "ch.deletescape.lawnchair" == callingPackage
+        allowed = "org.zimlx.zimlx.plah" == callingPackage || "org.zimlx.zimlx" == callingPackage
         enforcePermission()
         proxyCallback = callback
         Updater.checkUpdate(context)

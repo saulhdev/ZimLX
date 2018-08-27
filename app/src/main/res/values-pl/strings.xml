@@ -243,9 +243,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d skrótów i %2$d powiadomień dla %3$s</string>
     <string name="notifications_header">Powiadomienia</string>
     <string name="widgets_bottom_sheet_title">%1$s widżetów</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">О aplikacji</string>
-    <string name="about_pref_summary">Poznaj zespół Lawnchaira</string>
+    <string name="about_pref_summary">Poznaj zespół ZimLXa</string>
     <string name="changelog_title">Lista zmian dla wersji #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Zestaw ikon</string>
@@ -278,7 +278,7 @@
     <string name="full_width_width_widgets_pref_title">Widżety na całej szerokości</string>
     <string name="full_width_widgets_pref_summary">Zezwól widżetom na rozciągnięcie się na całej szerokości ekranu bez odstępów</string>
     <string name="notification_access_pref_title">Odznaki powiadomień i podgląd</string>
-    <string name="notification_access_pref_summary">Zezwól Lawnchair na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
+    <string name="notification_access_pref_summary">Zezwól ZimLX na dostęp do twoich powiadomień żeby włączyć te funkcje</string>
     <string name="general_pref_title">Pulpit</string>
     <string name="dock_pref_title">Dock</string>
     <string name="app_drawer_pref_title">Lista aplikacji</string>
@@ -290,7 +290,7 @@
     <string name="app_drawer_pref_summary">Dostosuj listę aplikacji</string>
     <string name="pixel_ui_pref_summary">Różne elementy tematu</string>
     <string name="backup_pref_title">Kopia zapasowa</string>
-    <string name="behavior_pref_summary">Zmień zachowanie Lawnchair</string>
+    <string name="behavior_pref_summary">Zmień zachowanie ZimLX</string>
     <string name="backup_pref_summary">Utwórz/Przywróć kopię zapasową ustawień i plików</string>
     <string name="debug_pref_summary">Zrestartuj lub przebuduj bazę ikon</string>
     <string name="show_pixel_bar_pref_title">Pokaż górny pasek Pixel</string>
@@ -302,8 +302,8 @@
     <string name="pixel_style_icons_pref_title">Uzyj stylu ikon Pixel</string>
     <string name="pixel_style_icons_pref_summary">Kiedy opcja jest włączona, okrągłe ikony będą używane, gdzie jest to możliwe</string>
     <string name="show_google_now_tab_pref_title">Pokaż stronę Google Now</string>
-    <string name="restart_lawnchair_pref_title">Zrestartuj Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
+    <string name="restart_ZimLX_pref_title">Zrestartuj ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Może być pomocne gdy niektóre ustawienia nie zostaną zastosowane poprawnie</string>
     <string name="rebuild_icondb_pref_title">Przebuduj bazę danych ikon</string>
     <string name="pinch_to_overview_pref_title">Uszczypnij dla podglądu ekranów</string>
     <string name="pinch_to_overview_pref_summary">Wykonaj gest uszczypnięcia na ekranie głównym aby zobaczyć podgląd ekranów</string>
@@ -321,8 +321,8 @@
     <string name="import_db_title">Bazę danych</string>
     <string name="export_prefs_title">Ustawienia</string>
     <string name="import_prefs_title">Ustawienia</string>
-    <string name="notification_listener_label">Lawnchair - Odznaki powiadomień</string>
-    <string name="color_extraction_label">Lawnchair - Pobieranie koloru</string>
+    <string name="notification_listener_label">ZimLX - Odznaki powiadomień</string>
+    <string name="color_extraction_label">ZimLX - Pobieranie koloru</string>
     <string name="test_title">Test</string>
     <string name="visibility">Widoczność</string>
     <string name="default_text">Domyślny</string>
@@ -420,9 +420,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed nie jest aktywny</string>
     <string name="lawnfeed_not_enabled">Wygląda, że próbujesz otworzyć stronę Google Now, ale nie włączono opcji w ustawieniach zachowania.\n\nCzy włączyć teraz?</string>
     <string name="lawnfeed_outdated_title">Wymagana aktualizacja Lawnfeed</string>
-    <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją Lawnchair.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
+    <string name="lawnfeed_outdated">Nowsza wersja Lawnfeed jest wymagana do pracy z aktualną wersją ZimLX.\n\nPrzed aktualizacją prawdopodobnie będzie wymagane usunięcie obecnej wersji Lawnfeed.\n\nCzy pobrać ją teraz?</string>
     <string name="title_storage_permission_required">Wymagany dostęp do plików</string>
-    <string name="content_storage_permission_required">W Androidzie 8.1 i wyższym uprawnienia do \"pamięci urządzenia\" są wymagane dla aplikacji z dostępem do tapet. Bez tego Lawnchair może ulec awarii lub zachowywać się niestabilnie.</string>
+    <string name="content_storage_permission_required">W Androidzie 8.1 i wyższym uprawnienia do \"pamięci urządzenia\" są wymagane dla aplikacji z dostępem do tapet. Bez tego ZimLX może ulec awarii lub zachowywać się niestabilnie.</string>
     <string name="disable_popup">Nie pokazuj ponownie</string>
     <string name="backups">Kopie zapasowe</string>
     <string name="new_backup">Utwórz</string>
@@ -452,7 +452,7 @@
     <string name="restore_failed">Przywracanie nie powiodło się</string>
     <string name="restore_read_meta_fail">Nieprawidłowy plik kopii zapasowej</string>
     <string name="backup_share_title">Udostępnij kopię zapasową</string>
-    <string name="backup_share_text">Plik kopii zapasowej Lawnchair</string>
+    <string name="backup_share_text">Plik kopii zapasowej ZimLX</string>
     <string name="read_external_storage_required">Aby utworzyć kopię zapasową wymagany jest dostęp do plików</string>
     <string name="local_backups">Lokalne kopie zapasowe</string>
     <string name="backup_location_device_storage">Pamięć urządzenia</string>
@@ -465,7 +465,7 @@
     <string name="pref_category_drawer">Szuflada</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Pozostałe</string>
-    <string name="blur_oom">Lawnchairowi skończyła się pamięć podczas próby rozmycia tapety. Zmniejszenie rozdzielczości tapety może rozwiązać ten problem.</string>
+    <string name="blur_oom">ZimLXowi skończyła się pamięć podczas próby rozmycia tapety. Zmniejszenie rozdzielczości tapety może rozwiązać ten problem.</string>
     <string name="legacy_backup">Plik starszej wersji kopii zapasowej</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Licencje Open Source</string>
@@ -490,7 +490,7 @@
     <string name="about_role_special_snowflake">Zarządca PR / Moderator</string>
     <string name="about_role_mod_support">Moderator / Wsparcie</string>
     <string name="about_role_family_member">Członek rodziny</string>
-    <string name="about_bio_deletescape">Entuzjasta Androida oraz twórca aplikacji na niego, uwielbia memy (nawet za bardzo). Założyciel projektu Lawnchair.</string>
+    <string name="about_bio_deletescape">Entuzjasta Androida oraz twórca aplikacji na niego, uwielbia memy (nawet za bardzo). Założyciel projektu ZimLX.</string>
     <string name="about_bio_divadsn">Osiemnastolatek, zamienia kofeinę i pizzę w kod. Znany poprzednio jako Codebucket.</string>
     <string name="about_bio_recoded">Spokojny programista oraz grafik.</string>
     <string name="about_bio_josh">Niezależny grafik.</string>

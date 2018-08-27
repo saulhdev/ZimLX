@@ -243,9 +243,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d zástupci a %2$d oznámení pro %3$s</string>
     <string name="notifications_header">Oznámení</string>
     <string name="widgets_bottom_sheet_title">%1$s widgety</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">O aplikaci</string>
-    <string name="about_pref_summary">Seznamte se s týmem Lawnchair</string>
+    <string name="about_pref_summary">Seznamte se s týmem ZimLX</string>
     <string name="changelog_title">Seznam změn pro sestavení #%d</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Balíček ikon</string>
@@ -278,7 +278,7 @@
     <string name="full_width_width_widgets_pref_title">Widgety s plnou šířkou</string>
     <string name="full_width_widgets_pref_summary">Povolte widgetům pokrývat celou šířku bez odsazení</string>
     <string name="notification_access_pref_title">Zobrazení oznámení a náhledů</string>
-    <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte spouštěči Lawnchair přístup k vašim upozorněním</string>
+    <string name="notification_access_pref_summary">Pro zapnutí této funkce povolte spouštěči ZimLX přístup k vašim upozorněním</string>
     <string name="general_pref_title">Obecné</string>
     <string name="dock_pref_title">Dok</string>
     <string name="app_drawer_pref_title">Seznam aplikací</string>
@@ -290,7 +290,7 @@
     <string name="app_drawer_pref_summary">Přizpůsobit seznam aplikací</string>
     <string name="pixel_ui_pref_summary">Povolit exkluzivní funkce spouštěče Pixel</string>
     <string name="backup_pref_title">Zálohování</string>
-    <string name="behavior_pref_summary">Změnit chování Lawnchair</string>
+    <string name="behavior_pref_summary">Změnit chování ZimLX</string>
     <string name="backup_pref_summary">Zálohovat databázi a nastavení</string>
     <string name="debug_pref_summary">Restartovat nebo znovu vytvořit ikonu databáze</string>
     <string name="show_pixel_bar_pref_title">Zobrazit Pixel horní panel</string>
@@ -302,8 +302,8 @@
     <string name="pixel_style_icons_pref_title">Použít ikony Pixel</string>
     <string name="pixel_style_icons_pref_summary">Pokud budou povoleny kruhové ikony, budou použity všude, kde je to možné</string>
     <string name="show_google_now_tab_pref_title">Zobrazit stránku Google Now</string>
-    <string name="restart_lawnchair_pref_title">Restartovat Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">Může být užitečné v případě, že některá nastavení nejsou použita správně</string>
+    <string name="restart_ZimLX_pref_title">Restartovat ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">Může být užitečné v případě, že některá nastavení nejsou použita správně</string>
     <string name="rebuild_icondb_pref_title">Znovu vytvořit databázi ikon</string>
     <string name="pinch_to_overview_pref_title">Přepnout na přehled</string>
     <string name="pinch_to_overview_pref_summary">Pro otevření přehledu klepněte na domovskou obrazovku</string>
@@ -321,8 +321,8 @@
     <string name="import_db_title">Import databáze</string>
     <string name="export_prefs_title">Export nastavení</string>
     <string name="import_prefs_title">Import nastavení</string>
-    <string name="notification_listener_label">Lawnchair - indikátor oznámení</string>
-    <string name="color_extraction_label">Lawnchair - Extrakce barev</string>
+    <string name="notification_listener_label">ZimLX - indikátor oznámení</string>
+    <string name="color_extraction_label">ZimLX - Extrakce barev</string>
     <string name="test_title">Zkouška</string>
     <string name="visibility">Viditelnost</string>
     <string name="default_text">Výchozí</string>
@@ -420,9 +420,9 @@
     <string name="lawnfeed_not_enabled_title">Lawnfeed není povolen</string>
     <string name="lawnfeed_not_enabled">Zdá se, že se pokoušíte otevřít stránku Google Now, avšak v nastavení chování jste tuto možnost nepovolili.\n\nChcete tuto možnost povolit?</string>
     <string name="lawnfeed_outdated_title">Vyžadována aktualizace Lawnfeed</string>
-    <string name="lawnfeed_outdated">V této verzi Lawnchair je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
+    <string name="lawnfeed_outdated">V této verzi ZimLX je zapotřebí novější verze Lawnfeed.\n\nPřed instalací této aktualizace budete pravděpodobně muset odinstalovat aktuální verzi Lawnfeed.\n\nChcete ji nyní stáhnout?</string>
     <string name="title_storage_permission_required">Vyžadováno oprávnění k úložišti</string>
-    <string name="content_storage_permission_required">V zařízeních s Android 8.1 a vyšším je pro přístup k tapetám vyžadováno oprávnění k úložišti. Bez zmíněného oprávnění se může stát, že aplikace Lawnchair selže nebo bude mít neočekávané chování.</string>
+    <string name="content_storage_permission_required">V zařízeních s Android 8.1 a vyšším je pro přístup k tapetám vyžadováno oprávnění k úložišti. Bez zmíněného oprávnění se může stát, že aplikace ZimLX selže nebo bude mít neočekávané chování.</string>
     <string name="disable_popup">Znovu nezobrazovat</string>
     <string name="backups">Zálohy</string>
     <string name="new_backup">Vytvořit</string>
@@ -452,7 +452,7 @@
     <string name="restore_failed">Obnovení selhalo</string>
     <string name="restore_read_meta_fail">Neplatný zálož. soubor</string>
     <string name="backup_share_title">Sdílet zálohu</string>
-    <string name="backup_share_text">Záložní soubor Lawnchair</string>
+    <string name="backup_share_text">Záložní soubor ZimLX</string>
     <string name="read_external_storage_required">Oprávnění úložiště je potřeba k vytvoření zálohy</string>
     <string name="local_backups">Místní zálohy</string>
     <string name="backup_location_device_storage">Úložiště zařízení</string>
@@ -465,7 +465,7 @@
     <string name="pref_category_drawer">Seznam aplikací</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">Různé</string>
-    <string name="blur_oom">Lawnchair vyčerpal paměť při pokusu rozmazat tapetu! Snížení rozlišení tabety by tento problém mohlo vyřešit.</string>
+    <string name="blur_oom">ZimLX vyčerpal paměť při pokusu rozmazat tapetu! Snížení rozlišení tabety by tento problém mohlo vyřešit.</string>
     <string name="legacy_backup">Starší soubor zálohy</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">Open Source licence</string>
@@ -490,7 +490,7 @@
     <string name="about_role_special_snowflake">PR manažerr / moderátor</string>
     <string name="about_role_mod_support">Moderátor / podpora</string>
     <string name="about_role_family_member">Člen rodiny</string>
-    <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (příliš mnoho). Zakladatel projektu Lawnchair.</string>
+    <string name="about_bio_deletescape">Vývojář androidu &amp; nadšenec, milující memy (příliš mnoho). Zakladatel projektu ZimLX.</string>
     <string name="about_bio_divadsn">18 let starý, mění kafe a pizzu v kódy. Dříve známý také jako Codebucket.</string>
     <string name="about_bio_recoded">Kodér a grafický designér.</string>
     <string name="about_bio_josh">Grafický návrhář na volné noze.</string>

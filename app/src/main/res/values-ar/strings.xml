@@ -245,9 +245,9 @@
     <string name="shortcuts_menu_with_notifications_description">%1$d اختصارات و %2$d اشعارات لـ %3$s</string>
     <string name="notifications_header">الإشعارات</string>
     <string name="widgets_bottom_sheet_title">الأدوات %1$s</string>
-    <!-- About Lawnchair -->
+    <!-- About ZimLX -->
     <string name="about_title">حول</string>
-    <string name="about_pref_summary">تعرف عن فريق lawnchair</string>
+    <string name="about_pref_summary">تعرف عن فريق ZimLX</string>
     <string name="changelog_title">تغييرات البنية #%d</string>
     <string name="week_day_format">%1$s، %2$s</string>
     <string name="icon_pack_preference_title">حزم الإيقونات</string>
@@ -280,7 +280,7 @@
     <string name="full_width_width_widgets_pref_title">أدوات بالعرض الكامل</string>
     <string name="full_width_widgets_pref_summary">السماح للأدوات بالتمدد على كامل عرض الشاشة من غير حشو</string>
     <string name="notification_access_pref_title">علامات الإشعارات و معاينتها</string>
-    <string name="notification_access_pref_summary">السماح ل Lawnchair بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
+    <string name="notification_access_pref_summary">السماح ل ZimLX بالوصول إلى الإشعارات الخاصة بك لتفعيل هذه الميزات</string>
     <string name="general_pref_title">عام</string>
     <string name="dock_pref_title">قائمة البرامج</string>
     <string name="app_drawer_pref_title">قائمة البرامج</string>
@@ -292,7 +292,7 @@
     <string name="app_drawer_pref_summary">تخصيص درج التطبيقات الخاص بك</string>
     <string name="pixel_ui_pref_summary">تفعيل ميزات واجهة بكسل الخاصة</string>
     <string name="backup_pref_title">النسخ الإحتياطي &amp; والإستعادة</string>
-    <string name="behavior_pref_summary">تغيير سلوك Lawnchair</string>
+    <string name="behavior_pref_summary">تغيير سلوك ZimLX</string>
     <string name="backup_pref_summary">النسخ الاحتياطي قاعدة البيانات والإعدادات الخاصة بك</string>
     <string name="debug_pref_summary">إعادة تشغيل أو إعادة إنشاء قاعدة بيانات الأيقونات</string>
     <string name="show_pixel_bar_pref_title">اظهار الشريط العلوي لبكسل</string>
@@ -304,8 +304,8 @@
     <string name="pixel_style_icons_pref_title">استخدم أيقونات بكسل</string>
     <string name="pixel_style_icons_pref_summary">عند التفعيل سيتم استخدام الأيقونات الدائرية حيثما كان ذلك ممكناً</string>
     <string name="show_google_now_tab_pref_title">إظهار صفحة جوجل الآن</string>
-    <string name="restart_lawnchair_pref_title">أعادة تشغيل Lawnchair</string>
-    <string name="restart_lawnchair_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات</string>
+    <string name="restart_ZimLX_pref_title">أعادة تشغيل ZimLX</string>
+    <string name="restart_ZimLX_pref_summary">يمكن أن يكون مفيداً إذا لم يتم تطبيق بعض الإعدادات</string>
     <string name="rebuild_icondb_pref_title">إعادة إنشاء قاعدة بيانات الأيقونة</string>
     <string name="pinch_to_overview_pref_title">اقبض بإصبعين لنظرة عامة</string>
     <string name="pinch_to_overview_pref_summary">اقبض باصعين على الشاشة الرئيسية لفتح النظرة العامة</string>
@@ -323,7 +323,7 @@
     <string name="import_db_title">إستيراد قاعدة البيانات</string>
     <string name="export_prefs_title">تصدير الإعدادات</string>
     <string name="import_prefs_title">إستيراد الإعدادات</string>
-    <string name="notification_listener_label">Lawnchair - علامات الإشعارات</string>
+    <string name="notification_listener_label">ZimLX - علامات الإشعارات</string>
     <string name="color_extraction_label">لاونتشير - استخراج اللون</string>
     <string name="test_title">اختبار</string>
     <string name="visibility">وضوح الرؤية</string>
@@ -467,7 +467,7 @@
     <string name="pref_category_drawer">قائمة التطبيقات</string>
     <!-- Preference Category Misc Title -->
     <string name="pref_category_misc">متفرقات</string>
-    <string name="blur_oom">Lawnchair يعمل خارج نطاق الذاكرة حاول تضبيب الخلفية! تقليل دقة الخلفية يمكن ان يصلح هذا.</string>
+    <string name="blur_oom">ZimLX يعمل خارج نطاق الذاكرة حاول تضبيب الخلفية! تقليل دقة الخلفية يمكن ان يصلح هذا.</string>
     <string name="legacy_backup">ملف النسخة الاحتياطية القديمة</string>
     <!-- About screen -->
     <string name="title_attribouter_licenses">ترخيص مفتوح المصدر</string>
@@ -488,7 +488,7 @@
     <string name="about_role_dev">المطور</string>
     <string name="about_role_designer">المصمم</string>
     <string name="about_role_family_member">فرد من الاسرة</string>
-    <string name="about_bio_deletescape">مطور الاندرويد و الهواة ، يحب الميمات (قليلا جدا في الواقع). مؤسس مشروع Lawnchair.</string>
+    <string name="about_bio_deletescape">مطور الاندرويد و الهواة ، يحب الميمات (قليلا جدا في الواقع). مؤسس مشروع ZimLX.</string>
     <string name="about_bio_divadsn">18 عاماً، يحول الكافيين والبيتزا إلى التعليمات البرمجية. أيضا تعرف سابقا باسم كوديبوكيت.</string>
     <string name="about_bio_recoded">مصمم البرامج والرسومات الخفيفة.</string>
     <string name="about_bio_josh">مصمم جرافيك حر.</string>
