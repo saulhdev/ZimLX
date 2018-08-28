@@ -1,24 +1,26 @@
 package org.zimmob.zimlx.minibar;
 
 import android.app.NotificationManager;
+import android.app.admin.DevicePolicyManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
 
-import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
+import org.zimmob.zimlx.util.DialogHelper;
+import org.zimmob.zimlx.util.Tool;
 
 public class Minibar {
-    private static Launcher mLauncher;
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
             new ActionDisplayItem(Action.EditMinibar, "EditMinibar", "", R.drawable.ic_mode_edit_black_24dp, 98),
             new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", "", R.drawable.ic_photo_black_24dp, 36),
             new ActionDisplayItem(Action.LockScreen, "LockScreen", "", R.drawable.ic_lock_black_24dp, 24),
             new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", "", R.drawable.ic_settings_launcher_black_24dp, 50),
             new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", "", R.drawable.ic_volume_up_black_24dp, 71),
-            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", "", R.drawable.ic_android_minimal, 25),
+            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", "", R.drawable.ic_build, 25),
             new ActionDisplayItem(Action.AppDrawer, "AppDrawer", "", R.drawable.ic_apps_dark_24dp, 73),
             new ActionDisplayItem(Action.SearchBar, "SearchBar", "", R.drawable.ic_search_light_24dp, 89),
             new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", "", R.drawable.ic_network_24dp, 46),
@@ -42,16 +44,19 @@ public class Minibar {
                 context.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER), context.getString(R.string.wallpaper_pick)));
                 break;
             case LockScreen:
-                /*try {
+                try {
                     ((DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE)).lockNow();
                 } catch (Exception e) {
-                    DialogHelper.alertDialog(context, "Device Admin Required", "OpenLauncher requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.", "Enable", (dialog, which) -> {
+                    DialogHelper.alertDialog(context,
+                            "Device Admin Required",
+                            context.getResources().getString(R.string.device_admin_message),
+                            "Enable", (dialog, which) -> {
                         Tool.toast(context, context.getString(R.string.toast_device_admin_required));
                         Intent intent = new Intent();
                         intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
                         context.startActivity(intent);
                     });
-                }*/
+                }
                 break;
             case DeviceSettings:
                 context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));

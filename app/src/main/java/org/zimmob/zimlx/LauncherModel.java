@@ -2699,6 +2699,101 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
+     * Clear all the shortcuts for the given package, and re-add the new shortcuts.
+     */
+    private void updateDeepShortcutMap(
+            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+        if (packageName != null) {
+            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
+            while (keysIter.hasNext()) {
+                ComponentKey next = keysIter.next();
+                if (next.componentName.getPackageName().equals(packageName)
+                        && next.user.equals(user)) {
+                    keysIter.remove();
+                }
+            }
+        }
+
+        // Now add the new shortcuts to the map.
+        for (ShortcutInfoCompat shortcut : shortcuts) {
+            boolean shouldShowInContainer = shortcut.isEnabled()
+                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
+            if (shouldShowInContainer) {
+                ComponentKey targetComponent
+                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
+                mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
+            }
+        }
+    }
+
+    public void bindDeepShortcuts() {
+        final MultiHashMap<ComponentKey, String> shortcutMapCopy = mBgDeepShortcutMap.clone();
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                Callbacks callbacks = getCallback();
+                if (callbacks != null) {
+                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
+                }
+            }
+        };
+        runOnMainThread(r);
+    }
+
+    /**
+     * Refreshes the cached shortcuts if the shortcut permission has changed.
+     * Current implementation simply reloads the workspace, but it can be optimized to
+     * use partial updates similar to {@link UserManagerCompat}
+     */
+    public void refreshShortcutsIfRequired() {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
+            sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
+            sWorker.post(mShortcutPermissionCheckRunnable);
+        }
+    }
+
+    /**
+     * Called when the icons for packages have been updated in the icon cache.
+     */
+    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandle user) {
+        final Callbacks callbacks = getCallback();
+        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
+        final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
+
+        // If any package icon has changed (app was updated while launcher was dead),
+        // update the corresponding shortcuts.
+        synchronized (sBgLock) {
+            for (ItemInfo info : sBgItemsIdMap) {
+                if (info instanceof ShortcutInfo && user.equals(info.user)
+                        && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+                    ShortcutInfo si = (ShortcutInfo) info;
+                    ComponentName cn = si.getTargetComponent();
+                    if (cn != null && updatedPackages.contains(cn.getPackageName())) {
+                        si.updateIcon(mIconCache);
+                        updatedShortcuts.add(si);
+                    }
+                }
+            }
+            mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
+        }
+
+        bindUpdatedShortcuts(updatedShortcuts, user);
+
+        if (!updatedApps.isEmpty()) {
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindAppsUpdated(updatedApps);
+                    }
+                }
+            });
+        }
+    }
+
+    /**
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(final Context context,
@@ -2870,101 +2965,6 @@ public class LauncherModel extends BroadcastReceiver
             if (bwp != null) {
                 bwp.updateAsync();
             }
-        }
-    }
-
-    /**
-     * Clear all the shortcuts for the given package, and re-add the new shortcuts.
-     */
-    private void updateDeepShortcutMap(
-            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
-        if (packageName != null) {
-            Iterator<ComponentKey> keysIter = mBgDeepShortcutMap.keySet().iterator();
-            while (keysIter.hasNext()) {
-                ComponentKey next = keysIter.next();
-                if (next.componentName.getPackageName().equals(packageName)
-                        && next.user.equals(user)) {
-                    keysIter.remove();
-                }
-            }
-        }
-
-        // Now add the new shortcuts to the map.
-        for (ShortcutInfoCompat shortcut : shortcuts) {
-            boolean shouldShowInContainer = shortcut.isEnabled()
-                    && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
-            if (shouldShowInContainer) {
-                ComponentKey targetComponent
-                        = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-                mBgDeepShortcutMap.addToList(targetComponent, shortcut.getId());
-            }
-        }
-    }
-
-    public void bindDeepShortcuts() {
-        final MultiHashMap<ComponentKey, String> shortcutMapCopy = mBgDeepShortcutMap.clone();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = getCallback();
-                if (callbacks != null) {
-                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
-                }
-            }
-        };
-        runOnMainThread(r);
-    }
-
-    /**
-     * Refreshes the cached shortcuts if the shortcut permission has changed.
-     * Current implementation simply reloads the workspace, but it can be optimized to
-     * use partial updates similar to {@link UserManagerCompat}
-     */
-    public void refreshShortcutsIfRequired() {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            sWorker.removeCallbacks(mShortcutPermissionCheckRunnable);
-            sWorker.post(mShortcutPermissionCheckRunnable);
-        }
-    }
-
-    /**
-     * Called when the icons for packages have been updated in the icon cache.
-     */
-    public void onPackageIconsUpdated(HashSet<String> updatedPackages, UserHandle user) {
-        final Callbacks callbacks = getCallback();
-        final ArrayList<AppInfo> updatedApps = new ArrayList<>();
-        final ArrayList<ShortcutInfo> updatedShortcuts = new ArrayList<>();
-
-        // If any package icon has changed (app was updated while launcher was dead),
-        // update the corresponding shortcuts.
-        synchronized (sBgLock) {
-            for (ItemInfo info : sBgItemsIdMap) {
-                if (info instanceof ShortcutInfo && user.equals(info.user)
-                        && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-                    ShortcutInfo si = (ShortcutInfo) info;
-                    ComponentName cn = si.getTargetComponent();
-                    if (cn != null && updatedPackages.contains(cn.getPackageName())) {
-                        si.updateIcon(mIconCache);
-                        updatedShortcuts.add(si);
-                    }
-                }
-            }
-            mBgAllAppsList.updateIconsAndLabels(updatedPackages, user, updatedApps);
-        }
-
-        bindUpdatedShortcuts(updatedShortcuts, user);
-
-        if (!updatedApps.isEmpty()) {
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindAppsUpdated(updatedApps);
-                    }
-                }
-            });
         }
     }
 
@@ -3182,6 +3182,34 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    private void bindWidgetsModel(final Callbacks callbacks) {
+        final MultiHashMap<PackageItemInfo, WidgetItem> clone = this.mBgWidgetsModel.getWidgetsMap().clone();
+        this.mHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                Callbacks callback = LauncherModel.this.getCallback();
+                if (callbacks == callback && callback != null) {
+                    callbacks.bindAllWidgets(clone);
+                }
+            }
+        });
+    }
+
+
+    public void refreshAndBindWidgetsAndShortcuts(final Callbacks callbacks, final boolean z, final PackageUserKey packageUserKey) {
+        runOnWorkerThread(new Runnable() {
+            @Override
+            public void run() {
+                if (z && (!LauncherModel.this.mBgWidgetsModel.isEmpty())) {
+                    LauncherModel.this.bindWidgetsModel(callbacks);
+                }
+                ArrayList<WidgetItem> update = LauncherModel.this.mBgWidgetsModel.update(LauncherModel.this.mApp.getContext(), packageUserKey);
+                LauncherModel.this.bindWidgetsModel(callbacks);
+                LauncherModel.this.mApp.getWidgetCache().removeObsoletePreviews(update);
+            }
+        });
+    }
+
     void enqueueItemUpdatedTask(Runnable task) {
         sWorker.post(task);
     }
@@ -3198,33 +3226,6 @@ public class LauncherModel extends BroadcastReceiver
                 ArrayList<ShortcutInfo> update = new ArrayList<>();
                 update.add(info);
                 bindUpdatedShortcuts(update, fullDetail.getUserHandle());
-            }
-        });
-    }
-
-    private void bindWidgetsModel(final Callbacks callbacks) {
-        final MultiHashMap<PackageItemInfo, WidgetItem> clone = this.mBgWidgetsModel.getWidgetsMap().clone();
-        this.mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callback = LauncherModel.this.getCallback();
-                if (callbacks == callback && callback != null) {
-                    callbacks.bindAllWidgets(clone);
-                }
-            }
-        });
-    }
-
-    public void refreshAndBindWidgetsAndShortcuts(final Callbacks callbacks, final boolean z, final PackageUserKey packageUserKey) {
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                if (z && (!LauncherModel.this.mBgWidgetsModel.isEmpty())) {
-                    LauncherModel.this.bindWidgetsModel(callbacks);
-                }
-                ArrayList<WidgetItem> update = LauncherModel.this.mBgWidgetsModel.update(LauncherModel.this.mApp.getContext(), packageUserKey);
-                LauncherModel.this.bindWidgetsModel(callbacks);
-                LauncherModel.this.mApp.getWidgetCache().removeObsoletePreviews(update);
             }
         });
     }
@@ -3274,6 +3275,61 @@ public class LauncherModel extends BroadcastReceiver
     Intent getRestoredItemIntent(Intent intent) {
         ComponentName componentName = intent.getComponent();
         return getMarketIntent(componentName.getPackageName());
+    }
+
+    public interface Callbacks {
+        boolean setLoadOnResume();
+
+        int getCurrentWorkspaceScreen();
+
+        void clearPendingBinds();
+
+        void startBinding();
+
+        void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
+                       boolean forceAnimateIcons);
+
+        void bindScreens(ArrayList<Long> orderedScreenIds);
+
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+
+        void finishBindingItems();
+
+        void bindAppWidget(LauncherAppWidgetInfo info);
+
+        void bindAllApplications(ArrayList<AppInfo> apps);
+
+        void bindAllWidgets(MultiHashMap multiHashMap);
+
+        void bindAppsAdded(ArrayList<Long> newScreens,
+                           ArrayList<ItemInfo> addNotAnimated,
+                           ArrayList<ItemInfo> addAnimated,
+                           ArrayList<AppInfo> addedApps);
+
+        void bindAppsUpdated(ArrayList<AppInfo> apps);
+
+        void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
+                                  ArrayList<ShortcutInfo> removed, UserHandle user);
+
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+
+        void bindWorkspaceComponentsRemoved(
+                HashSet<String> packageNames, HashSet<ComponentName> components,
+                UserHandle user);
+
+        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
+
+        void notifyWidgetProvidersChanged();
+
+        void bindWidgetsModel(WidgetsModel model);
+
+        void onPageBoundSynchronously(int page);
+
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+
+        void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
     }
 
     /**
@@ -3332,6 +3388,10 @@ public class LauncherModel extends BroadcastReceiver
             info.flags = AppInfo.initFlags(lai);
         }
         return info;
+    }
+
+    public interface ItemInfoFilter {
+        boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
     }
 
     @Thunk
@@ -3424,79 +3484,6 @@ public class LauncherModel extends BroadcastReceiver
         return info;
     }
 
-    public Callbacks getCallback() {
-        return mCallbacks != null ? mCallbacks.get() : null;
-    }
-
-    /**
-     * @return {@link FolderInfo} if its already loaded.
-     */
-    public FolderInfo findFolderById(Long folderId) {
-        synchronized (sBgLock) {
-            return sBgFolders.get(folderId);
-        }
-    }
-
-    public interface Callbacks {
-        boolean setLoadOnResume();
-
-        int getCurrentWorkspaceScreen();
-
-        void clearPendingBinds();
-
-        void startBinding();
-
-        void bindItems(ArrayList<ItemInfo> shortcuts, int start, int end,
-                       boolean forceAnimateIcons);
-
-        void bindScreens(ArrayList<Long> orderedScreenIds);
-
-        void finishFirstPageBind(ViewOnDrawExecutor executor);
-
-        void finishBindingItems();
-
-        void bindAppWidget(LauncherAppWidgetInfo info);
-
-        void bindAllApplications(ArrayList<AppInfo> apps);
-
-        void bindAllWidgets(MultiHashMap multiHashMap);
-
-        void bindAppsAdded(ArrayList<Long> newScreens,
-                           ArrayList<ItemInfo> addNotAnimated,
-                           ArrayList<ItemInfo> addAnimated,
-                           ArrayList<AppInfo> addedApps);
-
-        void bindAppsUpdated(ArrayList<AppInfo> apps);
-
-        void bindShortcutsChanged(ArrayList<ShortcutInfo> updated,
-                                  ArrayList<ShortcutInfo> removed, UserHandle user);
-
-        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-
-        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-
-        void bindWorkspaceComponentsRemoved(
-                HashSet<String> packageNames, HashSet<ComponentName> components,
-                UserHandle user);
-
-        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-
-        void notifyWidgetProvidersChanged();
-
-        void bindWidgetsModel(WidgetsModel model);
-
-        void onPageBoundSynchronously(int page);
-
-        void executeOnNextDraw(ViewOnDrawExecutor executor);
-
-        void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
-    }
-
-
-    public interface ItemInfoFilter {
-        boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn);
-    }
-
     public interface CallbackTask {
         void execute(Callbacks callbacks);
     }
@@ -3515,6 +3502,19 @@ public class LauncherModel extends BroadcastReceiver
             if (this.mModel.mHasLoaderCompletedOnce) {
                 execute(this.mModel.mApp, this.mModel.mBgAllAppsList);
             }
+        }
+    }
+
+    public Callbacks getCallback() {
+        return mCallbacks != null ? mCallbacks.get() : null;
+    }
+
+    /**
+     * @return {@link FolderInfo} if its already loaded.
+     */
+    public FolderInfo findFolderById(Long folderId) {
+        synchronized (sBgLock) {
+            return sBgFolders.get(folderId);
         }
     }
 

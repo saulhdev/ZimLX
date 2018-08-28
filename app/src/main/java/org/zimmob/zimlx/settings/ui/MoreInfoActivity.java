@@ -37,6 +37,7 @@ public class MoreInfoActivity extends AppCompatActivity {
         toolbar.setBackgroundColor(Utilities.getPrefs(this).getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setTitle(R.string.about_title);
 
         MoreInfoFragment moreInfoFragment;
         if (savedInstanceState == null) {

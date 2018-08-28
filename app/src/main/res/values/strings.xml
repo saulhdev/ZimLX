@@ -23,6 +23,7 @@
     <!-- Application name -->
     <string name="app_name" translatable="false">ZimLX</string>
     <string name="application_id" translatable="false">org.zimmob.zimlx</string>
+
     <!-- Default folder name -->
     <string name="folder_name" translatable="false" />
     <!-- Work folder name -->
@@ -673,4 +674,7 @@
     <string name="download_icon_theme">Download new icon theme</string>
     <string name="button_apply">Apply</string>
     <string name="edit_icon">Edit Icon</string>
+
+    <string name="device_admin_message">ZimLX requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.</string>
+    <string name="toast_device_admin_required">Please enable device administration.</string>
 </resources>
