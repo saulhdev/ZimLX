@@ -245,7 +245,6 @@ public class Launcher extends Activity
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
     private final BroadcastReceiver mUiBroadcastReceiver = new BroadcastReceiver() {
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (ACTION_APPWIDGET_HOST_RESET.equals(intent.getAction())) {
@@ -414,7 +413,6 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.INSTANCE.loadThemePreference(this);
         Utilities.setupPirateLocale(this);
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
         }
@@ -488,14 +486,20 @@ public class Launcher extends Activity
         mLauncherTab = new LauncherTab(this);
 
         Window window = getWindow();
-        WindowManager.LayoutParams attributes = window.getAttributes();
+        View decorView = window.getDecorView();
+        /*WindowManager.LayoutParams attributes = window.getAttributes();
         attributes.systemUiVisibility |= (View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
         window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
         window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
         window.setStatusBarColor(0);
         window.setNavigationBarColor(0);
+        */
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
-        //initMinibar();
+
+        initMinibar();
 
         Settings.init(this);
     }
@@ -531,6 +535,7 @@ public class Launcher extends Activity
         ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
 
     }
+
 
     private boolean getConsumeNextResume() {
         return _consumeNextResume;

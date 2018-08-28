@@ -50,20 +50,26 @@ public class LauncherScroller {
     private float mDeltaY;
     private boolean mFinished;
     private TimeInterpolator mInterpolator;
+    private static final int NB_SAMPLES = 100;
+    private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
     private static float DECELERATION_RATE = (float) (Math.log(0.78) / Math.log(0.9));
     private static float sViscousFluidScale;
     private static float sViscousFluidNormalize;
-    private static final int NB_SAMPLES = 100;
-    private static final float[] SPLINE_POSITION = new float[NB_SAMPLES + 1];
+
     private static final int DEFAULT_DURATION = 250;
     private static final int SCROLL_MODE = 0;
     private static final int FLING_MODE = 1;
-    private boolean mFlywheel;
+    private final float mPpi;
     private static final float INFLEXION = 0.35f; // Tension lines cross at (INFLEXION, 1)
     private static final float START_TENSION = 0.5f;
     private static final float END_TENSION = 1.0f;
     private static final float P1 = START_TENSION * INFLEXION;
     private static final float P2 = 1.0f - END_TENSION * (1.0f - INFLEXION);
+    private boolean mFlywheel;
+    private float mVelocity;
+    private float mCurrVelocity;
+    private int mDistance;
+    private float mFlingFriction = ViewConfiguration.getScrollFriction();
 
     static {
         float x_min = 0.0f;
@@ -103,20 +109,9 @@ public class LauncherScroller {
         sViscousFluidNormalize = 1.0f / viscousFluid(1.0f);
 
     }
-
-    private final float mPpi;
-
-
-
-
     private float mDeceleration;
-    private float mVelocity;
-
     // A context-specific coefficient adjusted to physical values.
     private float mPhysicalCoeff;
-    private float mCurrVelocity;
-    private int mDistance;
-    private float mFlingFriction = ViewConfiguration.getScrollFriction();
 
     static float viscousFluid(float x) {
         x *= sViscousFluidScale;

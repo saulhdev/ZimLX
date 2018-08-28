@@ -39,5 +39,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public void setMinibarArrangement(ArrayList<String> value) {
         setStringList(R.string.pref_key__minibar_items, value);
     }
+
 }
 

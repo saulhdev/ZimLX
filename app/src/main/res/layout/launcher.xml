@@ -16,12 +16,15 @@
 <!-- Full screen view projects under the status bar and contains the background -->
 <org.zimmob.zimlx.LauncherRootView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-
     android:id="@+id/launcher"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <org.zimmob.zimlx.dragndrop.DragLayer
         android:id="@+id/drag_layer"
         android:layout_width="match_parent"
@@ -81,13 +84,12 @@
             android:layout_height="match_parent"
             android:visibility="invisible"
             launcher:layout_ignoreInsets="true" />
-
+    </org.zimmob.zimlx.dragndrop.DragLayer>
         <!-- The navigation drawer -->
         <FrameLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:visibility="invisible"
             android:background="@color/colorPrimary">
 
             <org.zimmob.zimlx.minibar.SwipeListView
@@ -102,7 +104,5 @@
                 android:scrollbars="none" />
 
         </FrameLayout>
-
-    </org.zimmob.zimlx.dragndrop.DragLayer>
-
+    </android.support.v4.widget.DrawerLayout>
 </org.zimmob.zimlx.LauncherRootView>

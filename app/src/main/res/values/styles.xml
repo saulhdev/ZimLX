@@ -35,12 +35,13 @@
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!--
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
-
+        -->
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
         <item name="folderNameTextColor">@color/folder_name_text_color</item>
@@ -65,11 +66,13 @@
     </style>
 
     <style name="LauncherTheme.Dark" parent="@style/BaseLauncherTheme.Dark">
-        <item name="android:windowTranslucentStatus">false</item>
-        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!--
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
+        -->
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color_dark</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color_dark</item>
         <item name="folderNameTextColor">@color/folder_name_text_color_dark</item>
