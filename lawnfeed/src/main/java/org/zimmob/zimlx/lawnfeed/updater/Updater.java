@@ -26,9 +26,9 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 public class Updater {
-    public static final String VERSION_URL = "https://storage.codebucket.de/ZimLX/version.json";
+    public static final String VERSION_URL = "https://storage.codebucket.de/zimlx/version.json";
 
-    public static final String DOWNLOAD_URL = "https://storage.codebucket.de/ZimLX/%1$s/Lawnfeed-%1$s.apk";
+    public static final String DOWNLOAD_URL = "https://storage.codebucket.de/zimlx/%1$s/Lawnfeed-%1$s.apk";
     public static final String PREFERENCES_LAST_CHECKED = "last_checked";
     public static final String PREFERENCES_CACHED_UPDATE = "cached_update";
     public static final String CHANNEL_ID = "lawnfeed_updater";
@@ -68,7 +68,7 @@ public class Updater {
                 NotificationCompat.Builder builder = new NotificationCompat.Builder(context, CHANNEL_ID)
                         .setContentTitle(context.getResources().getString(R.string.update_available_title))
                         .setContentText(context.getResources().getString(R.string.update_available))
-                        .setSmallIcon(R.drawable.ic_ZimLX)
+                        .setSmallIcon(R.drawable.ic_lawnchair)
                         .setSound(RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION))
                         .setVibrate(new long[]{0, 100, 100, 100})
                         .setAutoCancel(true)

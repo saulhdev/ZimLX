@@ -36,5 +36,6 @@
     <!-- PREFERENCES ADVANCED-->
     <string name="pref_key__language" translatable="false">pref_key__language</string>
     <string name="pref_key__backup" translatable="false">pref_key__backup</string>
+    <string name="pref_theme" translatable="false">pref_theme</string>
 
 </resources>

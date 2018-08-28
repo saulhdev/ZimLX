@@ -5,6 +5,10 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
+import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.Utilities;
+import org.zimmob.zimlx.settings.AppSettings;
+
 /**
  * Created by saul on 04-25-18.
  * Project ZimLX
@@ -12,29 +16,39 @@ import android.support.v7.app.AppCompatActivity;
  */
 public class ThemeActivity extends AppCompatActivity {
 
-    //AppSettings _appSettings;
-    private String _currentTheme;
+    AppSettings appSettings;
+    private String currentTheme;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-       /*_appSettings = AppSettings.get();
-        _currentTheme = _appSettings.getTheme();
-        if (_appSettings.getTheme().equals("0")) {
-            setTheme(R.style.NormalActivity_Light);
-        } else {
-            setTheme(R.style.NormalActivity_Dark);
+        appSettings = new AppSettings(this);
+        currentTheme = appSettings.getTheme();
+        switch (currentTheme) {
+            case "0":
+                setTheme(R.style.LauncherTheme);
+                break;
+            case "1":
+                setTheme(R.style.LauncherTheme_Dark);
+                break;
+            case "2":
+                setTheme(R.style.LauncherTheme_Black);
+                break;
+            default:
+                setTheme(R.style.LauncherTheme);
+                break;
         }
-        getWindow().setStatusBarColor(dark(_appSettings.getPrimaryColor()));
-        */
+
+        getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
+
         super.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        //if (!_appSettings.getTheme().equals(_currentTheme)) {
-        //    restart();
-        //}
+        if (!appSettings.getTheme().equals(currentTheme)) {
+            restart();
+        }
     }
 
     private void restart() {

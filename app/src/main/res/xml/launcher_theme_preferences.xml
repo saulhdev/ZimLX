@@ -63,7 +63,7 @@
             android:defaultValue="0"
             android:entries="@array/themeTexts"
             android:entryValues="@array/themeValues"
-            android:key="pref_theme"
+            android:key="@string/pref_theme"
             android:persistent="true"
             android:summary="%s"
             android:title="@string/theme_pref_title" />

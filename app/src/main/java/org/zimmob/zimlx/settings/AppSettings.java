@@ -40,5 +40,8 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         setStringList(R.string.pref_key__minibar_items, value);
     }
 
+    public String getTheme() {
+        return getString(R.string.pref_theme, "0");
+    }
 }
 

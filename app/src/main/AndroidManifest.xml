@@ -114,7 +114,7 @@
         <activity
             android:name=".settings.ui.MoreInfoActivity"
             android:parentActivityName=".settings.ui.SettingsActivity"
-            android:theme="@style/NormalActivity.Light">
+            android:theme="@style/SettingsHome">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".settings.ui.SettingsActivity" />

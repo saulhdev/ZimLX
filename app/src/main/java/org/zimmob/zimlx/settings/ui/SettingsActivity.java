@@ -95,7 +95,6 @@ public class SettingsActivity extends AppCompatActivity implements
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content, new LauncherSettingsFragment())
-
                     .commit();
         }
 
