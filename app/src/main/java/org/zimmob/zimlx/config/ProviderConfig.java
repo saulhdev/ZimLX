@@ -13,17 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.zimmob.zimlx.config;
 
-package org.zimmob.zimlx.config
+import org.zimmob.zimlx.BuildConfig;
 
-import org.zimmob.zimlx.BuildConfig
+public class ProviderConfig {
 
-object ProviderConfig {
+    public static String AUTHORITY = BuildConfig.APPLICATION_ID + ".settings";
+    public static boolean IS_DOGFOOD_BUILD = true;
 
-    @JvmField
-    var AUTHORITY = BuildConfig.APPLICATION_ID + ".settings"
-
-    fun init(packageName: String) {
-        AUTHORITY = packageName + ".settings"
+    public ProviderConfig(String packageName) {
+        AUTHORITY = packageName + ".settings";
     }
 }
