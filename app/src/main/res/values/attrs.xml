@@ -153,5 +153,20 @@
     <attr name="roundSearchBarHintColor" format="color" />
     <attr name="roundSearchBarTextColor" format="color" />
     <attr name="searchBarTextColor" format="color" />
-
+    <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
+            customize an AppsCustomizePagedView in xml files. -->
+    <declare-styleable name="AppsCustomizePagedView">
+        <!-- Max number of cells of applications horizontally -->
+        <attr name="maxAppCellCountX" format="integer" />
+        <!-- Max number of cells of applications vertically -->
+        <attr name="maxAppCellCountY" format="integer" />
+        <!-- Horizontal spacing between widgets and wallpapers -->
+        <attr name="widgetCellWidthGap" format="dimension" />
+        <!-- Vertical spacing between widgets -->
+        <attr name="widgetCellHeightGap" format="dimension" />
+        <!-- Number of widgets horizontally -->
+        <attr name="widgetCountX" format="integer" />
+        <!-- Number of widgets vertically -->
+        <attr name="widgetCountY" format="integer" />
+    </declare-styleable>
 </resources>

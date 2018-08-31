@@ -2,12 +2,14 @@ package org.zimmob.zimlx.minibar;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
+import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -17,19 +19,22 @@ import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback;
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
+import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
+import org.zimmob.zimlx.Utilities;
+import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.settings.AppSettings;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallback {
+public class MinibarEditActivity extends AppCompatActivity implements ItemTouchCallback {
     @BindView(R.id.toolbar)
-    public Toolbar _toolbar;
+    public Toolbar toolbar;
 
     @BindView(R.id.enableSwitch)
     public SwitchCompat _enableSwitch;
@@ -37,16 +42,23 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     @BindView(R.id.recyclerView)
     public RecyclerView _recyclerView;
     private FastItemAdapter<Item> _adapter;
-
+    private AppSettings appSettings;
+    private Launcher mLauncher;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
+        Utilities.setupPirateLocale(this);
 
         setContentView(R.layout.activity_minibar_edit);
         ButterKnife.bind(this);
-        setSupportActionBar(_toolbar);
-        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
+        setSupportActionBar(toolbar);
+        toolbar.setBackgroundColor(Utilities.getPrefs(this).getPrimaryColor());
+        toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.minibar);
 
         _adapter = new FastItemAdapter<>();
@@ -58,24 +70,26 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         _recyclerView.setLayoutManager(new LinearLayoutManager(this));
         _recyclerView.setAdapter(_adapter);
 
+        appSettings = new AppSettings(this);
+        mLauncher = new Launcher();
 
-        /*final ArrayList<String> minibarArrangement = AppSettings.get().getMinibarArrangement();
+        final ArrayList<String> minibarArrangement = appSettings.getMinibarArrangement();
         for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
             _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
 
-        boolean minBarEnable = AppSettings.get().getMinibarEnable();
+        boolean minBarEnable = appSettings.getMinibarEnable();
         _enableSwitch.setChecked(minBarEnable);
         _enableSwitch.setText(minBarEnable ? R.string.on : R.string.off);
         _enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.setText(isChecked ? R.string.on : R.string.off);
-            AppSettings.get().setMinibarEnable(isChecked);
-            if (HomeActivity.companion.getLauncher() != null) {
+            appSettings.setMinibarEnable(isChecked);
+            /*if (HomeActivity.companion.getLauncher() != null) {
                 HomeActivity.companion.getLauncher().closeAppDrawer();
                 HomeActivity.companion.getLauncher().getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
-            }
+            }*/
         });
-        */
+
 
         setResult(RESULT_OK);
     }
@@ -87,15 +101,16 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             if (item.enable)
                 minibarArrangement.add(Long.toString(item.id));
         }
-        //AppSettings.get().setMinibarArrangement(minibarArrangement);
+        appSettings.setMinibarArrangement(minibarArrangement);
         super.onPause();
     }
 
     @Override
     protected void onStop() {
-        /*if (HomeActivity.companion.getLauncher() != null) {
-            HomeActivity.companion.getLauncher().initMinibar();
+        /*if(mLauncher!=null){
+            mLauncher.initMinibar();
         }*/
+
         super.onStop();
     }
 

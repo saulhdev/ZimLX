@@ -29,6 +29,7 @@ public class Minibar {
 
     public static void RunAction(Action action, final Context context) {
         Minibar.RunAction(new ActionItem(action, null), context);
+
     }
 
     public static void RunAction(ActionItem action, final Context context) {

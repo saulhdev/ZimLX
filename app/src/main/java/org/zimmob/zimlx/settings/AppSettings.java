@@ -40,8 +40,18 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         setStringList(R.string.pref_key__minibar_items, value);
     }
 
-    public String getTheme() {
-        return getString(R.string.pref_theme, "0");
+    // internal preferences below here
+    public boolean getMinibarEnable() {
+        return getBool(R.string.pref_key__minibar_enable, true);
+    }
+
+    public void setMinibarEnable(boolean value) {
+        setBool(R.string.pref_key__minibar_enable, value);
+    }
+
+    @Override
+    public Context getContext() {
+        return mContext;
     }
 }
 

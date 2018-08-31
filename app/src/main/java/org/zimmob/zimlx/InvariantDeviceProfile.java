@@ -30,6 +30,8 @@ import android.view.WindowManager;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.config.ProviderConfig;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceFlags;
 import org.zimmob.zimlx.util.Thunk;
@@ -412,4 +414,10 @@ public class InvariantDeviceProfile {
         return this;
     }
 
+    public int getAllAppsButtonRank() {
+        if (ProviderConfig.IS_DOGFOOD_BUILD && FeatureFlags.NO_ALL_APPS_ICON) {
+            throw new IllegalAccessError("Accessing all apps rank when all-apps is disabled");
+        }
+        return numHotseatIcons / 2;
+    }
 }

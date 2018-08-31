@@ -116,7 +116,6 @@ public class DeviceProfile {
 
 
     public BadgeRenderer mBadgeRenderer;
-
     // Insets
     private Rect mInsets = new Rect();
 

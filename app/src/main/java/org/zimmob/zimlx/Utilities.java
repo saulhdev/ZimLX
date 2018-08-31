@@ -163,6 +163,9 @@ public final class Utilities {
             "zone.jasi2169."
     };
 
+    public static int sIconTextureWidth = -1;
+    public static int sIconTextureHeight = -1;
+
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(Paint.DITHER_FLAG,
                 Paint.FILTER_BITMAP_FLAG));
@@ -181,6 +184,9 @@ public final class Utilities {
         }
     }
 
+    static void resizeIconDrawable(Drawable icon) {
+        icon.setBounds(0, 0, sIconTextureWidth, sIconTextureHeight);
+    }
     /**
      * Returns a bitmap suitable for the all apps view. If the package or the resource do not
      * exist, it returns null.
@@ -1157,19 +1163,16 @@ public final class Utilities {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.reset_alternative_icons_title)
                 .setMessage(String.format(context.getString(R.string.reset_alternative_icons), appsList.size()))
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        IPreferenceProvider prefs = Utilities.getPrefs(context);
-                        Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
+                .setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+                    IPreferenceProvider prefs = Utilities.getPrefs(context);
+                    Launcher launcher = LauncherAppState.getInstanceNoCreate().getLauncher();
 
-                        for (String app : appsList) {
-                            prefs.removeAlternateIcon(app);
-                        }
-
-                        // Ensure those icons get updated
-                        launcher.scheduleReloadIcons();
+                    for (String app : appsList) {
+                        prefs.removeAlternateIcon(app);
                     }
+
+                    // Ensure those icons get updated
+                    launcher.scheduleReloadIcons();
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();

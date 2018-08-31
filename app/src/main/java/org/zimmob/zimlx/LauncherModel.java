@@ -85,6 +85,7 @@ import java.io.ByteArrayOutputStream;
 import java.lang.ref.WeakReference;
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -655,8 +656,24 @@ public class LauncherModel extends BroadcastReceiver
         updateItemInDatabaseHelper(context, values, item);
     }
 
-    public AllAppsList getAllAppsList() {
-        return mBgAllAppsList;
+    public static final Comparator<AppInfo> getAppNameComparator() {
+        final Collator collator = Collator.getInstance();
+        return new Comparator<AppInfo>() {
+            public final int compare(AppInfo a, AppInfo b) {
+                if (a.user.equals(b.user)) {
+                    int result = collator.compare(a.title.toString().trim(),
+                            b.title.toString().trim());
+                    if (result == 0) {
+                        result = a.componentName.compareTo(b.componentName);
+                    }
+                    return result;
+                } else {
+                    // TODO Need to figure out rules for sorting
+                    // profiles, this puts work second.
+                    return a.user.toString().compareTo(b.user.toString());
+                }
+            }
+        };
     }
 
     /**
@@ -888,17 +905,8 @@ public class LauncherModel extends BroadcastReceiver
         runOnWorkerThread(r);
     }
 
-    /**
-     * Runs the specified runnable immediately if called from the main thread, otherwise it is
-     * posted on the main thread handler.
-     */
-    private void runOnMainThread(Runnable r) {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            // If we are on the worker thread, post onto the main handler
-            mHandler.post(r);
-        } else {
-            r.run();
-        }
+    public AllAppsList getAllAppsList() {
+        return mBgAllAppsList;
     }
 
     /**
@@ -909,6 +917,19 @@ public class LauncherModel extends BroadcastReceiver
             // Remove any queued UI runnables
             mHandler.cancelAll();
             mCallbacks = new WeakReference<>(callbacks);
+        }
+    }
+
+    /**
+     * Runs the specified runnable immediately if called from the main thread, otherwise it is
+     * posted on the main thread handler.
+     */
+    private void runOnMainThread(Runnable r) {
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            // If we are on the worker thread, post onto the main handler
+            mHandler.post(r);
+        } else {
+            r.run();
         }
     }
 
@@ -962,45 +983,6 @@ public class LauncherModel extends BroadcastReceiver
                         };
                         mHandler.post(r);
                     }
-                }
-            }
-        };
-        runOnWorkerThread(updateRunnable);
-    }
-
-    /**
-     * Updates the icons and label of all pending icons for the provided package name.
-     */
-    public void updateSessionDisplayInfo(final String packageName) {
-        Runnable updateRunnable = new Runnable() {
-
-            @Override
-            public void run() {
-                synchronized (sBgLock) {
-                    ArrayList<ShortcutInfo> updates = new ArrayList<>();
-                    UserHandle user = Utilities.myUserHandle();
-
-                    for (ItemInfo info : sBgItemsIdMap) {
-                        if (info instanceof ShortcutInfo) {
-                            ShortcutInfo si = (ShortcutInfo) info;
-                            ComponentName cn = si.getTargetComponent();
-                            if (si.isPromise() && (cn != null)
-                                    && packageName.equals(cn.getPackageName())) {
-                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
-                                    // For auto install apps update the icon as well as label.
-                                    mIconCache.getTitleAndIcon(si,
-                                            si.promisedIntent, user,
-                                            si.shouldUseLowResIcon());
-                                } else {
-                                    // Only update the icon for restored apps.
-                                    si.updateIcon(mIconCache);
-                                }
-                                updates.add(si);
-                            }
-                        }
-                    }
-
-                    bindUpdatedShortcuts(updates, user);
                 }
             }
         };
@@ -1095,32 +1077,43 @@ public class LauncherModel extends BroadcastReceiver
         enqueueItemUpdatedTask(new ShortcutsChangedTask(packageName, shortcuts, user, false));
     }
 
-    public void addAppsToAllApps(final ArrayList<AppInfo> allAppsApps) {
-        final Callbacks callbacks = getCallback();
+    /**
+     * Updates the icons and label of all pending icons for the provided package name.
+     */
+    public void updateSessionDisplayInfo(final String packageName) {
+        Runnable updateRunnable = new Runnable() {
 
-        if (allAppsApps == null) {
-            throw new RuntimeException("allAppsApps must not be null");
-        }
-        if (allAppsApps.isEmpty()) {
-            return;
-        }
-
-        // Process the newly added applications and add them to the database first
-        Runnable r = new Runnable() {
             @Override
             public void run() {
-                runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Callbacks cb = getCallback();
-                        if (callbacks == cb && cb != null) {
-                            callbacks.bindAppsAdded(null, null, null, allAppsApps);
+                synchronized (sBgLock) {
+                    ArrayList<ShortcutInfo> updates = new ArrayList<>();
+                    UserHandle user = Utilities.myUserHandle();
+
+                    for (ItemInfo info : sBgItemsIdMap) {
+                        if (info instanceof ShortcutInfo) {
+                            ShortcutInfo si = (ShortcutInfo) info;
+                            ComponentName cn = si.getTargetComponent();
+                            if (si.isPromise() && (cn != null)
+                                    && packageName.equals(cn.getPackageName())) {
+                                if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                    // For auto install apps update the icon as well as label.
+                                    mIconCache.getTitleAndIcon(si,
+                                            si.promisedIntent, user,
+                                            si.shouldUseLowResIcon());
+                                } else {
+                                    // Only update the icon for restored apps.
+                                    si.updateIcon(mIconCache);
+                                }
+                                updates.add(si);
+                            }
                         }
                     }
-                });
+
+                    bindUpdatedShortcuts(updates, user);
+                }
             }
         };
-        runOnWorkerThread(r);
+        runOnWorkerThread(updateRunnable);
     }
 
     void forceReload() {
@@ -1220,77 +1213,32 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    /**
-     * Find a position on the screen for the given size or adds a new screen.
-     *
-     * @return screenId and the coordinates for the item.
-     */
-    @Thunk
-    Pair<Long, int[]> findSpaceForItem(
-            Context context,
-            ArrayList<Long> workspaceScreens,
-            ArrayList<Long> addedWorkspaceScreensFinal,
-            int spanX, int spanY) {
-        LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
+    public void addAppsToAllApps(final ArrayList<AppInfo> allAppsApps) {
+        final Callbacks callbacks = getCallback();
 
-        // Use sBgItemsIdMap as all the items are already loaded.
-        synchronized (sBgLock) {
-            for (ItemInfo info : sBgItemsIdMap) {
-                if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-                    ArrayList<ItemInfo> items = screenItems.get(info.screenId);
-                    if (items == null) {
-                        items = new ArrayList<>();
-                        screenItems.put(info.screenId, items);
+        if (allAppsApps == null) {
+            throw new RuntimeException("allAppsApps must not be null");
+        }
+        if (allAppsApps.isEmpty()) {
+            return;
+        }
+
+        // Process the newly added applications and add them to the database first
+        Runnable r = new Runnable() {
+            @Override
+            public void run() {
+                runOnMainThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Callbacks cb = getCallback();
+                        if (callbacks == cb && cb != null) {
+                            callbacks.bindAppsAdded(null, null, null, allAppsApps);
+                        }
                     }
-                    items.add(info);
-                }
+                });
             }
-        }
-
-        // Find appropriate space for the item.
-        long screenId = 0;
-        int[] cordinates = new int[2];
-        boolean found = false;
-
-        int screenCount = workspaceScreens.size();
-        // First check the preferred screen.
-        int preferredScreenIndex = workspaceScreens.isEmpty() ? 0 : 1;
-        if (preferredScreenIndex < screenCount) {
-            screenId = workspaceScreens.get(preferredScreenIndex);
-            found = findNextAvailableIconSpaceInScreen(
-                    screenItems.get(screenId), cordinates, spanX, spanY);
-        }
-
-        if (!found) {
-            // Search on any of the screens starting from the first screen.
-            for (int screen = 1; screen < screenCount; screen++) {
-                screenId = workspaceScreens.get(screen);
-                if (findNextAvailableIconSpaceInScreen(
-                        screenItems.get(screenId), cordinates, spanX, spanY)) {
-                    // We found a space for it
-                    found = true;
-                    break;
-                }
-            }
-        }
-
-        if (!found) {
-            // Still no position found. Add a new screen to the end.
-            screenId = LauncherSettings.Settings.call(context.getContentResolver(),
-                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
-                    .getLong(LauncherSettings.Settings.EXTRA_VALUE);
-
-            // Save the screen id for binding in the workspace
-            workspaceScreens.add(screenId);
-            addedWorkspaceScreensFinal.add(screenId);
-
-            // If we still can't find an empty space, then God help us all!!!
-            if (!findNextAvailableIconSpaceInScreen(
-                    screenItems.get(screenId), cordinates, spanX, spanY)) {
-                throw new RuntimeException("Can't find space to add the item");
-            }
-        }
-        return Pair.create(screenId, cordinates);
+        };
+        runOnWorkerThread(r);
     }
 
     /**
@@ -2794,6 +2742,79 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     /**
+     * Find a position on the screen for the given size or adds a new screen.
+     *
+     * @return screenId and the coordinates for the item.
+     */
+    @Thunk
+    Pair<Long, int[]> findSpaceForItem(
+            Context context,
+            ArrayList<Long> workspaceScreens,
+            ArrayList<Long> addedWorkspaceScreensFinal,
+            int spanX, int spanY) {
+        LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
+
+        // Use sBgItemsIdMap as all the items are already loaded.
+        synchronized (sBgLock) {
+            for (ItemInfo info : sBgItemsIdMap) {
+                if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                    ArrayList<ItemInfo> items = screenItems.get(info.screenId);
+                    if (items == null) {
+                        items = new ArrayList<>();
+                        screenItems.put(info.screenId, items);
+                    }
+                    items.add(info);
+                }
+            }
+        }
+
+        // Find appropriate space for the item.
+        long screenId = 0;
+        int[] cordinates = new int[2];
+        boolean found = false;
+
+        int screenCount = workspaceScreens.size();
+        // First check the preferred screen.
+        int preferredScreenIndex = workspaceScreens.isEmpty() ? 0 : 1;
+        if (preferredScreenIndex < screenCount) {
+            screenId = workspaceScreens.get(preferredScreenIndex);
+            found = findNextAvailableIconSpaceInScreen(
+                    screenItems.get(screenId), cordinates, spanX, spanY);
+        }
+
+        if (!found) {
+            // Search on any of the screens starting from the first screen.
+            for (int screen = 1; screen < screenCount; screen++) {
+                screenId = workspaceScreens.get(screen);
+                if (findNextAvailableIconSpaceInScreen(
+                        screenItems.get(screenId), cordinates, spanX, spanY)) {
+                    // We found a space for it
+                    found = true;
+                    break;
+                }
+            }
+        }
+
+        if (!found) {
+            // Still no position found. Add a new screen to the end.
+            screenId = LauncherSettings.Settings.call(context.getContentResolver(),
+                    LauncherSettings.Settings.METHOD_NEW_SCREEN_ID)
+                    .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+
+            // Save the screen id for binding in the workspace
+            workspaceScreens.add(screenId);
+            addedWorkspaceScreensFinal.add(screenId);
+
+            // If we still can't find an empty space, then God help us all!!!
+            if (!findNextAvailableIconSpaceInScreen(
+                    screenItems.get(screenId), cordinates, spanX, spanY)) {
+                throw new RuntimeException("Can't find space to add the item");
+            }
+        }
+        return Pair.create(screenId, cordinates);
+    }
+
+    /**
      * Adds the provided items to the workspace.
      */
     public void addAndBindAddedWorkspaceItems(final Context context,
@@ -2922,6 +2943,25 @@ public class LauncherModel extends BroadcastReceiver
         return false;
     }
 
+    private void bindUpdatedShortcuts(
+            final ArrayList<ShortcutInfo> updatedShortcuts,
+            final ArrayList<ShortcutInfo> removedShortcuts,
+            final UserHandle user) {
+        if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
+            final Callbacks callbacks = getCallback();
+            mHandler.post(new Runnable() {
+
+                @Override
+                public void run() {
+                    Callbacks cb = getCallback();
+                    if (cb != null && callbacks == cb) {
+                        cb.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
+                    }
+                }
+            });
+        }
+    }
+
     /**
      * Call from the handler for ACTION_PACKAGE_ADDED, ACTION_PACKAGE_REMOVED and
      * ACTION_PACKAGE_CHANGED.
@@ -2968,66 +3008,9 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
-    @Thunk
-    class AppsAvailabilityCheck extends BroadcastReceiver {
-
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            synchronized (sBgLock) {
-                final LauncherAppsCompat launcherApps = LauncherAppsCompat
-                        .getInstance(mApp.getContext());
-                final PackageManager manager = context.getPackageManager();
-                final ArrayList<String> packagesRemoved = new ArrayList<>();
-                final ArrayList<String> packagesUnavailable = new ArrayList<>();
-                for (Entry<UserHandle, HashSet<String>> entry : sPendingPackages.entrySet()) {
-                    UserHandle user = entry.getKey();
-                    packagesRemoved.clear();
-                    packagesUnavailable.clear();
-                    for (String pkg : entry.getValue()) {
-                        if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
-                            if (PackageManagerHelper.isAppOnSdcard(manager, pkg)) {
-                                packagesUnavailable.add(pkg);
-                            } else {
-                                packagesRemoved.add(pkg);
-                            }
-                        }
-                    }
-                    if (!packagesRemoved.isEmpty()) {
-                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
-                                packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
-                    }
-                    if (!packagesUnavailable.isEmpty()) {
-                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_UNAVAILABLE,
-                                packagesUnavailable.toArray(new String[packagesUnavailable.size()]), user));
-                    }
-                }
-                sPendingPackages.clear();
-            }
-        }
-    }
-
     private void bindUpdatedShortcuts(
             ArrayList<ShortcutInfo> updatedShortcuts, UserHandle user) {
         bindUpdatedShortcuts(updatedShortcuts, new ArrayList<ShortcutInfo>(), user);
-    }
-
-    private void bindUpdatedShortcuts(
-            final ArrayList<ShortcutInfo> updatedShortcuts,
-            final ArrayList<ShortcutInfo> removedShortcuts,
-            final UserHandle user) {
-        if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
-            final Callbacks callbacks = getCallback();
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
-                    }
-                }
-            });
-        }
     }
 
     private class ShortcutsChangedTask implements Runnable {
@@ -3484,25 +3467,47 @@ public class LauncherModel extends BroadcastReceiver
         return info;
     }
 
-    public interface CallbackTask {
-        void execute(Callbacks callbacks);
-    }
-
-    public abstract class BaseModelUpdateTask implements Runnable {
-        private LauncherModel mModel;
-
-        public abstract void execute(LauncherAppState launcherAppState, AllAppsList allAppsList);
-
-        void init(LauncherModel launcherModel) {
-            this.mModel = launcherModel;
-        }
+    @Thunk
+    class AppsAvailabilityCheck extends BroadcastReceiver {
 
         @Override
-        public void run() {
-            if (this.mModel.mHasLoaderCompletedOnce) {
-                execute(this.mModel.mApp, this.mModel.mBgAllAppsList);
+        public void onReceive(Context context, Intent intent) {
+            synchronized (sBgLock) {
+                final LauncherAppsCompat launcherApps = LauncherAppsCompat
+                        .getInstance(mApp.getContext());
+                final PackageManager manager = context.getPackageManager();
+                final ArrayList<String> packagesRemoved = new ArrayList<>();
+                final ArrayList<String> packagesUnavailable = new ArrayList<>();
+                for (Entry<UserHandle, HashSet<String>> entry : sPendingPackages.entrySet()) {
+                    UserHandle user = entry.getKey();
+                    packagesRemoved.clear();
+                    packagesUnavailable.clear();
+                    for (String pkg : entry.getValue()) {
+                        if (!launcherApps.isPackageEnabledForProfile(pkg, user)) {
+                            if (PackageManagerHelper.isAppOnSdcard(manager, pkg)) {
+                                packagesUnavailable.add(pkg);
+                            } else {
+                                packagesRemoved.add(pkg);
+                            }
+                        }
+                    }
+                    if (!packagesRemoved.isEmpty()) {
+                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_REMOVE,
+                                packagesRemoved.toArray(new String[packagesRemoved.size()]), user));
+                    }
+                    if (!packagesUnavailable.isEmpty()) {
+                        enqueueItemUpdatedTask(new PackageUpdatedTask(PackageUpdatedTask.OP_UNAVAILABLE,
+                                packagesUnavailable.toArray(new String[packagesUnavailable.size()]), user));
+                    }
+                }
+                sPendingPackages.clear();
             }
         }
+    }
+
+
+    public interface CallbackTask {
+        void execute(Callbacks callbacks);
     }
 
     public Callbacks getCallback() {
@@ -3524,6 +3529,23 @@ public class LauncherModel extends BroadcastReceiver
         @Override
         public void execute(@NonNull Runnable command) {
             runOnMainThread(command);
+        }
+    }
+
+    public abstract class BaseModelUpdateTask implements Runnable {
+        private LauncherModel mModel;
+
+        public abstract void execute(LauncherAppState launcherAppState, AllAppsList allAppsList);
+
+        void init(LauncherModel launcherModel) {
+            this.mModel = launcherModel;
+        }
+
+        @Override
+        public void run() {
+            if (this.mModel.mHasLoaderCompletedOnce) {
+                execute(this.mModel.mApp, this.mModel.mBgAllAppsList);
+            }
         }
     }
 

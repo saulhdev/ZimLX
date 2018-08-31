@@ -38,6 +38,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.zimmob.zimlx.LauncherProvider.SqlArguments;
 import org.zimmob.zimlx.LauncherSettings.Favorites;
+import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.util.Thunk;
 
 import java.io.IOException;
@@ -96,6 +97,7 @@ public class AutoInstallsLayout {
     protected final Resources mSourceRes;
     protected final int mLayoutId;
     protected final String mRootTag;
+    private final InvariantDeviceProfile mIdp;
     @Thunk
     final Context mContext;
     @Thunk
@@ -122,9 +124,9 @@ public class AutoInstallsLayout {
         mSourceRes = res;
         mLayoutId = layoutId;
 
-        InvariantDeviceProfile idp = LauncherAppState.getInstance().getInvariantDeviceProfile();
-        mRowCount = idp.numRows;
-        mColumnCount = idp.numColumns;
+        mIdp = LauncherAppState.getInstance().getInvariantDeviceProfile();
+        mRowCount = mIdp.numRows;
+        mColumnCount = mIdp.numColumns;
     }
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
@@ -273,7 +275,9 @@ public class AutoInstallsLayout {
         if (HOTSEAT_CONTAINER_NAME.equals(getAttributeValue(parser, ATTR_CONTAINER))) {
             out[0] = Favorites.CONTAINER_HOTSEAT;
             // Hack: hotseat items are stored using screen ids
-            out[1] = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
+            long rank = Long.parseLong(getAttributeValue(parser, ATTR_RANK));
+            out[1] = (FeatureFlags.NO_ALL_APPS_ICON || rank < mIdp.getAllAppsButtonRank())
+                    ? rank : (rank + 1);
         } else {
             out[0] = Favorites.CONTAINER_DESKTOP;
             out[1] = Long.parseLong(getAttributeValue(parser, ATTR_SCREEN));

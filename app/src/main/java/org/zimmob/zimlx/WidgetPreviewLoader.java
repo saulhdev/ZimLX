@@ -1,11 +1,13 @@
 package org.zimmob.zimlx;
 
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ResolveInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
@@ -37,6 +39,7 @@ import org.zimmob.zimlx.util.SQLiteCacheHelper;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.widget.WidgetCell;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -70,7 +73,7 @@ public class WidgetPreviewLoader {
     private final CacheDb mDb;
     private final int mProfileBadgeMargin;
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
-
+    private static final String WIDGET_PREFIX = "Widget:";
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
@@ -243,6 +246,114 @@ public class WidgetPreviewLoader {
         }
     }
 
+    private static final String SHORTCUT_PREFIX = "Shortcut:";
+    private final HashMap<String, WeakReference<Bitmap>> mLoadedPreviews = new HashMap<>();
+
+    private static String getObjectName(Object o) {
+        // should cache the string builder
+        StringBuilder sb = new StringBuilder();
+        String output;
+        if (o instanceof AppWidgetProviderInfo) {
+            sb.append(WIDGET_PREFIX);
+            sb.append(o.toString());
+            output = sb.toString();
+            sb.setLength(0);
+        } else {
+            sb.append(SHORTCUT_PREFIX);
+
+            ResolveInfo info = (ResolveInfo) o;
+            sb.append(new ComponentName(info.activityInfo.packageName,
+                    info.activityInfo.name).flattenToString());
+            output = sb.toString();
+            sb.setLength(0);
+        }
+        return output;
+    }
+
+    private RectF drawBoxWithShadow(Canvas canvas, Paint paint, int i, int i2) {
+        Resources resources = this.mContext.getResources();
+        float dimension = resources.getDimension(R.dimen.widget_preview_shadow_blur);
+        float dimension2 = resources.getDimension(R.dimen.widget_preview_key_shadow_distance);
+        float dimension3 = resources.getDimension(R.dimen.widget_preview_corner_radius);
+        RectF rectF = new RectF(dimension, dimension, ((float) i) - dimension, (((float) i2) - dimension) - dimension2);
+        paint.setColor(-1);
+        paint.setShadowLayer(dimension, 0.0f, dimension2, 1023410176);
+        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
+        paint.setShadowLayer(dimension, 0.0f, 0.0f, ColorUtils.setAlphaComponent(0x1000000, 30));
+        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
+        paint.clearShadowLayer();
+        return rectF;
+    }
+
+    private Bitmap generateShortcutPreview(
+            Launcher launcher, ShortcutConfigActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
+        int i3 = launcher.getDeviceProfile().iconSizePx;
+        int dimensionPixelSize = launcher.getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
+        int i4 = (dimensionPixelSize * 2) + i3;
+        if (maxHeight < i4 || maxWidth < i4) {
+            throw new RuntimeException("Max size is too small for preview");
+        }
+        Canvas canvas = new Canvas();
+        if (preview == null || preview.getWidth() < i4 || preview.getHeight() < i4) {
+            preview = Bitmap.createBitmap(i4, i4, Config.ARGB_8888);
+            canvas.setBitmap(preview);
+        } else {
+            if (preview.getWidth() > i4 || preview.getHeight() > i4) {
+                preview.reconfigure(i4, i4, preview.getConfig());
+            }
+            canvas.setBitmap(preview);
+            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
+        }
+        Paint paint = new Paint(3);
+        RectF drawBoxWithShadow = drawBoxWithShadow(canvas, paint, i4, i4);
+        Bitmap createScaledBitmapWithoutShadow = LauncherIcons.createScaledBitmapWithoutShadow(mutateOnMainThread(info.getFullResIcon(this.mIconCache)), this.mContext, 26);
+        Rect rect = new Rect(0, 0, createScaledBitmapWithoutShadow.getWidth(), createScaledBitmapWithoutShadow.getHeight());
+        drawBoxWithShadow.set(0.0f, 0.0f, (float) i3, (float) i3);
+        drawBoxWithShadow.offset((float) dimensionPixelSize, (float) dimensionPixelSize);
+        canvas.drawBitmap(createScaledBitmapWithoutShadow, rect, drawBoxWithShadow, paint);
+        canvas.setBitmap(null);
+        return preview;
+    }
+
+    private Drawable mutateOnMainThread(final Drawable drawable) {
+        try {
+            return mMainThreadExecutor.submit(new Callable<Drawable>() {
+                @Override
+                public Drawable call() {
+                    return drawable.mutate();
+                }
+            }).get();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException(e);
+        } catch (ExecutionException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * @return an array of containing versionCode and lastUpdatedTime for the package.
+     */
+    @Thunk
+    long[] getPackageVersion(String packageName) {
+        synchronized (mPackageVersions) {
+            long[] versions = mPackageVersions.get(packageName);
+            if (versions == null) {
+                versions = new long[2];
+                try {
+                    PackageInfo info = mContext.getPackageManager().getPackageInfo(packageName,
+                            PackageManager.GET_UNINSTALLED_PACKAGES);
+                    versions[0] = info.versionCode;
+                    versions[1] = info.lastUpdateTime;
+                } catch (NameNotFoundException e) {
+                    Log.e(TAG, "PackageInfo not found", e);
+                }
+                mPackageVersions.put(packageName, versions);
+            }
+            return versions;
+        }
+    }
+
     /**
      * Generates the widget preview from either the {@link AppWidgetManagerCompat} or cache
      * and add badge at the bottom right corner.
@@ -269,6 +380,7 @@ public class WidgetPreviewLoader {
                         Integer.toHexString(info.previewImage) + " for provider: " + info.provider);
             }
         }
+
 
         final boolean widgetPreviewExists = (drawable != null);
         final int spanX = info.spanX;
@@ -367,87 +479,22 @@ public class WidgetPreviewLoader {
         return mWidgetManager.getBadgeBitmap(info, preview, imageWidth, imageHeight);
     }
 
-    private RectF drawBoxWithShadow(Canvas canvas, Paint paint, int i, int i2) {
-        Resources resources = this.mContext.getResources();
-        float dimension = resources.getDimension(R.dimen.widget_preview_shadow_blur);
-        float dimension2 = resources.getDimension(R.dimen.widget_preview_key_shadow_distance);
-        float dimension3 = resources.getDimension(R.dimen.widget_preview_corner_radius);
-        RectF rectF = new RectF(dimension, dimension, ((float) i) - dimension, (((float) i2) - dimension) - dimension2);
-        paint.setColor(-1);
-        paint.setShadowLayer(dimension, 0.0f, dimension2, 1023410176);
-        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
-        paint.setShadowLayer(dimension, 0.0f, 0.0f, ColorUtils.setAlphaComponent(0x1000000, 30));
-        canvas.drawRoundRect(rectF, dimension3, dimension3, paint);
-        paint.clearShadowLayer();
-        return rectF;
-    }
-
-    private Bitmap generateShortcutPreview(
-            Launcher launcher, ShortcutConfigActivityInfo info, int maxWidth, int maxHeight, Bitmap preview) {
-        int i3 = launcher.getDeviceProfile().iconSizePx;
-        int dimensionPixelSize = launcher.getResources().getDimensionPixelSize(R.dimen.widget_preview_shortcut_padding);
-        int i4 = (dimensionPixelSize * 2) + i3;
-        if (maxHeight < i4 || maxWidth < i4) {
-            throw new RuntimeException("Max size is too small for preview");
-        }
-        Canvas canvas = new Canvas();
-        if (preview == null || preview.getWidth() < i4 || preview.getHeight() < i4) {
-            preview = Bitmap.createBitmap(i4, i4, Config.ARGB_8888);
-            canvas.setBitmap(preview);
-        } else {
-            if (preview.getWidth() > i4 || preview.getHeight() > i4) {
-                preview.reconfigure(i4, i4, preview.getConfig());
-            }
-            canvas.setBitmap(preview);
-            canvas.drawColor(0, PorterDuff.Mode.CLEAR);
-        }
-        Paint paint = new Paint(3);
-        RectF drawBoxWithShadow = drawBoxWithShadow(canvas, paint, i4, i4);
-        Bitmap createScaledBitmapWithoutShadow = LauncherIcons.createScaledBitmapWithoutShadow(mutateOnMainThread(info.getFullResIcon(this.mIconCache)), this.mContext, 26);
-        Rect rect = new Rect(0, 0, createScaledBitmapWithoutShadow.getWidth(), createScaledBitmapWithoutShadow.getHeight());
-        drawBoxWithShadow.set(0.0f, 0.0f, (float) i3, (float) i3);
-        drawBoxWithShadow.offset((float) dimensionPixelSize, (float) dimensionPixelSize);
-        canvas.drawBitmap(createScaledBitmapWithoutShadow, rect, drawBoxWithShadow, paint);
-        canvas.setBitmap(null);
-        return preview;
-    }
-
-    private Drawable mutateOnMainThread(final Drawable drawable) {
-        try {
-            return mMainThreadExecutor.submit(new Callable<Drawable>() {
-                @Override
-                public Drawable call() {
-                    return drawable.mutate();
+    public void recycleBitmap(Object o, Bitmap bitmapToRecycle) {
+        String name = getObjectName(o);
+        synchronized (mLoadedPreviews) {
+            if (mLoadedPreviews.containsKey(name)) {
+                Bitmap b = mLoadedPreviews.get(name).get();
+                if (b == bitmapToRecycle) {
+                    mLoadedPreviews.remove(name);
+                    if (bitmapToRecycle.isMutable()) {
+                        synchronized (mUnusedBitmaps) {
+                            //mUnusedBitmaps.add(new SoftReference<Bitmap>(b));
+                        }
+                    }
+                } else {
+                    throw new RuntimeException("Bitmap passed in doesn't match up");
                 }
-            }).get();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new RuntimeException(e);
-        } catch (ExecutionException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * @return an array of containing versionCode and lastUpdatedTime for the package.
-     */
-    @Thunk
-    long[] getPackageVersion(String packageName) {
-        synchronized (mPackageVersions) {
-            long[] versions = mPackageVersions.get(packageName);
-            if (versions == null) {
-                versions = new long[2];
-                try {
-                    PackageInfo info = mContext.getPackageManager().getPackageInfo(packageName,
-                            PackageManager.GET_UNINSTALLED_PACKAGES);
-                    versions[0] = info.versionCode;
-                    versions[1] = info.lastUpdateTime;
-                } catch (NameNotFoundException e) {
-                    Log.e(TAG, "PackageInfo not found", e);
-                }
-                mPackageVersions.put(packageName, versions);
             }
-            return versions;
         }
     }
 

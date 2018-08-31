@@ -677,4 +677,8 @@
 
     <string name="device_admin_message">ZimLX requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.</string>
     <string name="toast_device_admin_required">Please enable device administration.</string>
+    <string name="apps_customize_apps_scroll_format">Apps page %1$d of %2$d</string>
+    <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
+    <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
+
 </resources>

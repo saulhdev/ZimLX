@@ -35,7 +35,10 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
     public LauncherAppWidgetProviderInfo info;
     public AppWidgetHostView boundWidget;
     public Bundle bindOptions = null;
-
+    public int minWidth;
+    public int minHeight;
+    public int minResizeWidth;
+    public int minResizeHeight;
     public PendingAddWidgetInfo(Context context, LauncherAppWidgetProviderInfo info) {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         this.info = info;
@@ -48,6 +51,11 @@ public class PendingAddWidgetInfo extends PendingAddItemInfo {
         spanY = info.spanY;
         minSpanX = info.minSpanX;
         minSpanY = info.minSpanY;
+
+        minWidth = info.minWidth;
+        minHeight = info.minHeight;
+        minResizeWidth = info.minResizeWidth;
+        minResizeHeight = info.minResizeHeight;
     }
 
 }

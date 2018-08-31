@@ -218,4 +218,13 @@
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
     <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
     <dimen name="popup_elevation">9dp</dimen>
+
+    <dimen name="apps_customize_tab_bar_height">42dp</dimen>
+    <integer name="apps_customize_widget_cell_count_x">3</integer>
+    <integer name="apps_customize_widget_cell_count_y">2</integer>
+
+    <!-- When dragging items on the workspace, the number of dps by which the position of
+     the drag view should be offset from the position of the original view. -->
+    <dimen name="dragViewOffsetX">0dp</dimen>
+    <dimen name="dragViewOffsetY">0dp</dimen>
 </resources>

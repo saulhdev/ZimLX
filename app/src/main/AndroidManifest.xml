@@ -123,7 +123,7 @@
             android:name=".minibar.MinibarEditActivity"
             android:label="Edit Item"
             android:parentActivityName=".Launcher"
-            android:theme="@style/NormalActivity.Light" />
+            android:theme="@style/SettingsHome" />
         <activity
             android:name=".kustomsupport.AutoFinishTransparentActivity"
             android:theme="@style/Theme.Transparent" />

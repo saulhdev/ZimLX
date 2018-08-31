@@ -27,12 +27,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewDebug;
 import android.widget.FrameLayout;
+import android.widget.TextView;
 
 import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
+import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.dynamicui.ExtractedColors;
 
 public class Hotseat extends FrameLayout {
@@ -101,16 +104,6 @@ public class Hotseat extends FrameLayout {
         return mHasVerticalHotseat ? (mContent.getCountY() - ((rank % size) + 1)) : rank / size;
     }
 
-    @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mContent = findViewById(R.id.layout);
-        mContent.setIsHotseat(true);
-
-        refresh();
-        resetLayout();
-    }
-
     public void refresh() {
         DeviceProfile grid = mLauncher.getDeviceProfile();
         int rows = Utilities.getNumberOfHotseatRows(mLauncher);
@@ -122,8 +115,54 @@ public class Hotseat extends FrameLayout {
         mContent.requestLayout();
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mContent = findViewById(R.id.layout);
+        mContent.setIsHotseat(true);
+
+        refresh();
+        resetLayout();
+    }
     void resetLayout() {
         mContent.removeAllViewsInLayout();
+        if (!FeatureFlags.NO_ALL_APPS_ICON) {
+            // Add the Apps button
+            Context context = getContext();
+            DeviceProfile grid = mLauncher.getDeviceProfile();
+            int mAllAppsButtonRank = grid.inv.getAllAppsButtonRank();
+            LayoutInflater inflater = LayoutInflater.from(context);
+            TextView allAppsButton = (TextView)
+                    inflater.inflate(R.layout.all_apps_button, mContent, false);
+            Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+
+            Utilities.resizeIconDrawable(d);
+            int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+            Rect bounds = d.getBounds();
+            d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
+                    bounds.bottom - scaleDownPx / 2);
+            allAppsButton.setCompoundDrawables(null, d, null, null);
+
+            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
+            if (mLauncher != null) {
+                //mLauncher.setAllAppsButton(allAppsButton);
+                allAppsButton.setOnTouchListener(mLauncher.getHapticFeedbackTouchListener());
+                allAppsButton.setOnClickListener(v -> {
+                    if (mLauncher != null) {
+                        //mLauncher.onClickAllAppsButton(v);
+                    }
+                });
+            }
+
+            // Note: We do this to ensure that the hotseat is always laid out in the orientation of
+            // the hotseat in order regardless of which orientation they were added
+            int x = getCellXFromOrder(mAllAppsButtonRank);
+            int y = getCellYFromOrder(mAllAppsButtonRank);
+            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x, y, 1, 1);
+            lp.canReorder = false;
+            mContent.addViewToCellLayout(allAppsButton, -1, 0, lp, true);
+        }
     }
 
     @Override

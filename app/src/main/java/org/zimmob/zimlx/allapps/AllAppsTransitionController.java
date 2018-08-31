@@ -94,19 +94,19 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
 
     private int mPullDownAction;
 
-    public AllAppsTransitionController(Launcher l) {
-        mLauncher = l;
-        mDetector = new VerticalPullDetector(l);
+    public AllAppsTransitionController(Launcher launcher) {
+        mLauncher = launcher;
+        mDetector = new VerticalPullDetector(launcher);
         mDetector.setListener(this);
         mShiftRange = DEFAULT_SHIFT_RANGE;
         mProgress = 1f;
         mEvaluator = new ArgbEvaluator();
-        mTheme = Utilities.getThemer().allAppsTheme(l);
+        mTheme = Utilities.getThemer().allAppsTheme(launcher);
         mAllAppsBackgroundColor = mTheme.getBackgroundColor();
         mAllAppsBackgroundColorBlur = mTheme.getBackgroundColorBlur();
-        mTransparentHotseat = Utilities.getPrefs(l).getTransparentHotseat();
-        mLightStatusBar = Utilities.getPrefs(l).getLightStatusBar();
-        initPullDown(l);
+        mTransparentHotseat = Utilities.getPrefs(launcher).getTransparentHotseat();
+        mLightStatusBar = Utilities.getPrefs(launcher).getLightStatusBar();
+        initPullDown(launcher);
     }
 
     public void initPullDown(Context context) {
