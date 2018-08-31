@@ -85,4 +85,7 @@
     <item name="action_resize" type="id" />
     <item name="action_deep_shortcuts" type="id" />
 
+    <!-- View tag key used to store SpringAnimation data. -->
+    <item name="spring_animation_tag" type="id" />
+
 </resources>
