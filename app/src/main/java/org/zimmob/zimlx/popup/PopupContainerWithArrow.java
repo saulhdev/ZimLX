@@ -158,7 +158,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
                 .getEnabledSystemShortcutsForItem(itemInfo);
 
         LayoutInflater layoutInflater =
-                LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_SHORTCUTS));
+                LayoutInflater.from(FeatureFlags.applyDarkTheme(launcher, FeatureFlags.DARK_SHORTCUTS));
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) layoutInflater.inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);

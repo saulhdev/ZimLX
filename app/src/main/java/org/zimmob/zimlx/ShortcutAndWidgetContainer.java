@@ -91,8 +91,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     }
 
     public void setupLp(CellLayout.LayoutParams lp) {
-        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(),
-                mCountX);
+        lp.setup(mCellWidth, mCellHeight, mWidthGap, mHeightGap, invertLayoutHorizontally(), mCountX);
     }
 
     // Set whether or not to invert the layout horizontally if the layout is in RTL mode.

@@ -411,7 +411,7 @@ public class Launcher extends Activity
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.loadThemePreference(this);
+        FeatureFlags.loadThemePreference(this);
         Utilities.setupPirateLocale(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);

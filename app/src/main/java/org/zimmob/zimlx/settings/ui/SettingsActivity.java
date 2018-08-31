@@ -76,7 +76,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        FeatureFlags.applyDarkTheme(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         Utilities.setupPirateLocale(this);
@@ -88,7 +88,7 @@ public class SettingsActivity extends AppCompatActivity implements
         toolbar.setBackgroundColor(Utilities.getPrefs(this).getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
 
-        if (FeatureFlags.INSTANCE.getCurrentTheme() != 2)
+        if (FeatureFlags.getCurrentTheme() != 2)
             BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
         if (savedInstanceState == null) {
@@ -149,7 +149,7 @@ public class SettingsActivity extends AppCompatActivity implements
     @Override
     public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
         if (FeatureFlags.KEY_PREF_THEME.equals(key)) {
-            FeatureFlags.INSTANCE.loadThemePreference(this);
+            FeatureFlags.loadThemePreference(this);
             recreate();
         }
     }
@@ -393,7 +393,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         @Override
         public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-            return super.onCreateView(FeatureFlags.INSTANCE.getLayoutInflator(inflater), container, savedInstanceState);
+            return super.onCreateView(FeatureFlags.getLayoutInflator(inflater), container, savedInstanceState);
         }
     }
 }

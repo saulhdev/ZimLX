@@ -115,7 +115,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     }
 
     public AllAppsContainerView(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_ALLAPPS), attrs, defStyleAttr);
+        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_ALLAPPS), attrs, defStyleAttr);
         Resources res = context.getResources();
 
         mLauncher = Launcher.getLauncher(context);

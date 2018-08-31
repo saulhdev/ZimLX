@@ -25,7 +25,7 @@ public class IconPickerActivity extends AppCompatActivity implements IconGridAda
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        FeatureFlags.applyDarkTheme(this);
         Utilities.setupPirateLocale(this);
 
         super.onCreate(savedInstanceState);

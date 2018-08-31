@@ -129,7 +129,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         if (shortcutType == PopupPopulator.Item.SYSTEM_SHORTCUT_ICON) {
             // System shortcut icons are added to a header that is separate from the full shortcuts.
             if (mSystemShortcutIcons == null) {
-                LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
+                LayoutInflater layoutInflater = LayoutInflater.from(FeatureFlags.applyDarkTheme(mLauncher, FeatureFlags.DARK_SHORTCUTS));
                 mSystemShortcutIcons = (LinearLayout) layoutInflater.inflate(
                         R.layout.system_shortcut_icons, mShortcutsLayout, false);
                 mShortcutsLayout.addView(mSystemShortcutIcons, 0);

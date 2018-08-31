@@ -269,6 +269,51 @@ public class FolderPagedView extends PagedView {
         }
     }
 
+    /**
+     * Calculates the grid size such that {@param count} items can fit in the grid.
+     * The grid size is calculated such that countY <= countX and countX = ceil(sqrt(count)) while
+     * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
+     */
+    public static void calculateGridSize(int count, int countX, int countY, int maxCountX,
+                                         int maxCountY, int maxItemsPerPage, int[] out) {
+        boolean done;
+        int gridCountX = countX;
+        int gridCountY = countY;
+
+        if (count >= maxItemsPerPage) {
+            gridCountX = maxCountX;
+            gridCountY = maxCountY;
+            done = true;
+        } else {
+            done = false;
+        }
+
+        while (!done) {
+            int oldCountX = gridCountX;
+            int oldCountY = gridCountY;
+            if (gridCountX * gridCountY < count) {
+                // Current grid is too small, expand it
+                if ((gridCountX <= gridCountY || gridCountY == maxCountY)
+                        && gridCountX < maxCountX) {
+                    gridCountX++;
+                } else if (gridCountY < maxCountY) {
+                    gridCountY++;
+                }
+                if (gridCountY == 0) gridCountY++;
+            } else if ((gridCountY - 1) * gridCountX >= count && gridCountY >= gridCountX) {
+                gridCountY = Math.max(0, gridCountY - 1);
+            } else if ((gridCountX - 1) * gridCountY >= count) {
+                gridCountX = Math.max(0, gridCountX - 1);
+            }
+            done = gridCountX == oldCountX && gridCountY == oldCountY;
+        }
+
+        out[0] = gridCountX;
+        out[1] = gridCountY;
+    }
+
+
+
     @Override
     protected void onScrollChanged(int l, int t, int oldl, int oldt) {
         super.onScrollChanged(l, t, oldl, oldt);

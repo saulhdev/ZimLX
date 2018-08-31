@@ -81,6 +81,7 @@ import org.zimmob.zimlx.util.Thunk;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -133,7 +134,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<>();
     private Drawable mReferenceDrawable = null;
     private Alarm mOpenAlarm = new Alarm();
-
+    FolderIconPreviewVerifier mPreviewVerifier;
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -381,6 +382,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         this.mBadgeInfo = folderBadgeInfo;
     }
 
+    public PreviewLayoutRule getLayoutRule() {
+        return mPreviewLayoutRule;
+    }
     private void updateBadgeScale(boolean z, boolean z2) {
         float f = z2 ? 1.0f : 0.0f;
         if (z == z2 || !isShown()) {
@@ -544,6 +548,34 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
     }
 
+    /**
+     * Returns the list of preview items displayed in the icon.
+     */
+    public List<BubbleTextView> getPreviewItems() {
+        return getPreviewItemsOnPage(0);
+    }
+
+    /**
+     * Returns the list of "preview items" on {@param page}.
+     */
+    public List<BubbleTextView> getPreviewItemsOnPage(int page) {
+        mPreviewVerifier.setFolderInfo(mFolder.getInfo());
+
+        List<BubbleTextView> itemsToDisplay = new ArrayList<>();
+        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
+        int numItems = itemsOnPage.size();
+        for (int rank = 0; rank < numItems; ++rank) {
+            if (mPreviewVerifier.isItemInPreview(page, rank)) {
+                itemsToDisplay.add(itemsOnPage.get(rank));
+            }
+
+            if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
+                break;
+            }
+        }
+        return itemsToDisplay;
+    }
+
     private void updateItemDrawingParams(boolean animate) {
         ArrayList<View> items = mFolder.getItemsInReadingOrder();
         int nItemsInPreview = Math.min(items.size(), mPreviewLayoutRule.numItems());
@@ -665,8 +697,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
                                                                  PreviewItemDrawingParams params);
 
+        float scaleForItem(int index, int totalNumItems);
         void init(int availableSpace, int intrinsicIconSize, boolean rtl);
 
+        float getIconSize();
         int numItems();
 
         boolean clipToBackground();
@@ -743,7 +777,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         public void setup(Context context, DisplayMetrics dm, DeviceProfile grid, View invalidateDelegate,
                           int availableSpace, int topPadding) {
             BG_INTENSITY = Utilities.resolveAttributeData(
-                    FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_FOLDER),
+                    FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_FOLDER),
                     R.attr.folderBgIntensity);
 
             mInvalidateDelegate = invalidateDelegate;
@@ -772,6 +806,9 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             sMask.transform(mMaskMatrix, mMask);
         }
 
+        public int getBackgroundAlpha() {
+            return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+        }
         @SuppressLint("PrivateApi")
         private void initAdaptive() {
             Class<?> pathParser;

@@ -17,7 +17,7 @@ import org.zimmob.zimlx.config.FeatureFlags
 open class BackupBaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        FeatureFlags.applyDarkTheme(this)
+        FeatureFlags.applyDarkTheme(this, 0)
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
@@ -27,7 +27,7 @@ open class BackupBaseActivity : AppCompatActivity() {
         toolbar.setBackgroundColor(Utilities.getPrefs(this).primaryColor)
         setSupportActionBar(toolbar)
 
-        if (FeatureFlags.currentTheme != 2)
+        if (FeatureFlags.getCurrentTheme() != 2)
             BlurWallpaperProvider.applyBlurBackground(this)
     }
 

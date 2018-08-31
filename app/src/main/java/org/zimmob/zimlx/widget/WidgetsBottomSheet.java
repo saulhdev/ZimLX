@@ -75,7 +75,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         this.mVerticalPullDetector = new VerticalPullDetector(context);
         this.mVerticalPullDetector.setListener(this);
 
-        if (!Utilities.ATLEAST_OREO && !FeatureFlags.INSTANCE.getUseDarkTheme()) {
+        if (!Utilities.ATLEAST_OREO && !FeatureFlags.getUseDarkTheme(0)) {
             setWillNotDraw(false);
             mNavHeight = getResources().getDimensionPixelSize(R.dimen.navigation_bar_height);
             mNavPaint = new Paint();
@@ -85,7 +85,7 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
     }
 
     private static int getTheme() {
-        return FeatureFlags.INSTANCE.getUseDarkTheme() ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
+        return FeatureFlags.getUseDarkTheme() ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
     }
 
     public static WidgetsBottomSheet getOpen(Launcher launcher) {

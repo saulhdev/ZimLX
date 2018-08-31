@@ -25,6 +25,7 @@ import android.content.res.Resources.Theme;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -32,6 +33,7 @@ import android.graphics.Region;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
+import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -108,6 +110,19 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
+
+    public static final Property<BubbleTextView, Integer> TEXT_ALPHA_PROPERTY
+            = new Property<BubbleTextView, Integer>(Integer.class, "textAlpha") {
+        @Override
+        public Integer get(BubbleTextView bubbleTextView) {
+            return bubbleTextView.getTextAlpha();
+        }
+
+        @Override
+        public void set(BubbleTextView bubbleTextView, Integer alpha) {
+            bubbleTextView.setTextAlpha(alpha);
+        }
+    };
 
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -257,6 +272,31 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         if (Utilities.isAnimatedClock(getContext(), componentName)) {
             setIcon(ClockIconDrawable.Companion.createWrapped(getContext()));
         }
+    }
+
+    /**
+     * Creates an animator to fade the text in or out.
+     *
+     * @param fadeIn Whether the text should fade in or fade out.
+     */
+    public ObjectAnimator createTextAlphaAnimator(boolean fadeIn) {
+        int toAlpha = shouldTextBeVisible() && fadeIn ? Color.alpha(mTextColor) : 0;
+        return ObjectAnimator.ofInt(this, TEXT_ALPHA_PROPERTY, toAlpha);
+    }
+
+    public boolean shouldTextBeVisible() {
+        // Text should be visible everywhere but the hotseat.
+        Object tag = getParent() instanceof FolderIcon ? ((View) getParent()).getTag() : getTag();
+        ItemInfo info = tag instanceof ItemInfo ? (ItemInfo) tag : null;
+        return info == null || info.container != LauncherSettings.Favorites.CONTAINER_HOTSEAT;
+    }
+
+    private int getTextAlpha() {
+        return Color.alpha(getCurrentTextColor());
+    }
+
+    private void setTextAlpha(int alpha) {
+        super.setTextColor(ColorUtils.setAlphaComponent(mTextColor, alpha));
     }
 
     public void applyFromApplicationInfo(AppInfo info) {
@@ -804,6 +844,9 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         }
     }
 
+    public int getIconSize() {
+        return mIconSize;
+    }
     /**
      * Interface to be implemented by the grand parent to allow click shadow effect.
      */

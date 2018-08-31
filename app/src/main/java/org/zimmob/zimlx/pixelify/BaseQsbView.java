@@ -43,7 +43,7 @@ public abstract class BaseQsbView extends FrameLayout implements OnClickListener
     private boolean mUseWhiteLogo;
 
     public BaseQsbView(Context context, AttributeSet attributeSet, int i) {
-        super(FeatureFlags.INSTANCE.applyDarkTheme(context, FeatureFlags.DARK_QSB), attributeSet, i);
+        super(FeatureFlags.applyDarkTheme(context, FeatureFlags.DARK_QSB), attributeSet, i);
         mLauncher = Launcher.getLauncher(context);
     }
 

@@ -110,7 +110,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     public void initPullDown(Context context) {
-        mPullDownAction = FeatureFlags.INSTANCE.pullDownAction(context);
+        mPullDownAction = FeatureFlags.pullDownAction(context);
     }
 
     public void updateLightStatusBar(Context context) {
@@ -307,7 +307,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
     }
 
     private void updateLightStatusBar(float shift) {
-        boolean useDarkTheme = FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_ALLAPPS);
+        boolean useDarkTheme = FeatureFlags.getUseDarkTheme(FeatureFlags.DARK_ALLAPPS);
         boolean darkStatusBar = useDarkTheme ||
                 (BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) &&
                         !mLauncher.getExtractedColors().isLightStatusBar() &&

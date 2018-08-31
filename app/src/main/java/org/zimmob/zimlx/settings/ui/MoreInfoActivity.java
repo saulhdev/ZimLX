@@ -25,7 +25,7 @@ public class MoreInfoActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        FeatureFlags.applyDarkTheme(this);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         Utilities.setupPirateLocale(this);

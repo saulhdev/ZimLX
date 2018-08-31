@@ -37,7 +37,7 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
     private Button buttonPlayStore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.INSTANCE.applyDarkTheme(this);
+        FeatureFlags.applyDarkTheme(this);
         Utilities.setupPirateLocale(this);
 
         Utilities.getPrefs(this).getEnableScreenRotation();

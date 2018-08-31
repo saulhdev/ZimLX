@@ -76,7 +76,7 @@ public class SuperGContainerView extends BaseQsbView {
             mQsbView.setLayerType(LAYER_TYPE_SOFTWARE, null);
         }
         if (Utilities.getPrefs(getContext()).getShowSearchPill() && Utilities.getPrefs(getContext()).getUseWhiteGoogleIcon() &&
-                (mBlurEnabled || FeatureFlags.INSTANCE.useDarkTheme(FeatureFlags.DARK_QSB))) {
+                (mBlurEnabled || FeatureFlags.getUseDarkTheme(FeatureFlags.DARK_QSB))) {
             ((ImageView) findViewById(R.id.g_icon)).setColorFilter(Color.WHITE);
             if (Utilities.getPrefs(getContext()).getShowVoiceSearchButton()) {
                 ((ImageView) findViewById(R.id.mic_icon)).setColorFilter(Color.WHITE);

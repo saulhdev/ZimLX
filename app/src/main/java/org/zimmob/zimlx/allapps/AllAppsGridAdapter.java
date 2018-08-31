@@ -99,7 +99,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mEmptySearchMessage = res.getString(R.string.all_apps_loading_message);
         mGridLayoutMgr = new AppsGridLayoutManager(launcher);
         mGridLayoutMgr.setSpanSizeLookup(new GridSpanSizer());
-        mLayoutInflater = LayoutInflater.from(FeatureFlags.INSTANCE.applyDarkTheme(launcher, FeatureFlags.DARK_ALLAPPS));
+        mLayoutInflater = LayoutInflater.from(FeatureFlags.applyDarkTheme(launcher, FeatureFlags.DARK_ALLAPPS));
         mIconClickListener = iconClickListener;
         mIconLongClickListener = iconLongClickListener;
         mTheme = Utilities.getThemer().allAppsTheme(launcher);
@@ -318,7 +318,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @NonNull
         public SpringAnimation initialize(ViewHolder viewHolder) {
-            return SpringAnimationHandler.Companion.forView(viewHolder.itemView, DynamicAnimation.TRANSLATION_Y, 0);
+            return SpringAnimationHandler.forView(viewHolder.itemView, DynamicAnimation.TRANSLATION_Y, 0);
         }
 
         public void update(@NonNull SpringAnimation springAnimation, ViewHolder viewHolder) {
@@ -339,6 +339,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     .getSpring()
                     .setStiffness(Utilities.boundToRange(900.0f - (((float) appPosition) * 50.0f), 580.0f, 900.0f))
                     .setDampingRatio(0.55f);
+        }
+
+        @Override
+        public void setDefaultValues(SpringAnimation spring) {
+
         }
 
         private int getAppPosition(int i, int i2, int i3) {
