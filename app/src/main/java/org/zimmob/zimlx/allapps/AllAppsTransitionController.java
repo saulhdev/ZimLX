@@ -466,14 +466,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             }
         });
         mDiscoBounceAnimation.setTarget(this);
-        mAppsView.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mDiscoBounceAnimation == null) {
-                    return;
-                }
-                mDiscoBounceAnimation.start();
+        mAppsView.post(() -> {
+            if (mDiscoBounceAnimation == null) {
+                return;
             }
+            mDiscoBounceAnimation.start();
         });
     }
 

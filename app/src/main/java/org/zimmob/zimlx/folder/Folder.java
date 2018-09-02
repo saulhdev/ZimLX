@@ -97,17 +97,13 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
      */
     public static final int SCROLL_HINT_DURATION = DragController.SCROLL_DELAY;
     // Compares item position based on rank and position giving priority to the rank.
-    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = new Comparator<ItemInfo>() {
-
-        @Override
-        public int compare(ItemInfo lhs, ItemInfo rhs) {
-            if (lhs.rank != rhs.rank) {
-                return lhs.rank - rhs.rank;
-            } else if (lhs.cellY != rhs.cellY) {
-                return lhs.cellY - rhs.cellY;
-            } else {
-                return lhs.cellX - rhs.cellX;
-            }
+    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = (lhs, rhs) -> {
+        if (lhs.rank != rhs.rank) {
+            return lhs.rank - rhs.rank;
+        } else if (lhs.cellY != rhs.cellY) {
+            return lhs.cellY - rhs.cellY;
+        } else {
+            return lhs.cellX - rhs.cellX;
         }
     };
     static final int STATE_NONE = -1;
@@ -260,13 +256,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFolderName = findViewById(R.id.folder_name);
-        mFolderName.setOnBackKeyListener(new ExtendedEditText.OnBackKeyListener() {
-            @Override
-            public boolean onBackKey() {
-                // Close the activity on back key press
-                doneEditingFolderName(true);
-                return false;
-            }
+        mFolderName.setOnBackKeyListener(() -> {
+            // Close the activity on back key press
+            doneEditingFolderName(true);
+            return false;
         });
         mFolderName.setOnFocusChangeListener(this);
         mFolderName.setEnabled(!mLauncher.isEditingDisabled());
@@ -386,12 +379,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     public void startEditingFolderName() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mFolderName.setHint("");
-                mIsEditingName = true;
-            }
+        post(() -> {
+            mFolderName.setHint("");
+            mIsEditingName = true;
         });
     }
 

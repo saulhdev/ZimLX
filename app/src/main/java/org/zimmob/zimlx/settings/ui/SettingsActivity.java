@@ -56,6 +56,7 @@ import org.zimmob.zimlx.Utilities;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.graphics.IconShapeOverride;
+import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.overlay.ILauncherClient;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
@@ -334,6 +335,10 @@ public class SettingsActivity extends AppCompatActivity implements
                             LauncherAppState.getInstance().getLauncher().scheduleKill();
                         }
                         break;
+                    case "pref_key__minibar":
+                        Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
+                        break;
+
                     case PreferenceFlags.KEY_WEATHER_PROVIDER:
                         if (!checkPermission(Manifest.permission.ACCESS_FINE_LOCATION)) {
                             Toast.makeText(getActivity(), R.string.location_permission_warn, Toast.LENGTH_SHORT).show();

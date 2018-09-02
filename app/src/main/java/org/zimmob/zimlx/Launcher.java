@@ -141,6 +141,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -192,6 +193,8 @@ public class Launcher extends Activity
     // Related to the auto-advancing of widgets
     private final int ADVANCE_MSG = 1;
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
+    public static Context mContext;
+
     public ViewGroupFocusHelper mFocusHandler;
     @Thunk
     State mState = State.WORKSPACE;
@@ -304,12 +307,7 @@ public class Launcher extends Activity
                     final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
                     final int delay = ADVANCE_STAGGER * i;
                     if (v instanceof Advanceable) {
-                        mHandler.postDelayed(new Runnable() {
-                            @Override
-                            public void run() {
-                                ((Advanceable) v).advance();
-                            }
-                        }, delay);
+                        mHandler.postDelayed(() -> ((Advanceable) v).advance(), delay);
                     }
                     i++;
                 }
@@ -417,6 +415,7 @@ public class Launcher extends Activity
         final ArrayList<String> labels = new ArrayList<>();
         final ArrayList<Integer> icons = new ArrayList<>();
         AppSettings appSettings = new AppSettings(this);
+        Minibar.setContext(this);
         for (String act : appSettings.getMinibarArrangement()) {
             if (act.length() > 1) {
                 Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
@@ -527,7 +526,7 @@ public class Launcher extends Activity
 
         Utilities.showOutdatedLawnfeedPopup(this);
         mLauncherTab = new LauncherTab(this);
-
+        mContext = this;
         initMinibar();
 
         Settings.init(this);
@@ -610,12 +609,7 @@ public class Launcher extends Activity
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             final int systemUiFlags = newSystemUiFlags;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
-                }
-            });
+            runOnUiThread(() -> getWindow().getDecorView().setSystemUiVisibility(systemUiFlags));
         }
     }
 
@@ -629,12 +623,7 @@ public class Launcher extends Activity
         }
         if (newSystemUiFlags != oldSystemUiFlags) {
             final int systemUiFlags = newSystemUiFlags;
-            runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    getWindow().getDecorView().setSystemUiVisibility(systemUiFlags);
-                }
-            });
+            runOnUiThread(() -> getWindow().getDecorView().setSystemUiVisibility(systemUiFlags));
         }
     }
 
@@ -786,12 +775,7 @@ public class Launcher extends Activity
                         "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        exitSpringLoadedDragModeDelayed(false, 0, null);
-                    }
-                };
+                final Runnable onComplete = () -> exitSpringLoadedDragModeDelayed(false, 0, null);
 
                 mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
@@ -806,12 +790,9 @@ public class Launcher extends Activity
                         mWorkspace.getScreenWithId(requestArgs.screenId);
 
                 dropLayout.setDropPending(true);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
-                        dropLayout.setDropPending(false);
-                    }
+                final Runnable onComplete = () -> {
+                    completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
+                    dropLayout.setDropPending(false);
                 };
                 mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
@@ -877,12 +858,7 @@ public class Launcher extends Activity
         if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.READ_EXTERNAL_STORAGE)) {
                 final Launcher _this = this;
-                DialogInterface.OnClickListener listener = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface di, int i) {
-                        Utilities.requestStoragePermission(_this);
-                    }
-                };
+                DialogInterface.OnClickListener listener = (di, i) -> Utilities.requestStoragePermission(_this);
                 new AlertDialog.Builder(this).setTitle(R.string.title_storage_permission_required)
                         .setMessage(R.string.content_storage_permission_required).setPositiveButton(android.R.string.ok, listener)
                         .setCancelable(false).show();
@@ -921,12 +897,9 @@ public class Launcher extends Activity
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
                     requestArgs.getWidgetProvider());
             boundWidget = layout;
-            onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-                }
+            onCompleteRunnable = () -> {
+                completeAddAppWidget(appWidgetId, requestArgs, layout, null);
+                exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
             };
         } else if (resultCode == RESULT_CANCELED) {
             mAppWidgetHost.deleteAppWidgetId(appWidgetId);
@@ -1273,22 +1246,14 @@ public class Launcher extends Activity
         mOverviewPanel = findViewById(R.id.overview_panel);
 
         // Long-clicking buttons in the overview panel does the same thing as clicking them.
-        OnLongClickListener performClickOnLongClick = new OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                return v.performClick();
-            }
-        };
+        OnLongClickListener performClickOnLongClick = v -> v.performClick();
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
         if (Utilities.isWallapaperAllowed(getApplicationContext())) {
-            wallpaperButton.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!mWorkspace.isSwitchingState()) {
-                        onClickWallpaperPicker(view);
-                    }
+            wallpaperButton.setOnClickListener(view -> {
+                if (!mWorkspace.isSwitchingState()) {
+                    onClickWallpaperPicker(view);
                 }
             });
             wallpaperButton.setOnLongClickListener(performClickOnLongClick);
@@ -1300,12 +1265,9 @@ public class Launcher extends Activity
 
         // Bind widget button actions
         mWidgetsButton = findViewById(R.id.widget_button);
-        mWidgetsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickAddWidgetButton();
-                }
+        mWidgetsButton.setOnClickListener(view -> {
+            if (!mWorkspace.isSwitchingState()) {
+                onClickAddWidgetButton();
             }
         });
         mWidgetsButton.setOnLongClickListener(performClickOnLongClick);
@@ -1324,10 +1286,6 @@ public class Launcher extends Activity
         mOverviewPanel.setAlpha(0f);
     }
 
-    public void addToCustomContentPage(View customContent,
-                                       CustomContentCallbacks callbacks, String description) {
-        //mWorkspace.addToCustomContentPage(customContent, callbacks, description);
-    }
 
     /**
      * Sets the all apps handle.
@@ -1543,14 +1501,11 @@ public class Launcher extends Activity
                         // some communication back with the app.
                         mWorkspace.postDelayed(mBuildLayersRunnable, 500);
                         final ViewTreeObserver.OnDrawListener listener = this;
-                        mWorkspace.post(new Runnable() {
-                            @Override
-                            public void run() {
-                                if (mWorkspace != null &&
-                                        mWorkspace.getViewTreeObserver() != null) {
-                                    mWorkspace.getViewTreeObserver().
-                                            removeOnDrawListener(listener);
-                                }
+                        mWorkspace.post(() -> {
+                            if (mWorkspace != null &&
+                                    mWorkspace.getViewTreeObserver() != null) {
+                                mWorkspace.getViewTreeObserver().
+                                        removeOnDrawListener(listener);
                             }
                         });
                     }
@@ -1729,12 +1684,9 @@ public class Launcher extends Activity
 
                 // We use this flag to suppress noisy callbacks above custom content state
                 // from onResume.
-                mWorkspace.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (mWorkspace != null) {
-                            mWorkspace.moveToDefaultScreen(true);
-                        }
+                mWorkspace.post(() -> {
+                    if (mWorkspace != null) {
+                        mWorkspace.moveToDefaultScreen(true);
                     }
                 });
             }
@@ -2003,13 +1955,10 @@ public class Launcher extends Activity
                     mAppWidgetHost, REQUEST_CREATE_APPWIDGET);
         } else {
             // Otherwise just add it
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    // Exit spring loaded mode if necessary after adding the widget
-                    exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
-                            null);
-                }
+            Runnable onComplete = () -> {
+                // Exit spring loaded mode if necessary after adding the widget
+                exitSpringLoadedDragModeDelayed(true, EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
+                        null);
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, appWidgetInfo);
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
@@ -2317,12 +2266,7 @@ public class Launcher extends Activity
             // The install has not been queued
             final String packageName = info.providerName.getPackageName();
             showBrokenAppInstallDialog(packageName,
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info);
-                        }
-                    });
+                    (dialog, id) -> startActivitySafely(v, LauncherModel.getMarketIntent(packageName), info));
         } else {
             // Download has started.
             final String packageName = info.providerName.getPackageName();
@@ -2355,13 +2299,9 @@ public class Launcher extends Activity
                 .setTitle(R.string.abandoned_promises_title)
                 .setMessage(R.string.abandoned_promise_explanation)
                 .setPositiveButton(R.string.abandoned_search, onSearchClickListener)
-                .setNeutralButton(R.string.abandoned_clean_this,
-                        new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int id) {
-                                final UserHandle user = Utilities.myUserHandle();
-                                mWorkspace.removeAbandonedPromise(packageName, user);
-                            }
+                .setNeutralButton(R.string.abandoned_clean_this, (dialog, id) -> {
+                    final UserHandle user = Utilities.myUserHandle();
+                    mWorkspace.removeAbandonedPromise(packageName, user);
                         })
                 .create().show();
     }
@@ -2411,12 +2351,7 @@ public class Launcher extends Activity
                 && !shortcut.hasStatusFlag(ShortcutInfo.FLAG_INSTALL_SESSION_ACTIVE)) {
             showBrokenAppInstallDialog(
                     shortcut.getTargetComponent().getPackageName(),
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int id) {
-                            startAppShortcutOrInfoActivity(v);
-                        }
-                    });
+                    (dialog, id) -> startAppShortcutOrInfoActivity(v));
             return;
         }
 
@@ -2511,15 +2446,11 @@ public class Launcher extends Activity
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
         if (mHapticFeedbackTouchListener == null) {
-            mHapticFeedbackTouchListener = new View.OnTouchListener() {
-                @SuppressLint("ClickableViewAccessibility")
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
-                        v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
-                    }
-                    return false;
+            mHapticFeedbackTouchListener = (v, event) -> {
+                if ((event.getAction() & MotionEvent.ACTION_MASK) == MotionEvent.ACTION_DOWN) {
+                    v.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY);
                 }
+                return false;
             };
         }
         return mHapticFeedbackTouchListener;
@@ -3057,12 +2988,7 @@ public class Launcher extends Activity
         }
         showAppsOrWidgets(State.WIDGETS, animated, false);
 
-        mWidgetsView.post(new Runnable() {
-            @Override
-            public void run() {
-                mWidgetsView.requestFocus();
-            }
-        });
+        mWidgetsView.post(() -> mWidgetsView.requestFocus());
     }
 
     /**
@@ -3228,11 +3154,9 @@ public class Launcher extends Activity
     private boolean waitUntilResume(Runnable run) {
         return waitUntilResume(run, false);
     }
-
     public void addOnResumeCallback(Runnable run) {
         mOnResumeCallbacks.add(run);
     }
-
     /**
      * If the activity is currently paused, signal that we need to re-run the loader
      * in onResume.
@@ -3333,12 +3257,7 @@ public class Launcher extends Activity
                               final ArrayList<ItemInfo> addNotAnimated,
                               final ArrayList<ItemInfo> addAnimated,
                               final ArrayList<AppInfo> addedApps) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated, addedApps);
-            }
-        };
+        Runnable r = () -> bindAppsAdded(newScreens, addNotAnimated, addAnimated, addedApps);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3375,12 +3294,7 @@ public class Launcher extends Activity
     @Override
     public void bindItems(final ArrayList<ItemInfo> shortcuts, final int start, final int end,
                           final boolean forceAnimateIcons) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindItems(shortcuts, start, end, forceAnimateIcons);
-            }
-        };
+        Runnable r = () -> bindItems(shortcuts, start, end, forceAnimateIcons);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3448,24 +3362,18 @@ public class Launcher extends Activity
             if (newShortcutsScreenId > -1) {
                 long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
                 final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newShortcutsScreenId);
-                final Runnable startBounceAnimRunnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        anim.playTogether(bounceAnims);
-                        anim.start();
-                    }
+                final Runnable startBounceAnimRunnable = () -> {
+                    anim.playTogether(bounceAnims);
+                    anim.start();
                 };
                 if (newShortcutsScreenId != currentScreenId) {
                     // We post the animation slightly delayed to prevent slowdowns
                     // when we are loading right after we return to launcher.
-                    mWorkspace.postDelayed(new Runnable() {
-                        @Override
-                        public void run() {
-                            if (mWorkspace != null) {
-                                mWorkspace.snapToPage(newScreenIndex);
-                                mWorkspace.postDelayed(startBounceAnimRunnable,
-                                        NEW_APPS_ANIMATION_DELAY);
-                            }
+                    mWorkspace.postDelayed(() -> {
+                        if (mWorkspace != null) {
+                            mWorkspace.snapToPage(newScreenIndex);
+                            mWorkspace.postDelayed(startBounceAnimRunnable,
+                                    NEW_APPS_ANIMATION_DELAY);
                         }
                     }, NEW_APPS_PAGE_MOVE_DELAY);
                 } else {
@@ -3492,12 +3400,7 @@ public class Launcher extends Activity
      */
     @Override
     public void bindAppWidget(final LauncherAppWidgetInfo item) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindAppWidget(item);
-            }
-        };
+        Runnable r = () -> bindAppWidget(item);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3548,7 +3451,7 @@ public class Launcher extends Activity
                     if (isDirectConfig && item.bindOptions != null) {
                         Bundle newOptions = item.bindOptions.getExtras();
                         if (options != null) {
-                            newOptions.putAll(options);
+                            Objects.requireNonNull(newOptions).putAll(options);
                         }
                         options = newOptions;
                     }
@@ -3645,22 +3548,14 @@ public class Launcher extends Activity
 
     @Override
     public void finishFirstPageBind(final ViewOnDrawExecutor executor) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                finishFirstPageBind(executor);
-            }
-        };
+        Runnable r = () -> finishFirstPageBind(executor);
         if (waitUntilResume(r)) {
             return;
         }
 
-        Runnable onComplete = new Runnable() {
-            @Override
-            public void run() {
-                if (executor != null) {
-                    executor.onLoadAnimationCompleted();
-                }
+        Runnable onComplete = () -> {
+            if (executor != null) {
+                executor.onLoadAnimationCompleted();
             }
         };
         if (mDragLayer.getAlpha() < 1) {
@@ -3677,12 +3572,7 @@ public class Launcher extends Activity
      */
     @Override
     public void finishBindingItems() {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                finishBindingItems();
-            }
-        };
+        Runnable r = () -> finishBindingItems();
         if (waitUntilResume(r)) {
             return;
         }
@@ -3783,12 +3673,7 @@ public class Launcher extends Activity
      */
     @Override
     public void bindAppsUpdated(final ArrayList<AppInfo> apps) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindAppsUpdated(apps);
-            }
-        };
+        Runnable r = () -> bindAppsUpdated(apps);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3800,12 +3685,7 @@ public class Launcher extends Activity
 
     @Override
     public void bindWidgetsRestored(final ArrayList<LauncherAppWidgetInfo> widgets) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindWidgetsRestored(widgets);
-            }
-        };
+        Runnable r = () -> bindWidgetsRestored(widgets);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3824,12 +3704,7 @@ public class Launcher extends Activity
     @Override
     public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated,
                                      final ArrayList<ShortcutInfo> removed, final UserHandle user) {
-        if (!waitUntilResume(new Runnable() {
-            @Override
-            public void run() {
-                Launcher.this.bindShortcutsChanged(updated, removed, user);
-            }
-        })) {
+        if (!waitUntilResume(() -> Launcher.this.bindShortcutsChanged(updated, removed, user))) {
             if (!updated.isEmpty()) {
                 this.mWorkspace.updateShortcuts(updated);
             }
@@ -3865,12 +3740,7 @@ public class Launcher extends Activity
      */
     @Override
     public void bindRestoreItemsChange(final HashSet<ItemInfo> updates) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindRestoreItemsChange(updates);
-            }
-        };
+        Runnable r = () -> bindRestoreItemsChange(updates);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3889,12 +3759,7 @@ public class Launcher extends Activity
     public void bindWorkspaceComponentsRemoved(
             final HashSet<String> packageNames, final HashSet<ComponentName> components,
             final UserHandle user) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindWorkspaceComponentsRemoved(packageNames, components, user);
-            }
-        };
+        Runnable r = () -> bindWorkspaceComponentsRemoved(packageNames, components, user);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3913,12 +3778,7 @@ public class Launcher extends Activity
 
     @Override
     public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                bindAppInfosRemoved(appInfos);
-            }
-        };
+        Runnable r = () -> bindAppInfosRemoved(appInfos);
         if (waitUntilResume(r)) {
             return;
         }
@@ -4050,22 +3910,6 @@ public class Launcher extends Activity
         NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
         WIDGETS, WIDGETS_SPRING_LOADED
     }
-
-    public interface CustomContentCallbacks {
-        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-        // by a onResume or by scrolling otherwise.
-        void onShow(boolean fromResume);
-
-        // Custom content is completely hidden
-        void onHide();
-
-        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        void onScrollProgressChanged(float progress);
-
-        // Indicates whether the user is allowed to scroll away from the custom content.
-        boolean isScrollingAllowed();
-    }
-
 
     public interface LauncherOverlay {
 

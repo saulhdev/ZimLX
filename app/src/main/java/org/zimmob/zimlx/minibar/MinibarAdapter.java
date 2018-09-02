@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.zimmob.zimlx.R;
 
@@ -43,7 +42,6 @@ public class MinibarAdapter extends BaseAdapter {
 
     public View getView(int position, View convertView, ViewGroup parent) {
         View view;
-        TextView tv;
         ImageView iv;
         if (convertView == null) {
             LayoutInflater inflater = LayoutInflater.from(_context);
@@ -53,9 +51,6 @@ public class MinibarAdapter extends BaseAdapter {
         }
 
         iv = view.findViewById(R.id.iv);
-        tv = view.findViewById(R.id.tv);
-
-        //tv.setText(labels.get(position));
         iv.setImageResource(_icons.get(position));
         return view;
     }

@@ -8,22 +8,25 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
 
+import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.util.DialogHelper;
 import org.zimmob.zimlx.util.Tool;
 
 public class Minibar {
+    public static Context mContext;
+
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", "", R.drawable.ic_mode_edit_black_24dp, 98),
-            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", "", R.drawable.ic_photo_black_24dp, 36),
-            new ActionDisplayItem(Action.LockScreen, "LockScreen", "", R.drawable.ic_lock_black_24dp, 24),
-            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", "", R.drawable.ic_settings_launcher_black_24dp, 50),
-            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", "", R.drawable.ic_volume_up_black_24dp, 71),
-            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", "", R.drawable.ic_build, 25),
-            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", "", R.drawable.ic_apps_dark_24dp, 73),
-            new ActionDisplayItem(Action.SearchBar, "SearchBar", "", R.drawable.ic_search_light_24dp, 89),
-            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", "", R.drawable.ic_network_24dp, 46),
+            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Launcher.getLauncher(mContext).getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
+            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Launcher.getLauncher(mContext).getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
+            new ActionDisplayItem(Action.LockScreen, "LockScreen", Launcher.getLauncher(mContext).getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
+            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
+            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
+            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 25),
+            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", Launcher.getLauncher(mContext).getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
+            new ActionDisplayItem(Action.SearchBar, "SearchBar", Launcher.getLauncher(mContext).getString(R.string.minibar_9), R.drawable.ic_search_light_24dp, 89),
+            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
 
     };
 
@@ -114,11 +117,15 @@ public class Minibar {
         EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, AppDrawer, LaunchApp, SearchBar, MobileNetworkSettings,
     }
 
+    public static void setContext(Context context) {
+        mContext = context;
+    }
+
     public static class ActionItem {
         public Intent extraData;
-        Action action;
+        public Action action;
 
-        ActionItem(Action action, Intent extraData) {
+        public ActionItem(Action action, Intent extraData) {
             this.action = action;
             this.extraData = extraData;
         }
@@ -129,9 +136,9 @@ public class Minibar {
         public String description;
         public int icon;
         public int id;
-        Action action;
+        public Action action;
 
-        ActionDisplayItem(Action action, String label, String description, int icon, int id) {
+        public ActionDisplayItem(Action action, String label, String description, int icon, int id) {
             this.action = action;
             this.label = label;
             this.description = description;

@@ -334,31 +334,28 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(toView, false);
 
             final AnimatorSet stateAnimation = animation;
-            final Runnable startAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Check that mCurrentAnimation hasn't changed while
-                    // we waited for a layout/draw pass
-                    if (mCurrentAnimation != stateAnimation)
-                        return;
-                    dispatchOnLauncherTransitionStart(fromView);
-                    dispatchOnLauncherTransitionStart(toView);
+            final Runnable startAnimRunnable = () -> {
+                // Check that mCurrentAnimation hasn't changed while
+                // we waited for a layout/draw pass
+                if (mCurrentAnimation != stateAnimation)
+                    return;
+                dispatchOnLauncherTransitionStart(fromView);
+                dispatchOnLauncherTransitionStart(toView);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
-                            v.buildLayer();
-                        }
+                // Enable all necessary layers
+                for (View v : layerViews.keySet()) {
+                    if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                        v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
-
-                    // Focus the new view
-                    toView.requestFocus();
-
-                    stateAnimation.start();
+                    if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
+                        v.buildLayer();
+                    }
                 }
+
+                // Focus the new view
+                toView.requestFocus();
+
+                stateAnimation.start();
             };
             toView.bringToFront();
             toView.setVisibility(View.VISIBLE);
@@ -391,30 +388,27 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(toView, false);
 
             final AnimatorSet stateAnimation = animation;
-            final Runnable startAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Check that mCurrentAnimation hasn't changed while
-                    // we waited for a layout/draw pass
-                    if (mCurrentAnimation != stateAnimation)
-                        return;
+            final Runnable startAnimRunnable = () -> {
+                // Check that mCurrentAnimation hasn't changed while
+                // we waited for a layout/draw pass
+                if (mCurrentAnimation != stateAnimation)
+                    return;
 
-                    dispatchOnLauncherTransitionStart(fromView);
-                    dispatchOnLauncherTransitionStart(toView);
+                dispatchOnLauncherTransitionStart(fromView);
+                dispatchOnLauncherTransitionStart(toView);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
-                            v.buildLayer();
-                        }
+                // Enable all necessary layers
+                for (View v : layerViews.keySet()) {
+                    if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                        v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
-
-                    toView.requestFocus();
-                    stateAnimation.start();
+                    if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
+                        v.buildLayer();
+                    }
                 }
+
+                toView.requestFocus();
+                stateAnimation.start();
             };
             mCurrentAnimation = animation;
             if (shouldPost) {
@@ -796,28 +790,25 @@ public class LauncherStateTransitionAnimation {
             });
 
             final AnimatorSet stateAnimation = animation;
-            final Runnable startAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Check that mCurrentAnimation hasn't changed while
-                    // we waited for a layout/draw pass
-                    if (mCurrentAnimation != stateAnimation)
-                        return;
+            final Runnable startAnimRunnable = () -> {
+                // Check that mCurrentAnimation hasn't changed while
+                // we waited for a layout/draw pass
+                if (mCurrentAnimation != stateAnimation)
+                    return;
 
-                    dispatchOnLauncherTransitionStart(fromView);
-                    dispatchOnLauncherTransitionStart(toView);
+                dispatchOnLauncherTransitionStart(fromView);
+                dispatchOnLauncherTransitionStart(toView);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
-                            v.buildLayer();
-                        }
+                // Enable all necessary layers
+                for (View v : layerViews.keySet()) {
+                    if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                        v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
-                    stateAnimation.start();
+                    if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
+                        v.buildLayer();
+                    }
                 }
+                stateAnimation.start();
             };
             mCurrentAnimation = animation;
             fromView.post(startAnimRunnable);
@@ -862,31 +853,28 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(toView, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
-            final Runnable startAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Check that mCurrentAnimation hasn't changed while
-                    // we waited for a layout/draw pass
-                    if (mCurrentAnimation != stateAnimation)
-                        return;
+            final Runnable startAnimRunnable = () -> {
+                // Check that mCurrentAnimation hasn't changed while
+                // we waited for a layout/draw pass
+                if (mCurrentAnimation != stateAnimation)
+                    return;
 
-                    dispatchOnLauncherTransitionStart(fromView);
-                    dispatchOnLauncherTransitionStart(toView);
+                dispatchOnLauncherTransitionStart(fromView);
+                dispatchOnLauncherTransitionStart(toView);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
-                            v.buildLayer();
-                        }
+                // Enable all necessary layers
+                for (View v : layerViews.keySet()) {
+                    if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                        v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
-
-                    // Focus the new view
-                    toView.requestFocus();
-                    stateAnimation.start();
+                    if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
+                        v.buildLayer();
+                    }
                 }
+
+                // Focus the new view
+                toView.requestFocus();
+                stateAnimation.start();
             };
             mCurrentAnimation = animation;
             if (shouldPost) {

@@ -6,6 +6,19 @@
         android:key="prefCat_desktopOptions"
         android:title="@string/pref_category_homescreen">
 
+        <Preference
+            android:key="pref_key__minibar"
+            android:summary="@string/pref_summary__minibar"
+            android:title="@string/pref_title__minibar" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimaryDark"
+            android:key="pref_minibar_color"
+            android:title="@string/pref_title__minibar_background_color"
+            app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
+            app:cpv_showAlphaSlider="true" />
+
+
         <SwitchPreference
             android:defaultValue="false"
             android:disableDependentsState="true"
