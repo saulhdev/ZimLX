@@ -91,6 +91,7 @@ import org.zimmob.zimlx.accessibility.LauncherAccessibilityDelegate;
 import org.zimmob.zimlx.allapps.AllAppsContainerView;
 import org.zimmob.zimlx.allapps.AllAppsIconRowView;
 import org.zimmob.zimlx.allapps.AllAppsTransitionController;
+import org.zimmob.zimlx.allapps.PredictiveAppsProvider;
 import org.zimmob.zimlx.allapps.UnicodeStrippedAppSearchController;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.compat.AppWidgetManagerCompat;
@@ -336,6 +337,8 @@ public class Launcher extends Activity
     private LauncherTab mLauncherTab;
     private PopupDataProvider mPopupDataProvider;
     private boolean mDisableEditing;
+    private PredictiveAppsProvider mPredictiveAppsProvider;
+
     // Activity result which needs to be processed after workspace has loaded.
     private ActivityResultInfo mPendingActivityResult;
     /**
@@ -409,6 +412,38 @@ public class Launcher extends Activity
         return LauncherAppState.getInstance().getLauncher();
     }
 
+    public void initMinibar() {
+        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
+        final ArrayList<String> labels = new ArrayList<>();
+        final ArrayList<Integer> icons = new ArrayList<>();
+        AppSettings appSettings = new AppSettings(this);
+        for (String act : appSettings.getMinibarArrangement()) {
+            if (act.length() > 1) {
+                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
+                if (item != null) {
+                    items.add(item);
+                    labels.add(item.label);
+                    icons.add(item.icon);
+                }
+            }
+        }
+        SwipeListView minibar = findViewById(R.id.minibar);
+        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
+        minibar.setOnItemClickListener((parent, view, i, id) -> {
+            Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
+            if (action == Minibar.Action.DeviceSettings || action == Minibar.Action.LauncherSettings || action == Minibar.Action.EditMinibar) {
+                _consumeNextResume = true;
+            }
+            Minibar.RunAction(action, this);
+            if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
+                //getDrawerLayout().closeDrawers();
+            }
+        });
+        // frame layout spans the entire side while the minibar container has gaps at the top and bottom
+        ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.loadThemePreference(this);
@@ -438,6 +473,9 @@ public class Launcher extends Activity
 
         mDragController = new DragController(this);
         mBlurWallpaperProvider = new BlurWallpaperProvider(this);
+
+        mPredictiveAppsProvider = new PredictiveAppsProvider(this);
+
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
@@ -452,6 +490,11 @@ public class Launcher extends Activity
         mPaused = false;
 
         setContentView(R.layout.launcher);
+        Window window = getWindow();
+        View decorView = window.getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
         setupViews();
@@ -485,58 +528,10 @@ public class Launcher extends Activity
         Utilities.showOutdatedLawnfeedPopup(this);
         mLauncherTab = new LauncherTab(this);
 
-        Window window = getWindow();
-        View decorView = window.getDecorView();
-        /*WindowManager.LayoutParams attributes = window.getAttributes();
-        attributes.systemUiVisibility |= (View.SYSTEM_UI_FLAG_LAYOUT_STABLE | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN);
-        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        window.setStatusBarColor(0);
-        window.setNavigationBarColor(0);
-        */
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-
         initMinibar();
 
         Settings.init(this);
     }
-
-    public void initMinibar() {
-        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
-        final ArrayList<String> labels = new ArrayList<>();
-        final ArrayList<Integer> icons = new ArrayList<>();
-        AppSettings appSettings = new AppSettings(this);
-        for (String act : appSettings.getMinibarArrangement()) {
-            if (act.length() > 1) {
-                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
-                if (item != null) {
-                    items.add(item);
-                    labels.add(item.label);
-                    icons.add(item.icon);
-                }
-            }
-        }
-        SwipeListView minibar = findViewById(R.id.minibar);
-        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
-        minibar.setOnItemClickListener((parent, view, i, id) -> {
-            Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
-            if (action == Minibar.Action.DeviceSettings || action == Minibar.Action.LauncherSettings || action == Minibar.Action.EditMinibar) {
-                _consumeNextResume = true;
-            }
-            Minibar.RunAction(action, this);
-            if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
-                //getDrawerLayout().closeDrawers();
-            }
-        });
-        // frame layout spans the entire side while the minibar container has gaps at the top and bottom
-        ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
-
-    }
-
-
     private boolean getConsumeNextResume() {
         return _consumeNextResume;
     }
@@ -1318,18 +1313,20 @@ public class Launcher extends Activity
 
         // Bind settings actions
         View settingsButton = findViewById(R.id.settings_button);
-        settingsButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (!mWorkspace.isSwitchingState()) {
-                    onClickSettingsButton(view);
-                }
+        settingsButton.setOnClickListener(view -> {
+            if (!mWorkspace.isSwitchingState()) {
+                onClickSettingsButton(view);
             }
         });
         settingsButton.setOnLongClickListener(performClickOnLongClick);
         settingsButton.setOnTouchListener(getHapticFeedbackTouchListener());
 
         mOverviewPanel.setAlpha(0f);
+    }
+
+    public void addToCustomContentPage(View customContent,
+                                       CustomContentCallbacks callbacks, String description) {
+        //mWorkspace.addToCustomContentPage(customContent, callbacks, description);
     }
 
     /**
@@ -1476,20 +1473,17 @@ public class Launcher extends Activity
         addWidgetToAutoAdvanceIfNeeded(hostView, appWidgetInfo);
     }
 
-    public void updateIconBadges(final Set<PackageUserKey> set) {
-        Runnable anonymousClass13 = new Runnable() {
-            @Override
-            public void run() {
-                Launcher.this.mWorkspace.updateIconBadges(set);
-                Launcher.this.mAppsView.updateIconBadges(set);
-                PopupContainerWithArrow open = PopupContainerWithArrow.getOpen(Launcher.this);
-                if (open != null) {
-                    open.updateNotificationHeader(set);
-                }
+    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
+        Runnable r = () -> {
+            Launcher.this.mWorkspace.updateIconBadges(updatedBadges);
+            Launcher.this.mAppsView.updateIconBadges(updatedBadges);
+            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+            if (popup != null) {
+                popup.updateNotificationHeader(updatedBadges);
             }
         };
-        if (!waitUntilResume(anonymousClass13)) {
-            anonymousClass13.run();
+        if (!waitUntilResume(r)) {
+            r.run();
         }
     }
 
@@ -4020,9 +4014,6 @@ public class Launcher extends Activity
         mCurrentDialog = null;
     }
 
-    /**
-     * Call this after onCreate to set or clear overlay.
-     */
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mWorkspace.setLauncherOverlay(overlay);
     }
@@ -4059,6 +4050,22 @@ public class Launcher extends Activity
         NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
         WIDGETS, WIDGETS_SPRING_LOADED
     }
+
+    public interface CustomContentCallbacks {
+        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
+        // by a onResume or by scrolling otherwise.
+        void onShow(boolean fromResume);
+
+        // Custom content is completely hidden
+        void onHide();
+
+        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
+        void onScrollProgressChanged(float progress);
+
+        // Indicates whether the user is allowed to scroll away from the custom content.
+        boolean isScrollingAllowed();
+    }
+
 
     public interface LauncherOverlay {
 

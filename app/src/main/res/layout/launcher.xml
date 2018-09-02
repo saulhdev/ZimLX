@@ -18,73 +18,82 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/launcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    <org.zimmob.zimlx.dragndrop.DragLayer
-        android:id="@+id/drag_layer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@drawable/workspace_bg"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:importantForAccessibility="no">
 
-        <!-- The workspace contains 5 screens of cells -->
-        <!-- DO NOT CHANGE THE ID -->
-        <org.zimmob.zimlx.Workspace
-            android:id="@+id/workspace"
+        <android.support.constraint.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            launcher:pageIndicator="@+id/page_indicator" />
+            android:fitsSystemWindows="true">
 
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            launcher:layout_ignoreInsets="true" />
+            <org.zimmob.zimlx.dragndrop.DragLayer
+                android:id="@+id/drag_layer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/workspace_bg"
+                android:clipChildren="false"
+                android:clipToPadding="false"
+                android:importantForAccessibility="no">
 
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel"
-            android:visibility="gone" />
+                <!-- The workspace contains 5 screens of cells -->
+                <!-- DO NOT CHANGE THE ID -->
+                <org.zimmob.zimlx.Workspace
+                    android:id="@+id/workspace"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_gravity="center"
+                    launcher:pageIndicator="@+id/page_indicator" />
 
-        <!-- Keep these behind the workspace so that they are not visible when
-             we go into AllApps -->
-        <include
-            android:id="@+id/page_indicator"
-            layout="@layout/page_indicator" />
+                <!-- DO NOT CHANGE THE ID -->
+                <include
+                    android:id="@+id/hotseat"
+                    layout="@layout/hotseat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    launcher:layout_ignoreInsets="true" />
 
-        <include
-            android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar_horz" />
+                <include
+                    android:id="@+id/overview_panel"
+                    layout="@layout/overview_panel"
+                    android:visibility="gone" />
 
-        <include
-            android:id="@+id/qsb_container"
-            layout="@layout/qsb_container" />
+                <!-- Keep these behind the workspace so that they are not visible when
+                     we go into AllApps -->
+                <include
+                    android:id="@+id/page_indicator"
+                    layout="@layout/page_indicator" />
 
-        <include
-            android:id="@+id/widgets_view"
-            layout="@layout/widgets_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
+                <include
+                    android:id="@+id/drop_target_bar"
+                    layout="@layout/drop_target_bar_horz" />
 
-        <include
-            android:id="@+id/apps_view"
-            layout="@layout/all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible"
-            launcher:layout_ignoreInsets="true" />
-    </org.zimmob.zimlx.dragndrop.DragLayer>
+                <include
+                    android:id="@+id/qsb_container"
+                    layout="@layout/qsb_container" />
+
+                <include
+                    android:id="@+id/widgets_view"
+                    layout="@layout/widgets_view"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible" />
+
+                <include
+                    android:id="@+id/apps_view"
+                    layout="@layout/all_apps"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:visibility="invisible"
+                    launcher:layout_ignoreInsets="true" />
+
+            </org.zimmob.zimlx.dragndrop.DragLayer>
+
+        </android.support.constraint.ConstraintLayout>
+
         <!-- The navigation drawer -->
         <FrameLayout
             android:layout_width="wrap_content"

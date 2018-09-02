@@ -18,7 +18,9 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -27,6 +29,9 @@
     </style>
 
     <style name="BaseLauncherTheme.Dark" parent="@android:style/Theme.Material.NoActionBar">
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -35,13 +40,12 @@
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
-        <!--
         <item name="android:statusBarColor">#00000000</item>
         <item name="android:navigationBarColor">#00000000</item>
-        -->
         <item name="materialPanelBgColor">@color/quantum_panel_bg_color</item>
         <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
         <item name="folderNameTextColor">@color/folder_name_text_color</item>
@@ -117,7 +121,8 @@
         <item name="colorAccent">@color/accent_material_light</item>
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
         <item name="blurTintColor">#45ffffff</item>
-        <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
+        <item name="colorControlNormal">@color/white</item>
+        <item name="android:navigationBarColor">@color/white</item>
         <item name="android:colorEdgeEffect">@color/accent_material_light</item>
     </style>
 

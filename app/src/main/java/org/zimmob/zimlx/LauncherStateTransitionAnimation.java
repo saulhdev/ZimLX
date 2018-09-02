@@ -973,8 +973,7 @@ public class LauncherStateTransitionAnimation {
             return 0;
         }
 
-        AnimatorListenerAdapter getMaterialRevealViewAnimatorListener(View revealView,
-                                                                      View buttonView) {
+        AnimatorListenerAdapter getMaterialRevealViewAnimatorListener(View revealView, View buttonView) {
             return null;
         }
 

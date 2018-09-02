@@ -48,6 +48,7 @@
         android:supportsRtl="true">
         <activity
             android:name=".Launcher"
+            android:theme="@style/LauncherTheme"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|navigation"
             android:enabled="true"
@@ -56,7 +57,6 @@
             android:resumeWhilePausing="true"
             android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:theme="@style/LauncherTheme"
             android:windowSoftInputMode="adjustNothing">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -127,6 +127,47 @@
         <activity
             android:name=".kustomsupport.AutoFinishTransparentActivity"
             android:theme="@style/Theme.Transparent" />
+        <activity android:name=".BlankActivity" />
+
+        <activity-alias
+            android:name=".FakeLauncher"
+            android:enabled="false"
+            android:targetActivity=".BlankActivity">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
+        <activity
+            android:name=".backup.BackupListActivity"
+            android:label="@string/backups"
+            android:parentActivityName=".settings.ui.SettingsActivity"
+            android:theme="@style/SettingsTheme" />
+        <activity
+            android:name=".backup.NewBackupActivity"
+            android:label="@string/new_backup"
+            android:parentActivityName=".backup.BackupListActivity"
+            android:theme="@style/SettingsTheme" />
+        <activity
+            android:name=".backup.RestoreBackupActivity"
+            android:label="@string/restore_backup"
+            android:parentActivityName=".backup.BackupListActivity"
+            android:theme="@style/SettingsTheme" />
+        <activity
+            android:name="org.zimmob.zimlx.dragndrop.AddItemActivity"
+            android:autoRemoveFromRecents="true"
+            android:excludeFromRecents="true"
+            android:label="@string/action_add_to_workspace"
+            android:theme="@android:style/Theme.Material.Light.Dialog.Alert">
+            <intent-filter>
+                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
+                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
+            </intent-filter>
+        </activity>
 
         <provider
             android:name=".kustomsupport.Kustom5SecsProvider"
@@ -139,6 +180,15 @@
             android:exported="true"
             android:readPermission="org.zimmob.zimlx.permission.READ_SETTINGS"
             android:writePermission="org.zimmob.zimlx.permission.WRITE_SETTINGS" />
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="${applicationId}.provider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/provider_paths" />
+        </provider>
 
         <receiver
             android:name=".InstallShortcutReceiver"
@@ -203,61 +253,6 @@
             android:name="com.samsung.android.non_immersive"
             android:value="true" />
 
-        <activity
-            android:name=".BlankActivity"
-            android:theme="@style/Theme.Transparent" />
-
-        <activity-alias
-            android:name=".FakeLauncher"
-            android:enabled="false"
-            android:targetActivity=".BlankActivity">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
-
-        <activity
-            android:name=".backup.BackupListActivity"
-            android:label="@string/backups"
-            android:parentActivityName=".settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme" />
-
-        <activity
-            android:name=".backup.NewBackupActivity"
-            android:label="@string/new_backup"
-            android:parentActivityName=".backup.BackupListActivity"
-            android:theme="@style/SettingsTheme" />
-
-        <activity
-            android:name=".backup.RestoreBackupActivity"
-            android:label="@string/restore_backup"
-            android:parentActivityName=".backup.BackupListActivity"
-            android:theme="@style/SettingsTheme" />
-        <provider
-            android:name="android.support.v4.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
-
-        <activity
-            android:name="org.zimmob.zimlx.dragndrop.AddItemActivity"
-            android:autoRemoveFromRecents="true"
-            android:excludeFromRecents="true"
-            android:label="@string/action_add_to_workspace"
-            android:theme="@android:style/Theme.Material.Light.Dialog.Alert">
-            <intent-filter>
-                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
-                <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
-            </intent-filter>
-        </activity>
     </application>
 
 </manifest>

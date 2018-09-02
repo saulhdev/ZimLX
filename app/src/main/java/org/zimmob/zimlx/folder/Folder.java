@@ -187,12 +187,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     private boolean mRearrangeOnClose = false;
     private View mCurrentDragView;
     private boolean mIsExternalDrag;
-    OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
-        @Override
-        public void onAlarm(Alarm alarm) {
-            completeDragExit();
-        }
-    };
+    OnAlarmListener mOnExitAlarmListener = alarm -> completeDragExit();
     private boolean mDragInProgress = false;
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;

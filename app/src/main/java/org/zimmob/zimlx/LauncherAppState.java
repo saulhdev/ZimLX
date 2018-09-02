@@ -19,6 +19,7 @@ package org.zimmob.zimlx;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.Looper;
 import android.util.Log;
 
 import org.zimmob.zimlx.compat.LauncherAppsCompat;
@@ -29,12 +30,13 @@ import org.zimmob.zimlx.util.ConfigMonitor;
 import org.zimmob.zimlx.util.Thunk;
 
 import java.lang.ref.WeakReference;
+import java.util.concurrent.ExecutionException;
 
 public class LauncherAppState {
 
     private static WeakReference<LauncherProvider> sLauncherProvider;
-    private static Context sContext;
     private static LauncherAppState INSTANCE;
+    private static Context mContext;
     @Thunk
     final LauncherModel mModel;
     private final IconCache mIconCache;
@@ -46,19 +48,19 @@ public class LauncherAppState {
     private Launcher mLauncher;
 
     private LauncherAppState() {
-        if (sContext == null) {
+        if (mContext == null) {
             throw new IllegalStateException("LauncherAppState inited before app context set");
         }
 
         Log.v(Launcher.TAG, "LauncherAppState inited");
 
-        mInvariantDeviceProfile = new InvariantDeviceProfile(sContext);
-        mIconCache = new IconCache(sContext, mInvariantDeviceProfile);
-        mWidgetCache = new WidgetPreviewLoader(sContext, mIconCache);
+        mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
+        mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
+        mWidgetCache = new WidgetPreviewLoader(mContext, mIconCache);
 
         mModel = new LauncherModel(this, mIconCache, new StringSetAppFilter(), DeepShortcutManager.getInstance(getContext()));
 
-        LauncherAppsCompat.getInstance(sContext).addOnAppsChangedCallback(mModel);
+        LauncherAppsCompat.getInstance(mContext).addOnAppsChangedCallback(mModel);
 
         // Register intent receivers
         IntentFilter filter = new IntentFilter();
@@ -72,20 +74,28 @@ public class LauncherAppState {
         // For extracting colors from the wallpaper
         filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
 
-        sContext.registerReceiver(mModel, filter);
-        UserManagerCompat.getInstance(sContext).enableAndResetCache();
-        new ConfigMonitor(sContext).register();
+        mContext.registerReceiver(mModel, filter);
+        UserManagerCompat.getInstance(mContext).enableAndResetCache();
+        new ConfigMonitor(mContext).register();
 
         if (Utilities.ATLEAST_NOUGAT) {
-            ExtractionUtils.startColorExtractionServiceIfNecessary(sContext);
+            ExtractionUtils.startColorExtractionServiceIfNecessary(mContext);
         } else {
-            ExtractionUtils.startColorExtractionService(sContext);
+            ExtractionUtils.startColorExtractionService(mContext);
         }
     }
 
     public static LauncherAppState getInstance() {
         if (INSTANCE == null) {
-            INSTANCE = new LauncherAppState();
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                INSTANCE = new LauncherAppState();
+            } else {
+                try {
+                    return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance()).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
         return INSTANCE;
     }
@@ -104,15 +114,15 @@ public class LauncherAppState {
         // The content provider exists for the entire duration of the launcher main process and
         // is the first component to get created. Initializing application context here ensures
         // that LauncherAppState always exists in the main process.
-        sContext = provider.getContext().getApplicationContext();
+        mContext = provider.getContext().getApplicationContext();
     }
 
-    public static InvariantDeviceProfile getIDP() {
+    public static InvariantDeviceProfile getIDP(Context context) {
         return getInstance().mInvariantDeviceProfile;
     }
 
     public Context getContext() {
-        return sContext;
+        return mContext;
     }
 
     /**
@@ -172,4 +182,5 @@ public class LauncherAppState {
     public Launcher getLauncher() {
         return mLauncher;
     }
+
 }

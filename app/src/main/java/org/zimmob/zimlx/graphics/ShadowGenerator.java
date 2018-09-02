@@ -21,8 +21,10 @@ import android.graphics.Bitmap.Config;
 import android.graphics.BlurMaskFilter;
 import android.graphics.BlurMaskFilter.Blur;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.RectF;
+import android.support.v4.graphics.ColorUtils;
 
 import org.zimmob.zimlx.LauncherAppState;
 
@@ -154,5 +156,59 @@ public class ShadowGenerator {
 
         mCanvas.setBitmap(null);
         return result;
+    }
+
+    public static class Builder {
+
+        public final RectF bounds = new RectF();
+        public final int color;
+
+        public int ambientShadowAlpha = AMBIENT_SHADOW_ALPHA;
+
+        public float shadowBlur;
+
+        public float keyShadowDistance;
+        public int keyShadowAlpha = KEY_SHADOW_ALPHA;
+        public float radius;
+
+        public Builder(int color) {
+            this.color = color;
+        }
+
+        public Builder setupBlurForSize(int height) {
+            shadowBlur = height * 1f / 32;
+            keyShadowDistance = height * 1f / 16;
+            return this;
+        }
+
+        public Bitmap createPill(int width, int height) {
+            radius = height / 2;
+
+            int centerX = Math.round(width / 2 + shadowBlur);
+            int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
+            int center = Math.max(centerX, centerY);
+            bounds.set(0, 0, width, height);
+            bounds.offsetTo(center - width / 2, center - height / 2);
+
+            int size = center * 2;
+            Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
+            drawShadow(new Canvas(result));
+            return result;
+        }
+
+        public void drawShadow(Canvas c) {
+            Paint p = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+            p.setColor(color);
+
+            // Key shadow
+            p.setShadowLayer(shadowBlur, 0, keyShadowDistance,
+                    ColorUtils.setAlphaComponent(Color.BLACK, keyShadowAlpha));
+            c.drawRoundRect(bounds, radius, radius, p);
+
+            // Ambient shadow
+            p.setShadowLayer(shadowBlur, 0, 0,
+                    ColorUtils.setAlphaComponent(Color.BLACK, ambientShadowAlpha));
+            c.drawRoundRect(bounds, radius, radius, p);
+        }
     }
 }

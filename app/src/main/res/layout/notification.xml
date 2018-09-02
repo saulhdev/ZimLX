@@ -27,7 +27,7 @@
         <View
             android:id="@+id/gutter_top"
             android:layout_width="fill_parent"
-            android:layout_height="4dp"
+            android:layout_height="6dp"
             android:theme="@style/PopupGutter"
             android:visibility="gone" />
 

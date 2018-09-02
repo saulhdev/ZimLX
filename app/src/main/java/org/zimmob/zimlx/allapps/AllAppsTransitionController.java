@@ -385,7 +385,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         }
 
         mCaretController.updateCaret(progress, mContainerVelocity, mDetector.isDraggingState());
-        updateLightStatusBar(shiftCurrent);
+        //updateLightStatusBar(shiftCurrent);
     }
 
     private void calculateDuration(float velocity, float disp) {

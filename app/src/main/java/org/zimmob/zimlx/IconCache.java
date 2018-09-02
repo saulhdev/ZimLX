@@ -111,9 +111,7 @@ public class IconCache {
         mLowResPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
 
         pip = new PixelIconProvider(context);
-
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
-
         mActivityBgColor = context.getResources().getColor(R.color.quantum_panel_bg_color);
         TypedArray ta = context.obtainStyledAttributes(new int[]{R.attr.colorSecondary});
         mPackageBgColor = ta.getColor(0, 0);

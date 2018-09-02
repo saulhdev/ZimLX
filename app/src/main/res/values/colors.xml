@@ -123,4 +123,13 @@
     <color name="Light.TextColor">#616161</color>
     <color name="Light.TextColorSecondary">#9e9e9e</color>
     <color name="button_background">#205dec</color>
+
+    <!-- Popup container -->
+    <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
+
+    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
+    <color name="legacy_icon_background">#FFFFFF</color>
+
+    <color name="all_apps_bg_hand_fill">#E5E5E5</color>
+    <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 </resources>

@@ -7,7 +7,6 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
@@ -42,23 +41,29 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.onFinishInflate();
     }
 
-    @TargetApi(Build.VERSION_CODES.M)
+    @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
-        boolean rawInsetsChanged = !mInsets.equals(insets);
         mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
                         getContext().getSystemService(ActivityManager.class).isLowRamDevice());
-        mRightInsetBarWidth = insets.right;
-        mLeftInsetBarWidth = insets.left;
-        setInsets(mDrawSideInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
+        if (mDrawSideInsetBar) {
+            mLeftInsetBarWidth = insets.left;
+            mRightInsetBarWidth = insets.right;
+            insets = new Rect(0, insets.top, 0, insets.bottom);
+        } else {
+            mLeftInsetBarWidth = mRightInsetBarWidth = 0;
+        }
 
-        if (mAlignedView != null && mDrawSideInsetBar) {
+        boolean rawInsetsChanged = !mInsets.equals(insets);
+        setInsets(insets);
+
+        if (mAlignedView != null) {
             // Apply margins on aligned view to handle left/right insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-            if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
-                lp.leftMargin = insets.left;
-                lp.rightMargin = insets.right;
+            if (lp.leftMargin != mLeftInsetBarWidth || lp.rightMargin != mRightInsetBarWidth) {
+                lp.leftMargin = mLeftInsetBarWidth;
+                lp.rightMargin = mRightInsetBarWidth;
                 mAlignedView.setLayoutParams(lp);
             }
         }
@@ -72,6 +77,38 @@ public class LauncherRootView extends InsettableFrameLayout {
         return true; // I'll take it from here
     }
 
+
+    /*
+        @TargetApi(Build.VERSION_CODES.M)
+        @Override
+        protected boolean fitSystemWindows(Rect insets) {
+            boolean rawInsetsChanged = !mInsets.equals(insets);
+            mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
+                    (!Utilities.ATLEAST_MARSHMALLOW ||
+                            getContext().getSystemService(ActivityManager.class).isLowRamDevice());
+            mRightInsetBarWidth = insets.right;
+            mLeftInsetBarWidth = insets.left;
+            setInsets(mDrawSideInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
+
+            if (mAlignedView != null && mDrawSideInsetBar) {
+                // Apply margins on aligned view to handle left/right insets.
+                MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
+                if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
+                    lp.leftMargin = insets.left;
+                    lp.rightMargin = insets.right;
+                    mAlignedView.setLayoutParams(lp);
+                }
+            }
+
+            if (rawInsetsChanged) {
+                // Update the grid again
+                Launcher launcher = Launcher.getLauncher(getContext());
+                launcher.onInsetsChanged(insets);
+            }
+
+            return true; // I'll take it from here
+        }
+    */
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);

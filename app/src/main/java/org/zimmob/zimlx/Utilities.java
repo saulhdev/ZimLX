@@ -281,7 +281,6 @@ public final class Utilities {
     public static Bitmap getShadowForIcon(Bitmap icon, int size) {
         return ShadowGenerator.getInstance().createShadow(icon, size);
     }
-
     /**
      * Adds the {@param badge} on top of {@param srcTgt} using the badge dimensions.
      */

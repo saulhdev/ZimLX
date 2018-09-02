@@ -21,6 +21,7 @@
     android:layout_height="match_parent"
     android:background="@color/drawer_background_transparentish"
     android:orientation="vertical"
+    android:fitsSystemWindows="true"
     launcher:revealBackground="@drawable/quantum_panel_shape">
 
     <org.zimmob.zimlx.allapps.AllAppsBackground
