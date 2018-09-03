@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<ch.deletescape.wallpaperpicker.CheckableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<org.zimmob.wallpaperpicker.CheckableFrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="@dimen/wallpaperThumbnailWidth"
     android:layout_height="@dimen/wallpaperThumbnailHeight"
     android:clickable="true"
@@ -46,4 +46,4 @@
         android:padding="4dp"
         android:singleLine="true"
         android:textColor="@color/wallpaper_picker_item_label_text_color" />
-</ch.deletescape.wallpaperpicker.CheckableFrameLayout>
+</org.zimmob.wallpaperpicker.CheckableFrameLayout>

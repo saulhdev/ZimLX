@@ -21,7 +21,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <ch.deletescape.wallpaperpicker.CropView
+    <org.zimmob.wallpaperpicker.CropView
         android:id="@+id/cropView"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
