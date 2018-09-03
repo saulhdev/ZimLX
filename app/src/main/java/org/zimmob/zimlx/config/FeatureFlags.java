@@ -64,6 +64,11 @@ public final class FeatureFlags extends BaseFlags {
     public static final String KEY_PREF_PRIMARY_COLOR = "pref_primary_color";
     public static final String KEY_PREF_MINIBAR_COLOR = "pref_minibar_color";
     public static final String KEY_PREF_MINIBAR_ITEMS = "pref_minibar_items";
+    public static final String KEY_PREF_NOTIFICATION_COLOR = "pref_notification_color";
+    public static final String KEY_PREF_NOTIFICATION_BACKGROUND = "pref_notification_background";
+    public static final String KEY_PREF_NOTIFICATION_COUNT = "pref_notification_count";
+
+
     public static final String KEY_PREF_THEME_MODE = "pref_themeMode";
     public static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     public static final String KEY_PREF_PLANE = "pref_plane";
@@ -86,7 +91,7 @@ public final class FeatureFlags extends BaseFlags {
     public static boolean useDarkTheme = true;
     public static int[] SETTINGS_HOME_THEMES = {R.style.SettingsHome, R.style.SettingsHome_Dark, R.style.SettingsHome_Black};
     // When enabled the all-apps icon is not added to the hotseat.
-    public static boolean NO_ALL_APPS_ICON = true;
+    public static boolean NO_ALL_APPS_ICON = false;
     private static int darkThemeFlag = 0;
     private static int myCurrentTheme = 0;
     private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};

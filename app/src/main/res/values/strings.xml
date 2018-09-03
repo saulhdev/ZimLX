@@ -578,7 +578,7 @@
     <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
     <string name="pref_title__interfaces">Interfaces</string>
-    <string name="pref_title__inputs">Gestures &amp; Notifications</string>
+    <string name="pref_title__inputs">Gestures</string>
     <string name="pref_title__others">Others</string>
     <string name="pref_title__folder">Folder</string>
     <string name="pref_summary__folder">Change folder shape and color</string>
@@ -681,5 +681,21 @@
     <string name="apps_customize_apps_scroll_format">Apps page %1$d of %2$d</string>
     <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
     <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
+    <string name="pref_title__notification_text_color">Notification Text Color</string>
+    <string name="pref_title__notification_background_color">Notification Background Color</string>
+    <string name="pref_title__notification_count">Show Notification Count</string>
+
+    <string name="pref_title__gestures">Gestures</string>
+    <string name="pref_title__gesture_feedback">Gesture Feedback</string>
+    <string name="pref_summary__gesture_feedback">Get feedback when long pressing an item on the desktop.</string>
+    <string name="pref_title__gesture_quick_swipe">Quick Swipe Drawer</string>
+    <string name="pref_summary__gesture_quick_swipe">Swipe upwards on the dock to open the app drawer.</string>
+    <string name="pref_title__gesture_double_tap">Double Tap</string>
+    <string name="pref_title__gesture_swipe_up">Swipe Upwards</string>
+    <string name="pref_title__gesture_swipe_down">Swipe Downwards</string>
+    <string name="pref_title__gesture_pinch">Pinch</string>
+    <string name="pref_title__gesture_unpinch">Unpinch</string>
+    <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
+    <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
 
 </resources>

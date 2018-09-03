@@ -39,7 +39,6 @@ import org.zimmob.zimlx.util.Thunk;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 public class InvariantDeviceProfile {
 
@@ -348,6 +347,10 @@ public class InvariantDeviceProfile {
         return profiles;
     }
 
+    public boolean isAllAppsButtonRank(int rank) {
+        return rank == getAllAppsButtonRank();
+    }
+
     /**
      * Returns the closest device profiles ordered by closeness to the specified width and height
      */
@@ -357,13 +360,8 @@ public class InvariantDeviceProfile {
 
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
-            @Override
-            public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
-                return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps));
-            }
-        });
+        Collections.sort(pointsByNearness, (a, b) -> Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                dist(width, height, b.minWidthDps, b.minHeightDps)));
 
         return pointsByNearness;
     }

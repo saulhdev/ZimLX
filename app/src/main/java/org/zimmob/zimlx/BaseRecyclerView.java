@@ -132,11 +132,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Returns whether this {@link MotionEvent} should trigger the scroll to be stopped.
      */
     protected boolean shouldStopScroll(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
-            return (Math.abs(mDy) < mDeltaThreshold &&
-                    getScrollState() != RecyclerView.SCROLL_STATE_IDLE);
-        }
-        return false;
+        return ev.getAction() == MotionEvent.ACTION_DOWN && (Math.abs(mDy) < mDeltaThreshold && getScrollState() != RecyclerView.SCROLL_STATE_IDLE);
     }
 
     public void updateBackgroundPadding(Rect padding) {

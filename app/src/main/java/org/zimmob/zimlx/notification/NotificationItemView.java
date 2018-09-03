@@ -148,11 +148,8 @@ public class NotificationItemView extends PopupItemView {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (mMainView.getNotificationInfo() == null) {
-            // The notification hasn't been populated yet.
-            return false;
-        }
-        return mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev);
+        // The notification hasn't been populated yet.
+        return mMainView.getNotificationInfo() != null && (mSwipeHelper.onTouchEvent(ev) || super.onTouchEvent(ev));
     }
 
     public void applyNotificationInfos(final List<NotificationInfo> notificationInfos) {
@@ -180,15 +177,12 @@ public class NotificationItemView extends PopupItemView {
             mMainView.setTranslationX(0);
             mIconView.getGlobalVisibleRect(sTempRect);
             mFooter.animateFirstNotificationTo(sTempRect,
-                    new NotificationFooterLayout.IconAnimationEndListener() {
-                        @Override
-                        public void onIconAnimationEnd(NotificationInfo newMainNotification) {
-                            if (newMainNotification != null) {
-                                mMainView.applyNotificationInfo(newMainNotification, mIconView, true);
-                                mMainView.setVisibility(VISIBLE);
-                            }
-                            mAnimatingNextIcon = false;
+                    newMainNotification -> {
+                        if (newMainNotification != null) {
+                            mMainView.applyNotificationInfo(newMainNotification, mIconView, true);
+                            mMainView.setVisibility(VISIBLE);
                         }
+                        mAnimatingNextIcon = false;
                     });
         } else {
             mFooter.trimNotifications(notificationKeys);

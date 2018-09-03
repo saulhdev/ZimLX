@@ -201,10 +201,10 @@ public class SettingsActivity extends AppCompatActivity implements
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
-            if (preference.getKey() == "pref_key__cat_about") {
+            /*if (preference.getKey()=="pref_key__cat_about") {
                 startActivity(new Intent(getActivity(), MoreInfoActivity.class));
                 return true;
-            }
+            }*/
 
             return super.onPreferenceTreeClick(preference);
         }

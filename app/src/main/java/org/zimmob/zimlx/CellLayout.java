@@ -2168,12 +2168,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     public boolean isOccupied(int x, int y) {
-        if (x < mCountX && y < mCountY) {
-            return mOccupied.cells[x][y];
-        } else {
-            return true;
-            //throw new RuntimeException("Position exceeds the bound of this CellLayout");
-        }
+        return x >= mCountX || y >= mCountY || mOccupied.cells[x][y];
+//throw new RuntimeException("Position exceeds the bound of this CellLayout");
     }
 
     @Override

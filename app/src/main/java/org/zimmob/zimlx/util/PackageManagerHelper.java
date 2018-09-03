@@ -23,6 +23,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.text.TextUtils;
 
@@ -117,5 +118,14 @@ public class PackageManagerHelper {
         }
 
         return false;
+    }
+
+    public static Intent getMarketIntent(String packageName) {
+        return new Intent(Intent.ACTION_VIEW)
+                .setData(new Uri.Builder()
+                        .scheme("market")
+                        .authority("details")
+                        .appendQueryParameter("id", packageName)
+                        .build());
     }
 }

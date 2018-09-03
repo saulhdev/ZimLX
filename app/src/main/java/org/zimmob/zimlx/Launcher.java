@@ -54,6 +54,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
@@ -72,7 +73,6 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -114,6 +114,7 @@ import org.zimmob.zimlx.minibar.SwipeListView;
 import org.zimmob.zimlx.model.WidgetsModel;
 import org.zimmob.zimlx.notification.NotificationListener;
 import org.zimmob.zimlx.overlay.ILauncherClient;
+import org.zimmob.zimlx.pageindicators.PageIndicator;
 import org.zimmob.zimlx.popup.PopupContainerWithArrow;
 import org.zimmob.zimlx.popup.PopupDataProvider;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
@@ -125,6 +126,7 @@ import org.zimmob.zimlx.shortcuts.ShortcutKey;
 import org.zimmob.zimlx.shortcuts.ShortcutsItemView;
 import org.zimmob.zimlx.util.ActivityResultInfo;
 import org.zimmob.zimlx.util.ComponentKey;
+import org.zimmob.zimlx.util.HpGestureCallback;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageManagerHelper;
@@ -260,8 +262,10 @@ public class Launcher extends Activity
     };
     private int[] mTmpAddItemCellCoordinates = new int[2];
     private ViewGroup mOverviewPanel;
-    private View mAllAppsHandle;
+
+    private View mAllAppsButton;
     private View mWidgetsButton;
+
     private DropTargetBar mDropTargetBar;
     private MultiHashMap mAllWidgets;
     private Runnable mBindAllWidgetsRunnable = new BindAllWidgetsRunnable();
@@ -489,14 +493,10 @@ public class Launcher extends Activity
         mPaused = false;
 
         setContentView(R.layout.launcher);
-        Window window = getWindow();
-        View decorView = window.getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
         setupViews();
+
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
@@ -528,7 +528,8 @@ public class Launcher extends Activity
         mLauncherTab = new LauncherTab(this);
         mContext = this;
         initMinibar();
-
+        AppSettings appSettings = new AppSettings(mContext);
+        HpGestureCallback desktopGestureCallback = new HpGestureCallback(appSettings);
         Settings.init(this);
     }
     private boolean getConsumeNextResume() {
@@ -709,13 +710,8 @@ public class Launcher extends Activity
 
         final int pendingAddWidgetId = requestArgs.getWidgetId();
 
-        Runnable exitSpringLoaded = new Runnable() {
-            @Override
-            public void run() {
-                exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
-                        EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-            }
-        };
+        Runnable exitSpringLoaded = () -> exitSpringLoadedDragModeDelayed((resultCode != RESULT_CANCELED),
+                EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
 
         if (requestCode == REQUEST_EDIT_ICON) {
             if (data != null && data.hasExtra("alternateIcon")) {
@@ -1065,7 +1061,7 @@ public class Launcher extends Activity
     private boolean acceptFilter() {
         final InputMethodManager inputManager = (InputMethodManager)
                 getSystemService(Context.INPUT_METHOD_SERVICE);
-        return !inputManager.isFullscreenMode();
+        return !Objects.requireNonNull(inputManager).isFullscreenMode();
     }
 
     @Override
@@ -1194,15 +1190,22 @@ public class Launcher extends Activity
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
-        if (mPlanesEnabled) {
-            Log.d(TAG, "inflating planes");
-            getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
-        }
-
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
 
+
+        if (mPlanesEnabled) {
+            Log.d(TAG, "inflating planes");
+            getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
+        }
+/*
+        Window window = getWindow();
+        View decorView = window.getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        */
         // Setup the drag layer
         mDragLayer.setup(this, mDragController, mAllAppsController);
 
@@ -1246,7 +1249,7 @@ public class Launcher extends Activity
         mOverviewPanel = findViewById(R.id.overview_panel);
 
         // Long-clicking buttons in the overview panel does the same thing as clicking them.
-        OnLongClickListener performClickOnLongClick = v -> v.performClick();
+        OnLongClickListener performClickOnLongClick = View::performClick;
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
@@ -1286,16 +1289,16 @@ public class Launcher extends Activity
         mOverviewPanel.setAlpha(0f);
     }
 
-
     /**
-     * Sets the all apps handle.
+     * Sets the all apps button. This method is called from {@link Hotseat}.
+     * TODO: Get rid of this.
      */
-    public void setAllAppsHandle(View allAppsHandle) {
-        mAllAppsHandle = allAppsHandle;
+    public void setAllAppsButton(View allAppsButton) {
+        mAllAppsButton = allAppsButton;
     }
 
     public View getStartViewForAllAppsRevealAnimation() {
-        return mWorkspace.getPageIndicator();
+        return FeatureFlags.NO_ALL_APPS_ICON ? mWorkspace.getPageIndicator() : mAllAppsButton;
     }
 
     public View getWidgetsButton() {
@@ -2210,8 +2213,9 @@ public class Launcher extends Activity
             if (v instanceof FolderIcon) {
                 onClickFolderIcon(v);
             }
-        } else if (v == mAllAppsHandle) {
-            onClickAllAppsHandle();
+        } else if ((v instanceof PageIndicator) ||
+                (v == mAllAppsButton && mAllAppsButton != null)) {
+            onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
         } else if (tag instanceof LauncherAppWidgetInfo) {
@@ -2281,12 +2285,6 @@ public class Launcher extends Activity
                 info.appWidgetId, this, mAppWidgetHost, REQUEST_RECONFIGURE_APPWIDGET);
     }
 
-    protected void onClickAllAppsHandle() {
-        if (!isAppsViewVisible()) {
-            showAppsView(true, false);
-        }
-    }
-
     public void onLongClickAllAppsHandle() {
         if (!isAppsViewVisible()) {
             showAppsView(true, true);
@@ -2304,6 +2302,58 @@ public class Launcher extends Activity
                     mWorkspace.removeAbandonedPromise(packageName, user);
                         })
                 .create().show();
+    }
+
+    /**
+     * Event handler for the "grid" button or "caret" that appears on the home screen, which
+     * enters all apps mode. In verticalBarLayout the caret can be seen when all apps is open, and
+     * so in that case reverses the action.
+     *
+     * @param v The view that was clicked.
+     */
+    protected void onClickAllAppsButton(View v) {
+        if (!isAppsViewVisible()) {
+            //getUserEventDispatcher().logActionOnControl(Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
+            showAppsView(true /* animated */, false /* updatePredictedApps */);
+        } else {
+            showWorkspace(true);
+        }
+    }
+
+    private void onClickPendingAppItem(final View v, final String packageName,
+                                       boolean downloadStarted) {
+        if (downloadStarted) {
+            // If the download has started, simply direct to the market app.
+            startMarketIntentForPackage(v, packageName);
+            return;
+        }
+        new AlertDialog.Builder(this)
+                .setTitle(R.string.abandoned_promises_title)
+                .setMessage(R.string.abandoned_promise_explanation)
+                .setPositiveButton(R.string.abandoned_search, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        startMarketIntentForPackage(v, packageName);
+                    }
+                })
+                .setNeutralButton(R.string.abandoned_clean_this,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                final UserHandle user = Process.myUserHandle();
+                                mWorkspace.removeAbandonedPromise(packageName, user);
+                            }
+                        })
+                .create().show();
+    }
+
+    private void startMarketIntentForPackage(View v, String packageName) {
+        ItemInfo item = (ItemInfo) v.getTag();
+        Intent intent = PackageManagerHelper.getMarketIntent(packageName);
+        boolean success = startActivitySafely(v, intent, item);
+        if (success && v instanceof BubbleTextView) {
+            mWaitingForResume = (BubbleTextView) v;
+            mWaitingForResume.setStayPressed(true);
+        }
     }
 
     /**
@@ -2797,6 +2847,78 @@ public class Launcher extends Activity
 
     @Override
     public boolean onLongClick(View view) {
+        if (!isDraggingEnabled()) return false;
+        if (isWorkspaceLocked()) return false;
+        if (mState != State.WORKSPACE) return false;
+
+        float mLastDispatchTouchEventX = 0.0f;
+
+        boolean ignoreLongPressToOverview =
+                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
+        if (view instanceof Workspace) {
+            if (!mWorkspace.isInOverviewMode()) {
+                if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
+                    /*getUserEventDispatcher()
+                            .logActionOnContainer(Action.Touch.LONGPRESS,
+                            Action.Direction.NONE, ContainerType.WORKSPACE,
+                            mWorkspace.getCurrentPage());
+                    */
+                    showOverviewMode(true);
+                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
+        }
+        CellLayout.CellInfo longClickCellInfo = null;
+        View itemUnderLongClick = null;
+        if (view.getTag() instanceof ItemInfo) {
+            ItemInfo info = (ItemInfo) view.getTag();
+            longClickCellInfo = new CellLayout.CellInfo(view, info);
+            itemUnderLongClick = longClickCellInfo.cell;
+            mPendingRequestArgs = null;
+        }
+// The hotseat touch handling does not go through Workspace, and we always allow long press
+        // on hotseat items.
+        if (!mDragController.isDragging()) {
+            if (itemUnderLongClick == null) {
+                // User long pressed on empty space
+                if (mWorkspace.isInOverviewMode()) {
+                    mWorkspace.startReordering(view);
+                    //getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                    //        Action.Direction.NONE, ContainerType.OVERVIEW);
+                } else {
+                    if (ignoreLongPressToOverview) {
+                        return false;
+                    }
+                    /*
+                        getUserEventDispatcher()
+                            .logActionOnContainer(Action.Touch.LONGPRESS,
+                            Action.Direction.NONE, ContainerType.WORKSPACE,
+                            mWorkspace.getCurrentPage());
+                    */
+                    showOverviewMode(true);
+                }
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+            } else {
+                final boolean isAllAppsButton =
+                        !FeatureFlags.NO_ALL_APPS_ICON && isHotseatLayout(view) &&
+                                mDeviceProfile.inv.isAllAppsButtonRank(mHotseat.getOrderInHotseat(
+                                        longClickCellInfo.cellX, longClickCellInfo.cellY));
+                if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
+                    // User long pressed on an item
+                    mWorkspace.startDrag(longClickCellInfo, new DragOptions());
+                }
+            }
+        }
+        return true;
+
+/*
         CellLayout.CellInfo cellInfo = null;
         if (!isDraggingEnabled() || isWorkspaceLocked() || this.mState != State.WORKSPACE) {
             return false;
@@ -2838,7 +2960,7 @@ public class Launcher extends Activity
         }
         onLongClickAllAppsHandle();
         return true;
-
+*/
     }
 
     boolean isHotseatLayout(View layout) {
@@ -2902,8 +3024,8 @@ public class Launcher extends Activity
                     Workspace.State.NORMAL, animated, onCompleteRunnable);
 
             // Set focus to the AppsCustomize button
-            if (mAllAppsHandle != null) {
-                mAllAppsHandle.requestFocus();
+            if (mAllAppsButton != null) {
+                mAllAppsButton.requestFocus();
             }
         }
 
@@ -2937,14 +3059,11 @@ public class Launcher extends Activity
     void showOverviewMode(boolean animated, boolean requestButtonFocus) {
         Runnable postAnimRunnable = null;
         if (requestButtonFocus) {
-            postAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Hitting the menu button when in touch mode does not trigger touch mode to
-                    // be disabled, so if requested, force focus on one of the overview panel
-                    // buttons.
-                    mOverviewPanel.requestFocusFromTouch();
-                }
+            postAnimRunnable = () -> {
+                // Hitting the menu button when in touch mode does not trigger touch mode to
+                // be disabled, so if requested, force focus on one of the overview panel
+                // buttons.
+                mOverviewPanel.requestFocusFromTouch();
             };
         }
         mWorkspace.setVisibility(View.VISIBLE);
@@ -3071,22 +3190,21 @@ public class Launcher extends Activity
         if (mExitSpringLoadedModeRunnable != null) {
             mHandler.removeCallbacks(mExitSpringLoadedModeRunnable);
         }
-        mExitSpringLoadedModeRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (successfulDrop) {
-                    // TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
-                    //
-                    // Before we show workspace, hide all apps again because
-                    // exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
-                    // clean up our state transition functions
-                    mWidgetsView.setVisibility(View.GONE);
-                    showWorkspace(true, onCompleteRunnable);
-                } else {
-                    exitSpringLoadedDragMode();
-                }
-                mExitSpringLoadedModeRunnable = null;
+        mExitSpringLoadedModeRunnable = () -> {
+            if (successfulDrop) {
+                /*
+                TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
+
+                Before we show workspace, hide all apps again because
+                exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
+                clean up our state transition functions
+                */
+                mWidgetsView.setVisibility(View.GONE);
+                showWorkspace(true, onCompleteRunnable);
+            } else {
+                exitSpringLoadedDragMode();
             }
+            mExitSpringLoadedModeRunnable = null;
         };
         mHandler.postDelayed(mExitSpringLoadedModeRunnable, delay);
     }
@@ -3572,7 +3690,7 @@ public class Launcher extends Activity
      */
     @Override
     public void finishBindingItems() {
-        Runnable r = () -> finishBindingItems();
+        Runnable r = this::finishBindingItems;
         if (waitUntilResume(r)) {
             return;
         }
@@ -3831,10 +3949,7 @@ public class Launcher extends Activity
     }
 
     private boolean shouldShowDiscoveryBounce() {
-        if (mState != State.WORKSPACE || !mIsResumeFromActionScreenOff) {
-            return false;
-        }
-        return !mSharedPrefs.getAppsViewShown();
+        return mState == State.WORKSPACE && mIsResumeFromActionScreenOff && !mSharedPrefs.getAppsViewShown();
     }
 
     /**

@@ -1,10 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<android.support.v7.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
         android:key="notification_access"
         android:summary="@string/notification_access_pref_summary"
         android:title="@string/notification_access_pref_title">
         <intent android:action="android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS" />
     </Preference>
-    pre
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_notification_count"
+        android:persistent="true"
+        android:title="@string/pref_title__notification_count" />
+
+    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+        android:defaultValue="@color/notification_text_color"
+        android:key="notification_text_color"
+        android:title="@string/pref_title__notification_text_color"
+        app:cpv_dialogTitle="@string/pref_title__notification_text_color"
+        app:cpv_showAlphaSlider="true" />
+
+    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+        android:defaultValue="@color/notification_background"
+        android:key="pref_notification_background"
+        android:title="@string/pref_title__notification_background_color"
+        app:cpv_dialogTitle="@string/pref_title__notification_background_color"
+        app:cpv_showAlphaSlider="true" />
+
 </android.support.v7.preference.PreferenceScreen>

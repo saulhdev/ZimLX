@@ -42,8 +42,8 @@ class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: Attri
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         val view = holder.itemView
-        mSeekbar = view.findViewById<SeekBar>(R.id.seekbar)
-        mValueText = view.findViewById<TextView>(R.id.txtValue)
+        mSeekbar = view.findViewById(R.id.seekbar)
+        mValueText = view.findViewById(R.id.txtValue)
         mSeekbar!!.max = steps
         mSeekbar!!.setOnSeekBarChangeListener(this)
 

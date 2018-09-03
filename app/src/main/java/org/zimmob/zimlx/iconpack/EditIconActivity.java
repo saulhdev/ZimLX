@@ -119,6 +119,7 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
         list.addAll(pm.queryIntentActivities(new Intent("com.teslacoilsw.launcher.THEME"), 0));
         list.addAll(pm.queryIntentActivities(new Intent("com.gau.go.launcherex.theme"), 0));
         list.addAll(pm.queryIntentActivities(new Intent("com.dlto.atom.launcher.THEME"), 0));
+        list.addAll(pm.queryIntentActivities(new Intent("com.fede.launcher.THEME_ICONPACK"), 0));
 
         list.addAll(pm.queryIntentActivities(new Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0));
         for (ResolveInfo info : list) {

@@ -122,11 +122,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
     @Override
     public boolean performAccessibilityAction(View host, int action, Bundle args) {
-        if ((host.getTag() instanceof ItemInfo)
-                && performAction(host, (ItemInfo) host.getTag(), action)) {
-            return true;
-        }
-        return super.performAccessibilityAction(host, action, args);
+        return (host.getTag() instanceof ItemInfo) && performAction(host, (ItemInfo) host.getTag(), action) || super.performAccessibilityAction(host, action, args);
     }
 
     public boolean performAction(final View host, final ItemInfo item, int action) {

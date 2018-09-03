@@ -28,7 +28,7 @@
             android:alwaysRetainTaskState="false"
             android:autoRemoveFromRecents="true"
             android:launchMode="singleTask"
-            android:theme="@style/Theme.Transparent"></activity>
+            android:theme="@style/Theme.Transparent" />
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="org.zimmob.zimlx.lawnfeed.provider"

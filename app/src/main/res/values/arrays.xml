@@ -4,4 +4,28 @@
         <item>@string/which_wallpaper_option_lock_screen</item>
         <item>@string/which_wallpaper_option_home_screen_and_lock_screen</item>
     </string-array>
+    <string-array name="entries__gestures">
+        <item>Ninguno</item>
+        <item>Ajustes de la Minibar</item>
+        <item>Establecer fondo de pantalla</item>
+        <item>Bloquear pantalla</item>
+        <item>Liberar RAM</item>
+        <item>Ajustes del Dispositivo</item>
+        <item>Ajustes del Inicio</item>
+        <item>Panel de Volumen</item>
+        <item>Abrir cajón de aplicaciones</item>
+        <item>Abrir aplicación</item>
+    </string-array>
+    <string-array name="values__zero_to_nine" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+        <item>6</item>
+        <item>7</item>
+        <item>8</item>
+        <item>9</item>
+    </string-array>
 </resources>

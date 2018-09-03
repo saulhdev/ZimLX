@@ -168,10 +168,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             return false;
         }
         mDetector.onTouchEvent(ev);
-        if (mDetector.isSettlingState() && (isInDisallowRecatchBottomZone() || isInDisallowRecatchTopZone())) {
-            return false;
-        }
-        return mDetector.isDraggingOrSettling();
+        return (!mDetector.isSettlingState() || (!isInDisallowRecatchBottomZone() && !isInDisallowRecatchTopZone())) && mDetector.isDraggingOrSettling();
     }
 
     private boolean shouldPossiblyIntercept(MotionEvent ev) {

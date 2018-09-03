@@ -53,5 +53,34 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
     public Context getContext() {
         return mContext;
     }
+
+    public boolean isGestureFeedback() {
+        return getBool(R.string.pref_key__gesture_feedback, false);
+    }
+
+    public boolean getGestureDockSwipeUp() {
+        return getBool(R.string.pref_key__gesture_quick_swipe, true);
+    }
+
+    public int getGestureDoubleTap() {
+        return getIntOfStringPref(R.string.pref_key__gesture_double_tap, 0);
+    }
+
+    public int getGestureSwipeUp() {
+        return getIntOfStringPref(R.string.pref_key__gesture_swipe_up, 8);
+    }
+
+    public int getGestureSwipeDown() {
+        return getIntOfStringPref(R.string.pref_key__gesture_swipe_down, 10);
+    }
+
+    public int getGesturePinch() {
+        return getIntOfStringPref(R.string.pref_key__gesture_pinch, 0);
+    }
+
+    public int getGestureUnpinch() {
+        return getIntOfStringPref(R.string.pref_key__gesture_unpinch, 0);
+    }
+
 }
 

@@ -1069,11 +1069,8 @@ public class Workspace extends PagedView
 
     @Override
     public boolean dispatchUnhandledMove(View focused, int direction) {
-        if (workspaceInModalState() || !isFinishedSwitchingState()) {
-            // when the home screens are shrunken, shouldn't allow side-scrolling
-            return false;
-        }
-        return super.dispatchUnhandledMove(focused, direction);
+        // when the home screens are shrunken, shouldn't allow side-scrolling
+        return !workspaceInModalState() && isFinishedSwitchingState() && super.dispatchUnhandledMove(focused, direction);
     }
 
     @Override

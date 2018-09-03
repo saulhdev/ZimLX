@@ -86,6 +86,21 @@ public class DeviceProfile {
 
     public int cellWidthPx;
     public int cellHeightPx;
+    public int hotseatCellHeightPx;
+    // In portrait: size = height, in landscape: size = width
+    public int hotseatBarSizePx;
+    public int hotseatBarTopPaddingPx;
+    public int hotseatBarBottomPaddingPx;
+
+    public int hotseatBarLeftNavBarLeftPaddingPx;
+    public int hotseatBarLeftNavBarRightPaddingPx;
+
+    public int hotseatBarRightNavBarLeftPaddingPx;
+    public int hotseatBarRightNavBarRightPaddingPx;
+    public int hotseatIconSizePx;
+    public int hotseatIconSizePxOriginal;
+    private int hotseatLandGutterPx;
+    private int hotseatBarHeightPx;
 
     // Folder
     public int folderBackgroundOffset;
@@ -94,21 +109,15 @@ public class DeviceProfile {
     public int folderCellWidthPx;
     public int folderCellHeightPx;
     public int folderChildDrawablePaddingPx;
-    public int hotseatIconSizePx;
-    public int hotseatCellHeightPx;
-    public int hotseatIconSizePxOriginal;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     // Workspace
     private int desiredWorkspaceLeftRightMarginPx;
-    private int hotseatBarHeightPx;
 
     // All apps
     public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
-    private int hotseatBarTopPaddingPx;
-    private int hotseatLandGutterPx;
     public float allAppsIconTextSizePx;
 
     // Drop Target
@@ -176,8 +185,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
         overviewModeBarSpacerWidthPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
-        overviewModeIconZoneRatio =
-                res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
+        overviewModeIconZoneRatio = res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
@@ -186,9 +194,25 @@ public class DeviceProfile {
         float hotseatBaseHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
         float hotseatScale = prefs.getHotseatHeightScale();
         hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
+        hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
+
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
+        hotseatBarBottomPaddingPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarLeftNavBarRightPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_right_padding);
+        hotseatBarRightNavBarRightPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_right_padding);
+        hotseatBarLeftNavBarLeftPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_left_padding);
+        hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
+                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
+        hotseatBarSizePx = isVerticalBarLayout()
+                ? Utilities.pxFromDp(inv.iconSize, dm)
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+
 
         // Determine sizes.
         widthPx = width;
@@ -676,7 +700,18 @@ public class DeviceProfile {
         return (hotseatBarHeightPx - hotseatBarTopPaddingPx) * Utilities.getNumberOfHotseatRows(mContext) + hotseatBarTopPaddingPx;
     }
 
+    public boolean shouldIgnoreLongPressToOverview(float touchX) {
+        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
+        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
+        return !inMultiWindowMode() && (touchedLhsEdge || touchedRhsEdge);
+    }
+
+    public boolean inMultiWindowMode() {
+        return this != inv.landscapeProfile && this != inv.portraitProfile;
+    }
+
     public interface LauncherLayoutChangeListener {
         void onLauncherLayoutChanged();
     }
+
 }

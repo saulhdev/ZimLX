@@ -132,4 +132,9 @@
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
+
+    <!-- NOTIFICATION -->
+    <color name="notification_background">#0E19E9</color>
+    <color name="notification_text_color">#FFFFFF</color>
+
 </resources>

@@ -113,6 +113,9 @@ interface IPreferenceProvider {
     val blurMode: Int
     val workSpaceLabelColor: Int
     val primaryColor: Int
+    val notificationTextColor: Int
+    val notificationBackground: Int
+    val notificationCount: Boolean
     val minibarColor: Int
     val allAppsLabelColor: Int
     fun alternateIcon(key: String): String?

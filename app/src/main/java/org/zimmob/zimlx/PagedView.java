@@ -50,6 +50,7 @@ import org.zimmob.zimlx.util.LauncherEdgeEffect;
 import org.zimmob.zimlx.util.Thunk;
 
 import java.util.ArrayList;
+import java.util.Objects;
 
 /**
  * An abstraction of the original Workspace which supports browsing through a
@@ -597,7 +598,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             onPostReorderingAnimationCompleted();
             AccessibilityManager am = (AccessibilityManager)
                     getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            if (am.isEnabled()) {
+            if (Objects.requireNonNull(am).isEnabled()) {
                 // Notify the user when the page changes
                 announceForAccessibility(getCurrentPageDescription());
             }
@@ -1515,48 +1516,45 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
                                 pageUnderPointIndex <= mTempVisiblePagesRange[1] &&
                                 pageUnderPointIndex != mSidePageHoverIndex && mScroller.isFinished()) {
                             mSidePageHoverIndex = pageUnderPointIndex;
-                            mSidePageHoverRunnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    // Setup the scroll to the correct page before we swap the views
-                                    snapToPage(pageUnderPointIndex);
+                            mSidePageHoverRunnable = () -> {
+                                // Setup the scroll to the correct page before we swap the views
+                                snapToPage(pageUnderPointIndex);
 
-                                    // For each of the pages between the paged view and the drag view,
-                                    // animate them from the previous position to the new position in
-                                    // the layout (as a result of the drag view moving in the layout)
-                                    int shiftDelta = (dragViewIndex < pageUnderPointIndex) ? -1 : 1;
-                                    int lowerIndex = (dragViewIndex < pageUnderPointIndex) ?
-                                            dragViewIndex + 1 : pageUnderPointIndex;
-                                    int upperIndex = (dragViewIndex > pageUnderPointIndex) ?
-                                            dragViewIndex - 1 : pageUnderPointIndex;
-                                    for (int i = lowerIndex; i <= upperIndex; ++i) {
-                                        View v = getChildAt(i);
-                                        // dragViewIndex < pageUnderPointIndex, so after we remove the
-                                        // drag view all subsequent views to pageUnderPointIndex will
-                                        // shift down.
-                                        int oldX = getViewportOffsetX() + getChildOffset(i);
-                                        int newX = getViewportOffsetX() + getChildOffset(i + shiftDelta);
+                                // For each of the pages between the paged view and the drag view,
+                                // animate them from the previous position to the new position in
+                                // the layout (as a result of the drag view moving in the layout)
+                                int shiftDelta = (dragViewIndex < pageUnderPointIndex) ? -1 : 1;
+                                int lowerIndex = (dragViewIndex < pageUnderPointIndex) ?
+                                        dragViewIndex + 1 : pageUnderPointIndex;
+                                int upperIndex = (dragViewIndex > pageUnderPointIndex) ?
+                                        dragViewIndex - 1 : pageUnderPointIndex;
+                                for (int i = lowerIndex; i <= upperIndex; ++i) {
+                                    View v = getChildAt(i);
+                                    // dragViewIndex < pageUnderPointIndex, so after we remove the
+                                    // drag view all subsequent views to pageUnderPointIndex will
+                                    // shift down.
+                                    int oldX = getViewportOffsetX() + getChildOffset(i);
+                                    int newX = getViewportOffsetX() + getChildOffset(i + shiftDelta);
 
-                                        // Animate the view translation from its old position to its new
-                                        // position
-                                        ObjectAnimator anim = (ObjectAnimator) v.getTag();
-                                        if (anim != null) {
-                                            anim.cancel();
-                                        }
-
-                                        v.setTranslationX(oldX - newX);
-                                        anim = LauncherAnimUtils.ofFloat(v, View.TRANSLATION_X, 0);
-                                        anim.setDuration(REORDERING_REORDER_REPOSITION_DURATION);
-                                        anim.start();
-                                        v.setTag(anim);
+                                    // Animate the view translation from its old position to its new
+                                    // position
+                                    ObjectAnimator anim = (ObjectAnimator) v.getTag();
+                                    if (anim != null) {
+                                        anim.cancel();
                                     }
 
-                                    removeView(mDragView);
-                                    addView(mDragView, pageUnderPointIndex);
-                                    mSidePageHoverIndex = -1;
-                                    if (mPageIndicator != null) {
-                                        mPageIndicator.setActiveMarker(getNextPage());
-                                    }
+                                    v.setTranslationX(oldX - newX);
+                                    anim = LauncherAnimUtils.ofFloat(v, View.TRANSLATION_X, 0);
+                                    anim.setDuration(REORDERING_REORDER_REPOSITION_DURATION);
+                                    anim.start();
+                                    v.setTag(anim);
+                                }
+
+                                removeView(mDragView);
+                                addView(mDragView, pageUnderPointIndex);
+                                mSidePageHoverIndex = -1;
+                                if (mPageIndicator != null) {
+                                    mPageIndicator.setActiveMarker(getNextPage());
                                 }
                             };
                             postDelayed(mSidePageHoverRunnable, REORDERING_SIDE_PAGE_HOVER_TIMEOUT);
@@ -2011,19 +2009,11 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         // If we haven't flung-to-delete the current child, then we just animate the drag view
         // back into position
-        final Runnable onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onEndReordering();
-            }
-        };
+        final Runnable onCompleteRunnable = this::onEndReordering;
 
-        mPostReorderingPreZoomInRunnable = new Runnable() {
-            @Override
-            public void run() {
-                onCompleteRunnable.run();
-                enableFreeScroll();
-            }
+        mPostReorderingPreZoomInRunnable = () -> {
+            onCompleteRunnable.run();
+            enableFreeScroll();
         };
 
         mPostReorderingPreZoomInRemainingAnimationCount =

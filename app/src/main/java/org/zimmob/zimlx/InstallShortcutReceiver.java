@@ -46,7 +46,7 @@ import org.zimmob.zimlx.util.Thunk;
 
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -128,7 +128,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                     infos.add(info);
                 }
             }
-            sharedPrefs.setAppsPendingInstalls(new HashSet<String>());
+            sharedPrefs.setAppsPendingInstalls(new HashSet<>());
             return infos;
         }
     }
@@ -254,7 +254,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
                 List<ShortcutInfoCompat> si = sm.queryForFullDetails(
                         object.launcherIntent.getPackage(),
-                        Arrays.asList(object.launcherIntent.getStringExtra(
+                        Collections.singletonList(object.launcherIntent.getStringExtra(
                                 ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
                         object.user);
                 if (si.isEmpty()) {

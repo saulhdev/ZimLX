@@ -69,7 +69,9 @@ public class Minibar {
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
             case AppDrawer:
-                //HomeActivity.companion.getLauncher().openAppDrawer();
+                if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
+                    Launcher.getLauncher(mContext).showAppsView(true, false);
+                }
                 break;
             case SearchBar: {
                 //assert HomeActivity.companion.getLauncher() != null;

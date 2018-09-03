@@ -90,6 +90,7 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
     private boolean mHideText;
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
+    private IconPalette mBadgePalette;
     private float mBadgeScale;
     private boolean mForceHideBadge;
     private Rect mTempIconBounds;
@@ -584,7 +585,9 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
                 int scrollY = getScrollY();
                 canvas.translate((float) scrollX, (float) scrollY);
                 mIconPalette = ((FastBitmapDrawable) this.mIcon).getIconPalette();
-                mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale, mTempSpaceForBadgeOffset, mIconPalette);
+                //mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale, mTempSpaceForBadgeOffset, mIconPalette);
+                mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
+                        mTempSpaceForBadgeOffset);
                 canvas.translate((float) (-scrollX), (float) (-scrollY));
             }
         }
@@ -700,21 +703,25 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         }
     }
 
-    public void applyBadgeState(ItemInfo itemInfo, boolean z) {
+    public void applyBadgeState(ItemInfo itemInfo, boolean animate) {
         if (this.mIcon instanceof FastBitmapDrawable) {
-            boolean i2 = this.mBadgeInfo != null;
+            boolean wasBadged = this.mBadgeInfo != null;
             this.mBadgeInfo = this.mLauncher.getPopupDataProvider().getBadgeInfoForItem(itemInfo);
-            boolean i = this.mBadgeInfo != null;
-            float badgeScale = i ? 1.0f : 0.0f;
+            boolean isBadged = this.mBadgeInfo != null;
+            float newBadgeScale = isBadged ? 1.0f : 0.0f;
             this.mBadgeRenderer = this.mLauncher.getDeviceProfile().mBadgeRenderer;
-            if (i2 || i) {
-                this.mIconPalette = ((FastBitmapDrawable) this.mIcon).getIconPalette();
-                if (z && (i2 ^ i) && isShown()) {
-                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, new float[]{badgeScale}).start();
-                    return;
+            if (wasBadged || isBadged) {
+                mBadgePalette = IconPalette.getBadgePalette(getResources());
+                if (mBadgePalette == null) {
+                    mBadgePalette = ((FastBitmapDrawable) mIcon).getIconPalette();
                 }
-                this.mBadgeScale = badgeScale;
-                invalidate();
+                // Animate when a badge is first added or when it is removed.
+                if (animate && (wasBadged ^ isBadged) && isShown()) {
+                    ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();
+                } else {
+                    mBadgeScale = newBadgeScale;
+                    invalidate();
+                }
             }
         }
     }

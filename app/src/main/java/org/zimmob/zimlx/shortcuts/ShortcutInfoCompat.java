@@ -148,27 +148,15 @@ public class ShortcutInfoCompat {
     }
 
     public boolean hasKeyFieldsOnly() {
-        if (useNative()) {
-            return mShortcutInfo.hasKeyFieldsOnly();
-        } else {
-            return false;
-        }
+        return useNative() && mShortcutInfo.hasKeyFieldsOnly();
     }
 
     public boolean isPinned() {
-        if (useNative()) {
-            return mShortcutInfo.isPinned();
-        } else {
-            return false;
-        }
+        return useNative() && mShortcutInfo.isPinned();
     }
 
     public boolean isDeclaredInManifest() {
-        if (useNative()) {
-            return mShortcutInfo.isDeclaredInManifest();
-        } else {
-            return true;
-        }
+        return !useNative() || mShortcutInfo.isDeclaredInManifest();
     }
 
     public boolean isEnabled() {
@@ -180,11 +168,7 @@ public class ShortcutInfoCompat {
     }
 
     public boolean isDynamic() {
-        if (useNative()) {
-            return mShortcutInfo.isDynamic();
-        } else {
-            return false;
-        }
+        return useNative() && mShortcutInfo.isDynamic();
     }
 
     public int getRank() {

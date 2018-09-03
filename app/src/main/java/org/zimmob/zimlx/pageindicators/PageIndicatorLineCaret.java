@@ -129,7 +129,8 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mAllAppsHandle.setOnClickListener(mLauncher);
         mAllAppsHandle.setOnLongClickListener(mLauncher);
         mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);
-        mLauncher.setAllAppsHandle(mAllAppsHandle);
+        mLauncher.setAllAppsButton(mAllAppsHandle);
+
     }
 
     @Override

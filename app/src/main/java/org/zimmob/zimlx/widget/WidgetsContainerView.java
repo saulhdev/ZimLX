@@ -88,10 +88,7 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
     }
 
     public boolean handleLongClick(View view) {
-        if (view.isInTouchMode() && !mLauncher.getWorkspace().isSwitchingState() && mLauncher.isDraggingEnabled()) {
-            return beginDragging(view);
-        }
-        return false;
+        return view.isInTouchMode() && !mLauncher.getWorkspace().isSwitchingState() && mLauncher.isDraggingEnabled() && beginDragging(view);
     }
 
     private boolean beginDragging(View view) {

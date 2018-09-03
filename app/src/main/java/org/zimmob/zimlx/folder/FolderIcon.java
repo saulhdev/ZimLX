@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -75,6 +74,7 @@ import org.zimmob.zimlx.badge.FolderBadgeInfo;
 import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragView;
+import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.graphics.IconShapeOverride;
 import org.zimmob.zimlx.util.Thunk;
 
@@ -329,13 +329,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final PreviewItemDrawingParams params = index < mDrawingParams.size() ?
                     mDrawingParams.get(index) : null;
             if (params != null) params.hidden = true;
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    if (params != null) params.hidden = false;
-                    mFolder.showItem(item);
-                    invalidate();
-                }
+            postDelayed(() -> {
+                if (params != null) params.hidden = false;
+                mFolder.showItem(item);
+                invalidate();
             }, DROP_IN_ANIMATION_DURATION);
         } else {
             addItem(item);
@@ -511,7 +508,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.mTempBounds.set(save, saveLayer, save + size, size + saveLayer);
             float max = Math.max(0.0f, this.mBadgeScale - this.mBackground.getScaleProgress());
             this.mTempSpaceForBadgeOffset.set(getWidth() - this.mTempBounds.right, this.mTempBounds.top);
-            this.mBadgeRenderer.draw(canvas, this.mBadgeInfo, this.mTempBounds, max, this.mTempSpaceForBadgeOffset);
+            //this.mBadgeRenderer.draw(canvas, this.mBadgeInfo, this.mTempBounds, max, this.mTempSpaceForBadgeOffset);
+            IconPalette badgePalette = IconPalette.getFolderBadgePalette(getResources());
+            mBadgeRenderer.draw(canvas, badgePalette, mBadgeInfo, mTempBounds,
+                    mBadgeScale, mTempSpaceForBadgeOffset);
         }
 
         canvas.restore();
@@ -1006,14 +1006,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
-            mScaleAnimator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float prog = animation.getAnimatedFraction();
-                    mScale = prog * scale1 + (1 - prog) * scale0;
-                    mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
-                    invalidate();
-                }
+            mScaleAnimator.addUpdateListener(animation -> {
+                float prog = animation.getAnimatedFraction();
+                mScale = prog * scale1 + (1 - prog) * scale0;
+                mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
+                invalidate();
             });
             mScaleAnimator.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -1037,12 +1034,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-            Runnable onStart = new Runnable() {
-                @Override
-                public void run() {
-                    delegateDrawing(cl, cellX, cellY);
-                }
-            };
+            Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
             animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
         }
 
@@ -1054,18 +1046,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final int cellX = delegateCellX;
             final int cellY = delegateCellY;
 
-            Runnable onStart = new Runnable() {
-                @Override
-                public void run() {
-                    delegateDrawing(cl, cellX, cellY);
-                }
-            };
-            Runnable onEnd = new Runnable() {
-                @Override
-                public void run() {
-                    clearDrawingDelegate();
-                }
-            };
+            Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
+            Runnable onEnd = () -> clearDrawingDelegate();
             animateScale(1f, 1f, onStart, onEnd);
         }
     }
@@ -1118,16 +1100,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final float transY0 = mTmpParams.transY;
 
             mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
-            mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float progress = animation.getAnimatedFraction();
+            mValueAnimator.addUpdateListener(animation -> {
+                float progress = animation.getAnimatedFraction();
 
-                    params.transX = transX0 + progress * (finalTransX - transX0);
-                    params.transY = transY0 + progress * (finalTransY - transY0);
-                    params.scale = scale0 + progress * (finalScale - scale0);
-                    invalidate();
-                }
+                params.transX = transX0 + progress * (finalTransX - transX0);
+                params.transY = transY0 + progress * (finalTransY - transY0);
+                params.scale = scale0 + progress * (finalScale - scale0);
+                invalidate();
             });
 
             mValueAnimator.addListener(new AnimatorListenerAdapter() {

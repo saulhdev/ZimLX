@@ -74,7 +74,7 @@ public class NotificationListener extends NotificationListenerService {
                     case MSG_NOTIFICATION_FULL_REFRESH:
                         final List<StatusBarNotification> activeNotifications = sIsConnected
                                 ? filterNotifications(getActiveNotifications())
-                                : new ArrayList<StatusBarNotification>();
+                                : new ArrayList<>();
                         mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
                         break;
                 }

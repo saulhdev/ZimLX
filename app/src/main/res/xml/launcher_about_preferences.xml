@@ -24,7 +24,7 @@
     <PreferenceCategory android:title="@string/contribute">
 
         <Preference
-            android:icon="@drawable/ic_favorite_black_24dp"
+            android:icon="@drawable/ic_attach_money_black_24dp"
             android:key="@string/pref_key__more_info__donate"
             android:summary="@string/more_info_support"
             android:title="@string/donate" />

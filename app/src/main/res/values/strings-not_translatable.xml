@@ -37,5 +37,17 @@
     <string name="pref_key__language" translatable="false">pref_key__language</string>
     <string name="pref_key__backup" translatable="false">pref_key__backup</string>
     <string name="pref_theme" translatable="false">pref_theme</string>
-    <string name="build_info_class" translatable="false"></string>
+    <string name="build_info_class" translatable="false">info</string>
+
+    <!-- PREFERENCES GESTURES-->
+    <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
+    <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
+    <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
+    <string name="pref_key__gesture_swipe_up" translatable="false">pref_key__gesture_swipe_up</string>
+    <string name="pref_key__gesture_swipe_down" translatable="false">pref_key__gesture_swipe_down</string>
+    <string name="pref_key__gesture_pinch" translatable="false">pref_key__gesture_pinch</string>
+    <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
+    <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
+
+
 </resources>

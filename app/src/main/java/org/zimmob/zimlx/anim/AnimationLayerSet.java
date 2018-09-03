@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.util.ArrayMap;
 import android.view.View;
 
-import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -47,9 +46,7 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
     @Override
     public void onAnimationStart(Animator animation) {
         // Enable all necessary layers
-        Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
-        while (itr.hasNext()) {
-            Map.Entry<View, Integer> entry = itr.next();
+        for (Map.Entry<View, Integer> entry : mViewsToLayerTypeMap.entrySet()) {
             View v = entry.getKey();
             entry.setValue(v.getLayerType());
             v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
@@ -61,9 +58,7 @@ public class AnimationLayerSet extends AnimatorListenerAdapter {
 
     @Override
     public void onAnimationEnd(Animator animation) {
-        Iterator<Map.Entry<View, Integer>> itr = mViewsToLayerTypeMap.entrySet().iterator();
-        while (itr.hasNext()) {
-            Map.Entry<View, Integer> entry = itr.next();
+        for (Map.Entry<View, Integer> entry : mViewsToLayerTypeMap.entrySet()) {
             entry.getKey().setLayerType(entry.getValue(), null);
         }
     }

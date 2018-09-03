@@ -815,7 +815,7 @@ public class GridSizeMigrationTask {
         }
 
         public void find() {
-            find(0, 0, 0, new ArrayList<DbEntry>());
+            find(0, 0, 0, new ArrayList<>());
         }
 
         /**

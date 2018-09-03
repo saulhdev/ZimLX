@@ -150,7 +150,7 @@ public final class Utilities {
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>());
     // Blacklisted APKs which will be hidden, these include simple regex formatting, without
     // full regex formatting (e.g. com.android. will block everything that starts with com.android.)
     // Taken from: https://github.com/substratum/substratum/blob/dev/app/src/main/java/projekt/substratum/common/Systems.java

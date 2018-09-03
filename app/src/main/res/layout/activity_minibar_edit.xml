@@ -22,6 +22,7 @@
                 android:id="@+id/enableSwitch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:checked="true"
                 android:paddingLeft="72dp"
                 android:paddingRight="16dp"
                 android:text="@string/on"

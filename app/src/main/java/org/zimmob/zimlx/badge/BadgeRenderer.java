@@ -25,6 +25,7 @@ import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
 import org.zimmob.zimlx.R;
@@ -38,9 +39,6 @@ import org.zimmob.zimlx.graphics.ShadowGenerator;
  * @see BadgeInfo for the data to draw
  */
 public class BadgeRenderer {
-
-    private static final boolean DOTS_ONLY = false;
-
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
     // Used to expand the width of the badge for each additional digit.
@@ -52,7 +50,7 @@ public class BadgeRenderer {
     private static final float DOT_SCALE = 0.6f;
 
     private final Context mContext;
-    private final IconPalette mIconPalette;
+    //private final IconPalette mIconPalette;
     private final int mSize;
     private final int mCharSize;
     private final int mTextHeight;
@@ -67,6 +65,10 @@ public class BadgeRenderer {
     private final SparseArray<Bitmap> mBackgroundsWithShadow;
     private final Bitmap mBackgroundWithShadow;
 
+    private boolean showNotificationCount = true;
+    private int textColor;
+    private int backgroundColor;
+
     public BadgeRenderer(Context context, int iconSizePx) {
         mContext = context;
         Resources res = context.getResources();
@@ -75,51 +77,62 @@ public class BadgeRenderer {
         mOffset = (int) (OFFSET_PERCENTAGE * iconSizePx);
         mStackOffsetX = (int) (STACK_OFFSET_PERCENTAGE_X * iconSizePx);
         mStackOffsetY = (int) (STACK_OFFSET_PERCENTAGE_Y * iconSizePx);
-        mTextPaint.setTextSize(iconSizePx * TEXT_SIZE_PERCENTAGE);
-        mTextPaint.setTextAlign(Paint.Align.CENTER);
         mLargeIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_small_padding));
         mSmallIconDrawer = new IconDrawer(res.getDimensionPixelSize(R.dimen.badge_large_padding));
-        mIconPalette = IconPalette.fromDominantColor(Utilities.getDynamicBadgeColor(context));
+        //mIconPalette = IconPalette.fromDominantColor(Utilities.getDynamicBadgeColor(context));
+        showNotificationCount = Utilities.getPrefs(context).getNotificationCount();
+        //backgroundColor=Utilities.getPrefs(context).getNotificationTextColor();
 
-        // Measure the text height.
+        // Measure the text height;.
         Rect tempTextHeight = new Rect();
+        mTextPaint.setTextSize(iconSizePx * TEXT_SIZE_PERCENTAGE);
+        mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.getTextBounds("0", 0, 1, tempTextHeight);
         mTextHeight = tempTextHeight.height();
         mBackgroundsWithShadow = new SparseArray<>(3);
         mBackgroundWithShadow = ShadowGenerator.createPillWithShadow(-1, mSize, mSize);
+
     }
 
-    public void draw(Canvas canvas, BadgeInfo badgeInfo, Rect rect, float f, Point point) {
+    /*public void draw(Canvas canvas, BadgeInfo badgeInfo, Rect rect, float f, Point point) {
         draw(canvas, badgeInfo, rect, f, point, mIconPalette);
-    }
+    }*/
 
-    public void draw(Canvas canvas, BadgeInfo badgeInfo, Rect iconBounds, float badgeScale, Point spaceForOffset, IconPalette iconPalette) {
-        mTextPaint.setColor(iconPalette.textColor);
-        IconDrawer iconDrawer = (badgeInfo == null || !badgeInfo.isIconLarge()) ? mSmallIconDrawer : mLargeIconDrawer;
+    /**
+     * Draw a circle in the top right corner of the given bounds, and draw
+     * {@link BadgeInfo#getNotificationCount()} on top of the circle.
+     *
+     * @param palette        The colors (based on the icon) to use for the badge.
+     * @param badgeInfo      Contains data to draw on the badge. Could be null if we are animating out.
+     * @param iconBounds     The bounds of the icon being badged.
+     * @param badgeScale     The progress of the animation, from 0 to 1.
+     * @param spaceForOffset How much space is available to offset the badge up and to the right.
+     */
+    public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
+                     Rect iconBounds, float badgeScale, Point spaceForOffset) {
+
+        mTextPaint.setColor(palette.textColor);
+        IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
+                ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
-                mContext, iconPalette.backgroundColor, mSize, iconDrawer.mPadding);
+                mContext, palette.backgroundColor, mSize, iconDrawer.mPadding);
         String notificationCount = badgeInfo == null ? "0"
                 : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
-        int width = DOTS_ONLY ? mSize : mSize + mCharSize * (numChars - 1);
+        int width = showNotificationCount ? mSize : mSize + mCharSize * (numChars - 1);
+        // Lazily load the background with shadow.
         Bitmap backgroundWithShadow = mBackgroundsWithShadow.get(numChars);
         if (backgroundWithShadow == null) {
             backgroundWithShadow = new ShadowGenerator.Builder(Color.WHITE)
                     .setupBlurForSize(mSize).createPill(width, mSize);
             mBackgroundsWithShadow.put(numChars, backgroundWithShadow);
         }
-
-        if (badgeInfo != null) {
-            badgeInfo.getNotificationIconForBadge(mContext, iconPalette.backgroundColor, mSize, iconDrawer.mPadding);
-        }
         canvas.save(Canvas.ALL_SAVE_FLAG);
-        badgeScale *= 0.6f;
-
         // We draw the badge relative to its center.
         int badgeCenterX = iconBounds.right - width / 2;
         int badgeCenterY = iconBounds.top + mSize / 2;
-        boolean isText = !DOTS_ONLY && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
-        boolean isIcon = !DOTS_ONLY && icon != null;
+        boolean isText = showNotificationCount && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
+        boolean isIcon = showNotificationCount && icon != null;
         boolean isDot = !(isText || isIcon);
         if (isDot) {
             badgeScale *= DOT_SCALE;
@@ -127,12 +140,9 @@ public class BadgeRenderer {
         int offsetX = Math.min(mOffset, spaceForOffset.x);
         int offsetY = Math.min(mOffset, spaceForOffset.y);
         canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
-        //canvas.translate((float) ((rect.right - (mSize / 2)) + Math.min(mOffset, point.x)), (float) ((rect.top + (mSize / 2)) - Math.min(mOffset, point.y)));
         canvas.scale(badgeScale, badgeScale);
-        mBackgroundPaint.setColorFilter(iconPalette.backgroundColorMatrixFilter);
-        int length = mBackgroundWithShadow.getHeight();
-        mBackgroundPaint.setColorFilter(iconPalette.saturatedBackgroundColorMatrixFilter);
-        canvas.drawBitmap(mBackgroundWithShadow, (float) ((-length) / 2), (float) ((-length) / 2), mBackgroundPaint);
+        // Prepare the background and shadow and possible stacking effect.
+        mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
         boolean shouldStack = !isDot && badgeInfo != null
                 && badgeInfo.getNotificationKeys().size() > 1;
@@ -144,6 +154,7 @@ public class BadgeRenderer {
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
             canvas.translate(-offsetDiffX, -offsetDiffY);
         }
+
         if (isText) {
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
@@ -153,7 +164,7 @@ public class BadgeRenderer {
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
             iconDrawer.drawIcon(icon, canvas);
         } else if (isDot) {
-            mBackgroundPaint.setColorFilter(iconPalette.saturatedBackgroundColorMatrixFilter);
+            mBackgroundPaint.setColorFilter(palette.saturatedBackgroundColorMatrixFilter);
             canvas.drawBitmap(backgroundWithShadow, -backgroundWithShadowSize / 2,
                     -backgroundWithShadowSize / 2, mBackgroundPaint);
         }

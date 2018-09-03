@@ -52,7 +52,6 @@ public class PageIndicatorCaretLandscape extends PageIndicator {
         setOnClickListener(l);
         setOnLongClickListener(l);
         setOnFocusChangeListener(l.mFocusHandler);
-        l.setAllAppsHandle(this);
     }
 
     @Override

@@ -68,7 +68,6 @@ import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.ShortcutInfo;
 import org.zimmob.zimlx.UninstallDropTarget.DropTargetSource;
 import org.zimmob.zimlx.Utilities;
-import org.zimmob.zimlx.Workspace.ItemOperator;
 import org.zimmob.zimlx.accessibility.AccessibleDragListenerAdapter;
 import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
@@ -498,12 +497,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
-        mFolderIcon.post(new Runnable() {
-            @Override
-            public void run() {
-                if (getItemCount() <= 1) {
-                    replaceFolderWithFinalItem();
-                }
+        mFolderIcon.post(() -> {
+            if (getItemCount() <= 1) {
+                replaceFolderWithFinalItem();
             }
         });
     }
@@ -580,12 +576,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mContent.setLayerType(LAYER_TYPE_HARDWARE, null);
         mFooter.setLayerType(LAYER_TYPE_HARDWARE, null);
-        onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mContent.setLayerType(LAYER_TYPE_NONE, null);
-                mFooter.setLayerType(LAYER_TYPE_NONE, null);
-            }
+        onCompleteRunnable = () -> {
+            mContent.setLayerType(LAYER_TYPE_NONE, null);
+            mFooter.setLayerType(LAYER_TYPE_NONE, null);
         };
         openFolderAnim.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -853,12 +846,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                                 final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
             Log.d(TAG, "Deferred handling drop because waiting for uninstall.");
-            mDeferredAction = new Runnable() {
-                @Override
-                public void run() {
-                    onDropCompleted(target, d, isFlingToDelete, success);
-                    mDeferredAction = null;
-                }
+            mDeferredAction = () -> {
+                onDropCompleted(target, d, isFlingToDelete, success);
+                mDeferredAction = null;
             };
             return;
         }
@@ -1128,40 +1118,37 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     @Thunk
     void replaceFolderWithFinalItem() {
         // Add the last remaining child to the workspace in place of the folder
-        Runnable onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                int itemCount = mInfo.contents.size();
-                if (itemCount <= 1) {
-                    View newIcon = null;
+        Runnable onCompleteRunnable = () -> {
+            int itemCount = mInfo.contents.size();
+            if (itemCount <= 1) {
+                View newIcon = null;
 
-                    if (itemCount == 1) {
-                        // Move the item from the folder to the workspace, in the position of the
-                        // folder
-                        CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
-                                mInfo.screenId);
-                        ShortcutInfo finalItem = mInfo.contents.remove(0);
-                        newIcon = mLauncher.createShortcut(cellLayout, finalItem);
-                        LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
-                                mInfo.screenId, mInfo.cellX, mInfo.cellY);
-                    }
+                if (itemCount == 1) {
+                    // Move the item from the folder to the workspace, in the position of the
+                    // folder
+                    CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
+                            mInfo.screenId);
+                    ShortcutInfo finalItem = mInfo.contents.remove(0);
+                    newIcon = mLauncher.createShortcut(cellLayout, finalItem);
+                    LauncherModel.addOrMoveItemInDatabase(mLauncher, finalItem, mInfo.container,
+                            mInfo.screenId, mInfo.cellX, mInfo.cellY);
+                }
 
-                    // Remove the folder
-                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
-                    if (mFolderIcon instanceof DropTarget) {
-                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
-                    }
+                // Remove the folder
+                mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
+                if (mFolderIcon instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget) mFolderIcon);
+                }
 
-                    if (newIcon != null) {
-                        // We add the child after removing the folder to prevent both from existing
-                        // at the same time in the CellLayout.  We need to add the new item with
-                        // addInScreenFromBind() to ensure that hotseat items are placed correctly.
-                        mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo.container,
-                                mInfo.screenId, mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
+                if (newIcon != null) {
+                    // We add the child after removing the folder to prevent both from existing
+                    // at the same time in the CellLayout.  We need to add the new item with
+                    // addInScreenFromBind() to ensure that hotseat items are placed correctly.
+                    mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo.container,
+                            mInfo.screenId, mInfo.cellX, mInfo.cellY, mInfo.spanX, mInfo.spanY);
 
-                        // Focus the newly created child
-                        newIcon.requestFocus();
-                    }
+                    // Focus the newly created child
+                    newIcon.requestFocus();
                 }
             }
         };
@@ -1198,13 +1185,10 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             this.setNextFocusLeftId(firstChild.getId());
             this.setNextFocusUpId(firstChild.getId());
             // When pressing shift+tab in the above state, give the focus to the last item.
-            setOnKeyListener(new OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
-                            event.hasModifiers(KeyEvent.META_SHIFT_ON);
-                    return isShiftPlusTab && Folder.this.isFocused() && lastChild.requestFocus();
-                }
+            setOnKeyListener((v, keyCode, event) -> {
+                boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
+                        event.hasModifiers(KeyEvent.META_SHIFT_ON);
+                return isShiftPlusTab && Folder.this.isFocused() && lastChild.requestFocus();
             });
         }
     }
@@ -1216,14 +1200,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         // If we are coming from All Apps space, we defer removing the extra empty screen
         // until the folder closes
         if (d.dragSource != mLauncher.getWorkspace() && !(d.dragSource instanceof Folder)) {
-            cleanUpRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.exitSpringLoadedDragModeDelayed(true,
-                            Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
-                            null);
-                }
-            };
+            cleanUpRunnable = () -> mLauncher.exitSpringLoadedDragModeDelayed(true,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
+                    null);
         }
 
         // If the icon was dropped while the page was being scrolled, we need to compute
@@ -1347,13 +1326,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     }
 
     private View getViewForInfo(final ShortcutInfo item) {
-        return mContent.iterateOverItems(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info == item;
-            }
-        });
+        return mContent.iterateOverItems((info, view) -> info == item);
     }
 
     @Override
@@ -1368,13 +1341,9 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
     public ArrayList<View> getItemsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
-            mContent.iterateOverItems(new ItemOperator() {
-
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    mItemsInReadingOrder.add(view);
-                    return false;
-                }
+            mContent.iterateOverItems((info, view) -> {
+                mItemsInReadingOrder.add(view);
+                return false;
             });
             mItemsInvalidated = false;
         }

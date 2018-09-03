@@ -94,6 +94,7 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
         list.addAll(pm.queryIntentActivities(Intent("org.adw.launcher.THEMES"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.anddoes.launcher.THEME"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.teslacoilsw.launcher.THEME"), 0))
+        list.addAll(pm.queryIntentActivities(Intent("com.fede.launcher.THEME_ICONPACK"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.gau.go.launcherex.theme"), 0))
         list.addAll(pm.queryIntentActivities(Intent("com.dlto.atom.launcher.THEME"), 0))
         list.addAll(pm.queryIntentActivities(Intent("android.intent.action.MAIN").addCategory("com.anddoes.launcher.THEME"), 0))
