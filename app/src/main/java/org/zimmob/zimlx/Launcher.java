@@ -46,6 +46,7 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -73,6 +74,7 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -126,7 +128,6 @@ import org.zimmob.zimlx.shortcuts.ShortcutKey;
 import org.zimmob.zimlx.shortcuts.ShortcutsItemView;
 import org.zimmob.zimlx.util.ActivityResultInfo;
 import org.zimmob.zimlx.util.ComponentKey;
-import org.zimmob.zimlx.util.HpGestureCallback;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageManagerHelper;
@@ -495,6 +496,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
+
         setupViews();
 
         mDeviceProfile.layout(this, false /* notifyListeners */);
@@ -528,8 +530,6 @@ public class Launcher extends Activity
         mLauncherTab = new LauncherTab(this);
         mContext = this;
         initMinibar();
-        AppSettings appSettings = new AppSettings(mContext);
-        HpGestureCallback desktopGestureCallback = new HpGestureCallback(appSettings);
         Settings.init(this);
     }
     private boolean getConsumeNextResume() {
@@ -1190,22 +1190,18 @@ public class Launcher extends Activity
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
-        mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = getWindow();
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.TRANSPARENT);
+        }
 
         if (mPlanesEnabled) {
             Log.d(TAG, "inflating planes");
             getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
         }
-/*
-        Window window = getWindow();
-        View decorView = window.getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-        */
+
         // Setup the drag layer
         mDragLayer.setup(this, mDragController, mAllAppsController);
 
@@ -1848,7 +1844,7 @@ public class Launcher extends Activity
                         .setPackage("com.google.android.googlequicksearchbox"));
                 break;
             case FeatureFlags.PULLDOWN_APPS_SEARCH:
-                onLongClickAllAppsHandle();
+                //onLongClickAllAppsHandle();
                 break;
         }
     }
@@ -2847,7 +2843,7 @@ public class Launcher extends Activity
 
     @Override
     public boolean onLongClick(View view) {
-        if (!isDraggingEnabled()) return false;
+        /*if (!isDraggingEnabled()) return false;
         if (isWorkspaceLocked()) return false;
         if (mState != State.WORKSPACE) return false;
 
@@ -2863,6 +2859,7 @@ public class Launcher extends Activity
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
                     */
+        /*
                     showOverviewMode(true);
                     mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
                             HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
@@ -2882,9 +2879,9 @@ public class Launcher extends Activity
             itemUnderLongClick = longClickCellInfo.cell;
             mPendingRequestArgs = null;
         }
-// The hotseat touch handling does not go through Workspace, and we always allow long press
+       // The hotseat touch handling does not go through Workspace, and we always allow long press
         // on hotseat items.
-        if (!mDragController.isDragging()) {
+        /*if (!mDragController.isDragging()) {
             if (itemUnderLongClick == null) {
                 // User long pressed on empty space
                 if (mWorkspace.isInOverviewMode()) {
@@ -2900,7 +2897,7 @@ public class Launcher extends Activity
                             .logActionOnContainer(Action.Touch.LONGPRESS,
                             Action.Direction.NONE, ContainerType.WORKSPACE,
                             mWorkspace.getCurrentPage());
-                    */
+                    *//*
                     showOverviewMode(true);
                 }
                 mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
@@ -2917,13 +2914,14 @@ public class Launcher extends Activity
             }
         }
         return true;
+        */
 
-/*
+
         CellLayout.CellInfo cellInfo = null;
         if (!isDraggingEnabled() || isWorkspaceLocked() || this.mState != State.WORKSPACE) {
             return false;
         }
-        if (view != mAllAppsHandle) {
+        if (view != mAllAppsButton) {
             if (!(view instanceof Workspace)) {
                 View view2;
                 if (view.getTag() instanceof ItemInfo) {
@@ -2960,7 +2958,7 @@ public class Launcher extends Activity
         }
         onLongClickAllAppsHandle();
         return true;
-*/
+
     }
 
     boolean isHotseatLayout(View layout) {

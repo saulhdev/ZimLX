@@ -126,14 +126,18 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
 
+    @Thunk
+    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+
+    static {
+        sWorkerThread.start();
+    }
+
     /**
      * Set of runnables to be called on the background thread after the workspace binding
      * is complete.
      */
     static final ArrayList<Runnable> mBindCompleteRunnables = new ArrayList<>();
-
-    @Thunk
-    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
     // The lock that must be acquired before referencing any static bg data structures.  Unlike
 // other locks, this one can generally be held long-term because we never expect any of these
 // static data structures to be referenced outside of the worker thread except on the first
@@ -150,9 +154,6 @@ public class LauncherModel extends BroadcastReceiver
 // times it is pinned.
     static final Map<ShortcutKey, MutableInt> sBgPinnedShortcutCounts = new HashMap<>();
 
-    static {
-        sWorkerThread.start();
-    }
 
     // < only access in worker thread >
     private final AllAppsList mBgAllAppsList;
@@ -1339,31 +1340,28 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<ContentProviderOperation> ops = new ArrayList<>();
-                // Clear the table
-                ops.add(ContentProviderOperation.newDelete(uri).build());
-                int count = screensCopy.size();
-                for (int i = 0; i < count; i++) {
-                    ContentValues v = new ContentValues();
-                    long screenId = screensCopy.get(i);
-                    v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-                    v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
-                }
+        Runnable r = () -> {
+            ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+            // Clear the table
+            ops.add(ContentProviderOperation.newDelete(uri).build());
+            int count = screensCopy.size();
+            for (int i = 0; i < count; i++) {
+                ContentValues v = new ContentValues();
+                long screenId = screensCopy.get(i);
+                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
+            }
 
-                try {
-                    cr.applyBatch(ProviderConfig.AUTHORITY, ops);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                cr.applyBatch(ProviderConfig.AUTHORITY, ops);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
 
-                synchronized (sBgLock) {
-                    sBgWorkspaceScreens.clear();
-                    sBgWorkspaceScreens.addAll(screensCopy);
-                }
+            synchronized (sBgLock) {
+                sBgWorkspaceScreens.clear();
+                sBgWorkspaceScreens.addAll(screensCopy);
             }
         };
         runOnWorkerThread(r);
@@ -1426,13 +1424,10 @@ public class LauncherModel extends BroadcastReceiver
 
     public void bindDeepShortcuts() {
         final MultiHashMap<ComponentKey, String> shortcutMapCopy = mBgDeepShortcutMap.clone();
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = getCallback();
-                if (callbacks != null) {
-                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
-                }
+        Runnable r = () -> {
+            Callbacks callbacks = getCallback();
+            if (callbacks != null) {
+                callbacks.bindDeepShortcutMap(shortcutMapCopy);
             }
         };
         runOnMainThread(r);
@@ -1463,12 +1458,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                runOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        oldCallbacks.clearPendingBinds();
-                    }
-                });
+                runOnMainThread(() -> oldCallbacks.clearPendingBinds());
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
@@ -1543,14 +1533,10 @@ public class LauncherModel extends BroadcastReceiver
         bindUpdatedShortcuts(updatedShortcuts, user);
 
         if (!updatedApps.isEmpty()) {
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindAppsUpdated(updatedApps);
-                    }
+            mHandler.post(() -> {
+                Callbacks cb = getCallback();
+                if (cb != null && callbacks == cb) {
+                    cb.bindAppsUpdated(updatedApps);
                 }
             });
         }
@@ -1565,15 +1551,12 @@ public class LauncherModel extends BroadcastReceiver
      * Repopulates the shortcut info, possibly updating any icon already on the workspace.
      */
     public void updateShortcutInfo(final ShortcutInfoCompat fullDetail, final ShortcutInfo info) {
-        enqueueItemUpdatedTask(new Runnable() {
-            @Override
-            public void run() {
-                info.updateFromDeepShortcutInfo(
-                        fullDetail, LauncherAppState.getInstance().getContext());
-                ArrayList<ShortcutInfo> update = new ArrayList<>();
-                update.add(info);
-                bindUpdatedShortcuts(update, fullDetail.getUserHandle());
-            }
+        enqueueItemUpdatedTask(() -> {
+            info.updateFromDeepShortcutInfo(
+                    fullDetail, LauncherAppState.getInstance().getContext());
+            ArrayList<ShortcutInfo> update = new ArrayList<>();
+            update.add(info);
+            bindUpdatedShortcuts(update, fullDetail.getUserHandle());
         });
     }
 
@@ -1583,14 +1566,10 @@ public class LauncherModel extends BroadcastReceiver
             final UserHandle user) {
         if (!updatedShortcuts.isEmpty() || !removedShortcuts.isEmpty()) {
             final Callbacks callbacks = getCallback();
-            mHandler.post(new Runnable() {
-
-                @Override
-                public void run() {
-                    Callbacks cb = getCallback();
-                    if (cb != null && callbacks == cb) {
-                        cb.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
-                    }
+            mHandler.post(() -> {
+                Callbacks cb = getCallback();
+                if (cb != null && callbacks == cb) {
+                    cb.bindShortcutsChanged(updatedShortcuts, removedShortcuts, user);
                 }
             });
         }
@@ -1602,28 +1581,22 @@ public class LauncherModel extends BroadcastReceiver
 
     private void bindWidgetsModel(final Callbacks callbacks) {
         final MultiHashMap<org.zimmob.zimlx.model.PackageItemInfo, org.zimmob.zimlx.model.WidgetItem> clone = this.mBgWidgetsModel.getWidgetsMap().clone();
-        this.mHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callback = LauncherModel.this.getCallback();
-                if (callbacks == callback && callback != null) {
-                    callbacks.bindAllWidgets(clone);
-                }
+        this.mHandler.post(() -> {
+            Callbacks callback = LauncherModel.this.getCallback();
+            if (callbacks == callback && callback != null) {
+                callbacks.bindAllWidgets(clone);
             }
         });
     }
 
     public void refreshAndBindWidgetsAndShortcuts(final Callbacks callbacks, final boolean z, final PackageUserKey packageUserKey) {
-        runOnWorkerThread(new Runnable() {
-            @Override
-            public void run() {
-                if (z && (!LauncherModel.this.mBgWidgetsModel.isEmpty())) {
-                    LauncherModel.this.bindWidgetsModel(callbacks);
-                }
-                ArrayList<org.zimmob.zimlx.model.WidgetItem> update = LauncherModel.this.mBgWidgetsModel.update(LauncherModel.this.mApp.getContext(), packageUserKey);
+        runOnWorkerThread(() -> {
+            if (z && (!LauncherModel.this.mBgWidgetsModel.isEmpty())) {
                 LauncherModel.this.bindWidgetsModel(callbacks);
-                LauncherModel.this.mApp.getWidgetCache().removeObsoletePreviews(update);
             }
+            ArrayList<org.zimmob.zimlx.model.WidgetItem> update = LauncherModel.this.mBgWidgetsModel.update(LauncherModel.this.mApp.getContext(), packageUserKey);
+            LauncherModel.this.bindWidgetsModel(callbacks);
+            LauncherModel.this.mApp.getWidgetCache().removeObsoletePreviews(update);
         });
     }
 
@@ -3435,13 +3408,10 @@ public class LauncherModel extends BroadcastReceiver
 
         private void bindWorkspaceScreens(final Callbacks oldCallbacks,
                                           final ArrayList<Long> orderedScreens) {
-            final Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    Callbacks callbacks = tryGetCallbacks(oldCallbacks);
-                    if (callbacks != null) {
-                        callbacks.bindScreens(orderedScreens);
-                    }
+            final Runnable r = () -> {
+                Callbacks callbacks = tryGetCallbacks(oldCallbacks);
+                if (callbacks != null) {
+                    callbacks.bindScreens(orderedScreens);
                 }
             };
             runOnMainThread(r);
