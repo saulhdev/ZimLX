@@ -126,12 +126,12 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
 
-    @Thunk
-    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
-
     static {
         sWorkerThread.start();
     }
+
+    @Thunk
+    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
 
     /**
      * Set of runnables to be called on the background thread after the workspace binding

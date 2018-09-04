@@ -59,7 +59,6 @@ class RestoreBackupActivity : BackupBaseActivity(), ZimBackup.MetaLoader.Callbac
         setContentView(R.layout.activity_restore_backup)
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
-
         when {
             intent.hasExtra(EXTRA_URI) -> {
             }

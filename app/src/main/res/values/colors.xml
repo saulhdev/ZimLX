@@ -125,7 +125,7 @@
     <color name="button_background">#205dec</color>
 
     <!-- Popup container -->
-    <color name="folder_badge_color">#1DE9B6</color> <!-- Teal A400 -->
+    <color name="folder_badge_color">#FFAF174A</color> <!-- Teal A400 -->
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
     <color name="legacy_icon_background">#FFFFFF</color>
@@ -134,7 +134,7 @@
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
 
     <!-- NOTIFICATION -->
-    <color name="notification_background">#0E19E9</color>
+    <color name="notification_background">#FFAF174A</color>
     <color name="notification_text_color">#FFFFFF</color>
 
 </resources>

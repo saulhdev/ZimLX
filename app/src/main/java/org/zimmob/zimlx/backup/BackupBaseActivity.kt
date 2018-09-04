@@ -25,6 +25,8 @@ open class BackupBaseActivity : AppCompatActivity() {
 
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         toolbar.setBackgroundColor(Utilities.getPrefs(this).primaryColor)
+        toolbar.setTitleTextColor(resources.getColor(R.color.white))
+        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24px)
         setSupportActionBar(toolbar)
 
         if (FeatureFlags.getCurrentTheme() != 2)
