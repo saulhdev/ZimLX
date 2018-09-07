@@ -1,4 +1,5 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.protobuf'
 if (enable_plugin_kotlin) {
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
@@ -58,6 +59,8 @@ android {
                 applicationId "org.zimmob.zimlx"
                 versionName name
                 versionCode code
+
+                testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
             }
         } else {
             throw new GradleException("Could not read version.properties!")
@@ -111,6 +114,10 @@ android {
             java {
                 srcDir 'src/main/java'
             }
+            proto {
+                srcDir 'protos/'
+                srcDir 'proto_overrides/'
+            }
         }
         androidTest {
             java {
@@ -161,7 +168,6 @@ dependencies {
     implementation 'in.championswimmer:SimpleFingerGestures_Android_Library:1.2@aar'
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-
     implementation('com.github.ozodrukh:CircularReveal:2.1.0') {
         transitive = true
     }
@@ -185,6 +191,28 @@ dependencies {
 
 }
 
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    remove java
+                    javanano {
+                        option "java_package=launcher_log_extension.proto|org.zimmob.zimlx.userevent.nano"
+                        option "java_package=launcher_log.proto|org.zimmob.zimlx.userevent.nano"
+                        option "java_package=launcher_dump.proto|org.zimmob.zimlx.userevent.nano"
+                        option "enum_style=java"
+                        option 'ignore_services=false'
+                    }
+                }
+            }
+        }
+   }
+}
+
 repositories {
     google()
     //jcenter()
@@ -195,3 +223,4 @@ repositories {
 
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.google.protobuf'

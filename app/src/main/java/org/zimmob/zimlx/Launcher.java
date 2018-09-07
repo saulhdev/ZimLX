@@ -133,6 +133,7 @@ import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageManagerHelper;
 import org.zimmob.zimlx.util.PackageUserKey;
 import org.zimmob.zimlx.util.PendingRequestArgs;
+import org.zimmob.zimlx.util.SystemUiController;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.util.ViewOnDrawExecutor;
 import org.zimmob.zimlx.widget.PendingAddWidgetInfo;
@@ -197,7 +198,7 @@ public class Launcher extends Activity
     private final int ADVANCE_MSG = 1;
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
     public static Context mContext;
-
+    protected SystemUiController mSystemUiController;
     public ViewGroupFocusHelper mFocusHandler;
     @Thunk
     State mState = State.WORKSPACE;
@@ -2626,6 +2627,12 @@ public class Launcher extends Activity
         return false;
     }
 
+    public SystemUiController getSystemUiController() {
+        if (mSystemUiController == null) {
+            mSystemUiController = new SystemUiController(getWindow());
+        }
+        return mSystemUiController;
+    }
     /**
      * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
      * in the DragLayer in the exact absolute location of the original FolderIcon.
@@ -2768,11 +2775,9 @@ public class Launcher extends Activity
         folder.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED);
     }
-
     public void closeFolder() {
         closeFolder(true);
     }
-
     public void closeFolder(boolean animate) {
         Folder folder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
         if (folder != null) {

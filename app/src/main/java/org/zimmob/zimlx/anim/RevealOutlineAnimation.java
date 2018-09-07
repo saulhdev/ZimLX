@@ -3,7 +3,6 @@ package org.zimmob.zimlx.anim;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.View;
@@ -11,59 +10,106 @@ import android.view.ViewOutlineProvider;
 
 import org.zimmob.zimlx.Utilities;
 
+/**
+ * A {@link ViewOutlineProvider} that has helper functions to create reveal animations.
+ * This class should be extended so that subclasses can define the reveal shape as the
+ * animation progresses from 0 to 1.
+ */
 public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
-    protected Rect mOutline = new Rect();
+    protected Rect mOutline;
     protected float mOutlineRadius;
 
-    abstract void setProgress(float f);
-
-    abstract boolean shouldRemoveElevationDuringAnimation();
-
-    public ValueAnimator createRevealAnimator(View view) {
-        return createRevealAnimator(view, false);
+    public RevealOutlineAnimation() {
+        mOutline = new Rect();
     }
 
-    public ValueAnimator createRevealAnimator(final View view, boolean z) {
-        ValueAnimator animator = z ? ValueAnimator.ofFloat(1.0f, 0.0f) : ValueAnimator.ofFloat(0.0f, 1.0f);
-        final float elevation = view.getElevation();
-        animator.addListener(new AnimatorListenerAdapter() {
+    /**
+     * Returns whether elevation should be removed for the duration of the reveal animation.
+     */
+    public abstract boolean shouldRemoveElevationDuringAnimation();
+
+    /**
+     * Sets the progress, from 0 to 1, of the reveal animation.
+     */
+    public abstract void setProgress(float progress);
+
+    public ValueAnimator createRevealAnimator(View revealView) {
+        return createRevealAnimator(revealView, false);
+    }
+
+    public ValueAnimator createRevealAnimator(View revealView, boolean isReversed) {
+        return createRevealAnimator(revealView, isReversed, false);
+    }
+
+    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed, final boolean restoreOutline) {
+        return createRevealAnimator(revealView, isReversed, restoreOutline, false);
+    }
+
+    public ValueAnimator createRevealAnimator(final View revealView, boolean isReversed,
+                                              final boolean restoreOutline, final boolean alternateRestoreOutline) {
+        ValueAnimator va =
+                isReversed ? ValueAnimator.ofFloat(1f, 0f) : ValueAnimator.ofFloat(0f, 1f);
+        final float elevation = revealView.getElevation();
+
+        va.addListener(new AnimatorListenerAdapter() {
             private boolean mWasCanceled = false;
 
-            public void onAnimationStart(Animator animator) {
-                view.setOutlineProvider(RevealOutlineAnimation.this);
-                view.setClipToOutline(true);
+            public void onAnimationStart(Animator animation) {
+                revealView.setOutlineProvider(RevealOutlineAnimation.this);
+                revealView.setClipToOutline(true);
                 if (shouldRemoveElevationDuringAnimation()) {
-                    view.setTranslationZ(-elevation);
+                    revealView.setTranslationZ(-elevation);
                 }
             }
 
-            public void onAnimationCancel(Animator animator) {
+            @Override
+            public void onAnimationCancel(Animator animation) {
                 mWasCanceled = true;
             }
 
-            public void onAnimationEnd(Animator animator) {
+            public void onAnimationEnd(Animator animation) {
                 if (!mWasCanceled) {
-                    view.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
-                    view.setClipToOutline(false);
+                    if (restoreOutline) {
+                        revealView.setOutlineProvider(ViewOutlineProvider.BACKGROUND);
+                        revealView.setClipToOutline(false);
+                    } else if (alternateRestoreOutline) {
+                        revealView.setOutlineProvider(new RoundedBoundsOutlineProvider(mOutlineRadius));
+                    }
                     if (shouldRemoveElevationDuringAnimation()) {
-                        view.setTranslationZ(0.0f);
+                        revealView.setTranslationZ(0);
                     }
                 }
             }
+
         });
-        animator.addUpdateListener(new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                setProgress((Float) valueAnimator.getAnimatedValue());
-                view.invalidateOutline();
-                if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
-                    view.invalidate();
-                }
+
+        va.addUpdateListener(arg0 -> {
+            float progress = (Float) arg0.getAnimatedValue();
+            setProgress(progress);
+            revealView.invalidateOutline();
+            if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
+                revealView.invalidate();
             }
         });
-        return animator;
+        return va;
     }
 
-    public void getOutline(View view, Outline outline) {
+    @Override
+    public void getOutline(View v, Outline outline) {
         outline.setRoundRect(mOutline, mOutlineRadius);
+    }
+
+    private static class RoundedBoundsOutlineProvider extends ViewOutlineProvider {
+
+        private final float mRadius;
+
+        private RoundedBoundsOutlineProvider(float radius) {
+            mRadius = radius;
+        }
+
+        @Override
+        public void getOutline(View view, Outline outline) {
+            outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), mRadius);
+        }
     }
 }

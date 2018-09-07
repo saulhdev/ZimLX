@@ -88,4 +88,5 @@
     <!-- View tag key used to store SpringAnimation data. -->
     <item name="spring_animation_tag" type="id" />
     <integer name="config_folderDelay">30</integer>
+
 </resources>

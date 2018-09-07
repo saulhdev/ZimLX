@@ -117,7 +117,9 @@ public class LauncherSettings {
     /**
      * Favorites.
      */
-    public static final class Favorites implements BaseLauncherColumns {
+    public static class Favorites implements BaseLauncherColumns {
+
+
 
         public static final String TABLE_NAME = "favorites";
 
@@ -263,6 +265,9 @@ public class LauncherSettings {
                     "rank INTEGER NOT NULL DEFAULT 0," +
                     "options INTEGER NOT NULL DEFAULT 0" +
                     ");");
+        }
+
+        public Favorites() {
         }
     }
 

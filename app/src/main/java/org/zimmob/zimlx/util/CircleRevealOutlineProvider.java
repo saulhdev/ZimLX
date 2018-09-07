@@ -16,6 +16,8 @@
 
 package org.zimmob.zimlx.util;
 
+import org.zimmob.zimlx.anim.RevealOutlineAnimation;
+
 public class CircleRevealOutlineProvider extends RevealOutlineAnimation {
 
     private int mCenterX;
@@ -36,12 +38,10 @@ public class CircleRevealOutlineProvider extends RevealOutlineAnimation {
         mRadius1 = r1;
     }
 
-    @Override
     public boolean shouldRemoveElevationDuringAnimation() {
         return true;
     }
 
-    @Override
     public void setProgress(float progress) {
         mOutlineRadius = (1 - progress) * mRadius0 + progress * mRadius1;
 

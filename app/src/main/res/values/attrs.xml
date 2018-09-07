@@ -16,7 +16,6 @@
 -->
 
 <resources>
-
     <!-- BubbleTextView specific attributes. -->
     <declare-styleable name="BubbleTextView">
         <attr name="layoutHorizontal" format="boolean" />
@@ -133,9 +132,6 @@
     </declare-styleable>
 
     <attr name="materialPanelBgColor" format="color" />
-    <attr name="popupColorPrimary" format="color" />
-    <attr name="popupColorSecondary" format="color" />
-    <attr name="popupColorTertiary" format="color" />
     <attr name="appPopupTextColor" format="color" />
     <attr name="appPopupHeaderBgColor" format="color" />
     <attr name="folderBgIntensity" format="integer" />
@@ -153,6 +149,21 @@
     <attr name="roundSearchBarHintColor" format="color" />
     <attr name="roundSearchBarTextColor" format="color" />
     <attr name="searchBarTextColor" format="color" />
+
+    <!-- Attributes used for launcher theme -->
+    <attr name="allAppsScrimColor" format="color" />
+    <attr name="allAppsNavBarScrimColor" format="color" />
+    <attr name="popupColorPrimary" format="color" />
+    <attr name="popupColorSecondary" format="color" />
+    <attr name="popupColorTertiary" format="color" />
+    <attr name="isMainColorDark" format="boolean" />
+    <attr name="isWorkspaceDarkText" format="boolean" />
+    <attr name="workspaceTextColor" format="color" />
+    <attr name="workspaceShadowColor" format="color" />
+    <attr name="workspaceAmbientShadowColor" format="color" />
+    <attr name="workspaceKeyShadowColor" format="color" />
+    <attr name="workspaceStatusBarScrim" format="reference" />
+    <attr name="widgetsTheme" format="reference" />
     <!-- AppsCustomizePagedView specific attributes.  These attributes are used to
             customize an AppsCustomizePagedView in xml files. -->
     <declare-styleable name="AppsCustomizePagedView">

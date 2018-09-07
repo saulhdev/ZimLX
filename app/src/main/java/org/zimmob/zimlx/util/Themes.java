@@ -32,4 +32,11 @@ public class Themes {
     public static void setColorScaleOnMatrix(int i, ColorMatrix colorMatrix) {
         colorMatrix.setScale(((float) Color.red(i)) / 255.0f, ((float) Color.green(i)) / 255.0f, ((float) Color.blue(i)) / 255.0f, ((float) Color.alpha(i)) / 255.0f);
     }
+
+    public static boolean getAttrBoolean(Context context, int attr) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        boolean value = ta.getBoolean(0, false);
+        ta.recycle();
+        return value;
+    }
 }

@@ -28,11 +28,6 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     }
 
     @Override
-    public float getIconSize() {
-        return 0;
-    }
-
-    @Override
     public FolderIcon.PreviewItemDrawingParams computePreviewItemDrawingParams(int index,
                                                                                int curNumItems, FolderIcon.PreviewItemDrawingParams params) {
 
@@ -57,11 +52,6 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
             params.overlayAlpha = overlayAlpha;
         }
         return params;
-    }
-
-    @Override
-    public float scaleForItem(int index, int totalNumItems) {
-        return 0;
     }
 
     private void getPosition(int index, int curNumItems, float[] result) {

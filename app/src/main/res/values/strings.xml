@@ -697,5 +697,6 @@
     <string name="pref_title__gesture_unpinch">Unpinch</string>
     <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
     <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
+    <string name="icon_pack_system">System (Default)</string>
 
 </resources>

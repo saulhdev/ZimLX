@@ -11,6 +11,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
+import static org.zimmob.zimlx.util.SystemUiController.FLAG_DARK_NAV;
+import static org.zimmob.zimlx.util.SystemUiController.UI_STATE_ROOT_VIEW;
+
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;
@@ -54,6 +57,8 @@ public class LauncherRootView extends InsettableFrameLayout {
         } else {
             mLeftInsetBarWidth = mRightInsetBarWidth = 0;
         }
+        Launcher.getLauncher(getContext()).getSystemUiController().updateUiState(
+                UI_STATE_ROOT_VIEW, mDrawSideInsetBar ? FLAG_DARK_NAV : 0);
 
         boolean rawInsetsChanged = !mInsets.equals(insets);
         setInsets(insets);
@@ -77,38 +82,6 @@ public class LauncherRootView extends InsettableFrameLayout {
         return true; // I'll take it from here
     }
 
-
-    /*
-        @TargetApi(Build.VERSION_CODES.M)
-        @Override
-        protected boolean fitSystemWindows(Rect insets) {
-            boolean rawInsetsChanged = !mInsets.equals(insets);
-            mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
-                    (!Utilities.ATLEAST_MARSHMALLOW ||
-                            getContext().getSystemService(ActivityManager.class).isLowRamDevice());
-            mRightInsetBarWidth = insets.right;
-            mLeftInsetBarWidth = insets.left;
-            setInsets(mDrawSideInsetBar ? new Rect(0, insets.top, 0, insets.bottom) : insets);
-
-            if (mAlignedView != null && mDrawSideInsetBar) {
-                // Apply margins on aligned view to handle left/right insets.
-                MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-                if (lp.leftMargin != insets.left || lp.rightMargin != insets.right) {
-                    lp.leftMargin = insets.left;
-                    lp.rightMargin = insets.right;
-                    mAlignedView.setLayoutParams(lp);
-                }
-            }
-
-            if (rawInsetsChanged) {
-                // Update the grid again
-                Launcher launcher = Launcher.getLauncher(getContext());
-                launcher.onInsetsChanged(insets);
-            }
-
-            return true; // I'll take it from here
-        }
-    */
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);

@@ -24,20 +24,17 @@ public class DialogUtils {
         if (Utilities.ATLEAST_NOUGAT) {
             new AlertDialog.Builder(context)
                     .setTitle(R.string.wallpaper_instructions)
-                    .setItems(R.array.which_wallpaper_options, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int selectedItemIndex) {
-                            int whichWallpaper;
-                            if (selectedItemIndex == 0) {
-                                whichWallpaper = WallpaperManagerCompat.FLAG_SET_SYSTEM;
-                            } else if (selectedItemIndex == 1) {
-                                whichWallpaper = WallpaperManagerCompat.FLAG_SET_LOCK;
-                            } else {
-                                whichWallpaper = WallpaperManagerCompat.FLAG_SET_SYSTEM
-                                        | WallpaperManagerCompat.FLAG_SET_LOCK;
-                            }
-                            cropTask.execute(whichWallpaper);
+                    .setItems(R.array.which_wallpaper_options, (dialog, selectedItemIndex) -> {
+                        int whichWallpaper;
+                        if (selectedItemIndex == 0) {
+                            whichWallpaper = WallpaperManagerCompat.FLAG_SET_SYSTEM;
+                        } else if (selectedItemIndex == 1) {
+                            whichWallpaper = WallpaperManagerCompat.FLAG_SET_LOCK;
+                        } else {
+                            whichWallpaper = WallpaperManagerCompat.FLAG_SET_SYSTEM
+                                    | WallpaperManagerCompat.FLAG_SET_LOCK;
                         }
+                        cropTask.execute(whichWallpaper);
                     })
                     .setOnCancelListener(onCancelListener)
                     .show();

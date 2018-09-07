@@ -26,7 +26,7 @@ import org.zimmob.zimlx.compat.ShortcutConfigActivityInfo;
  */
 public class PendingAddShortcutInfo extends PendingAddItemInfo {
 
-    ShortcutConfigActivityInfo activityInfo;
+    public ShortcutConfigActivityInfo activityInfo;
 
     public PendingAddShortcutInfo(ShortcutConfigActivityInfo activityInfo) {
         this.activityInfo = activityInfo;
