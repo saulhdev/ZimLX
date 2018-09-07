@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -81,7 +82,6 @@ import org.zimmob.zimlx.util.Thunk;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -94,19 +94,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public static final boolean SPRING_LOADING_ENABLED = true;
     private static final Property BADGE_SCALE_PROPERTY = new C04281(Float.TYPE, "badgeScale");
     private Point mTempSpaceForBadgeOffset = new Point();
-    // The number of icons to display in the
-    private static final int CONSUMPTION_ANIMATION_DURATION = 100;
-    private static final int DROP_IN_ANIMATION_DURATION = 400;
-    private static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
-    private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
-    // Delay when drag enters until the folder opens, in miliseconds.
-    private static final int ON_OPEN_DELAY = 800;
     @Thunk
     Launcher mLauncher;
     @Thunk
     Folder mFolder;
-    @Thunk
-    BubbleTextView mFolderName;
     PreviewBackground mBackground = new PreviewBackground();
     boolean mAnimating = false;
     Paint mBgPaint = new Paint();
@@ -117,24 +108,40 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             mLauncher.openFolder(FolderIcon.this);
         }
     };
+
+    // The number of icons to display in the
+    private static final int CONSUMPTION_ANIMATION_DURATION = 100;
+    private static final int DROP_IN_ANIMATION_DURATION = 400;
+    private static final int INITIAL_ITEM_ANIMATION_DURATION = 350;
+    private static final int FINAL_ITEM_ANIMATION_DURATION = 200;
     private float mBadgeScale;
-    private Rect mTempBounds = new Rect();
-    private FolderInfo mInfo;
-    private CheckLongPressHelper mLongPressHelper;
-    private StylusEventHelper mStylusEventHelper;
+
+    // Delay when drag enters until the folder opens, in miliseconds.
+    private static final int ON_OPEN_DELAY = 800;
+
+    @Thunk
+    BubbleTextView mFolderName;
+
     // These variables are all associated with the drawing of the preview; they are stored
     // as member variables for shared usage and to avoid computation on each frame
     private int mIntrinsicIconSize = -1;
     private int mTotalWidth = -1;
     private int mPrevTopPadding = -1;
+    private Rect mTempBounds = new Rect();
+
     private PreviewLayoutRule mPreviewLayoutRule;
+    private FolderInfo mInfo;
     private Rect mOldBounds = new Rect();
+
     private float mSlop;
+
     private PreviewItemDrawingParams mTmpParams = new PreviewItemDrawingParams(0, 0, 0, 0);
     private ArrayList<PreviewItemDrawingParams> mDrawingParams = new ArrayList<>();
     private Drawable mReferenceDrawable = null;
+    private CheckLongPressHelper mLongPressHelper;
+
     private Alarm mOpenAlarm = new Alarm();
-    FolderIconPreviewVerifier mPreviewVerifier;
+
     public FolderIcon(Context context, AttributeSet attrs) {
         super(context, attrs);
         init();
@@ -144,6 +151,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         this(context, null);
         init();
     }
+
+    private StylusEventHelper mStylusEventHelper;
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
                                      FolderInfo folderInfo) {
@@ -189,12 +198,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         return icon;
     }
 
-    private void init() {
-        mLongPressHelper = new CheckLongPressHelper(this);
-        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
-    }
-
     public Folder getFolder() {
         return mFolder;
     }
@@ -238,6 +241,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             // Workspace#onDropExternal.
             mOpenAlarm.setAlarm(ON_OPEN_DELAY);
         }
+    }
+
+    private void init() {
+        mLongPressHelper = new CheckLongPressHelper(this);
+        mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
+        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
     }
 
     public Drawable prepareCreate(final View destView) {
@@ -379,9 +388,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         this.mBadgeInfo = folderBadgeInfo;
     }
 
-    public PreviewLayoutRule getLayoutRule() {
-        return mPreviewLayoutRule;
-    }
     private void updateBadgeScale(boolean z, boolean z2) {
         float f = z2 ? 1.0f : 0.0f;
         if (z == z2 || !isShown()) {
@@ -390,6 +396,11 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             return;
         }
         ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, new float[]{f}).start();
+    }
+
+    public void setFolderBackground(PreviewBackground bg) {
+        mBackground = bg;
+        mBackground.setInvalidateDelegate(this);
     }
 
     private float getLocalCenterForIndex(int index, int curNumItems, int[] center) {
@@ -452,11 +463,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         canvas.restore();
     }
 
-    public void setFolderBackground(PreviewBackground bg) {
-        mBackground = bg;
-        mBackground.setInvalidateDelegate(this);
-    }
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -510,8 +516,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             this.mTempSpaceForBadgeOffset.set(getWidth() - this.mTempBounds.right, this.mTempBounds.top);
             //this.mBadgeRenderer.draw(canvas, this.mBadgeInfo, this.mTempBounds, max, this.mTempSpaceForBadgeOffset);
             IconPalette badgePalette = IconPalette.getFolderBadgePalette(getResources());
-            mBadgeRenderer.draw(canvas, badgePalette, mBadgeInfo, mTempBounds,
-                    mBadgeScale, mTempSpaceForBadgeOffset);
+            this.mBadgeRenderer.draw(canvas, badgePalette, mBadgeInfo, mTempBounds, mBadgeScale, mTempSpaceForBadgeOffset);
         }
 
         canvas.restore();
@@ -546,34 +551,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         } else {
             mFolderName.setVisibility(INVISIBLE);
         }
-    }
-
-    /**
-     * Returns the list of preview items displayed in the icon.
-     */
-    public List<BubbleTextView> getPreviewItems() {
-        return getPreviewItemsOnPage(0);
-    }
-
-    /**
-     * Returns the list of "preview items" on {@param page}.
-     */
-    public List<BubbleTextView> getPreviewItemsOnPage(int page) {
-        mPreviewVerifier.setFolderInfo(mFolder.getInfo());
-
-        List<BubbleTextView> itemsToDisplay = new ArrayList<>();
-        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(page);
-        int numItems = itemsOnPage.size();
-        for (int rank = 0; rank < numItems; ++rank) {
-            if (mPreviewVerifier.isItemInPreview(page, rank)) {
-                itemsToDisplay.add(itemsOnPage.get(rank));
-            }
-
-            if (itemsToDisplay.size() == FolderIcon.NUM_ITEMS_IN_PREVIEW) {
-                break;
-            }
-        }
-        return itemsToDisplay;
     }
 
     private void updateItemDrawingParams(boolean animate) {
@@ -697,10 +674,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
                                                                  PreviewItemDrawingParams params);
 
-        float scaleForItem(int index, int totalNumItems);
         void init(int availableSpace, int intrinsicIconSize, boolean rtl);
 
-        float getIconSize();
         int numItems();
 
         boolean clipToBackground();
@@ -714,7 +689,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         boolean hidden;
         FolderPreviewItemAnim anim;
         Drawable drawable;
-
         PreviewItemDrawingParams(float transX, float transY, float scale, float overlayAlpha) {
             this.transX = transX;
             this.transY = transY;
@@ -744,18 +718,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
      * information, handles drawing, and animation (accept state <--> rest state).
      */
     public static class PreviewBackground {
-        // Drawing / animation configurations
-        private static final float ACCEPT_SCALE_FACTOR = 1.25f;
-        private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
-        // Expressed on a scale from 0 to 255.
-        private static final int BG_OPACITY = 160;
-        private static final int MAX_BG_OPACITY = 225;
-        private static final int SHADOW_OPACITY = 80;
-        private static int BG_INTENSITY = 245;
-        private static float MASK_SIZE = 100f;
-        private static Path sMask;
-        private static Method methodCreatePathFromPathData;
-        private final Matrix mMaskMatrix = new Matrix();
         public int previewSize;
         public int delegateCellX;
         public int delegateCellY;
@@ -770,7 +732,24 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         private View mInvalidateDelegate;
         private int basePreviewOffsetX;
         private int basePreviewOffsetY;
+
+        // Drawing / animation configurations
+        private static final float ACCEPT_SCALE_FACTOR = 1.25f;
+        private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
+
+        // Expressed on a scale from 0 to 255.
+        private static final int BG_OPACITY = 160;
+        private static final int MAX_BG_OPACITY = 225;
+        private static final int SHADOW_OPACITY = 80;
+        private static int BG_INTENSITY = 245;
         private CellLayout mDrawingDelegate;
+
+        private static float MASK_SIZE = 100f;
+        private static Path sMask;
+
+        private static Method methodCreatePathFromPathData;
+
+        private final Matrix mMaskMatrix = new Matrix();
         private boolean mAdaptive = false;
         private Path mMask;
 
@@ -806,9 +785,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             sMask.transform(mMaskMatrix, mMask);
         }
 
-        public int getBackgroundAlpha() {
-            return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-        }
         @SuppressLint("PrivateApi")
         private void initAdaptive() {
             Class<?> pathParser;
@@ -1100,13 +1076,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final float transY0 = mTmpParams.transY;
 
             mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
-            mValueAnimator.addUpdateListener(animation -> {
-                float progress = animation.getAnimatedFraction();
+            mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
+                @Override
+                public void onAnimationUpdate(ValueAnimator animation) {
+                    float progress = animation.getAnimatedFraction();
 
-                params.transX = transX0 + progress * (finalTransX - transX0);
-                params.transY = transY0 + progress * (finalTransY - transY0);
-                params.scale = scale0 + progress * (finalScale - scale0);
-                invalidate();
+                    params.transX = transX0 + progress * (finalTransX - transX0);
+                    params.transY = transY0 + progress * (finalTransY - transY0);
+                    params.scale = scale0 + progress * (finalScale - scale0);
+                    invalidate();
+                }
             });
 
             mValueAnimator.addListener(new AnimatorListenerAdapter() {

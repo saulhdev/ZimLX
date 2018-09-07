@@ -63,17 +63,19 @@ public class DeviceProfile {
     private final int overviewModeBarItemWidthPx;
     private final int overviewModeBarSpacerWidthPx;
     private final float overviewModeIconZoneRatio;
+
+    public final int workspaceSpringLoadedBottomSpace;
     public final int edgeMarginPx;
     public final Rect defaultWidgetPadding;
-    public final int workspaceSpringLoadedBottomSpace;
     private final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
+    public float workspaceSpringLoadShrinkFactor;
+    public int iconSizePxOriginal;
+
     // Page indicator
     private final int pageIndicatorHeightPx;
     private final int pageIndicatorLandGutterLeftNavBarPx;
     private final int pageIndicatorLandGutterRightNavBarPx;
-    public float workspaceSpringLoadShrinkFactor;
-    public int iconSizePxOriginal;
     private final int pageIndicatorLandWorkspaceOffsetPx;
 
     // Workspace icons
@@ -86,21 +88,6 @@ public class DeviceProfile {
 
     public int cellWidthPx;
     public int cellHeightPx;
-    public int hotseatCellHeightPx;
-    // In portrait: size = height, in landscape: size = width
-    public int hotseatBarSizePx;
-    public int hotseatBarTopPaddingPx;
-    public int hotseatBarBottomPaddingPx;
-
-    public int hotseatBarLeftNavBarLeftPaddingPx;
-    public int hotseatBarLeftNavBarRightPaddingPx;
-
-    public int hotseatBarRightNavBarLeftPaddingPx;
-    public int hotseatBarRightNavBarRightPaddingPx;
-    public int hotseatIconSizePx;
-    public int hotseatIconSizePxOriginal;
-    private int hotseatLandGutterPx;
-    private int hotseatBarHeightPx;
 
     // Folder
     public int folderBackgroundOffset;
@@ -109,15 +96,21 @@ public class DeviceProfile {
     public int folderCellWidthPx;
     public int folderCellHeightPx;
     public int folderChildDrawablePaddingPx;
+    public int hotseatCellHeightPx;
+    public int hotseatIconSizePx;
+    public int hotseatIconSizePxOriginal;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     // Workspace
     private int desiredWorkspaceLeftRightMarginPx;
+    private int hotseatBarHeightPx;
 
     // All apps
     public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
+    private int hotseatBarTopPaddingPx;
+    private int hotseatLandGutterPx;
     public float allAppsIconTextSizePx;
 
     // Drop Target
@@ -125,11 +118,13 @@ public class DeviceProfile {
 
 
     public BadgeRenderer mBadgeRenderer;
+
     // Insets
     private Rect mInsets = new Rect();
 
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
+
     private Context mContext;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
@@ -150,17 +145,14 @@ public class DeviceProfile {
         isPhone = !isTablet && !isLargeTablet;
 
         // Some more constants
-        transposeLayoutWithOrientation =
-                res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
+        transposeLayoutWithOrientation = res.getBoolean(R.bool.hotseat_transpose_layout_with_orientation);
 
-        ComponentName cn = new ComponentName(context.getPackageName(),
-                this.getClass().getName());
+        ComponentName cn = new ComponentName(context.getPackageName(), this.getClass().getName());
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = edgeMarginPx;
         if (prefs.getHotseatShowArrow()) {
-            pageIndicatorHeightPx =
-                    res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
+            pageIndicatorHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
             pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
                     R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
             pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
@@ -171,48 +163,22 @@ public class DeviceProfile {
             pageIndicatorLandGutterRightNavBarPx = 0;
         }
 
-        pageIndicatorLandWorkspaceOffsetPx =
-                res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
-        defaultPageSpacingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
-        topWorkspacePadding =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
-        overviewModeMinIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
-        overviewModeMaxIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
-        overviewModeBarItemWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
-        overviewModeBarSpacerWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
+        pageIndicatorLandWorkspaceOffsetPx = res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
+        defaultPageSpacingPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
+        topWorkspacePadding = res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
+        overviewModeMinIconZoneHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
+        overviewModeMaxIconZoneHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
+        overviewModeBarItemWidthPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
+        overviewModeBarSpacerWidthPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
         overviewModeIconZoneRatio = res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
-        iconDrawablePaddingOriginalPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
+        iconDrawablePaddingOriginalPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
-        workspaceSpringLoadedBottomSpace =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
+        workspaceSpringLoadedBottomSpace = res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
         float hotseatBaseHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
         float hotseatScale = prefs.getHotseatHeightScale();
         hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
-
-        hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
-        hotseatBarLeftNavBarRightPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_right_padding);
-        hotseatBarRightNavBarRightPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_right_padding);
-        hotseatBarLeftNavBarLeftPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_left_padding);
-        hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
-        hotseatBarSizePx = isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
-                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
-
+        hotseatBarTopPaddingPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
 
         // Determine sizes.
         widthPx = width;

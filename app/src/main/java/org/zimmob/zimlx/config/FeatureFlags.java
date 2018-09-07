@@ -31,11 +31,7 @@ import org.zimmob.zimlx.preferences.PreferenceProvider;
  */
 public final class FeatureFlags extends BaseFlags {
 
-    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
-    public static final boolean LEGACY_ICON_TREATMENT = false;
-
     // When enabled, app shortcuts are extracted from the package XML.
-    public static final boolean LAUNCHER_BACKPORT_SHORTCUTS = true;
     public static final String KEY_PREF_LIGHT_STATUS_BAR = "pref_forceLightStatusBar";
     public static final String KEY_PREF_PINCH_TO_OVERVIEW = "pref_pinchToOverview";
     public static final String KEY_PREF_PULLDOWN_NOTIS = "pref_pulldownNotis";
@@ -81,8 +77,9 @@ public final class FeatureFlags extends BaseFlags {
     public static final int PULLDOWN_NOTIFICATIONS = 1;
     public static final int PULLDOWN_SEARCH = 2;
     public static final int PULLDOWN_APPS_SEARCH = 3;
+    public static final String KEY_PREF_DT2S_HANDLER = "pref_dt2sHandler";
+
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static boolean QSB_ON_FIRST_SCREEN = true;
     public static int DARK_QSB = 1;
     public static int DARK_FOLDER = 2;
     public static int DARK_ALLAPPS = 4;
@@ -96,7 +93,6 @@ public final class FeatureFlags extends BaseFlags {
     private static int myCurrentTheme = 0;
     private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
     private static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
-    private boolean LAUNCHER_ALL_APPS_PULL_UP = true;
 
     private FeatureFlags() {
     }
@@ -108,11 +104,6 @@ public final class FeatureFlags extends BaseFlags {
 
     public static int getCurrentTheme() {
         return myCurrentTheme;
-    }
-
-    public void setCurrentTheme(int currentTheme) {
-        myCurrentTheme = currentTheme;
-
     }
 
     public static void loadThemePreference(Context context) {

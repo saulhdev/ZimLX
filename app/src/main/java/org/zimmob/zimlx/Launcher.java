@@ -107,6 +107,7 @@ import org.zimmob.zimlx.dragndrop.DragView;
 import org.zimmob.zimlx.dynamicui.ExtractedColors;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.folder.FolderIcon;
+import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.iconpack.EditIconActivity;
 import org.zimmob.zimlx.keyboard.CustomActionsPopup;
 import org.zimmob.zimlx.keyboard.ViewGroupFocusHelper;
@@ -330,6 +331,7 @@ public class Launcher extends Activity
     private Canvas mFolderIconCanvas;
     private Rect mRectForFolderAnimation = new Rect();
     private DeviceProfile mDeviceProfile;
+    private GestureController mGestureController = new GestureController(this);
     // This is set to the view that launched the activity that navigated the user away from
     // launcher. Since there is no callback for when the activity has finished launching, enable
     // the press state and keep this reference to reset the press state when we return to launcher.
@@ -1608,6 +1610,10 @@ public class Launcher extends Activity
         return mDeviceProfile;
     }
 
+    public GestureController getGestureController() {
+        return mGestureController;
+    }
+
     public void closeSystemDialogs() {
         getWindow().closeAllPanels();
 
@@ -2848,80 +2854,6 @@ public class Launcher extends Activity
 
     @Override
     public boolean onLongClick(View view) {
-        /*if (!isDraggingEnabled()) return false;
-        if (isWorkspaceLocked()) return false;
-        if (mState != State.WORKSPACE) return false;
-
-        float mLastDispatchTouchEventX = 0.0f;
-
-        boolean ignoreLongPressToOverview =
-                mDeviceProfile.shouldIgnoreLongPressToOverview(mLastDispatchTouchEventX);
-        if (view instanceof Workspace) {
-            if (!mWorkspace.isInOverviewMode()) {
-                if (!mWorkspace.isTouchActive() && !ignoreLongPressToOverview) {
-                    /*getUserEventDispatcher()
-                            .logActionOnContainer(Action.Touch.LONGPRESS,
-                            Action.Direction.NONE, ContainerType.WORKSPACE,
-                            mWorkspace.getCurrentPage());
-                    */
-        /*
-                    showOverviewMode(true);
-                    mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                            HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-        CellLayout.CellInfo longClickCellInfo = null;
-        View itemUnderLongClick = null;
-        if (view.getTag() instanceof ItemInfo) {
-            ItemInfo info = (ItemInfo) view.getTag();
-            longClickCellInfo = new CellLayout.CellInfo(view, info);
-            itemUnderLongClick = longClickCellInfo.cell;
-            mPendingRequestArgs = null;
-        }
-       // The hotseat touch handling does not go through Workspace, and we always allow long press
-        // on hotseat items.
-        /*if (!mDragController.isDragging()) {
-            if (itemUnderLongClick == null) {
-                // User long pressed on empty space
-                if (mWorkspace.isInOverviewMode()) {
-                    mWorkspace.startReordering(view);
-                    //getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
-                    //        Action.Direction.NONE, ContainerType.OVERVIEW);
-                } else {
-                    if (ignoreLongPressToOverview) {
-                        return false;
-                    }
-                    /*
-                        getUserEventDispatcher()
-                            .logActionOnContainer(Action.Touch.LONGPRESS,
-                            Action.Direction.NONE, ContainerType.WORKSPACE,
-                            mWorkspace.getCurrentPage());
-                    *//*
-                    showOverviewMode(true);
-                }
-                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
-                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
-            } else {
-                final boolean isAllAppsButton =
-                        !FeatureFlags.NO_ALL_APPS_ICON && isHotseatLayout(view) &&
-                                mDeviceProfile.inv.isAllAppsButtonRank(mHotseat.getOrderInHotseat(
-                                        longClickCellInfo.cellX, longClickCellInfo.cellY));
-                if (!(itemUnderLongClick instanceof Folder || isAllAppsButton)) {
-                    // User long pressed on an item
-                    mWorkspace.startDrag(longClickCellInfo, new DragOptions());
-                }
-            }
-        }
-        return true;
-        */
-
-
         CellLayout.CellInfo cellInfo = null;
         if (!isDraggingEnabled() || isWorkspaceLocked() || this.mState != State.WORKSPACE) {
             return false;

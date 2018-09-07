@@ -65,6 +65,7 @@ import org.zimmob.zimlx.Workspace;
 import org.zimmob.zimlx.allapps.AllAppsTransitionController;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.folder.FolderIcon;
+import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.keyboard.ViewGroupFocusHelper;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.util.TouchController;
@@ -93,6 +94,7 @@ public class DragLayer extends InsettableFrameLayout {
     private final Rect mScrollChildPosition = new Rect();
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final Drawable mTopShadow;
+    private GestureController mGestureController;
     public boolean mIsAccesibilityEnabled;
     @Thunk
     DragController mDragController;
@@ -160,6 +162,7 @@ public class DragLayer extends InsettableFrameLayout {
         mLauncher = launcher;
         mDragController = dragController;
         mAllAppsController = allAppsTransitionController;
+        mGestureController = launcher.getGestureController();
 
         boolean isAccessibilityEnabled = ((AccessibilityManager) mLauncher.getSystemService(
                 Context.ACCESSIBILITY_SERVICE)).isEnabled();
@@ -312,6 +315,11 @@ public class DragLayer extends InsettableFrameLayout {
             mActiveController = mPinchListener;
             return true;
         }
+        if (mGestureController != null && mGestureController.onControllerInterceptTouchEvent(ev)) {
+            mActiveController = mGestureController;
+            return true;
+        }
+
         return false;
     }
 

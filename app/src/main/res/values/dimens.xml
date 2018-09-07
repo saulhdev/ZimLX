@@ -21,12 +21,12 @@
     <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
     <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_overview_min_icon_zone_height">60dp</dimen>
+    <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
     <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
     <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
     <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
 
-    <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
+    <dimen name="dynamic_grid_workspace_top_padding">12dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">6dp</dimen>

@@ -183,12 +183,7 @@ public class Hotseat extends FrameLayout {
             } else {
                 mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
                 mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
-                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        ((ColorDrawable) mBackground).setColor((Integer) animation.getAnimatedValue());
-                    }
-                });
+                mBackgroundColorAnimator.addUpdateListener(animation -> ((ColorDrawable) mBackground).setColor((Integer) animation.getAnimatedValue()));
                 mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {
