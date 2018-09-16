@@ -227,20 +227,17 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     new InterruptibleInOutAnimator(duration, fromAlphaValue, toAlphaValue);
             anim.getAnimator().setInterpolator(easeOutInterpolator);
             final int thisIndex = i;
-            anim.getAnimator().addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    final Bitmap outline = (Bitmap) anim.getTag();
+            anim.getAnimator().addUpdateListener(animation -> {
+                final Bitmap outline = (Bitmap) anim.getTag();
 
-                    // If an animation is started and then stopped very quickly, we can still
-                    // get spurious updates we've cleared the tag. Guard against this.
-                    if (outline == null) {
-                        // Try to prevent it from continuing to run
-                        animation.cancel();
-                    } else {
-                        mDragOutlineAlphas[thisIndex] = (Float) animation.getAnimatedValue();
-                        CellLayout.this.invalidate(mDragOutlines[thisIndex]);
-                    }
+                // If an animation is started and then stopped very quickly, we can still
+                // get spurious updates we've cleared the tag. Guard against this.
+                if (outline == null) {
+                    // Try to prevent it from continuing to run
+                    animation.cancel();
+                } else {
+                    mDragOutlineAlphas[thisIndex] = (Float) animation.getAnimatedValue();
+                    CellLayout.this.invalidate(mDragOutlines[thisIndex]);
                 }
             });
             // The animation holds a reference to the drag outline bitmap as long is it's
@@ -918,14 +915,11 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             va.setDuration(duration);
             mReorderAnimators.put(lp, va);
 
-            va.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = (Float) animation.getAnimatedValue();
-                    lp.x = (int) ((1 - r) * oldX + r * newX);
-                    lp.y = (int) ((1 - r) * oldY + r * newY);
-                    child.requestLayout();
-                }
+            va.addUpdateListener(animation -> {
+                float r = (Float) animation.getAnimatedValue();
+                lp.x = (int) ((1 - r) * oldX + r * newX);
+                lp.y = (int) ((1 - r) * oldY + r * newY);
+                child.requestLayout();
             });
             va.addListener(new AnimatorListenerAdapter() {
                 boolean cancelled = false;

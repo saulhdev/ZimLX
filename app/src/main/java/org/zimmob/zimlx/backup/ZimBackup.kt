@@ -221,7 +221,7 @@ open class ZimBackup(val context: Context, val uri: Uri?) {
         const val BUFFER = 2018
 
         const val EXTENSION = "shed"
-        const val MIME_TYPE = "application/vnd.ZimLX.backup"
+        const val MIME_TYPE = "application/vnd.zimlx.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         const val WALLPAPER_FILE_NAME = "wallpaper.png"

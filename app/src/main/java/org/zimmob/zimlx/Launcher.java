@@ -23,6 +23,7 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -75,6 +76,7 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
+import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -187,6 +189,14 @@ public class Launcher extends Activity
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
     // Type: ActivityResultInfo
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
+    /**
+     * The different states that Launcher can be in.
+     */
+    enum State {
+        NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
+        WIDGETS, WIDGETS_SPRING_LOADED
+    }
+
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
     private static final int ADVANCE_INTERVAL = 20000;
     private static final int ADVANCE_STAGGER = 250;
@@ -352,6 +362,7 @@ public class Launcher extends Activity
      * {@link #startActivityForResult(Intent, int)} or {@link #requestPermissions(String[], int)}
      */
     private PendingRequestArgs mPendingRequestArgs;
+
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -455,6 +466,7 @@ public class Launcher extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.loadThemePreference(this);
         Utilities.setupPirateLocale(this);
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
         }
@@ -480,9 +492,6 @@ public class Launcher extends Activity
 
         mDragController = new DragController(this);
         mBlurWallpaperProvider = new BlurWallpaperProvider(this);
-
-        mPredictiveAppsProvider = new PredictiveAppsProvider(this);
-
         mAllAppsController = new AllAppsTransitionController(this);
         mStateTransitionAnimation = new LauncherStateTransitionAnimation(this, mAllAppsController);
 
@@ -499,9 +508,7 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
-
         setupViews();
-
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
         loadExtractedColorsAndColorItems();
@@ -531,17 +538,16 @@ public class Launcher extends Activity
 
         Utilities.showOutdatedLawnfeedPopup(this);
         mLauncherTab = new LauncherTab(this);
-        mContext = this;
+
         initMinibar();
         Settings.init(this);
-    }
-    private boolean getConsumeNextResume() {
-        return _consumeNextResume;
+        Window window = getWindow();
+        View decorView = window.getDecorView();
+        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
-    private void setConsumeNextResume(boolean v) {
-        _consumeNextResume = v;
-    }
     private void setScreenOrientation() {
         if (Utilities.getPrefs(this).getEnableScreenRotation()) {
             setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
@@ -1193,18 +1199,10 @@ public class Launcher extends Activity
         mQsbContainer = mDragLayer.findViewById(R.id.qsb_container);
         mWorkspace.initParentViews(mDragLayer);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = getWindow();
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(Color.TRANSPARENT);
-        }
-
         if (mPlanesEnabled) {
             Log.d(TAG, "inflating planes");
             getLayoutInflater().inflate(R.layout.planes, (ViewGroup) mLauncherView, true);
         }
-
         // Setup the drag layer
         mDragLayer.setup(this, mDragController, mAllAppsController);
 
@@ -3951,14 +3949,6 @@ public class Launcher extends Activity
 
     public BlurWallpaperProvider getBlurWallpaperProvider() {
         return mBlurWallpaperProvider;
-    }
-
-    /**
-     * The different states that Launcher can be in.
-     */
-    enum State {
-        NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
-        WIDGETS, WIDGETS_SPRING_LOADED
     }
 
     public interface LauncherOverlay {

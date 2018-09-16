@@ -60,7 +60,7 @@ public final class FeatureFlags extends BaseFlags {
     public static final String KEY_PREF_PRIMARY_COLOR = "pref_primary_color";
     public static final String KEY_PREF_MINIBAR_COLOR = "pref_minibar_color";
     public static final String KEY_PREF_MINIBAR_ITEMS = "pref_minibar_items";
-    public static final String KEY_PREF_NOTIFICATION_COLOR = "pref_notification_color";
+    public static final String KEY_PREF_NOTIFICATION_TEXT_COLOR = "pref_notification_text_color";
     public static final String KEY_PREF_NOTIFICATION_BACKGROUND = "pref_notification_background";
     public static final String KEY_PREF_NOTIFICATION_COUNT = "pref_notification_count";
 

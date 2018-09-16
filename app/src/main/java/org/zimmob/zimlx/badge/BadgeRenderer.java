@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -87,6 +88,7 @@ public class BadgeRenderer {
         mTextPaint.setTextSize(iconSizePx * TEXT_SIZE_PERCENTAGE);
         mTextPaint.setTextAlign(Paint.Align.CENTER);
         mTextPaint.getTextBounds("0", 0, 1, tempTextHeight);
+        mTextPaint.setColor(Utilities.getPrefs(mContext).getNotificationTextColor());
         mTextHeight = tempTextHeight.height();
         mBackgroundsWithShadow = new SparseArray<>(3);
         mBackgroundWithShadow = ShadowGenerator.createPillWithShadow(-1, mSize, mSize);
@@ -105,7 +107,8 @@ public class BadgeRenderer {
      */
     public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
                      Rect iconBounds, float badgeScale, Point spaceForOffset) {
-        mTextPaint.setColor(Utilities.getPrefs(mContext).getNotificationTextColor());
+        //mTextPaint.setColor(Utilities.getPrefs(mContext).getNotificationTextColor());
+        mTextPaint.setColor(Color.WHITE);
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
@@ -140,9 +143,9 @@ public class BadgeRenderer {
         // Prepare the background and shadow and possible stacking effect.
         mBackgroundPaint.setColorFilter(palette.backgroundColorMatrixFilter);
         int backgroundWithShadowSize = backgroundWithShadow.getHeight(); // Same as width.
-        boolean shouldStack = !isDot && badgeInfo != null
+        /*boolean shouldStack = !isDot && badgeInfo != null
                 && badgeInfo.getNotificationKeys().size() > 1;
-        /*if (shouldStack) {
+        if (shouldStack) {
             int offsetDiffX = mStackOffsetX - mOffset;
             int offsetDiffY = mStackOffsetY - mOffset;
             canvas.translate(offsetDiffX, offsetDiffY);

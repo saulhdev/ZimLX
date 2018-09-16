@@ -50,7 +50,7 @@ public class DeviceProfile {
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
-    /**
+    /*
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
      * 7% of the screen width can be used as right padding.
@@ -82,10 +82,22 @@ public class DeviceProfile {
     public int iconSizePx;
     // Hotseat
     public int hotseatCellWidthPx;
+    public int hotseatCellHeightPx;
+    public int hotseatIconSizePx;
+    public int hotseatIconSizePxOriginal;
+    public int hotseatBarSizePx;
+    public int hotseatBarTopPaddingPx;
+    public int hotseatBarBottomPaddingPx;
+    private int hotseatLandGutterPx;
+    public int hotseatBarLeftNavBarLeftPaddingPx;
+    public int hotseatBarLeftNavBarRightPaddingPx;
+
+    public int hotseatBarRightNavBarLeftPaddingPx;
+    public int hotseatBarRightNavBarRightPaddingPx;
+
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
-
     public int cellWidthPx;
     public int cellHeightPx;
 
@@ -96,9 +108,6 @@ public class DeviceProfile {
     public int folderCellWidthPx;
     public int folderCellHeightPx;
     public int folderChildDrawablePaddingPx;
-    public int hotseatCellHeightPx;
-    public int hotseatIconSizePx;
-    public int hotseatIconSizePxOriginal;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
     // Workspace
@@ -109,8 +118,6 @@ public class DeviceProfile {
     public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
-    private int hotseatBarTopPaddingPx;
-    private int hotseatLandGutterPx;
     public float allAppsIconTextSizePx;
 
     // Drop Target
@@ -179,6 +186,12 @@ public class DeviceProfile {
         hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
         hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
         hotseatBarTopPaddingPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+        hotseatBarBottomPaddingPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarSizePx = isVerticalBarLayout()
+                ? Utilities.pxFromDp(inv.iconSize, dm)
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+
 
         // Determine sizes.
         widthPx = width;
@@ -225,7 +238,7 @@ public class DeviceProfile {
         mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
     }
 
-    /**
+    /*
      * Determine the exact visual footprint of the all apps button, taking into account scaling
      * and internal padding of the drawable.
      */
@@ -281,7 +294,7 @@ public class DeviceProfile {
         mInsets.set(insets);
     }
 
-    /**
+    /*
      * Returns the width and height of the search bar, ignoring any padding.
      */
     public Point getSearchBarDimensForWidgetOpts() {
@@ -416,7 +429,7 @@ public class DeviceProfile {
         }
     }
 
-    /**
+    /*
      * Returns the workspace padding in the specified orientation.
      * Note that it assumes that while in verticalBarLayout, the nav bar is on the right, as such
      * this value is not reliable.
@@ -446,9 +459,13 @@ public class DeviceProfile {
                 int availablePaddingX = Math.max(0, width - (int) ((inv.numColumns * cellWidthPx) +
                         ((inv.numColumns - 1) * gapScale * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
-                        width * MAX_HORIZONTAL_PADDING_PERCENT);
+                        width * MAX_HORIZONTAL_PADDING_PERCENT);/*
                 int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
-                        - 2 * inv.numRows * cellHeightPx);
+                        - 2 * inv.numRows * cellHeightPx);*/
+                int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
+                        - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
+                        - hotseatBarBottomPaddingPx);
+
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
@@ -462,7 +479,7 @@ public class DeviceProfile {
         return padding;
     }
 
-    /**
+    /*
      * @return the bounds for which the open folders should be contained within
      */
     public Rect getAbsoluteOpenFolderBounds() {
@@ -549,6 +566,12 @@ public class DeviceProfile {
         if (hasVerticalBarLayout) {
             // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
             //                     screen regardless of RTL
+            int paddingRight = mInsets.left > 0
+                    ? hotseatBarLeftNavBarRightPaddingPx
+                    : hotseatBarRightNavBarRightPaddingPx;
+            int paddingLeft = mInsets.left > 0
+                    ? hotseatBarLeftNavBarLeftPaddingPx
+                    : hotseatBarRightNavBarLeftPaddingPx;
             lp.gravity = Gravity.END;
             lp.width = getHotseatHeight() + mInsets.left + mInsets.right;
             lp.height = LayoutParams.MATCH_PARENT;

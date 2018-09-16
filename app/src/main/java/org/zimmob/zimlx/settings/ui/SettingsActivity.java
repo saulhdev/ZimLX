@@ -72,6 +72,7 @@ public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
 
     private static IPreferenceProvider sharedPrefs;
+
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -85,9 +86,11 @@ public class SettingsActivity extends AppCompatActivity implements
 
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
+
         setSupportActionBar(toolbar);
         toolbar.setBackgroundColor(Utilities.getPrefs(this).getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
 
         if (FeatureFlags.getCurrentTheme() != 2)
             BlurWallpaperProvider.Companion.applyBlurBackground(this);
@@ -110,8 +113,6 @@ public class SettingsActivity extends AppCompatActivity implements
         Fragment fragment;
         if (pref instanceof SubPreference) {
             fragment = SubSettingsFragment.newInstance(((SubPreference) pref));
-            //} else if(pref.getKey().equals("pref_about")){
-            //    fragment = Attribouter.from(this).withFile(R.xml.attribouter).toFragment();
         } else {
             fragment = Fragment.instantiate(this, pref.getFragment());
         }

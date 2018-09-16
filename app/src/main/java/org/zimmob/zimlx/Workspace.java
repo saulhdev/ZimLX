@@ -23,12 +23,10 @@ import android.animation.LayoutTransition;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.app.WallpaperManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -38,6 +36,7 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -51,6 +50,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -104,6 +104,7 @@ public class Workspace extends PagedView
     public static final long EXTRA_EMPTY_SCREEN_ID = -201;
     // The is the first screen. It is always present, even if its empty.
     public static final long FIRST_SCREEN_ID = 0;
+    private final static long CUSTOM_CONTENT_SCREEN_ID = -301;
     public static final int QSB_ALPHA_INDEX_STATE_CHANGE = 0;
     public static final int QSB_ALPHA_INDEX_Y_TRANSLATION = 1;
     public static final int QSB_ALPHA_INDEX_PAGE_SCROLL = 2;
@@ -116,9 +117,9 @@ public class Workspace extends PagedView
     public static final int ANIMATE_INTO_POSITION_AND_RESIZE = 2;
     public static final int COMPLETE_TWO_STAGE_WIDGET_DROP_ANIMATION = 3;
     public static final int CANCEL_TWO_STAGE_WIDGET_DROP_ANIMATION = 4;
-    final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
-    final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
-    final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
+    public final static float START_DAMPING_TOUCH_SLOP_ANGLE = (float) Math.PI / 6;
+    public final static float MAX_SWIPE_ANGLE = (float) Math.PI / 3;
+    public final static float TOUCH_SLOP_DAMPING_FACTOR = 4;
     private static final String TAG = "Launcher.Workspace";
     private static final int SNAP_OFF_EMPTY_SCREEN_DURATION = 400;
     private static final int FADE_EMPTY_SCREEN_DURATION = 150;
@@ -286,7 +287,7 @@ public class Workspace extends PagedView
         }
     };
 
-    /**
+    /*
      * Used to inflate the Workspace from XML.
      *
      * @param context The application's context.
@@ -296,7 +297,7 @@ public class Workspace extends PagedView
         this(context, attrs, 0);
     }
 
-    /**
+    /*
      * Used to inflate the Workspace from XML.
      *
      * @param context  The application's context.
@@ -329,7 +330,7 @@ public class Workspace extends PagedView
         setMotionEventSplittingEnabled(true);
     }
 
-    /**
+    /*
      * Returns the drawable for the given text view.
      */
     public static Drawable getTextViewIcon(TextView tv) {
@@ -355,6 +356,13 @@ public class Workspace extends PagedView
     @Override
     public void setInsets(Rect insets) {
         mInsets.set(insets);
+        CellLayout customScreen = getScreenWithId(CUSTOM_CONTENT_SCREEN_ID);
+        if (customScreen != null) {
+            View customContent = customScreen.getShortcutsAndWidgets().getChildAt(0);
+            if (customContent instanceof Insettable) {
+                ((Insettable) customContent).setInsets(mInsets);
+            }
+        }
     }
 
     // estimate the size of a widget with spans hSpan, vSpan. return MAX_VALUE for each
@@ -732,12 +740,7 @@ public class Workspace extends PagedView
         }
 
         if (delay > 0) {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens);
-                }
-            }, delay);
+            postDelayed(() -> removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens), delay);
             return;
         }
 
@@ -773,19 +776,16 @@ public class Workspace extends PagedView
 
         final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
 
-        mRemoveEmptyScreenRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (hasExtraEmptyScreen()) {
-                    mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-                    mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
-                    removeView(cl);
-                    if (stripEmptyScreens) {
-                        stripEmptyScreens();
-                    }
-                    // Update the page indicator to reflect the removed page.
-                    showPageIndicatorAtCurrentScroll();
+        mRemoveEmptyScreenRunnable = () -> {
+            if (hasExtraEmptyScreen()) {
+                mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
+                mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
+                removeView(cl);
+                if (stripEmptyScreens) {
+                    stripEmptyScreens();
                 }
+                // Update the page indicator to reflect the removed page.
+                showPageIndicatorAtCurrentScroll();
             }
         };
 
@@ -1424,12 +1424,9 @@ public class Workspace extends PagedView
         } else {
             ValueAnimator animator = ValueAnimator
                     .ofFloat(mHotseatAlpha[HOTSEAT_STATE_ALPHA_INDEX], finalValue);
-            animator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    float value = (Float) valueAnimator.getAnimatedValue();
-                    setHotseatAlphaAtIndex(value, HOTSEAT_STATE_ALPHA_INDEX);
-                }
+            animator.addUpdateListener(valueAnimator -> {
+                float value = (Float) valueAnimator.getAnimatedValue();
+                setHotseatAlphaAtIndex(value, HOTSEAT_STATE_ALPHA_INDEX);
             });
 
             AccessibilityManager am = (AccessibilityManager)
@@ -1456,22 +1453,19 @@ public class Workspace extends PagedView
     }
 
     @Override
-    protected void getEdgeVerticalPostion(int[] pos) {
+    protected void getEdgeVerticalPosition(int[] pos) {
         View child = getChildAt(getPageCount() - 1);
         pos[0] = child.getTop();
         pos[1] = child.getBottom();
     }
 
     protected void setWallpaperDimension() {
-        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                final Point size = LauncherAppState.getInstance()
-                        .getInvariantDeviceProfile().defaultWallpaperSize;
-                if (size.x != mWallpaperManager.getDesiredMinimumWidth()
-                        || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
-                    mWallpaperManager.suggestDesiredDimensions(size.x, size.y);
-                }
+        Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
+            final Point size = LauncherAppState.getInstance()
+                    .getInvariantDeviceProfile().defaultWallpaperSize;
+            if (size.x != mWallpaperManager.getDesiredMinimumWidth()
+                    || size.y != mWallpaperManager.getDesiredMinimumHeight()) {
+                mWallpaperManager.suggestDesiredDimensions(size.x, size.y);
             }
         });
     }
@@ -2378,13 +2372,10 @@ public class Workspace extends PagedView
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
                         if (pInfo != null && !d.accessibleDrag) {
-                            mDelayedResizeRunnable = new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (!isPageMoving() && !mIsSwitchingState) {
-                                        DragLayer dragLayer = mLauncher.getDragLayer();
-                                        dragLayer.addResizeFrame(hostView, cellLayout);
-                                    }
+                            mDelayedResizeRunnable = () -> {
+                                if (!isPageMoving() && !mIsSwitchingState) {
+                                    DragLayer dragLayer = mLauncher.getDragLayer();
+                                    dragLayer.addResizeFrame(hostView, cellLayout);
                                 }
                             };
                         }
@@ -2405,12 +2396,9 @@ public class Workspace extends PagedView
             final CellLayout parent = (CellLayout) cell.getParent().getParent();
             // Prepare it to be animated into its new position
             // This must be called after the view has been re-parented
-            final Runnable onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mAnimatingViewIntoPlace = false;
-                    updateChildrenLayersEnabled(false);
-                }
+            final Runnable onCompleteRunnable = () -> {
+                mAnimatingViewIntoPlace = false;
+                updateChildrenLayersEnabled(false);
             };
             mAnimatingViewIntoPlace = true;
             if (d.dragView.hasDrawn()) {
@@ -2877,7 +2865,7 @@ public class Workspace extends PagedView
         mLauncher.getDragLayer().getDescendantRectRelativeToSelf(this, outRect);
     }
 
-    /**
+    /*
      * Drop an item that didn't originate on one of the workspace screens.
      * It may have come from Launcher (e.g. from all apps or customize), or it may have
      * come from another app altogether.
@@ -2887,13 +2875,8 @@ public class Workspace extends PagedView
      */
     private void onDropExternal(final int[] touchXY, final ItemInfo dragInfo,
                                 final CellLayout cellLayout, boolean insertAtFirst, DragObject d) {
-        final Runnable exitSpringLoadedRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.exitSpringLoadedDragModeDelayed(true,
-                        Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
-            }
-        };
+        final Runnable exitSpringLoadedRunnable = () -> mLauncher.exitSpringLoadedDragModeDelayed(true,
+                Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT, null);
 
         ItemInfo info = dragInfo;
         int spanX = info.spanX;
@@ -2950,19 +2933,16 @@ public class Workspace extends PagedView
                 item.spanY = resultSpan[1];
             }
 
-            Runnable onAnimationCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
-                    // adding an item that may not be dropped right away (due to a config activity)
-                    // we defer the removal until the activity returns.
-                    deferRemoveExtraEmptyScreen();
+            Runnable onAnimationCompleteRunnable = () -> {
+                // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
+                // adding an item that may not be dropped right away (due to a config activity)
+                // we defer the removal until the activity returns.
+                deferRemoveExtraEmptyScreen();
 
-                    // When dragging and dropping from customization tray, we deal with creating
-                    // widgets/shortcuts/folders in a slightly different way
-                    mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
-                            item.spanX, item.spanY);
-                }
+                // When dragging and dropping from customization tray, we deal with creating
+                // widgets/shortcuts/folders in a slightly different way
+                mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
+                        item.spanX, item.spanY);
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
                     || pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
@@ -3145,15 +3125,12 @@ public class Workspace extends PagedView
                 endStyle = DragLayer.ANIMATION_END_DISAPPEAR;
             }
 
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    if (finalView != null) {
-                        finalView.setVisibility(VISIBLE);
-                    }
-                    if (onCompleteRunnable != null) {
-                        onCompleteRunnable.run();
-                    }
+            Runnable onComplete = () -> {
+                if (finalView != null) {
+                    finalView.setVisibility(VISIBLE);
+                }
+                if (onCompleteRunnable != null) {
+                    onCompleteRunnable.run();
                 }
             };
             dragLayer.animateViewIntoPosition(dragView, from.left, from.top, finalPos[0],
@@ -3240,12 +3217,9 @@ public class Workspace extends PagedView
     public void onDropCompleted(final View target, final DragObject d,
                                 final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
-            mDeferredAction = new Runnable() {
-                @Override
-                public void run() {
-                    onDropCompleted(target, d, isFlingToDelete, success);
-                    mDeferredAction = null;
-                }
+            mDeferredAction = () -> {
+                onDropCompleted(target, d, isFlingToDelete, success);
+                mDeferredAction = null;
             };
             return;
         }
@@ -3295,14 +3269,11 @@ public class Workspace extends PagedView
      * Removes all folder listeners
      */
     public void removeFolderListeners() {
-        mapOverItems(false, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                if (view instanceof FolderIcon) {
-                    ((FolderIcon) view).removeListeners();
-                }
-                return false;
+        mapOverItems(false, (info, view) -> {
+            if (view instanceof FolderIcon) {
+                ((FolderIcon) view).removeListeners();
             }
+            return false;
         });
     }
 
@@ -3508,61 +3479,37 @@ public class Workspace extends PagedView
     }
 
     public View getHomescreenIconByItemId(final long id) {
-        return getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return info != null && info.id == id;
-            }
-        });
+        return getFirstMatch((info, v) -> info != null && info.id == id);
     }
 
     public View getViewForTag(final Object tag) {
-        return getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return info == tag;
-            }
-        });
+        return getFirstMatch((info, v) -> info == tag);
     }
 
     public LauncherAppWidgetHostView getWidgetForAppWidgetId(final int appWidgetId) {
-        return (LauncherAppWidgetHostView) getFirstMatch(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                return (info instanceof LauncherAppWidgetInfo) &&
-                        ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId;
-            }
-        });
+        return (LauncherAppWidgetHostView) getFirstMatch((info, v) -> (info instanceof LauncherAppWidgetInfo) &&
+                ((LauncherAppWidgetInfo) info).appWidgetId == appWidgetId);
     }
 
     public View getFirstMatch(final ItemOperator operator) {
         final View[] value = new View[1];
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (operator.evaluate(info, v)) {
-                    value[0] = v;
-                    return true;
-                }
-                return false;
+        mapOverItems(MAP_NO_RECURSE, (info, v) -> {
+            if (operator.evaluate(info, v)) {
+                value[0] = v;
+                return true;
             }
+            return false;
         });
         return value[0];
     }
 
     void clearDropTargets() {
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (v instanceof DropTarget) {
-                    mDragController.removeDropTarget((DropTarget) v);
-                }
-                // not done, process all the shortcuts
-                return false;
+        mapOverItems(MAP_NO_RECURSE, (info, v) -> {
+            if (v instanceof DropTarget) {
+                mDragController.removeDropTarget((DropTarget) v);
             }
+            // not done, process all the shortcuts
+            return false;
         });
     }
 
@@ -3584,31 +3531,27 @@ public class Workspace extends PagedView
 
             final ArrayList<View> childrenToRemove = new ArrayList<>();
             final HashMap<FolderInfo, ArrayList<ShortcutInfo>> folderAppsToRemove = new HashMap<>();
-            LauncherModel.ItemInfoFilter filter = new LauncherModel.ItemInfoFilter() {
-                @Override
-                public boolean filterItem(ItemInfo parent, ItemInfo info,
-                                          ComponentName cn) {
-                    if (parent instanceof FolderInfo) {
-                        if (matcher.matches(info, cn)) {
-                            FolderInfo folder = (FolderInfo) parent;
-                            ArrayList<ShortcutInfo> appsToRemove;
-                            if (folderAppsToRemove.containsKey(folder)) {
-                                appsToRemove = folderAppsToRemove.get(folder);
-                            } else {
-                                appsToRemove = new ArrayList<>();
-                                folderAppsToRemove.put(folder, appsToRemove);
-                            }
-                            appsToRemove.add((ShortcutInfo) info);
-                            return true;
+            LauncherModel.ItemInfoFilter filter = (parent, info, cn) -> {
+                if (parent instanceof FolderInfo) {
+                    if (matcher.matches(info, cn)) {
+                        FolderInfo folder = (FolderInfo) parent;
+                        ArrayList<ShortcutInfo> appsToRemove;
+                        if (folderAppsToRemove.containsKey(folder)) {
+                            appsToRemove = folderAppsToRemove.get(folder);
+                        } else {
+                            appsToRemove = new ArrayList<>();
+                            folderAppsToRemove.put(folder, appsToRemove);
                         }
-                    } else {
-                        if (matcher.matches(info, cn)) {
-                            childrenToRemove.add(children.get(info));
-                            return true;
-                        }
+                        appsToRemove.add((ShortcutInfo) info);
+                        return true;
                     }
-                    return false;
+                } else {
+                    if (matcher.matches(info, cn)) {
+                        childrenToRemove.add(children.get(info));
+                        return true;
+                    }
                 }
+                return false;
             };
             LauncherModel.filterItemInfos(children.keySet(), filter);
 
@@ -3640,7 +3583,7 @@ public class Workspace extends PagedView
         stripEmptyScreens();
     }
 
-    /**
+    /*
      * Map the operator over the shortcuts and widgets, return the first-non-null value.
      *
      * @param recurse true: iterate over folder children. false: op get the folders themselves.
@@ -3688,61 +3631,49 @@ public class Workspace extends PagedView
             folderIds.add(s.container);
         }
 
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
-                        updates.contains(info)) {
-                    ShortcutInfo si = (ShortcutInfo) info;
-                    BubbleTextView shortcut = (BubbleTextView) v;
-                    Drawable oldIcon = getTextViewIcon(shortcut);
-                    boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
-                            && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
-                    shortcut.applyFromShortcutInfo(si, si.isPromise() != oldPromiseState);
-                }
-                // process all the shortcuts
-                return false;
+        mapOverItems(MAP_RECURSE, (info, v) -> {
+            if (info instanceof ShortcutInfo && v instanceof BubbleTextView &&
+                    updates.contains(info)) {
+                ShortcutInfo si = (ShortcutInfo) info;
+                BubbleTextView shortcut = (BubbleTextView) v;
+                Drawable oldIcon = getTextViewIcon(shortcut);
+                boolean oldPromiseState = (oldIcon instanceof PreloadIconDrawable)
+                        && ((PreloadIconDrawable) oldIcon).hasNotCompleted();
+                shortcut.applyFromShortcutInfo(si, si.isPromise() != oldPromiseState);
             }
+            // process all the shortcuts
+            return false;
         });
 
         // Update folder icons
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof FolderInfo && folderIds.contains(info.id)) {
-                    ((FolderInfo) info).itemsChanged(false);
-                }
-                // process all the shortcuts
-                return false;
+        mapOverItems(MAP_NO_RECURSE, (info, v) -> {
+            if (info instanceof FolderInfo && folderIds.contains(info.id)) {
+                ((FolderInfo) info).itemsChanged(false);
             }
+            // process all the shortcuts
+            return false;
         });
     }
 
     public void updateIconBadges(final Set set) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
         final HashSet hashSet = new HashSet();
-        mapOverItems(true, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo itemInfo, View view) {
-                if ((itemInfo instanceof ShortcutInfo) && (view instanceof BubbleTextView) && packageUserKey.updateFromItemInfo(itemInfo) && set.contains(packageUserKey)) {
-                    ((BubbleTextView) view).applyBadgeState(itemInfo, true);
-                    hashSet.add(itemInfo.container);
-                }
-                return false;
+        mapOverItems(true, (itemInfo, view) -> {
+            if ((itemInfo instanceof ShortcutInfo) && (view instanceof BubbleTextView) && packageUserKey.updateFromItemInfo(itemInfo) && set.contains(packageUserKey)) {
+                ((BubbleTextView) view).applyBadgeState(itemInfo, true);
+                hashSet.add(itemInfo.container);
             }
+            return false;
         });
-        mapOverItems(false, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo itemInfo, View view) {
-                if ((itemInfo instanceof FolderInfo) && hashSet.contains(itemInfo.id) && (view instanceof FolderIcon)) {
-                    FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
-                    for (ShortcutInfo badgeInfoForItem : ((FolderInfo) itemInfo).contents) {
-                        folderBadgeInfo.addBadgeInfo(Workspace.this.mLauncher.getPopupDataProvider().getBadgeInfoForItem(badgeInfoForItem));
-                    }
-                    ((FolderIcon) view).setBadgeInfo(folderBadgeInfo);
+        mapOverItems(false, (itemInfo, view) -> {
+            if ((itemInfo instanceof FolderInfo) && hashSet.contains(itemInfo.id) && (view instanceof FolderIcon)) {
+                FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+                for (ShortcutInfo badgeInfoForItem : ((FolderInfo) itemInfo).contents) {
+                    folderBadgeInfo.addBadgeInfo(Workspace.this.mLauncher.getPopupDataProvider().getBadgeInfoForItem(badgeInfoForItem));
                 }
-                return false;
+                ((FolderIcon) view).setBadgeInfo(folderBadgeInfo);
             }
+            return false;
         });
     }
 
@@ -3754,20 +3685,17 @@ public class Workspace extends PagedView
     }
 
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
-                        && updates.contains(info)) {
-                    ((BubbleTextView) v).applyState(false);
-                } else if (v instanceof PendingAppWidgetHostView
-                        && info instanceof LauncherAppWidgetInfo
-                        && updates.contains(info)) {
-                    ((PendingAppWidgetHostView) v).applyState();
-                }
-                // process all the shortcuts
-                return false;
+        mapOverItems(MAP_RECURSE, (info, v) -> {
+            if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                    && updates.contains(info)) {
+                ((BubbleTextView) v).applyState(false);
+            } else if (v instanceof PendingAppWidgetHostView
+                    && info instanceof LauncherAppWidgetInfo
+                    && updates.contains(info)) {
+                ((PendingAppWidgetHostView) v).applyState();
             }
+            // process all the shortcuts
+            return false;
         });
     }
 
@@ -4032,16 +3960,13 @@ public class Workspace extends PagedView
 
             mRefreshPending = false;
 
-            mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
-                        mLauncher.removeItem(view, info, false /* deleteFromDb */);
-                        mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
-                    }
-                    // process all the shortcuts
-                    return false;
+            mapOverItems(MAP_NO_RECURSE, (info, view) -> {
+                if (view instanceof PendingAppWidgetHostView && mInfos.contains(info)) {
+                    mLauncher.removeItem(view, info, false /* deleteFromDb */);
+                    mLauncher.bindAppWidget((LauncherAppWidgetInfo) info);
                 }
+                // process all the shortcuts
+                return false;
             });
         }
     }

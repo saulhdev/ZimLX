@@ -90,8 +90,8 @@ public class InvariantDeviceProfile {
     float hotseatIconSizeOriginal;
     int defaultLayoutId;
 
-    DeviceProfile landscapeProfile;
-    DeviceProfile portraitProfile;
+    public DeviceProfile landscapeProfile;
+    public DeviceProfile portraitProfile;
 
     public Point defaultWallpaperSize;
 
@@ -105,7 +105,7 @@ public class InvariantDeviceProfile {
                 p.defaultLayoutId);
     }
 
-    InvariantDeviceProfile(String n, float w, float h, int r, int c, int cd, int fr, int fc,
+    public InvariantDeviceProfile(String n, float w, float h, int r, int c, int cd, int fr, int fc,
                            float is, float its, int hs, float his, int dlId) {
         name = n;
         minWidthDps = w;
@@ -123,7 +123,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(Build.VERSION_CODES.M)
-    InvariantDeviceProfile(Context context) {
+    public InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -310,7 +310,7 @@ public class InvariantDeviceProfile {
         return (float) Math.hypot(x1 - x0, y1 - y0);
     }
 
-    ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
+    public ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
         ArrayList<InvariantDeviceProfile> profiles = new ArrayList<>();
         try (XmlResourceParser parser = context.getResources().getXml(R.xml.device_profiles)) {
             final int depth = parser.getDepth();
@@ -355,7 +355,7 @@ public class InvariantDeviceProfile {
      * Returns the closest device profiles ordered by closeness to the specified width and height
      */
     // Package private visibility for testing.
-    ArrayList<InvariantDeviceProfile> findClosestDeviceProfiles(
+    public ArrayList<InvariantDeviceProfile> findClosestDeviceProfiles(
             final float width, final float height, ArrayList<InvariantDeviceProfile> points) {
 
         // Sort the profiles by their closeness to the dimensions
@@ -367,7 +367,7 @@ public class InvariantDeviceProfile {
     }
 
     // Package private visibility for testing.
-    InvariantDeviceProfile invDistWeightedInterpolate(Context context, float width, float height,
+    public InvariantDeviceProfile invDistWeightedInterpolate(Context context, float width, float height,
                                                       ArrayList<InvariantDeviceProfile> points) {
         float weights = 0;
 

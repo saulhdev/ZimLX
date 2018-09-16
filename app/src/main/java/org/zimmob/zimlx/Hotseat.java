@@ -25,11 +25,13 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.ViewDebug;
+import android.view.WindowInsets;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
@@ -109,6 +111,7 @@ public class Hotseat extends FrameLayout {
         int rows = Utilities.getNumberOfHotseatRows(mLauncher);
         if (grid.isVerticalBarLayout()) {
             mContent.setGridSize(rows, grid.inv.numHotseatIcons);
+
         } else {
             mContent.setGridSize(grid.inv.numHotseatIcons, rows);
         }
@@ -118,12 +121,19 @@ public class Hotseat extends FrameLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+
         mContent = findViewById(R.id.layout);
         mContent.setIsHotseat(true);
-
+        if (grid.isVerticalBarLayout()) {
+            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+        } else {
+            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
+        }
         refresh();
         resetLayout();
     }
+
     void resetLayout() {
         mContent.removeAllViewsInLayout();
 

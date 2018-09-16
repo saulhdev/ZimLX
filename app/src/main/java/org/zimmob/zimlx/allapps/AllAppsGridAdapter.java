@@ -193,12 +193,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
                 searchMarketView.setTextColor(mTheme.getSearchBarHintTextColor());
-                searchMarketView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
-                    }
-                });
+                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_SEARCH_DIVIDER:
                 ImageView divider = (ImageView) mLayoutInflater.inflate(

@@ -201,7 +201,7 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val theme by StringPref(FeatureFlags.KEY_PREF_THEME, "0")
     override val primaryColor by IntPref(FeatureFlags.KEY_PREF_PRIMARY_COLOR, R.color.colorPrimary)
     override val minibarColor by IntPref(FeatureFlags.KEY_PREF_MINIBAR_COLOR, R.color.colorPrimary)
-    override val notificationTextColor by IntPref(FeatureFlags.KEY_PREF_NOTIFICATION_COLOR, R.color.notification_text_color)
+    override val notificationTextColor by IntPref(FeatureFlags.KEY_PREF_NOTIFICATION_TEXT_COLOR, R.color.notification_text_color)
     override val notificationBackground by IntPref(FeatureFlags.KEY_PREF_NOTIFICATION_BACKGROUND, R.color.notification_background)
     override val notificationCount: Boolean by BooleanPref(FeatureFlags.KEY_PREF_NOTIFICATION_COUNT, true)
 
