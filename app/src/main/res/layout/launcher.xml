@@ -28,7 +28,6 @@
         android:layout_height="match_parent"
         launcher:layout_ignoreInsets="true">
 
-
             <org.zimmob.zimlx.dragndrop.DragLayer
                 android:id="@+id/drag_layer"
                 android:layout_width="match_parent"

@@ -62,6 +62,7 @@ import android.os.UserHandle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -454,7 +455,7 @@ public class Launcher extends Activity
             }
             Minibar.RunAction(action, this);
             if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
-                //getDrawerLayout().closeDrawers();
+                ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
             }
         });
         // frame layout spans the entire side while the minibar container has gaps at the top and bottom
@@ -2139,6 +2140,7 @@ public class Launcher extends Activity
 
     @Override
     public void onBackPressed() {
+        ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
         if (mDragController.isDragging()) {
             mDragController.cancelDrag();
             return;
@@ -2338,11 +2340,9 @@ public class Launcher extends Activity
                     }
                 })
                 .setNeutralButton(R.string.abandoned_clean_this,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int id) {
-                                final UserHandle user = Process.myUserHandle();
-                                mWorkspace.removeAbandonedPromise(packageName, user);
-                            }
+                        (dialog, id) -> {
+                            final UserHandle user = Process.myUserHandle();
+                            mWorkspace.removeAbandonedPromise(packageName, user);
                         })
                 .create().show();
     }

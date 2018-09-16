@@ -67,12 +67,13 @@
     <!-- All Apps -->
     <dimen name="all_apps_button_scale_down">0dp</dimen>
     <dimen name="all_apps_grid_view_start_margin">0dp</dimen>
-    <dimen name="all_apps_search_bar_height">80dp</dimen>
+    <dimen name="all_apps_search_bar_height">60dp</dimen>
     <dimen name="all_apps_search_bar_margin_top">35dp</dimen>
     <dimen name="all_apps_search_bar_round_height">80dp</dimen>
     <dimen name="all_apps_search_bar_round_margin_bottom">10dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
-    <dimen name="all_apps_list_bottom_padding">8dp</dimen>
+    <dimen name="all_apps_list_bottom_padding">20dp</dimen>
+    <dimen name="all_apps_list_top_padding">20dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>

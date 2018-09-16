@@ -254,12 +254,9 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         // This is a focus listener that proxies focus from a view into the list view.  This is to
         // work around the search box from getting first focus and showing the cursor.
-        getContentView().setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                if (hasFocus) {
-                    mAppsRecyclerView.requestFocus();
-                }
+        getContentView().setOnFocusChangeListener((v, hasFocus) -> {
+            if (hasFocus) {
+                mAppsRecyclerView.requestFocus();
             }
         });
 

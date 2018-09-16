@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
+import android.support.v4.widget.DrawerLayout;
 
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
@@ -71,6 +72,7 @@ public class Minibar {
             case AppDrawer:
                 if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
                     Launcher.getLauncher(mContext).showAppsView(true, false);
+                    ((DrawerLayout)Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
                 }
                 break;
             case SearchBar: {
