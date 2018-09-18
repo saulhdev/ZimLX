@@ -36,7 +36,6 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Parcelable;
@@ -50,7 +49,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.Interpolator;
@@ -3655,24 +3653,35 @@ public class Workspace extends PagedView
         });
     }
 
-    public void updateIconBadges(final Set set) {
+    public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
-        final HashSet hashSet = new HashSet();
-        mapOverItems(true, (itemInfo, view) -> {
-            if ((itemInfo instanceof ShortcutInfo) && (view instanceof BubbleTextView) && packageUserKey.updateFromItemInfo(itemInfo) && set.contains(packageUserKey)) {
-                ((BubbleTextView) view).applyBadgeState(itemInfo, true);
-                hashSet.add(itemInfo.container);
-            }
-            return false;
-        });
-        mapOverItems(false, (itemInfo, view) -> {
-            if ((itemInfo instanceof FolderInfo) && hashSet.contains(itemInfo.id) && (view instanceof FolderIcon)) {
-                FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
-                for (ShortcutInfo badgeInfoForItem : ((FolderInfo) itemInfo).contents) {
-                    folderBadgeInfo.addBadgeInfo(Workspace.this.mLauncher.getPopupDataProvider().getBadgeInfoForItem(badgeInfoForItem));
+        final HashSet<Long> folderIds = new HashSet<>();
+        // Update folder icons
+        mapOverItems(MAP_RECURSE, new ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View v) {
+                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                        && packageUserKey.updateFromItemInfo(info)) {
+                    if (updatedBadges.contains(packageUserKey)) {
+                        ((BubbleTextView) v).applyBadgeState(info, true /* animate */);
+                        folderIds.add(info.container);
+                    }
                 }
-                ((FolderIcon) view).setBadgeInfo(folderBadgeInfo);
+                // process all the shortcuts
+                return false;
             }
+        });
+        mapOverItems(MAP_NO_RECURSE, (info, v) -> {
+            if (info instanceof FolderInfo && folderIds.contains(info.id)
+                    && v instanceof FolderIcon) {
+                FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+                for (ShortcutInfo si : ((FolderInfo) info).contents) {
+                    folderBadgeInfo.addBadgeInfo(mLauncher.getPopupDataProvider()
+                            .getBadgeInfoForItem(si));
+                }
+                ((FolderIcon) v).setBadgeInfo(folderBadgeInfo);
+            }
+            // process all the shortcuts
             return false;
         });
     }

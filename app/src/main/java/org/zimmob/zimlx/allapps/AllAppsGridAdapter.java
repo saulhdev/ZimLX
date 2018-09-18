@@ -19,40 +19,44 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;
 import android.support.annotation.NonNull;
+import android.support.v4.view.accessibility.AccessibilityEventCompat;
+import android.support.v4.view.accessibility.AccessibilityNodeInfoCompat;
+import android.support.v4.view.accessibility.AccessibilityRecordCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.zimmob.zimlx.AppInfo;
 import org.zimmob.zimlx.BubbleTextView;
-import org.zimmob.zimlx.DeviceProfile;
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
 import org.zimmob.zimlx.allapps.theme.IAllAppsThemer;
 import org.zimmob.zimlx.anim.SpringAnimationHandler;
 import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.discovery.AppDiscoveryAppInfo;
+import org.zimmob.zimlx.discovery.AppDiscoveryItemView;
+
+import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
  */
 public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
-
-    // A section break in the grid
-    public static final int VIEW_TYPE_SECTION_BREAK = 1;
     // A normal icon
     public static final int VIEW_TYPE_ICON = 1 << 1;
+    // A prediction icon
+    public static final int VIEW_TYPE_PREDICTION_ICON = 1 << 2;
     // The message shown when there are no filtered results
     public static final int VIEW_TYPE_EMPTY_SEARCH = 1 << 3;
     // The message to continue to a market search when there are no filtered results
@@ -63,14 +67,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // A divider that separates the apps list and the search market button
     public static final int VIEW_TYPE_SEARCH_MARKET_DIVIDER = 1 << 5;
-    // The divider under the search field
-    public static final int VIEW_TYPE_SEARCH_DIVIDER = 1 << 6;
+    // The divider that separates prediction icons from the app list
+    public static final int VIEW_TYPE_PREDICTION_DIVIDER = 1 << 6;
+    public static final int VIEW_TYPE_APPS_LOADING_DIVIDER = 1 << 7;
+    public static final int VIEW_TYPE_DISCOVERY_ITEM = 1 << 8;
 
     // Common view type masks
-    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_DIVIDER
-            | VIEW_TYPE_SEARCH_MARKET_DIVIDER
-            | VIEW_TYPE_SECTION_BREAK;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+    public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_MARKET_DIVIDER
+            | VIEW_TYPE_PREDICTION_DIVIDER;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
+            | VIEW_TYPE_PREDICTION_ICON;
+    public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
+            | VIEW_TYPE_DISCOVERY_ITEM;
+    public static final int VIEW_TYPE_MASK_HAS_SPRINGS = VIEW_TYPE_MASK_ICON
+            | VIEW_TYPE_PREDICTION_DIVIDER;
+
     private final Launcher mLauncher;
     private final LayoutInflater mLayoutInflater;
     private final AlphabeticalAppsList mApps;
@@ -104,7 +115,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mIconLongClickListener = iconLongClickListener;
         mTheme = Utilities.getThemer().allAppsTheme(launcher);
         if (Utilities.getPrefs(launcher).getEnablePhysics())
-            mSpringAnimationHandler = new SpringAnimationHandler<>(0, new AllAppsSpringAnimationFactory());
+            mSpringAnimationHandler = new SpringAnimationHandler<>(SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -170,42 +181,45 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
-            case VIEW_TYPE_SECTION_BREAK:
-                return new ViewHolder(new View(parent.getContext()));
-            case VIEW_TYPE_ICON: {
-                View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
+            case VIEW_TYPE_ICON:
+            case VIEW_TYPE_PREDICTION_ICON:
+                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
+                        R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
+                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
-                // Ensure the all apps icon height matches the workspace icons
-                DeviceProfile profile = mLauncher.getDeviceProfile();
-                GridLayoutManager.LayoutParams lp =
-                        (GridLayoutManager.LayoutParams) icon.getLayoutParams();
-                lp.height = mTheme.iconHeight(profile.getAllAppsCellHeight(mLauncher));
-                icon.setLayoutParams(lp);
+                // Ensure the all apps icon height matches the workspace icons in portrait mode.
+                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
-            }
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
+                        .inflate(R.layout.all_apps_discovery_item, parent, false);
+                appDiscoveryItemView.init(mIconClickListener, mLauncher.getAccessibilityDelegate(),
+                        mIconLongClickListener);
+                return new ViewHolder(appDiscoveryItemView);
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
             case VIEW_TYPE_SEARCH_MARKET:
-                TextView searchMarketView = (TextView) mLayoutInflater.inflate(R.layout.all_apps_search_market,
+                View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setTextColor(mTheme.getSearchBarHintTextColor());
-                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
+                searchMarketView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
+                    }
+                });
                 return new ViewHolder(searchMarketView);
-            case VIEW_TYPE_SEARCH_DIVIDER:
-                ImageView divider = (ImageView) mLayoutInflater.inflate(
-                        R.layout.all_apps_search_divider, parent, false);
-                if (!Utilities.getPrefs(mLauncher).getUseRoundSearchBar())
-                    divider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
-                return new ViewHolder(divider);
+            case VIEW_TYPE_APPS_LOADING_DIVIDER:
+                View loadingDividerView = mLayoutInflater.inflate(
+                        R.layout.all_apps_discovery_loading_divider, parent, false);
+                return new ViewHolder(loadingDividerView);
+            case VIEW_TYPE_PREDICTION_DIVIDER:
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                ImageView marketDivider = (ImageView) mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false);
-                marketDivider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
-                return new ViewHolder(marketDivider);
+                return new ViewHolder(mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -214,38 +228,40 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         switch (holder.getItemViewType()) {
-            case VIEW_TYPE_ICON: {
+            case VIEW_TYPE_ICON:
+            case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                if (holder.mContent instanceof BubbleTextView) {
-                    BubbleTextView icon = (BubbleTextView) holder.mContent;
-                    icon.applyFromApplicationInfo(info);
-                    icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
-                    icon.setTextColor(mAppIconTextColor);
-                    // TODO: currently this cuts off the text
-                    // icon.setLines(mAppIconTextMaxLines);
-                    // icon.setMaxLines(mAppIconTextMaxLines);
-                    // icon.setSingleLine(mAppIconTextMaxLines == 1);
-                } else if (holder.mContent instanceof AllAppsIconRowView) {
-                    AllAppsIconRowView row = (AllAppsIconRowView) holder.mContent;
-                    row.applyFromApplicationInfo(info);
-                    row.setText(info.title);
-                    row.setTextColor(mAppIconTextColor);
-                }
+                BubbleTextView icon = (BubbleTextView) holder.itemView;
+                icon.applyFromApplicationInfo(info);
                 break;
-            }
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)
+                        mApps.getAdapterItems().get(position).appInfo;
+                AppDiscoveryItemView view = (AppDiscoveryItemView) holder.itemView;
+                view.apply(appDiscoveryAppInfo);
+                break;
             case VIEW_TYPE_EMPTY_SEARCH:
-                TextView emptyViewText = (TextView) holder.mContent;
+                TextView emptyViewText = (TextView) holder.itemView;
                 emptyViewText.setText(mEmptySearchMessage);
                 emptyViewText.setGravity(mApps.hasNoFilteredResults() ? Gravity.CENTER :
                         Gravity.START | Gravity.CENTER_VERTICAL);
                 break;
             case VIEW_TYPE_SEARCH_MARKET:
-                TextView searchView = (TextView) holder.mContent;
+                TextView searchView = (TextView) holder.itemView;
                 if (mMarketSearchIntent != null) {
                     searchView.setVisibility(View.VISIBLE);
                 } else {
                     searchView.setVisibility(View.GONE);
                 }
+                break;
+            case VIEW_TYPE_APPS_LOADING_DIVIDER:
+                int visLoading = mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
+                int visLoaded = !mApps.isAppDiscoveryRunning() ? View.VISIBLE : View.GONE;
+                holder.itemView.findViewById(R.id.loadingProgressBar).setVisibility(visLoading);
+                holder.itemView.findViewById(R.id.loadedDivider).setVisibility(visLoaded);
+                break;
+            case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
+                // nothing to do
                 break;
         }
         if (mBindViewCallback != null) {
@@ -282,14 +298,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public void onViewAttachedToWindow(ViewHolder holder) {
         int itemViewType = holder.getItemViewType();
-        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, VIEW_TYPE_MASK_HAS_SPRINGS))
             mSpringAnimationHandler.add(holder.itemView, holder);
     }
 
     @Override
     public void onViewDetachedFromWindow(ViewHolder holder) {
         int itemViewType = holder.getItemViewType();
-        if (mSpringAnimationHandler != null && isViewType(itemViewType, 70))
+        if (mSpringAnimationHandler != null && isViewType(itemViewType, VIEW_TYPE_MASK_HAS_SPRINGS))
             mSpringAnimationHandler.remove(holder.itemView);
     }
 
@@ -378,7 +394,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
      * A subclass of GridLayoutManager that overrides accessibility values during app search.
      */
     public class AppsGridLayoutManager extends GridLayoutManager {
-
         public AppsGridLayoutManager(Context context) {
             super(context, 1, GridLayoutManager.VERTICAL, false);
         }
@@ -389,23 +404,56 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
             // Ensure that we only report the number apps for accessibility not including other
             // adapter views
-            event.setItemCount(mApps.getNumFilteredApps());
+            final AccessibilityRecordCompat record = AccessibilityEventCompat
+                    .asRecord(event);
+            record.setItemCount(mApps.getNumFilteredApps());
+            record.setFromIndex(Math.max(0,
+                    record.getFromIndex() - getRowsNotForAccessibility(record.getFromIndex())));
+            record.setToIndex(Math.max(0,
+                    record.getToIndex() - getRowsNotForAccessibility(record.getToIndex())));
         }
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
                                                RecyclerView.State state) {
-            if (mApps.hasNoFilteredResults()) {
-                // Disregard the no-search-results text as a list item for accessibility
-                return 0;
-            } else {
-                return super.getRowCountForAccessibility(recycler, state);
-            }
+            return super.getRowCountForAccessibility(recycler, state) -
+                    getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
-        public int getPaddingBottom() {
-            return mLauncher.getDragLayer().getInsets().bottom;
+        public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
+                                                             RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+            super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
+
+            ViewGroup.LayoutParams lp = host.getLayoutParams();
+            AccessibilityNodeInfoCompat.CollectionItemInfoCompat cic = info.getCollectionItemInfo();
+            if (!(lp instanceof LayoutParams) || (cic == null)) {
+                return;
+            }
+            LayoutParams glp = (LayoutParams) lp;
+            info.setCollectionItemInfo(AccessibilityNodeInfoCompat.CollectionItemInfoCompat.obtain(
+                    cic.getRowIndex() - getRowsNotForAccessibility(glp.getViewAdapterPosition()),
+                    cic.getRowSpan(),
+                    cic.getColumnIndex(),
+                    cic.getColumnSpan(),
+                    cic.isHeading(),
+                    cic.isSelected()));
+        }
+
+        /**
+         * Returns the number of rows before {@param adapterPosition}, including this position
+         * which should not be counted towards the collection info.
+         */
+        private int getRowsNotForAccessibility(int adapterPosition) {
+            List<AlphabeticalAppsList.AdapterItem> items = mApps.getAdapterItems();
+            adapterPosition = Math.max(adapterPosition, mApps.getAdapterItems().size() - 1);
+            int extraRows = 0;
+            for (int i = 0; i <= adapterPosition; i++) {
+                if (!isViewType(items.get(i).viewType, VIEW_TYPE_MASK_CONTENT)) {
+                    extraRows++;
+                }
+            }
+            return extraRows;
         }
     }
 

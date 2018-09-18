@@ -681,7 +681,6 @@
     <string name="apps_customize_apps_scroll_format">Apps page %1$d of %2$d</string>
     <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
     <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
-    <string name="pref_title__notification_text_color">Notification Text Color</string>
     <string name="pref_title__notification_background_color">Notification Background Color</string>
     <string name="pref_title__notification_count">Show Notification Count</string>
 
@@ -706,5 +705,19 @@
     <string name="dt2s_root">Using root</string>
     <string name="dt2s_admin_hint">To be able to use double tap to lock, you have to enable device admin for Lawnchair. This is a secure lock, meaning you have to enter your PIN on the next unlock, if you have any.</string>
     <string name="dt2s_admin_warning">By disabling device admin, you will not be able to use double tap to lock on your home screen.</string>
+
+    <!-- Predictive apps -->
+    <string name="predictive_apps_title">Predictive apps</string>
+    <string name="predictive_apps_summary_on">Your favorite apps will appear at the top of the drawer</string>
+    <string name="predictive_apps_summary_off">Your favorite apps won\'t appear at the top of the drawer</string>
+
+    <string name="icon_badging_title">Notification dots</string>
+    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_on">On</string>
+    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_off">Off</string>
+    <string name="msg_missing_notification_access">To show Notification Dots, turn on app notifications for <xliff:g example="My App" id="name">%1$s</xliff:g></string>
+    <string name="title_missing_notification_access">Notification access needed</string>
+    <string name="title_change_settings">Change settings</string>
 
 </resources>

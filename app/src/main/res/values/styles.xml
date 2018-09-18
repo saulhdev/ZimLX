@@ -20,7 +20,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -47,12 +47,12 @@
         <item name="folderIconTextColor">@color/quantum_panel_text_color</item>
         <item name="folderNameTextColor">@color/folder_name_text_color</item>
         <item name="folderBgIntensity">@integer/folderBgIntensity</item>
-        <item name="deepShortcutsHandleColor">#a6a6a6</item>
-        <item name="appPopupTextColor">#686666</item>
+        <item name="deepShortcutsHandleColor">?android:textColorSecondary</item>
+        <item name="appPopupTextColor">?android:textColorSecondary</item>
         <item name="appPopupHeaderBgColor">@color/popup_header_background_color</item>
-        <item name="popupColorPrimary">#807f7f</item>
-        <item name="popupColorSecondary">#686666</item>
-        <item name="popupColorTertiary">#464646</item>
+        <item name="popupColorPrimary">@color/popup_background_color</item>
+        <item name="popupColorSecondary">#fff5f5f5</item>
+        <item name="popupColorTertiary">@color/notification_color_beneath</item>
         <item name="allAppsContainerColor">@color/all_apps_container_color</item>
         <item name="allAppsContainerColorBlur">@color/all_apps_container_color_blur</item>
         <item name="allAppsEmptySearchTextColor">@color/all_apps_empty_search_text_color</item>

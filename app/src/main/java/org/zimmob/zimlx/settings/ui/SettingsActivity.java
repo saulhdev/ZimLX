@@ -62,15 +62,19 @@ import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceFlags;
 
+import java.util.Objects;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
 public class SettingsActivity extends AppCompatActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
-
+    public static final String KEY_PREDICTIVE_APPS = "pref_predictive_apps";
     private static IPreferenceProvider sharedPrefs;
 
     @BindView(R.id.toolbar)
@@ -167,7 +171,7 @@ public class SettingsActivity extends AppCompatActivity implements
             if (item instanceof SubPreference) {
                 SubPreference subPreference = (SubPreference) item;
                 if (subPreference.onLongClick(null)) {
-                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
+                    ((SettingsActivity) Objects.requireNonNull(getActivity())).onPreferenceStartFragment(this, subPreference);
                     return true;
                 } else {
                     return false;
@@ -213,7 +217,7 @@ public class SettingsActivity extends AppCompatActivity implements
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(R.string.settings_button_text);
+            requireNonNull(getActivity()).setTitle(R.string.settings_button_text);
         }
     }
 
@@ -242,7 +246,7 @@ public class SettingsActivity extends AppCompatActivity implements
                 prefWeatherProvider.setOnPreferenceChangeListener(this);
                 updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
                 Preference overrideShapePreference = findPreference(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE);
-                if (IconShapeOverride.Companion.isSupported(getActivity())) {
+                if (IconShapeOverride.Companion.isSupported(requireNonNull(getActivity()))) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
                 } else {
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
@@ -264,12 +268,11 @@ public class SettingsActivity extends AppCompatActivity implements
                 }
 
                 // Remove Google Now tab option when Lawnfeed is not installed
-                int enabledState = ILauncherClient.Companion.getEnabledState(getContext());
+                int enabledState = ILauncherClient.Companion.getEnabledState(requireNonNull(getContext()));
                 if (BuildConfig.ENABLE_LAWNFEED && enabledState == ILauncherClient.Companion.DISABLED_NO_PROXY_APP) {
                     getPreferenceScreen().removePreference(findPreference(FeatureFlags.KEY_PREF_SHOW_NOW_TAB));
                 }
             }
-
         }
 
         @Override
@@ -360,7 +363,7 @@ public class SettingsActivity extends AppCompatActivity implements
                                 public void onDialogDismissed(int dialogId) {
                                 }
                             });
-                            dialog.show(getActivity().getFragmentManager(), "color-picker-dialog");
+                            dialog.show(requireNonNull(getActivity()).getFragmentManager(), "color-picker-dialog");
                         }
 
                         return super.onPreferenceTreeClick(preference);
@@ -377,7 +380,7 @@ public class SettingsActivity extends AppCompatActivity implements
 
         private boolean checkPermission(String permission) {
             boolean granted = ContextCompat.checkSelfPermission(
-                    getActivity(),
+                    requireNonNull(getActivity()),
                     permission) == PackageManager.PERMISSION_GRANTED;
             if (granted) return true;
             ActivityCompat.requestPermissions(
@@ -388,13 +391,13 @@ public class SettingsActivity extends AppCompatActivity implements
         }
 
         private int getContent() {
-            return getArguments().getInt(CONTENT_RES_ID);
+            return Objects.requireNonNull(getArguments()).getInt(CONTENT_RES_ID);
         }
 
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(getArguments().getString(TITLE));
+            Objects.requireNonNull(getActivity()).setTitle(getArguments().getString(TITLE));
         }
 
         @Override

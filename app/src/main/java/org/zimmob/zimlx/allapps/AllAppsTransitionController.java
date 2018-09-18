@@ -262,7 +262,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
         if (fling) {
             if (velocity < 0 && mPullDownState < 2) {
                 calculateDuration(velocity, mAppsView.getTranslationY());
-                mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
+                mLauncher.showAppsView(true, true, false /* focusSearchBar */);
                 if (hasSpringAnimationHandler())
                     mSpringAnimationHandler.animateToFinalPosition(0, 1);
             } else if (mPullDownAction != FeatureFlags.PULLDOWN_APPS_SEARCH || mPullDownState < 2) {
@@ -276,7 +276,7 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
                 mLauncher.showWorkspace(true);
             } else {
                 calculateDuration(velocity, Math.abs(mAppsView.getTranslationY()));
-                mLauncher.showAppsView(true /* animated */, false /* focusSearchBar */);
+                mLauncher.showAppsView(true, true, false /* focusSearchBar */);
             }
         }
         mPullDownState = mPullDownAction != 0 ? 1 : 0;
@@ -297,8 +297,11 @@ public class AllAppsTransitionController implements TouchController, VerticalPul
             mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
             mHotseat.setBackgroundTransparent(true /* transparent */);
             if (!mLauncher.isAllAppsVisible()) {
+                mLauncher.tryAndUpdatePredictedApps();
                 mAppsView.setVisibility(View.VISIBLE);
-                mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
+                if (!FeatureFlags.LAUNCHER_GRADIENT_ALL_APPS) {
+                    mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
+                }
             }
         }
     }

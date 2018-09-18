@@ -60,10 +60,18 @@ public final class FeatureFlags extends BaseFlags {
     public static final String KEY_PREF_PRIMARY_COLOR = "pref_primary_color";
     public static final String KEY_PREF_MINIBAR_COLOR = "pref_minibar_color";
     public static final String KEY_PREF_MINIBAR_ITEMS = "pref_minibar_items";
-    public static final String KEY_PREF_NOTIFICATION_TEXT_COLOR = "pref_notification_text_color";
     public static final String KEY_PREF_NOTIFICATION_BACKGROUND = "pref_notification_background";
     public static final String KEY_PREF_NOTIFICATION_COUNT = "pref_notification_count";
-
+    public static final String KEY_PREF_PREDICTIVE_APPS = "pref_predictive_apps";
+    public static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
+    /**
+     * Hidden field Settings.Secure.NOTIFICATION_BADGING
+     */
+    public static final String NOTIFICATION_BADGING = "notification_badging";
+    /**
+     * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
+     */
+    public static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public static final String KEY_PREF_THEME_MODE = "pref_themeMode";
     public static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";

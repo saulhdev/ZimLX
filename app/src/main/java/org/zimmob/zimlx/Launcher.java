@@ -23,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
@@ -47,7 +46,6 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
@@ -77,7 +75,6 @@ import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.view.Window;
-import android.view.WindowInsets;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -132,6 +129,7 @@ import org.zimmob.zimlx.shortcuts.ShortcutKey;
 import org.zimmob.zimlx.shortcuts.ShortcutsItemView;
 import org.zimmob.zimlx.util.ActivityResultInfo;
 import org.zimmob.zimlx.util.ComponentKey;
+import org.zimmob.zimlx.util.ComponentKeyMapper;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageManagerHelper;
@@ -385,6 +383,9 @@ public class Launcher extends Activity
             } else if (Intent.ACTION_USER_PRESENT.equals(action)) {
                 mUserPresent = true;
                 updateAutoAdvanceState();
+            } else if (Intent.ACTION_HEADSET_PLUG.equals(action)) {
+                // We propose the user different suggestions when headset is plugged in
+                tryAndUpdatePredictedApps();
             }
         }
     };
@@ -539,6 +540,8 @@ public class Launcher extends Activity
 
         Utilities.showOutdatedLawnfeedPopup(this);
         mLauncherTab = new LauncherTab(this);
+        mPredictiveAppsProvider = new PredictiveAppsProvider(this);
+        tryAndUpdatePredictedApps();
 
         initMinibar();
         Settings.init(this);
@@ -614,7 +617,9 @@ public class Launcher extends Activity
         int oldSystemUiFlags = getWindow().getDecorView().getSystemUiVisibility();
         int newSystemUiFlags = oldSystemUiFlags;
         if (activate) {
-            newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                newSystemUiFlags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
+            }
         } else {
             newSystemUiFlags &= ~(View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
         }
@@ -958,9 +963,12 @@ public class Launcher extends Activity
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
         } else if (mOnResumeState == State.APPS) {
-            showAppsView(false /* animated */, mAppsView.shouldRestoreImeState() /* focusSearchBar */);
+            showAppsView(false, true, mAppsView.shouldRestoreImeState() /* focusSearchBar */);
         } else if (mOnResumeState == State.WIDGETS) {
             showWidgetsView(false, false);
+        }
+        if (mOnResumeState != State.APPS) {
+            tryAndUpdatePredictedApps();
         }
         mOnResumeState = State.NONE;
 
@@ -1130,7 +1138,7 @@ public class Launcher extends Activity
             switch (keyCode) {
                 case 29:
                     if (this.mState == State.WORKSPACE) {
-                        showAppsView(true, true);
+                        showAppsView(true, true, true);
                         return true;
                     }
                     break;
@@ -1654,7 +1662,7 @@ public class Launcher extends Activity
                 if (!Utilities.getPrefs(this).getHomeOpensDrawer() || mState != State.WORKSPACE || mWorkspace.getCurrentPage() != 0 || mOverviewPanel.getVisibility() == View.VISIBLE) {
                     showWorkspace(true);
                 } else {
-                    showAppsView(true, false);
+                    showAppsView(true, true, false);
                 }
             } else {
                 mOnResumeState = State.WORKSPACE;
@@ -2290,7 +2298,7 @@ public class Launcher extends Activity
 
     public void onLongClickAllAppsHandle() {
         if (!isAppsViewVisible()) {
-            showAppsView(true, true);
+            showAppsView(true, true, true);
         }
     }
 
@@ -2317,7 +2325,7 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton(View v) {
         if (!isAppsViewVisible()) {
             //getUserEventDispatcher().logActionOnControl(Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
-            showAppsView(true /* animated */, false /* updatePredictedApps */);
+            showAppsView(true, true, false /* updatePredictedApps */);
         } else {
             showWorkspace(true);
         }
@@ -2333,12 +2341,7 @@ public class Launcher extends Activity
         new AlertDialog.Builder(this)
                 .setTitle(R.string.abandoned_promises_title)
                 .setMessage(R.string.abandoned_promise_explanation)
-                .setPositiveButton(R.string.abandoned_search, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        startMarketIntentForPackage(v, packageName);
-                    }
-                })
+                .setPositiveButton(R.string.abandoned_search, (dialogInterface, i) -> startMarketIntentForPackage(v, packageName))
                 .setNeutralButton(R.string.abandoned_clean_this,
                         (dialog, id) -> {
                             final UserHandle user = Process.myUserHandle();
@@ -2531,6 +2534,9 @@ public class Launcher extends Activity
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);
+                    if (isAllAppsVisible()) {
+                        mPredictiveAppsProvider.updateComponentCount(intent.getComponent());
+                    }
                 }
             } finally {
                 StrictMode.setVmPolicy(oldPolicy);
@@ -2619,6 +2625,9 @@ public class Launcher extends Activity
             } else if (user == null || user.equals(Utilities.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
+                if (isAllAppsVisible()) {
+                    mPredictiveAppsProvider.updateComponentCount(intent.getComponent());
+                }
             } else {
                 LauncherAppsCompat.getInstance(this).startActivityForProfile(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
@@ -3026,8 +3035,11 @@ public class Launcher extends Activity
     /**
      * Shows the apps view.
      */
-    public void showAppsView(boolean animated, boolean focusSearchBar) {
+    public void showAppsView(boolean animated, boolean updatePredictedApps, boolean focusSearchBar) {
         markAppsViewShown();
+        if (updatePredictedApps) {
+            tryAndUpdatePredictedApps();
+        }
         showAppsOrWidgets(State.APPS, animated, focusSearchBar);
     }
 
@@ -3149,13 +3161,29 @@ public class Launcher extends Activity
 
     void exitSpringLoadedDragMode() {
         if (mState == State.APPS_SPRING_LOADED) {
-            showAppsView(true /* animated */, false /* focusSearchBar */);
+            showAppsView(true, true, false /* focusSearchBar */);
         } else if (mState == State.WIDGETS_SPRING_LOADED) {
             showWidgetsView(true, false);
         } else if (mState == State.WORKSPACE_SPRING_LOADED) {
             showWorkspace(true);
         }
     }
+
+    /**
+     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
+     * resumed.
+     */
+    public void tryAndUpdatePredictedApps() {
+        List<ComponentKeyMapper<AppInfo>> apps = null;
+        if (Utilities.getPrefs(this).getEnablePredictiveApps()) {
+            apps = mPredictiveAppsProvider.getPredictions();
+        }
+
+        if (apps != null) {
+            mAppsView.setPredictedApps(apps);
+        }
+    }
+
 
     @Override
     public boolean dispatchPopulateAccessibilityEvent(AccessibilityEvent event) {
@@ -3837,6 +3865,7 @@ public class Launcher extends Activity
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
+            tryAndUpdatePredictedApps();
         }
     }
 

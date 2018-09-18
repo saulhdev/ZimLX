@@ -51,6 +51,8 @@ import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -88,6 +90,7 @@ import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceFlags;
 import org.zimmob.zimlx.preferences.PreferenceImpl;
 import org.zimmob.zimlx.preferences.PreferenceProvider;
+import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.shortcuts.DeepShortcutManager;
 import org.zimmob.zimlx.shortcuts.ShortcutInfoCompat;
 import org.zimmob.zimlx.util.IconNormalizer;
@@ -100,6 +103,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -116,6 +120,9 @@ import java.util.regex.Pattern;
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
+
+    private static final int SUGGESTIONS_DAY_START = 5;
+    private static final int SUGGESTIONS_DAY_END = 21;
 
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
@@ -981,6 +988,34 @@ public final class Utilities {
             throw new IllegalStateException("Not an adaptive icon");
     }
 
+    public static boolean hasHeadset(Context context) {
+        if (ATLEAST_NOUGAT) {
+            AudioManager manager = context.getSystemService(AudioManager.class);
+            if (manager == null) {
+                return false;
+            }
+
+            AudioDeviceInfo[] devices = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+            for (AudioDeviceInfo device : devices) {
+                switch (device.getType()) {
+                    case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
+                    case AudioDeviceInfo.TYPE_USB_HEADSET:
+                    case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
+                    case AudioDeviceInfo.TYPE_WIRED_HEADSET:
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static boolean isDayTime() {
+        Calendar calendar = Calendar.getInstance();
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        return hours > SUGGESTIONS_DAY_START && hours < SUGGESTIONS_DAY_END;
+    }
+
     public static Drawable getBackground(Drawable drawable) {
         ensureAdaptiveIcon(drawable);
         if (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable)
@@ -1235,6 +1270,11 @@ public final class Utilities {
         drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
         drawable.draw(canvas);
         return bitmap;
+    }
+
+    public static boolean arePredictiveAppsEnabled(Context context) {
+        SharedPreferences prefs = getSharedPrefs(context);
+        return prefs.getBoolean(SettingsActivity.KEY_PREDICTIVE_APPS, false);
     }
 
     public static void killLauncher() {

@@ -60,13 +60,13 @@ public class AppInfo extends ItemInfoWithIcon implements EditableItemInfo {
     /**
      * Indicates whether we're using a low res icon
      */
-    boolean usingLowResIcon;
+    public boolean usingLowResIcon;
     int flags = 0;
 
     /**
      * {@see ShortcutInfo#isDisabled}
      */
-    int isDisabled = ShortcutInfo.DEFAULT;
+    public int isDisabled = ShortcutInfo.DEFAULT;
 
     public AppInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;

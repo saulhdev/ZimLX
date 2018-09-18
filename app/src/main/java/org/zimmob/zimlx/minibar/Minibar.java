@@ -71,7 +71,7 @@ public class Minibar {
                 break;
             case AppDrawer:
                 if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
-                    Launcher.getLauncher(mContext).showAppsView(true, false);
+                    Launcher.getLauncher(mContext).showAppsView(true, true, false);
                     ((DrawerLayout)Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
                 }
                 break;

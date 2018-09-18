@@ -57,6 +57,7 @@ import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.graphics.TintedDrawableSpan;
 import org.zimmob.zimlx.keyboard.FocusedItemDecorator;
 import org.zimmob.zimlx.util.ComponentKey;
+import org.zimmob.zimlx.util.ComponentKeyMapper;
 import org.zimmob.zimlx.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -144,6 +145,13 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
      */
     public void setApps(List<AppInfo> apps) {
         mApps.setApps(apps);
+    }
+
+    /**
+     * Sets the current set of predicted apps.
+     */
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        mApps.setPredictedApps(apps);
     }
 
     /**

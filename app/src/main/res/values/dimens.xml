@@ -239,4 +239,6 @@
      the drag view should be offset from the position of the original view. -->
     <dimen name="dragViewOffsetX">0dp</dimen>
     <dimen name="dragViewOffsetY">0dp</dimen>
+
+    <dimen name="settings_icon_size">36dp</dimen>
 </resources>

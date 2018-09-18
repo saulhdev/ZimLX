@@ -30,6 +30,7 @@ import org.zimmob.zimlx.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Contains data to be used in an icon badge.
@@ -135,8 +136,8 @@ public class BadgeInfo {
             return null;
         }
         if (mNotificationIcon == null) {
-            Drawable icon = mNotificationInfo.getIconForBackground(context, badgeColor)
-                    .getConstantState().newDrawable();
+            Drawable icon = Objects.requireNonNull(mNotificationInfo.getIconForBackground(context, badgeColor)
+                    .getConstantState()).newDrawable();
             int iconSize = badgeSize - badgePadding * 2;
             icon.setBounds(0, 0, iconSize, iconSize);
             Bitmap iconBitmap = Bitmap.createBitmap(badgeSize, badgeSize, Bitmap.Config.ARGB_8888);

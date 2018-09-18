@@ -16,14 +16,23 @@
 package org.zimmob.zimlx.allapps;
 
 import android.content.Context;
+import android.os.Process;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.util.Log;
 
 import org.zimmob.zimlx.AppFilter;
 import org.zimmob.zimlx.AppInfo;
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.LauncherAppState;
 import org.zimmob.zimlx.compat.AlphabeticIndexCompat;
+import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.discovery.AppDiscoveryAppInfo;
+import org.zimmob.zimlx.discovery.AppDiscoveryItem;
+import org.zimmob.zimlx.discovery.AppDiscoveryUpdateState;
 import org.zimmob.zimlx.model.AppNameComparator;
 import org.zimmob.zimlx.util.ComponentKey;
+import org.zimmob.zimlx.util.ComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +46,16 @@ import java.util.TreeMap;
  * The alphabetically sorted list of applications.
  */
 public class AlphabeticalAppsList {
+    public static final String TAG = "AlphabeticalAppsList";
+    private static final boolean DEBUG = false;
+    private static final boolean DEBUG_PREDICTIONS = false;
+
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION = 0;
+    private static final int FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS = 1;
+
+    private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
+    // The set of predicted app component names
+    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
@@ -51,6 +70,12 @@ public class AlphabeticalAppsList {
     private List<SectionInfo> mSections = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
+    // The set of predicted apps resolved from the component names and the current set of apps
+    private final List<AppInfo> mPredictedApps = new ArrayList<>();
+    private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
+    private AppDiscoveryUpdateState mAppDiscoveryUpdateState;
+
+
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
@@ -59,6 +84,7 @@ public class AlphabeticalAppsList {
     private AppNameComparator mAppNameComparator;
     private MergeAlgorithm mMergeAlgorithm;
     private int mNumAppsPerRow;
+    private int mNumPredictedAppsPerRow;
     private int mNumAppRowsInAdapter;
 
     public AlphabeticalAppsList(Context context) {
@@ -145,6 +171,9 @@ public class AlphabeticalAppsList {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
+    boolean shouldShowEmptySearch() {
+        return hasNoFilteredResults() && !isAppDiscoveryRunning() && mDiscoveredApps.isEmpty();
+    }
     /**
      * Sets the sorted list of filtered components.
      */
@@ -157,6 +186,92 @@ public class AlphabeticalAppsList {
         }
         return false;
     }
+
+    public void onAppDiscoverySearchUpdate(@Nullable AppDiscoveryItem app,
+                                           @NonNull AppDiscoveryUpdateState state) {
+        mAppDiscoveryUpdateState = state;
+        switch (state) {
+            case START:
+                mDiscoveredApps.clear();
+                break;
+            case UPDATE:
+                mDiscoveredApps.add(new AppDiscoveryAppInfo(app));
+                break;
+        }
+        updateAdapterItems();
+    }
+
+    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
+        if (mComponentToAppMap.isEmpty()) {
+            // Apps have not been bound yet.
+            return Collections.emptyList();
+        }
+
+        List<AppInfo> predictedApps = new ArrayList<>();
+        for (ComponentKeyMapper<AppInfo> mapper : components) {
+            AppInfo info = mapper.getItem(mComponentToAppMap);
+            if (info != null) {
+                predictedApps.add(info);
+            } else {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    Log.e(TAG, "Predicted app not found: " + mapper);
+                }
+            }
+            // Stop at the number of predicted apps
+            if (predictedApps.size() == mNumPredictedAppsPerRow) {
+                break;
+            }
+        }
+        return predictedApps;
+    }
+
+    /**
+     * Sets the current set of predicted apps.
+     * <p>
+     * This can be called before we get the full set of applications, we should merge the results
+     * only in onAppsUpdated() which is idempotent.
+     * <p>
+     * If the number of predicted apps is the same as the previous list of predicted apps,
+     * we can optimize by swapping them in place.
+     */
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        mPredictedAppComponents.clear();
+        mPredictedAppComponents.addAll(apps);
+
+        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
+        // We only need to do work if any of the visible predicted apps have changed.
+        if (!newPredictedApps.equals(mPredictedApps)) {
+            if (newPredictedApps.size() == mPredictedApps.size()) {
+                swapInNewPredictedApps(newPredictedApps);
+            } else {
+                // We need to update the appIndex of all the items.
+                onAppsUpdated();
+            }
+        }
+    }
+
+    /**
+     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
+     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
+     * <p>
+     * Note: This should only be called if the # of predicted apps is the same.
+     * This method assumes that predicted apps are the first items in the adapter.
+     */
+    private void swapInNewPredictedApps(List<AppInfo> apps) {
+        mPredictedApps.clear();
+        mPredictedApps.addAll(apps);
+
+        int size = apps.size();
+        for (int i = 0; i < size; ++i) {
+            AppInfo info = apps.get(i);
+            AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
+            appItem.rowAppIndex = i;
+            mAdapterItems.set(i, appItem);
+            mFilteredApps.set(i, info);
+            mAdapter.notifyItemChanged(i);
+        }
+    }
+
 
     /**
      * Adds new apps to the list.
@@ -255,7 +370,9 @@ public class AlphabeticalAppsList {
      * mCachedSectionNames to have been calculated for the set of all apps in mApps.
      */
     private void updateAdapterItems() {
-        SectionInfo lastSectionInfo = null;
+        refillAdapterItems();
+        refreshRecyclerView();
+        /*SectionInfo lastSectionInfo = null;
         String lastSectionName = null;
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
@@ -290,10 +407,8 @@ public class AlphabeticalAppsList {
             }
 
             // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, sectionName,
-                    lastSectionInfo.numApps++, info);
-            if (lastSectionInfo.firstAppItem == null) {
-                lastSectionInfo.firstAppItem = appItem;
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
                 lastFastScrollerSectionInfo.fastScrollToItem = appItem;
             }
             mAdapterItems.add(appItem);
@@ -353,7 +468,172 @@ public class AlphabeticalAppsList {
         // Refresh the recycler view
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+        }*/
+    }
+
+    private void refreshRecyclerView() {
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
         }
+    }
+
+    private void refillAdapterItems() {
+        String lastSectionName = null;
+        FastScrollSectionInfo lastFastScrollerSectionInfo = null;
+        int position = 0;
+        int appIndex = 0;
+
+        // Prepare to update the list of sections, filtered apps, etc.
+        mFilteredApps.clear();
+        mFastScrollerSections.clear();
+        mAdapterItems.clear();
+
+        if (DEBUG_PREDICTIONS) {
+            if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                        Process.myUserHandle())));
+            }
+        }
+
+        // Process the predicted app components
+        mPredictedApps.clear();
+        if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
+            mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
+
+            if (!mPredictedApps.isEmpty()) {
+                // Add a section for the predictions
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
+                mFastScrollerSections.add(lastFastScrollerSectionInfo);
+
+                // Add the predicted app items
+                for (AppInfo info : mPredictedApps) {
+                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, "", info,
+                            appIndex++);
+                    if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                        lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                    }
+                    mAdapterItems.add(appItem);
+                    mFilteredApps.add(info);
+                }
+
+                mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
+            }
+        }
+
+        // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
+        // ordered set of sections
+        for (AppInfo info : getFiltersAppInfos()) {
+            String sectionName = getAndUpdateCachedSectionName(info.title);
+
+            // Create a new section if the section names do not match
+            if (!sectionName.equals(lastSectionName)) {
+                lastSectionName = sectionName;
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                mFastScrollerSections.add(lastFastScrollerSectionInfo);
+            }
+
+            // Create an app item
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+            }
+            mAdapterItems.add(appItem);
+            mFilteredApps.add(info);
+        }
+
+        if (hasFilter()) {
+            if (isAppDiscoveryRunning() || mDiscoveredApps.size() > 0) {
+                mAdapterItems.add(AdapterItem.asLoadingDivider(position++));
+                // Append all app discovery results
+                for (int i = 0; i < mDiscoveredApps.size(); i++) {
+                    AppDiscoveryAppInfo appDiscoveryAppInfo = mDiscoveredApps.get(i);
+                    if (appDiscoveryAppInfo.isRecent) {
+                        // already handled in getFilteredAppInfos()
+                        continue;
+                    }
+                    AdapterItem item = AdapterItem.asDiscoveryItem(position++,
+                            "", appDiscoveryAppInfo, appIndex++);
+                    mAdapterItems.add(item);
+                }
+
+                if (!isAppDiscoveryRunning()) {
+                    mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+                }
+            } else {
+                // Append the search market item
+                if (hasNoFilteredResults()) {
+                    mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+                } else {
+                    mAdapterItems.add(AdapterItem.asMarketDivider(position++));
+                }
+                mAdapterItems.add(AdapterItem.asMarketSearch(position++));
+            }
+        }
+
+        if (mNumAppsPerRow != 0) {
+            // Update the number of rows in the adapter after we do all the merging (otherwise, we
+            // would have to shift the values again)
+            int numAppsInSection = 0;
+            int numAppsInRow = 0;
+            int rowIndex = -1;
+            for (AdapterItem item : mAdapterItems) {
+                item.rowIndex = 0;
+                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
+                    numAppsInSection = 0;
+                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                    if (numAppsInSection % mNumAppsPerRow == 0) {
+                        numAppsInRow = 0;
+                        rowIndex++;
+                    }
+                    item.rowIndex = rowIndex;
+                    item.rowAppIndex = numAppsInRow;
+                    numAppsInSection++;
+                    numAppsInRow++;
+                }
+            }
+            mNumAppRowsInAdapter = rowIndex + 1;
+
+            // Pre-calculate all the fast scroller fractions
+            switch (mFastScrollDistributionMode) {
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                    float rowFraction = 1f / mNumAppRowsInAdapter;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+
+                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    }
+                    break;
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                    float cumulativeTouchFraction = 0f;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+                        info.touchFraction = cumulativeTouchFraction;
+                        cumulativeTouchFraction += perSectionTouchFraction;
+                    }
+                    break;
+            }
+        }
+    }
+
+    public boolean isAppDiscoveryRunning() {
+        return mAppDiscoveryUpdateState == AppDiscoveryUpdateState.START
+                || mAppDiscoveryUpdateState == AppDiscoveryUpdateState.UPDATE;
     }
 
     private List<AppInfo> getFiltersAppInfos() {
@@ -489,23 +769,23 @@ public class AlphabeticalAppsList {
         public int rowAppIndex;
         // The associated AppInfo for the app
         public AppInfo appInfo = null;
+        public int appIndex = -1;
 
-        public static AdapterItem asSectionBreak(int pos, SectionInfo section) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SECTION_BREAK;
-            item.position = pos;
-            section.sectionBreakItem = item;
+        public static AdapterItem asPredictedApp(int pos, String sectionName, AppInfo appInfo,
+                                                 int appIndex) {
+            AdapterItem item = asApp(pos, sectionName, appInfo, appIndex);
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
             return item;
         }
 
-        public static AdapterItem asApp(int pos, String sectionName,
-                                        int sectionAppIndex, AppInfo appInfo) {
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                                        int appIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
             item.position = pos;
             item.sectionName = sectionName;
-            item.sectionAppIndex = sectionAppIndex;
             item.appInfo = appInfo;
+            item.appIndex = appIndex;
             return item;
         }
 
@@ -516,13 +796,16 @@ public class AlphabeticalAppsList {
             return item;
         }
 
-        public static AdapterItem asSearchDivder(int pos) {
+        public static AdapterItem asDiscoveryItem(int pos, String sectionName, AppInfo appInfo,
+                                                  int appIndex) {
             AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER;
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_DISCOVERY_ITEM;
             item.position = pos;
+            item.sectionName = sectionName;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
             return item;
         }
-
         public static AdapterItem asMarketDivider(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER;
@@ -533,6 +816,20 @@ public class AlphabeticalAppsList {
         public static AdapterItem asMarketSearch(int pos) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asLoadingDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_APPS_LOADING_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asPredictionDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER;
             item.position = pos;
             return item;
         }

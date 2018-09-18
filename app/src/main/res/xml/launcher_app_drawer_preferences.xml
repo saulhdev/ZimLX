@@ -39,6 +39,14 @@
             android:persistent="true"
             android:title="@string/use_round_searhbar" />
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_predictive_apps"
+            android:persistent="true"
+            android:summaryOff="@string/predictive_apps_summary_off"
+            android:summaryOn="@string/predictive_apps_summary_on"
+            android:title="@string/predictive_apps_title" />
+
         <org.zimmob.zimlx.preferences.SeekbarPreference
             android:key="pref_allAppsOpacitySB"
             android:persistent="true"

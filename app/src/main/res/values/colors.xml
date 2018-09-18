@@ -69,7 +69,7 @@
     <color name="widgets_view_item_text_color">#C4C4C4</color>
 
     <color name="secondary_color">#0277BD</color>
-    <color name="accent_material_light">#4286F5</color>
+    <!--<color name="accent_material_light">#4286F5</color>-->
 
     <color name="wallpaper_picker_translucent_gray">#66212121</color>
 
@@ -79,7 +79,7 @@
     <color name="qsb_background_black">@android:color/black</color>
     <color name="weather_widget_text_color">#ffffffff</color>
     <color name="default_shadow_color_no_alpha">#ff000000</color>
-    <color name="popup_header_background_color">#706f6f</color>
+    <color name="popup_header_background_color">#ffeeeeee</color>
     <color name="popup_header_background_color_dark">#ff101010</color>
     <color name="popup_header_background_color_black">@android:color/black</color>
     <color name="popup_background_color">#ffffffff</color>
@@ -140,6 +140,5 @@
 
     <!-- NOTIFICATION -->
     <color name="notification_background">#FFAF174A</color>
-    <color name="notification_text_color">#ffffff</color>
 
 </resources>

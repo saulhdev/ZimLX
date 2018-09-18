@@ -585,7 +585,6 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
                 int scrollY = getScrollY();
                 canvas.translate((float) scrollX, (float) scrollY);
                 mIconPalette = ((FastBitmapDrawable) this.mIcon).getIconPalette();
-                //mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale, mTempSpaceForBadgeOffset, mIconPalette);
                 mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
                         mTempSpaceForBadgeOffset);
                 canvas.translate((float) (-scrollX), (float) (-scrollY));
