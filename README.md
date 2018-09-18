@@ -4,7 +4,7 @@
 <img src="Logo/logotype.png" width=50%>
 </h1>
 
-Open Source and free Launcher for Android based on OpenLauncher.
+Open Source and free Launcher for Android based on Lawnchair and OpenLauncher.
 
 ## Screenshots
 <table>
@@ -52,7 +52,6 @@ Open Source and free Launcher for Android based on OpenLauncher.
 #### * App Drawer
     -> Row and Columns config
     -> Vertical and Horizontal Layout
-    -> Four Sort Modes: AZ, ZA, Last Installed, Most Used (In vertical layout only AZ ZA are enabled) 
     -> Hide Apps
     -> Label Size
     -> Background color
@@ -82,7 +81,8 @@ Open Source and free Launcher for Android based on OpenLauncher.
 * App Drawer
     * Transitions
     * Badge support
-    * Notifications
+    * Notifications    
+    * Four Sort Modes: AZ, ZA, Last Installed, Most Used (In vertical layout only AZ ZA are enabled) 
 * Folder
     * Folder Preview
     * Folder Transition
