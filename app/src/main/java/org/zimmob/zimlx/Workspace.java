@@ -3657,19 +3657,16 @@ public class Workspace extends PagedView
         final PackageUserKey packageUserKey = new PackageUserKey(null, null);
         final HashSet<Long> folderIds = new HashSet<>();
         // Update folder icons
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof ShortcutInfo && v instanceof BubbleTextView
-                        && packageUserKey.updateFromItemInfo(info)) {
-                    if (updatedBadges.contains(packageUserKey)) {
-                        ((BubbleTextView) v).applyBadgeState(info, true /* animate */);
-                        folderIds.add(info.container);
-                    }
+        mapOverItems(MAP_RECURSE, (info, v) -> {
+            if (info instanceof ShortcutInfo && v instanceof BubbleTextView
+                    && packageUserKey.updateFromItemInfo(info)) {
+                if (updatedBadges.contains(packageUserKey)) {
+                    ((BubbleTextView) v).applyBadgeState(info, true /* animate */);
+                    folderIds.add(info.container);
                 }
-                // process all the shortcuts
-                return false;
             }
+            // process all the shortcuts
+            return false;
         });
         mapOverItems(MAP_NO_RECURSE, (info, v) -> {
             if (info instanceof FolderInfo && folderIds.contains(info.id)
@@ -3729,17 +3726,14 @@ public class Workspace extends PagedView
             } else {
                 // widgetRefresh will automatically run when the packages are updated.
                 // For now just update the progress bars
-                mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-                    @Override
-                    public boolean evaluate(ItemInfo info, View view) {
-                        if (view instanceof PendingAppWidgetHostView
-                                && changedInfo.contains(info)) {
-                            ((LauncherAppWidgetInfo) info).installProgress = 100;
-                            ((PendingAppWidgetHostView) view).applyState();
-                        }
-                        // process all the shortcuts
-                        return false;
+                mapOverItems(MAP_NO_RECURSE, (info, view) -> {
+                    if (view instanceof PendingAppWidgetHostView
+                            && changedInfo.contains(info)) {
+                        ((LauncherAppWidgetInfo) info).installProgress = 100;
+                        ((PendingAppWidgetHostView) view).applyState();
                     }
+                    // process all the shortcuts
+                    return false;
                 });
             }
         }

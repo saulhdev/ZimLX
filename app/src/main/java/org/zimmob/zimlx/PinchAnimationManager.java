@@ -92,15 +92,12 @@ public class PinchAnimationManager {
             duration = mNormalOverviewTransitionDuration;
         }
         ValueAnimator animator = ValueAnimator.ofFloat(currentProgress, toProgress);
-        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                                       @Override
-                                       public void onAnimationUpdate(ValueAnimator animation) {
-                                           float pinchProgress = (Float) animation.getAnimatedValue();
-                                           setAnimationProgress(pinchProgress);
-                                           thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
-                                                   PinchAnimationManager.this);
-                                       }
-                                   }
+        animator.addUpdateListener(animation -> {
+                    float pinchProgress = (Float) animation.getAnimatedValue();
+                    setAnimationProgress(pinchProgress);
+                    thresholdManager.updateAndAnimatePassedThreshold(pinchProgress,
+                            PinchAnimationManager.this);
+                }
         );
         animator.addListener(new AnimatorListenerAdapter() {
             @Override

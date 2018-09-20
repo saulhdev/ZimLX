@@ -69,11 +69,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
         if (sGlobalDrawListener != null) {
             view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
         }
-        sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-            public void onDraw() {
-                sGlobalFrameCounter++;
-            }
-        };
+        sGlobalDrawListener = () -> sGlobalFrameCounter++;
         view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
         sVisible = true;
     }
@@ -114,11 +110,7 @@ public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
                 animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
                 mAdjustedSecondFrameTime = true;
             } else if (frameNum > 1) {
-                mTarget.post(new Runnable() {
-                    public void run() {
-                        animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
-                    }
-                });
+                mTarget.post(() -> animation.removeUpdateListener(FirstFrameAnimatorHelper.this));
             }
             mHandlingOnAnimationUpdate = false;
         }

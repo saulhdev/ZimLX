@@ -225,7 +225,7 @@ public class AlphabeticalAppsList {
         return predictedApps;
     }
 
-    /**
+    /*
      * Sets the current set of predicted apps.
      * <p>
      * This can be called before we get the full set of applications, we should merge the results
@@ -250,7 +250,7 @@ public class AlphabeticalAppsList {
         }
     }
 
-    /**
+    /*
      * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
      * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
      * <p>
@@ -273,7 +273,7 @@ public class AlphabeticalAppsList {
     }
 
 
-    /**
+    /*
      * Adds new apps to the list.
      */
     public void addApps(List<AppInfo> apps) {
@@ -490,13 +490,13 @@ public class AlphabeticalAppsList {
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                mPredictedAppComponents.add(new ComponentKeyMapper<>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                mPredictedAppComponents.add(new ComponentKeyMapper<>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                mPredictedAppComponents.add(new ComponentKeyMapper<>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                mPredictedAppComponents.add(new ComponentKeyMapper<>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));
             }
         }

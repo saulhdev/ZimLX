@@ -117,15 +117,19 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     }
 
     override fun numRows(default: String): String {
-        return getString(PreferenceFlags.KEY_NUM_ROWS, default)
+        return getString(PreferenceFlags.KEY_PREF_NUM_ROWS, default)
     }
 
     override fun numCols(default: String): String {
-        return getString(PreferenceFlags.KEY_NUM_COLS, default)
+        return getString(PreferenceFlags.KEY_PREF_NUM_COLS, default)
     }
 
     override fun numColsDrawer(default: String): String {
         return getString(PreferenceFlags.KEY_NUM_COLS_DRAWER, default)
+    }
+
+    override fun getNumPredictedApps(default: String): String {
+        return getString(FeatureFlags.KEY_PREF_NUM_PREDICTIVE_APPS, default)
     }
 
     override val iconScaleSB by FloatPref(PreferenceFlags.KEY_ICON_SCALE_SB, 1f)
@@ -204,7 +208,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val notificationBackground by IntPref(FeatureFlags.KEY_PREF_NOTIFICATION_BACKGROUND, R.color.notification_background)
     override val notificationCount: Boolean by BooleanPref(FeatureFlags.KEY_PREF_NOTIFICATION_COUNT, true)
     override val enablePredictiveApps: Boolean by BooleanPref(FeatureFlags.KEY_PREF_PREDICTIVE_APPS, true)
-
     override val enableVibrancy: Boolean
         get() = true
     override val useRoundSearchBar by BooleanPref(FeatureFlags.KEY_PREF_ROUND_SEARCH_BAR, false)
@@ -400,13 +403,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
             PrefDelegate<Int>(key, defaultValue) {
         override fun getValue(thisRef: Any?, property: KProperty<*>): Int = sharedPrefs.getInt(key
                 ?: property.name, defaultValue)
-    }
-
-    private inner class MutableFloatPref(key: String? = null, defaultValue: Float = 0f) :
-            FloatPref(key, defaultValue), MutablePrefDelegate<Float> {
-        override fun setValue(thisRef: Any?, property: KProperty<*>, value: Float) {
-            edit { putFloat(key ?: property.name, value) }
-        }
     }
 
     private open inner class FloatPref(key: String? = null, defaultValue: Float = 0f) :

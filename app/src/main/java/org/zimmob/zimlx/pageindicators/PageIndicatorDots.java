@@ -21,7 +21,6 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Outline;
@@ -193,12 +192,9 @@ public class PageIndicatorDots extends PageIndicator {
         for (int i = 0; i < count; i++) {
             ValueAnimator anim = ValueAnimator.ofFloat(0, 1).setDuration(ENTER_ANIMATION_DURATION);
             final int index = i;
-            anim.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    mEntryAnimationRadiusFactors[index] = (Float) animation.getAnimatedValue();
-                    invalidate();
-                }
+            anim.addUpdateListener(animation -> {
+                mEntryAnimationRadiusFactors[index] = (Float) animation.getAnimatedValue();
+                invalidate();
             });
             anim.setInterpolator(interpolator);
             anim.setStartDelay(ENTER_ANIMATION_START_DELAY + ENTER_ANIMATION_STAGGERED_DELAY * i);

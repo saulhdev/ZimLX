@@ -449,12 +449,9 @@ public class LauncherStateTransitionAnimation {
      */
     private Animator dispatchOnLauncherTransitionStepAnim(final View fromView, final View toView) {
         ValueAnimator updateAnimator = ValueAnimator.ofFloat(0, 1);
-        updateAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                dispatchOnLauncherTransitionStep(fromView, animation.getAnimatedFraction());
-                dispatchOnLauncherTransitionStep(toView, animation.getAnimatedFraction());
-            }
+        updateAnimator.addUpdateListener(animation -> {
+            dispatchOnLauncherTransitionStep(fromView, animation.getAnimatedFraction());
+            dispatchOnLauncherTransitionStep(toView, animation.getAnimatedFraction());
         });
         return updateAnimator;
     }
@@ -551,27 +548,24 @@ public class LauncherStateTransitionAnimation {
             dispatchOnLauncherTransitionPrepare(fromWorkspace, multiplePagesVisible);
 
             final AnimatorSet stateAnimation = animation;
-            final Runnable startAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Check that mCurrentAnimation hasn't changed while
-                    // we waited for a layout/draw pass
-                    if (mCurrentAnimation != stateAnimation)
-                        return;
+            final Runnable startAnimRunnable = () -> {
+                // Check that mCurrentAnimation hasn't changed while
+                // we waited for a layout/draw pass
+                if (mCurrentAnimation != stateAnimation)
+                    return;
 
-                    dispatchOnLauncherTransitionStart(fromWorkspace);
+                dispatchOnLauncherTransitionStart(fromWorkspace);
 
-                    // Enable all necessary layers
-                    for (View v : layerViews.keySet()) {
-                        if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
-                            v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-                        }
-                        if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
-                            v.buildLayer();
-                        }
+                // Enable all necessary layers
+                for (View v : layerViews.keySet()) {
+                    if (layerViews.get(v) == BUILD_AND_SET_LAYER) {
+                        v.setLayerType(View.LAYER_TYPE_HARDWARE, null);
                     }
-                    stateAnimation.start();
+                    if (v.isAttachedToWindow() && v.getVisibility() == View.VISIBLE) {
+                        v.buildLayer();
+                    }
                 }
+                stateAnimation.start();
             };
             animation.addListener(new AnimatorListenerAdapter() {
                 @Override
@@ -731,12 +725,7 @@ public class LauncherStateTransitionAnimation {
                 // Invalidate the scrim throughout the animation to ensure the highlight
                 // cutout is correct throughout.
                 ValueAnimator invalidateScrim = ValueAnimator.ofFloat(0f, 1f);
-                invalidateScrim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mLauncher.getDragLayer().invalidateScrim();
-                    }
-                });
+                invalidateScrim.addUpdateListener(animation1 -> mLauncher.getDragLayer().invalidateScrim());
                 animation.play(invalidateScrim);
 
                 // Animate the all apps button

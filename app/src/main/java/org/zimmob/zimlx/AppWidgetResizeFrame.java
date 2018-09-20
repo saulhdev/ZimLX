@@ -3,8 +3,6 @@ package org.zimmob.zimlx;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.PropertyValuesHolder;
-import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetHostView;
 import android.content.Context;
@@ -389,12 +387,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
         mDeltaX = 0;
         mDeltaY = 0;
 
-        post(new Runnable() {
-            @Override
-            public void run() {
-                snapToWidget(true);
-            }
-        });
+        post(() -> snapToWidget(true));
     }
 
     public void snapToWidget(boolean animate) {
@@ -449,12 +442,7 @@ public class AppWidgetResizeFrame extends FrameLayout implements View.OnKeyListe
             ObjectAnimator rightOa = LauncherAnimUtils.ofFloat(mRightHandle, ALPHA, 1.0f);
             ObjectAnimator topOa = LauncherAnimUtils.ofFloat(mTopHandle, ALPHA, 1.0f);
             ObjectAnimator bottomOa = LauncherAnimUtils.ofFloat(mBottomHandle, ALPHA, 1.0f);
-            oa.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    requestLayout();
-                }
-            });
+            oa.addUpdateListener(animation -> requestLayout());
             AnimatorSet set = LauncherAnimUtils.createAnimatorSet();
             set.playTogether(oa, leftOa, rightOa, topOa, bottomOa);
 

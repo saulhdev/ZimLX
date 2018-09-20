@@ -2,7 +2,6 @@ package org.zimmob.zimlx.popup;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.View;
 import android.view.View.OnClickListener;
 
 import org.zimmob.zimlx.AbstractFloatingView;
@@ -44,12 +43,7 @@ public abstract class SystemShortcut {
 
         @Override
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
-            return new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, launcher.getViewBounds(view), launcher.getActivityLaunchOptions(view));
-                }
-            };
+            return view -> InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, launcher.getViewBounds(view), launcher.getActivityLaunchOptions(view));
         }
     }
 
@@ -83,12 +77,9 @@ public abstract class SystemShortcut {
         public OnClickListener getOnClickListener(final Launcher launcher, final ItemInfo itemInfo) {
             if (launcher.isEditingDisabled())
                 return null;
-            return new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                    launcher.openDialog(new EditAppDialog(launcher, (EditableItemInfo) itemInfo, launcher));
-                }
+            return view -> {
+                AbstractFloatingView.closeAllOpenViews(launcher);
+                launcher.openDialog(new EditAppDialog(launcher, (EditableItemInfo) itemInfo, launcher));
             };
         }
     }

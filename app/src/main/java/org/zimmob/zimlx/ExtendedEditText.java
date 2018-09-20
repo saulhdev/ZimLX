@@ -27,7 +27,6 @@ import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
 import android.widget.TextView;
 
 import java.lang.reflect.Field;
@@ -36,7 +35,7 @@ import java.lang.reflect.Field;
 /**
  * The edit text that reports back when the back key has been pressed.
  */
-public class ExtendedEditText extends EditText {
+public class ExtendedEditText extends android.support.v7.widget.AppCompatEditText {
 
     private boolean mShowImeAfterFirstLayout;
     private int mHintTextColor;
@@ -81,12 +80,9 @@ public class ExtendedEditText extends EditText {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    showSoftInput();
-                    mShowImeAfterFirstLayout = false;
-                }
+            post(() -> {
+                showSoftInput();
+                mShowImeAfterFirstLayout = false;
             });
         }
     }

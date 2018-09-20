@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Canvas;
@@ -1022,7 +1021,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final int cellY = delegateCellY;
 
             Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
-            Runnable onEnd = () -> clearDrawingDelegate();
+            Runnable onEnd = this::clearDrawingDelegate;
             animateScale(1f, 1f, onStart, onEnd);
         }
     }
@@ -1075,16 +1074,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
             final float transY0 = mTmpParams.transY;
 
             mValueAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
-            mValueAnimator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float progress = animation.getAnimatedFraction();
+            mValueAnimator.addUpdateListener(animation -> {
+                float progress = animation.getAnimatedFraction();
 
-                    params.transX = transX0 + progress * (finalTransX - transX0);
-                    params.transY = transY0 + progress * (finalTransY - transY0);
-                    params.scale = scale0 + progress * (finalScale - scale0);
-                    invalidate();
-                }
+                params.transX = transX0 + progress * (finalTransX - transX0);
+                params.transY = transY0 + progress * (finalTransY - transY0);
+                params.scale = scale0 + progress * (finalScale - scale0);
+                invalidate();
             });
 
             mValueAnimator.addListener(new AnimatorListenerAdapter() {

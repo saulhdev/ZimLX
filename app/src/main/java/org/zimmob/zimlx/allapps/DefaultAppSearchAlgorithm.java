@@ -45,13 +45,7 @@ public class DefaultAppSearchAlgorithm {
     public void doSearch(final String query,
                          final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                callback.onSearchResult(query, result);
-            }
-        });
+        mResultHandler.post(() -> callback.onSearchResult(query, result));
     }
 
     protected ArrayList<ComponentKey> getTitleMatchResult(String query) {

@@ -186,13 +186,9 @@ public class ManagedProfileHeuristic {
                 saveWorkFolderShortcuts(folderId, workFolder.contents.size(), workFolderApps);
 
                 // FolderInfo could already be bound. We need to add shortcuts on the UI thread.
-                new MainThreadExecutor().execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        for (ShortcutInfo info : workFolderApps) {
-                            workFolder.add(info, false);
-                        }
+                new MainThreadExecutor().execute(() -> {
+                    for (ShortcutInfo info : workFolderApps) {
+                        workFolder.add(info, false);
                     }
                 });
             } else {

@@ -60,35 +60,24 @@ public class EditAppDialog extends Launcher.LauncherDialog {
         else
             findViewById(R.id.visibility_container).setVisibility(View.GONE);
 
-        icon.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                launcher.startEditIcon(info);
-            }
-        });
+        icon.setOnClickListener(view -> launcher.startEditIcon(info));
 
         if (component != null) {
-            icon.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-                    try {
-                        LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, Utilities.myUserHandle());
-                        return true;
-                    } catch (SecurityException | ActivityNotFoundException e) {
-                        Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-                        Log.e("EditAppDialog", "Unable to launch settings", e);
-                    }
-                    return false;
+            icon.setOnLongClickListener(v -> {
+                try {
+                    LauncherAppsCompat.getInstance(launcher).showAppDetailsForProfile(component, Utilities.myUserHandle());
+                    return true;
+                } catch (SecurityException | ActivityNotFoundException e) {
+                    Toast.makeText(launcher, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                    Log.e("EditAppDialog", "Unable to launch settings", e);
                 }
+                return false;
             });
         }
 
-        View.OnClickListener resetTitle = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                info.setTitle(getContext(), null);
-                EditAppDialog.this.title.setText(info.getTitle(getContext()));
-            }
+        View.OnClickListener resetTitle = v -> {
+            info.setTitle(getContext(), null);
+            EditAppDialog.this.title.setText(info.getTitle(getContext()));
         };
         reset.setOnClickListener(resetTitle);
 

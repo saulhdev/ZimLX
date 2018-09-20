@@ -23,7 +23,7 @@ public class AccessibilityHelper extends AccessibilityDelegate {
                     return context.getString(R.string.title_show_google_app, res.getString(id));
                 }
             }
-        } catch (NameNotFoundException e) {
+        } catch (NameNotFoundException ignored) {
         }
         return context.getString(R.string.title_show_google_app_default);
     }

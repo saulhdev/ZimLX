@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PredictiveAppsProvider {
-    public static final int MAX_SUGGESTIONS = 9;
     private static final String TAG = "PredictiveAppsProvider";
 
     private Context mContext;

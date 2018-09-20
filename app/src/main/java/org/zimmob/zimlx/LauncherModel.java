@@ -86,7 +86,6 @@ import java.security.InvalidParameterException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -475,12 +474,7 @@ public class LauncherModel extends BroadcastReceiver
 
     private static ArrayList<ItemInfo> getItemsByPackageName(
             final String pn, final UserHandle user) {
-        ItemInfoFilter filter = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                return cn.getPackageName().equals(pn) && info.user.equals(user);
-            }
-        };
+        ItemInfoFilter filter = (parent, info, cn) -> cn.getPackageName().equals(pn) && info.user.equals(user);
         return filterItemInfos(sBgItemsIdMap, filter);
     }
 
@@ -1416,7 +1410,7 @@ public class LauncherModel extends BroadcastReceiver
             if (mCallbacks != null && mCallbacks.get() != null) {
                 final Callbacks oldCallbacks = mCallbacks.get();
                 // Clear any pending bind-runnables from the synchronized load process.
-                runOnMainThread(() -> oldCallbacks.clearPendingBinds());
+                runOnMainThread(oldCallbacks::clearPendingBinds);
 
                 // If there is already one running, tell it to stop.
                 stopLoaderLocked();
@@ -1656,14 +1650,11 @@ public class LauncherModel extends BroadcastReceiver
     @Thunk
     ArrayList<ItemInfo> getItemInfoForComponentName(final ComponentName cname,
                                                     final UserHandle user) {
-        ItemInfoFilter filter = new ItemInfoFilter() {
-            @Override
-            public boolean filterItem(ItemInfo parent, ItemInfo info, ComponentName cn) {
-                if (info.user == null) {
-                    return cn.equals(cname);
-                } else {
-                    return cn.equals(cname) && info.user.equals(user);
-                }
+        ItemInfoFilter filter = (parent, info, cn) -> {
+            if (info.user == null) {
+                return cn.equals(cname);
+            } else {
+                return cn.equals(cname) && info.user.equals(user);
             }
         };
         return filterItemInfos(sBgItemsIdMap, filter);
@@ -3262,12 +3253,7 @@ public class LauncherModel extends BroadcastReceiver
             // list sequentially, build up a list of containers that are in the specified screen,
             // as well as all items in those containers.
             Set<Long> itemsOnScreen = new HashSet<>();
-            Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
-                @Override
-                public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    return Long.compare(lhs.container, rhs.container);
-                }
-            });
+            Collections.sort(allWorkspaceItems, (lhs, rhs) -> Long.compare(lhs.container, rhs.container));
             for (ItemInfo info : allWorkspaceItems) {
                 if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                     if (info.screenId == currentScreenId) {
@@ -3318,30 +3304,27 @@ public class LauncherModel extends BroadcastReceiver
             final InvariantDeviceProfile profile = app.getInvariantDeviceProfile();
             final int screenCols = profile.numColumns;
             final int screenCellCount = profile.numColumns * profile.numRows;
-            Collections.sort(workspaceItems, new Comparator<ItemInfo>() {
-                @Override
-                public int compare(ItemInfo lhs, ItemInfo rhs) {
-                    if (lhs.container == rhs.container) {
-                        // Within containers, order by their spatial position in that container
-                        switch ((int) lhs.container) {
-                            case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
-                                long lr = (lhs.screenId * screenCellCount +
-                                        lhs.cellY * screenCols + lhs.cellX);
-                                long rr = (rhs.screenId * screenCellCount +
-                                        rhs.cellY * screenCols + rhs.cellX);
-                                return Long.compare(lr, rr);
-                            }
-                            case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
-                                // We currently use the screen id as the rank
-                                return Long.compare(lhs.screenId, rhs.screenId);
-                            }
-                            default:
-                                return 0;
+            Collections.sort(workspaceItems, (lhs, rhs) -> {
+                if (lhs.container == rhs.container) {
+                    // Within containers, order by their spatial position in that container
+                    switch ((int) lhs.container) {
+                        case LauncherSettings.Favorites.CONTAINER_DESKTOP: {
+                            long lr = (lhs.screenId * screenCellCount +
+                                    lhs.cellY * screenCols + lhs.cellX);
+                            long rr = (rhs.screenId * screenCellCount +
+                                    rhs.cellY * screenCols + rhs.cellX);
+                            return Long.compare(lr, rr);
                         }
-                    } else {
-                        // Between containers, order by hotseat, desktop
-                        return Long.compare(lhs.container, rhs.container);
+                        case LauncherSettings.Favorites.CONTAINER_HOTSEAT: {
+                            // We currently use the screen id as the rank
+                            return Long.compare(lhs.screenId, rhs.screenId);
+                        }
+                        default:
+                            return 0;
                     }
+                } else {
+                    // Between containers, order by hotseat, desktop
+                    return Long.compare(lhs.container, rhs.container);
                 }
             });
         }

@@ -470,13 +470,8 @@ public class WorkspaceStateTransitionAnimation {
                 // These properties refer to the background protection gradient used for AllApps
                 // and Widget tray.
                 ValueAnimator bgFadeOutAnimation = ValueAnimator.ofFloat(startAlpha, finalAlpha);
-                bgFadeOutAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        dragLayer.setBackgroundAlpha(
-                                (Float) animation.getAnimatedValue());
-                    }
-                });
+                bgFadeOutAnimation.addUpdateListener(animation -> dragLayer.setBackgroundAlpha(
+                        (Float) animation.getAnimatedValue()));
                 bgFadeOutAnimation.setInterpolator(new DecelerateInterpolator(1.5f));
                 bgFadeOutAnimation.setDuration(duration);
                 mStateAnimator.play(bgFadeOutAnimation);

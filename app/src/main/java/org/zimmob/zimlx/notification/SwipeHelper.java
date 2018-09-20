@@ -263,18 +263,15 @@ public class SwipeHelper {
                     mTranslation = getTranslation(mCurrView);
                     if (mLongPressListener != null) {
                         if (mWatchLongPress == null) {
-                            mWatchLongPress = new Runnable() {
-                                @Override
-                                public void run() {
-                                    if (mCurrView != null && !mLongPressSent) {
-                                        mLongPressSent = true;
-                                        mCurrView.sendAccessibilityEvent(
-                                                AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
-                                        mCurrView.getLocationOnScreen(mTmpPos);
-                                        final int x = (int) ev.getRawX() - mTmpPos[0];
-                                        final int y = (int) ev.getRawY() - mTmpPos[1];
-                                        mLongPressListener.onLongPress(mCurrView, x, y);
-                                    }
+                            mWatchLongPress = () -> {
+                                if (mCurrView != null && !mLongPressSent) {
+                                    mLongPressSent = true;
+                                    mCurrView.sendAccessibilityEvent(
+                                            AccessibilityEvent.TYPE_VIEW_LONG_CLICKED);
+                                    mCurrView.getLocationOnScreen(mTmpPos);
+                                    final int x = (int) ev.getRawX() - mTmpPos[0];
+                                    final int y = (int) ev.getRawY() - mTmpPos[1];
+                                    mLongPressListener.onLongPress(mCurrView, x, y);
                                 }
                             };
                         }
@@ -371,11 +368,7 @@ public class SwipeHelper {
         if (!mDisableHwLayers) {
             animView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
         }
-        AnimatorUpdateListener updateListener = new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                onTranslationUpdate(animView, (float) animation.getAnimatedValue(), canBeDismissed);
-            }
-        };
+        AnimatorUpdateListener updateListener = animation -> onTranslationUpdate(animView, (float) animation.getAnimatedValue(), canBeDismissed);
 
         Animator anim = getViewTranslationAnimator(animView, newPos, updateListener);
         if (anim == null) {
@@ -427,11 +420,7 @@ public class SwipeHelper {
 
     public void snapChild(final View animView, final float targetLeft, float velocity) {
         final boolean canBeDismissed = mCallback.canChildBeDismissed(animView);
-        AnimatorUpdateListener updateListener = new AnimatorUpdateListener() {
-            public void onAnimationUpdate(ValueAnimator animation) {
-                onTranslationUpdate(animView, (float) animation.getAnimatedValue(), canBeDismissed);
-            }
-        };
+        AnimatorUpdateListener updateListener = animation -> onTranslationUpdate(animView, (float) animation.getAnimatedValue(), canBeDismissed);
 
         Animator anim = getViewTranslationAnimator(animView, targetLeft, updateListener);
         if (anim == null) {

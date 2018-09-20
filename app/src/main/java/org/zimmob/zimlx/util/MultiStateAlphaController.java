@@ -19,7 +19,6 @@ package org.zimmob.zimlx.util;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.view.View;
 import android.view.accessibility.AccessibilityManager;
@@ -75,12 +74,9 @@ public class MultiStateAlphaController {
             anim = ValueAnimator.ofFloat(0, 0);
         } else {
             ValueAnimator animator = ValueAnimator.ofFloat(mAlphas[index], finalAlpha);
-            animator.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator valueAnimator) {
-                    float value = (Float) valueAnimator.getAnimatedValue();
-                    setAlphaAtIndex(value, index);
-                }
+            animator.addUpdateListener(valueAnimator -> {
+                float value = (Float) valueAnimator.getAnimatedValue();
+                setAlphaAtIndex(value, index);
             });
             anim = animator;
         }

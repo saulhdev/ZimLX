@@ -16,7 +16,6 @@
 
 package org.zimmob.zimlx;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.AlarmManager;
 import android.app.AlertDialog;
@@ -25,7 +24,6 @@ import android.app.WallpaperManager;
 import android.content.ActivityNotFoundException;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
@@ -1076,24 +1074,15 @@ public final class Utilities {
         new AlertDialog.Builder(context)
                 .setTitle(R.string.lawnfeed_not_enabled_title)
                 .setMessage(R.string.lawnfeed_not_enabled)
-                .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
-                    @SuppressLint("ApplySharedPref")
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Enable Google Now page setting
-                        SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-                        settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
+                .setPositiveButton(android.R.string.ok, (dialogInterface, i) -> {
+                    // Enable Google Now page setting
+                    SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
+                    settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, true).commit();
 
-                        // Restart ZimLX to enable Lawnfeed
-                        LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
-                    }
+                    // Restart ZimLX to enable Lawnfeed
+                    LauncherAppState.getInstanceNoCreate().getLauncher().scheduleKill();
                 })
-                .setNeutralButton(R.string.disable_popup, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        prefs.setDisableLawnfeedPopup(true);
-                    }
-                })
+                .setNeutralButton(R.string.disable_popup, (dialogInterface, i) -> prefs.setDisableLawnfeedPopup(true))
                 .setNegativeButton(android.R.string.cancel, null)
                 .show();
     }
@@ -1105,18 +1094,15 @@ public final class Utilities {
         // Disable Google Now page setting if the user have enabled Google Now page
         if (Utilities.getPrefs(context).getShowGoogleNowTab()) {
             SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(context);
-            settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, false).commit();
+            settings.edit().putBoolean(PreferenceFlags.KEY_PREF_SHOW_NOW_TAB, false).apply();
         }
 
         new AlertDialog.Builder(context)
                 .setTitle(R.string.lawnfeed_outdated_title)
                 .setMessage(R.string.lawnfeed_outdated)
-                .setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        // Open website with download link for Lawnfeed
-                        openURLinBrowser(context, "https://ZimLX.info/getlawnfeed.html");
-                    }
+                .setPositiveButton(android.R.string.yes, (dialogInterface, i) -> {
+                    // Open website with download link for Lawnfeed
+                    openURLinBrowser(context, "https://ZimLX.info/getlawnfeed.html");
                 })
                 .setNegativeButton(android.R.string.no, null)
                 .show();
@@ -1158,29 +1144,26 @@ public final class Utilities {
     }
 
     public static void restartLauncher(final Context context) {
-        new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Thread.sleep(WAIT_BEFORE_RESTART);
-                } catch (Exception e) {
-                    Log.e("SettingsActivity", "Error waiting", e);
-                }
-
-                Intent intent = new Intent(Intent.ACTION_MAIN)
-                        .addCategory(Intent.CATEGORY_HOME)
-                        .setPackage(context.getPackageName())
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-
-                // Create a pending intent so the application is restarted after Process.killProcess() was called.
-                // We use an AlarmManager to call this intent in 50ms
-                PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-                AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-                alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pendingIntent);
-
-                // Kill the application
-                android.os.Process.killProcess(android.os.Process.myPid());
+        new LooperExecutor(LauncherModel.getWorkerLooper()).execute(() -> {
+            try {
+                Thread.sleep(WAIT_BEFORE_RESTART);
+            } catch (Exception e) {
+                Log.e("SettingsActivity", "Error waiting", e);
             }
+
+            Intent intent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .setPackage(context.getPackageName())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+            // Create a pending intent so the application is restarted after Process.killProcess() was called.
+            // We use an AlarmManager to call this intent in 50ms
+            PendingIntent pendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+            alarmManager.setExact(AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pendingIntent);
+
+            // Kill the application
+            android.os.Process.killProcess(android.os.Process.myPid());
         });
     }
 

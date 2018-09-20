@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.support.annotation.NonNull;
 
 import org.zimmob.zimlx.Utilities;
-import org.zimmob.zimlx.allapps.PredictiveAppsProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,6 +68,8 @@ public class SuggestionsDatabaseHelper extends SQLiteOpenHelper {
     }
 
     public List<SuggestionCandidate> getSuggestionCandidates(Context context) {
+        int numPredictedApps = Integer.valueOf(Utilities.getPrefs(context).getNumPredictedApps("5"));
+
         List<SuggestionCandidate> candidates = new ArrayList<>();
         int i = 0;
 
@@ -101,7 +102,8 @@ public class SuggestionsDatabaseHelper extends SQLiteOpenHelper {
                     cursor.getInt(cursor.getColumnIndex(KEY_NIGHT_COUNTER)),
                     cursor.getInt(cursor.getColumnIndex(KEY_HEADSET_COUNTER))));
             i++;
-        } while (i < PredictiveAppsProvider.MAX_SUGGESTIONS && cursor.moveToNext());
+        }
+        while (i < numPredictedApps && cursor.moveToNext());
 
         return candidates;
     }

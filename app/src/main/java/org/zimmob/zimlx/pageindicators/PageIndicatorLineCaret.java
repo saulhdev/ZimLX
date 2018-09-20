@@ -90,12 +90,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     private Paint mLinePaint;
     private Launcher mLauncher;
     private ImageView mAllAppsHandle;
-    private Runnable mHideLineRunnable = new Runnable() {
-        @Override
-        public void run() {
-            animateLineToAlpha(0);
-        }
-    };
+    private Runnable mHideLineRunnable = () -> animateLineToAlpha(0);
 
     public PageIndicatorLineCaret(Context context) {
         this(context, null);

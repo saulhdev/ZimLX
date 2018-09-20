@@ -18,7 +18,6 @@ package org.zimmob.zimlx.dragndrop;
 
 import android.animation.FloatArrayEvaluator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -134,20 +133,17 @@ public class DragView extends FrameLayout {
         // Animate the view into the correct position
         mAnim = LauncherAnimUtils.ofFloat(0f, 1f);
         mAnim.setDuration(VIEW_ZOOM_DURATION);
-        mAnim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float value = (Float) animation.getAnimatedValue();
+        mAnim.addUpdateListener(animation -> {
+            final float value = (Float) animation.getAnimatedValue();
 
-                setScaleX(initialScale + (value * (scale - initialScale)));
-                setScaleY(initialScale + (value * (scale - initialScale)));
-                if (sDragAlpha != 1f) {
-                    setAlpha(sDragAlpha * value + (1f - value));
-                }
+            setScaleX(initialScale + (value * (scale - initialScale)));
+            setScaleY(initialScale + (value * (scale - initialScale)));
+            if (sDragAlpha != 1f) {
+                setAlpha(sDragAlpha * value + (1f - value));
+            }
 
-                if (getParent() == null) {
-                    animation.cancel();
-                }
+            if (getParent() == null) {
+                animation.cancel();
             }
         });
 
@@ -239,12 +235,9 @@ public class DragView extends FrameLayout {
         ValueAnimator va = LauncherAnimUtils.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(new DecelerateInterpolator(1.5f));
-        va.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCrossFadeProgress = animation.getAnimatedFraction();
-                invalidate();
-            }
+        va.addUpdateListener(animation -> {
+            mCrossFadeProgress = animation.getAnimatedFraction();
+            invalidate();
         });
         va.start();
     }
@@ -282,13 +275,9 @@ public class DragView extends FrameLayout {
         mFilterAnimator = ValueAnimator.ofObject(new FloatArrayEvaluator(mCurrentFilter),
                 oldFilter, targetFilter);
         mFilterAnimator.setDuration(COLOR_CHANGE_DURATION);
-        mFilterAnimator.addUpdateListener(new AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mPaint.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-                invalidate();
-            }
+        mFilterAnimator.addUpdateListener(animation -> {
+            mPaint.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+            invalidate();
         });
         mFilterAnimator.start();
     }
@@ -327,12 +316,9 @@ public class DragView extends FrameLayout {
         setLayoutParams(lp);
         move(touchX, touchY);
         // Post the animation to skip other expensive work happening on the first frame
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mAnimationStarted = true;
-                mAnim.start();
-            }
+        post(() -> {
+            mAnimationStarted = true;
+            mAnim.start();
         });
     }
 
@@ -382,14 +368,11 @@ public class DragView extends FrameLayout {
             }
             mAnim.start();
         }
-        mAnim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float fraction = inverse ? animation.getAnimatedFraction() : (1 - animation.getAnimatedFraction());
-                mAnimatedShiftX = baseShiftX + (int) (fraction * targetShiftX);
-                mAnimatedShiftY = baseShiftY + (int) (fraction * targetShiftY);
-                applyTranslation();
-            }
+        mAnim.addUpdateListener(animation -> {
+            float fraction = inverse ? animation.getAnimatedFraction() : (1 - animation.getAnimatedFraction());
+            mAnimatedShiftX = baseShiftX + (int) (fraction * targetShiftX);
+            mAnimatedShiftY = baseShiftY + (int) (fraction * targetShiftY);
+            applyTranslation();
         });
     }
 
@@ -408,38 +391,34 @@ public class DragView extends FrameLayout {
         if (!Utilities.ATLEAST_NOUGAT)
             return;
         if (itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
-            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(new Runnable() {
-                public void run() {
-                    LauncherAppState instance = LauncherAppState.getInstance();
-                    Object[] objArr = new Object[1];
-                    Drawable fullDrawable = getFullDrawable(itemInfo, instance, objArr);
-                    if (Utilities.isAdaptive(fullDrawable)) {
-                        int width = mBitmap.getWidth();
-                        int height = mBitmap.getHeight();
-                        float dimension = mLauncher.getResources().getDimension(R.dimen.blur_size_medium_outline);
-                        float scale = IconNormalizer.getInstance().getScale(fullDrawable, null) * ((((float) width) - dimension) / ((float) width));
-                        fullDrawable.setBounds(0, 0, width, height);
-                        mFgImageView = setupImageView(Utilities.getForeground(fullDrawable), scale);
-                        mBgImageView = setupImageView(Utilities.getBackground(fullDrawable), scale);
-                        mSpringX = setupSpringAnimation((-width) / 4, width / 4, DynamicAnimation.TRANSLATION_X);
-                        mSpringY = setupSpringAnimation((-height) / 4, height / 4, DynamicAnimation.TRANSLATION_Y);
-                        mTmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                        mTmpCanvas = new Canvas(mTmpBitmap);
-                        Handler handler = new Handler(Looper.getMainLooper());
-                        handler.post(new Runnable() {
-                            public void run() {
-                                addView(mBgImageView);
-                                addView(mFgImageView);
-                                setWillNotDraw(true);
-                                if (itemInfo.isDisabled()) {
-                                    FastBitmapDrawable fastBitmapDrawable = new FastBitmapDrawable(null);
-                                    ColorFilter colorFilter = fastBitmapDrawable.getColorFilter();
-                                    mBgImageView.setColorFilter(colorFilter);
-                                    mFgImageView.setColorFilter(colorFilter);
-                                }
-                            }
-                        });
-                    }
+            new Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(() -> {
+                LauncherAppState instance = LauncherAppState.getInstance();
+                Object[] objArr = new Object[1];
+                Drawable fullDrawable = getFullDrawable(itemInfo, instance, objArr);
+                if (Utilities.isAdaptive(fullDrawable)) {
+                    int width = mBitmap.getWidth();
+                    int height = mBitmap.getHeight();
+                    float dimension = mLauncher.getResources().getDimension(R.dimen.blur_size_medium_outline);
+                    float scale = IconNormalizer.getInstance().getScale(fullDrawable, null) * ((((float) width) - dimension) / ((float) width));
+                    fullDrawable.setBounds(0, 0, width, height);
+                    mFgImageView = setupImageView(Utilities.getForeground(fullDrawable), scale);
+                    mBgImageView = setupImageView(Utilities.getBackground(fullDrawable), scale);
+                    mSpringX = setupSpringAnimation((-width) / 4, width / 4, DynamicAnimation.TRANSLATION_X);
+                    mSpringY = setupSpringAnimation((-height) / 4, height / 4, DynamicAnimation.TRANSLATION_Y);
+                    mTmpBitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                    mTmpCanvas = new Canvas(mTmpBitmap);
+                    Handler handler = new Handler(Looper.getMainLooper());
+                    handler.post(() -> {
+                        addView(mBgImageView);
+                        addView(mFgImageView);
+                        setWillNotDraw(true);
+                        if (itemInfo.isDisabled()) {
+                            FastBitmapDrawable fastBitmapDrawable = new FastBitmapDrawable(null);
+                            ColorFilter colorFilter = fastBitmapDrawable.getColorFilter();
+                            mBgImageView.setColorFilter(colorFilter);
+                            mFgImageView.setColorFilter(colorFilter);
+                        }
+                    });
                 }
             });
         }

@@ -135,15 +135,17 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
      * all the different view types.
      */
     public void preMeasureViews(AllAppsGridAdapter adapter) {
-        View icon = adapter.onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON).itemView;
-        final int iconHeight = icon.getLayoutParams().height;
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
-
         final int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(
                 getResources().getDisplayMetrics().widthPixels, View.MeasureSpec.AT_MOST);
         final int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(
                 getResources().getDisplayMetrics().heightPixels, View.MeasureSpec.AT_MOST);
+
+        // Icons
+        View icon = adapter.onCreateViewHolder(this, AllAppsGridAdapter.VIEW_TYPE_ICON).mContent;
+        int iconHeight = icon.getLayoutParams().height;
+
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
 
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,

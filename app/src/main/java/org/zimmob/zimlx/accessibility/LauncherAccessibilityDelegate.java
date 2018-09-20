@@ -2,7 +2,6 @@ package org.zimmob.zimlx.accessibility;
 
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -139,28 +138,24 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         } else if (action == ADD_TO_WORKSPACE) {
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
-            mLauncher.showWorkspace(true, new Runnable() {
+            mLauncher.showWorkspace(true, () -> {
+                if (item instanceof AppInfo) {
+                    ShortcutInfo info = ((AppInfo) item).makeShortcut();
+                    LauncherModel.addItemToDatabase(mLauncher, info,
+                            LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                            screenId, coordinates[0], coordinates[1]);
 
-                @Override
-                public void run() {
-                    if (item instanceof AppInfo) {
-                        ShortcutInfo info = ((AppInfo) item).makeShortcut();
-                        LauncherModel.addItemToDatabase(mLauncher, info,
-                                LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                screenId, coordinates[0], coordinates[1]);
-
-                        ArrayList<ItemInfo> itemList = new ArrayList<>();
-                        itemList.add(info);
-                        mLauncher.bindItems(itemList, 0, itemList.size(), true);
-                    } else if (item instanceof PendingAddItemInfo) {
-                        PendingAddItemInfo info = (PendingAddItemInfo) item;
-                        Workspace workspace = mLauncher.getWorkspace();
-                        workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
-                        mLauncher.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                                screenId, coordinates, info.spanX, info.spanY);
-                    }
-                    announceConfirmation(R.string.item_added_to_workspace);
+                    ArrayList<ItemInfo> itemList = new ArrayList<>();
+                    itemList.add(info);
+                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                } else if (item instanceof PendingAddItemInfo) {
+                    PendingAddItemInfo info = (PendingAddItemInfo) item;
+                    Workspace workspace = mLauncher.getWorkspace();
+                    workspace.snapToPage(workspace.getPageIndexForScreenId(screenId));
+                    mLauncher.addPendingItem(info, LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                            screenId, coordinates, info.spanX, info.spanY);
                 }
+                announceConfirmation(R.string.item_added_to_workspace);
             });
             return true;
         } else if (action == MOVE_TO_WORKSPACE) {
@@ -177,15 +172,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
             // Bind the item in next frame so that if a new workspace page was created,
             // it will get laid out.
-            new Handler().post(new Runnable() {
-
-                @Override
-                public void run() {
-                    ArrayList<ItemInfo> itemList = new ArrayList<>();
-                    itemList.add(item);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
-                    announceConfirmation(R.string.item_moved);
-                }
+            new Handler().post(() -> {
+                ArrayList<ItemInfo> itemList = new ArrayList<>();
+                itemList.add(item);
+                mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                announceConfirmation(R.string.item_moved);
             });
         } else if (action == RESIZE) {
             final LauncherAppWidgetInfo info = (LauncherAppWidgetInfo) item;
@@ -197,13 +188,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
             new AlertDialog.Builder(mLauncher)
                     .setTitle(R.string.action_resize)
-                    .setItems(labels, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            performResizeAction(actions.get(which), host, info);
-                            dialog.dismiss();
-                        }
+                    .setItems(labels, (dialog, which) -> {
+                        performResizeAction(actions.get(which), host, info);
+                        dialog.dismiss();
                     })
                     .show();
             return true;

@@ -53,18 +53,15 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
             final ShortcutInfo info = ((DeepShortcutView) host.getParent()).getFinalInfo();
             final int[] coordinates = new int[2];
             final long screenId = findSpaceOnWorkspace(item, coordinates);
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    LauncherModel.addItemToDatabase(mLauncher, info,
-                            LauncherSettings.Favorites.CONTAINER_DESKTOP,
-                            screenId, coordinates[0], coordinates[1]);
-                    ArrayList<ItemInfo> itemList = new ArrayList<>();
-                    itemList.add(info);
-                    mLauncher.bindItems(itemList, 0, itemList.size(), true);
-                    mLauncher.closeFloatingContainer();
-                    announceConfirmation(R.string.item_added_to_workspace);
-                }
+            Runnable onComplete = () -> {
+                LauncherModel.addItemToDatabase(mLauncher, info,
+                        LauncherSettings.Favorites.CONTAINER_DESKTOP,
+                        screenId, coordinates[0], coordinates[1]);
+                ArrayList<ItemInfo> itemList = new ArrayList<>();
+                itemList.add(info);
+                mLauncher.bindItems(itemList, 0, itemList.size(), true);
+                mLauncher.closeFloatingContainer();
+                announceConfirmation(R.string.item_added_to_workspace);
             };
 
             if (!mLauncher.showWorkspace(true, onComplete)) {

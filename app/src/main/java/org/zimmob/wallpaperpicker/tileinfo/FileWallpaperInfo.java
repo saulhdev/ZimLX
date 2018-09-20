@@ -35,13 +35,9 @@ public class FileWallpaperInfo extends DrawableThumbWallpaperInfo {
         a.setWallpaperButtonEnabled(false);
         final BitmapRegionTileSource.FilePathBitmapSource bitmapSource =
                 new BitmapRegionTileSource.FilePathBitmapSource(mFile, a);
-        a.setCropViewTileSource(bitmapSource, false, true, null, new Runnable() {
-
-            @Override
-            public void run() {
-                if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
-                    a.setWallpaperButtonEnabled(true);
-                }
+        a.setCropViewTileSource(bitmapSource, false, true, null, () -> {
+            if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                a.setWallpaperButtonEnabled(true);
             }
         });
     }

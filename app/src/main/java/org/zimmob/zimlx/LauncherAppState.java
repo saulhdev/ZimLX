@@ -91,7 +91,7 @@ public class LauncherAppState {
                 INSTANCE = new LauncherAppState();
             } else {
                 try {
-                    return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance()).get();
+                    return new MainThreadExecutor().submit(LauncherAppState::getInstance).get();
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }

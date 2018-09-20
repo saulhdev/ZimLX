@@ -43,12 +43,9 @@ public class ExtractionUtils {
      */
     public static void startColorExtractionServiceIfNecessary(final Context context) {
         // Run on a background thread, since the service is asynchronous anyway.
-        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (hasWallpaperIdChanged(context) || hasExtractionPreferencesChanged(context)) {
-                    startColorExtractionService(context);
-                }
+        Utilities.THREAD_POOL_EXECUTOR.execute(() -> {
+            if (hasWallpaperIdChanged(context) || hasExtractionPreferencesChanged(context)) {
+                startColorExtractionService(context);
             }
         });
     }

@@ -83,15 +83,12 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
         });
 
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator arg0) {
-                float progress = (Float) arg0.getAnimatedValue();
-                setProgress(progress);
-                revealView.invalidateOutline();
-                if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
-                    revealView.invalidate();
-                }
+        va.addUpdateListener(arg0 -> {
+            float progress = (Float) arg0.getAnimatedValue();
+            setProgress(progress);
+            revealView.invalidateOutline();
+            if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
+                revealView.invalidate();
             }
         });
         return va;

@@ -32,20 +32,16 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
         a.setWallpaperButtonEnabled(false);
         final BitmapRegionTileSource.InputStreamSource bitmapSource =
                 new BitmapRegionTileSource.InputStreamSource(a, mUri);
-        a.setCropViewTileSource(bitmapSource, true, false, null, new Runnable() {
-
-            @Override
-            public void run() {
-                if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
-                    a.selectTile(mView);
-                    a.setWallpaperButtonEnabled(true);
-                } else {
-                    ViewGroup parent = (ViewGroup) mView.getParent();
-                    if (parent != null) {
-                        parent.removeView(mView);
-                        Toast.makeText(a, R.string.image_load_fail,
-                                Toast.LENGTH_SHORT).show();
-                    }
+        a.setCropViewTileSource(bitmapSource, true, false, null, () -> {
+            if (bitmapSource.getLoadingState() == BitmapSource.State.LOADED) {
+                a.selectTile(mView);
+                a.setWallpaperButtonEnabled(true);
+            } else {
+                ViewGroup parent = (ViewGroup) mView.getParent();
+                if (parent != null) {
+                    parent.removeView(mView);
+                    Toast.makeText(a, R.string.image_load_fail,
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });
@@ -54,13 +50,11 @@ public class UriWallpaperInfo extends DrawableThumbWallpaperInfo {
     @Override
     public void onSave(final WallpaperPickerActivity a) {
         CropAndSetWallpaperTask.OnBitmapCroppedHandler h =
-                new CropAndSetWallpaperTask.OnBitmapCroppedHandler() {
-                    public void onBitmapCropped(byte[] imageBytes) {
-                        // rotation is set to 0 since imageBytes has already been correctly rotated
-                        Bitmap thumb = createThumbnail(
-                                InputStreamProvider.fromBytes(imageBytes), a, 0, true);
-                        a.getSavedImages().writeImage(thumb, imageBytes);
-                    }
+                imageBytes -> {
+                    // rotation is set to 0 since imageBytes has already been correctly rotated
+                    Bitmap thumb = createThumbnail(
+                            InputStreamProvider.fromBytes(imageBytes), a, 0, true);
+                    a.getSavedImages().writeImage(thumb, imageBytes);
                 };
         boolean shouldFadeOutOnFinish = a.getWallpaperParallaxOffset() == 0f;
         a.cropImageAndSetWallpaper(mUri, h, shouldFadeOutOnFinish);

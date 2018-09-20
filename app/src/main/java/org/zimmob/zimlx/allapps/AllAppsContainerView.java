@@ -178,15 +178,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchBarController.refreshSearchResult();
     }
 
-//    public void setSearchBarVisible(boolean visible) {
-//        if (visible) {
-//            mSearchBarController.setVisibility(View.VISIBLE);
-//        } else {
-//            mSearchBarController.setVisibility(View.INVISIBLE);
-//        }
-//    }
-
-    /**
+    /*
      * Sets the search bar that shows above the a-z list.
      */
     public void setSearchBarController(AllAppsSearchBarController searchController) {

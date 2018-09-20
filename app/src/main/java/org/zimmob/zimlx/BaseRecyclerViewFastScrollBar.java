@@ -256,13 +256,10 @@ public class BaseRecyclerViewFastScrollBar {
         if (mThumbActiveColor != mThumbInactiveColor) {
             ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(),
                     mThumbPaint.getColor(), isScrolling ? mThumbActiveColor : mThumbInactiveColor);
-            colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animator) {
-                    mThumbPaint.setColor((Integer) animator.getAnimatedValue());
-                    mRv.invalidate(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
-                            mThumbOffset.y + mThumbHeight);
-                }
+            colorAnimation.addUpdateListener(animator -> {
+                mThumbPaint.setColor((Integer) animator.getAnimatedValue());
+                mRv.invalidate(mThumbOffset.x, mThumbOffset.y, mThumbOffset.x + mThumbWidth,
+                        mThumbOffset.y + mThumbHeight);
             });
             mScrollbarAnimator.play(colorAnimation);
         }

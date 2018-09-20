@@ -54,11 +54,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.os.Process;
 import android.os.StrictMode;
 import android.os.UserHandle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.text.Selection;
@@ -323,7 +321,7 @@ public class Launcher extends Activity
                     final View v = key.findViewById(mWidgetsToAdvance.get(key).autoAdvanceViewId);
                     final int delay = ADVANCE_STAGGER * i;
                     if (v instanceof Advanceable) {
-                        mHandler.postDelayed(() -> ((Advanceable) v).advance(), delay);
+                        mHandler.postDelayed(((Advanceable) v)::advance, delay);
                     }
                     i++;
                 }
@@ -2325,29 +2323,10 @@ public class Launcher extends Activity
     protected void onClickAllAppsButton(View v) {
         if (!isAppsViewVisible()) {
             //getUserEventDispatcher().logActionOnControl(Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
-            showAppsView(true, true, false /* updatePredictedApps */);
+            showAppsView(true, true, false);
         } else {
             showWorkspace(true);
         }
-    }
-
-    private void onClickPendingAppItem(final View v, final String packageName,
-                                       boolean downloadStarted) {
-        if (downloadStarted) {
-            // If the download has started, simply direct to the market app.
-            startMarketIntentForPackage(v, packageName);
-            return;
-        }
-        new AlertDialog.Builder(this)
-                .setTitle(R.string.abandoned_promises_title)
-                .setMessage(R.string.abandoned_promise_explanation)
-                .setPositiveButton(R.string.abandoned_search, (dialogInterface, i) -> startMarketIntentForPackage(v, packageName))
-                .setNeutralButton(R.string.abandoned_clean_this,
-                        (dialog, id) -> {
-                            final UserHandle user = Process.myUserHandle();
-                            mWorkspace.removeAbandonedPromise(packageName, user);
-                        })
-                .create().show();
     }
 
     private void startMarketIntentForPackage(View v, String packageName) {
@@ -3032,7 +3011,7 @@ public class Launcher extends Activity
         getWindow().setSoftInputMode(mode);
     }
 
-    /**
+    /*
      * Shows the apps view.
      */
     public void showAppsView(boolean animated, boolean updatePredictedApps, boolean focusSearchBar) {
@@ -3043,7 +3022,7 @@ public class Launcher extends Activity
         showAppsOrWidgets(State.APPS, animated, focusSearchBar);
     }
 
-    /**
+    /*
      * Shows the widgets view.
      */
     void showWidgetsView(boolean animated, boolean resetPageToZero) {
@@ -3055,7 +3034,7 @@ public class Launcher extends Activity
         mWidgetsView.post(() -> mWidgetsView.requestFocus());
     }
 
-    /**
+    /*
      * Sets up the transition to show the apps/widgets view.
      *
      * @return whether the current from and to state allowed this operation
@@ -3138,8 +3117,6 @@ public class Launcher extends Activity
         mExitSpringLoadedModeRunnable = () -> {
             if (successfulDrop) {
                 /*
-                TODO(hyunyoungs): verify if this hack is still needed, if not, delete.
-
                 Before we show workspace, hide all apps again because
                 exitSpringLoadedDragMode made it visible. This is a bit hacky; we should
                 clean up our state transition functions
@@ -3203,7 +3180,7 @@ public class Launcher extends Activity
         return result;
     }
 
-    /**
+    /*
      * If the activity is currently paused, signal that we need to run the passed Runnable
      * in onResume.
      * <p>
@@ -4005,14 +3982,14 @@ public class Launcher extends Activity
             super(context);
         }
 
-        public LauncherDialog(@NonNull Context context, int themeResId) {
+        /*public LauncherDialog(@NonNull Context context, int themeResId) {
             super(context, themeResId);
         }
 
         protected LauncherDialog(@NonNull Context context, boolean cancelable, @Nullable OnCancelListener cancelListener) {
             super(context, cancelable, cancelListener);
         }
-
+*/
         public void onResume() {
 
         }

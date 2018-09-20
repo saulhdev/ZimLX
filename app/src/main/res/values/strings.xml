@@ -710,6 +710,7 @@
     <string name="predictive_apps_title">Predictive apps</string>
     <string name="predictive_apps_summary_on">Your favorite apps will appear at the top of the drawer</string>
     <string name="predictive_apps_summary_off">Your favorite apps won\'t appear at the top of the drawer</string>
+    <string name="predictive_apps_num_title">Predicted apps number</string>
 
     <string name="icon_badging_title">Notification dots</string>
     <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->

@@ -43,7 +43,7 @@ public class LauncherIcons {
             if (resourcesForApplication != null) {
                 return createIconBitmap(resourcesForApplication.getDrawableForDensity(resourcesForApplication.getIdentifier(shortcutIconResource.resourceName, null, null), LauncherAppState.getInstance().getInvariantDeviceProfile().fillResIconDpi), context);
             }
-        } catch (Exception e) {
+        } catch (Exception ignored) {
         }
         return null;
     }

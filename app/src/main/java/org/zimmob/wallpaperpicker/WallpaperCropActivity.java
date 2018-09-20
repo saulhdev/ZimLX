@@ -37,7 +37,6 @@ import android.view.View;
 import android.widget.Toast;
 
 import org.zimmob.wallpaperpicker.BitmapRegionTileSource.BitmapSource;
-import org.zimmob.wallpaperpicker.BitmapRegionTileSource.BitmapSource.InBitmapProvider;
 import org.zimmob.wallpaperpicker.common.CropAndSetWallpaperTask;
 import org.zimmob.wallpaperpicker.common.DialogUtils;
 import org.zimmob.wallpaperpicker.common.InputStreamProvider;
@@ -59,12 +58,7 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
     private final Set<Bitmap> mReusableBitmaps =
             Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
     private final DialogInterface.OnCancelListener mOnDialogCancelListener =
-            new DialogInterface.OnCancelListener() {
-                @Override
-                public void onCancel(DialogInterface dialog) {
-                    showActionBarAndTiles();
-                }
-            };
+            dialog -> showActionBarAndTiles();
     protected CropView mCropView;
     protected View mProgressView;
     protected View mSetWallpaperButton;
@@ -105,14 +99,11 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         final ActionBar actionBar = getActionBar();
         actionBar.setCustomView(R.layout.actionbar_set_wallpaper);
         actionBar.getCustomView().setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        actionBar.hide();
-                        // Never fade on finish because we return to the app that started us (e.g.
-                        // Photos), not the home screen.
-                        cropImageAndSetWallpaper(imageUri, null, false /* shouldFadeOutOnFinish */);
-                    }
+                v -> {
+                    actionBar.hide();
+                    // Never fade on finish because we return to the app that started us (e.g.
+                    // Photos), not the home screen.
+                    cropImageAndSetWallpaper(imageUri, null, false /* shouldFadeOutOnFinish */);
                 });
         mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);
 
@@ -120,16 +111,13 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         final BitmapRegionTileSource.InputStreamSource bitmapSource =
                 new BitmapRegionTileSource.InputStreamSource(this, imageUri);
         mSetWallpaperButton.setEnabled(false);
-        Runnable onLoad = new Runnable() {
-            @Override
-            public void run() {
-                if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
-                    Toast.makeText(WallpaperCropActivity.this, R.string.wallpaper_load_fail,
-                            Toast.LENGTH_LONG).show();
-                    finish();
-                } else {
-                    mSetWallpaperButton.setEnabled(true);
-                }
+        Runnable onLoad = () -> {
+            if (bitmapSource.getLoadingState() != BitmapSource.State.LOADED) {
+                Toast.makeText(WallpaperCropActivity.this, R.string.wallpaper_load_fail,
+                        Toast.LENGTH_LONG).show();
+                finish();
+            } else {
+                mSetWallpaperButton.setEnabled(true);
             }
         };
         setCropViewTileSource(bitmapSource, true, false, null, onLoad);
@@ -170,28 +158,24 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 }
             } else {
                 try {
-                    req.src.loadInBackground(new InBitmapProvider() {
-
-                        @Override
-                        public Bitmap forPixelCount(int count) {
-                            Bitmap bitmapToReuse = null;
-                            // Find the smallest bitmap that satisfies the pixel count limit
-                            synchronized (mReusableBitmaps) {
-                                int currentBitmapSize = Integer.MAX_VALUE;
-                                for (Bitmap b : mReusableBitmaps) {
-                                    int bitmapSize = b.getWidth() * b.getHeight();
-                                    if ((bitmapSize >= count) && (bitmapSize < currentBitmapSize)) {
-                                        bitmapToReuse = b;
-                                        currentBitmapSize = bitmapSize;
-                                    }
-                                }
-
-                                if (bitmapToReuse != null) {
-                                    mReusableBitmaps.remove(bitmapToReuse);
+                    req.src.loadInBackground(count -> {
+                        Bitmap bitmapToReuse = null;
+                        // Find the smallest bitmap that satisfies the pixel count limit
+                        synchronized (mReusableBitmaps) {
+                            int currentBitmapSize = Integer.MAX_VALUE;
+                            for (Bitmap b : mReusableBitmaps) {
+                                int bitmapSize = b.getWidth() * b.getHeight();
+                                if ((bitmapSize >= count) && (bitmapSize < currentBitmapSize)) {
+                                    bitmapToReuse = b;
+                                    currentBitmapSize = bitmapSize;
                                 }
                             }
-                            return bitmapToReuse;
+
+                            if (bitmapToReuse != null) {
+                                mReusableBitmaps.remove(bitmapToReuse);
+                            }
                         }
+                        return bitmapToReuse;
                     });
                 } catch (SecurityException securityException) {
                     if (isActivityDestroyed()) {
@@ -212,15 +196,11 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
                 loadSuccess = req.src.getLoadingState() == BitmapSource.State.LOADED;
             }
 
-            runOnUiThread(new Runnable() {
-
-                @Override
-                public void run() {
-                    if (req == mCurrentLoadRequest) {
-                        onLoadRequestComplete(req, loadSuccess);
-                    } else {
-                        addReusableBitmap(req.result);
-                    }
+            runOnUiThread(() -> {
+                if (req == mCurrentLoadRequest) {
+                    onLoadRequestComplete(req, loadSuccess);
+                } else {
+                    addReusableBitmap(req.result);
                 }
             });
             return true;
@@ -306,12 +286,9 @@ public class WallpaperCropActivity extends Activity implements Handler.Callback 
         // We don't want to show the spinner every time we load an image, because that would be
         // annoying; instead, only start showing the spinner if loading the image has taken
         // longer than 1 sec (ie 1000 ms)
-        mProgressView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (mCurrentLoadRequest == req) {
-                    mProgressView.setVisibility(View.VISIBLE);
-                }
+        mProgressView.postDelayed(() -> {
+            if (mCurrentLoadRequest == req) {
+                mProgressView.setVisibility(View.VISIBLE);
             }
         }, 1000);
     }

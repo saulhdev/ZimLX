@@ -20,7 +20,6 @@ import android.animation.AnimatorSet;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.Resources;
@@ -37,7 +36,6 @@ import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.DecelerateInterpolator;
 import android.view.animation.LinearInterpolator;
-import android.widget.TextView;
 
 import org.zimmob.zimlx.dragndrop.DragController;
 import org.zimmob.zimlx.dragndrop.DragLayer;
@@ -48,7 +46,7 @@ import org.zimmob.zimlx.util.Thunk;
 /**
  * Implements a DropTarget.
  */
-public abstract class ButtonDropTarget extends TextView
+public abstract class ButtonDropTarget extends android.support.v7.widget.AppCompatTextView
         implements DropTarget, DragController.DragListener, OnClickListener {
 
     private static final int DRAG_VIEW_DROP_DURATION = 285;
@@ -156,13 +154,9 @@ public abstract class ButtonDropTarget extends TextView
         ValueAnimator anim1 = ValueAnimator.ofObject(
                 new FloatArrayEvaluator(mCurrentFilter.getArray()),
                 mSrcFilter.getArray(), mDstFilter.getArray());
-        anim1.addUpdateListener(new AnimatorUpdateListener() {
-
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
-                invalidate();
-            }
+        anim1.addUpdateListener(animation -> {
+            mDrawable.setColorFilter(new ColorMatrixColorFilter(mCurrentFilter));
+            invalidate();
         });
 
         mCurrentColorAnim.play(anim1);
@@ -232,13 +226,10 @@ public abstract class ButtonDropTarget extends TextView
         final float scale = (float) to.width() / from.width();
         mDropTargetBar.deferOnDragEnd();
 
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                completeDrop(d);
-                mDropTargetBar.onDragEnd();
-                mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
-            }
+        Runnable onAnimationEndRunnable = () -> {
+            completeDrop(d);
+            mDropTargetBar.onDragEnd();
+            mLauncher.exitSpringLoadedDragModeDelayed(true, 0, null);
         };
         dragLayer.animateView(d.dragView, from, to, scale, 1f, 1f, 0.1f, 0.1f,
                 mLauncher.getDragController().isExternalDrag() ? 1 : DRAG_VIEW_DROP_DURATION,

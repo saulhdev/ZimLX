@@ -46,7 +46,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 public class WidgetPreviewLoader {
@@ -317,12 +316,7 @@ public class WidgetPreviewLoader {
 
     private Drawable mutateOnMainThread(final Drawable drawable) {
         try {
-            return mMainThreadExecutor.submit(new Callable<Drawable>() {
-                @Override
-                public Drawable call() {
-                    return drawable.mutate();
-                }
-            }).get();
+            return mMainThreadExecutor.submit(() -> drawable.mutate()).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
@@ -578,14 +572,11 @@ public class WidgetPreviewLoader {
             // in the tasks's onCancelled() call, and if cancelled while the task is writing to
             // disk, it will be cancelled in the task's onPostExecute() call.
             if (mTask.mBitmapToRecycle != null) {
-                mWorkerHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (mUnusedBitmaps) {
-                            mUnusedBitmaps.add(mTask.mBitmapToRecycle);
-                        }
-                        mTask.mBitmapToRecycle = null;
+                mWorkerHandler.post(() -> {
+                    synchronized (mUnusedBitmaps) {
+                        mUnusedBitmaps.add(mTask.mBitmapToRecycle);
                     }
+                    mTask.mBitmapToRecycle = null;
                 });
             }
         }
@@ -667,20 +658,17 @@ public class WidgetPreviewLoader {
 
             // Write the generated preview to the DB in the worker thread
             if (mVersions != null) {
-                mWorkerHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (!isCancelled()) {
-                            // If we are still using this preview, then write it to the DB and then
-                            // let the normal clear mechanism recycle the bitmap
-                            writeToDb(mKey, mVersions, preview);
-                            mBitmapToRecycle = preview;
-                        } else {
-                            // If we've already cancelled, then skip writing the bitmap to the DB
-                            // and manually add the bitmap back to the recycled set
-                            synchronized (mUnusedBitmaps) {
-                                mUnusedBitmaps.add(preview);
-                            }
+                mWorkerHandler.post(() -> {
+                    if (!isCancelled()) {
+                        // If we are still using this preview, then write it to the DB and then
+                        // let the normal clear mechanism recycle the bitmap
+                        writeToDb(mKey, mVersions, preview);
+                        mBitmapToRecycle = preview;
+                    } else {
+                        // If we've already cancelled, then skip writing the bitmap to the DB
+                        // and manually add the bitmap back to the recycled set
+                        synchronized (mUnusedBitmaps) {
+                            mUnusedBitmaps.add(preview);
                         }
                     }
                 });
@@ -697,12 +685,9 @@ public class WidgetPreviewLoader {
             // recycled set immediately. Otherwise, it will be recycled after the preview is written
             // to disk.
             if (preview != null) {
-                mWorkerHandler.post(new Runnable() {
-                    @Override
-                    public void run() {
-                        synchronized (mUnusedBitmaps) {
-                            mUnusedBitmaps.add(preview);
-                        }
+                mWorkerHandler.post(() -> {
+                    synchronized (mUnusedBitmaps) {
+                        mUnusedBitmaps.add(preview);
                     }
                 });
             }

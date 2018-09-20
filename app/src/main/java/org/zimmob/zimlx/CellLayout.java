@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -2696,19 +2695,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
-            va.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = (Float) animation.getAnimatedValue();
-                    float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
-                    float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
-                    float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-                    child.setTranslationX(x);
-                    child.setTranslationY(y);
-                    float s = r * finalScale + (1 - r) * initScale;
-                    child.setScaleX(s);
-                    child.setScaleY(s);
-                }
+            va.addUpdateListener(animation -> {
+                float r = (Float) animation.getAnimatedValue();
+                float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
+                float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
+                float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
+                child.setTranslationX(x);
+                child.setTranslationY(y);
+                float s = r * finalScale + (1 - r) * initScale;
+                child.setScaleX(s);
+                child.setScaleY(s);
             });
             va.addListener(new AnimatorListenerAdapter() {
                 @Override

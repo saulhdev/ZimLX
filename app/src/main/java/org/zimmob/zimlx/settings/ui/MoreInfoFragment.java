@@ -127,7 +127,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                     try {
                         String html = smp.parse(getResources().openRawResource(R.raw.changelog), "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW, SimpleMarkdownParser.FILTER_CHANGELOG).getHtml();
                         au.showDialogWithHtmlTextView(R.string.changelog, html);
-                    } catch (Exception ex) {
+                    } catch (Exception ignored) {
 
                     }
                     return true;

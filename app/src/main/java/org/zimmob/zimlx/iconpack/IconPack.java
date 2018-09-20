@@ -40,12 +40,7 @@ public class IconPack {
     private Map<String, IconPackProvider.IconInfo> icons = new ArrayMap<>();
     private String packageName;
     private Context mContext;
-    private Comparator<IconEntry> mIconComparator = new Comparator<IconEntry>() {
-        @Override
-        public int compare(IconEntry t1, IconEntry t2) {
-            return t1.resourceName.compareTo(t2.resourceName);
-        }
-    };
+    private Comparator<IconEntry> mIconComparator = (t1, t2) -> t1.resourceName.compareTo(t2.resourceName);
 
     public IconPack(Map<String, IconPackProvider.IconInfo> icons, Context context, String packageName,
                     String iconBack, String iconUpon, String iconMask, float scale, List<String> calendars) {

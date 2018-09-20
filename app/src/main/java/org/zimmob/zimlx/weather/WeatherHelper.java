@@ -9,7 +9,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
-import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -84,14 +83,11 @@ public class WeatherHelper implements SharedPreferences.OnSharedPreferenceChange
         final Launcher launcher = LauncherAppState.getInstance().getLauncher();
         final Rect sourceBounds = launcher.getViewBounds(mTemperatureView);
         final Bundle options = launcher.getActivityLaunchOptions(mTemperatureView);
-        mTemperatureView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if (PackageManagerHelper.isAppEnabled(context.getPackageManager(), "com.google.android.googlequicksearchbox", 0)) {
-                    openGoogleWeather(context, sourceBounds, options);
-                } else {
-                    Utilities.openURLinBrowser(context, mApi.getForecastURL(), sourceBounds, options);
-                }
+        mTemperatureView.setOnClickListener(view -> {
+            if (PackageManagerHelper.isAppEnabled(context.getPackageManager(), "com.google.android.googlequicksearchbox", 0)) {
+                openGoogleWeather(context, sourceBounds, options);
+            } else {
+                Utilities.openURLinBrowser(context, mApi.getForecastURL(), sourceBounds, options);
             }
         });
     }

@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- FOLDER TITLES -->
+    <string name="google_title" translatable="false">Google</string>
+    <string name="microsoft_title" translatable="false">Microsoft</string>
 
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
@@ -49,7 +52,5 @@
     <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
     <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
 
-    <!-- Folder titles -->
-    <string name="google_title" translatable="false">Google</string>
-    <string name="microsoft_title" translatable="false">Microsoft</string>
+
 </resources>

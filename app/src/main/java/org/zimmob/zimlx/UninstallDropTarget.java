@@ -178,13 +178,10 @@ public class UninstallDropTarget extends ButtonDropTarget {
             }
         };
 
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.exitSpringLoadedDragMode();
-                completeDrop(d);
-                mLauncher.getDragController().onDeferredEndFling(d);
-            }
+        Runnable onAnimationEndRunnable = () -> {
+            mLauncher.exitSpringLoadedDragMode();
+            completeDrop(d);
+            mLauncher.getDragController().onDeferredEndFling(d);
         };
 
         dragLayer.animateView(d.dragView, fling, duration, tInterpolator, onAnimationEndRunnable,

@@ -37,7 +37,7 @@
             android:defaultValue="@string/generalDefault"
             android:entries="@array/numColsTexts"
             android:entryValues="@array/numColsValues"
-            android:key="pref_numCols"
+            android:key="pref_key__num_cols"
             android:persistent="true"
             android:summary="%s"
             android:title="@string/num_cols_pref_title" />
@@ -46,7 +46,7 @@
             android:defaultValue="@string/generalDefault"
             android:entries="@array/numRowsTexts"
             android:entryValues="@array/numRowsValues"
-            android:key="pref_numRows"
+            android:key="pref_key__num_rows"
             android:persistent="true"
             android:summary="%s"
             android:title="@string/num_rows_pref_title" />

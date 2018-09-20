@@ -49,12 +49,9 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView implements Touc
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mChildrenFocused;
     private boolean mIsScrollable;
-    private Runnable onLayoutRunnable = new Runnable() {
-        @Override
-        public void run() {
-            // Update the widget with 0 Layout id, to reset the view to error view.
-            updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
-        }
+    private Runnable onLayoutRunnable = () -> {
+        // Update the widget with 0 Layout id, to reset the view to error view.
+        updateAppWidget(new RemoteViews(getAppWidgetInfo().provider.getPackageName(), 0));
     };
 
     public LauncherAppWidgetHostView(Context context) {

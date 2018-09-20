@@ -108,44 +108,38 @@ public class WidgetHostViewLoader implements DragController.DragListener {
             return false;
         }
 
-        mBindWidgetRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
-                if (AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
-                        mWidgetLoadingId, pInfo, options)) {
+        mBindWidgetRunnable = () -> {
+            mWidgetLoadingId = mLauncher.getAppWidgetHost().allocateAppWidgetId();
+            if (AppWidgetManagerCompat.getInstance(mLauncher).bindAppWidgetIdIfAllowed(
+                    mWidgetLoadingId, pInfo, options)) {
 
-                    // Widget id bound. Inflate the widget.
-                    mHandler.post(mInflateWidgetRunnable);
-                }
+                // Widget id bound. Inflate the widget.
+                mHandler.post(mInflateWidgetRunnable);
             }
         };
 
-        mInflateWidgetRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (mWidgetLoadingId == -1) {
-                    return;
-                }
-                AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
-                        mLauncher, mWidgetLoadingId, pInfo);
-                mInfo.boundWidget = hostView;
-
-                // We used up the widget Id in binding the above view.
-                mWidgetLoadingId = -1;
-
-                hostView.setVisibility(View.INVISIBLE);
-                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo, false);
-                // We want the first widget layout to be the correct size. This will be important
-                // for width size reporting to the AppWidgetManager.
-                DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],
-                        unScaledSize[1]);
-                lp.x = lp.y = 0;
-                lp.customPosition = true;
-                hostView.setLayoutParams(lp);
-                mLauncher.getDragLayer().addView(hostView);
-                mView.setTag(mInfo);
+        mInflateWidgetRunnable = () -> {
+            if (mWidgetLoadingId == -1) {
+                return;
             }
+            AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
+                    mLauncher, mWidgetLoadingId, pInfo);
+            mInfo.boundWidget = hostView;
+
+            // We used up the widget Id in binding the above view.
+            mWidgetLoadingId = -1;
+
+            hostView.setVisibility(View.INVISIBLE);
+            int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo, false);
+            // We want the first widget layout to be the correct size. This will be important
+            // for width size reporting to the AppWidgetManager.
+            DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],
+                    unScaledSize[1]);
+            lp.x = lp.y = 0;
+            lp.customPosition = true;
+            hostView.setLayoutParams(lp);
+            mLauncher.getDragLayer().addView(hostView);
+            mView.setTag(mInfo);
         };
 
         mHandler.post(mBindWidgetRunnable);

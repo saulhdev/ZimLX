@@ -111,7 +111,7 @@ public class Updater {
     public static int getBuildNumber(Context context) {
         try {
             return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionCode;
-        } catch (PackageManager.NameNotFoundException ex) {
+        } catch (PackageManager.NameNotFoundException ignored) {
         }
 
         return 0;

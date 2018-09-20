@@ -131,6 +131,10 @@
         <item>1</item>
         <item>2</item>
     </string-array>
+    <string-array name="predictive_apps_values">
+        <item>5</item>
+        <item>10</item>
+    </string-array>
 
     <string-array name="pullDownActionTexts">
         <item>@string/pull_down_do_nothing</item>

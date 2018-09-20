@@ -12,9 +12,6 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
-import static org.zimmob.zimlx.util.SystemUiController.FLAG_DARK_NAV;
-import static org.zimmob.zimlx.util.SystemUiController.UI_STATE_ROOT_VIEW;
-
 public class LauncherRootView extends InsettableFrameLayout {
 
     private final Paint mOpaquePaint;

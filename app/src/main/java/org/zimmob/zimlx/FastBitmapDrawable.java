@@ -71,17 +71,13 @@ public class FastBitmapDrawable extends Drawable {
         return 0;
     }
 
-    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
-
-        @Override
-        public float getInterpolation(float input) {
-            if (input < 0.05f) {
-                return input / 0.05f;
-            } else if (input < 0.3f) {
-                return 1;
-            } else {
-                return (1 - input) / 0.7f;
-            }
+    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = input -> {
+        if (input < 0.05f) {
+            return input / 0.05f;
+        } else if (input < 0.3f) {
+            return 1;
+        } else {
+            return (1 - input) / 0.7f;
         }
     };
     public static final int CLICK_FEEDBACK_DURATION = 2000;

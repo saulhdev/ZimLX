@@ -16,7 +16,7 @@
         android:title="@string/rate_the_app" />
 
     <Preference
-        android:icon="@drawable/ic_info_black_24dp"
+        android:icon="@drawable/ic_information"
         android:key="@string/pref_key__more_info__help"
         android:summary="@string/help_this_app"
         android:title="@string/help" />

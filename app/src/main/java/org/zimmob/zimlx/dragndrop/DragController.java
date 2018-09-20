@@ -333,15 +333,12 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public void animateDragViewToOriginalPosition(final Runnable runnable, final View view, int i) {
-        this.mDragObject.dragView.animateTo(this.mMotionDownX, this.mMotionDownY, new Runnable() {
-            @Override
-            public void run() {
-                if (view != null) {
-                    view.setVisibility(View.VISIBLE);
-                }
-                if (runnable != null) {
-                    runnable.run();
-                }
+        this.mDragObject.dragView.animateTo(this.mMotionDownX, this.mMotionDownY, () -> {
+            if (view != null) {
+                view.setVisibility(View.VISIBLE);
+            }
+            if (runnable != null) {
+                runnable.run();
             }
         }, i);
     }

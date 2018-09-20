@@ -37,15 +37,11 @@ public class DropTargetBar extends LinearLayout implements DragController.DragLi
     protected static final int DEFAULT_DRAG_FADE_DURATION = 175;
     protected static final TimeInterpolator DEFAULT_INTERPOLATOR = new AccelerateInterpolator();
 
-    private final Runnable mFadeAnimationEndRunnable = new Runnable() {
-
-        @Override
-        public void run() {
-            AccessibilityManager am = (AccessibilityManager)
-                    getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-            boolean accessibilityEnabled = am.isEnabled();
-            AlphaUpdateListener.updateVisibility(DropTargetBar.this, accessibilityEnabled);
-        }
+    private final Runnable mFadeAnimationEndRunnable = () -> {
+        AccessibilityManager am = (AccessibilityManager)
+                getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
+        boolean accessibilityEnabled = am.isEnabled();
+        AlphaUpdateListener.updateVisibility(DropTargetBar.this, accessibilityEnabled);
     };
 
     @ViewDebug.ExportedProperty(category = "launcher")

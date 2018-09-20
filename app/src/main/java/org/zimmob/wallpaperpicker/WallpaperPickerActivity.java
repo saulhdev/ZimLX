@@ -83,14 +83,11 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         }
         // the change of the flag must be delayed in order to avoid flickering,
         // a simple post / double post does not suffice here
-        mCropView.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (!visible) {
-                    changeWallpaperFlags(visible);
-                } else {
-                    mCropView.setVisibility(View.INVISIBLE);
-                }
+        mCropView.postDelayed(() -> {
+            if (!visible) {
+                changeWallpaperFlags(visible);
+            } else {
+                mCropView.setVisibility(View.INVISIBLE);
             }
         }, FLAG_POST_DELAY_MILLIS);
     }
@@ -189,22 +186,19 @@ public class WallpaperPickerActivity extends WallpaperCropActivity
         final ActionBar actionBar = getActionBar();
         actionBar.setCustomView(R.layout.actionbar_set_wallpaper);
         actionBar.getCustomView().setOnClickListener(
-                new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // Ensure that a tile is selected and loaded.
-                        if (mSelectedTile != null && mCropView.getTileSource() != null) {
-                            // Prevent user from selecting any new tile.
-                            mWallpaperStrip.setVisibility(View.GONE);
-                            actionBar.hide();
+                v -> {
+                    // Ensure that a tile is selected and loaded.
+                    if (mSelectedTile != null && mCropView.getTileSource() != null) {
+                        // Prevent user from selecting any new tile.
+                        mWallpaperStrip.setVisibility(View.GONE);
+                        actionBar.hide();
 
-                            WallpaperTileInfo info = (WallpaperTileInfo) mSelectedTile.getTag();
-                            info.onSave(WallpaperPickerActivity.this);
-                        } else {
-                            // This case shouldn't be possible, since "Set wallpaper" is disabled
-                            // until user clicks on a title.
-                            Log.w(TAG, "\"Set wallpaper\" was clicked when no tile was selected");
-                        }
+                        WallpaperTileInfo info = (WallpaperTileInfo) mSelectedTile.getTag();
+                        info.onSave(WallpaperPickerActivity.this);
+                    } else {
+                        // This case shouldn't be possible, since "Set wallpaper" is disabled
+                        // until user clicks on a title.
+                        Log.w(TAG, "\"Set wallpaper\" was clicked when no tile was selected");
                     }
                 });
         mSetWallpaperButton = findViewById(R.id.set_wallpaper_button);

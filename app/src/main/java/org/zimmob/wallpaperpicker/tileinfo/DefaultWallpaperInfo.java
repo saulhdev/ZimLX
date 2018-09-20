@@ -118,14 +118,11 @@ public class DefaultWallpaperInfo extends DrawableThumbWallpaperInfo {
     @Override
     public void onSave(final WallpaperPickerActivity a) {
         CropAndSetWallpaperTask.OnEndCropHandler onEndCropHandler
-                = new CropAndSetWallpaperTask.OnEndCropHandler() {
-            @Override
-            public void run(boolean cropSucceeded) {
-                if (cropSucceeded) {
-                    a.setResult(Activity.RESULT_OK);
-                }
-                a.finish();
+                = cropSucceeded -> {
+            if (cropSucceeded) {
+                a.setResult(Activity.RESULT_OK);
             }
+            a.finish();
         };
         CropAndSetWallpaperTask setWallpaperTask = new CropAndSetWallpaperTask(
                 null, a, null, -1, -1, -1, onEndCropHandler) {

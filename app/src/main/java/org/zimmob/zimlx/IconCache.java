@@ -401,29 +401,19 @@ public class IconCache {
      * @return a request ID that can be used to cancel the request.
      */
     public IconLoadRequest updateIconInBackground(final BubbleTextView caller, final ItemInfo info) {
-        Runnable request = new Runnable() {
-
-            @Override
-            public void run() {
-                if (info instanceof AppInfo) {
-                    getTitleAndIcon((AppInfo) info, null, false);
-                } else if (info instanceof ShortcutInfo) {
-                    ShortcutInfo st = (ShortcutInfo) info;
-                    getTitleAndIcon(st,
-                            st.promisedIntent != null ? st.promisedIntent : st.intent,
-                            st.user, false);
-                } else if (info instanceof PackageItemInfo) {
-                    PackageItemInfo pti = (PackageItemInfo) info;
-                    getTitleAndIconForApp(pti, false);
-                }
-                mMainThreadExecutor.execute(new Runnable() {
-
-                    @Override
-                    public void run() {
-                        caller.reapplyItemInfo(info);
-                    }
-                });
+        Runnable request = () -> {
+            if (info instanceof AppInfo) {
+                getTitleAndIcon((AppInfo) info, null, false);
+            } else if (info instanceof ShortcutInfo) {
+                ShortcutInfo st = (ShortcutInfo) info;
+                getTitleAndIcon(st,
+                        st.promisedIntent != null ? st.promisedIntent : st.intent,
+                        st.user, false);
+            } else if (info instanceof PackageItemInfo) {
+                PackageItemInfo pti = (PackageItemInfo) info;
+                getTitleAndIconForApp(pti, false);
             }
+            mMainThreadExecutor.execute(() -> caller.reapplyItemInfo(info));
         };
         mWorkerHandler.post(request);
         return new IconLoadRequest(request, mWorkerHandler);

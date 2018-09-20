@@ -66,17 +66,14 @@ public class LauncherAppsCompatVO extends LauncherAppsCompatVL {
                 }
             } else {
                 // Block the worker thread until the accept() is called.
-                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            Thread.sleep(acceptDelay);
-                        } catch (InterruptedException e) {
-                            // Ignore
-                        }
-                        if (request.isValid()) {
-                            request.accept();
-                        }
+                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(() -> {
+                    try {
+                        Thread.sleep(acceptDelay);
+                    } catch (InterruptedException e) {
+                        // Ignore
+                    }
+                    if (request.isValid()) {
+                        request.accept();
                     }
                 });
             }

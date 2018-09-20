@@ -47,11 +47,21 @@
             android:summaryOn="@string/predictive_apps_summary_on"
             android:title="@string/predictive_apps_title" />
 
+        <ListPreference
+            android:defaultValue="5"
+            android:entries="@array/predictive_apps_values"
+            android:entryValues="@array/predictive_apps_values"
+            android:key="pref_predictive_apps_values"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/predictive_apps_num_title" />
+
+
         <org.zimmob.zimlx.preferences.SeekbarPreference
             android:key="pref_allAppsOpacitySB"
             android:persistent="true"
             android:title="@string/all_apps_opacity_pref_title"
-            app:defaultSeekbarValue="1"
+            app:defaultSeekbarValue="0.75"
             app:maxValue="1"
             app:minValue="0"
             app:summaryFormat="%.0f%%"

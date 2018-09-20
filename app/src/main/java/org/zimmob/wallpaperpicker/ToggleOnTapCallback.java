@@ -31,11 +31,7 @@ public class ToggleOnTapCallback implements CropView.TouchCallback {
         mAnim = mViewtoToggle.animate();
         mAnim.alpha(0f)
                 .setDuration(150)
-                .withEndAction(new Runnable() {
-                    public void run() {
-                        mViewtoToggle.setVisibility(View.INVISIBLE);
-                    }
-                });
+                .withEndAction(() -> mViewtoToggle.setVisibility(View.INVISIBLE));
 
         mAnim.setInterpolator(new AccelerateInterpolator(0.75f));
         mAnim.start();

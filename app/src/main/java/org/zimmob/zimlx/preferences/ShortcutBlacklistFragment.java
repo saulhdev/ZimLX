@@ -22,7 +22,6 @@ import org.zimmob.zimlx.compat.LauncherActivityInfoCompat;
 import org.zimmob.zimlx.compat.LauncherAppsCompat;
 
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -51,12 +50,7 @@ public class ShortcutBlacklistFragment extends Fragment implements MultiSelectRe
 
         // Sort installed apps by using a custom Comparator
         installedApps = getAppsList(context);
-        Collections.sort(installedApps, new Comparator<LauncherActivityInfoCompat>() {
-            @Override
-            public int compare(LauncherActivityInfoCompat a, LauncherActivityInfoCompat b) {
-                return a.getLabel().toString().compareToIgnoreCase(b.getLabel().toString());
-            }
-        });
+        Collections.sort(installedApps, (a, b) -> a.getLabel().toString().compareToIgnoreCase(b.getLabel().toString()));
 
         // Inherit SelectableAdapter for hidden apps and apply shortcut blacklist
         adapter = new MultiSelectRecyclerViewAdapter(installedApps, this) {

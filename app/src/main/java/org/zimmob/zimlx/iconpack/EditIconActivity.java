@@ -25,7 +25,6 @@ import org.zimmob.zimlx.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -51,18 +50,11 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
             return;
         }
         buttonPlayStore = findViewById(R.id.play_store);
-        buttonPlayStore.setOnClickListener(v -> {
-            openPlayStore();
-        });
+        buttonPlayStore.setOnClickListener(v -> openPlayStore());
 
         ComponentName component = mInfo.getComponentName();
         List<IconPackInfo> iconPacks = new ArrayList<>(loadAvailableIconPacks().values());
-        Collections.sort(iconPacks, new Comparator<IconPackInfo>() {
-            @Override
-            public int compare(IconPackInfo lhs, IconPackInfo rhs) {
-                return lhs.label.toString().compareToIgnoreCase(rhs.label.toString());
-            }
-        });
+        Collections.sort(iconPacks, (lhs, rhs) -> lhs.label.toString().compareToIgnoreCase(rhs.label.toString()));
 
         setTitle(mInfo.getTitle());
 

@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import org.zimmob.zimlx.AppInfo;
 import org.zimmob.zimlx.BubbleTextView;
+import org.zimmob.zimlx.DeviceProfile;
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
@@ -53,6 +54,8 @@ import java.util.List;
  * The grid view adapter of all the apps.
  */
 public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.ViewHolder> {
+    // A section break in the grid
+    public static final int VIEW_TYPE_SECTION_BREAK = 1;
     // A normal icon
     public static final int VIEW_TYPE_ICON = 1 << 1;
     // A prediction icon
@@ -74,7 +77,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_SEARCH_MARKET_DIVIDER
-            | VIEW_TYPE_PREDICTION_DIVIDER;
+            | VIEW_TYPE_PREDICTION_DIVIDER | VIEW_TYPE_SECTION_BREAK;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON
             | VIEW_TYPE_PREDICTION_ICON;
     public static final int VIEW_TYPE_MASK_CONTENT = VIEW_TYPE_MASK_ICON
@@ -181,17 +184,25 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
+            case VIEW_TYPE_SECTION_BREAK:
+                return new ViewHolder(new View(parent.getContext()));
+
             case VIEW_TYPE_ICON:
             case VIEW_TYPE_PREDICTION_ICON:
                 BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
                         R.layout.all_apps_icon, parent, false);
+                //View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
                 icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
-                // Ensure the all apps icon height matches the workspace icons in portrait mode.
-                icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
+                // Ensure the all apps icon height matches the workspace icons
+                DeviceProfile profile = mLauncher.getDeviceProfile();
+                GridLayoutManager.LayoutParams lp =
+                        (GridLayoutManager.LayoutParams) icon.getLayoutParams();
+                lp.height = mTheme.iconHeight(profile.getAllAppsCellHeight(mLauncher));
+                icon.setLayoutParams(lp);
                 return new ViewHolder(icon);
             case VIEW_TYPE_DISCOVERY_ITEM:
                 AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
@@ -205,12 +216,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
-                    }
-                });
+                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_APPS_LOADING_DIVIDER:
                 View loadingDividerView = mLayoutInflater.inflate(

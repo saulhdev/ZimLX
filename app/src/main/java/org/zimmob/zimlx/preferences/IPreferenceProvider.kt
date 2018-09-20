@@ -117,6 +117,7 @@ interface IPreferenceProvider {
     val notificationBackground: Int
     val notificationCount: Boolean
     val enablePredictiveApps: Boolean
+    fun getNumPredictedApps(default: String): String
     val minibarColor: Int
     val allAppsLabelColor: Int
     fun alternateIcon(key: String): String?

@@ -56,12 +56,7 @@ public class AppNameComparator {
                 return result;
             }
         };
-        mSectionNameComparator = new Comparator<String>() {
-            @Override
-            public int compare(String o1, String o2) {
-                return compareTitles(o1, o2);
-            }
-        };
+        mSectionNameComparator = (o1, o2) -> compareTitles(o1, o2);
     }
 
     /**

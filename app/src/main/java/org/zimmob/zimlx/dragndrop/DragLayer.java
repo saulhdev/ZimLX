@@ -41,7 +41,6 @@ import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.animation.DecelerateInterpolator;
@@ -69,7 +68,6 @@ import org.zimmob.zimlx.folder.FolderIcon;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.keyboard.ViewGroupFocusHelper;
 import org.zimmob.zimlx.util.Thunk;
-import org.zimmob.zimlx.util.Tool;
 import org.zimmob.zimlx.util.TouchController;
 
 import java.util.ArrayList;
@@ -703,13 +701,10 @@ public class DragLayer extends InsettableFrameLayout {
         final int fromX = r.left;
         final int fromY = r.top;
         child.setVisibility(INVISIBLE);
-        Runnable onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                child.setVisibility(VISIBLE);
-                if (onFinishAnimationRunnable != null) {
-                    onFinishAnimationRunnable.run();
-                }
+        Runnable onCompleteRunnable = () -> {
+            child.setVisibility(VISIBLE);
+            if (onFinishAnimationRunnable != null) {
+                onFinishAnimationRunnable.run();
             }
         };
         animateViewIntoPosition(dragView, fromX, fromY, toX, toY, 1, 1, 1, toScale, toScale,
@@ -782,42 +777,39 @@ public class DragLayer extends InsettableFrameLayout {
         // Animate the view
         final float initAlpha = view.getAlpha();
         final float dropViewScale = view.getScaleX();
-        AnimatorUpdateListener updateCb = new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float percent = (Float) animation.getAnimatedValue();
-                final int width = view.getMeasuredWidth();
-                final int height = view.getMeasuredHeight();
+        AnimatorUpdateListener updateCb = animation -> {
+            final float percent = (Float) animation.getAnimatedValue();
+            final int width = view.getMeasuredWidth();
+            final int height = view.getMeasuredHeight();
 
-                float alphaPercent = alphaInterpolator == null ? percent :
-                        alphaInterpolator.getInterpolation(percent);
-                float motionPercent = motionInterpolator == null ? percent :
-                        motionInterpolator.getInterpolation(percent);
+            float alphaPercent = alphaInterpolator == null ? percent :
+                    alphaInterpolator.getInterpolation(percent);
+            float motionPercent = motionInterpolator == null ? percent :
+                    motionInterpolator.getInterpolation(percent);
 
-                float initialScaleX = initScaleX * dropViewScale;
-                float initialScaleY = initScaleY * dropViewScale;
-                float scaleX = finalScaleX * percent + initialScaleX * (1 - percent);
-                float scaleY = finalScaleY * percent + initialScaleY * (1 - percent);
-                float alpha = finalAlpha * alphaPercent + initAlpha * (1 - alphaPercent);
+            float initialScaleX = initScaleX * dropViewScale;
+            float initialScaleY = initScaleY * dropViewScale;
+            float scaleX = finalScaleX * percent + initialScaleX * (1 - percent);
+            float scaleY = finalScaleY * percent + initialScaleY * (1 - percent);
+            float alpha = finalAlpha * alphaPercent + initAlpha * (1 - alphaPercent);
 
-                float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
-                float fromTop = from.top + (initialScaleY - 1f) * height / 2;
+            float fromLeft = from.left + (initialScaleX - 1f) * width / 2;
+            float fromTop = from.top + (initialScaleY - 1f) * height / 2;
 
-                int x = (int) (fromLeft + Math.round((to.left - fromLeft) * motionPercent));
-                int y = (int) (fromTop + Math.round((to.top - fromTop) * motionPercent));
+            int x = (int) (fromLeft + Math.round((to.left - fromLeft) * motionPercent));
+            int y = (int) (fromTop + Math.round((to.top - fromTop) * motionPercent));
 
-                int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
-                        (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+            int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
+                    (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
 
-                int xPos = x - mDropView.getScrollX() + anchorAdjust;
-                int yPos = y - mDropView.getScrollY();
+            int xPos = x - mDropView.getScrollX() + anchorAdjust;
+            int yPos = y - mDropView.getScrollY();
 
-                mDropView.setTranslationX(xPos);
-                mDropView.setTranslationY(yPos);
-                mDropView.setScaleX(scaleX);
-                mDropView.setScaleY(scaleY);
-                mDropView.setAlpha(alpha);
-            }
+            mDropView.setTranslationX(xPos);
+            mDropView.setTranslationY(yPos);
+            mDropView.setScaleX(scaleX);
+            mDropView.setScaleY(scaleY);
+            mDropView.setAlpha(alpha);
         };
         animateView(view, updateCb, duration, interpolator, onCompleteRunnable, animationEndStyle,
                 anchorView);
