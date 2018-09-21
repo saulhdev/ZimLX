@@ -6,7 +6,6 @@
     <!-- Miscellaneous -->
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
-    <bool name="allow_rotation">false</bool>
     <!-- DragController -->
     <item name="drag_event_parity" type="id" />
 
@@ -87,6 +86,5 @@
 
     <!-- View tag key used to store SpringAnimation data. -->
     <item name="spring_animation_tag" type="id" />
-    <integer name="config_folderDelay">30</integer>
 
 </resources>

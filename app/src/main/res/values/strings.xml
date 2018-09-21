@@ -312,7 +312,6 @@
 
     <!-- About ZimLX -->
     <string name="about_title">About</string>
-    <string name="about_pref_summary">Get to know about the ZimLX team</string>
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="icon_pack_preference_title">Icon pack</string>
     <string name="icon_pack_preference_summary">Select an icon pack</string>
@@ -355,7 +354,6 @@
     <string name="dock_pref_summary">Customize your dock</string>
     <string name="app_drawer_pref_summary">Customize your app drawer</string>
     <string name="pixel_ui_pref_summary">Theme different elements</string>
-    <string name="backup_pref_title">Backup &amp; restore</string>
     <string name="behavior_pref_summary">Change the behavior of ZimLX</string>
     <string name="backup_pref_summary">Backup\/restore your settings and database</string>
     <string name="debug_pref_summary">Restart or rebuild icon database</string>
@@ -383,10 +381,6 @@
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
-    <string name="export_db_title">Database</string>
-    <string name="import_db_title">Database</string>
-    <string name="export_prefs_title">Settings</string>
-    <string name="import_prefs_title">Settings</string>
     <string name="notification_listener_label">ZimLX - Notification badges</string>
     <string name="color_extraction_label">ZimLX - Color extraction</string>
     <string name="test_package" translatable="false">com.example.test</string>
@@ -415,8 +409,6 @@
     <string name="blacklist_app_selected">&#160;selected</string>
 
     <!-- Import/Export Strings -->
-    <string name="backup_import_title">Restore</string>
-    <string name="backup_export_title">Backup</string>
     <string name="settings_export_success">Settings backed up successfully</string>
     <string name="db_export_success">Database backed up successfully</string>
     <string name="settings_import_success">Settings restored successfully</string>
@@ -506,13 +498,11 @@
     <string name="restore_backup">Restore</string>
     <string name="backup_name">Name</string>
     <string name="backup_location">Location</string>
-    <string name="choose_backup_path">Browse</string>
     <string name="backup_homescreen">Homescreen</string>
     <string name="backup_contents">Backup contents</string>
     <string name="backup_settings">Settings</string>
     <string name="backup_wallpaper">Wallpaper</string>
     <string name="backup_error_blank_name">Name must not be blank</string>
-    <string name="backup_error_blank_location">Location must not be blank</string>
     <string name="backup_error_blank_contents">Contents must not be blank</string>
     <string name="backup_creating">Creating backup</string>
     <string name="no_recent_backups">No recent backups</string>
@@ -571,30 +561,12 @@
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
 
     <!-- Dialogs -->
-    <string name="request_please_wait">Searching for installed apps. Please wait.</string>
     <string name="on">On</string>
-    <string name="desktop_action">Desktop Action</string>
-    <string name="select_app">Select App</string>
     <string name="off">Off</string>
     <string name="ok">OK</string>
     <string name="wallpaper_pick">Pick Wallpaper</string>
-    <string name="dialog__icon_pack_title">Pick icon pack</string>
-    <string name="dialog__icon_pack_info_toast">Unable to grab the icon without READ_EXTERNAL_STORAGE permission.</string>
-    <string name="dialog__backup_app_settings__backup">Backup</string>
-    <string name="dialog__backup_app_settings__restore">Restore</string>
-    <string name="dialog__backup_app_settings__success">Done.</string>
     <string name="dialog__backup_app_settings__error">Something went wrong.</string>
-    <string name="columns">Columns</string>
-    <string name="rows">Rows</string>
-
-    <string name="clear_user_data">Clear user data</string>
-    <string name="clear_user_data_are_you_sure">Are you sure, all your shortcuts will be removed.</string>
     <string name="cancel">Cancel</string>
-    <string name="search_hint">Search Apps</string>
-    <string name="search_online">Search online&#8230;</string>
-    <string name="bad_format">Bad Format</string>
-    <string name="searchbar_search_apps">Search Apps</string>
-    <string name="searchbar_button" translatable="false">...</string>
 
     <string name="test_title">Test</string>
     <string name="visibility">Visibility</string>
@@ -619,30 +591,13 @@
     <string name="pref_summary__language">Change language of this app.</string>
     <string name="pref_title__language">Language</string>
     <string name="folder_badge_count_title">Show folder badge Count</string>
-    <string name="choose_new_icon">Choose a new icon</string>
-    <string name="open_icon_theme">Open an icon theme</string>
-    <string name="download_icon_theme">Download new icon theme</string>
-    <string name="button_apply">Apply</string>
-    <string name="edit_icon">Edit Icon</string>
 
     <string name="device_admin_message">ZimLX requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.</string>
     <string name="toast_device_admin_required">Please enable device administration.</string>
-    <string name="apps_customize_apps_scroll_format">Apps page %1$d of %2$d</string>
-    <!-- The format string for AppsCustomize Apps page scroll text [CHAR_LIMIT=none] -->
-    <string name="apps_customize_widgets_scroll_format">Widgets page %1$d of %2$d</string>
     <string name="pref_title__notification_background_color">Notification Background Color</string>
     <string name="pref_title__notification_count">Show Notification Count</string>
 
     <string name="pref_title__gestures">Gestures</string>
-    <string name="pref_title__gesture_feedback">Gesture Feedback</string>
-    <string name="pref_summary__gesture_feedback">Get feedback when long pressing an item on the desktop.</string>
-    <string name="pref_title__gesture_quick_swipe">Quick Swipe Drawer</string>
-    <string name="pref_summary__gesture_quick_swipe">Swipe upwards on the dock to open the app drawer.</string>
-    <string name="pref_title__gesture_double_tap">Double Tap</string>
-    <string name="pref_title__gesture_swipe_up">Swipe Upwards</string>
-    <string name="pref_title__gesture_swipe_down">Swipe Downwards</string>
-    <string name="pref_title__gesture_pinch">Pinch</string>
-    <string name="pref_title__gesture_unpinch">Unpinch</string>
     <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
     <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
     <!-- DT2S -->
@@ -659,14 +614,5 @@
     <string name="predictive_apps_summary_on">Your favorite apps will appear at the top of the drawer</string>
     <string name="predictive_apps_summary_off">Your favorite apps won\'t appear at the top of the drawer</string>
     <string name="predictive_apps_num_title">Predicted apps number</string>
-
-    <string name="icon_badging_title">Notification dots</string>
-    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_on">On</string>
-    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
-    <string name="icon_badging_desc_off">Off</string>
-    <string name="msg_missing_notification_access">To show Notification Dots, turn on app notifications for <xliff:g example="My App" id="name">%1$s</xliff:g></string>
-    <string name="title_missing_notification_access">Notification access needed</string>
-    <string name="title_change_settings">Change settings</string>
 
 </resources>

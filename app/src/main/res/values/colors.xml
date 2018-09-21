@@ -140,5 +140,5 @@
 
     <!-- NOTIFICATION -->
     <color name="notification_background">#FFAF174A</color>
-
+    <color name="settings_icons">?android:attr/textColorPrimary</color>
 </resources>

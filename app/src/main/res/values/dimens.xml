@@ -34,12 +34,6 @@
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_right_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_left_nav_bar_left_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_land_right_nav_bar_left_padding">0dp</dimen>
     <dimen name="dynamic_grid_hotseat_height">88dp</dimen>
     <dimen name="dynamic_grid_hotseat_gutter_width">24dp</dimen>
 
@@ -230,15 +224,6 @@
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
     <dimen name="qsb_connector_gradient_end_padding">20.0dip</dimen>
     <dimen name="popup_elevation">9dp</dimen>
-
-    <dimen name="apps_customize_tab_bar_height">42dp</dimen>
-    <integer name="apps_customize_widget_cell_count_x">3</integer>
-    <integer name="apps_customize_widget_cell_count_y">2</integer>
-
-    <!-- When dragging items on the workspace, the number of dps by which the position of
-     the drag view should be offset from the position of the original view. -->
-    <dimen name="dragViewOffsetX">0dp</dimen>
-    <dimen name="dragViewOffsetY">0dp</dimen>
 
     <dimen name="settings_icon_size">36dp</dimen>
 </resources>

@@ -26,7 +26,6 @@ public class Minibar {
             new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
             new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 25),
             new ActionDisplayItem(Action.AppDrawer, "AppDrawer", Launcher.getLauncher(mContext).getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73),
-            new ActionDisplayItem(Action.SearchBar, "SearchBar", Launcher.getLauncher(mContext).getString(R.string.minibar_9), R.drawable.ic_search_light_24dp, 89),
             new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
 
     };
@@ -75,11 +74,6 @@ public class Minibar {
                     ((DrawerLayout)Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
                 }
                 break;
-            case SearchBar: {
-                //assert HomeActivity.companion.getLauncher() != null;
-                //HomeActivity.companion.getLauncher().getSearchBar().getSearchButton().performClick();
-                break;
-            }
             case VolumeDialog:
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
                     try {
@@ -118,7 +112,7 @@ public class Minibar {
     }
 
     public enum Action {
-        EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, AppDrawer, LaunchApp, SearchBar, MobileNetworkSettings,
+        EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, AppDrawer, LaunchApp, MobileNetworkSettings,
     }
 
     public static void setContext(Context context) {

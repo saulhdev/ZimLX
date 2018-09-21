@@ -560,6 +560,11 @@ public class Launcher extends Activity
         }
     }
 
+    @NonNull
+    public final DrawerLayout getDrawerLayout() {
+        return findViewById(R.id.drawer_layout);
+    }
+
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
     }

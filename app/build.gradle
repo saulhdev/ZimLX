@@ -55,7 +55,6 @@ android {
                 ext.awarenessApiKey = localProps.getProperty('awarenessApiKey') ?: System.getenv("AWARENESS_API_KEY")
                 buildConfigField "boolean", "AWARENESS_API_ENABLED", ext.awarenessApiKey ? "true" : "false"
                 manifestPlaceholders = [awarenessApiKey: ext.awarenessApiKey ?: "null"]
-                resValue "string", "manifest_package_id", "org.zimmob.zimlx"
                 applicationId "org.zimmob.zimlx"
                 versionName name
                 versionCode code
