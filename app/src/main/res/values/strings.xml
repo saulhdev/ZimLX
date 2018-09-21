@@ -547,35 +547,6 @@
     <string name="legacy_backup">Legacy backup file</string>
 
     <!-- About screen -->
-    <string name="about_twitter" translatable="false">Twitter</string>
-    <string name="title_attribouter_licenses">Open Source Licenses</string>
-    <string name="title_attribouter_email">Email</string>
-    <string name="title_attribouter_website">Website</string>
-    <string name="title_attribouter_rate">Rate</string>
-    <string name="title_attribouter_version">Version %1$s</string>
-    <string name="title_attribouter_license">License</string>
-    <string name="title_attribouter_license_permissions">Permissions</string>
-    <string name="title_attribouter_license_conditions">Conditions</string>
-    <string name="title_attribouter_license_limitations">Limitations</string>
-    <string name="title_attribouter_more_info">More Info</string>
-    <string name="title_attribouter_translators">Translators</string>
-    <string name="about_our_team">Our team</string>
-    <string name="about_our_contributors">Our main contributors</string>
-    <string name="about_our_family">Our other family members</string>
-    <string name="about_role_lead">Lead Developer</string>
-    <string name="about_role_devops">DevOps</string>
-    <string name="about_role_dev">Developer</string>
-    <string name="about_role_dev_mod">Developer / Moderator</string>
-    <string name="about_role_designer">Designer</string>
-    <string name="about_role_special_snowflake">PR Manager / Moderator</string>
-    <string name="about_role_mod_support">Moderator / Support</string>
-    <string name="about_role_family_member">Family Member</string>
-    <string name="about_bio_deletescape">Android developer &amp; enthusiasts, loves memes (a bit too much actually). Founder of the ZimLX project.</string>
-    <string name="about_bio_divadsn">18 years old, turns caffeine and pizza into code. Also previously known as Codebucket.</string>
-    <string name="about_bio_recoded">Mild coder and graphics designer.</string>
-    <string name="about_bio_josh">Freelance graphic designer.</string>
-    <string name="about_bio_chris">Creative Mind, Influencer &amp; Content Creator. Social Media and PR Manager.</string>
-    <string name="about_bio_msfjarvis">Core developer at halogenOS and application developer at substratum.</string>
 
     <string name="pref_title__interfaces">Interfaces</string>
     <string name="pref_title__inputs">Gestures</string>
@@ -600,7 +571,6 @@
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
 
     <!-- Dialogs -->
-    <string name="request_dummy_text">Hello world!</string>
     <string name="request_please_wait">Searching for installed apps. Please wait.</string>
     <string name="on">On</string>
     <string name="desktop_action">Desktop Action</string>
@@ -616,27 +586,6 @@
     <string name="dialog__backup_app_settings__error">Something went wrong.</string>
     <string name="columns">Columns</string>
     <string name="rows">Rows</string>
-    <string name="pref_title__date_bar">Date Bar</string>
-    <string name="pref_title__date_bar_text_color">Text Color</string>
-    <string name="pref_title__date_bar_date_format">Date Format</string>
-    <string name="pref_title__date_bar_date_format_custom_1">Custom Format: Line 1</string>
-    <string name="pref_title__date_bar_date_format_custom_2">Custom Format: Line 2</string>
-
-    <string name="title_folder_grid">Grid</string>
-    <string name="title_folder_line">Line</string>
-    <string name="title_folder_disorder">Disorder</string>
-
-    <string name="title_folder_circle">Circle</string>
-    <string name="title_folder_circle_bg">Circle Shadow</string>
-    <string name="title_folder_square">Square</string>
-    <string name="title_folder_square_bg">Square Shadow</string>
-
-    <string name="title_transition_fade">Fade</string>
-    <string name="title_transition_default">Default</string>
-    <string name="title_transition_zoom">Zoom</string>
-    <string name="title_transition_3d">3D</string>
-    <string name="title_transition_random">Random</string>
-    <string name="pref_title__desktop_transition">Transition</string>
 
     <string name="clear_user_data">Clear user data</string>
     <string name="clear_user_data_are_you_sure">Are you sure, all your shortcuts will be removed.</string>
@@ -669,7 +618,7 @@
     <string name="pref_title__notifications">Notifications</string>
     <string name="pref_summary__language">Change language of this app.</string>
     <string name="pref_title__language">Language</string>
-
+    <string name="folder_badge_count_title">Show folder badge Count</string>
     <string name="choose_new_icon">Choose a new icon</string>
     <string name="open_icon_theme">Open an icon theme</string>
     <string name="download_icon_theme">Download new icon theme</string>
@@ -696,7 +645,6 @@
     <string name="pref_title__gesture_unpinch">Unpinch</string>
     <string name="pref_title__overall_animation_speed_modifier">Animation Speed</string>
     <string name="pref_summary__overall_animation_speed_modifier">Modify the overall speed of animations</string>
-    <string name="icon_pack_system">System (Default)</string>
     <!-- DT2S -->
     <string name="dt2s_title">Double tap to sleep</string>
     <string name="dt2s_disabled">Disabled</string>

@@ -17,6 +17,7 @@
 package org.zimmob.zimlx.badge;
 
 
+import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.Utilities;
 
 /**
@@ -53,8 +54,13 @@ public class FolderBadgeInfo extends BadgeInfo {
 
     @Override
     public int getNotificationCount() {
-        // This forces the folder badge to always show up as a dot.
-        return mNumNotifications;
+        boolean showBadgeCount = Launcher.showNotificationCount;
+        if (showBadgeCount) {
+            return mNumNotifications;
+        } else {
+            // This forces the folder badge to always show up as a dot.
+            return 0;
+        }
     }
 
     public boolean hasBadge() {

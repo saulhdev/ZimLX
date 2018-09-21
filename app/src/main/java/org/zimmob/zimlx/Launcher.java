@@ -206,6 +206,7 @@ public class Launcher extends Activity
     private final int ADVANCE_MSG = 1;
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
     public static Context mContext;
+    public static boolean showNotificationCount;
     protected SystemUiController mSystemUiController;
     public ViewGroupFocusHelper mFocusHandler;
     @Thunk
@@ -485,6 +486,7 @@ public class Launcher extends Activity
                 : app.getInvariantDeviceProfile().portraitProfile;
 
         mSharedPrefs = PreferenceProvider.INSTANCE.getPreferences(this);
+        showNotificationCount = Utilities.getPrefs(this).getFolderBadgeCount();
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mModel = app.setLauncher(this);
         mIconCache = app.getIconCache();

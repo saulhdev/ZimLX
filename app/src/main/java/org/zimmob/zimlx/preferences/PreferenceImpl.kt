@@ -208,6 +208,9 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val notificationBackground by IntPref(FeatureFlags.KEY_PREF_NOTIFICATION_BACKGROUND, R.color.notification_background)
     override val notificationCount: Boolean by BooleanPref(FeatureFlags.KEY_PREF_NOTIFICATION_COUNT, true)
     override val enablePredictiveApps: Boolean by BooleanPref(FeatureFlags.KEY_PREF_PREDICTIVE_APPS, true)
+    override val folderBadgeCount by BooleanPref(PreferenceFlags.KEY_FOLDER_BADGE_COUNT, true)
+
+
     override val enableVibrancy: Boolean
         get() = true
     override val useRoundSearchBar by BooleanPref(FeatureFlags.KEY_PREF_ROUND_SEARCH_BAR, false)

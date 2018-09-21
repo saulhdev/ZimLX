@@ -113,7 +113,7 @@ object PreferenceFlags {
     //const val KEY_HIDDEN_APPS = "hidden-app"
     const val KEY_SHORTCUT_BLACKLIST = "shortcut-blacklist"
     const val KEY_TWO_ROW_DOCK = "pref_twoRowDock"
-
+    const val KEY_FOLDER_BADGE_COUNT = "pref_key__folder_badge_count"
     const val EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED"
     const val KEY_AYY_MATEY = "pref_ayy_matey"
 

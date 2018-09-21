@@ -114,10 +114,6 @@ interface IPreferenceProvider {
     val blurMode: Int
     val workSpaceLabelColor: Int
     val primaryColor: Int
-    val notificationBackground: Int
-    val notificationCount: Boolean
-    val enablePredictiveApps: Boolean
-    fun getNumPredictedApps(default: String): String
     val minibarColor: Int
     val allAppsLabelColor: Int
     fun alternateIcon(key: String): String?
@@ -148,6 +144,13 @@ interface IPreferenceProvider {
     val hotseatCustomOpacity: Float
     val enablePhysics: Boolean
     val ayyMatey: Boolean
+
+    //NOTIFICATIONS AND BADGES
+    val notificationBackground: Int
+    val notificationCount: Boolean
+    val enablePredictiveApps: Boolean
+    val folderBadgeCount: Boolean
+    fun getNumPredictedApps(default: String): String
 
     // -----------------
     // GENERAL - BITS

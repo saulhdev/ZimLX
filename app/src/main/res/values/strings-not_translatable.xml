@@ -3,7 +3,7 @@
     <!-- FOLDER TITLES -->
     <string name="google_title" translatable="false">Google</string>
     <string name="microsoft_title" translatable="false">Microsoft</string>
-
+    <string name="play_folder_title">Play</string>
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
     <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>

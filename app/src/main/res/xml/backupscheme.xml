@@ -3,7 +3,7 @@
 
     <include
         domain="database"
-        path="launcher.db" />
+        path="zlauncher.db" />
     <include
         domain="sharedpref"
         path="org.zimmob.zimlx.prefs.xml" />
