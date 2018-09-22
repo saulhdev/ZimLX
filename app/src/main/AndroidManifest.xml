@@ -79,13 +79,10 @@
         <activity
             android:name=".settings.ui.SettingsActivity"
             android:autoRemoveFromRecents="true"
+            android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/settings_button_text"
+            android:parentActivityName=".Launcher"
             android:theme="@style/SettingsHome">
-            <intent-filter>
-                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
         </activity>
         <activity
             android:name="org.zimmob.wallpaperpicker.WallpaperPickerActivity"
@@ -148,17 +145,17 @@
             android:name=".backup.BackupListActivity"
             android:label="@string/backups"
             android:parentActivityName=".settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsHome" />
         <activity
             android:name=".backup.NewBackupActivity"
             android:label="@string/new_backup"
             android:parentActivityName=".backup.BackupListActivity"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsHome" />
         <activity
             android:name=".backup.RestoreBackupActivity"
             android:label="@string/restore_backup"
             android:parentActivityName=".backup.BackupListActivity"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsHome" />
         <activity
             android:name="org.zimmob.zimlx.dragndrop.AddItemActivity"
             android:autoRemoveFromRecents="true"
@@ -175,8 +172,6 @@
             android:name="org.zimmob.zimlx.gestures.dt2s.SleepTimeoutActivity"
             android:screenOrientation="locked"
             android:theme="@style/SleepTimeoutTheme"/>
-
-
 
         <provider
             android:name=".kustomsupport.Kustom5SecsProvider"
@@ -234,7 +229,6 @@
             </intent-filter>
         </receiver>
 
-
         <service
             android:name=".notification.NotificationListener"
             android:label="@string/notification_listener_label"
@@ -256,11 +250,11 @@
         <activity
             android:name=".iconpack.EditIconActivity"
             android:parentActivityName=".Launcher"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsHome" />
         <activity
             android:name=".iconpack.IconPickerActivity"
             android:parentActivityName=".iconpack.EditIconActivity"
-            android:theme="@style/SettingsTheme" />
+            android:theme="@style/SettingsHome" />
 
         <meta-data
             android:name="com.google.android.awareness.API_KEY"

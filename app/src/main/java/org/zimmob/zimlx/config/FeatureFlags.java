@@ -59,7 +59,6 @@ public final class FeatureFlags extends BaseFlags {
     public static final String KEY_PREF_THEME = "pref_theme";
     public static final String KEY_PREF_PRIMARY_COLOR = "pref_primary_color";
     public static final String KEY_PREF_MINIBAR_COLOR = "pref_minibar_color";
-    //public static final String KEY_PREF_MINIBAR_ITEMS = "pref_minibar_items";
     public static final String KEY_PREF_NOTIFICATION_BACKGROUND = "pref_notification_background";
     public static final String KEY_PREF_NOTIFICATION_COUNT = "pref_notification_count";
     public static final String KEY_PREF_PREDICTIVE_APPS = "pref_predictive_apps";
@@ -85,14 +84,14 @@ public final class FeatureFlags extends BaseFlags {
     public static int DARK_ALLAPPS = 4;
     public static int DARK_SHORTCUTS = 8;
     public static int DARK_BLUR = 16;
-    public static boolean useDarkTheme = true;
-    public static int[] SETTINGS_HOME_THEMES = {R.style.SettingsHome, R.style.SettingsHome_Dark, R.style.SettingsHome_Black};
+    public static boolean useDarkTheme = false;
     // When enabled the all-apps icon is not added to the hotseat.
     public static boolean NO_ALL_APPS_ICON = false;
     private static int darkThemeFlag = 0;
     private static int myCurrentTheme = 0;
-    private static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
-    private static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
+    public static int[] LAUNCHER_THEMES = {R.style.LauncherTheme, R.style.LauncherTheme_Dark, R.style.LauncherTheme_Black};
+    public static int[] SETTINGS_THEMES = {R.style.SettingsTheme, R.style.SettingsTheme_Dark, R.style.SettingsTheme_Black};
+    public static int[] SETTINGS_HOME_THEMES = {R.style.SettingsHome, R.style.SettingsHome_Dark, R.style.SettingsHome_Black};
 
     private FeatureFlags() {
     }

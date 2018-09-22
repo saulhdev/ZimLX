@@ -242,6 +242,7 @@ public class SettingsActivity extends AppCompatActivity implements
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                             .removePreference(overrideShapePreference);
                 }
+
                 if (Utilities.ATLEAST_NOUGAT) {
                     ((PreferenceCategory) findPreference("prefCat_homeScreen"))
                             .removePreference(findPreference(PreferenceFlags.KEY_PREF_PIXEL_STYLE_ICONS));

@@ -203,7 +203,7 @@
     <dimen name="swipe_helper_falsing_threshold">70.0dip</dimen>
     <dimen name="deep_shortcuts_text_padding_start">56.0dip</dimen>
     <dimen name="deep_shortcuts_divider_width">164.0dip</dimen>
-    <dimen name="container_fastscroll_popup_margin">18.0dip</dimen>
+    <dimen name="container_fastscroll_popup_margin">45.0dip</dimen>
     <dimen name="widget_preview_label_vertical_padding">8.0dip</dimen>
     <dimen name="widget_preview_label_horizontal_padding">16.0dip</dimen>
     <dimen name="widget_preview_shadow_blur">0.5dip</dimen>

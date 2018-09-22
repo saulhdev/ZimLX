@@ -163,6 +163,25 @@
         <item>1</item>
     </string-array>
 
+    <string-array name="entries__desktop_indicator_mode" translatable="false">
+        <item>@string/desktop_indicator_mode_normal</item>
+        <item>@string/desktop_indicator_mode_arrow</item>
+        <item>@string/desktop_indicator_mode_lines</item>
+    </string-array>
+    <string-array name="values__zero_to_two" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="entries__drawer_styles" translatable="false">
+        <item>@string/horizontal_paged_drawer</item>
+        <item>@string/vertical_scroll_drawer</item>
+    </string-array>
+    <string-array name="values__zero_to_one" translatable="false">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+
     <array name="icon_shape_override_paths_names">
         <item>@string/icon_shape_system_default</item>
         <item>@string/icon_shape_none</item>

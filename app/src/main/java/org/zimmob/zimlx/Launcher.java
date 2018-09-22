@@ -250,7 +250,7 @@ public class Launcher extends Activity
 
     private static boolean _consumeNextResume;
 
-    /**
+    /*
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
      * multiple calls to bind the same list.)
      */
@@ -311,9 +311,9 @@ public class Launcher extends Activity
     private View.OnTouchListener mHapticFeedbackTouchListener;
     private boolean mAutoAdvanceRunning = false;
     private long mAutoAdvanceSentTime;
+
     @Thunk
     final Handler mHandler = new Handler(new Handler.Callback() {
-
         @Override
         public boolean handleMessage(Message msg) {
             if (msg.what == ADVANCE_MSG) {
@@ -1654,6 +1654,7 @@ public class Launcher extends Activity
                 // Can be cases where mWorkspace is null, this prevents a NPE
                 return;
             }
+
             // In all these cases, only animate if we're already on home
             mWorkspace.exitWidgetResizeMode();
 
