@@ -23,11 +23,16 @@ import android.graphics.drawable.Drawable;
 import android.support.annotation.ColorInt;
 import android.support.v4.content.ContextCompat;
 import android.text.SpannableString;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.TextView;
+
+import org.zimmob.zimlx.util.UiThreadHelper;
 
 import java.lang.reflect.Field;
 
@@ -35,9 +40,10 @@ import java.lang.reflect.Field;
 /**
  * The edit text that reports back when the back key has been pressed.
  */
-public class ExtendedEditText extends android.support.v7.widget.AppCompatEditText {
+public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
+    private boolean mForceDisableSuggestions = false;
     private int mHintTextColor;
     private SpannableString mHintText;
     private OnBackKeyListener mBackKeyListener;
@@ -102,6 +108,32 @@ public class ExtendedEditText extends android.support.v7.widget.AppCompatEditTex
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
                         .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+    }
+
+    /**
+     * Set to true when you want isSuggestionsEnabled to return false.
+     * Use this to disable the red underlines that appear under typos when suggestions is enabled.
+     */
+    public void forceDisableSuggestions(boolean forceDisableSuggestions) {
+        mForceDisableSuggestions = forceDisableSuggestions;
+    }
+
+    @Override
+    public boolean isSuggestionsEnabled() {
+        return !mForceDisableSuggestions && super.isSuggestionsEnabled();
+    }
+
+    public void reset() {
+        if (!TextUtils.isEmpty(getText())) {
+            setText("");
+        }
+        if (isFocused()) {
+            View nextFocus = focusSearch(View.FOCUS_DOWN);
+            if (nextFocus != null) {
+                nextFocus.requestFocus();
+            }
+        }
+        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
     }
 
     @Override

@@ -88,7 +88,7 @@ import java.util.Comparator;
  */
 public class Folder extends LinearLayout implements DragSource, View.OnClickListener,
         View.OnLongClickListener, DropTarget, FolderListener, TextView.OnEditorActionListener,
-        View.OnFocusChangeListener, DragListener, DropTargetSource {
+        View.OnFocusChangeListener, DragListener, DropTargetSource, ExtendedEditText.OnBackKeyListener {
     private static final String TAG = "Launcher.Folder";
 
     /**
@@ -254,11 +254,7 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
 
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFolderName = findViewById(R.id.folder_name);
-        mFolderName.setOnBackKeyListener(() -> {
-            // Close the activity on back key press
-            doneEditingFolderName(true);
-            return false;
-        });
+        mFolderName.setOnBackKeyListener(this);
         mFolderName.setOnFocusChangeListener(this);
         mFolderName.setEnabled(!mLauncher.isEditingDisabled());
 
@@ -288,8 +284,11 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
         }
         mFolderName.setOnEditorActionListener(this);
         mFolderName.setSelectAllOnFocus(true);
-        mFolderName.setInputType(mFolderName.getInputType() |
-                InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+        mFolderName.setInputType(mFolderName.getInputType()
+                & ~InputType.TYPE_TEXT_FLAG_AUTO_CORRECT
+                & ~InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS
+                | InputType.TYPE_TEXT_FLAG_CAP_WORDS);
+
 
         mFooter = findViewById(R.id.folder_footer);
 
@@ -370,6 +369,29 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
             completeDragExit();
         }
         mDragController.removeDragListener(this);
+    }
+
+    @Override
+    public boolean onBackKey() {
+        // Convert to a string here to ensure that no other state associated with the text field
+        // gets saved.
+        String newTitle = mFolderName.getText().toString();
+        mInfo.setTitle(newTitle);
+        //mLauncher.getModelWriter().updateItemInDatabase(mInfo);
+
+        mFolderName.setHint(sDefaultFolderName.contentEquals(newTitle) ? sHintText : null);
+
+       /* sendCustomAccessibilityEvent(
+                this, AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
+                getContext().getString(R.string.folder_renamed, newTitle));
+*/
+        // This ensures that focus is gained every time the field is clicked, which selects all
+        // the text and brings up the soft keyboard if necessary.
+        mFolderName.clearFocus();
+
+        Selection.setSelection(mFolderName.getText(), 0, 0);
+        mIsEditingName = false;
+        return true;
     }
 
     public boolean isEditingName() {
