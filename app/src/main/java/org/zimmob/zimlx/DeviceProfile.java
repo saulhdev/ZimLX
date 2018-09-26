@@ -110,6 +110,9 @@ public class DeviceProfile {
     public int folderChildDrawablePaddingPx;
     public int allAppsCellHeightPx;
     public int allAppsCellWidthPx;
+    public int folderIconOffsetYPx;
+
+
     // Workspace
     private int desiredWorkspaceLeftRightMarginPx;
     private int hotseatBarHeightPx;

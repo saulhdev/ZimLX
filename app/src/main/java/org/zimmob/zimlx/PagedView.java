@@ -2058,6 +2058,13 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_LONG_CLICK);
     }
 
+    @Override
+    public void sendAccessibilityEvent(int eventType) {
+        // Don't let the view send real scroll events.
+        if (eventType != AccessibilityEvent.TYPE_VIEW_SCROLLED) {
+            super.sendAccessibilityEvent(eventType);
+        }
+    }
     public void onStartReordering() {
         // Set the touch state to reordering (allows snapping to pages, dragging a child, etc.)
         mTouchState = TOUCH_STATE_REORDERING;
@@ -2138,14 +2145,6 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
         public LayoutParams(ViewGroup.LayoutParams source) {
             super(source);
-        }
-    }
-
-    @Override
-    public void sendAccessibilityEvent(int eventType) {
-        // Don't let the view send real scroll events.
-        if (eventType != AccessibilityEvent.TYPE_VIEW_SCROLLED) {
-            super.sendAccessibilityEvent(eventType);
         }
     }
 

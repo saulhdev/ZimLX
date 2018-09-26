@@ -111,12 +111,12 @@
     </style>
 
     <style name="SettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--<item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentStatus">true</item>
         <item name="android:windowTranslucentNavigation">true</item>
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:navigationBarColor">@color/transparent</item>
-        <item name="android:windowNoTitle">true</item> -->
+        <item name="android:windowNoTitle">true</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -133,6 +133,19 @@
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
     </style>
 
+    <style name="NormalActivity.Light" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--Important for the Preference compat-->
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="android:windowBackground">@color/Light.Background</item>
+        <item name="android:textColorPrimary">@color/Light.TextColor</item>
+        <item name="android:textColor">@color/Light.TextColor</item>
+        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
+    </style>
+
     <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">
         <item name="colorPrimaryDark">@color/color_primary_dark_settings_dark</item>
         <item name="colorPrimary">@color/color_primary_settings_dark</item>
@@ -146,6 +159,7 @@
     </style>
 
     <style name="SettingsTheme.Black" parent="SettingsTheme.Dark">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="colorPrimaryDark">@color/color_primary_dark_settings_black</item>
         <item name="colorPrimary">@color/color_primary_settings_black</item>
         <item name="android:windowBackground">@android:color/black</item>
@@ -191,6 +205,31 @@
         <item name="android:shadowColor">#B0000000</item>
     </style>
 
+    <!-- Base theme for BubbleTextView and sub classes -->
+    <style name="BaseIcon">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_gravity">center</item>
+        <item name="android:focusable">true</item>
+        <item name="android:gravity">center_horizontal</item>
+        <item name="android:singleLine">true</item>
+        <item name="android:textColor">?android:attr/textColorSecondary</item>
+        <item name="android:fontFamily">sans-serif-condensed</item>
+
+        <!-- No shadows in the base theme -->
+        <item name="android:shadowRadius">0</item>
+    </style>
+
+    <!-- Icon displayed on the workspace -->
+    <style name="BaseIcon.Workspace">
+        <item name="android:shadowRadius">2.0</item>
+        <item name="android:shadowColor">?attr/workspaceShadowColor</item>
+        <item name="ambientShadowColor">?attr/workspaceAmbientShadowColor</item>
+        <item name="ambientShadowBlur">2.5dp</item>
+        <item name="keyShadowColor">?attr/workspaceKeyShadowColor</item>
+        <item name="keyShadowBlur">1dp</item>
+        <item name="keyShadowOffset">.5dp</item>
+    </style>
     <style name="Icon.AllApps">
         <item name="android:background">@null</item>
         <item name="android:textColor">@color/quantum_panel_text_color</item>

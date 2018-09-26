@@ -129,6 +129,10 @@
     <color name="Light.TextColorSecondary">#9e9e9e</color>
     <color name="button_background">#205dec</color>
 
+    <color name="Dark.Background">#424242</color>
+    <color name="Dark.TextColor">#ffffff</color>
+    <color name="Dark.TextColorSecondary">#9e9e9e</color>
+
     <!-- Popup container -->
     <color name="folder_badge_color">#FFAF174A</color> <!-- Teal A400 -->
 

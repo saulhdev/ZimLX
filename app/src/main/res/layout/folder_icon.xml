@@ -19,7 +19,7 @@
     android:focusable="true"
     android:orientation="vertical">
 
-    <org.zimmob.zimlx.BubbleTextView
+    <org.zimmob.zimlx.views.DoubleShadowBubbleTextView
         android:id="@+id/folder_icon_name"
         style="@style/Icon"
         android:layout_width="match_parent"

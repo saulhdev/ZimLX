@@ -19,13 +19,14 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/launcher"
+    android:fitsSystemWindows="true"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
-        android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_width="match_parent"
         launcher:layout_ignoreInsets="true">
 
             <org.zimmob.zimlx.dragndrop.DragLayer
@@ -35,7 +36,6 @@
                 android:background="@drawable/workspace_bg"
                 android:clipChildren="false"
                 android:clipToPadding="false"
-                android:fitsSystemWindows="true"
                 android:importantForAccessibility="no">
 
                 <!-- The workspace contains 5 screens of cells -->

@@ -615,6 +615,7 @@
     <string name="predictive_apps_num_title">Predicted apps number</string>
 
     <string name="vertical_scroll_drawer">Vertical</string>
+    <string name="vertical_scroll_list">Vertical List</string>
     <string name="horizontal_paged_drawer">Paged</string>
 
     <string name="desktop_indicator_mode_normal">Normal</string>

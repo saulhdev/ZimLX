@@ -72,6 +72,8 @@ import org.zimmob.zimlx.util.TouchController;
 
 import java.util.ArrayList;
 
+import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
@@ -367,7 +369,7 @@ public class DragLayer extends InsettableFrameLayout {
 
     private void sendTapOutsideFolderAccessibilityEvent(boolean isEditingName) {
         int stringId = isEditingName ? R.string.folder_tap_to_rename : R.string.folder_tap_to_close;
-        Utilities.sendCustomAccessibilityEvent(
+        sendCustomAccessibilityEvent(
                 this, AccessibilityEvent.TYPE_VIEW_FOCUSED, getContext().getString(stringId));
     }
 

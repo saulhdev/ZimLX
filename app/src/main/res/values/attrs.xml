@@ -111,13 +111,7 @@
 
         <attr name="defaultLayoutId" format="reference" />
     </declare-styleable>
-    <declare-styleable name="DoubleShadowTextClock">
-        <attr name="ambientShadowColor" format="color" />
-        <attr name="keyShadowColor" format="color" />
-        <attr name="ambientShadowBlur" format="dimension" />
-        <attr name="keyShadowBlur" format="dimension" />
-        <attr name="keyShadowOffset" format="dimension" />
-    </declare-styleable>
+
     <declare-styleable name="SeekbarPreference">
         <attr name="minValue" format="float" />
         <attr name="maxValue" format="float" />
@@ -180,5 +174,13 @@
         <attr name="widgetCountX" format="integer" />
         <!-- Number of widgets vertically -->
         <attr name="widgetCountY" format="integer" />
+    </declare-styleable>
+
+    <declare-styleable name="ShadowInfo">
+        <attr name="ambientShadowColor" format="color" />
+        <attr name="ambientShadowBlur" format="dimension" />
+        <attr name="keyShadowColor" format="color" />
+        <attr name="keyShadowBlur" format="dimension" />
+        <attr name="keyShadowOffset" format="dimension" />
     </declare-styleable>
 </resources>

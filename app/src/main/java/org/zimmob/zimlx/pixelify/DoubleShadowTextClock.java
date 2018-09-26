@@ -25,12 +25,12 @@ public class DoubleShadowTextClock extends TextClock {
 
     public DoubleShadowTextClock(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.DoubleShadowTextClock, i, 0);
-        ambientShadowBlur = obtainStyledAttributes.getDimension(R.styleable.DoubleShadowTextClock_ambientShadowBlur, 0.0f);
-        keyShadowBlur = obtainStyledAttributes.getDimension(R.styleable.DoubleShadowTextClock_keyShadowBlur, 0.0f);
-        keyShadowOffset = obtainStyledAttributes.getDimension(R.styleable.DoubleShadowTextClock_keyShadowOffset, 0.0f);
-        ambientShadowColor = obtainStyledAttributes.getColor(R.styleable.DoubleShadowTextClock_ambientShadowColor, 0);
-        keyShadowColor = obtainStyledAttributes.getColor(R.styleable.DoubleShadowTextClock_keyShadowColor, 0);
+        TypedArray obtainStyledAttributes = context.obtainStyledAttributes(attributeSet, R.styleable.ShadowInfo, i, 0);
+        ambientShadowBlur = obtainStyledAttributes.getDimension(R.styleable.ShadowInfo_ambientShadowBlur, 0.0f);
+        keyShadowBlur = obtainStyledAttributes.getDimension(R.styleable.ShadowInfo_keyShadowBlur, 0.0f);
+        keyShadowOffset = obtainStyledAttributes.getDimension(R.styleable.ShadowInfo_keyShadowOffset, 0.0f);
+        ambientShadowColor = obtainStyledAttributes.getColor(R.styleable.ShadowInfo_ambientShadowColor, 0);
+        keyShadowColor = obtainStyledAttributes.getColor(R.styleable.ShadowInfo_keyShadowColor, 0);
         obtainStyledAttributes.recycle();
         setShadowLayer(Math.max(keyShadowBlur + keyShadowOffset, ambientShadowBlur), 0.0f, 0.0f, keyShadowColor);
     }

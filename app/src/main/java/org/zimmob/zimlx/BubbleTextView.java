@@ -140,7 +140,6 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         mLauncher = Launcher.getLauncher(context);
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
-
         TypedArray a = context.obtainStyledAttributes(attrs,
                 R.styleable.BubbleTextView, defStyle, 0);
         mCustomShadowsEnabled = a.getBoolean(R.styleable.BubbleTextView_customShadows, true);
@@ -523,6 +522,11 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         return result;
     }
 
+    @SuppressWarnings("wrongcall")
+    protected void drawWithoutBadge(Canvas canvas) {
+        super.onDraw(canvas);
+    }
+
     @Override
     public void draw(Canvas canvas) {
         if (!mCustomShadowsEnabled || mShadowsDisabled) {
@@ -576,7 +580,7 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
         drawBadgeIfNecessary(canvas);
     }
 
-    private void drawBadgeIfNecessary(Canvas canvas) {
+    public void drawBadgeIfNecessary(Canvas canvas) {
         if (!mForceHideBadge) {
             if (hasBadge() || mBadgeScale > 0.0f) {
                 getIconBounds(mTempIconBounds);
@@ -591,6 +595,7 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
             }
         }
     }
+
 
     public void forceHideBadge(boolean z) {
         if (mForceHideBadge != z) {

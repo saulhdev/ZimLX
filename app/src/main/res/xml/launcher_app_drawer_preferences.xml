@@ -7,16 +7,16 @@
         android:title="@string/pref_category_drawer">
 
         <ListPreference
-            android:defaultValue="0"
+            android:defaultValue="2"
             android:entries="@array/entries__drawer_styles"
-            android:entryValues="@array/values__zero_to_one"
+            android:entryValues="@array/values__zero_to_two"
             android:key="pref_key__drawer_style"
+            android:persistent="true"
             android:summary="@string/pref_summary__drawer_style"
             android:title="@string/pref_title__drawer_style" />
 
         <ListPreference
             android:defaultValue="@string/generalDefault"
-            android:dependency="pref_verticalDrawerLayout"
             android:entries="@array/numColsTexts"
             android:entryValues="@array/numColsValues"
             android:key="pref_numColsDrawer"
@@ -26,7 +26,6 @@
 
         <ListPreference
             android:defaultValue="@string/generalDefault"
-            android:dependency="pref_verticalDrawerLayout"
             android:entries="@array/numRowsTexts"
             android:entryValues="@array/numRowsValues"
             android:key="pref_numRowsDrawer"
@@ -82,7 +81,6 @@
 
         <SwitchPreference
             android:defaultValue="false"
-            android:dependency="pref_verticalDrawerLayout"
             android:disableDependentsState="true"
             android:key="pref_hideAllAppsAppLabels"
             android:persistent="true"

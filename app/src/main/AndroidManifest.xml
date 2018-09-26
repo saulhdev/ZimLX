@@ -81,7 +81,6 @@
             android:autoRemoveFromRecents="true"
             android:configChanges="orientation|keyboard|screenSize"
             android:label="@string/settings_button_text"
-            android:parentActivityName=".Launcher"
             android:theme="@style/SettingsHome">
         </activity>
         <activity

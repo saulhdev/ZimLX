@@ -49,6 +49,15 @@
             android:key="pref_hotseatShowPageIndicator"
             android:persistent="true"
             android:title="@string/hotseat_show_page_indicator" />
+
+        <ListPreference
+            android:defaultValue="2"
+            android:dependency="pref_hotseatShowPageIndicator"
+            android:entries="@array/entries__desktop_indicator_mode"
+            android:entryValues="@array/values__zero_to_two"
+            android:key="pref_key__desktop_indicator_style"
+            android:title="@string/pref_title__desktop_indicator_style" />
+
     </android.support.v7.preference.PreferenceCategory>
 
     <android.support.v7.preference.PreferenceCategory

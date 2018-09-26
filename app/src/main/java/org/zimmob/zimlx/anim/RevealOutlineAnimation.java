@@ -99,6 +99,14 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         outline.setRoundRect(mOutline, mOutlineRadius);
     }
 
+    public float getRadius() {
+        return mOutlineRadius;
+    }
+
+    public void getOutline(Rect out) {
+        out.set(mOutline);
+    }
+
     private static class RoundedBoundsOutlineProvider extends ViewOutlineProvider {
 
         private final float mRadius;

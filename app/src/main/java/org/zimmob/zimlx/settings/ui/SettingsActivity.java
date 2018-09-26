@@ -195,7 +195,7 @@ public class SettingsActivity extends AppCompatActivity implements
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
             View view = super.onCreateView(inflater, container, savedInstanceState);
-            setDivider(null);
+            //setDivider(null);
             return view;
         }
 

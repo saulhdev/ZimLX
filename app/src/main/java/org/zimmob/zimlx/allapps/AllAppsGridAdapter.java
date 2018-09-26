@@ -19,6 +19,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.support.animation.DynamicAnimation;
 import android.support.animation.SpringAnimation;
 import android.support.annotation.NonNull;
@@ -31,9 +32,9 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
-import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.zimmob.zimlx.AppInfo;
@@ -189,12 +190,9 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
             case VIEW_TYPE_ICON:
             case VIEW_TYPE_PREDICTION_ICON:
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
-                        R.layout.all_apps_icon, parent, false);
-                //View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
+                View icon = mLayoutInflater.inflate(mTheme.getIconLayout(), parent, false);
                 icon.setOnClickListener(mIconClickListener);
                 icon.setOnLongClickListener(mIconLongClickListener);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
                 icon.setOnFocusChangeListener(mIconFocusListener);
 
                 // Ensure the all apps icon height matches the workspace icons
@@ -224,8 +222,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 return new ViewHolder(loadingDividerView);
             case VIEW_TYPE_PREDICTION_DIVIDER:
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
-                return new ViewHolder(mLayoutInflater.inflate(
-                        R.layout.all_apps_divider, parent, false));
+                ImageView marketDivider = (ImageView) mLayoutInflater.inflate(
+                        R.layout.all_apps_divider, parent, false);
+                marketDivider.setImageDrawable(new ColorDrawable(mTheme.getSearchBarHintTextColor()));
+                return new ViewHolder(marketDivider);
+
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -237,8 +238,18 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_ICON:
             case VIEW_TYPE_PREDICTION_ICON:
                 AppInfo info = mApps.getAdapterItems().get(position).appInfo;
-                BubbleTextView icon = (BubbleTextView) holder.itemView;
-                icon.applyFromApplicationInfo(info);
+                if (holder.mContent instanceof BubbleTextView) {
+                    BubbleTextView icon = (BubbleTextView) holder.mContent;
+                    icon.applyFromApplicationInfo(info);
+                    icon.setAccessibilityDelegate(mLauncher.getAccessibilityDelegate());
+                    icon.setTextColor(mAppIconTextColor);
+                } else if (holder.mContent instanceof AllAppsIconRowView) {
+                    AllAppsIconRowView row = (AllAppsIconRowView) holder.mContent;
+                    row.applyFromApplicationInfo(info);
+                    row.setText(info.title);
+                    row.setTextColor(mAppIconTextColor);
+                }
+
                 break;
             case VIEW_TYPE_DISCOVERY_ITEM:
                 AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)

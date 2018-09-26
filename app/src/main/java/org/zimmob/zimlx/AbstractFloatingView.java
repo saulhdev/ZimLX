@@ -19,6 +19,7 @@ package org.zimmob.zimlx;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.support.annotation.IntDef;
+import android.support.v4.util.Pair;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +29,13 @@ import org.zimmob.zimlx.dragndrop.DragLayer;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
+
 
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
@@ -45,6 +53,25 @@ public abstract class AbstractFloatingView extends LinearLayout {
 
     public AbstractFloatingView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+    }
+
+    protected void announceAccessibilityChanges() {
+        Pair<View, String> targetInfo = getAccessibilityTarget();
+        if (targetInfo == null || !isAccessibilityEnabled(getContext())) {
+            return;
+        }
+        sendCustomAccessibilityEvent(
+                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
+
+        if (mIsOpen) {
+            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
+        }
+        //BaseDraggingActivity.fromContext(getContext()).getDragLayer()
+        //        .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
+    }
+
+    protected Pair<View, String> getAccessibilityTarget() {
+        return null;
     }
 
     protected static <T extends AbstractFloatingView> T getOpenView(
@@ -101,7 +128,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
         return true;
     }
 
-    public final void close(boolean animate) {
+    public void close(boolean animate) {
         animate &= !Utilities.isPowerSaverOn(getContext());
         handleClose(animate);
     }

@@ -10,6 +10,9 @@ public class ClippedFolderIconLayoutRule implements FolderIcon.PreviewLayoutRule
     final float MAX_RADIUS_DILATION = 0.15f;
     final float ITEM_RADIUS_SCALE_FACTOR = 1.33f;
 
+    public static final int EXIT_INDEX = -2;
+    public static final int ENTER_INDEX = -3;
+
     private float[] mTmpPoint = new float[2];
 
     private float mAvailableSpace;

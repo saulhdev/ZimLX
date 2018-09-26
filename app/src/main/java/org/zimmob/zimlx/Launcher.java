@@ -122,6 +122,7 @@ import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceProvider;
 import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.settings.Settings;
+import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.shortcuts.DeepShortcutManager;
 import org.zimmob.zimlx.shortcuts.ShortcutKey;
 import org.zimmob.zimlx.shortcuts.ShortcutsItemView;
@@ -156,6 +157,10 @@ public class Launcher extends Activity
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
         AccessibilityManager.AccessibilityStateChangeListener, DialogInterface.OnDismissListener {
     public static final String TAG = "Launcher";
+    static final boolean DEBUG_WIDGETS = false;
+    static final boolean DEBUG_STRICT_MODE = false;
+    static final boolean DEBUG_RESUME_TIME = false;
+
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final String ACTION_APPWIDGET_HOST_RESET =
             "org.zimmob.zimlx.intent.ACTION_APPWIDGET_HOST_RESET";
@@ -1466,7 +1471,8 @@ public class Launcher extends Activity
         // Listen for broadcasts related to user-presence
         final IntentFilter filter = new IntentFilter();
         filter.addAction(Intent.ACTION_SCREEN_OFF);
-        filter.addAction(Intent.ACTION_USER_PRESENT);
+        filter.addAction(Intent.ACTION_USER_PRESENT); // When the device wakes up + keyguard is gone
+        filter.addAction(Intent.ACTION_HEADSET_PLUG); // Change suggestions when headset is plugged in
         registerReceiver(mReceiver, filter);
         FirstFrameAnimatorHelper.initializeDrawListener(getWindow().getDecorView());
         mAttached = true;
@@ -1635,6 +1641,10 @@ public class Launcher extends Activity
 
     @Override
     protected void onNewIntent(Intent intent) {
+        long startTime = 0;
+        if (DEBUG_RESUME_TIME) {
+            startTime = System.currentTimeMillis();
+        }
         super.onNewIntent(intent);
 
         boolean alreadyOnHome = mHasFocus && ((intent.getFlags() &
@@ -1759,8 +1769,8 @@ public class Launcher extends Activity
         // We close any open folder since it will not be re-opened, and we need to make sure
         // this state is reflected.
         // TODO: Move folderInfo.isOpened out of the model and make it a UI state.
-        closeFolder(false);
-        closeFloatingContainer(false);
+        closeFolder(true);
+        closeFloatingContainer(true);
 
         if (mPendingRequestArgs != null) {
             outState.putParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS, mPendingRequestArgs);
@@ -2482,7 +2492,8 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickSettingsButton(View v) {
-        Utilities.getPrefs(this).showSettings(this, v);
+        //Utilities.getPrefs(this).showSettings(this, v);
+        this.startActivity(new Intent(this, SettingsActivity.class));
     }
 
     public View.OnTouchListener getHapticFeedbackTouchListener() {
@@ -2778,6 +2789,7 @@ public class Launcher extends Activity
     public void closeFolder() {
         closeFolder(true);
     }
+
     public void closeFolder(boolean animate) {
         Folder folder = mWorkspace != null ? mWorkspace.getOpenFolder() : null;
         if (folder != null) {

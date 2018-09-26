@@ -2,7 +2,8 @@ package org.zimmob.zimlx.config
 
 import android.content.Context
 import org.zimmob.zimlx.Utilities
-import org.zimmob.zimlx.allapps.theme.AllAppsBaseTheme
+import org.zimmob.zimlx.allapps.theme.AllAppsPagedTheme
+import org.zimmob.zimlx.allapps.theme.AllAppsVerticalListTheme
 import org.zimmob.zimlx.allapps.theme.AllAppsVerticalTheme
 import org.zimmob.zimlx.allapps.theme.IAllAppsThemer
 import org.zimmob.zimlx.popup.theme.IPopupThemer
@@ -15,11 +16,14 @@ open class ThemerImpl : IThemer {
     var popupTheme: IPopupThemer? = null
 
     override fun allAppsTheme(context: Context): IAllAppsThemer {
-        val useVerticalLayout = Utilities.getPrefs(context).verticalDrawerLayout
-        if (allAppsTheme == null ||
-                (useVerticalLayout && allAppsTheme !is AllAppsVerticalTheme) ||
-                (!useVerticalLayout && allAppsTheme is AllAppsVerticalTheme))
-            allAppsTheme = if (useVerticalLayout) AllAppsVerticalTheme(context) else AllAppsBaseTheme(context)
+        val drawerStyle = Integer.valueOf(Utilities.getPrefs(context).drawerLayoutStyle("1"))
+        if (allAppsTheme == null) {
+            when (drawerStyle) {
+                0 -> allAppsTheme = AllAppsPagedTheme(context)
+                1 -> allAppsTheme = AllAppsVerticalTheme(context)
+                2 -> allAppsTheme = AllAppsVerticalListTheme(context)
+            }
+        }
         return allAppsTheme!!
     }
 

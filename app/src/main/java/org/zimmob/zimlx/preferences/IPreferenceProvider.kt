@@ -35,8 +35,9 @@ interface IPreferenceProvider {
     val allAppsIconTextScale: Float
     val allAppsIconPaddingScale: Float
     val useCustomAllAppsTextColor: Boolean
-    val verticalDrawerLayout: Boolean
-
+    //val verticalDrawerLayout: Boolean
+    //val drawerLayoutStyle: Int
+    fun drawerLayoutStyle(default: String): String
     // -------------------
     // 3) Desktop
     // -------------------

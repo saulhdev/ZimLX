@@ -26,6 +26,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Shader;
 import android.support.annotation.Nullable;
+import android.util.Log;
 import android.util.SparseArray;
 
 import org.zimmob.zimlx.R;
@@ -33,12 +34,17 @@ import org.zimmob.zimlx.Utilities;
 import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.graphics.ShadowGenerator;
 
+import static android.graphics.Paint.ANTI_ALIAS_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
 /**
  * Contains parameters necessary to draw a badge for an icon (e.g. the size of the badge).
  *
  * @see BadgeInfo for the data to draw
  */
 public class BadgeRenderer {
+    private static final String TAG = "BadgeRenderer";
+
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
     // Used to expand the width of the badge for each additional digit.
@@ -59,15 +65,19 @@ public class BadgeRenderer {
     private final int mStackOffsetY;
     private final IconDrawer mLargeIconDrawer;
     private final IconDrawer mSmallIconDrawer;
-    private final Paint mTextPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final Paint mBackgroundPaint = new Paint(Paint.ANTI_ALIAS_FLAG
-            | Paint.FILTER_BITMAP_FLAG);
+    private final Paint mTextPaint = new Paint(ANTI_ALIAS_FLAG);
+    private final Paint mBackgroundPaint = new Paint(ANTI_ALIAS_FLAG
+            | FILTER_BITMAP_FLAG);
     private final SparseArray<Bitmap> mBackgroundsWithShadow;
     private final Bitmap mBackgroundWithShadow;
 
     private boolean showNotificationCount;
     private int textColor;
     private int backgroundColor;
+    private final float mBitmapOffset;
+    private final float mDotCenterOffset;
+    private final float mCircleRadius;
+    private final Paint mCirclePaint = new Paint(ANTI_ALIAS_FLAG | FILTER_BITMAP_FLAG);
 
     public BadgeRenderer(Context context, int iconSizePx) {
         mContext = context;
@@ -91,6 +101,10 @@ public class BadgeRenderer {
         mBackgroundsWithShadow = new SparseArray<>(3);
         mBackgroundWithShadow = ShadowGenerator.createPillWithShadow(-1, mSize, mSize);
 
+        ShadowGenerator.Builder builder = new ShadowGenerator.Builder(Color.TRANSPARENT);
+        mCircleRadius = builder.radius;
+        mDotCenterOffset = SIZE_PERCENTAGE * iconSizePx;
+        mBitmapOffset = -mBackgroundWithShadow.getHeight() * 0.5f; // Same as width.
     }
 
     /**
@@ -170,14 +184,46 @@ public class BadgeRenderer {
     }
 
     /**
+     * Draw a circle in the top right corner of the given bounds, and draw
+     * {@link BadgeInfo#getNotificationCount()} on top of the circle.
+     *
+     * @param color          The color (based on the icon) to use for the badge.
+     * @param iconBounds     The bounds of the icon being badged.
+     * @param badgeScale     The progress of the animation, from 0 to 1.
+     * @param spaceForOffset How much space is available to offset the badge up and to the right.
+     */
+    public void draw(
+            Canvas canvas, int color, Rect iconBounds, float badgeScale, Point spaceForOffset) {
+        if (iconBounds == null || spaceForOffset == null) {
+            Log.e(TAG, "Invalid null argument(s) passed in call to draw.");
+            return;
+        }
+        canvas.save();
+        // We draw the badge relative to its center.
+        float badgeCenterX = iconBounds.right - mDotCenterOffset / 2;
+        float badgeCenterY = iconBounds.top + mDotCenterOffset / 2;
+
+        int offsetX = Math.min(mOffset, spaceForOffset.x);
+        int offsetY = Math.min(mOffset, spaceForOffset.y);
+        canvas.translate(badgeCenterX + offsetX, badgeCenterY - offsetY);
+        canvas.scale(badgeScale, badgeScale);
+
+        mCirclePaint.setColor(Color.BLACK);
+        canvas.drawBitmap(mBackgroundWithShadow, mBitmapOffset, mBitmapOffset, mCirclePaint);
+        mCirclePaint.setColor(color);
+        canvas.drawCircle(0, 0, mCircleRadius, mCirclePaint);
+        canvas.restore();
+    }
+
+    /**
      * Draws the notification icon with padding of a given size.
      */
     private class IconDrawer {
 
         private final int mPadding;
         private final Bitmap mCircleClipBitmap;
-        private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
-                Paint.FILTER_BITMAP_FLAG);
+        private final Paint mPaint = new Paint(ANTI_ALIAS_FLAG | Paint.DITHER_FLAG |
+                FILTER_BITMAP_FLAG);
 
         public IconDrawer(int padding) {
             mPadding = padding;

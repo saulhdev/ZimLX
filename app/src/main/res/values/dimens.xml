@@ -186,6 +186,7 @@
     <dimen name="popup_item_divider_height">0.5dip</dimen>
     <dimen name="popup_padding_start">10.0dip</dimen>
     <dimen name="popup_padding_end">16.0dip</dimen>
+    <dimen name="popup_vertical_padding">4dp</dimen>
     <dimen name="popup_arrow_width">10.0dip</dimen>
     <dimen name="popup_arrow_height">8.0dip</dimen>
     <dimen name="popup_arrow_vertical_offset">-2.0dip</dimen>

@@ -3353,8 +3353,7 @@ public class LauncherModel extends BroadcastReceiver
                 final Runnable r = () -> {
                     Callbacks callbacks = tryGetCallbacks(oldCallbacks);
                     if (callbacks != null) {
-                        callbacks.bindItems(workspaceItems, start, start + chunkSize,
-                                false);
+                        callbacks.bindItems(workspaceItems, start, start + chunkSize, false);
                     }
                 };
                 executor.execute(r);

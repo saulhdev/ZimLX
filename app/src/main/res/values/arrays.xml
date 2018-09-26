@@ -176,10 +176,7 @@
     <string-array name="entries__drawer_styles" translatable="false">
         <item>@string/horizontal_paged_drawer</item>
         <item>@string/vertical_scroll_drawer</item>
-    </string-array>
-    <string-array name="values__zero_to_one" translatable="false">
-        <item>0</item>
-        <item>1</item>
+        <item>@string/vertical_scroll_list</item>
     </string-array>
 
     <array name="icon_shape_override_paths_names">

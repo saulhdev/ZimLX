@@ -45,10 +45,16 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val allAppsIconPaddingScale by FloatPref(PreferenceFlags.KEY_PREF_ALL_APPS_ICON_PADDING_SCALE, 1f)
     override val hotseatShouldUseCustomOpacity by BooleanPref(PreferenceFlags.KEY_HOTSEAT_SHOULD_USE_CUSTOM_OPACITY, false)
     override val useCustomAllAppsTextColor by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_CUSTOM_LABEL_COLOR, false)
-    override val verticalDrawerLayout by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, false)
+    //override val verticalDrawerLayout by BooleanPref(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, false)
+    //override val drawerLayoutStyle by IntPref(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, 1)
     override val iconLabelsInTwoLines by BooleanPref(PreferenceFlags.KEY_ICON_LABELS_IN_TWO_LINES, false)
     override val animatedClockIconAlternativeClockApps by BooleanPref(PreferenceFlags.KEY_ANIMATED_CLOCK_ICON_ALTERNATIVE_CLOCK_APPS, false)
     override val enablePhysics by BooleanPref(PreferenceFlags.KEY_ENABLE_PHYSICS, true)
+
+    override fun drawerLayoutStyle(default: String): String {
+        return getString(PreferenceFlags.KEY_PREF_DRAWER_VERTICAL_LAYOUT, default)
+    }
+
 
     override fun lightStatusBarKeyCache(default: Boolean): Boolean {
         return getBoolean(PreferenceFlags.KEY_LIGHT_STATUS_BAR, default)
