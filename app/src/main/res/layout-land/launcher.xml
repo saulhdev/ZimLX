@@ -21,72 +21,99 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <org.zimmob.zimlx.dragndrop.DragLayer
-        android:id="@+id/drag_layer"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@drawable/workspace_bg"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:importantForAccessibility="no">
+        launcher:layout_ignoreInsets="true">
 
-        <!-- The workspace contains 5 screens of cells -->
-        <!-- DO NOT CHANGE THE ID -->
-        <org.zimmob.zimlx.Workspace
-            android:id="@+id/workspace"
+        <org.zimmob.zimlx.dragndrop.DragLayer
+            android:id="@+id/drag_layer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            launcher:pageIndicator="@id/page_indicator" />
+            android:background="@drawable/workspace_bg"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:importantForAccessibility="no">
 
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat"
-            android:layout_width="match_parent"
+            <!-- The workspace contains 5 screens of cells -->
+            <!-- DO NOT CHANGE THE ID -->
+            <org.zimmob.zimlx.Workspace
+                android:id="@+id/workspace"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="center"
+                launcher:pageIndicator="@id/page_indicator" />
+
+            <!-- DO NOT CHANGE THE ID -->
+            <include
+                android:id="@+id/hotseat"
+                layout="@layout/hotseat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                launcher:layout_ignoreInsets="true" />
+
+            <include
+                android:id="@+id/drop_target_bar"
+                layout="@layout/drop_target_bar_vert" />
+
+            <include
+                android:id="@+id/overview_panel"
+                layout="@layout/overview_panel"
+                android:visibility="gone" />
+
+            <org.zimmob.zimlx.pageindicators.PageIndicatorCaretLandscape
+                android:id="@+id/page_indicator"
+                android:layout_width="@dimen/dynamic_grid_page_indicator_height"
+                android:layout_height="@dimen/dynamic_grid_page_indicator_height"
+                android:layout_gravity="bottom|start" />
+
+            <!-- A place holder view instead of the QSB in transposed layout -->
+            <View
+                android:id="@+id/workspace_blocked_row"
+                android:layout_width="0dp"
+                android:layout_height="10dp" />
+
+            <include
+                android:id="@+id/qsb_container"
+                layout="@layout/qsb_container" />
+
+            <include
+                android:id="@+id/widgets_view"
+                layout="@layout/widgets_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+            <include
+                android:id="@+id/apps_view"
+                layout="@layout/all_apps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+        </org.zimmob.zimlx.dragndrop.DragLayer>
+
+        <FrameLayout
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
-            launcher:layout_ignoreInsets="true" />
+            android:layout_gravity="start"
+            android:background="@color/colorPrimary">
 
-        <include
-            android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar_vert" />
+            <org.zimmob.zimlx.minibar.SwipeListView
+                android:id="@+id/minibar"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|start"
+                android:clipToPadding="true"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:listSelector="@android:color/transparent"
+                android:paddingTop="15dp"
+                android:scrollbars="none" />
 
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel"
-            android:visibility="gone" />
+        </FrameLayout>
 
-        <org.zimmob.zimlx.pageindicators.PageIndicatorCaretLandscape
-            android:id="@+id/page_indicator"
-            android:layout_width="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_height="@dimen/dynamic_grid_page_indicator_height"
-            android:layout_gravity="bottom|start" />
-
-        <!-- A place holder view instead of the QSB in transposed layout -->
-        <View
-            android:id="@+id/workspace_blocked_row"
-            android:layout_width="0dp"
-            android:layout_height="10dp" />
-
-        <include
-            android:id="@+id/qsb_container"
-            layout="@layout/qsb_container" />
-
-        <include
-            android:id="@+id/widgets_view"
-            layout="@layout/widgets_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
-        <include
-            android:id="@+id/apps_view"
-            layout="@layout/all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
-    </org.zimmob.zimlx.dragndrop.DragLayer>
-
+    </android.support.v4.widget.DrawerLayout>
 </org.zimmob.zimlx.LauncherRootView>

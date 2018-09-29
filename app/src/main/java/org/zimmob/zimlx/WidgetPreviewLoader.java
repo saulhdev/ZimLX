@@ -316,7 +316,7 @@ public class WidgetPreviewLoader {
 
     private Drawable mutateOnMainThread(final Drawable drawable) {
         try {
-            return mMainThreadExecutor.submit(() -> drawable.mutate()).get();
+            return mMainThreadExecutor.submit(drawable::mutate).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);

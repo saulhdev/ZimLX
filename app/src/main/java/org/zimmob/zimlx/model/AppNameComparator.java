@@ -56,7 +56,7 @@ public class AppNameComparator {
                 return result;
             }
         };
-        mSectionNameComparator = (o1, o2) -> compareTitles(o1, o2);
+        mSectionNameComparator = this::compareTitles;
     }
 
     /**
