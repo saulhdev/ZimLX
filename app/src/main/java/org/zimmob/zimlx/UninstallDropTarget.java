@@ -14,8 +14,8 @@ import android.util.Pair;
 import android.view.animation.AnimationUtils;
 import android.widget.Toast;
 
+import org.zimmob.zimlx.anim.FlingAnimation;
 import org.zimmob.zimlx.dragndrop.DragLayer;
-import org.zimmob.zimlx.util.FlingAnimation;
 
 public class UninstallDropTarget extends ButtonDropTarget {
 

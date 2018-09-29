@@ -83,4 +83,5 @@ public abstract class SystemShortcut {
             };
         }
     }
+
 }

@@ -68,6 +68,7 @@ import org.zimmob.zimlx.ShortcutInfo;
 import org.zimmob.zimlx.UninstallDropTarget.DropTargetSource;
 import org.zimmob.zimlx.Utilities;
 import org.zimmob.zimlx.accessibility.AccessibleDragListenerAdapter;
+import org.zimmob.zimlx.anim.CircleRevealOutlineProvider;
 import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.config.FeatureFlags;
@@ -76,7 +77,6 @@ import org.zimmob.zimlx.dragndrop.DragController.DragListener;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.pageindicators.PageIndicatorDots;
-import org.zimmob.zimlx.util.CircleRevealOutlineProvider;
 import org.zimmob.zimlx.util.Thunk;
 
 import java.util.ArrayList;

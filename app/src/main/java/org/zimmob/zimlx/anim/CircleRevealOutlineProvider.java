@@ -14,9 +14,7 @@
  * limitations under the License.
  */
 
-package org.zimmob.zimlx.util;
-
-import org.zimmob.zimlx.anim.RevealOutlineAnimation;
+package org.zimmob.zimlx.anim;
 
 public class CircleRevealOutlineProvider extends RevealOutlineAnimation {
 

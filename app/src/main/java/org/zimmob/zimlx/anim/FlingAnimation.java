@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.anim;
 
 import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;

@@ -24,10 +24,10 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import org.zimmob.zimlx.anim.FlingAnimation;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.folder.Folder;
-import org.zimmob.zimlx.util.FlingAnimation;
 import org.zimmob.zimlx.util.Thunk;
 
 public class DeleteDropTarget extends ButtonDropTarget {

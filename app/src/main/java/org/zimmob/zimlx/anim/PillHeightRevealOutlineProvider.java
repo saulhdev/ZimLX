@@ -18,8 +18,6 @@ package org.zimmob.zimlx.anim;
 
 import android.graphics.Rect;
 
-import org.zimmob.zimlx.util.PillRevealOutlineProvider;
-
 /**
  * Extension of {@link PillRevealOutlineProvider} which only changes the height of the pill.
  * For now, we assume the height is added/removed from the bottom.

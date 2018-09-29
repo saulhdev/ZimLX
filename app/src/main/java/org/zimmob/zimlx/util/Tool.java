@@ -1,22 +1,13 @@
 package org.zimmob.zimlx.util;
 
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Point;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.util.Log;
 import android.util.TypedValue;
-import android.view.HapticFeedbackConstants;
-import android.view.View;
-import android.view.animation.AccelerateDecelerateInterpolator;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Toast;
 
 import org.zimmob.zimlx.R;
@@ -24,9 +15,6 @@ import org.zimmob.zimlx.R;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
-import java.util.List;
 
 /**
  * Created by saul on 04-25-18.
@@ -34,7 +22,7 @@ import java.util.List;
  * henriquez.saul@gmail.com
  */
 public class Tool {
-
+/*
     public static void hideKeyboard(Context context, View view) {
         ((InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE)).hideSoftInputFromWindow(view.getWindowToken(), InputMethodManager.HIDE_NOT_ALWAYS);
     }
@@ -123,7 +111,7 @@ public class Tool {
                     .withEndAction(() -> view.setVisibility(View.GONE));
         }
     }
-/*
+
     public static final void createScaleInScaleOutAnim(@NonNull final View view, @NonNull final Runnable endAction, float runActionAtPercent) {
         final long animTime = (long) (Setup.appSettings().getOverallAnimationSpeedModifier() * ((float) ItemTouchHelper.Callback.DEFAULT_DRAG_ANIMATION_DURATION));
         ViewPropertyAnimator duration = view.animate().scaleX(0.85f).scaleY(0.85f).setDuration(animTime);
@@ -150,33 +138,35 @@ public class Tool {
         return (int) (f * system.getDisplayMetrics().density);
     }
 
-    public static final boolean isPackageInstalled(@NonNull String packageName, @NonNull PackageManager packageManager) {
-        try {
-            packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
-            return true;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
+    /*
+        public static final boolean isPackageInstalled(@NonNull String packageName, @NonNull PackageManager packageManager) {
+            try {
+                packageManager.getPackageInfo(packageName, PackageManager.GET_ACTIVITIES);
+                return true;
+            } catch (PackageManager.NameNotFoundException e) {
+                return false;
+            }
         }
-    }
-
+    */
     public static int dp2px(int dp, Context context) {
         Resources resources = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics()));
     }
 
-    public static int sp2px(Context context, float spValue) {
-        final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
-        return (int) (spValue * fontScale + 0.5f);
-    }
+    /*
+        public static int sp2px(Context context, float spValue) {
+            final float fontScale = context.getResources().getDisplayMetrics().scaledDensity;
+            return (int) (spValue * fontScale + 0.5f);
+        }
 
-    public static int clampInt(int target, int min, int max) {
-        return Math.max(min, Math.min(max, target));
-    }
+        public static int clampInt(int target, int min, int max) {
+            return Math.max(min, Math.min(max, target));
+        }
 
-    public static float clampFloat(float target, float min, float max) {
-        return Math.max(min, Math.min(max, target));
-    }
-
+        public static float clampFloat(float target, float min, float max) {
+            return Math.max(min, Math.min(max, target));
+        }
+    */
     /*public static void startApp(Context context, App app) {
         if (HomeActivity.companion.getLauncher() != null)
             HomeActivity.companion.getLauncher().onStartApp(context, app, null);
@@ -193,7 +183,7 @@ public class Tool {
             homeActivity.onStartApp(context, app, view);
         }
     }*/
-
+/*
     public static Bitmap drawableToBitmap(Drawable drawable) {
         if (drawable == null) {
             return null;
@@ -236,48 +226,49 @@ public class Tool {
     public static void vibrate(View view) {
         view.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
     }
-
+*/
     public static void print(Object o) {
         if (o != null) {
             Log.e("ZimLX", o.toString());
         }
     }
 
-    public static void print(Object... o) {
-        StringBuilder sb = new StringBuilder();
-        for (Object anO : o) {
-            sb.append(anO.toString()).append("  ");
+    /*
+        public static void print(Object... o) {
+            StringBuilder sb = new StringBuilder();
+            for (Object anO : o) {
+                sb.append(anO.toString()).append("  ");
+            }
+            Log.e("ZimLX", sb.toString());
         }
-        Log.e("ZimLX", sb.toString());
-    }
 
-    public static boolean isIntentActionAvailable(Context context, String action) {
-        final PackageManager packageManager = context.getPackageManager();
-        final Intent intent = new Intent(action);
-        List resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        return resolveInfo.size() > 0;
-    }
-
-    public static String getIntentAsString(Intent intent) {
-        if (intent == null) {
-            return "";
-        } else {
-            return intent.toUri(0);
+        public static boolean isIntentActionAvailable(Context context, String action) {
+            final PackageManager packageManager = context.getPackageManager();
+            final Intent intent = new Intent(action);
+            List resolveInfo = packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
+            return resolveInfo.size() > 0;
         }
-    }
 
-    public static Intent getIntentFromString(String string) {
-        if (string == null || string.isEmpty()) {
-            return new Intent();
-        } else {
-            try {
-                return new Intent().parseUri(string, 0);
-            } catch (URISyntaxException e) {
-                return new Intent();
+        public static String getIntentAsString(Intent intent) {
+            if (intent == null) {
+                return "";
+            } else {
+                return intent.toUri(0);
             }
         }
-    }
 
+        public static Intent getIntentFromString(String string) {
+            if (string == null || string.isEmpty()) {
+                return new Intent();
+            } else {
+                try {
+                    return new Intent().parseUri(string, 0);
+                } catch (URISyntaxException e) {
+                    return new Intent();
+                }
+            }
+        }
+    */
     public static Drawable getIcon(Context context, String filename) {
         if (filename == null) {
             return null;
@@ -290,30 +281,31 @@ public class Tool {
         return icon;
     }
 
-    public static void saveIcon(Context context, Bitmap icon, String filename) {
-        File directory = new File(context.getFilesDir() + "/icons");
-        if (!directory.exists()) {
-            directory.mkdir();
-        }
+    /*
+        public static void saveIcon(Context context, Bitmap icon, String filename) {
+            File directory = new File(context.getFilesDir() + "/icons");
+            if (!directory.exists()) {
+                directory.mkdir();
+            }
 
-        File file = new File(context.getFilesDir() + "/icons/" + filename + ".png");
-        removeIcon(context, filename);
-        try {
-            file.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+            File file = new File(context.getFilesDir() + "/icons/" + filename + ".png");
+            removeIcon(context, filename);
+            try {
+                file.createNewFile();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
 
-        try {
-            FileOutputStream out = new FileOutputStream(file);
-            icon.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.close();
-        } catch (Exception e) {
-            e.printStackTrace();
+            try {
+                FileOutputStream out = new FileOutputStream(file);
+                icon.compress(Bitmap.CompressFormat.PNG, 100, out);
+                out.close();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
-    }
-
-    private static void removeIcon(Context context, String filename) {
+    */
+    /*private static void removeIcon(Context context, String filename) {
         File file = new File(context.getFilesDir() + "/icons/" + filename + ".png");
         if (file.exists()) {
             try {
@@ -324,7 +316,7 @@ public class Tool {
         }
     }
 
-    /*public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
+    public static View.OnTouchListener getItemOnTouchListener(Item item, final ItemGestureListener.ItemGestureCallback itemGestureCallback) {
         final ItemGestureListener itemGestureListener = Config.ENABLE_ITEM_TOUCH_LISTENER && itemGestureCallback != null ? new ItemGestureListener(Setup.appContext(), item, itemGestureCallback) : null;
         return (view, motionEvent) -> {
             HomeActivity.companion.setItemTouchX((int) motionEvent.getX());
@@ -334,8 +326,8 @@ public class Tool {
             }
             return false;
         };
-    }*/
-
+    }
+*/
     public static void copy(Context context, String stringIn, String stringOut) {
         try {
             File desktopData = new File(stringOut);

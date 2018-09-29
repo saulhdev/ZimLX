@@ -31,7 +31,7 @@ import android.view.animation.AccelerateInterpolator;
 
 import org.zimmob.zimlx.allapps.AllAppsContainerView;
 import org.zimmob.zimlx.allapps.AllAppsTransitionController;
-import org.zimmob.zimlx.util.CircleRevealOutlineProvider;
+import org.zimmob.zimlx.anim.CircleRevealOutlineProvider;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.widget.WidgetsContainerView;
 

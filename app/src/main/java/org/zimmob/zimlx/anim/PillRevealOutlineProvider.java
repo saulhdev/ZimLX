@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zimmob.zimlx.util;
+package org.zimmob.zimlx.anim;
 
 import android.graphics.Rect;
 
