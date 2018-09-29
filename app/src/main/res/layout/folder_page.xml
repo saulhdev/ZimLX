@@ -13,14 +13,8 @@
      limitations under the License.
 -->
 
-<org.zimmob.zimlx.popup.PopupContainerWithArrow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/deep_shortcuts_container"
+<org.zimmob.zimlx.CellLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:background="?attr/popupColorPrimary"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:elevation="@dimen/popup_elevation"
-    android:orientation="vertical"
-    android:paddingBottom="8.0dip"
-    android:paddingTop="8.0dip" />
+    android:hapticFeedbackEnabled="false"
+    android:importantForAccessibility="no" />

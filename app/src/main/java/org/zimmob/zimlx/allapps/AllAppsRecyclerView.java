@@ -123,6 +123,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         RecyclerView.RecycledViewPool pool = getRecycledViewPool();
         int approxRows = (int) Math.ceil(grid.availableHeightPx / grid.allAppsIconSizePx);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH, 1);
+        pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
@@ -146,6 +147,21 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, iconHeight);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON, iconHeight);
+
+        // Search divider
+        View searchDivider = adapter.onCreateViewHolder(this,
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER).mContent;
+        searchDivider.measure(widthMeasureSpec, heightMeasureSpec);
+        int searchDividerHeight = searchDivider.getMeasuredHeight();
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_DIVIDER, searchDividerHeight);
+
+
+        // Generic dividers
+        View divider = adapter.onCreateViewHolder(this,
+                AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER).mContent;
+        divider.measure(widthMeasureSpec, heightMeasureSpec);
+        int dividerHeight = divider.getMeasuredHeight();
+        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET_DIVIDER, dividerHeight);
 
         putSameHeightFor(adapter, widthMeasureSpec, heightMeasureSpec,
                 AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER,

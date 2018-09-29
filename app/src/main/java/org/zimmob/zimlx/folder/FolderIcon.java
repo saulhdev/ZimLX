@@ -141,13 +141,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     private Alarm mOpenAlarm = new Alarm();
 
-    public FolderIcon(Context context, AttributeSet attrs) {
-        super(context, attrs);
+    public FolderIcon(Context context) {
+        this(context, null);
         init();
     }
 
-    public FolderIcon(Context context) {
-        this(context, null);
+    public FolderIcon(Context context, AttributeSet attrs) {
+        super(context, attrs);
         init();
     }
 

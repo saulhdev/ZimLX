@@ -395,6 +395,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             }
 
             mlp.topMargin = height;
+            mlp.bottomMargin = 50;
             mAppsRecyclerView.setLayoutParams(mlp);
 
             mSearchContainer.setPadding(

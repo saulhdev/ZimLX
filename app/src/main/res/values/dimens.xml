@@ -77,7 +77,7 @@
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
 
-    <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
+    <dimen name="all_apps_divider_margin_vertical">6dp</dimen>
 
     <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->
@@ -183,7 +183,7 @@
     <dimen name="system_shortcut_header_height">40.0dip</dimen>
     <dimen name="system_shortcut_header_icon_touch_size">48.0dip</dimen>
     <dimen name="system_shortcut_header_icon_padding">12.0dip</dimen>
-    <dimen name="popup_item_divider_height">0.5dip</dimen>
+    <dimen name="popup_item_divider_height">0.7dip</dimen>
     <dimen name="popup_padding_start">10.0dip</dimen>
     <dimen name="popup_padding_end">16.0dip</dimen>
     <dimen name="popup_vertical_padding">4dp</dimen>
