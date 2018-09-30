@@ -55,6 +55,14 @@
 
         <SwitchPreference
             android:defaultValue="false"
+            android:key="pref_forceLightStatusBar"
+            android:persistent="true"
+            android:summaryOff="@string/light_statusbar_pref_off"
+            android:summaryOn="@string/light_statusbar_pref_force"
+            android:title="@string/light_statusbar_pref_title" />
+
+        <SwitchPreference
+            android:defaultValue="false"
             android:key="pref_enableDynamicUi"
             android:persistent="true"
             android:title="@string/dynamic_ui_pref_title" />
