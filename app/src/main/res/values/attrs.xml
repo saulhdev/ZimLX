@@ -183,4 +183,8 @@
         <attr name="keyShadowBlur" format="dimension" />
         <attr name="keyShadowOffset" format="dimension" />
     </declare-styleable>
+    <declare-styleable name="RecyclerViewFastScroller">
+        <attr name="canThumbDetach" format="boolean" />
+    </declare-styleable>
+
 </resources>

@@ -41,10 +41,32 @@ import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.sendCustomAcces
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
 public abstract class AbstractFloatingView extends LinearLayout {
-
+    public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_FOLDER = 1 << 0;
-    public static final int TYPE_POPUP_CONTAINER_WITH_ARROW = 1 << 1;
+    public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
+    public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
+    public static final int TYPE_ON_BOARD_POPUP = 1 << 5;
+    public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
+    // Popups related to quickstep UI
+    public static final int TYPE_QUICKSTEP_PREVIEW = 1 << 7;
+    public static final int TYPE_TASK_MENU = 1 << 8;
+    public static final int TYPE_OPTIONS_POPUP = 1 << 9;
+    public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
+            | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
+            | TYPE_OPTIONS_POPUP;
+    // Type of popups which should be kept open during launcher rebind
+    public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
+            | TYPE_QUICKSTEP_PREVIEW | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+    // Usually we show the back button when a floating view is open. Instead, hide for these types.
+    public static final int TYPE_HIDE_BACK_BUTTON = TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE;
+    public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
+
+    public static AbstractFloatingView getTopOpenView(Launcher launcher) {
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_WIDGETS_BOTTOM_SHEET);
+    }
+
     protected boolean mIsOpen;
 
     public AbstractFloatingView(Context context, AttributeSet attrs) {
@@ -114,10 +136,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
         closeAllOpenViews(launcher, true);
     }
 
-    public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_POPUP_CONTAINER_WITH_ARROW
-                | TYPE_WIDGETS_BOTTOM_SHEET);
-    }
+    public abstract void logActionCommand(int command);
 
     /**
      * We need to handle touch events to prevent them from falling through to the workspace below.
@@ -150,6 +169,23 @@ public abstract class AbstractFloatingView extends LinearLayout {
         return null;
     }
 
+    @IntDef(flag = true, value = {
+            TYPE_FOLDER,
+            TYPE_ACTION_POPUP,
+            TYPE_WIDGETS_BOTTOM_SHEET,
+            TYPE_WIDGET_RESIZE_FRAME,
+            TYPE_WIDGETS_FULL_SHEET,
+            TYPE_ON_BOARD_POPUP,
+            TYPE_DISCOVERY_BOUNCE,
+
+            TYPE_QUICKSTEP_PREVIEW,
+            TYPE_TASK_MENU,
+            TYPE_OPTIONS_POPUP
+    })
+    @Retention(RetentionPolicy.SOURCE)
+    public @interface FloatingViewType {
+    }
+
     public final boolean isOpen() {
         return mIsOpen;
     }
@@ -158,13 +194,4 @@ public abstract class AbstractFloatingView extends LinearLayout {
     }
 
     protected abstract boolean isOfType(@FloatingViewType int type);
-
-    @IntDef(flag = true, value = {
-            TYPE_FOLDER,
-            TYPE_POPUP_CONTAINER_WITH_ARROW,
-            TYPE_WIDGETS_BOTTOM_SHEET
-    })
-    @Retention(RetentionPolicy.SOURCE)
-    public @interface FloatingViewType {
-    }
 }

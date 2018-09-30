@@ -20,6 +20,9 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Selection;
 import android.text.Spannable;
@@ -58,7 +61,9 @@ import org.zimmob.zimlx.graphics.TintedDrawableSpan;
 import org.zimmob.zimlx.keyboard.FocusedItemDecorator;
 import org.zimmob.zimlx.util.ComponentKey;
 import org.zimmob.zimlx.util.ComponentKeyMapper;
+import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.PackageUserKey;
+import org.zimmob.zimlx.views.BottomUserEducationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -106,6 +111,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private int mRecyclerViewBottomPadding;
     private AllAppsBackground mAllAppsBackground;
     private IAllAppsThemer mTheme;
+    private final AdapterHolder[] mAH;
+    private boolean mUsingTabs;
+    private AllAppsPagedView mViewPager;
+    private FloatingHeaderView mHeader;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -120,6 +129,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         Resources res = context.getResources();
 
         mLauncher = Launcher.getLauncher(context);
+        mAH = new AdapterHolder[2];
+        mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
+        mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
+
+
         mSectionNamesMargin = res.getDimensionPixelSize(R.dimen.all_apps_grid_view_start_margin);
         mApps = new AlphabeticalAppsList(context);
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
@@ -248,6 +262,25 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.reset();
     }
 
+    /**
+     * Resets the state of AllApps.
+     */
+    public void reset(boolean animate) {
+        for (int i = 0; i < mAH.length; i++) {
+            if (mAH[i].recyclerView != null) {
+                mAH[i].recyclerView.scrollToTop();
+            }
+        }
+        if (isHeaderVisible()) {
+            mHeader.reset(animate);
+        }
+        // Reset the search bar and base recycler view after transitioning home
+        //mSearchUiManager.resetSearch();
+    }
+
+    public boolean isHeaderVisible() {
+        return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
+    }
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -282,7 +315,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mSearchContainerOffsetTop = getResources().getDimensionPixelSize(
                 R.dimen.all_apps_search_bar_margin_top);
-
 
         // Load the all apps recycler view
         mAppsRecyclerView = findViewById(R.id.apps_list_view);
@@ -558,6 +590,23 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
     }
 
+    public void onTabChanged(int pos) {
+        mHeader.setMainActive(pos == 0);
+        reset(true /* animate */);
+        if (mAH[pos].recyclerView != null) {
+            mAH[pos].recyclerView.bindFastScrollbar();
+
+            findViewById(R.id.tab_personal)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
+            findViewById(R.id.tab_work)
+                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
+
+        }
+        if (pos == AdapterHolder.WORK) {
+            BottomUserEducationView.showIfNeeded(mLauncher);
+        }
+    }
+
     /**
      * Handles the touch events to dismiss all apps when clicking outside the bounds of the
      * recycler view.
@@ -672,4 +721,69 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         return mSpringAnimationHandler;
     }
 
+
+    public class AdapterHolder {
+        public static final int MAIN = 0;
+        public static final int WORK = 1;
+
+        public final AllAppsGridAdapter adapter;
+        final LinearLayoutManager layoutManager;
+        final AlphabeticalAppsList appsList;
+        final Rect padding = new Rect();
+        AllAppsRecyclerView recyclerView;
+        boolean verticalFadingEdge;
+
+        AdapterHolder(boolean isWork) {
+            appsList = new AlphabeticalAppsList(mLauncher);
+            adapter = new AllAppsGridAdapter(mLauncher, appsList, null, null);
+            appsList.setAdapter(adapter);
+            layoutManager = adapter.getLayoutManager();
+        }
+
+        void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
+            //appsList.updateItemFilter(matcher);
+            recyclerView = (AllAppsRecyclerView) rv;
+            //recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
+            recyclerView.setApps(appsList);
+            recyclerView.setLayoutManager(layoutManager);
+            recyclerView.setAdapter(adapter);
+            recyclerView.setHasFixedSize(true);
+            // No animations will occur when changes occur to the items in this RecyclerView.
+            recyclerView.setItemAnimator(null);
+            FocusedItemDecorator focusedItemDecorator = new FocusedItemDecorator(recyclerView);
+            recyclerView.addItemDecoration(focusedItemDecorator);
+            adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
+            applyVerticalFadingEdgeEnabled(verticalFadingEdge);
+            applyPadding();
+        }
+
+        void applyPadding() {
+            if (recyclerView != null) {
+                recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            }
+        }
+
+        public void applyVerticalFadingEdgeEnabled(boolean enabled) {
+            verticalFadingEdge = enabled;
+            mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
+                    && verticalFadingEdge);
+        }
+
+        public void onTabChanged(int pos) {
+            mHeader.setMainActive(pos == 0);
+            reset(true /* animate */);
+            if (mAH[pos].recyclerView != null) {
+                mAH[pos].recyclerView.bindFastScrollbar();
+
+                findViewById(R.id.tab_personal)
+                        .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
+                findViewById(R.id.tab_work)
+                        .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
+
+            }
+            if (pos == AdapterHolder.WORK) {
+                BottomUserEducationView.showIfNeeded(mLauncher);
+            }
+        }
+    }
 }

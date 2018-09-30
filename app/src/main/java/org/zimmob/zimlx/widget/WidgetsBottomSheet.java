@@ -88,10 +88,6 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         return FeatureFlags.getUseDarkTheme() ? R.style.WidgetContainerTheme_Dark : R.style.WidgetContainerTheme;
     }
 
-    public static WidgetsBottomSheet getOpen(Launcher launcher) {
-        return (WidgetsBottomSheet) AbstractFloatingView.getOpenView(launcher, 4);
-    }
-
     @Override
     protected void onMeasure(int i, int i2) {
         super.onMeasure(i, i2);
@@ -189,6 +185,11 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
                 this.mIsOpen = false;
             }
         }
+    }
+
+    @Override
+    public void logActionCommand(int command) {
+
     }
 
     private void setLightNavBar(boolean z) {

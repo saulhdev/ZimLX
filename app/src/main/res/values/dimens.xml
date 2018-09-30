@@ -72,12 +72,29 @@
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">4dp</dimen>
-
-    <!-- Search bar in All Apps -->
+    <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
+    <dimen name="all_apps_divider_height">1dp</dimen>
+    <dimen name="all_apps_header_tab_height">50dp</dimen>
+    <dimen name="all_apps_header_top_padding">36dp</dimen>
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
-
     <dimen name="all_apps_divider_margin_vertical">6dp</dimen>
+    <dimen name="all_apps_tabs_side_padding">12dp</dimen>
+    <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
+    <!-- Fast scroll -->
+    <dimen name="fastscroll_track_min_width">6dp</dimen>
+    <dimen name="fastscroll_track_max_width">8dp</dimen>
+    <dimen name="fastscroll_thumb_padding">1dp</dimen>
+    <dimen name="fastscroll_thumb_height">52dp</dimen>
+    <dimen name="fastscroll_thumb_touch_inset">-24dp</dimen>
+
+    <dimen name="fastscroll_popup_width">75dp</dimen>
+    <dimen name="fastscroll_popup_height">62dp</dimen>
+    <dimen name="fastscroll_popup_padding">13dp</dimen>
+    <dimen name="fastscroll_popup_text_size">32dp</dimen>
+    <dimen name="fastscroll_popup_margin">19dp</dimen>
+    <dimen name="fastscroll_width">58dp</dimen>
+    <dimen name="fastscroll_end_margin">-26dp</dimen>
 
     <!-- Dragging -->
     <!-- Drag padding to add to the bottom of drop targets -->

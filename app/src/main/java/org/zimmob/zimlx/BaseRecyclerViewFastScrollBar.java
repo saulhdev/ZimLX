@@ -19,6 +19,7 @@ import android.animation.AnimatorSet;
 import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -26,15 +27,22 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.support.v7.widget.RecyclerView;
+import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.TextView;
 
+import org.zimmob.zimlx.graphics.FastScrollThumbDrawable;
 import org.zimmob.zimlx.util.Thunk;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
  */
-public class BaseRecyclerViewFastScrollBar {
+public class BaseRecyclerViewFastScrollBar extends View {
+    private static final int SCROLL_DELTA_THRESHOLD_DP = 4;
+    private static final Rect sTempRect = new Rect();
 
     private final static int MAX_TRACK_ALPHA = 30;
     private final static int SCROLL_BAR_VIS_DURATION = 150;
@@ -71,7 +79,32 @@ public class BaseRecyclerViewFastScrollBar {
     private Rect mInvalidateRect = new Rect();
     private Rect mTmpRect = new Rect();
 
-    public BaseRecyclerViewFastScrollBar(BaseRecyclerView rv, Resources res) {
+    // Fast scroller popup
+    private TextView mPopupView;
+    private boolean mPopupVisible;
+    private String mPopupSectionName;
+    /**
+     * Keeps the last known scrolling delta/velocity along y-axis.
+     */
+    private int mDy = 0;
+    private float mDeltaThreshold;
+    private RecyclerView.OnScrollListener mOnScrollListener;
+
+    public BaseRecyclerViewFastScrollBar(Context context) {
+        this(context, null);
+    }
+
+    public BaseRecyclerViewFastScrollBar(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public BaseRecyclerViewFastScrollBar(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+
+    }
+
+    public BaseRecyclerViewFastScrollBar(Context context, BaseRecyclerView rv, Resources res) {
+        this(context, null);
         mRv = rv;
         mPopup = new BaseRecyclerViewFastScrollPopup(rv, res);
         mTrackPaint = new Paint();
@@ -87,6 +120,32 @@ public class BaseRecyclerViewFastScrollBar {
         mThumbHeight = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_height);
         mThumbCurvature = mThumbMaxWidth - mThumbMinWidth;
         mTouchInset = res.getDimensionPixelSize(R.dimen.container_fastscroll_thumb_touch_inset);
+
+        mDeltaThreshold = res.getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
+    }
+
+    public void setRecyclerView(BaseRecyclerView rv, TextView popupView) {
+        if (mRv != null && mOnScrollListener != null) {
+            mRv.removeOnScrollListener(mOnScrollListener);
+        }
+        mRv = rv;
+
+        mRv.addOnScrollListener(mOnScrollListener = new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                mDy = dy;
+
+                // TODO(winsonc): If we want to animate the section heads while scrolling, we can
+                //                initiate that here if the recycler view scroll state is not
+                //                RecyclerView.SCROLL_STATE_IDLE.
+
+                mRv.onUpdateScrollbar(dy);
+            }
+        });
+
+        mPopupView = popupView;
+        mPopupView.setBackground(
+                new FastScrollThumbDrawable(mThumbPaint, Utilities.isRtl(getResources())));
     }
 
     public void setThumbOffsetY(int thumbOffsetY) {
@@ -224,6 +283,7 @@ public class BaseRecyclerViewFastScrollBar {
     }
 
     public void draw(Canvas canvas) {
+        super.draw(canvas);
         if (mThumbOffset.x < 0 || mThumbOffset.y < 0) {
             return;
         }

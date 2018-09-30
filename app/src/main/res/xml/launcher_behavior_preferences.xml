@@ -26,15 +26,6 @@
         android:summary="@string/pinch_to_overview_pref_summary"
         android:title="@string/pinch_to_overview_pref_title" />
 
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@array/pullDownActionTexts"
-        android:entryValues="@array/pullDownActionValues"
-        android:key="pref_pulldownAction"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/pull_down_action_pref_title" />
-
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_forceLightStatusBar"

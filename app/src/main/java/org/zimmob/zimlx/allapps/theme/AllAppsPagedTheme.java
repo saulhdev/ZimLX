@@ -14,7 +14,7 @@ public class AllAppsPagedTheme extends AllAppsBaseTheme {
 
     @Override
     public int getIconLayout() {
-        return R.layout.all_apps_icon;
+        return R.layout.all_apps_tabs;
     }
 
 }

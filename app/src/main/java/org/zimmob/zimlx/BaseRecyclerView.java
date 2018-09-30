@@ -22,6 +22,7 @@ import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.ViewGroup;
 
 import org.zimmob.zimlx.util.Thunk;
 
@@ -61,11 +62,37 @@ public abstract class BaseRecyclerView extends RecyclerView
     public BaseRecyclerView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mDeltaThreshold = getResources().getDisplayMetrics().density * SCROLL_DELTA_THRESHOLD_DP;
-        mScrollbar = new BaseRecyclerViewFastScrollBar(this, getResources());
+        mScrollbar = new BaseRecyclerViewFastScrollBar(getContext(), this, getResources());
         mContentTranslationY = 0;
 
         ScrollListener listener = new ScrollListener();
         addOnScrollListener(listener);
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        if (Utilities.getPrefs(getContext()).drawerLayoutStyle("1") == "0") {
+            bindFastScrollbar();
+        }
+    }
+
+    public void bindFastScrollbar() {
+        ViewGroup parent = (ViewGroup) getParent().getParent();
+        mScrollbar = parent.findViewById(R.id.fast_scroller);
+        mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
+        onUpdateScrollbar(0);
+    }
+
+    /**
+     * Returns the height of the fast scroll bar
+     */
+    public int getScrollbarTrackHeight() {
+        return mScrollbar.getHeight() - getScrollBarTop() - getPaddingBottom();
+    }
+
+    public int getScrollBarTop() {
+        return getPaddingTop();
     }
 
     public void reset() {
@@ -155,7 +182,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * VisibleHeight = View height - top padding - bottom padding
      */
     protected int getVisibleHeight() {
-        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom;
+        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom - 50;
     }
 
     /**
@@ -247,7 +274,7 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * @return whether fast scrolling is supported in the current state.
      */
-    protected boolean supportsFastScrolling() {
+    public boolean supportsFastScrolling() {
         return true;
     }
 
@@ -263,18 +290,18 @@ public abstract class BaseRecyclerView extends RecyclerView
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
-    protected abstract String scrollToPositionAtProgress(float touchFraction);
+    public abstract String scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
      * <p>Override in each subclass of this base class.
      */
-    protected abstract void onUpdateScrollbar(int dy);
+    public abstract void onUpdateScrollbar(int dy);
 
     /**
      * <p>Override in each subclass of this base class.
      */
-    protected void onFastScrollCompleted() {
+    public void onFastScrollCompleted() {
     }
 
     private class ScrollListener extends OnScrollListener {
@@ -288,4 +315,5 @@ public abstract class BaseRecyclerView extends RecyclerView
             onUpdateScrollbar(dy);
         }
     }
+
 }

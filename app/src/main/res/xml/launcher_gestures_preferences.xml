@@ -3,6 +3,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/pref_title__gestures">
         <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/pullDownActionTexts"
+            android:entryValues="@array/pullDownActionValues"
+            android:key="pref_pulldownAction"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/pull_down_action_pref_title" />
+
+        <ListPreference
             android:defaultValue=""
             android:entries="@array/dt2sHandlers"
             android:entryValues="@array/dt2sHandlerClasses"

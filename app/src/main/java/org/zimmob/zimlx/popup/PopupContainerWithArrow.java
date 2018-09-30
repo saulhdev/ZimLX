@@ -183,7 +183,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
      * Returns a DeepShortcutsContainer which is already open or null
      */
     public static PopupContainerWithArrow getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_POPUP_CONTAINER_WITH_ARROW);
+        return getOpenView(launcher, TYPE_ACTION_POPUP);
     }
 
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
@@ -662,6 +662,11 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         return mOriginalIcon;
     }
 
+    @Override
+    public void logActionCommand(int command) {
+
+    }
+
     /**
      * Determines when the deferred drag should be started.
      * <p>
@@ -1008,7 +1013,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @Override
     protected boolean isOfType(int type) {
-        return (type & TYPE_POPUP_CONTAINER_WITH_ARROW) != 0;
+        return (type & TYPE_ACTION_POPUP) != 0;
     }
 
     @IntDef(flag = true, value = {

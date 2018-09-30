@@ -22,6 +22,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.util.AttributeSet;
+import android.util.SparseBooleanArray;
 import android.view.View;
 import android.widget.FrameLayout;
 
@@ -41,7 +42,7 @@ public abstract class BaseContainerView extends FrameLayout
     private InsetDrawable mRevealDrawable;
     private View mRevealView;
     private View mContent;
-
+    private final SparseBooleanArray mSpringViews = new SparseBooleanArray();
     public BaseContainerView(Context context) {
         this(context, null);
     }
@@ -94,6 +95,9 @@ public abstract class BaseContainerView extends FrameLayout
         updatePaddings();
     }
 
+    public void addSpringView(int id) {
+        mSpringViews.put(id, true);
+    }
     public void setRevealDrawableColor(int color) {
         ((ColorDrawable) mBaseDrawable).setColor(color);
     }

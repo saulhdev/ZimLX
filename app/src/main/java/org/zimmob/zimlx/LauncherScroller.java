@@ -448,6 +448,19 @@ public class LauncherScroller {
     }
 
     /**
+     * Extend the scroll animation. This allows a running animation to scroll
+     * further and longer, when used with {@link #setFinalX(int)}.
+     *
+     * @param extend Additional time to scroll in milliseconds.
+     * @see #setFinalX(int)
+     */
+    public void extendDuration(int extend) {
+        int passed = timePassed();
+        mDuration = passed + extend;
+        mDurationReciprocal = 1.0f / mDuration;
+        mFinished = false;
+    }
+    /**
      * Returns the time elapsed since the beginning of the scrolling.
      *
      * @return The elapsed time in milliseconds.

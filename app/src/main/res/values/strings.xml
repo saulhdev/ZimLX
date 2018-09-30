@@ -624,5 +624,22 @@
     <string name="pref_title__drawer_style">Style</string>
     <string name="pref_title__desktop_indicator_style">Indicator Style</string>
     <string name="pref_summary__drawer_style">Choose between a paged and vertical app drawer.</string>
+    <string name="work_mode_off_label">Notifications and apps are off</string>
+    <string name="bottom_work_tab_user_education_close_button">Close</string>
+    <string name="bottom_work_tab_user_education_closed">Closed</string>
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
+    <string name="work_profile_toggle_label">Work profile</string>
+    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
+    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
+    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
+    <string name="bottom_work_tab_user_education_body">Each work app has a badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
+    "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
+    <string name="work_mode_on_label">Managed by your organization</string>
+    <!-- Label of tab to indicate personal apps -->
+    <string name="all_apps_personal_tab">Personal</string>
+
+    <!-- Label of tab to indicate work apps -->
+    <string name="all_apps_work_tab">Work</string>
 
 </resources>
