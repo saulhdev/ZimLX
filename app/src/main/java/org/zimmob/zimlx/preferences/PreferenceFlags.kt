@@ -129,9 +129,10 @@ object PreferenceFlags {
     const val APPS_VIEW_SHOWN = "launcher.apps_view_shown"
 
     // CONSTANTS
+    /*
     const val PREF_WEATHER_PROVIDER_AWARENESS = "1"
     const val PREF_WEATHER_DEFAULT_CITY = "Lucerne, CH"
     const val PREF_WEATHER_UNIT_METRIC = "metric"
-    const val PREF_DEFAULT_WEATHER_API_KEY = "17a6438b1d63d5b05f7039e7cb52cde7"
+    const val PREF_DEFAULT_WEATHER_API_KEY = "17a6438b1d63d5b05f7039e7cb52cde7"*/
     const val PREF_DEFAULT_STRING = "default"
 }

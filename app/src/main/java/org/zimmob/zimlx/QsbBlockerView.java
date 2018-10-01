@@ -11,19 +11,15 @@ import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceProvider;
-import org.zimmob.zimlx.weather.WeatherHelper;
 
-public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, WeatherHelper.OnWeatherLoadListener, SharedPreferences.OnSharedPreferenceChangeListener {
+public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChangeListener, View.OnLongClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private final Paint mBgPaint = new Paint(1);
     private View mView;
-    private WeatherHelper weatherHelper;
     private boolean switchToDate = false;
     private boolean switching = false;
     private boolean weatherShowing = false;
@@ -112,8 +108,8 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (view == null || switching) {
             if (Utilities.getPrefs(getContext()).getEnablePlanes()) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-            } else if (!switchToDate && (Utilities.getPrefs(getContext()).getShowWeather() || switching)) {
-                weatherShowing = true;
+                ///} else if (!switchToDate && switching) {
+                /*weatherShowing = true;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
 
                 TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
@@ -123,9 +119,9 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
                 mView.findViewById(R.id.weather_widget_time).setOnLongClickListener(this);
 
                 temperature.setOnLongClickListener(this);
-                iconView.setOnLongClickListener(this);
+                iconView.setOnLongClickListener(this);*/
             } else {
-                weatherShowing = false;
+                //weatherShowing = false;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
                 mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
                 mView.findViewById(R.id.date_text2).setOnLongClickListener(this);
@@ -160,14 +156,14 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
     public boolean onLongClick(View view) {
         switchToDate = weatherShowing;
         switching = true;
-        if (weatherHelper != null) {
+        /*if (weatherHelper != null) {
             weatherHelper.stop();
-        }
+        }*/
         setupView(true);
         return true;
     }
 
-    @Override
+    /*
     public void onLoad(boolean success) {
         if (weatherShowing && !success) {
             switchToDate = true;
@@ -179,7 +175,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
             setupView(false);
         }
     }
-
+*/
     private static final class QsbBlockerViewAlpha extends Property<QsbBlockerView, Integer> {
 
         public QsbBlockerViewAlpha(Class<Integer> type, String name) {

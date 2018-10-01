@@ -67,7 +67,6 @@ public final class FeatureFlags extends BaseFlags {
     public static final String KEY_PREF_THEME_MODE = "pref_themeMode";
     public static final String KEY_PREF_HIDE_HOTSEAT = "pref_hideHotseat";
     public static final String KEY_PREF_PLANE = "pref_plane";
-    public static final String KEY_PREF_WEATHER = "pref_weather";
     public static final String KEY_PREF_PULLDOWN_ACTION = "pref_pulldownAction";
     public static final String KEY_PREF_LOCK_DESKTOP = "pref_lockDesktop";
     public static final String KEY_PREF_ANIMATED_CLOCK_ICON = "pref_animatedClockIcon";

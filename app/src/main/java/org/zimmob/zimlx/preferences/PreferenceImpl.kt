@@ -64,8 +64,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
         setBoolean(PreferenceFlags.KEY_LIGHT_STATUS_BAR, value, commit)
     }
 
-    override val weatherUnit by StringPref(PreferenceFlags.KEY_WEATHER_UNITS, PreferenceFlags.PREF_WEATHER_UNIT_METRIC)
-    override val weatherCity by StringPref(PreferenceFlags.KEY_WEATHER_CITY, PreferenceFlags.PREF_WEATHER_DEFAULT_CITY)
     override val showHidden by BooleanPref(PreferenceFlags.KEY_SHOW_HIDDEN, false)
 
     override fun migrationSrcHotseatCount(default: Int): Int {
@@ -152,8 +150,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
         setString(PreferenceFlags.KEY_ITEM_ALIAS_PREFIX + key, value, commit)
     }
 
-    override val weatherApiKey by StringPref(PreferenceFlags.KEY_WEATHER_API_KEY, PreferenceFlags.PREF_DEFAULT_WEATHER_API_KEY)
-
     override fun getIntPref(key: String, default: Int): Int {
         return sharedPrefs.getInt(key, default)
     }
@@ -168,7 +164,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
 
     override var overrideIconShape by MutableStringPref(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE, "")
     override val backportAdaptiveIcons = Utilities.ATLEAST_NOUGAT
-    override val weatherProvider by StringPref(PreferenceFlags.KEY_WEATHER_PROVIDER, PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS)
     override var previousBuildNumber by MutableIntPref(PreferenceFlags.KEY_PREVIOUS_BUILD_NUMBER, 0)
     override var disableLawnfeedPopup by MutableBooleanPref(PreferenceFlags.KEY_DISABLE_LAWNFEED_POPUP, false)
 
@@ -224,7 +219,6 @@ open class PreferenceImpl(context: Context) : IPreferenceProvider {
     override val showTopShadow by BooleanPref(FeatureFlags.KEY_PREF_SHOW_TOP_SHADOW, true)
     override val hideHotseat by BooleanPref(FeatureFlags.KEY_PREF_HIDE_HOTSEAT, false)
     override val enablePlanes by BooleanPref(FeatureFlags.KEY_PREF_PLANE, false)
-    override val showWeather by BooleanPref(FeatureFlags.KEY_PREF_WEATHER, false)
     override val lockDesktop by BooleanPref(FeatureFlags.KEY_PREF_LOCK_DESKTOP, false)
     override val animatedClockIcon by BooleanPref(FeatureFlags.KEY_PREF_ANIMATED_CLOCK_ICON, false)
     override val useSystemFonts by BooleanPref(FeatureFlags.KEY_PREF_USE_SYSTEM_FONTS, false)

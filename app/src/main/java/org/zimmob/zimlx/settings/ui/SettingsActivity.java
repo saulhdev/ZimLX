@@ -18,7 +18,6 @@
 package org.zimmob.zimlx.settings.ui;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -229,12 +228,7 @@ public class SettingsActivity extends AppCompatActivity implements
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             if (getContent() == R.xml.launcher_theme_preferences) {
-                Preference prefWeatherEnabled = findPreference(FeatureFlags.KEY_PREF_WEATHER);
-                prefWeatherEnabled.setOnPreferenceChangeListener(this);
-                Preference prefWeatherProvider = findPreference(PreferenceFlags.KEY_WEATHER_PROVIDER);
-                prefWeatherProvider.setEnabled(BuildConfig.AWARENESS_API_ENABLED);
-                prefWeatherProvider.setOnPreferenceChangeListener(this);
-                updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
+                //updateEnabledState(Utilities.getPrefs(getActivity()).getWeatherProvider());
                 Preference overrideShapePreference = findPreference(PreferenceFlags.KEY_OVERRIDE_ICON_SHAPE);
                 if (IconShapeOverride.Companion.isSupported(requireNonNull(getActivity()))) {
                     IconShapeOverride.Companion.handlePreferenceUi((ListPreference) overrideShapePreference);
@@ -271,19 +265,19 @@ public class SettingsActivity extends AppCompatActivity implements
             addPreferencesFromResource(getContent());
         }
 
-        private void updateEnabledState(String weatherProvider) {
+        /*private void updateEnabledState(String weatherProvider) {
             boolean awarenessApiEnabled = weatherProvider.equals(PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS);
             Preference prefWeatherCity = findPreference(PreferenceFlags.KEY_WEATHER_CITY);
             Preference prefWeatherApiKey = findPreference(PreferenceFlags.KEY_WEATHER_API_KEY);
             prefWeatherCity.setEnabled(!awarenessApiEnabled);
             prefWeatherApiKey.setEnabled(!awarenessApiEnabled);
-        }
+        }*/
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
-                    case PreferenceFlags.KEY_WEATHER_PROVIDER:
+                    /*case PreferenceFlags.KEY_WEATHER_PROVIDER:
                         updateEnabledState((String) newValue);
                         break;
                     case FeatureFlags.KEY_PREF_WEATHER:
@@ -291,7 +285,7 @@ public class SettingsActivity extends AppCompatActivity implements
                         if (Utilities.getPrefs(context).getShowWeather() && Utilities.isAwarenessApiEnabled(context)) {
                             checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
                         }
-                        break;
+                        break;*/
                 }
 
                 return true;

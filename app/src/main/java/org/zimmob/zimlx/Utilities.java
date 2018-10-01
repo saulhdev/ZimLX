@@ -953,10 +953,10 @@ public final class Utilities {
         return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
     }
 
-    public static boolean isAwarenessApiEnabled(Context context) {
+    /*public static boolean isAwarenessApiEnabled(Context context) {
         IPreferenceProvider prefs = getPrefs(context);
         return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
-    }
+    }*/
 
     private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
         if (componentName == null) {

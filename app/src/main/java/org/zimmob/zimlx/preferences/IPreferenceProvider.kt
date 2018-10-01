@@ -47,18 +47,6 @@ interface IPreferenceProvider {
     val centerWallpaper: Boolean
     val popupCardTheme: Boolean
 
-    // -------------------
-    // 4) Weather
-    // -------------------
-    val weatherProvider: String
-    val weatherApiKey: String
-    val weatherCity: String
-    val weatherUnit: String
-
-    // --------------
-    // Unsorted...
-    // --------------
-
     // -----------------
     // FEATURES
     // -----------------
@@ -97,7 +85,6 @@ interface IPreferenceProvider {
     val showTopShadow: Boolean
     val hideHotseat: Boolean
     val enablePlanes: Boolean
-    val showWeather: Boolean
     val lockDesktop: Boolean
     val animatedClockIcon: Boolean
     val animatedClockIconAlternativeClockApps: Boolean

@@ -108,45 +108,4 @@
             app:summaryFormat="%.0f" />
     </android.support.v7.preference.PreferenceCategory>
 
-    <android.support.v7.preference.PreferenceCategory
-        android:key="prefCat_weather"
-        android:title="@string/pref_cat_weather">
-
-        <SwitchPreference
-            android:key="pref_weather"
-            android:title="@string/pref_weather_title" />
-
-        <ListPreference
-            android:defaultValue="metric"
-            android:dependency="pref_weather"
-            android:entries="@array/unitsTexts"
-            android:entryValues="@array/unitsValues"
-            android:key="pref_weather_units"
-            android:summary="%s"
-            android:title="@string/pref_weather_units" />
-
-
-        <org.zimmob.zimlx.preferences.CustomLocationPreference
-            android:defaultValue="Lucerne, CH"
-            android:dependency="pref_weather"
-            android:key="pref_weather_city"
-            android:summary="@string/pref_weather_city_summary"
-            android:title="@string/pref_weather_city_title" />
-
-        <org.zimmob.zimlx.preferences.ApiKeyPreference
-            android:defaultValue="17a6438b1d63d5b05f7039e7cb52cde7"
-            android:dependency="pref_weather"
-            android:key="pref_weatherApiKey"
-            android:title="@string/pref_weather_api_key_title" />
-
-        <ListPreference
-            android:defaultValue="1"
-            android:dependency="pref_weather"
-            android:enabled="false"
-            android:entries="@array/weatherProviderTexts"
-            android:entryValues="@array/weatherProviderValues"
-            android:key="pref_weatherProvider"
-            android:summary="%s"
-            android:title="@string/pref_weather_provider" />
-    </android.support.v7.preference.PreferenceCategory>
 </android.support.v7.preference.PreferenceScreen>

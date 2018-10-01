@@ -182,7 +182,7 @@ public abstract class BaseRecyclerView extends RecyclerView
      * VisibleHeight = View height - top padding - bottom padding
      */
     protected int getVisibleHeight() {
-        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom - 120;
+        return getHeight() - mBackgroundPadding.top - mBackgroundPadding.bottom - 100;
     }
 
     /**

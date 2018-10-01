@@ -52,9 +52,6 @@ android {
                 buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
                 buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
                 buildConfigField "boolean", "ENABLE_LAWNFEED", "false"
-                ext.awarenessApiKey = localProps.getProperty('awarenessApiKey') ?: System.getenv("AWARENESS_API_KEY")
-                buildConfigField "boolean", "AWARENESS_API_ENABLED", ext.awarenessApiKey ? "true" : "false"
-                manifestPlaceholders = [awarenessApiKey: ext.awarenessApiKey ?: "null"]
                 applicationId "org.zimmob.zimlx"
                 versionName name
                 versionCode code
@@ -142,7 +139,6 @@ dependencies {
     implementation "com.android.support:design:${version_library_appcompat}"
     implementation "com.android.support:support-dynamic-animation:${version_library_appcompat}"
     implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:v1.1.2'
-    implementation 'com.google.android.gms:play-services-awareness:15.0.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version_plugin_kotlin"
     implementation 'com.pavelsikun:vintage-chroma:1.5'
     implementation project(':launcherclient')
@@ -214,10 +210,7 @@ protobuf {
 
 repositories {
     google()
-    //jcenter()
     mavenCentral()
-    //maven { url "https://jitpack.io" }
-    //maven { url 'https://maven.google.com' }
 }
 
 apply plugin: 'kotlin-android'
