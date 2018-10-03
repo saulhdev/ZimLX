@@ -43,8 +43,6 @@ android {
                 flavorDimensions "versionCode"
                 multiDexEnabled false
 
-                //buildConfigField "boolean", "IS_TEST_BUILD", "false"
-                //buildConfigField "boolean", "IS_GPLAY_BUILD", "false"
                 buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findUsedAndroidLocales()}"
                 buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
                 buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
@@ -111,8 +109,8 @@ android {
                 srcDir 'src/main/java'
             }
             proto {
-                srcDir 'protos/'
-                srcDir 'proto_overrides/'
+                srcDir 'src/protos/'
+                srcDir 'src/proto_overrides/'
             }
         }
         androidTest {
@@ -120,9 +118,9 @@ android {
                 srcDir 'src/test/java'
             }
         }
-        if (enable_plugin_kotlin) {
+        /*if (enable_plugin_kotlin) {
             main.java.srcDirs += 'src/main/kotlin'
-        }
+        }*/
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
