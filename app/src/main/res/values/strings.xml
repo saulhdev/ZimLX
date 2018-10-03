@@ -49,6 +49,11 @@
     <string name="widget_dims_format" translatable="false">%1$d \u00d7 %2$d</string>
     <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
     <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+    <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_dismiss_notification">Dismiss</string>
+
+    <!-- Accessibility confirmation for notification being dismissed. -->
+    <string name="notification_dismissed">Notification dismissed</string>
 
     <!-- All Apps -->
     <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
@@ -377,6 +382,15 @@
     <string name="keep_scroll_state_pref_summary">Saves the scroll position in the drawer</string>
     <string name="home_opens_drawer_pref_title">Home button opens app drawer</string>
     <string name="home_opens_drawer_pref_summary">Pressing the home button while on the desktop will open the app drawer</string>
+
+    <string name="export_db_title">Database</string>
+    <string name="import_db_title">Database</string>
+    <string name="export_prefs_title">Settings</string>
+    <string name="import_prefs_title">Settings</string>
+    <string name="backup_import_title">Restore</string>
+    <string name="backup_export_title">Backup</string>
+    <string name="hide_app_selected">Hide Selected</string>
+
     <string name="show_hidden_pref_title">Show hidden apps</string>
     <string name="show_hidden_pref_on">Hidden apps will be shown to change visibility settings</string>
     <string name="show_hidden_pref_off">Hidden apps won\'t be visible</string>
