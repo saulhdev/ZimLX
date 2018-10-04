@@ -6,6 +6,7 @@
     <!-- Miscellaneous -->
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
+    <bool name="allow_rotation">false</bool>
     <!-- DragController -->
     <item name="drag_event_parity" type="id" />
 
@@ -83,8 +84,11 @@
     <item name="action_move_screen_forwards" type="id" />
     <item name="action_resize" type="id" />
     <item name="action_deep_shortcuts" type="id" />
+    <item name="action_dismiss_notification" type="id" />
 
     <!-- View tag key used to store SpringAnimation data. -->
     <item name="spring_animation_tag" type="id" />
 
+    <!-- Tag id used for view scrim -->
+    <item name="view_scrim" type="id" />
 </resources>

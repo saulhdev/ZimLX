@@ -2347,16 +2347,6 @@ public class Launcher extends Activity
         }
     }
 
-    private void startMarketIntentForPackage(View v, String packageName) {
-        ItemInfo item = (ItemInfo) v.getTag();
-        Intent intent = PackageManagerHelper.getMarketIntent(packageName);
-        boolean success = startActivitySafely(v, intent, item);
-        if (success && v instanceof BubbleTextView) {
-            mWaitingForResume = (BubbleTextView) v;
-            mWaitingForResume.setStayPressed(true);
-        }
-    }
-
     /**
      * Event handler for an app shortcut click.
      *
@@ -2492,7 +2482,6 @@ public class Launcher extends Activity
      * on the home screen.
      */
     public void onClickSettingsButton(View v) {
-        //Utilities.getPrefs(this).showSettings(this, v);
         this.startActivity(new Intent(this, SettingsActivity.class));
     }
 
@@ -2638,12 +2627,6 @@ public class Launcher extends Activity
         return false;
     }
 
-    public SystemUiController getSystemUiController() {
-        if (mSystemUiController == null) {
-            mSystemUiController = new SystemUiController(getWindow());
-        }
-        return mSystemUiController;
-    }
     /**
      * This method draws the FolderIcon to an ImageView and then adds and positions that ImageView
      * in the DragLayer in the exact absolute location of the original FolderIcon.
@@ -2786,6 +2769,7 @@ public class Launcher extends Activity
         folder.sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
         getDragLayer().sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED);
     }
+
     public void closeFolder() {
         closeFolder(true);
     }
@@ -2831,15 +2815,7 @@ public class Launcher extends Activity
     public void closeFloatingContainer(boolean animate) {
         AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
         if (topOpenView != null)
-            topOpenView.close(animate);
-    }
-
-    public View getTopFloatingView() {
-        View topView = getOpenShortcutsContainer();
-        if (topView == null) {
-            topView = getWorkspace().getOpenFolder();
-        }
-        return topView;
+            topOpenView.handleClose(animate);
     }
 
     /**

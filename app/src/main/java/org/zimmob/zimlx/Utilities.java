@@ -100,6 +100,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Collection;
@@ -134,6 +135,14 @@ public final class Utilities {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     public static final boolean ATLEAST_OREO_M1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
+    public static final int SINGLE_FRAME_MS = 16;
+    /**
+     * Indicates if the device has a debug build. Should only be used to store additional info or
+     * add extra logging and not for changing the app behavior.
+     */
+    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug")
+            || Build.TYPE.toLowerCase().equals("eng");
+
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "org.zimmob.zimlx.WALLPAPER_OFFSET";
     private static final String TAG = "Launcher.Utilities";
@@ -145,6 +154,11 @@ public final class Utilities {
             Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
     private static final int[] sLoc0 = new int[2];
     private static final int[] sLoc1 = new int[2];
+    private static final float[] sPoint = new float[2];
+    private static final Matrix sMatrix = new Matrix();
+    private static final Matrix sInverseMatrix = new Matrix();
+
+
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -446,6 +460,28 @@ public final class Utilities {
         coord[0] = Math.round(pt[0]);
         coord[1] = Math.round(pt[1]);
         return scale;
+    }
+
+    /**
+     * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, int[], boolean)}.
+     */
+    public static void mapCoordInSelfToDescendant(View descendant, View root, int[] coord) {
+        sMatrix.reset();
+        View v = descendant;
+        while (v != root) {
+            sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
+            sMatrix.postConcat(v.getMatrix());
+            sMatrix.postTranslate(v.getLeft(), v.getTop());
+            v = (View) v.getParent();
+        }
+        sMatrix.postTranslate(-v.getScrollX(), -v.getScrollY());
+        sMatrix.invert(sInverseMatrix);
+
+        sPoint[0] = coord[0];
+        sPoint[1] = coord[1];
+        sInverseMatrix.mapPoints(sPoint);
+        coord[0] = Math.round(sPoint[0]);
+        coord[1] = Math.round(sPoint[1]);
     }
 
     /**
@@ -953,11 +989,6 @@ public final class Utilities {
         return context.getPackageManager().getApplicationIcon(context.getApplicationInfo());
     }
 
-    /*public static boolean isAwarenessApiEnabled(Context context) {
-        IPreferenceProvider prefs = getPrefs(context);
-        return PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS.equals(prefs.getWeatherProvider());
-    }*/
-
     private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
         if (componentName == null) {
             return false;
@@ -1262,6 +1293,25 @@ public final class Utilities {
 
     public static void killLauncher() {
         System.exit(0);
+    }
+
+    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
+        String className = context.getString(resId);
+        if (!TextUtils.isEmpty(className)) {
+            try {
+                Class<?> cls = Class.forName(className);
+                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+                Log.e(TAG, "Bad overriden class", e);
+            }
+        }
+
+        try {
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

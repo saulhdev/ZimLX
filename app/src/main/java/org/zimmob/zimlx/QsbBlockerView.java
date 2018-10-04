@@ -108,20 +108,7 @@ public class QsbBlockerView extends FrameLayout implements Workspace.OnStateChan
         if (view == null || switching) {
             if (Utilities.getPrefs(getContext()).getEnablePlanes()) {
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.plane_widget, this, false);
-                ///} else if (!switchToDate && switching) {
-                /*weatherShowing = true;
-                mView = LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
-
-                TextView temperature = mView.findViewById(R.id.weather_widget_temperature);
-                ImageView iconView = mView.findViewById(R.id.weather_widget_icon);
-                weatherHelper = startListener || weatherHelper == null ? new WeatherHelper(temperature, iconView, getContext()) : weatherHelper;
-                weatherHelper.setListener(this);
-                mView.findViewById(R.id.weather_widget_time).setOnLongClickListener(this);
-
-                temperature.setOnLongClickListener(this);
-                iconView.setOnLongClickListener(this);*/
             } else {
-                //weatherShowing = false;
                 mView = LayoutInflater.from(getContext()).inflate(R.layout.date_widget, this, false);
                 mView.findViewById(R.id.date_text1).setOnLongClickListener(this);
                 mView.findViewById(R.id.date_text2).setOnLongClickListener(this);

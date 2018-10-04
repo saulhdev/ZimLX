@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2016 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,13 +12,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="?attr/popupColorTertiary" />
 
-<org.zimmob.zimlx.popup.PopupContainerWithArrow xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/deep_shortcuts_container"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:background="?attr/popupColorPrimary"
-    android:clipChildren="false"
-    android:clipToPadding="false"
-    android:elevation="@dimen/popup_elevation"
-    android:orientation="vertical" />
+    <item
+        android:height="3dp"
+        android:top="0dp">
+        <shape>
+            <gradient
+                android:angle="270"
+                android:endColor="@android:color/transparent"
+                android:startColor="#33000000"
+                android:type="linear" />
+        </shape>
+    </item>
+</layer-list>

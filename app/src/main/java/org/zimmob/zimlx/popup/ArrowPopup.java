@@ -126,7 +126,6 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
     /**
      * Shows the popup at the desired location, optionally reversing the children.
-     *
      * @param viewsToFlip number of views from the top to to flip in case of reverse order
      */
     protected void reorderAndShow(int viewsToFlip) {

@@ -112,7 +112,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
         dv.animateShift(-mIconShift.x, -mIconShift.y);
         mLauncher.closeFolder(true);
         // TODO: support dragging from within folder without having to close it
-        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
+        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_ALL);
         return false;
     }
 

@@ -64,7 +64,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_WIDGETS_BOTTOM_SHEET);
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_ACTION_POPUP);
     }
 
     protected boolean mIsOpen;
@@ -77,19 +77,19 @@ public abstract class AbstractFloatingView extends LinearLayout {
         super(context, attrs, defStyleAttr);
     }
 
-    protected void announceAccessibilityChanges() {
-        Pair<View, String> targetInfo = getAccessibilityTarget();
-        if (targetInfo == null || !isAccessibilityEnabled(getContext())) {
-            return;
+    public static void closeAllOpenViews(Launcher launcher, boolean animate) {
+        DragLayer dragLayer = launcher.getDragLayer();
+        // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
+        // and will be one of the last views.
+        for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
+            View child = dragLayer.getChildAt(i);
+            if (child instanceof AbstractFloatingView) {
+                AbstractFloatingView abs = (AbstractFloatingView) child;
+                if (abs.isOfType(TYPE_ALL)) {
+                    abs.close(animate);
+                }
+            }
         }
-        sendCustomAccessibilityEvent(
-                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
-
-        if (mIsOpen) {
-            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
-        }
-        //BaseDraggingActivity.fromContext(getContext()).getDragLayer()
-        //        .sendAccessibilityEvent(TYPE_WINDOW_CONTENT_CHANGED);
     }
 
     protected Pair<View, String> getAccessibilityTarget() {
@@ -120,23 +120,22 @@ public abstract class AbstractFloatingView extends LinearLayout {
         }
     }
 
-    public static void closeAllOpenViews(Launcher launcher, boolean animate) {
-        DragLayer dragLayer = launcher.getDragLayer();
-        // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
-        // and will be one of the last views.
-        for (int i = dragLayer.getChildCount() - 1; i >= 0; i--) {
-            View child = dragLayer.getChildAt(i);
-            if (child instanceof AbstractFloatingView) {
-                ((AbstractFloatingView) child).close(animate);
-            }
+    protected void announceAccessibilityChanges() {
+        Pair<View, String> targetInfo = getAccessibilityTarget();
+        if (targetInfo == null || !isAccessibilityEnabled(getContext())) {
+            return;
+        }
+        sendCustomAccessibilityEvent(
+                targetInfo.first, TYPE_WINDOW_STATE_CHANGED, targetInfo.second);
+
+        if (mIsOpen) {
+            sendAccessibilityEvent(TYPE_VIEW_FOCUSED);
         }
     }
 
     public static void closeAllOpenViews(Launcher launcher) {
         closeAllOpenViews(launcher, true);
     }
-
-    public abstract void logActionCommand(int command);
 
     /**
      * We need to handle touch events to prevent them from falling through to the workspace below.
@@ -153,6 +152,15 @@ public abstract class AbstractFloatingView extends LinearLayout {
     }
 
     protected abstract void handleClose(boolean animate);
+
+    /**
+     * @return Whether the back is consumed. If false, Launcher will handle the back as well.
+     */
+    public boolean onBackPressed() {
+        //logActionCommand(Action.Command.BACK);
+        close(true);
+        return true;
+    }
 
     /**
      * If the view is current handling keyboard, return the active target, null otherwise

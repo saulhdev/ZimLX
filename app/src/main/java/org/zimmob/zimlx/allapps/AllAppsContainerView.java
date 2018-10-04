@@ -63,7 +63,6 @@ import org.zimmob.zimlx.util.ComponentKey;
 import org.zimmob.zimlx.util.ComponentKeyMapper;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.PackageUserKey;
-import org.zimmob.zimlx.views.BottomUserEducationView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -114,7 +113,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
     private final AdapterHolder[] mAH;
     private boolean mUsingTabs;
     private AllAppsPagedView mViewPager;
-    private FloatingHeaderView mHeader;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -262,25 +260,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mAppsRecyclerView.reset();
     }
 
-    /**
-     * Resets the state of AllApps.
-     */
-    public void reset(boolean animate) {
-        for (int i = 0; i < mAH.length; i++) {
-            if (mAH[i].recyclerView != null) {
-                mAH[i].recyclerView.scrollToTop();
-            }
-        }
-        if (isHeaderVisible()) {
-            mHeader.reset(animate);
-        }
-        // Reset the search bar and base recycler view after transitioning home
-        //mSearchUiManager.resetSearch();
-    }
-
-    public boolean isHeaderVisible() {
-        return mHeader != null && mHeader.getVisibility() == View.VISIBLE;
-    }
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -590,23 +569,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         }
     }
 
-    public void onTabChanged(int pos) {
-        mHeader.setMainActive(pos == 0);
-        reset(true /* animate */);
-        if (mAH[pos].recyclerView != null) {
-            mAH[pos].recyclerView.bindFastScrollbar();
-
-            findViewById(R.id.tab_personal)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
-            findViewById(R.id.tab_work)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-
-        }
-        if (pos == AdapterHolder.WORK) {
-            BottomUserEducationView.showIfNeeded(mLauncher);
-        }
-    }
-
     /**
      * Handles the touch events to dismiss all apps when clicking outside the bounds of the
      * recycler view.
@@ -767,23 +729,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             verticalFadingEdge = enabled;
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
-        }
-
-        public void onTabChanged(int pos) {
-            mHeader.setMainActive(pos == 0);
-            reset(true /* animate */);
-            if (mAH[pos].recyclerView != null) {
-                mAH[pos].recyclerView.bindFastScrollbar();
-
-                findViewById(R.id.tab_personal)
-                        .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
-                findViewById(R.id.tab_work)
-                        .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-
-            }
-            if (pos == AdapterHolder.WORK) {
-                BottomUserEducationView.showIfNeeded(mLauncher);
-            }
         }
     }
 }

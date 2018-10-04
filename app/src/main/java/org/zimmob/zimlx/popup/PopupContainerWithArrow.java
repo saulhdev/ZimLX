@@ -256,7 +256,9 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
                 R.dimen.popup_arrow_horizontal_offset_start :
                 R.dimen.popup_arrow_horizontal_offset_end);
+
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
+
         mArrow.setPivotX(arrowWidth / 2);
         mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
 
@@ -662,11 +664,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         return mOriginalIcon;
     }
 
-    @Override
-    public void logActionCommand(int command) {
-
-    }
-
     /**
      * Determines when the deferred drag should be started.
      * <p>
@@ -972,6 +969,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
+        mLauncher.getDragLayer().removeView(mArrow);
     }
 
     @Override

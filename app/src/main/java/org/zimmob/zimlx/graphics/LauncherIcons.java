@@ -4,10 +4,12 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
+import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PaintFlagsDrawFilter;
 import android.graphics.Rect;
@@ -20,6 +22,7 @@ import android.os.UserHandle;
 
 import org.zimmob.zimlx.AppInfo;
 import org.zimmob.zimlx.IconCache;
+import org.zimmob.zimlx.InvariantDeviceProfile;
 import org.zimmob.zimlx.LauncherAppState;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
@@ -29,13 +32,79 @@ import org.zimmob.zimlx.shortcuts.DeepShortcutManager;
 import org.zimmob.zimlx.shortcuts.ShortcutInfoCompat;
 import org.zimmob.zimlx.util.IconNormalizer;
 
-public class LauncherIcons {
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
+public class LauncherIcons implements AutoCloseable {
+
+    public static final Object sPoolSync = new Object();
     private static final Canvas sCanvas = new Canvas();
     private static final Rect sOldBounds = new Rect();
-
+    private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
+    private static LauncherIcons sPool;
     static {
         sCanvas.setDrawFilter(new PaintFlagsDrawFilter(4, 2));
     }
+
+    private final Rect mOldBounds = new Rect();
+    private final Context mContext;
+    private final Canvas mCanvas;
+    private final PackageManager mPm;
+    private final int mFillResIconDpi;
+    private final int mIconBitmapSize;
+    private IconNormalizer mNormalizer;
+    private ShadowGenerator mShadowGenerator;
+    private Drawable mWrapperIcon;
+    private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+    // sometimes we store linked lists of these things
+    private LauncherIcons next;
+
+    private LauncherIcons(Context context) {
+        mContext = context.getApplicationContext();
+        mPm = mContext.getPackageManager();
+
+        InvariantDeviceProfile idp = LauncherAppState.getIDP(mContext);
+        mFillResIconDpi = idp.fillResIconDpi;
+        mIconBitmapSize = idp.iconBitmapSize;
+
+        mCanvas = new Canvas();
+        mCanvas.setDrawFilter(new PaintFlagsDrawFilter(DITHER_FLAG, FILTER_BITMAP_FLAG));
+    }
+
+    /**
+     * Return a new Message instance from the global pool. Allows us to
+     * avoid allocating new objects in many cases.
+     */
+    public static LauncherIcons obtain(Context context) {
+        synchronized (sPoolSync) {
+            if (sPool != null) {
+                LauncherIcons m = sPool;
+                sPool = m.next;
+                m.next = null;
+                return m;
+            }
+        }
+        return new LauncherIcons(context);
+    }
+
+    /**
+     * Recycles a LauncherIcons that may be in-use.
+     */
+    public void recycle() {
+        synchronized (sPoolSync) {
+            // Clear any temporary state variables
+            mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+
+            next = sPool;
+            sPool = this;
+        }
+    }
+
+    @Override
+    public void close() {
+        recycle();
+    }
+
 
     public static Bitmap createIconBitmap(ShortcutIconResource shortcutIconResource, Context context) {
         try {
@@ -157,6 +226,14 @@ public class LauncherIcons {
             canvas.setBitmap(null);
         }
         return createBitmap;
+    }
+
+    public Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo) {
+        return createShortcutIcon(shortcutInfo, true /* badged */);
+    }
+
+    public Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfo, boolean badged) {
+        return createShortcutIcon(shortcutInfo, mContext, true);
     }
 
     public static Bitmap createShortcutIcon(ShortcutInfoCompat shortcutInfoCompat, Context context) {

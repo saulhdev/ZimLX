@@ -81,11 +81,6 @@ public class BottomUserEducationView extends AbstractSlideInView implements Inse
     }
 
     @Override
-    public void logActionCommand(int command) {
-        // Since this is on-boarding popup, it is not a user controlled action.
-    }
-
-    @Override
     protected boolean isOfType(int type) {
         return (type & TYPE_ON_BOARD_POPUP) != 0;
     }

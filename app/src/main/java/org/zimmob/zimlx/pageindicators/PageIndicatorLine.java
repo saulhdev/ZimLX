@@ -43,7 +43,7 @@ public class PageIndicatorLine extends PageIndicator {
         @Override
         public void onAnimationEnd(Animator animation) {
             mAnimator = null;
-            animateToPostion(mFinalPosition);
+            animateToPosition(mFinalPosition);
         }
     };
     private int mActivePage;
@@ -89,12 +89,12 @@ public class PageIndicatorLine extends PageIndicator {
 
             if ((absScroll - currentScroll) > scrollThreshold) {
                 // current scroll is before absolute scroll
-                animateToPostion(mActivePage - SHIFT_PER_ANIMATION);
+                animateToPosition(mActivePage - SHIFT_PER_ANIMATION);
             } else if ((currentScroll - absScroll) > scrollThreshold) {
                 // current scroll is ahead of absolute scroll
-                animateToPostion(mActivePage + SHIFT_PER_ANIMATION);
+                animateToPosition(mActivePage + SHIFT_PER_ANIMATION);
             } else {
-                animateToPostion(mActivePage);
+                animateToPosition(mActivePage);
             }
         }
     }
@@ -109,7 +109,7 @@ public class PageIndicatorLine extends PageIndicator {
         CURRENT_POSITION.set(this, mFinalPosition);
     }
 
-    private void animateToPostion(float position) {
+    private void animateToPosition(float position) {
         mFinalPosition = position;
         if (Math.abs(mCurrentPosition - mFinalPosition) < SHIFT_THRESHOLD) {
             mCurrentPosition = mFinalPosition;

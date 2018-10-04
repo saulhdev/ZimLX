@@ -82,7 +82,11 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Indicates the installation progress of the widget provider
      */
-    int installProgress = -1;
+    /**
+     * Indicates the installation progress of the widget provider
+     */
+    public int installProgress = -1;
+
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
     LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {

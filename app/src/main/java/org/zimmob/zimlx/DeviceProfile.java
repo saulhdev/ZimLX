@@ -46,6 +46,8 @@ public class DeviceProfile {
 
     // Device properties in current orientation
     public final boolean isLandscape;
+    public final boolean isMultiWindowMode;
+
     public final int widthPx;
     public final int heightPx;
     public final int availableWidthPx;
@@ -139,13 +141,13 @@ public class DeviceProfile {
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
-                         int width, int height, boolean isLandscape) {
+                         int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
         mContext = context;
         IPreferenceProvider prefs = Utilities.getPrefs(mContext);
 
         this.inv = inv;
         this.isLandscape = isLandscape;
-
+        this.isMultiWindowMode = isMultiWindowMode;
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
 

@@ -81,7 +81,10 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
      * Indicates that the widget restore has started.
      */
     public static final int FLAG_RESTORE_STARTED = 8; //0B1000;
-
+    /**
+     * Web UI supported.
+     */
+    public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
     /**
      * Indicates if it represents a common type mentioned in {@link CommonAppTypeParser}.
      * Upto 15 different types supported.
@@ -141,7 +144,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
      * A message to display when the user tries to start a disabled shortcut.
      * This is currently only used for deep shortcuts.
      */
-    CharSequence disabledMessage;
+    public CharSequence disabledMessage;
 
     int status;
     /**
@@ -465,6 +468,10 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @Override
     public int getType() {
         return itemType;
+    }
+
+    public boolean hasPromiseIconUi() {
+        return isPromise() && !hasStatusFlag(FLAG_SUPPORTS_WEB_UI);
     }
 
     @Override

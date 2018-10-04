@@ -4,7 +4,58 @@
 <img src="Logo/logotype.png" width=50%>
 </h1>
 
-Open Source and free Launcher for Android based on Lawnchair and OpenLauncher.
+Free and Open Source Launcher for Android.
+Our mission is to bring a powerful launcher with smart features to make your device easy to use.
+
+
+## Main Features   
+
+#### * Desktop
+    -> Row and Columns config
+    -> Three indicator Style mode
+    -> Minibar support with custom color configuration (see the screenshots below).
+    
+#### * Dock
+    -> Two rows support 
+    -> Background Size
+
+#### * App Drawer
+    -> Row and Columns configuration
+    -> Vertical Layout
+    -> Hide Apps
+    -> Label Size and color configuration
+    -> Custom Scrollbar
+    -> Most used apps support and configuration (5 or 10)
+    -> Widgets by long click
+
+#### * Appearance
+    -> Theme Color Change
+    -> Theme Black, Dark and Light
+    -> Icon Size
+    -> Icon Pack support
+    -> Icon Shape support
+
+#### * Folder
+    -> Show notification counts in folder
+    
+#### * Notifications
+    -> Icon Badge support in apps and Folder
+    -> Icon badge color configuration.
+
+## Development Features
+* Desktop
+    * Transitions and animations.
+    * Pages management
+    
+* App Drawer
+    * Transitions and animations
+    * Horizontal layout  
+    * Most used sort mode
+    * Adapative icon support
+    
+## Donations
+Want to buy me a coffee? https://paypal.me/saulhenriquez
+
 
 ## Screenshots
 <table>
@@ -32,69 +83,3 @@ Open Source and free Launcher for Android based on Lawnchair and OpenLauncher.
                         </td>
     </tr>
 <table>
-
-## Working Features
-#### * Minibar
-    -> Minibar custom color
-    -> Minibar Edit items
-   
-
-#### * Desktop
-    -> Row and Columns config
-    -> Three indicator Style mode
-    -> Full screen mode
-    -> Background color
-    
-#### * Dock
-    -> Dock Size
-    -> Background Size
-
-#### * App Drawer
-    -> Row and Columns config
-    -> Vertical and Horizontal Layout
-    -> Hide Apps
-    -> Label Size
-    -> Background color
-    -> Scrollbar color
-    -> Label Size
-    -> Label color
-    -> Cardview color
-
-#### * Appearance
-    -> Theme Color Change
-    -> Theme Dark and Light
-    -> Icon Size
-    -> Icon Pack
-
-#### * Folder
-    -> Folder Shape
-    -> Folder Background
-    
-#### * Gestures
-    -> Gestures Config
-
-#### * Notifications
-
-## Future Features
-* Desktop
-    * Transitions
-* App Drawer
-    * Transitions
-    * Badge support
-    * Notifications    
-    * Four Sort Modes: AZ, ZA, Last Installed, Most Used (In vertical layout only AZ ZA are enabled) 
-* Folder
-    * Folder Preview
-    * Folder Transition
-* Appearance
-    * Font Type
-    * Font Size
-* Multi language support and more cool stuff.
-
-## Donations
-Want to support me? https://paypal.me/saulhenriquez
-
-## Collaborate
-If you are interested in collaborate, please contact me at saul_henriquez@hotmail.com
-
-For more information about OpenLauncher please visit https://github.com/OpenLauncherTeam
