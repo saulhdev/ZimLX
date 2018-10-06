@@ -63,6 +63,7 @@
             <include
                 android:id="@+id/page_indicator"
                 layout="@layout/page_indicator" />
+                android:theme="@style/HomeScreenElementTheme" />
 
             <include
                 android:id="@+id/drop_target_bar"

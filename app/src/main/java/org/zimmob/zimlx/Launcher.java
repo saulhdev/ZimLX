@@ -183,13 +183,9 @@ public class Launcher extends Activity
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN;
     private static final int SOFT_INPUT_MODE_ALL_APPS =
             WindowManager.LayoutParams.SOFT_INPUT_ADJUST_RESIZE;
-    // Type: int
     private static final String RUNTIME_STATE_CURRENT_SCREEN = "launcher.current_screen";
-    // Type: int
     private static final String RUNTIME_STATE = "launcher.state";
-    // Type: PendingRequestArgs
     private static final String RUNTIME_STATE_PENDING_REQUEST_ARGS = "launcher.request_args";
-    // Type: ActivityResultInfo
     private static final String RUNTIME_STATE_PENDING_ACTIVITY_RESULT = "launcher.activity_result";
     /**
      * The different states that Launcher can be in.

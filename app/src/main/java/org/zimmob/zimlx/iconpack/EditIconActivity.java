@@ -82,7 +82,7 @@ public class EditIconActivity extends AppCompatActivity implements CustomIconAda
 
     private void openPlayStore() {
         Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(Uri.parse("https://play.google.com/store/search?q=iconpack&c=apps"));
+        intent.setData(Uri.parse("https://play.google.com/store/search?q=icon pack&c=apps"));
         startActivity(intent);
     }
     @Override
