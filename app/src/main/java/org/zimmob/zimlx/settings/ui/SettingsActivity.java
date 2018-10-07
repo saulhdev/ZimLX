@@ -265,29 +265,9 @@ public class SettingsActivity extends AppCompatActivity implements
             addPreferencesFromResource(getContent());
         }
 
-        /*private void updateEnabledState(String weatherProvider) {
-            boolean awarenessApiEnabled = weatherProvider.equals(PreferenceFlags.PREF_WEATHER_PROVIDER_AWARENESS);
-            Preference prefWeatherCity = findPreference(PreferenceFlags.KEY_WEATHER_CITY);
-            Preference prefWeatherApiKey = findPreference(PreferenceFlags.KEY_WEATHER_API_KEY);
-            prefWeatherCity.setEnabled(!awarenessApiEnabled);
-            prefWeatherApiKey.setEnabled(!awarenessApiEnabled);
-        }*/
-
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             if (preference.getKey() != null) {
-                switch (preference.getKey()) {
-                    /*case PreferenceFlags.KEY_WEATHER_PROVIDER:
-                        updateEnabledState((String) newValue);
-                        break;
-                    case FeatureFlags.KEY_PREF_WEATHER:
-                        Context context = getActivity();
-                        if (Utilities.getPrefs(context).getShowWeather() && Utilities.isAwarenessApiEnabled(context)) {
-                            checkPermission(Manifest.permission.ACCESS_FINE_LOCATION);
-                        }
-                        break;*/
-                }
-
                 return true;
             }
             return false;

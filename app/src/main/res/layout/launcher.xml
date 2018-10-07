@@ -24,8 +24,7 @@
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        launcher:layout_ignoreInsets="true">
+        android:layout_height="match_parent">
 
         <org.zimmob.zimlx.dragndrop.DragLayer
             android:id="@+id/drag_layer"
@@ -63,7 +62,6 @@
             <include
                 android:id="@+id/page_indicator"
                 layout="@layout/page_indicator" />
-                android:theme="@style/HomeScreenElementTheme" />
 
             <include
                 android:id="@+id/drop_target_bar"
@@ -78,6 +76,7 @@
                 layout="@layout/widgets_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                launcher:layout_ignoreInsets="true"
                 android:visibility="invisible" />
 
             <include

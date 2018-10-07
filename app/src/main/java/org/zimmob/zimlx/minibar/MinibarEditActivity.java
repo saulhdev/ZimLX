@@ -2,6 +2,7 @@ package org.zimmob.zimlx.minibar;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -71,7 +72,7 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
         _recyclerView.setAdapter(_adapter);
 
         appSettings = new AppSettings(this);
-        mLauncher = new Launcher();
+        mLauncher =  Launcher.getLauncher(appSettings.getContext());
 
         final ArrayList<String> minibarArrangement = appSettings.getMinibarArrangement();
         for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
@@ -84,7 +85,7 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
         _enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.setText(isChecked ? R.string.on : R.string.off);
             appSettings.setMinibarEnable(isChecked);
-            //mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+            mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);
     }

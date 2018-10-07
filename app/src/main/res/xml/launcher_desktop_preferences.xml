@@ -18,7 +18,6 @@
             app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
             app:cpv_showAlphaSlider="true" />
 
-
         <SwitchPreference
             android:defaultValue="false"
             android:disableDependentsState="true"

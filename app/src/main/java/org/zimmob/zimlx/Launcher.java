@@ -208,39 +208,26 @@ public class Launcher extends Activity
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
     public static Context mContext;
     public static boolean showNotificationCount;
-    protected SystemUiController mSystemUiController;
+    protected AppSettings appSettings;
     public ViewGroupFocusHelper mFocusHandler;
-    @Thunk
-    State mState = State.WORKSPACE;
-    @Thunk
-    LauncherStateTransitionAnimation mStateTransitionAnimation;
-    @Thunk
-    Workspace mWorkspace;
-    @Thunk
-    DragLayer mDragLayer;
-    @Thunk
-    Hotseat mHotseat;
+    @Thunk State mState = State.WORKSPACE;
+    @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
+    @Thunk Workspace mWorkspace;
+    @Thunk DragLayer mDragLayer;
+    @Thunk Hotseat mHotseat;
     // Main container view for the all apps screen.
-    @Thunk
-    AllAppsContainerView mAppsView;
+    @Thunk AllAppsContainerView mAppsView;
     AllAppsTransitionController mAllAppsController;
     // Main container view and the model for the widget tray screen.
-    @Thunk
-    WidgetsContainerView mWidgetsView;
-    @Thunk
-    WidgetsModel mWidgetsModel;
-    @Thunk
-    boolean mWorkspaceLoading = true;
-    @Thunk
-    boolean mUserPresent = true;
-    @Thunk
-    HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance = new HashMap<>();
+    @Thunk WidgetsContainerView mWidgetsView;
+    @Thunk WidgetsModel mWidgetsModel;
+    @Thunk boolean mWorkspaceLoading = true;
+    @Thunk boolean mUserPresent = true;
+    @Thunk HashMap<View, AppWidgetProviderInfo> mWidgetsToAdvance = new HashMap<>();
     // Holds the page that we need to animate to, and the icon views that we need to animate up
     // when we scroll to that page on resume.
-    @Thunk
-    ImageView mFolderIconImageView;
-    @Thunk
-    Runnable mBuildLayersRunnable = new Runnable() {
+    @Thunk ImageView mFolderIconImageView;
+    @Thunk Runnable mBuildLayersRunnable = new Runnable() {
         @Override
         public void run() {
             if (mWorkspace != null) {
@@ -255,8 +242,7 @@ public class Launcher extends Activity
      * A runnable that we can dequeue and re-enqueue when all applications are bound (to prevent
      * multiple calls to bind the same list.)
      */
-    @Thunk
-    ArrayList<AppInfo> mTmpAppsList;
+    @Thunk ArrayList<AppInfo> mTmpAppsList;
     private boolean mIsSafeModeEnabled;
     private DragController mDragController;
     private View mQsbContainer;
@@ -406,68 +392,12 @@ public class Launcher extends Activity
         }
     };
 
-    /**
-     * Given the integer (ordinal) value of a State enum instance, convert it to a variable of type
-     * State
-     */
-    private static State intToState(int stateOrdinal) {
-        State state = State.WORKSPACE;
-        final State[] stateValues = State.values();
-        for (State stateValue : stateValues) {
-            if (stateValue.ordinal() == stateOrdinal) {
-                state = stateValue;
-                break;
-            }
-        }
-        return state;
-    }
-
-    @NonNull
-    public static Launcher getLauncher(Context context) {
-        if (context instanceof Launcher) {
-            return (Launcher) context;
-        }
-
-        return LauncherAppState.getInstance().getLauncher();
-    }
-
-    public void initMinibar() {
-        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
-        final ArrayList<String> labels = new ArrayList<>();
-        final ArrayList<Integer> icons = new ArrayList<>();
-        AppSettings appSettings = new AppSettings(this);
-        Minibar.setContext(this);
-        for (String act : appSettings.getMinibarArrangement()) {
-            if (act.length() > 1) {
-                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
-                if (item != null) {
-                    items.add(item);
-                    labels.add(item.label);
-                    icons.add(item.icon);
-                }
-            }
-        }
-        SwipeListView minibar = findViewById(R.id.minibar);
-        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
-        minibar.setOnItemClickListener((parent, view, i, id) -> {
-            Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
-            if (action == Minibar.Action.DeviceSettings || action == Minibar.Action.LauncherSettings || action == Minibar.Action.EditMinibar) {
-                _consumeNextResume = true;
-            }
-            Minibar.RunAction(action, this);
-            if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
-                ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
-            }
-        });
-        // frame layout spans the entire side while the minibar container has gaps at the top and bottom
-        ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
-
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FeatureFlags.loadThemePreference(this);
         Utilities.setupPirateLocale(this);
+        mContext = this;
+        appSettings = new AppSettings(mContext);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
@@ -551,6 +481,63 @@ public class Launcher extends Activity
         decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+    }
+
+    /**
+     * Given the integer (ordinal) value of a State enum instance, convert it to a variable of type
+     * State
+     */
+    private static State intToState(int stateOrdinal) {
+        State state = State.WORKSPACE;
+        final State[] stateValues = State.values();
+        for (State stateValue : stateValues) {
+            if (stateValue.ordinal() == stateOrdinal) {
+                state = stateValue;
+                break;
+            }
+        }
+        return state;
+    }
+
+    @NonNull
+    public static Launcher getLauncher(Context context) {
+        if (context instanceof Launcher) {
+            return (Launcher) context;
+        }
+
+        return LauncherAppState.getInstance().getLauncher();
+    }
+
+    public void initMinibar() {
+        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
+        final ArrayList<String> labels = new ArrayList<>();
+        final ArrayList<Integer> icons = new ArrayList<>();
+        Minibar.setContext(mContext);
+        for (String act : appSettings.getMinibarArrangement()) {
+            if (act.length() > 1) {
+                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
+                if (item != null) {
+                    items.add(item);
+                    labels.add(item.label);
+                    icons.add(item.icon);
+                }
+            }
+        }
+        SwipeListView minibar = findViewById(R.id.minibar);
+        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
+        minibar.setOnItemClickListener((parent, view, i, id) -> {
+            Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
+            if (action == Minibar.Action.DeviceSettings || action == Minibar.Action.LauncherSettings || action == Minibar.Action.EditMinibar) {
+                _consumeNextResume = true;
+            }
+            Minibar.RunAction(action, this);
+            if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
+                ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+            }
+        });
+        // frame layout spans the entire side while the minibar container has gaps at the top and bottom
+        ((FrameLayout) minibar.getParent()).setBackgroundColor(Utilities.getPrefs(this).getMinibarColor());
+
     }
 
     private void setScreenOrientation() {
@@ -3647,13 +3634,6 @@ public class Launcher extends Activity
         NotificationListener.setNotificationsChangedListener(mPopupDataProvider);
         InstallShortcutReceiver.disableAndFlushInstallQueue(this);
     }
-
-/*    public int getSearchBarHeight() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.getSearchBarHeight();
-        }
-        return LauncherCallbacks.SEARCH_BAR_HEIGHT_NORMAL;
-    }*/
 
     private boolean canRunNewAppsAnimation() {
         long diff = System.currentTimeMillis() - mDragController.getLastGestureUpTime();
