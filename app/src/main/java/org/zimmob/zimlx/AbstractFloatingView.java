@@ -41,10 +41,10 @@ import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.sendCustomAcces
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
 public abstract class AbstractFloatingView extends LinearLayout {
-    public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_FOLDER = 1 << 0;
-    public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
+    public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
+    public static final int TYPE_WIDGET_RESIZE_FRAME = 1 << 3;
     public static final int TYPE_WIDGETS_FULL_SHEET = 1 << 4;
     public static final int TYPE_ON_BOARD_POPUP = 1 << 5;
     public static final int TYPE_DISCOVERY_BOUNCE = 1 << 6;
@@ -64,7 +64,7 @@ public abstract class AbstractFloatingView extends LinearLayout {
     public static final int TYPE_ACCESSIBLE = TYPE_ALL & ~TYPE_DISCOVERY_BOUNCE;
 
     public static AbstractFloatingView getTopOpenView(Launcher launcher) {
-        return getOpenView(launcher, TYPE_FOLDER | TYPE_ACTION_POPUP);
+        return getOpenView(launcher, TYPE_FOLDER | TYPE_ACTION_POPUP | TYPE_WIDGETS_BOTTOM_SHEET);
     }
 
     protected boolean mIsOpen;

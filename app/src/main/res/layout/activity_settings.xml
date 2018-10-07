@@ -3,14 +3,13 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true"
+    app:layout_ignoreInsets="true"
     android:orientation="vertical">
 
     <include layout="@layout/toolbar" />
 
     <FrameLayout
         android:id="@+id/content"
-        app:layout_ignoreInsets="true"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />

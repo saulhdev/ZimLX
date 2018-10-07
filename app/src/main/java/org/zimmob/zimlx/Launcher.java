@@ -2154,7 +2154,7 @@ public class Launcher extends Activity
         }
 
         AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
-        if (topOpenView != null) {
+        if (topOpenView != null && topOpenView.onBackPressed()) {
             if (topOpenView.getActiveTextView() != null) {
                 topOpenView.getActiveTextView().dispatchBackKey();
             } else {
