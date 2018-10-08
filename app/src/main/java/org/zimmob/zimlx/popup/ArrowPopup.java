@@ -54,21 +54,28 @@ import java.util.Collections;
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
  */
+/**
+ * A container for shortcuts to deep links and notifications associated with an app.
+ */
 public abstract class ArrowPopup extends AbstractFloatingView {
 
+    private final Rect mTempRect = new Rect();
+
     protected final LayoutInflater mInflater;
+    private final float mOutlineRadius;
     protected final Launcher mLauncher;
     protected final boolean mIsRtl;
-    private final Rect mTempRect = new Rect();
-    private final float mOutlineRadius;
+
     private final int mArrayOffset;
     private final View mArrow;
-    private final Rect mStartRect = new Rect();
-    private final Rect mEndRect = new Rect();
+
     protected boolean mIsLeftAligned;
     protected boolean mIsAboveIcon;
+    private final Rect mStartRect = new Rect();
+
     protected Animator mOpenCloseAnimator;
     protected boolean mDeferContainerRemoval;
+    private final Rect mEndRect = new Rect();
     private int mGravity;
 
     public ArrowPopup(Context context, AttributeSet attrs, int defStyleAttr) {
@@ -201,13 +208,13 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
-     * <p>
+     *
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
      * - Below and right-aligned
-     * <p>
+     *
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */

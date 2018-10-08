@@ -36,7 +36,6 @@ import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
 import android.support.annotation.IntDef;
-import android.support.v4.util.Pair;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -70,19 +69,16 @@ import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.dragndrop.DragController;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragOptions;
-import org.zimmob.zimlx.dragndrop.DragView;
 import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.graphics.TriangleShape;
-import org.zimmob.zimlx.notification.NotificationInfo;
 import org.zimmob.zimlx.notification.NotificationItemView;
 import org.zimmob.zimlx.notification.NotificationKeyData;
 import org.zimmob.zimlx.popup.theme.IPopupThemer;
 import org.zimmob.zimlx.shortcuts.DeepShortcutManager;
 import org.zimmob.zimlx.shortcuts.DeepShortcutView;
-import org.zimmob.zimlx.shortcuts.ShortcutDragPreviewProvider;
 import org.zimmob.zimlx.shortcuts.ShortcutsItemView;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.util.PackageUserKey;
-import org.zimmob.zimlx.util.Themes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -90,42 +86,54 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import static org.zimmob.zimlx.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+/**
+ * A container for shortcuts to deep links and notifications associated with an app.
+ */
 
 /**
  * A container for shortcuts to deep links within apps.
  */
 @TargetApi(Build.VERSION_CODES.N)
-public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
-        DragController.DragListener, View.OnLongClickListener, View.OnTouchListener {
+public class PopupContainerWithArrow extends AbstractFloatingView implements DragSource,
+        DragController.DragListener {
     public static final int ROUNDED_TOP_CORNERS = 1 << 0;
     public static final int ROUNDED_BOTTOM_CORNERS = 1 << 1;
-    protected final Launcher mLauncher;
-    private final int mStartDragThreshold;
-    private final boolean mIsRtl;
+
     private final Rect mTempRect = new Rect();
     private final Rect mStartRect = new Rect();
+
+    protected final Launcher mLauncher;
+    private final int mStartDragThreshold;
     private final Rect mEndRect = new Rect();
+    private final boolean mIsRtl;
+
     public MainItemView mMainItemView;
-
     public ShortcutsItemView mShortcutsItemView;
-    private final PointF mInterceptTouchDown = new PointF();
-    private final Point mIconLastTouchPos = new Point();
-
-    private BubbleTextView mOriginalIcon;
     private NotificationItemView mNotificationItemView;
-    private int mNumNotifications;
+    protected BubbleTextView mOriginalIcon;
     protected boolean mIsAboveIcon;
     protected Animator mOpenCloseAnimator;
-    private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private boolean mIsLeftAligned;
     private boolean mIsCenterAligned;
+    private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private View mArrow;
+    private PointF mInterceptTouchDown = new PointF();
     private boolean mDeferContainerRemoval;
     private AnimatorSet mReduceHeightAnimatorSet;
+
     private IPopupThemer mTheme;
-    private int mGravity;
+
+    /**
+     * Returns a DeepShortcutsContainer which is already open or null
+     */
+    public static PopupContainerWithArrow getOpen(Launcher launcher) {
+        return getOpenView(launcher, TYPE_ACTION_POPUP);
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+
+    }
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
@@ -135,13 +143,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 R.dimen.deep_shortcuts_start_drag_threshold);
         mAccessibilityDelegate = new ShortcutMenuAccessibilityDelegate(mLauncher);
         mIsRtl = Utilities.isRtl(getResources());
-
-        // Initialize arrow view
-        final Resources resources = getResources();
-        final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
-        final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
-        mArrow = new View(context);
-        mArrow.setLayoutParams(new DragLayer.LayoutParams(arrowWidth, arrowHeight));
     }
 
     public PopupContainerWithArrow(Context context, AttributeSet attrs) {
@@ -152,9 +153,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         this(context, null, 0);
     }
 
+    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
+        return mAccessibilityDelegate;
+    }
+
     /**
      * Shows the notifications and deep shortcuts associated with {@param icon}.
-     *
      * @return the container if shown or null.
      */
     public static PopupContainerWithArrow showForIcon(BubbleTextView icon) {
@@ -188,33 +192,19 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         return container;
     }
 
-    /**
-     * Returns a DeepShortcutsContainer which is already open or null
-     */
-    public static PopupContainerWithArrow getOpen(Launcher launcher) {
-        return getOpenView(launcher, TYPE_ACTION_POPUP);
-    }
-
-    public LauncherAccessibilityDelegate getAccessibilityDelegate() {
-        return mAccessibilityDelegate;
-    }
-
     public void setTheme(IPopupThemer theme) {
         mTheme = theme;
     }
 
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
                                 final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
-
         final Resources resources = getResources();
         final int arrowWidth = resources.getDimensionPixelSize(R.dimen.popup_arrow_width);
         final int arrowHeight = resources.getDimensionPixelSize(R.dimen.popup_arrow_height);
-        final int arrowVerticalOffset = resources.getDimensionPixelSize( R.dimen.popup_arrow_vertical_offset);
-        final int arrowCenterOffset = resources.getDimensionPixelSize(isAlignedWithStart()
-                ? R.dimen.popup_arrow_horizontal_center_start
-                : R.dimen.popup_arrow_horizontal_center_end);
+        final int arrowVerticalOffset = resources.getDimensionPixelSize(
+                R.dimen.popup_arrow_vertical_offset);
+
         mOriginalIcon = originalIcon;
-        setVisibility(View.INVISIBLE);
 
         // Add dummy views first, and populate with real info when ready.
         PopupPopulator.Item[] itemsToPopulate = PopupPopulator
@@ -265,15 +255,12 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
 
         // Add the arrow.
-        DragLayer.LayoutParams arrowLp = (DragLayer.LayoutParams) mArrow.getLayoutParams();
         final int arrowHorizontalOffset = resources.getDimensionPixelSize(isAlignedWithStart() ?
                 R.dimen.popup_arrow_horizontal_offset_start :
                 R.dimen.popup_arrow_horizontal_offset_end);
-
         mArrow = addArrowView(arrowHorizontalOffset, arrowVerticalOffset, arrowWidth, arrowHeight);
-
-        mArrow.setPivotX(arrowLp.width / 2);
-        mArrow.setPivotY(mIsAboveIcon ? 0 : arrowLp.height);
+        mArrow.setPivotX(arrowWidth / 2);
+        mArrow.setPivotY(mIsAboveIcon ? 0 : arrowHeight);
 
         animateOpen();
 
@@ -286,22 +273,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
                 systemShortcuts, systemShortcutViews));
-    }
-
-    @Override
-    protected Pair<View, String> getAccessibilityTarget() {
-        return Pair.create(this, "");
-    }
-
-    @Override
-    protected void getTargetObjectLocation(Rect outPos) {
-        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(mOriginalIcon, outPos);
-        outPos.top += mOriginalIcon.getPaddingTop();
-        outPos.left += mOriginalIcon.getPaddingLeft();
-        outPos.right -= mOriginalIcon.getPaddingRight();
-        outPos.bottom = outPos.top + (mOriginalIcon.getIcon() != null
-                ? mOriginalIcon.getIcon().getBounds().height()
-                : mOriginalIcon.getHeight());
     }
 
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate,
@@ -399,9 +370,18 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         return (PopupItemView) getChildAt(index);
     }
 
+    protected PopupItemView getItemViewInMainAt(int index) {
+        return (PopupItemView) mMainItemView.itemContainer.getChildAt(index);
+    }
+
     protected int getItemCount() {
         // All children except the arrow are items.
         return getChildCount() - 1;
+    }
+
+    protected int getItemCountInMain() {
+        // All children except the arrow are items.
+        return mMainItemView.itemContainer.getChildCount();
     }
 
     private Point computeAnimStartPoint(int y) {
@@ -460,7 +440,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
             @Override
             public void onAnimationEnd(Animator animation) {
                 mOpenCloseAnimator = null;
-                sendCustomAccessibilityEvent(
+                Utilities.sendCustomAccessibilityEvent(
                         PopupContainerWithArrow.this,
                         AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED,
                         getContext().getString(R.string.action_deep_shortcut));
@@ -478,13 +458,13 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     /**
      * Orients this container above or below the given icon, aligning with the left or right.
-     * <p>
+     *
      * These are the preferred orientations, in order (RTL prefers right-aligned over left):
      * - Above and left-aligned
      * - Above and right-aligned
      * - Below and left-aligned
      * - Below and right-aligned
-     * <p>
+     *
      * So we always align left if there is enough horizontal space
      * and align above if there is enough vertical space.
      */
@@ -602,15 +582,14 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         mIsCenterAligned = z;
     }
 
-    protected boolean isAlignedWithStart() {
+    private boolean isAlignedWithStart() {
         return mIsLeftAligned && !mIsRtl || !mIsLeftAligned && mIsRtl;
     }
 
     /**
      * Adds an arrow view pointing at the original icon.
-     *
      * @param horizontalOffset the horizontal offset of the arrow, so that it
-     *                         points at the center of the original icon
+     *                              points at the center of the original icon
      */
     private View addArrowView(int horizontalOffset, int verticalOffset, int width, int height) {
         LayoutParams layoutParams = new LayoutParams(width, height);
@@ -660,7 +639,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     /**
      * Determines when the deferred drag should be started.
-     * <p>
+     *
      * Current behavior:
      * - Start the drag if the touch passes a certain distance from the original touch down.
      */
@@ -950,7 +929,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     /**
      * Closes the folder without animation.
      */
-    @Override
     protected void closeComplete() {
         if (mOpenCloseAnimator != null) {
             mOpenCloseAnimator.cancel();
@@ -964,44 +942,6 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
-        mLauncher.getDragLayer().removeView(mArrow);
-    }
-
-    @Override
-    public boolean onTouch(View v, MotionEvent ev) {
-        // Touched a shortcut, update where it was touched so we can drag from there on long click.
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
-                break;
-        }
-        return false;
-    }
-
-    @Override
-    public boolean onLongClick(View v) {
-        //if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
-        // Return early if not the correct view
-        if (!(v.getParent() instanceof DeepShortcutView)) return false;
-
-        // Long clicked on a shortcut.
-        DeepShortcutView sv = (DeepShortcutView) v.getParent();
-        sv.setWillDrawIcon(false);
-
-        // Move the icon to align with the center-top of the touch point
-        Point iconShift = new Point();
-        iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
-        iconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
-
-        DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(),
-                this, sv.getFinalInfo(),
-                new ShortcutDragPreviewProvider(sv.getIconView(), iconShift), new DragOptions());
-        dv.animateShift(-iconShift.x, -iconShift.y);
-
-        // TODO: support dragging from within folder without having to close it
-        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
-        return false;
     }
 
     @Override

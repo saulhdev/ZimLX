@@ -158,9 +158,8 @@ public class NotificationItemView extends PopupItemView {
         }
 
         NotificationInfo mainNotification = notificationInfos.get(0);
-        mMainView.applyNotificationInfo(mainNotification, mIconView);
+        mMainView.applyNotificationInfo(mainNotification, mIconView, true);
 
-        mDivider.setVisibility(notificationInfos.size() > 1 ? VISIBLE : GONE);
         for (int i = 1; i < notificationInfos.size(); i++) {
             mFooter.addNotificationInfo(notificationInfos.get(i));
         }

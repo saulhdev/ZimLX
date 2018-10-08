@@ -41,6 +41,7 @@ import org.zimmob.zimlx.dragndrop.DragController;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.dragndrop.DragView;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.util.Thunk;
 
 /**
@@ -294,4 +295,6 @@ public abstract class ButtonDropTarget extends android.support.v7.widget.AppComp
     public int getTextColor() {
         return getTextColors().getDefaultColor();
     }
+
+    public abstract Target getDropTargetForLogging();
 }

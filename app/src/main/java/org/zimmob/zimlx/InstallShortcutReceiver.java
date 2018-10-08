@@ -53,6 +53,15 @@ import java.util.List;
 import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
+
+    public static final int FLAG_ACTIVITY_PAUSED = 1;
+    public static final int FLAG_LOADER_RUNNING = 2;
+    public static final int FLAG_DRAG_AND_DROP = 4;
+    public static final int FLAG_BULK_ADD = 4;
+    private static final int MSG_ADD_TO_QUEUE = 1;
+    private static final int MSG_FLUSH_QUEUE = 2;
+
+
     public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
     public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
     private static final String TAG = "InstallShortcutReceiver";
@@ -71,6 +80,9 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     // Determines whether to defer installing shortcuts immediately until
     // processAllPendingInstalls() is called.
     private static boolean mUseInstallQueue = false;
+    // Determines whether to defer installing shortcuts immediately until
+    // processAllPendingInstalls() is called.
+    private static int sInstallQueueDisabledFlags = 0;
 
     private static void addToInstallQueue(
             IPreferenceProvider sharedPrefs, PendingInstallShortcutInfo info) {
@@ -179,6 +191,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     static void enableInstallQueue() {
         mUseInstallQueue = true;
+    }
+
+    public static void enableInstallQueue(int flag) {
+        sInstallQueueDisabledFlags |= flag;
     }
 
     static void disableAndFlushInstallQueue(Context context) {

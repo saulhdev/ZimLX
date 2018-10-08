@@ -30,6 +30,8 @@ import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.util.Thunk;
 
+import static org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
+
 public class DeleteDropTarget extends ButtonDropTarget {
 
     public DeleteDropTarget(Context context, AttributeSet attrs) {
@@ -98,6 +100,11 @@ public class DeleteDropTarget extends ButtonDropTarget {
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
             removeWorkspaceOrFolderItem(mLauncher, item, null);
         }
+    }
+
+    @Override
+    public Target getDropTargetForLogging() {
+        return null;
     }
 
     @Override

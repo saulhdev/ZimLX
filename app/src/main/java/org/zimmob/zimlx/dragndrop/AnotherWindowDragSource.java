@@ -21,7 +21,9 @@ import android.view.View;
 
 import org.zimmob.zimlx.DragSource;
 import org.zimmob.zimlx.DropTarget.DragObject;
+import org.zimmob.zimlx.ItemInfo;
 import org.zimmob.zimlx.Launcher;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto;
 
 /**
  * DragSource used when the drag started at another window.
@@ -64,6 +66,11 @@ public class AnotherWindowDragSource implements DragSource {
         if (!success) {
             Launcher.getLauncher(mContext).exitSpringLoadedDragModeDelayed(false, 0, null);
         }
+
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
 
     }
 }

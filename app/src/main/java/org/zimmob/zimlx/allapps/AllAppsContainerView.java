@@ -59,6 +59,7 @@ import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.folder.Folder;
 import org.zimmob.zimlx.graphics.TintedDrawableSpan;
 import org.zimmob.zimlx.keyboard.FocusedItemDecorator;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.util.ComponentKey;
 import org.zimmob.zimlx.util.ComponentKeyMapper;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
@@ -401,8 +402,8 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
                 height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
                 height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_margin_bottom);
             } else if (!grid.isVerticalBarLayout()) {
-                //height += grid.inv.searchHeightAddition;
-                height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
+                height += grid.inv.searchHeightAddition;
+                //height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
             }
 
             mlp.topMargin = height;
@@ -683,6 +684,10 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         return mSpringAnimationHandler;
     }
 
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+        // This is filled in {@link AllAppsRecyclerView}
+    }
 
     public class AdapterHolder {
         public static final int MAIN = 0;
@@ -730,5 +735,6 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
         }
+
     }
 }

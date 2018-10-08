@@ -16,12 +16,14 @@ import org.zimmob.zimlx.BaseContainerView;
 import org.zimmob.zimlx.DeleteDropTarget;
 import org.zimmob.zimlx.DragSource;
 import org.zimmob.zimlx.DropTarget;
+import org.zimmob.zimlx.ItemInfo;
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
 import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.folder.Folder;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto;
 import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageUserKey;
 
@@ -164,5 +166,10 @@ public class WidgetsContainerView extends BaseContainerView implements OnLongCli
 
     public List getWidgetsForPackageUser(PackageUserKey packageUserKey) {
         return this.mAdapter.copyWidgetsForPackageUser(packageUserKey);
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target, LauncherLogProto.Target targetParent) {
+
     }
 }

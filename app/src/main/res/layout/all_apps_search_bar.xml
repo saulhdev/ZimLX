@@ -13,7 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="bottom"
-        android:background="@color/transparent"
+        android:background="@drawable/bg_search_bar_round"
         android:focusableInTouchMode="true"
         android:gravity="left|center"
         android:hint="@string/all_apps_search_bar_hint"

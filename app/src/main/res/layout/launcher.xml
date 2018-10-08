@@ -18,15 +18,12 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/launcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    launcher:layout_ignoreInsets="true"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        launcher:layout_ignoreInsets="true">
+        android:layout_height="match_parent">
 
         <org.zimmob.zimlx.dragndrop.DragLayer
             android:id="@+id/drag_layer"
@@ -51,8 +48,7 @@
                 android:id="@+id/hotseat"
                 layout="@layout/hotseat"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                launcher:layout_ignoreInsets="true" />
+                android:layout_height="wrap_content" />
 
             <include
                 android:id="@+id/overview_panel"
@@ -78,7 +74,6 @@
                 layout="@layout/widgets_view"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                launcher:layout_ignoreInsets="true"
                 android:visibility="invisible" />
 
             <include
@@ -86,9 +81,7 @@
                 layout="@layout/all_apps"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"
-                launcher:layout_ignoreInsets="true" />
-
+                android:visibility="invisible" />
 
         </org.zimmob.zimlx.dragndrop.DragLayer>
 

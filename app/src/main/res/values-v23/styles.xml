@@ -2,10 +2,14 @@
 <resources>
 
     <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="android:windowTranslucentStatus">true</item>
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">@color/transparent</item>
+
         <item name="colorPrimaryDark">@color/color_primary_dark_settings_v23</item>
         <item name="colorPrimary">@color/color_primary_settings</item>
         <item name="android:colorAccent">@color/accent_material_light</item>
-        <item name="android:windowLightStatusBar">true</item>
         <item name="blurTintColor">#45ffffff</item>
         <item name="android:navigationBarColor">@color/color_navigationbar_settings</item>
         <item name="android:colorEdgeEffect">@color/accent_material_light</item>

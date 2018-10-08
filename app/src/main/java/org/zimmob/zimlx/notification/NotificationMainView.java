@@ -45,6 +45,9 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
     private int mBackgroundColor;
     private TextView mTitleView;
     private TextView mTextView;
+    // This is used only to track the notification view, so that it can be properly logged.
+    public static final ItemInfo NOTIFICATION_ITEM_INFO = new ItemInfo();
+    private View mIconView;
 
     public NotificationMainView(Context context) {
         this(context, null, 0);
@@ -73,8 +76,9 @@ public class NotificationMainView extends FrameLayout implements SwipeHelper.Cal
         mTextView = mTextAndBackground.findViewById(R.id.text);
     }
 
-    public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {
-        applyNotificationInfo(mainNotification, iconView, false);
+    public void setContentTranslation(float translation) {
+        mTextAndBackground.setTranslationX(translation);
+        mIconView.setTranslationX(translation);
     }
 
     /**

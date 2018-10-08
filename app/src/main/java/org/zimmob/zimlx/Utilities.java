@@ -838,6 +838,10 @@ public final class Utilities {
         return PreferenceProvider.INSTANCE.getPreferences(context);
     }
 
+    public static SharedPreferences getDevicePrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
     @NonNull
     public static SharedPreferences getSharedPrefs(Context context) {
         return PreferenceImpl.Companion.getSharedPrefs(context);

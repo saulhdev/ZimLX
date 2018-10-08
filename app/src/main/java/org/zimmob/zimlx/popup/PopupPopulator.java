@@ -55,7 +55,7 @@ public class PopupPopulator {
     public static final int MAX_ITEMS = 4;
     @VisibleForTesting
     static final int NUM_DYNAMIC = 2;
-    private static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
+    public static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
     /**
      * Sorts shortcuts in rank order, with manifest shortcuts coming before dynamic shortcuts.
      */
@@ -193,7 +193,7 @@ public class PopupPopulator {
                     ShortcutInfo si = new ShortcutInfo(shortcut, launcher);
                     // Use unbadged icon for the menu.
                     si.iconBitmap = LauncherIcons.createShortcutIcon(
-                            shortcut, launcher, false /* badged */);
+                            shortcut, launcher, false);
                     si.rank = i;
                     uiHandler.post(new UpdateShortcutChild(container, shortcutViews.get(i),
                             si, shortcut));
@@ -213,7 +213,6 @@ public class PopupPopulator {
             }
         };
     }
-
     public static void initializeSystemShortcut(Context context, View view, SystemShortcut info) {
         if (view instanceof DeepShortcutView) {
             // Expanded system shortcut, with both icon and text shown on white background.

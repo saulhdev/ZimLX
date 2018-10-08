@@ -91,4 +91,8 @@
 
     <!-- Tag id used for view scrim -->
     <item name="view_scrim" type="id" />
+
+    <string name="instant_app_resolver_class" translatable="false"></string>
+    <!-- Name of a user event dispatcher class. -->
+    <string name="user_event_dispatcher_class" translatable="false"></string>
 </resources>

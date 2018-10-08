@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import org.zimmob.zimlx.anim.FlingAnimation;
 import org.zimmob.zimlx.dragndrop.DragLayer;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto;
 
 public class UninstallDropTarget extends ButtonDropTarget {
 
@@ -140,6 +141,11 @@ public class UninstallDropTarget extends ButtonDropTarget {
         DropTargetResultCallback callback = d.dragSource instanceof DropTargetResultCallback
                 ? (DropTargetResultCallback) d.dragSource : null;
         startUninstallActivity(mLauncher, d.dragInfo, callback);
+    }
+
+    @Override
+    public LauncherLogProto.Target getDropTargetForLogging() {
+        return null;
     }
 
     @Override

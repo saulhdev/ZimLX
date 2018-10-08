@@ -75,6 +75,8 @@ import org.zimmob.zimlx.graphics.DragPreviewProvider;
 import org.zimmob.zimlx.pixelify.BaseQsbView;
 import org.zimmob.zimlx.popup.PopupContainerWithArrow;
 import org.zimmob.zimlx.shortcuts.ShortcutDragPreviewProvider;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.ContainerType;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.util.ItemInfoMatcher;
 import org.zimmob.zimlx.util.LongArrayMap;
 import org.zimmob.zimlx.util.MultiStateAlphaController;
@@ -3783,6 +3785,20 @@ public class Workspace extends PagedView
         }
         return getContext().getString(R.string.workspace_scroll_format,
                 page + 1, nScreens);
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        target.pageIndex = getCurrentPage();
+        targetParent.containerType = ContainerType.WORKSPACE;
+        if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
+            target.rank = info.rank;
+            targetParent.containerType = ContainerType.HOTSEAT;
+        } else if (info.container >= 0) {
+            targetParent.containerType = ContainerType.FOLDER;
+        }
     }
 
     public void setOnStateChangeListener(OnStateChangeListener listener) {

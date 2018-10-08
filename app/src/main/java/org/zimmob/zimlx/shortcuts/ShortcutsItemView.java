@@ -56,7 +56,7 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
     private Launcher mLauncher;
     private LinearLayout mShortcutsLayout;
     private LinearLayout mSystemShortcutIcons;
-
+    private int mHiddenShortcutsHeight;
     public ShortcutsItemView(Context context) {
         this(context, null, 0);
     }
@@ -160,6 +160,41 @@ public class ShortcutsItemView extends PopupItemView implements View.OnLongClick
             Collections.reverse(mSystemShortcutViews);
         }
         return mSystemShortcutViews;
+    }
+
+    /**
+     * Hides shortcuts until only {@param maxShortcuts} are showing. Also sets
+     * {@link #mHiddenShortcutsHeight} to be the amount of extra space that shortcuts will
+     * require when {@link #showAllShortcuts(boolean)} is called.
+     */
+    public void hideShortcuts(boolean hideFromTop, int maxShortcuts) {
+        // When shortcuts are shown, they get more space allocated to them.
+        final int oldHeight = mShortcutsLayout.getChildAt(0).getLayoutParams().height;
+        final int newHeight = getResources().getDimensionPixelSize(R.dimen.bg_popup_item_height);
+        mHiddenShortcutsHeight = (newHeight - oldHeight) * mShortcutsLayout.getChildCount();
+
+        int numToHide = mShortcutsLayout.getChildCount() - maxShortcuts;
+        if (numToHide <= 0) {
+            return;
+        }
+        final int numShortcuts = mShortcutsLayout.getChildCount();
+        final int dir = hideFromTop ? 1 : -1;
+        for (int i = hideFromTop ? 0 : numShortcuts - 1; 0 <= i && i < numShortcuts; i += dir) {
+            View child = mShortcutsLayout.getChildAt(i);
+            if (child instanceof DeepShortcutView) {
+                mHiddenShortcutsHeight += child.getLayoutParams().height;
+                child.setVisibility(GONE);
+                int prev = i + dir;
+                if (!hideFromTop && 0 <= prev && prev < numShortcuts) {
+                    // When hiding views from the bottom, make sure to hide the last divider.
+                    mShortcutsLayout.getChildAt(prev).findViewById(R.id.divider).setVisibility(GONE);
+                }
+                numToHide--;
+                if (numToHide == 0) {
+                    break;
+                }
+            }
+        }
     }
 
     /**

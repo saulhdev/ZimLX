@@ -77,6 +77,8 @@ import org.zimmob.zimlx.dragndrop.DragController.DragListener;
 import org.zimmob.zimlx.dragndrop.DragLayer;
 import org.zimmob.zimlx.dragndrop.DragOptions;
 import org.zimmob.zimlx.pageindicators.PageIndicatorDots;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.ContainerType;
+import org.zimmob.zimlx.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.util.Thunk;
 
 import java.util.ArrayList;
@@ -1355,6 +1357,14 @@ public class Folder extends LinearLayout implements DragSource, View.OnClickList
                 dismissEditingName();
             }
         }
+    }
+
+    @Override
+    public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
+        target.gridX = info.cellX;
+        target.gridY = info.cellY;
+        target.pageIndex = mContent.getCurrentPage();
+        targetParent.containerType = ContainerType.FOLDER;
     }
 
     @Override

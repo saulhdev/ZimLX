@@ -23,7 +23,6 @@ import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.ActivityOptions;
 import android.app.AlertDialog;
 import android.app.Dialog;
@@ -66,13 +65,13 @@ import android.text.method.TextKeyListener;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
@@ -93,6 +92,7 @@ import org.zimmob.zimlx.allapps.AllAppsIconRowView;
 import org.zimmob.zimlx.allapps.AllAppsTransitionController;
 import org.zimmob.zimlx.allapps.PredictiveAppsProvider;
 import org.zimmob.zimlx.allapps.UnicodeStrippedAppSearchController;
+import org.zimmob.zimlx.badge.BadgeInfo;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.compat.AppWidgetManagerCompat;
 import org.zimmob.zimlx.compat.LauncherAppsCompat;
@@ -134,7 +134,6 @@ import org.zimmob.zimlx.util.MultiHashMap;
 import org.zimmob.zimlx.util.PackageManagerHelper;
 import org.zimmob.zimlx.util.PackageUserKey;
 import org.zimmob.zimlx.util.PendingRequestArgs;
-import org.zimmob.zimlx.util.SystemUiController;
 import org.zimmob.zimlx.util.Thunk;
 import org.zimmob.zimlx.util.ViewOnDrawExecutor;
 import org.zimmob.zimlx.widget.PendingAddWidgetInfo;
@@ -152,7 +151,7 @@ import java.util.Set;
 /**
  * Default launcher application.
  */
-public class Launcher extends Activity
+public class Launcher extends BaseDraggingActivity
         implements OnClickListener, OnLongClickListener,
         LauncherModel.Callbacks, View.OnTouchListener, LauncherProviderChangeListener,
         AccessibilityManager.AccessibilityStateChangeListener, DialogInterface.OnDismissListener {
@@ -214,6 +213,7 @@ public class Launcher extends Activity
     @Thunk LauncherStateTransitionAnimation mStateTransitionAnimation;
     @Thunk Workspace mWorkspace;
     @Thunk DragLayer mDragLayer;
+    private View mLauncherView;
     @Thunk Hotseat mHotseat;
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
@@ -441,6 +441,10 @@ public class Launcher extends Activity
         setContentView(R.layout.launcher);
 
         mPlanesEnabled = Utilities.getPrefs(this).getEnablePlanes();
+        mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
+
+        getRootView().dispatchInsets();
+
         setupViews();
         mDeviceProfile.layout(this, false /* notifyListeners */);
         mExtractedColors = new ExtractedColors();
@@ -476,11 +480,6 @@ public class Launcher extends Activity
 
         initMinibar();
         Settings.init(this);
-        Window window = getWindow();
-        View decorView = window.getDecorView();
-        decorView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
     }
 
     /**
@@ -638,7 +637,11 @@ public class Launcher extends Activity
 
     public void onInsetsChanged(Rect insets) {
         mDeviceProfile.updateInsets(insets);
-        mDeviceProfile.layout(this, true /* notifyListeners */);
+        mDeviceProfile.layout(this, true);
+    }
+
+    public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
+        return mPopupDataProvider.getBadgeInfoForItem(info);
     }
 
     @Override
@@ -830,7 +833,7 @@ public class Launcher extends Activity
     }
 
     @Override
-    protected void onActivityResult(
+    public void onActivityResult(
             final int requestCode, final int resultCode, final Intent data) {
         handleActivityResult(requestCode, resultCode, data);
     }
@@ -1042,7 +1045,8 @@ public class Launcher extends Activity
     @Override
     protected void onPause() {
         // Ensure that items added to Launcher are queued until Launcher returns
-        InstallShortcutReceiver.enableInstallQueue();
+        //InstallShortcutReceiver.enableInstallQueue();
+        InstallShortcutReceiver.enableInstallQueue(InstallShortcutReceiver.FLAG_ACTIVITY_PAUSED);
 
         super.onPause();
         mPaused = true;
@@ -1565,6 +1569,11 @@ public class Launcher extends Activity
     public void showOutOfSpaceMessage(boolean isHotseatLayout) {
         int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
         Toast.makeText(this, getString(strId), Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public LauncherRootView getRootView() {
+        return (LauncherRootView) mLauncherView;
     }
 
     public DragLayer getDragLayer() {

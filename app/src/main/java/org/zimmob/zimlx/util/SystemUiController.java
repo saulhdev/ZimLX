@@ -21,6 +21,8 @@ import android.view.Window;
 
 import org.zimmob.zimlx.Utilities;
 
+import java.util.Arrays;
+
 
 /**
  * Utility class to manage various window flags to control system UI.
@@ -32,6 +34,7 @@ public class SystemUiController {
     public static final int UI_STATE_ALL_APPS = 1;
     public static final int UI_STATE_WIDGET_BOTTOM_SHEET = 2;
     public static final int UI_STATE_ROOT_VIEW = 3;
+    public static final int UI_STATE_OVERVIEW = 4;
 
     public static final int FLAG_LIGHT_NAV = 1 << 0;
     public static final int FLAG_DARK_NAV = 1 << 1;
@@ -39,7 +42,7 @@ public class SystemUiController {
     public static final int FLAG_DARK_STATUS = 1 << 3;
 
     private final Window mWindow;
-    private final int[] mStates = new int[4];
+    private final int[] mStates = new int[5];
 
     public SystemUiController(Window window) {
         mWindow = window;
@@ -77,5 +80,10 @@ public class SystemUiController {
         if (newFlags != oldFlags) {
             mWindow.getDecorView().setSystemUiVisibility(newFlags);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "mStates=" + Arrays.toString(mStates);
     }
 }

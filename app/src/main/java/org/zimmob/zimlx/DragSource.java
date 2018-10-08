@@ -19,11 +19,12 @@ package org.zimmob.zimlx;
 import android.view.View;
 
 import org.zimmob.zimlx.DropTarget.DragObject;
+import org.zimmob.zimlx.logging.UserEventDispatcher.LogContainerProvider;
 
 /**
  * Interface defining an object that can originate a drag.
  */
-public interface DragSource {
+public interface DragSource extends LogContainerProvider {
 
     /**
      * @return whether items dragged from this source supports

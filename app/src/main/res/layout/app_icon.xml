@@ -13,6 +13,6 @@
      limitations under the License.
 -->
 
-<org.zimmob.zimlx.BubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.zimmob.zimlx.views.DoubleShadowBubbleTextView xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/Icon"
     android:focusable="true" />
