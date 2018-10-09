@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <!--
 /*
 * Copyright (C) 2008 The Android Open Source Project
@@ -110,7 +109,7 @@
         <item name="folderBgColorBlur">@color/folder_bg_color_blur_black</item>
     </style>
 
-    <style name="SettingsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+    <style name="SettingsTheme" parent="@style/Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -119,27 +118,15 @@
         <item name="android:textColorPrimary">@color/Light.TextColor</item>
         <item name="android:textColor">@color/Light.TextColor</item>
         <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
-
     </style>
 
     <style name="SettingsHome" parent="SettingsTheme">
+        <item name="android:listDivider">@color/colorAccent</item>
         <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-    </style>
-
-    <style name="NormalActivity.Light" parent="Theme.AppCompat.Light.NoActionBar">
-        <!--Important for the Preference compat-->
-        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
-
-        <item name="android:windowBackground">@color/Light.Background</item>
-        <item name="android:textColorPrimary">@color/Light.TextColor</item>
-        <item name="android:textColor">@color/Light.TextColor</item>
-        <item name="android:textColorSecondary">@color/Light.TextColorSecondary</item>
     </style>
 
     <style name="SettingsTheme.Dark" parent="Theme.AppCompat.NoActionBar">
+        <item name="preferenceTheme">@style/PreferenceThemeOverlay.v14.Material</item>
         <item name="colorPrimaryDark">@color/color_primary_dark_settings_dark</item>
         <item name="colorPrimary">@color/color_primary_settings_dark</item>
         <item name="colorAccent">@color/accent_material_light</item>

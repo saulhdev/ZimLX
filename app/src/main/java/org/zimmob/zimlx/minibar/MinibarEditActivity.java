@@ -1,5 +1,6 @@
 package org.zimmob.zimlx.minibar;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
@@ -10,7 +11,6 @@ import android.support.v7.widget.SwitchCompat;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
-import android.view.Window;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -49,8 +49,6 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FeatureFlags.applyDarkTheme(this);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         Utilities.setupPirateLocale(this);
 
         setContentView(R.layout.activity_minibar_edit);
@@ -61,6 +59,7 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.minibar);
+        getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
 
         _adapter = new FastItemAdapter<>();
 
@@ -88,6 +87,14 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
             mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);
+    }
+
+    private int dark(int color) {
+        int a = Color.alpha(color);
+        int r = Color.red(color);
+        int g = Color.green(color);
+        int b = Color.blue(color);
+        return Color.argb(a, Math.max((int) (r * 0.8), 0), Math.max((int) (g * 0.8), 0), Math.max((int) (b * 0.8), 0));
     }
 
     @Override
