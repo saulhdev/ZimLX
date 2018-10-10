@@ -2,24 +2,20 @@ package org.zimmob.zimlx.backup
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.Toolbar
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import org.zimmob.zimlx.R
 import org.zimmob.zimlx.Utilities
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.config.FeatureFlags
+import org.zimmob.zimlx.views.ThemeActivity
 
 @SuppressLint("Registered")
-open class BackupBaseActivity : AppCompatActivity() {
+open class BackupBaseActivity : ThemeActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        FeatureFlags.applyDarkTheme(this, 0)
-        requestWindowFeature(Window.FEATURE_NO_TITLE)
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE)
         super.onCreate(savedInstanceState)
         super.setContentView(R.layout.activity_settings)
 

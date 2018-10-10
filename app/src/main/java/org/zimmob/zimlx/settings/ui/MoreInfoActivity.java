@@ -2,13 +2,11 @@ package org.zimmob.zimlx.settings.ui;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.Window;
 
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
-import org.zimmob.zimlx.config.FeatureFlags;
+import org.zimmob.zimlx.views.ThemeActivity;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -18,16 +16,13 @@ import butterknife.ButterKnife;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class MoreInfoActivity extends AppCompatActivity {
+public class MoreInfoActivity extends ThemeActivity {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        supportRequestWindowFeature(Window.FEATURE_NO_TITLE);
         Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
 
@@ -47,5 +42,4 @@ public class MoreInfoActivity extends AppCompatActivity {
             t.replace(R.id.more__fragment__placeholder_fragment, moreInfoFragment, MoreInfoFragment.TAG).commit();
         }
     }
-
 }

@@ -132,9 +132,6 @@ public final class FeatureFlags extends BaseFlags {
         loadThemePreference(activity);
         if (FeatureFlags.useDarkTheme)
             activity.setTheme(SETTINGS_HOME_THEMES[myCurrentTheme]);
-        else {
-            activity.setTheme(SETTINGS_HOME_THEMES[0]);
-        }
     }
 
     public static LayoutInflater getLayoutInflator(LayoutInflater layoutInflater) {

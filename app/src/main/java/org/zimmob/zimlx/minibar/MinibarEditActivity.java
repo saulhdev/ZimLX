@@ -1,10 +1,8 @@
 package org.zimmob.zimlx.minibar;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SwitchCompat;
@@ -23,8 +21,8 @@ import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 import org.zimmob.zimlx.Launcher;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
-import org.zimmob.zimlx.config.FeatureFlags;
 import org.zimmob.zimlx.settings.AppSettings;
+import org.zimmob.zimlx.views.ThemeActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -33,7 +31,7 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MinibarEditActivity extends AppCompatActivity implements ItemTouchCallback {
+public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallback {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
 
@@ -48,7 +46,6 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        FeatureFlags.applyDarkTheme(this);
         Utilities.setupPirateLocale(this);
 
         setContentView(R.layout.activity_minibar_edit);
@@ -59,7 +56,6 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.minibar);
-        getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
 
         _adapter = new FastItemAdapter<>();
 
@@ -87,14 +83,6 @@ public class MinibarEditActivity extends AppCompatActivity implements ItemTouchC
             mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);
-    }
-
-    private int dark(int color) {
-        int a = Color.alpha(color);
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
-        return Color.argb(a, Math.max((int) (r * 0.8), 0), Math.max((int) (g * 0.8), 0), Math.max((int) (b * 0.8), 0));
     }
 
     @Override

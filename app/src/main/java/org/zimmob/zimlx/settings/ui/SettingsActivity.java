@@ -21,14 +21,12 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
 import android.support.v7.preference.PreferenceCategory;
@@ -60,6 +58,7 @@ import org.zimmob.zimlx.overlay.ILauncherClient;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.IPreferenceProvider;
 import org.zimmob.zimlx.preferences.PreferenceFlags;
+import org.zimmob.zimlx.views.ThemeActivity;
 
 import java.util.Objects;
 
@@ -72,7 +71,7 @@ import static org.zimmob.zimlx.Utilities.ATLEAST_OREO;
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
-public class SettingsActivity extends AppCompatActivity implements
+public class SettingsActivity extends ThemeActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, SharedPreferences.OnSharedPreferenceChangeListener {
     public static final String KEY_PREDICTIVE_APPS = "pref_predictive_apps";
     private static IPreferenceProvider sharedPrefs;
@@ -82,7 +81,6 @@ public class SettingsActivity extends AppCompatActivity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FeatureFlags.applyDarkTheme(this);
         Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
 
@@ -94,7 +92,6 @@ public class SettingsActivity extends AppCompatActivity implements
         toolbar.setBackgroundColor(Utilities.getPrefs(this).getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
-        getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
         if (FeatureFlags.getCurrentTheme() != 2)
             BlurWallpaperProvider.Companion.applyBlurBackground(this);
 
@@ -111,13 +108,6 @@ public class SettingsActivity extends AppCompatActivity implements
         updateUpButton();
     }
 
-    private int dark(int color) {
-        int a = Color.alpha(color);
-        int r = Color.red(color);
-        int g = Color.green(color);
-        int b = Color.blue(color);
-        return Color.argb(a, Math.max((int) (r * 0.8), 0), Math.max((int) (g * 0.8), 0), Math.max((int) (b * 0.8), 0));
-    }
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference pref) {
         Fragment fragment;
