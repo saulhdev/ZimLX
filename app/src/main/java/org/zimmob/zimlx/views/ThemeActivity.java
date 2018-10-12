@@ -14,7 +14,6 @@ public class ThemeActivity extends AppCompatActivity {
         FeatureFlags.applyDarkTheme(this);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
-            getWindow().setNavigationBarColor(Utilities.getPrefs(this).getPrimaryColor());
         }
     }
 

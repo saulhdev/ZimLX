@@ -32,7 +32,6 @@ import android.widget.TextView;
 import org.zimmob.zimlx.LauncherAnimUtils;
 import org.zimmob.zimlx.R;
 import org.zimmob.zimlx.Utilities;
-import org.zimmob.zimlx.anim.PillHeightRevealOutlineProvider;
 import org.zimmob.zimlx.anim.PropertyResetListener;
 import org.zimmob.zimlx.anim.RoundedRectRevealOutlineProvider;
 import org.zimmob.zimlx.graphics.IconPalette;
@@ -96,12 +95,6 @@ public class NotificationItemView extends PopupItemView {
         }
         return getHeight() - (mFooter.getHeight() - getResources().getDimensionPixelSize(R.dimen.notification_empty_footer_height));
 
-    }
-
-    public Animator animateHeightRemoval(int heightToRemove) {
-        final int newHeight = getHeight() - heightToRemove;
-        return new PillHeightRevealOutlineProvider(mPillRect,
-                0, newHeight).createRevealAnimator(this, true /* isReversed */);
     }
 
     public Animator animateHeightRemoval(int heightToRemove, boolean z) {

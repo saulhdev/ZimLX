@@ -4,6 +4,7 @@
     android:layout_height="@dimen/all_apps_search_bar_height"
     android:layout_gravity="center|top"
     android:paddingTop="@dimen/all_apps_search_bar_margin_top"
+    android:paddingBottom="@dimen/all_apps_search_bar_round_margin_bottom"
     android:id="@+id/search_container"
     android:orientation="horizontal"
     android:saveEnabled="false">
@@ -12,9 +13,10 @@
         android:id="@+id/search_box_input"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginTop="2dp"
         android:layout_gravity="bottom"
-        android:background="@drawable/bg_search_bar_round"
         android:focusableInTouchMode="true"
+        android:background="@drawable/bg_search_bar"
         android:gravity="left|center"
         android:hint="@string/all_apps_search_bar_hint"
         android:imeOptions="actionSearch|flagNoExtractUi"
@@ -24,5 +26,4 @@
         android:textColor="?searchBarTextColor"
         android:textColorHint="@drawable/all_apps_search_hint"
         android:textSize="16sp" />
-
 </FrameLayout>

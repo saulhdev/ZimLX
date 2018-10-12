@@ -401,10 +401,16 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
             if (mUseRoundSearchBar) {
                 height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
                 height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_margin_bottom);
-            } else if (!grid.isVerticalBarLayout()) {
+            } else {
+                height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_height);
+                height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_margin_bottom);
+
+
+            }
+            /*else if (!grid.isVerticalBarLayout()) {
                 height += grid.inv.searchHeightAddition;
                 //height += getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_round_height);
-            }
+            }*/
 
             mlp.topMargin = height;
             mlp.bottomMargin = 50;
