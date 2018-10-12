@@ -16,9 +16,6 @@ object PreferenceFlags {
     const val KEY_OVERRIDE_ICON_SHAPE = "pref_override_icon_shape"
     const val KEY_BACKPORT_ADAPTIVE_ICONS = "pref_backportAdaptiveIcons"
     const val KEY_ICON_PACK_PACKAGE = "pref_iconPackPackage"
-    const val KEY_WEATHER_UNITS = "pref_weather_units"
-    const val KEY_WEATHER_CITY = "pref_weather_city"
-    const val KEY_WEATHER_API_KEY = "pref_weatherApiKey"
 
     // Floats
     const val KEY_ICON_SCALE_SB = "pref_iconScaleSB"
