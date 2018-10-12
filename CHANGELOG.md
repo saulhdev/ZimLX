@@ -1,3 +1,7 @@
+### v0.4.4
+* Fix setting theme
+* Add enable-disable minibar
+
 ### v0.4.3
 * add icon badge support
 * add predicted apps support

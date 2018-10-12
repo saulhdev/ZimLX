@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.views;
 
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
@@ -11,7 +12,10 @@ public class ThemeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         FeatureFlags.applyDarkTheme(this);
-        getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().setStatusBarColor(dark(Utilities.getPrefs(this).getPrimaryColor()));
+            getWindow().setNavigationBarColor(Utilities.getPrefs(this).getPrimaryColor());
+        }
     }
 
     private int dark(int color) {
