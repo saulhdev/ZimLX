@@ -89,7 +89,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
         if (springAnimationHandler == null) return;
         setOverScrollMode(OVER_SCROLL_NEVER);
         mSpringAnimationHandler = springAnimationHandler;
-        //addOnScrollListener(new SpringMotionOnScrollListener());
+        addOnScrollListener(new SpringMotionOnScrollListener());
     }
 
     @SuppressLint("ClickableViewAccessibility")
@@ -220,12 +220,9 @@ public class AllAppsRecyclerView extends BaseRecyclerView {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        /*if (mSpringAnimationHandler == null) return super.onInterceptTouchEvent(ev);
-        mPullDetector.onTouchEvent(ev);
-        return super.onInterceptTouchEvent(ev) || mOverScrollHelper.isInOverScroll();*/
+        if (mSpringAnimationHandler == null) return super.onInterceptTouchEvent(ev);
         mPullDetector.onTouchEvent(ev);
         return super.onInterceptTouchEvent(ev) || mOverScrollHelper.isInOverScroll();
-
     }
 
     /**

@@ -71,7 +71,8 @@
     <dimen name="all_apps_vertical_row_height">80dp</dimen>
     <dimen name="all_apps_vertical_row_padding">16.0dip</dimen>
     <dimen name="all_apps_vertical_icon_size">48.0dip</dimen>
-
+    <dimen name="all_apps_background_canvas_width">700dp</dimen>
+    <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <!-- Fast scroll -->
     <dimen name="fastscroll_track_min_width">6dp</dimen>
     <dimen name="fastscroll_track_max_width">8dp</dimen>

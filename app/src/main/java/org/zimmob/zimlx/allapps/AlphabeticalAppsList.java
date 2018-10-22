@@ -75,7 +75,6 @@ public class AlphabeticalAppsList {
     private final List<AppDiscoveryAppInfo> mDiscoveredApps = new ArrayList<>();
     private AppDiscoveryUpdateState mAppDiscoveryUpdateState;
 
-
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
     private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
@@ -372,103 +371,6 @@ public class AlphabeticalAppsList {
     private void updateAdapterItems() {
         refillAdapterItems();
         refreshRecyclerView();
-        /*SectionInfo lastSectionInfo = null;
-        String lastSectionName = null;
-        FastScrollSectionInfo lastFastScrollerSectionInfo = null;
-        int position = 0;
-
-        // Prepare to update the list of sections, filtered apps, etc.
-        mFilteredApps.clear();
-        mFastScrollerSections.clear();
-        mAdapterItems.clear();
-        mSections.clear();
-
-        // Add the search divider
-        mAdapterItems.add(AdapterItem.asSearchDivder(position++));
-
-        // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
-        // ordered set of sections
-        for (AppInfo info : getFiltersAppInfos()) {
-            String sectionName = getAndUpdateCachedSectionName(info.title);
-
-            // Create a new section if the section names do not match
-            if (lastSectionInfo == null || !sectionName.equals(lastSectionName)) {
-                lastSectionName = sectionName;
-                lastSectionInfo = new SectionInfo();
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
-                mSections.add(lastSectionInfo);
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-
-                // Create a new section item to break the flow of items in the list
-                if (!hasFilter()) {
-                    AdapterItem sectionItem = AdapterItem.asSectionBreak(position++, lastSectionInfo);
-                    mAdapterItems.add(sectionItem);
-                }
-            }
-
-            // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
-            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-            }
-            mAdapterItems.add(appItem);
-            mFilteredApps.add(info);
-        }
-
-        // Append the search market item if we are currently searching
-        if (hasFilter()) {
-            if (hasNoFilteredResults()) {
-                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
-            } else {
-                mAdapterItems.add(AdapterItem.asMarketDivider(position++));
-            }
-            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
-        }
-
-        // Merge multiple sections together as requested by the merge strategy for this device
-        mergeSections();
-
-        if (mNumAppsPerRow != 0) {
-            // Update the number of rows in the adapter after we do all the merging (otherwise, we
-            // would have to shift the values again)
-            int numAppsInSection = 0;
-            int numAppsInRow = 0;
-            int rowIndex = -1;
-            for (AdapterItem item : mAdapterItems) {
-                item.rowIndex = 0;
-                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
-                    numAppsInSection = 0;
-                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                    if (numAppsInSection % mNumAppsPerRow == 0) {
-                        numAppsInRow = 0;
-                        rowIndex++;
-                    }
-                    item.rowIndex = rowIndex;
-                    item.rowAppIndex = numAppsInRow;
-                    numAppsInSection++;
-                    numAppsInRow++;
-                }
-            }
-            mNumAppRowsInAdapter = rowIndex + 1;
-
-            // Pre-calculate all the fast scroller fractions
-            float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-            float cumulativeTouchFraction = 0f;
-            for (FastScrollSectionInfo info : mFastScrollerSections) {
-                AdapterItem item = info.fastScrollToItem;
-                if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                    info.touchFraction = 0f;
-                    continue;
-                }
-                info.touchFraction = cumulativeTouchFraction;
-                cumulativeTouchFraction += perSectionTouchFraction;
-            }
-        }
-
-        // Refresh the recycler view
-        if (mAdapter != null) {
-            mAdapter.notifyDataSetChanged();
-        }*/
     }
 
     private void refreshRecyclerView() {
@@ -833,5 +735,14 @@ public class AlphabeticalAppsList {
             item.position = pos;
             return item;
         }
+
+        /*
+        public static AdapterItem asWorkTabFooter(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
+            item.position = pos;
+            return item;
+        }
+        */
     }
 }

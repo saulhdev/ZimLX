@@ -16,6 +16,7 @@
 
 package org.zimmob.zimlx.compat;
 
+import android.content.ComponentName;
 import android.content.Context;
 
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public abstract class PackageInstallerCompat {
 
     public static final class PackageInstallInfo {
         public final String packageName;
-
+        public final ComponentName componentName;
         public int state;
         public int progress;
 
@@ -53,6 +54,7 @@ public abstract class PackageInstallerCompat {
             this.packageName = packageName;
             this.state = state;
             this.progress = progress;
+            this.componentName = new ComponentName(packageName, "");
         }
     }
 }

@@ -287,7 +287,17 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 break;
             case VIEW_TYPE_SEARCH_MARKET_DIVIDER:
                 // nothing to do
-                break;
+                break;/*
+            case VIEW_TYPE_WORK_TAB_FOOTER:
+                WorkModeSwitch workModeToggle = holder.itemView.findViewById(R.id.work_mode_toggle);
+                workModeToggle.refresh();
+                TextView managedByLabel = holder.itemView.findViewById(R.id.managed_by_label);
+                boolean anyProfileQuietModeEnabled = UserManagerCompat.getInstance(
+                        managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
+                managedByLabel.setText(anyProfileQuietModeEnabled
+                        ? R.string.work_mode_off_label : R.string.work_mode_on_label);
+                break;*/
+
         }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);

@@ -69,10 +69,10 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
      * be present along with {@link #FLAG_RESTORED_ICON}, and is set during default layout
      * parsing.
      */
-    public static final int FLAG_AUTOINTALL_ICON = 2; //0B10;
+    public static final int FLAG_AUTOINSTALL_ICON = 2; //0B10;
 
     /**
-     * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINTALL_ICON}
+     * The icon is being installed. If {@link #FLAG_RESTORED_ICON} or {@link #FLAG_AUTOINSTALL_ICON}
      * is set, then the icon is either being installed or is in a broken state.
      */
     public static final int FLAG_INSTALL_SESSION_ACTIVE = 4; // 0B100;
@@ -154,7 +154,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     /**
      * If this shortcut is a placeholder, then intent will be a market intent for the package, and
      * this will hold the original intent from the database.  Otherwise, null.
-     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINTALL_ICON}
+     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINSTALL_ICON}
      */
     Intent promisedIntent;
     /**
@@ -318,7 +318,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
 
 
     public final boolean isPromise() {
-        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINTALL_ICON);
+        return hasStatusFlag(FLAG_RESTORED_ICON | FLAG_AUTOINSTALL_ICON);
     }
 
     public int getInstallProgress() {

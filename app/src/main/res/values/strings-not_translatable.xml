@@ -45,5 +45,7 @@
     <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
     <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
 
+    <!-- Name of a drawable factory class. -->
+    <string name="drawable_factory_class" translatable="false"></string>
 
 </resources>

@@ -7,7 +7,6 @@ import org.zimmob.zimlx.PagedView;
 
 public class AllAppsPagedView extends PagedView {
 
-
     public AllAppsPagedView(Context context) {
         super(context);
     }

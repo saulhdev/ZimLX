@@ -50,6 +50,7 @@ import org.zimmob.zimlx.IconCache.IconLoadRequest;
 import org.zimmob.zimlx.badge.BadgeInfo;
 import org.zimmob.zimlx.badge.BadgeRenderer;
 import org.zimmob.zimlx.folder.FolderIcon;
+import org.zimmob.zimlx.graphics.DrawableFactory;
 import org.zimmob.zimlx.graphics.IconPalette;
 import org.zimmob.zimlx.model.PackageItemInfo;
 import org.zimmob.zimlx.pixelify.ClockIconDrawable;
@@ -241,6 +242,37 @@ public class BubbleTextView extends android.support.v7.widget.AppCompatTextView
                 }
             }
         }
+    }
+
+    public PreloadIconDrawable applyProgressLevel(int progressLevel) {
+        if (getTag() instanceof ItemInfoWithIcon) {
+            ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
+            if (progressLevel >= 100) {
+                setContentDescription(info.contentDescription != null
+                        ? info.contentDescription : "");
+            } else if (progressLevel > 0) {
+                setContentDescription(getContext()
+                        .getString(R.string.app_downloading_title, info.title,
+                                NumberFormat.getPercentInstance().format(progressLevel * 0.01)));
+            } else {
+                setContentDescription(getContext()
+                        .getString(R.string.app_waiting_download_title, info.title));
+            }
+            if (mIcon != null) {
+                final PreloadIconDrawable preloadDrawable;
+                if (mIcon instanceof PreloadIconDrawable) {
+                    preloadDrawable = (PreloadIconDrawable) mIcon;
+                    preloadDrawable.setLevel(progressLevel);
+                } else {
+                    preloadDrawable = DrawableFactory.get(getContext())
+                            .newPendingIcon(info, getContext());
+                    preloadDrawable.setLevel(progressLevel);
+                    setIcon(preloadDrawable);
+                }
+                return preloadDrawable;
+            }
+        }
+        return null;
     }
 
     public void applyFromShortcutInfo(ShortcutInfo shortcutInfo) {

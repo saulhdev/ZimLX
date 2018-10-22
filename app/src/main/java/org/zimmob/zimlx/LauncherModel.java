@@ -899,7 +899,7 @@ public class LauncherModel extends BroadcastReceiver
                         ComponentName cn = si.getTargetComponent();
                         if (si.isPromise() && (cn != null)
                                 && packageName.equals(cn.getPackageName())) {
-                            if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                            if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                 // For auto install apps update the icon as well as label.
                                 mIconCache.getTitleAndIcon(si,
                                         si.promisedIntent, user,
@@ -1574,7 +1574,7 @@ public class LauncherModel extends BroadcastReceiver
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+        } else if ((promiseType & ShortcutInfo.FLAG_AUTOINSTALL_ICON) != 0) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = iconInfo.getTitle(c);
             }
@@ -2034,7 +2034,7 @@ public class LauncherModel extends BroadcastReceiver
                                 AppInfo appInfo = addedOrUpdatedApps.get(cn);
 
                                 if (si.isPromise()) {
-                                    if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINTALL_ICON)) {
+                                    if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                         // Auto install icon
                                         PackageManager pm = context.getPackageManager();
                                         ResolveInfo matched = pm.resolveActivity(
@@ -2740,7 +2740,7 @@ public class LauncherModel extends BroadcastReceiver
                                                 }
                                             } else if (validPkg) {
                                                 intent = null;
-                                                if ((promiseType & ShortcutInfo.FLAG_AUTOINTALL_ICON) != 0) {
+                                                if ((promiseType & ShortcutInfo.FLAG_AUTOINSTALL_ICON) != 0) {
                                                     // We allow auto install apps to have their intent
                                                     // updated after an install.
                                                     intent = manager.getLaunchIntentForPackage(

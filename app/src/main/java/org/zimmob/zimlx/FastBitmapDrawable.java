@@ -34,13 +34,12 @@ import android.support.annotation.NonNull;
 import android.util.SparseArray;
 import android.view.animation.DecelerateInterpolator;
 
+import org.zimmob.zimlx.graphics.BitmapInfo;
 import org.zimmob.zimlx.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
-
-    protected FastBitmapDrawable() {
-
-    }
+    private static final float DISABLED_DESATURATION = 1f;
+    private static final float DISABLED_BRIGHTNESS = 0.5f;
 
     /**
      * Returns the duration for the state change animation.
@@ -100,6 +99,7 @@ public class FastBitmapDrawable extends Drawable {
 
     private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private Bitmap mBitmap;
+    protected int mIconColor;
     private State mState = State.NORMAL;
 
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
@@ -115,9 +115,28 @@ public class FastBitmapDrawable extends Drawable {
     private IconPalette mIconPalette;
 
     private boolean mEnableStates = true;
+    private boolean mIsDisabled;
+
+    public FastBitmapDrawable() {
+        //this(b, Color.TRANSPARENT);
+    }
 
     public FastBitmapDrawable(Bitmap b) {
+        this(b, Color.TRANSPARENT);
+    }
+
+    public FastBitmapDrawable(BitmapInfo info) {
+        this(info.icon, info.color);
+    }
+
+    public FastBitmapDrawable(ItemInfoWithIcon info) {
+        this(info.iconBitmap, info.iconColor);
+    }
+
+    protected FastBitmapDrawable(Bitmap b, int iconColor) {
         mBitmap = b;
+        mIconColor = iconColor;
+        setFilterBitmap(true);
         setBounds(0, 0, b.getWidth(), b.getHeight());
     }
 
@@ -268,6 +287,18 @@ public class FastBitmapDrawable extends Drawable {
 
     public float getDesaturation() {
         return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
+    }
+
+    private void invalidateDesaturationAndBrightness() {
+        setDesaturation(mIsDisabled ? DISABLED_DESATURATION : 0);
+        setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS : 0);
+    }
+
+    public void setIsDisabled(boolean isDisabled) {
+        if (mIsDisabled != isDisabled) {
+            mIsDisabled = isDisabled;
+            invalidateDesaturationAndBrightness();
+        }
     }
 
     /**

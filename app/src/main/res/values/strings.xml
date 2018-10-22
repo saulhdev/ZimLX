@@ -21,8 +21,8 @@
     <skip />
 
     <!-- Application name -->
-    <string name="app_name" translatable="false">ZimLX</string>
     <string name="application_id" translatable="false">org.zimmob.zimlx</string>
+    <string name="app_name" translatable="false">X Launcher</string>
 
     <!-- Default folder name -->
     <string name="folder_name" translatable="false" />

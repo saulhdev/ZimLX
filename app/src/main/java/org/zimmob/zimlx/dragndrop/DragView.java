@@ -413,7 +413,7 @@ public class DragView extends FrameLayout {
                         addView(mFgImageView);
                         setWillNotDraw(true);
                         if (itemInfo.isDisabled()) {
-                            FastBitmapDrawable fastBitmapDrawable = new FastBitmapDrawable(null);
+                            FastBitmapDrawable fastBitmapDrawable = new FastBitmapDrawable();
                             ColorFilter colorFilter = fastBitmapDrawable.getColorFilter();
                             mBgImageView.setColorFilter(colorFilter);
                             mFgImageView.setColorFilter(colorFilter);
