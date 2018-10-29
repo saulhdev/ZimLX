@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_show_predictions"
+        android:summary="@string/summary_app_suggestions"
+        android:title="@string/title_app_suggestions" />
+    <ListPreference
+        android:defaultValue="5"
+        android:entries="@array/predictive_apps_values"
+        android:entryValues="@array/predictive_apps_values"
+        android:key="pref_predictive_apps_values"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/pref_title__predictive_apps_num" />
+    <Preference
+        android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
+        android:key="pref_hiddenApps"
+        android:summary="@string/hide_apps_sum"
+        android:title="@string/hide_apps" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_hideAllAppsAppLabels"
+        android:persistent="true"
+        android:title="@string/hide_all_apps_icon_labels_pref_title" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_iconLabelsInTwoLines"
+        android:persistent="true"
+        android:title="@string/pref_title__label_two_lines" />
+</PreferenceScreen>

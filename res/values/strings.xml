@@ -1,0 +1,498 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+/*
+* Copyright (C) 2008 The Android Open Source Project
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*      http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
+-->
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- General -->
+    <skip />
+
+    <!-- Application name -->
+    <string name="app_name">Zim Launcher</string>
+    <!-- Default folder name -->
+    <string name="folder_name"></string>
+    <!-- Work folder name -->
+    <string name="work_folder_name">Work</string>
+    <!-- Displayed when user selects a shortcut for an app that was uninstalled [CHAR_LIMIT=none]-->
+    <string name="activity_not_found">App isn\'t installed.</string>
+    <!-- Displayed when user selects a shortcut for an app that is current not available [CHAR_LIMIT=none]-->
+    <string name="activity_not_available">App isn\'t available</string>
+    <!-- SafeMode shortcut error string -->
+    <string name="safemode_shortcut_error">Downloaded app disabled in Safe mode</string>
+    <!-- SafeMode widget error string -->
+    <string name="safemode_widget_error">Widgets disabled in Safe mode</string>
+    <!-- Message shown when a shortcut is not available. It could have been temporarily disabled and may start working again after some time. -->
+    <string name="shortcut_not_available">Shortcut isn\'t available</string>
+    <!-- User visible name for the launcher/home screen. [CHAR_LIMIT=30] -->
+    <string name="home_screen">Home screen</string>
+    <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
+    <string name="custom_actions">Custom actions</string>
+
+    <!-- Widgets -->
+    <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
+    <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>
+    <!-- Accessibility spoken hint message in widget picker, which allows user to add a widget. Custom action is the label for additional accessibility actions available in this mode [CHAR_LIMIT=100] -->
+    <string name="long_accessible_way_to_add">Double-tap &amp; hold to pick up a widget or use custom actions.</string>
+    <!-- The format string for the dimensions of a widget in the drawer -->
+    <!-- There is a special version of this format string for Farsi -->
+    <string name="widget_dims_format">%1$d \u00d7 %2$d</string>
+    <!-- Accessibility spoken message format for the dimensions of a widget in the drawer -->
+    <string name="widget_accessible_dims_format">%1$d wide by %2$d high</string>
+    <!-- Message to tell the user to press and hold a widget/icon to add it  -->
+    <string name="add_item_request_drag_hint">Touch &amp; hold to place manually</string>
+    <!-- Button label to automatically add icon on home screen [CHAR_LIMIT=50] -->
+    <string name="place_automatically">Add automatically</string>
+
+    <!-- All Apps -->
+    <!-- Search bar text in the apps view. [CHAR_LIMIT=50] -->
+    <string name="all_apps_search_bar_hint">Search apps</string>
+    <!-- Loading apps text. [CHAR_LIMIT=50] -->
+    <string name="all_apps_loading_message">Loading apps&#8230;</string>
+    <!-- No-search-results text. [CHAR_LIMIT=50] -->
+    <string name="all_apps_no_search_results">No apps found matching \"<xliff:g example="Android" id="query">%1$s</xliff:g>\"</string>
+    <!-- Label for the button which allows the user to get app search results. [CHAR_LIMIT=50] -->
+    <string name="all_apps_search_market_message">Search for more apps</string>
+
+    <!-- Popup items -->
+    <!-- Text to display as the header above notifications. [CHAR_LIMIT=30] -->
+    <string name="notifications_header">Notifications</string>
+
+    <!-- Drag and drop -->
+    <skip />
+    <!-- Error message when user has filled a home screen -->
+    <string name="out_of_space">No more room on this Home screen.</string>
+    <!-- Error message when user has filled the hotseat -->
+    <string name="hotseat_out_of_space">No more room in the Favorites tray</string>
+
+    <!-- All applications label -->
+    <string name="all_apps_button_label">Apps list</string>
+    <!-- Label for button in all applications label to go back home (to the workspace / desktop)
+         for accessibilty (spoken when the button gets focus). -->
+    <string name="all_apps_home_button_label">Home</string>
+
+    <!-- Label for remove drop target. [CHAR_LIMIT=20] -->
+    <string name="remove_drop_target_label">Remove</string>
+    <!-- Label for uninstall drop target. [CHAR_LIMIT=20]-->
+    <string name="uninstall_drop_target_label">Uninstall</string>
+    <!-- Label for app info drop target. [CHAR_LIMIT=20] -->
+    <string name="app_info_drop_target_label">App info</string>
+
+    <!-- Permissions: -->
+    <skip />
+    <!-- Permission short label -->
+    <string name="permlab_install_shortcut">install shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_install_shortcut">Allows an app to add
+        shortcuts without user intervention.</string>
+    <!-- Permission short label -->
+    <string name="permlab_read_settings">read Home settings and shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_read_settings">Allows the app to read the settings and
+        shortcuts in Home.</string>
+    <!-- Permission short label -->
+    <string name="permlab_write_settings">write Home settings and shortcuts</string>
+    <!-- Permission description -->
+    <string name="permdesc_write_settings">Allows the app to change the settings and
+        shortcuts in Home.</string>
+
+    <!-- Toast shown on clicking a direct call shortcut. [CHAR_LIMIT=80] -->
+    <string name="msg_no_phone_permission"><xliff:g example="Launcher3" id="app_name">%1$s</xliff:g> is not allowed to make phone calls</string>
+
+    <!-- Widgets: -->
+    <skip />
+
+    <!-- Text to show user in place of a gadget when we can't display it properly -->
+    <string name="gadget_error_text">Problem loading widget</string>
+
+    <!-- Text to show user in place of a gadget when it is not yet initialized. -->
+    <string name="gadget_setup_text">Setup</string>
+
+    <!-- Text to inform the user that they can't uninstall a system application -->
+    <string name="uninstall_system_app_text">This is a system app and can\'t be uninstalled.</string>
+
+    <!-- Default folder title -->
+    <string name="folder_hint_text">Unnamed Folder</string>
+
+    <!-- Accessibility -->
+    <!-- The format string for when an app is temporarily disabled. -->
+    <string name="disabled_app_label">Disabled <xliff:g example="Messenger" id="app_name">%1$s</xliff:g></string>
+    <skip />
+
+    <!-- The format string for default page scroll text [CHAR_LIMIT=none] -->
+    <string name="default_scroll_format">Page %1$d of %2$d</string>
+    <!-- The format string for Workspace page scroll text [CHAR_LIMIT=none] -->
+    <string name="workspace_scroll_format">Home screen %1$d of %2$d</string>
+    <!-- Description for a new page on homescreen[CHAR_LIMIT=none] -->
+    <string name="workspace_new_page">New home screen page</string>
+
+    <!-- Folder accessibility -->
+    <!-- The format string for when a folder is opened, speaks the dimensions -->
+    <string name="folder_opened">Folder opened, <xliff:g example="5" id="width">%1$d</xliff:g> by <xliff:g example="3" id="height">%2$d</xliff:g></string>
+    <!-- Instruction that clicking outside will close folder -->
+    <string name="folder_tap_to_close">Tap to close folder</string>
+    <!-- Instruction that clicking outside will commit folder rename -->
+    <string name="folder_tap_to_rename">Tap to save rename</string>
+    <!-- Indication that folder closed -->
+    <string name="folder_closed">Folder closed</string>
+    <!-- Folder renamed format -->
+    <string name="folder_renamed">Folder renamed to <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+    <!-- Folder name format -->
+    <string name="folder_name_format">Folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+
+    <!-- Strings for the customization mode -->
+    <!-- Text for widget add button -->
+    <string name="widget_button_text">Widgets</string>
+    <!-- Text for wallpaper change button -->
+    <string name="wallpaper_button_text">Wallpapers</string>
+    <!-- Text for settings button -->
+    <string name="settings_button_text">Home settings</string>
+    <!-- Message shown when a feature is disabled by the administrator -->
+    <string name="msg_disabled_by_admin">Disabled by your admin</string>
+    <!-- Text for custom accessibility action to go to the overview mode, where users can look and change the overall UI of the launcher. -->
+    <string name="accessibility_action_overview">Overview</string>
+
+    <!-- Strings for settings -->
+    <!-- Title for Allow Rotation setting. [CHAR LIMIT=50] -->
+    <string name="allow_rotation_title">Allow Home screen rotation</string>
+    <!-- Text explaining when the home screen will get rotated. [CHAR LIMIT=100] -->
+    <string name="allow_rotation_desc">When phone is rotated</string>
+    <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
+    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
+    <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
+    <string name="icon_badging_title">Notification dots</string>
+    <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_on">On</string>
+    <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
+    <string name="icon_badging_desc_off">Off</string>
+    <!-- Title for the dialog shown when the app does not has notification access, explaining the requirement for notification access [CHAR LIMIT=50] -->
+    <string name="title_missing_notification_access">Notification access needed</string>
+    <!-- Message explaining to the user that the notification access is required by the app for showing 'Notification dots' [CHAR LIMIT=NONE] -->
+    <string name="msg_missing_notification_access">To show Notification Dots, turn on app notifications for <xliff:g example="My App" id="name">%1$s</xliff:g></string>
+    <!-- Button text in the confirmation dialog which would take the user to the system settings [CHAR LIMIT=50] -->
+    <string name="title_change_settings">Change settings</string>
+
+    <!-- Label for the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=40] -->
+    <string name="auto_add_shortcuts_label">Add icon to Home screen</string>
+    <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
+    <string name="auto_add_shortcuts_description">For new apps</string>
+
+    <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
+    <string name="icon_shape_override_label">Change icon shape</string>
+    <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
+    <string name="icon_shape_system_default">Use system default</string>
+    <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
+    <string name="icon_shape_square">Square</string>
+    <!-- Option to change the shape of the home screen icons to a squircle. This represents the name of the shape somewhere between a circle and a square. [CHAR LIMIT=50] -->
+    <string name="icon_shape_squircle">Squircle</string>
+    <!-- Option to change the shape of the home screen icons to a circle. [CHAR LIMIT=50] -->
+    <string name="icon_shape_circle">Circle</string>
+    <!-- Option to change the shape of the home screen icons to a teardrop. This represents the name of the shape similar to a circle with with the bottom right corner pushed out like a square [CHAR LIMIT=50] -->
+    <string name="icon_shape_teardrop">Teardrop</string>
+
+    <!-- Message shown in the progress dialog when the icon shape override is being applied [CHAR LIMIT=100]-->
+    <string name="icon_shape_override_progress">Applying icon shape changes</string>
+
+    <!-- Label on an icon that references an uninstalled package, for which we have no information about when it might be installed. [CHAR_LIMIT=15] -->
+    <string name="package_state_unknown">Unknown</string>
+
+    <!-- Button for abandoned promises dialog, to removes this abandoned promise icon. -->
+    <string name="abandoned_clean_this">Remove</string>
+    <!-- Button for abandoned promise dialog, to search in the market for the missing package. -->
+    <string name="abandoned_search">Search</string>
+    <!-- Title for abandoned promise dialog. -->
+    <string name="abandoned_promises_title">This app is not installed</string>
+    <!-- Explanation for abandoned promise dialog. "The first 'it' refers to the shortcut icon.
+    The second "it" refers to the app. -->
+    <string name="abandoned_promise_explanation">The app for this icon isn\'t installed.
+        You can remove it, or search for the app and install it manually.
+    </string>
+    <!-- Title for an app which is being downloaded. -->
+    <string name="app_downloading_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> downloading, <xliff:g example="30%" id="progress">%2$s</xliff:g> complete</string>
+    <!-- Title for an app whose download has been started. -->
+    <string name="app_waiting_download_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> waiting to install</string>
+
+    <!-- Strings for widgets & more in the popup container/bottom sheet -->
+    <!-- Title for a bottom sheet that shows widgets for a particular app -->
+    <string name="widgets_bottom_sheet_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> widgets</string>
+
+    <!-- Strings for accessibility actions -->
+    <!-- Accessibility action to add an app to workspace. [CHAR_LIMIT=30] -->
+    <string name="action_add_to_workspace">Add to Home screen</string>
+
+    <!-- Accessibility action to move item to the current location. [CHAR_LIMIT=30] -->
+    <string name="action_move_here">Move item here</string>
+
+    <!-- Accessibility confirmation for item added to workspace. -->
+    <string name="item_added_to_workspace">Item added to home screen</string>
+
+    <!-- Accessibility confirmation for item removed. -->
+    <string name="item_removed">Item removed</string>
+
+    <!-- Accessibility action to move an item on the workspace. [CHAR_LIMIT=30] -->
+    <string name="action_move">Move item</string>
+
+    <!-- Accessibility description to move item to empty cell. -->
+    <string name="move_to_empty_cell">Move to row <xliff:g example="1" id="number">%1$s</xliff:g> column <xliff:g example="1" id="number">%2$s</xliff:g></string>
+
+    <!-- Accessibility description to move item inside a folder. -->
+    <string name="move_to_position">Move to position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+
+    <!-- Accessibility description to move item to the hotseat. -->
+    <string name="move_to_hotseat_position">Move to favorites position <xliff:g example="1" id="number">%1$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for item move. -->
+    <string name="item_moved">Item moved</string>
+
+    <!-- Accessibility description to move item into an existing folder. -->
+    <string name="add_to_folder">Add to folder: <xliff:g example="Games" id="name">%1$s</xliff:g></string>
+
+    <!-- Accessibility description to move item into an existing folder containing an app. -->
+    <string name="add_to_folder_with_app">Add to folder with <xliff:g example="Messenger" id="name">%1$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for item added to folder. -->
+    <string name="added_to_folder">Item added to folder</string>
+
+    <!-- Accessibility description to create folder with another item. -->
+    <string name="create_folder_with">Create folder with: <xliff:g example="Game" id="name">%1$s</xliff:g></string>
+
+    <!-- Accessibility confirmation for folder created. -->
+    <string name="folder_created">Folder created</string>
+
+    <!-- Accessibility action to move an item from folder to workspace. [CHAR_LIMIT=30] -->
+    <string name="action_move_to_workspace">Move to Home screen</string>
+
+    <!-- Accessibility action to move an homescreen to the left. [CHAR_LIMIT=30] -->
+    <string name="action_move_screen_left">Move screen to left</string>
+
+    <!-- Accessibility action to move an homescreen to the right. [CHAR_LIMIT=30] -->
+    <string name="action_move_screen_right">Move screen to right</string>
+
+    <!-- Accessibility confirmation when a screen was moved. -->
+    <string name="screen_moved">Screen moved</string>
+
+    <!-- Accessibility action to resize a widget. [CHAR_LIMIT=30] -->
+    <string name="action_resize">Resize</string>
+
+    <!-- Accessibility action to increase width of a widget. [CHAR_LIMIT=30] -->
+    <string name="action_increase_width">Increase width</string>
+
+    <!-- Accessibility action to increase height of a widget. [CHAR_LIMIT=30] -->
+    <string name="action_increase_height">Increase height</string>
+
+    <!-- Accessibility action to decrease width of a widget. [CHAR_LIMIT=30] -->
+    <string name="action_decrease_width">Decrease width</string>
+
+    <!-- Accessibility action to decrease height of a widget. [CHAR_LIMIT=30] -->
+    <string name="action_decrease_height">Decrease height</string>
+
+    <!-- Accessibility confirmation for widget resize. -->
+    <string name="widget_resized">Widget resized to width <xliff:g example="2" id="number">%1$s</xliff:g> height <xliff:g example="1" id="number">%2$s</xliff:g></string>
+
+    <!-- Accessibility action to show quick actions menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_deep_shortcut">Shortcuts</string>
+
+    <!-- Accessibility description for the shortcuts menu shown for an app. -->
+    <string name="shortcuts_menu_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts for <xliff:g example="Messenger" id="app_name">%2$s</xliff:g></string>
+    <!-- Accessibility description when the shortcuts menu has notifications as well as shortcuts. -->
+    <string name="shortcuts_menu_with_notifications_description"><xliff:g example="3" id="number_of_shortcuts">%1$d</xliff:g> shortcuts and <xliff:g example="3" id="number_of_notifications">%2$d</xliff:g> notifications for <xliff:g example="Messenger" id="app_name">%3$s</xliff:g></string>
+
+    <!-- Accessibility action to dismiss a notification in the shortcuts menu for an icon. [CHAR_LIMIT=30] -->
+    <string name="action_dismiss_notification">Dismiss</string>
+
+    <!-- Accessibility confirmation for notification being dismissed. -->
+    <string name="notification_dismissed">Notification dismissed</string>
+
+    <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
+    <string name="icu_abbrev_time">HH:mm</string>
+    <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
+    <string name="in_smartspace">In \"At a Glance\" widget</string>
+    <string name="smartspace_time">Show time</string>
+    <string name="smartspace_date">Show time and date</string>
+    <string name="smartspace_preferences">Preferences</string>
+    <string name="label_search">Search</string>
+    <string name="label_voice_search">Voice search</string>
+    <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
+    <string name="pref_icon_pack">Icon pack</string>
+    <string name="state_loading">Applying…</string>
+    <string name="smartspace_preferences_in_settings">At A Glance</string>
+    <string name="smartspace_preferences_in_settings_desc">At the top of your Home screen</string>
+    <string name="title_show_google_app">Display %1$s</string>
+    <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
+    <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
+    <string name="about">About</string>
+    <string name="title_google_app">Google app</string>
+    <string name="title_app_suggestions">Display app suggestions</string>
+    <string name="summary_app_suggestions">At the top of your All Apps list</string>
+    <string name="about_app_version">Version</string>
+    <string name="app_releases_url">https://github.com/amirzaidi/launcher3/releases</string>
+    <string name="app_name_pixel_launcher">Pixel Launcher</string>
+    <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
+    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
+    <string name="label_turn_off_suggestions">TURN OFF</string>
+    <string name="app_name_lawnchair">Zim Launcher</string>
+    <string name="pixel_style_pref_title">Pixel style</string>
+    <string name="about_title">About</string>
+    <string name="about_summary_title">Summary</string>
+    <string name="about_text">Lawnchair is a launcher app created by Till Kottmann (aka deletescape). It\'s based on Launcher3 from AOSP.</string>
+    <string name="about_version">Version</string>
+    <string name="about_changelog">Changelog</string>
+    <string name="about_contributors_title">Contributors</string>
+    <string name="about_icon_designer">App Icon Designer</string>
+    <string name="pixel_ui_pref_title">Theme</string>
+    <string name="action_edit">Edit</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app">Hide app</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="pixel_ui_pref_summary">Theme different elements</string>
+    <string name="app_drawer_pref_title">App drawer</string>
+    <string name="app_drawer_pref_summary">Customize your app drawer</string>
+    <string name="general_pref_title">Desktop</string>
+    <string name="general_pref_summary">Customize your desktop</string>
+    <string name="about_pref_summary">Get to know about the Lawnchair team</string>
+    <string name="hidden_app">Hide apps</string>
+    <string name="hide_app_selected">&#160; hidden</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="hide_app_apply">Apply</string>
+    <string name="hide_dock_gradient">Hide gradient</string>
+    <string name="dock_pref_summary">Customize your dock</string>
+    <string name="dock_pref_title">Dock</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    <string name="backups">Backups</string>
+    <string name="new_backup">Create</string>
+    <string name="restore_backup">Restore</string>
+    <string name="backup_name">Name</string>
+    <string name="backup_location">Location</string>
+    <string name="choose_backup_path">Browse</string>
+    <string name="backup_homescreen">Homescreen</string>
+    <string name="backup_contents">Backup contents</string>
+    <string name="backup_settings">Settings</string>
+    <string name="backup_wallpaper">Wallpaper</string>
+    <string name="backup_error_blank_name">Name must not be blank</string>
+    <string name="backup_error_blank_location">Location must not be blank</string>
+    <string name="backup_error_blank_contents">Contents must not be blank</string>
+    <string name="backup_creating">Creating backup</string>
+    <string name="no_recent_backups">No recent backups</string>
+    <string name="backup_loading">Loading...</string>
+    <string name="backup_invalid">Unavailable</string>
+    <string name="backup_remove_from_recents">Remove from list</string>
+    <string name="backup_share">Share</string>
+    <string name="backup_pref_summary">Backup/restore your settings and homescreen</string>
+    <string name="backup_timestamp">Created at</string>
+    <string name="backup_restoring">Restoring backup</string>
+    <string name="backup_restarting">Restarting</string>
+    <string name="restore_contents">Restore contents</string>
+    <string name="restore_success">Restore success</string>
+    <string name="backup_failed">Backup failed</string>
+    <string name="restore_failed">Restore failed</string>
+    <string name="restore_read_meta_fail">Invalid backup file</string>
+    <string name="backup_share_title">Share backup</string>
+    <string name="backup_share_text">Zim backup file</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+    <string name="full_width_width_widgets_pref_title">Full width widgets</string>
+    <string name="hide_apps">Hide apps</string>
+    <string name="hide_apps_sum">Hide app from the app drawer</string>
+    <string name="grid_size">Grid size</string>
+    <string name="grid_size_default">Default</string>
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+    <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
+    <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="show_debug_info_pref_title">Show debug info</string>
+    <string name="debug_pref_title">Debug</string>
+    <string name="debug_component_name">Component name</string>
+    <string name="debug_component_name_copied">Copied</string>
+    <string name="read_external_storage_required">Storage permission is required to create backup</string>
+    <string name="local_backups">Local backups</string>
+    <string name="backup_location_device_storage">Device storage</string>
+    <string name="backup_location_documents_storage">Documents storage</string>
+    <string name="grid_size_height">Height</string>
+    <string name="grid_size_width">Width</string>
+    <string name="launcher_theme_override_label">Force dark theme</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
+
+    <!-- Dialogs -->
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="ok">OK</string>
+    <string name="wallpaper_pick">Pick Wallpaper</string>
+    <string name="dialog__backup_app_settings__error">Something went wrong.</string>
+    <string name="cancel">Cancel</string>
+
+    <string name="device_admin_message">ZimLX requires the Device Administration permission to lock your screen. Please enable it in the settings to use this feature.</string>
+    <string name="toast_device_admin_required">Please enable device administration.</string>
+
+    <!-- Minibar -->
+    <string name="minibar">Minibar</string>
+    <string name="minibar_0">Change the minibar layout.</string>
+    <string name="minibar_1">Set the desktop wallpaper.</string>
+    <string name="minibar_2">Lock the screen immediately, requires device administration.</string>
+    <string name="minibar_4">Shortcut to device settings.</string>
+    <string name="minibar_5">Shortcut to OpenLauncher settings.</string>
+    <string name="minibar_7">Display all available volume sliders.</string>
+    <string name="minibar_8">Open the app drawer.</string>
+    <string name="minibar_9">Open the search bar.</string>
+    <string name="minibar_10">Mobile network settings.</string>
+
+    <!-- FOLDER TITLES -->
+    <string name="google_title" translatable="false">Google</string>
+    <string name="play_folder_title">Play</string>
+
+    <string name="pref_category_homescreen">Desktop</string>
+
+    <string name="pref_title__animated_clock_icon">Animate clock icon</string>
+    <string name="pref_title__minibar" translatable="false">@string/minibar</string>
+    <string name="pref_title__minibar_background_color" translatable="false">Minibar Color</string>
+    <string name="pref_title__interfaces">Interfaces</string>
+    <string name="pref_title__inputs">Gestures</string>
+    <string name="pref_title__others">Others</string>
+    <string name="pref_title__folder">Folder</string>
+    <string name="pref_title__primary_color">Primary Color</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__behavior">Behavior</string>
+    <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_title__language">Language</string>
+    <string name="pref_title__folder_badge_count">Show folder badge Count</string>
+    <string name="pref_title__notification_access">Notification badges and preview</string>
+    <string name="pref_title__notification_background_color">Notification Background Color</string>
+    <string name="pref_title__notification_count">Show Notification Count</string>
+    <string name="pref_title__predictive_apps_num">Predicted apps number</string>
+    <string name="pref_title__label_two_lines">Icon labels use two lines</string>
+    <string name="pref_summary__advanced">Languaje and backup</string>
+    <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
+    <string name="pref_summary__developer">Restart the app if it is needed</string>
+    <string name="pref_summary__folder">Change folder shape and color</string>
+    <string name="pref_summary__inputs">Configure gestures</string>
+    <string name="pref_summary__language">Change language of this app</string>
+    <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
+    <string name="pref_summary__notifications">Configure badge and notification count</string>
+    <string name="pref_summary__notification_access">Allow ZimLX to access your notifications to enable this feature</string>
+
+    <string name="animated_clock_icon_alternative_clock_apps_title">Animate alternative clock apps</string>
+    <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
+
+    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
+    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
+    <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
+    <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
+    <string name="pref_key__gesture_swipe_up" translatable="false">pref_key__gesture_swipe_up</string>
+    <string name="pref_key__gesture_swipe_down" translatable="false">pref_key__gesture_swipe_down</string>
+    <string name="pref_key__gesture_pinch" translatable="false">pref_key__gesture_pinch</string>
+    <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
+    <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
+    <string name="pref_key__language" translatable="false">pref_key__language</string>
+</resources>

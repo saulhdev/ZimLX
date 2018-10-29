@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_key__folder_badge_count"
+        android:persistent="true"
+        android:title="@string/pref_title__folder_badge_count" />
+</PreferenceScreen>

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <android.support.v7.preference.PreferenceCategory
+        android:key="prefCat_desktopOptions"
+        android:title="@string/pref_category_homescreen">
+
+        <Preference
+            android:key="pref_key__minibar"
+            android:summary="@string/pref_summary__minibar"
+            android:title="@string/pref_title__minibar" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimaryDark"
+            android:key="pref_minibar_color"
+            android:title="@string/pref_title__minibar_background_color"
+            app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
+            app:cpv_showAlphaSlider="true" />
+    </android.support.v7.preference.PreferenceCategory>
+
+    <PreferenceScreen
+        android:key="pref_smartspace"
+        android:persistent="false"
+        android:summary="@string/smartspace_preferences_in_settings_desc"
+        android:title="@string/smartspace_preferences_in_settings" />
+    <com.android.launcher3.views.ButtonPreference
+        android:key="pref_icon_badging"
+        android:persistent="false"
+        android:title="@string/icon_badging_title"
+        android:widgetLayout="@layout/notification_pref_warning">
+        <intent android:action="android.settings.NOTIFICATION_SETTINGS">
+            <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
+            <extra
+                android:name=":settings:fragment_args_key"
+                android:value="notification_badging" />
+        </intent>
+    </com.android.launcher3.views.ButtonPreference>
+    <SwitchPreference
+        android:defaultValue="@bool/allow_rotation"
+        android:key="pref_allowRotation"
+        android:persistent="true"
+        android:title="@string/allow_rotation_title" />
+    <SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="false"
+        android:key="pref_smartspace_time"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_time" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
+        android:key="pref_smartspace_date"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_date" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_enable_minus_one"
+        android:summary="@string/pref_show_google_now_summary"
+        android:title="@string/title_show_google_app" />
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_add_icon_to_home"
+        android:persistent="true"
+        android:summary="@string/auto_add_shortcuts_description"
+        android:title="@string/auto_add_shortcuts_label" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="pref_hideAppLabels"
+        android:persistent="true"
+        android:title="@string/hide_icon_labels_pref_title" />
+
+    <org.zimmob.zimlx.settings.ui.GridSizePreference
+        android:key="pref_desktop_grid_size"
+        android:title="@string/grid_size" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_fullWidthWidgets"
+        android:persistent="true"
+        android:summary="@string/full_width_widgets_pref_summary"
+        android:title="@string/full_width_width_widgets_pref_title" />
+
+</PreferenceScreen>

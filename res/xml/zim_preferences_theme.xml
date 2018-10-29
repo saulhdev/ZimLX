@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ListPreference
+        android:defaultValue=""
+        android:entries="@array/icon_shape_override_paths_names"
+        android:entryValues="@array/icon_shape_override_paths_values"
+        android:key="pref_override_icon_shape"
+        android:persistent="false"
+        android:summary="%s"
+        android:title="@string/icon_shape_override_label" />
+
+    <com.google.android.apps.nexuslauncher.CustomIconPreference
+        android:defaultValue=""
+        android:key="pref_icon_pack"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/pref_icon_pack" />
+
+    <android.support.v14.preference.SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_override_launcher_theme"
+        android:persistent="true"
+        android:title="@string/launcher_theme_override_label" />
+    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+        android:defaultValue="@color/colorPrimary"
+        android:key="pref_primary_color"
+        android:title="@string/pref_title__primary_color"
+        app:cpv_dialogTitle="@string/pref_title__primary_color"
+        app:cpv_showAlphaSlider="true" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_animatedClockIcon"
+        android:persistent="true"
+        android:title="@string/pref_title__animated_clock_icon" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_animatedClockIcon"
+        android:key="pref_animatedClockIconAlternativeClockApps"
+        android:persistent="true"
+        android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
+        android:title="@string/animated_clock_icon_alternative_clock_apps_title" />
+
+</PreferenceScreen>

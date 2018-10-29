@@ -1,65 +1,237 @@
 import java.text.SimpleDateFormat
 
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
-
 buildscript {
-    ext.version_setup_compileSdk = 27
-    ext.version_setup_minSdk = 21
-    ext.version_setup_targetSdk = ext.version_setup_compileSdk
-    ext.version_setup_buildTools = "28.0.3" // Specifying optional
-
-    // https://developer.android.com/studio/releases/gradle-plugin.html
-    ext.version_gradle_tools = "3.0.1"
-    // https://developer.android.com/topic/libraries/support-library/revisions.html
-    ext.version_library_appcompat = "27.0.1"
+    ext.kotlin_version = '1.2.50'
     // https://github.com/JakeWharton/butterknife/releases
     ext.version_library_butterknife = "8.8.1"
-    // https://github.com/guardianproject/NetCipher/releases
-    ext.version_library_netcipher = "2.0.0-alpha1"
-    // https://mvnrepository.com/artifact/org.jetbrains.kotlin/kotlin-gradle-plugin#LookAtCentral
     ext.version_plugin_kotlin = "1.2.50"
     ext.enable_plugin_kotlin = true
-
     repositories {
-        google()
-        jcenter()
         mavenCentral()
-        maven { url "https://jitpack.io" }
+        jcenter()
+        google()
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.1.4'
-        classpath 'com.github.dcendents:android-maven-gradle-plugin:1.5'
-        if (project.enable_plugin_kotlin) {
-            classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$version_plugin_kotlin"
-        }
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+
     }
 }
 
-allprojects {
-    repositories {
-        google()
-        jcenter()
-        mavenCentral()
-        maven { url "https://jitpack.io" }
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'com.google.protobuf'
+
+android {
+    compileSdkVersion 27
+    buildToolsVersion '28.0.3'
+
+    signingConfigs {
+        travis {
+            storeFile file("debug.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias "ZimLX"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+    def versionPropsFile = file('version.properties')
+
+    if (versionPropsFile.canRead()) {
+        Properties versionProps = new Properties()
+
+        versionProps.load(new FileInputStream(versionPropsFile))
+
+        def name = versionProps['VERSION_NAME']
+        def code = versionProps['VERSION_CODE'].toInteger() + 1
+
+        versionProps['VERSION_CODE'] = code.toString()
+        versionProps.store(versionPropsFile.newWriter(), null)
+        defaultConfig {
+            minSdkVersion 21
+            targetSdkVersion 27
+
+            /*if (System.getenv("TRAVIS") == "true") {
+                versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
+                versionName = System.getenv("MAJOR_MINOR") + (System.getenv("DRONE") ? "-" : ".") + System.getenv("TRAVIS_BUILD_NUMBER")
+            } else {
+                versionCode 1
+                versionName "2.0"
+            }*/
+            versionName name
+            versionCode code
+
+            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        }
+    } else {
+        throw new GradleException("Could not read version.properties!")
     }
 
-    tasks.matching { task -> task.name.matches('.*generate.*Resources') }.all {
-        task -> task.dependsOn copyRepoFiles
+    buildTypes {
+        debug {
+            minifyEnabled false
+        }
+
+        optimized {
+            initWith debug
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
+                    'proguard.flags'
+            if (System.getenv("TRAVIS") == "true") {
+                if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
+                    signingConfig signingConfigs.travis
+                }
+            }
+        }
+    }
+
+    flavorDimensions "tier", "build"
+    productFlavors {
+        aosp {
+            dimension "tier"
+            applicationId 'org.zimmob.zimlx'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+
+        l3go {
+            dimension "tier"
+            applicationId 'com.google.android.apps.nexuslauncher'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+
+        dev {
+            dimension "build"
+            applicationIdSuffix ".dev"
+            versionNameSuffix "-dev"
+        }
+
+        ci {
+            dimension "build"
+            applicationIdSuffix ".ci"
+            versionNameSuffix "-ci"
+        }
+
+        plah {
+            dimension "build"
+            applicationIdSuffix ".plah"
+        }
+    }
+    sourceSets {
+        main {
+            res.srcDirs = ['res']
+            java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            assets.srcDirs = ['assets']
+            manifest.srcFile 'AndroidManifest-common.xml'
+            proto {
+                srcDir 'protos/'
+                srcDir 'proto_overrides/'
+                srcDir 'proto_pixel/'
+            }
+        }
+
+        androidTest {
+            res.srcDirs = ['tests/res']
+            java.srcDirs = ['tests/src']
+            manifest.srcFile "tests/AndroidManifest-common.xml"
+        }
+
+        aosp {
+            java.srcDirs = ['src_flags']
+            manifest.srcFile "AndroidManifest.xml"
+        }
+
+        l3go {
+            res.srcDirs = ['go/res']
+            java.srcDirs = ['go/src_flags']
+            // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
+            // different attributes than the build system.
+            manifest.srcFile "AndroidManifest.xml"
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 }
 
-task clean(type: Delete) {
-    delete rootProject.buildDir
+afterEvaluate {
+    android.applicationVariants.all { variant ->
+        variant.resValue 'string', 'application_id', variant.applicationId
+    }
 }
 
-final String[] ROOT_TO_RAW_COPYFILES = ["README.md", "CHANGELOG.md", "CONTRIBUTORS.md", "LICENSE.txt", "LICENSE.md", "LICENSE"]
-task copyRepoFiles(type: Copy) {
-    from rootProject.files(ROOT_TO_RAW_COPYFILES)
-    into "app/src/main/res/raw"
-    rename { String fileName -> fileName.replace(fileName, fileName.toLowerCase()) }
+repositories {
+    mavenCentral()
+    jcenter()
+    google()
+}
+
+final String SUPPORT_LIBS_VERSION = '27.0.1'
+dependencies {
+    implementation "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:design:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:preference-v7:${SUPPORT_LIBS_VERSION}"
+    implementation "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
+    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
+    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+
+    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
+    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation 'com.mikepenz:fastadapter:3.2.6@aar'
+    implementation 'com.mikepenz:fastadapter-commons:3.2.6@aar'
+    implementation 'com.mikepenz:fastadapter-extensions:3.2.6@aar'
+    implementation 'com.balysv:material-ripple:1.0.2'
+    implementation 'cat.ereza:customactivityoncrash:2.2.0'
+    implementation 'com.jaredrummler:colorpicker:1.0.1'
+
+    // Tools
+    implementation "com.jakewharton:butterknife:${version_library_butterknife}"
+    if (enable_plugin_kotlin) {
+        implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version_plugin_kotlin"
+    }
+    // Processors
+    def anpros = ["com.jakewharton:butterknife-compiler:${version_library_butterknife}"]
+    for (anpro in anpros) {
+        if (enable_plugin_kotlin) {
+            kapt anpro
+        } else {
+            annotationProcessor anpro
+        }
+    }
+}
+
+protobuf {
+    // Configure the protoc executable
+    protoc {
+        artifact = 'com.google.protobuf:protoc:3.0.0'
+
+        generateProtoTasks {
+            all().each { task ->
+                task.builtins {
+                    remove java
+                    javanano {
+                        option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
+                        option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
+                        option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
+                        option "java_package=search.proto|com.google.android.apps.nexuslauncher.search.nano"
+                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
+                        option "enum_style=java"
+                    }
+                }
+            }
+        }
+    }
 }
 
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
@@ -91,6 +263,7 @@ ext.getGitHash = { ->
         return 'unknown'
     }
 }
+
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
 // Returns the build date in a RFC3339 compatible format. TZ is always converted to UTC
 static String getBuildDate() {
@@ -98,3 +271,5 @@ static String getBuildDate() {
     RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
     return RFC3339_LIKE.format(new Date())
 }
+
+apply plugin: 'kotlin-android-extensions'
