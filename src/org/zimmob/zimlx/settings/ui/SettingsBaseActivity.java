@@ -24,38 +24,40 @@ public class SettingsBaseActivity extends ThemeActivity {
     private ZimPreferences sharedPrefs;
 
     protected void onCreate(Bundle savedInstanceState) {
+        Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
         window = getWindow();
         decorLayout = new DecorLayout(this, window);
         super.setContentView(decorLayout);
         setContentView(R.layout.activity_settings);
-        sharedPrefs = Utilities.getZimPrefs(this);
         ButterKnife.bind(this);
+        sharedPrefs = Utilities.getZimPrefs(this);
         setSupportActionBar(toolbar);
         toolbar.setBackgroundColor(sharedPrefs.getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
-        if (!Utilities.ATLEAST_OREO_MR1 && Utilities.ATLEAST_OREO) {
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        /*if (!Utilities.ATLEAST_OREO_MR1 && Utilities.ATLEAST_OREO) {
             Utilities.setLightUi(window);
             window.setStatusBarColor(0);
             window.setNavigationBarColor(0);
-        }
+        }*/
     }
 
     public void setContentView(View v) {
-        ViewGroup contentParent = (ViewGroup) decorLayout.findViewById(android.R.id.content);
+        ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         contentParent.addView(v);
     }
 
     public void setContentView(int resId) {
-        ViewGroup contentParent = (ViewGroup) decorLayout.findViewById(android.R.id.content);
+        ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         LayoutInflater.from(this).inflate(resId, contentParent);
     }
 
     public void setContentView(View v, ViewGroup.LayoutParams lp) {
-        ViewGroup contentParent = (ViewGroup) decorLayout.findViewById(android.R.id.content);
+        ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         contentParent.addView(v, lp);
     }

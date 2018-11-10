@@ -32,7 +32,7 @@ abstract class BaseFlags {
     // When enabled while all-apps open, the soft input will be set to adjust resize .
     public static final boolean LAUNCHER3_UPDATE_SOFT_INPUT_MODE = false;
     // When enabled the promise icon is visible in all apps while installation an app.
-    public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
+    public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = true;
     // When enabled allows use of physics based motions in the Launcher.
     public static final boolean LAUNCHER3_PHYSICS = true;
     // When enabled allows use of spring motions on the icons.
@@ -48,7 +48,7 @@ abstract class BaseFlags {
     // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
     public static final boolean ADAPTIVE_ICON_SHADOW = true;
     // When enabled, app discovery will be enabled if service is implemented
-    public static final boolean DISCOVERY_ENABLED = false;
+    public static final boolean DISCOVERY_ENABLED = true;
     // When enabled, the qsb will be moved to the hotseat.
     public static final boolean QSB_IN_HOTSEAT = true;
     // Features to control Launcher3Go behavior

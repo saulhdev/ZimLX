@@ -17,6 +17,7 @@
 package com.android.launcher3;
 
 import android.animation.ObjectAnimator;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -29,6 +30,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.v4.graphics.ColorUtils;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.util.TypedValue;
@@ -51,6 +53,8 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
+
+import org.zimmob.zimlx.pixelify.ClockIconDrawable;
 
 import java.text.NumberFormat;
 
@@ -165,6 +169,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();
+        if (Utilities.getZimPrefs(context).getIconLabelsInTwoLines()) {
+            setMaxLines(2);
+            setEllipsize(TextUtils.TruncateAt.END);
+            setHorizontallyScrolling(false);
+        }
 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
@@ -181,6 +190,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)
+            applyClockIcon(info.getTargetComponent());
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
         }
@@ -188,8 +199,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         applyBadgeState(info, false /* animate */);
     }
 
+    private void applyClockIcon(ComponentName componentName) {
+        if (Utilities.isAnimatedClock(getContext(), componentName)) {
+            setIcon(ClockIconDrawable.Companion.createWrapped(getContext()));
+        }
+    }
+
     public void applyFromApplicationInfo(AppInfo info) {
         applyIconAndLabel(info.iconBitmap, info);
+        applyClockIcon(info.getTargetComponent());
 
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);

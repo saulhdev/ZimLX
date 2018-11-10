@@ -101,7 +101,7 @@
 
             <!--suppress AndroidDomInspection (Injected at compile time) -->
             <intent
-                android:targetClass="org.zimmob.zimlx.settings.ui.AboutActivity"
+                android:targetClass="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
                 android:targetPackage="@string/application_id" />
         </Preference>
     </PreferenceCategory>

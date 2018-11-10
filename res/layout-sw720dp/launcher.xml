@@ -21,91 +21,92 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-    <com.android.launcher3.dragndrop.DragLayer
-        android:id="@+id/drag_layer"
+    <android.support.v4.widget.DrawerLayout
+        android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/workspaceStatusBarScrim"
-        android:clipChildren="false"
-        android:clipToPadding="false"
-        android:importantForAccessibility="no">
+        launcher:layout_ignoreInsets="true">
 
-        <!-- The workspace contains 5 screens of cells -->
-        <!-- DO NOT CHANGE THE ID -->
-        <com.android.launcher3.Workspace
-            android:id="@+id/workspace"
+        <com.android.launcher3.dragndrop.DragLayer
+            android:id="@+id/drag_layer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center"
-            android:theme="@style/HomeScreenElementTheme"
-            launcher:pageIndicator="@id/page_indicator"></com.android.launcher3.Workspace>
+            android:background="?attr/workspaceStatusBarScrim"
+            android:clipChildren="false"
+            android:clipToPadding="false"
+            android:importantForAccessibility="no">
 
-        <include layout="@layout/all_apps_bg" />
-
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            launcher:layout_ignoreInsets="true" />
-
-        <include
-            android:id="@+id/drop_target_bar"
-            layout="@layout/drop_target_bar_horz" />
-
-        <include
-            android:id="@+id/overview_panel"
-            layout="@layout/overview_panel"
-            android:visibility="gone" />
-
-        <!-- Keep these behind the workspace so that they are not visible when
-             we go into AllApps -->
-        <include
-            android:id="@+id/page_indicator"
-            layout="@layout/page_indicator" />
-
-        <include
-            android:id="@+id/widgets_view"
-            layout="@layout/widgets_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
-        <include
-            android:id="@+id/apps_view"
-            layout="@layout/all_apps"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:visibility="invisible" />
-
-        <android.support.v4.widget.DrawerLayout
-            android:id="@+id/drawer_layout"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            launcher:layout_ignoreInsets="true">
-
-            <FrameLayout
-                android:layout_width="wrap_content"
+            <!-- The workspace contains 5 screens of cells -->
+            <!-- DO NOT CHANGE THE ID -->
+            <com.android.launcher3.Workspace
+                android:id="@+id/workspace"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="start"
-                android:background="@color/colorPrimary">
+                android:layout_gravity="center"
+                android:theme="@style/HomeScreenElementTheme"
+                launcher:pageIndicator="@id/page_indicator"></com.android.launcher3.Workspace>
 
-                <org.zimmob.zimlx.minibar.SwipeListView
-                    android:id="@+id/minibar"
-                    android:layout_width="75dp"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center_vertical|start"
-                    android:clipToPadding="true"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="0dp"
-                    android:listSelector="@android:color/transparent"
-                    android:paddingTop="15dp"
-                    android:scrollbars="none" />
+            <include layout="@layout/all_apps_bg" />
 
-            </FrameLayout>
+            <!-- DO NOT CHANGE THE ID -->
+            <include
+                android:id="@+id/hotseat"
+                layout="@layout/hotseat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                launcher:layout_ignoreInsets="true" />
 
-        </android.support.v4.widget.DrawerLayout>
-    </com.android.launcher3.dragndrop.DragLayer>
+            <include
+                android:id="@+id/drop_target_bar"
+                layout="@layout/drop_target_bar_horz" />
 
+            <include
+                android:id="@+id/overview_panel"
+                layout="@layout/overview_panel"
+                android:visibility="gone" />
+
+            <!-- Keep these behind the workspace so that they are not visible when
+                 we go into AllApps -->
+            <include
+                android:id="@+id/page_indicator"
+                layout="@layout/page_indicator" />
+
+            <include
+                android:id="@+id/widgets_view"
+                layout="@layout/widgets_view"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+            <include
+                android:id="@+id/apps_view"
+                layout="@layout/all_apps"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible" />
+
+        </com.android.launcher3.dragndrop.DragLayer>
+
+        <FrameLayout
+            android:id="@+id/dlview"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:background="@color/colorPrimary">
+
+            <org.zimmob.zimlx.minibar.SwipeListView
+                android:id="@+id/minibar"
+                android:layout_width="75dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="center_vertical|start"
+                android:clipToPadding="true"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="0dp"
+                android:listSelector="@android:color/transparent"
+                android:paddingTop="15dp"
+                android:scrollbars="none" />
+
+        </FrameLayout>
+
+    </android.support.v4.widget.DrawerLayout>
 </com.android.launcher3.LauncherRootView>

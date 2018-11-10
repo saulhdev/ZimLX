@@ -340,6 +340,7 @@ public class Launcher extends BaseActivity
     private ZimPreferencesChangeCallback mLawnchairPrefChangeCallback;
     private boolean mRestart = false;
     private LauncherCallbacks mLauncherCallbacks;
+    public static boolean showNotificationCount;
 
     public static CustomAppWidget getCustomAppWidget(String name) {
         return sCustomAppWidgets.get(name);
@@ -408,7 +409,7 @@ public class Launcher extends BaseActivity
             display.getSize(mwSize);
             mDeviceProfile = mDeviceProfile.getMultiWindowProfile(this, mwSize);
         }
-
+        showNotificationCount = Utilities.getZimPrefs(this).getFolderBadgeCount();
         mOrientation = getResources().getConfiguration().orientation;
         mSharedPrefs = Utilities.getPrefs(this);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
@@ -1291,7 +1292,6 @@ public class Launcher extends BaseActivity
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
         mWorkspace.initParentViews(mDragLayer);
-
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
                 | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
@@ -1300,7 +1300,7 @@ public class Launcher extends BaseActivity
         mDragLayer.setup(this, mDragController, mAllAppsController);
 
         // Setup the hotseat
-        mHotseat = (Hotseat) findViewById(R.id.hotseat);
+        mHotseat = findViewById(R.id.hotseat);
         if (mHotseat != null) {
             mHotseat.setOnLongClickListener(this);
         }
@@ -1324,8 +1324,8 @@ public class Launcher extends BaseActivity
         mDropTargetBar = mDragLayer.findViewById(R.id.drop_target_bar);
 
         // Setup Apps and Widgets
-        mAppsView = (AllAppsContainerView) findViewById(R.id.apps_view);
-        mWidgetsView = (WidgetsContainerView) findViewById(R.id.widgets_view);
+        mAppsView = findViewById(R.id.apps_view);
+        mWidgetsView = findViewById(R.id.widgets_view);
 
         // Setup the drag controller (drop targets have to be added in reverse order in priority)
         mDragController.setMoveTarget(mWorkspace);
@@ -1340,7 +1340,7 @@ public class Launcher extends BaseActivity
     }
 
     private void setupOverviewPanel() {
-        mOverviewPanel = (ViewGroup) findViewById(R.id.overview_panel);
+        mOverviewPanel = findViewById(R.id.overview_panel);
 
         // Bind wallpaper button actions
         View wallpaperButton = findViewById(R.id.wallpaper_button);
@@ -2195,6 +2195,13 @@ public class Launcher extends BaseActivity
 
     @Override
     public void onBackPressed() {
+        DrawerLayout dl = findViewById(R.id.drawer_layout);
+        FrameLayout sl = findViewById(R.id.dlview);
+        if (dl.isDrawerOpen(sl)) {
+            ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+            return;
+        }
+
         if (mLauncherCallbacks != null && mLauncherCallbacks.handleBackPressed()) {
             return;
         }
@@ -2988,6 +2995,7 @@ public class Launcher extends BaseActivity
         // Send an accessibility event to announce the context change
         getWindow().getDecorView()
                 .sendAccessibilityEvent(AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED);
+
         return true;
     }
 

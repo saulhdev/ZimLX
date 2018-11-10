@@ -66,6 +66,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import org.zimmob.zimlx.pixelify.ClockIconDrawable;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -320,8 +322,15 @@ public class DragView extends View {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(mLauncher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
+            if (activityInfo != null) {
+                if (Utilities.isAnimatedClock(getContext(), activityInfo.getComponentName()))
+                    return ClockIconDrawable.Companion.create(getContext());
+                return appState.getIconCache().getFullResIcon(activityInfo, false);
+            }
             return (activityInfo != null) ? appState.getIconCache()
                     .getFullResIcon(activityInfo, false) : null;
+
+
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
             if (info instanceof PendingAddShortcutInfo) {
                 ShortcutConfigActivityInfo activityInfo =

@@ -368,7 +368,7 @@ public class AlphabeticalAppsList {
 
         if (DEBUG_PREDICTIONS) {
             if (mPredictedAppComponents.isEmpty() && !mApps.isEmpty()) {
-                mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
+                mPredictedAppComponents.add(new ComponentKeyMapper<>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));
                 mPredictedAppComponents.add(new ComponentKeyMapper<AppInfo>(new ComponentKey(mApps.get(0).componentName,
                         Process.myUserHandle())));

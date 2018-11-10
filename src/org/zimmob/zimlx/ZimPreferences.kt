@@ -48,6 +48,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Theme
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
+    val animatedClockIcon by BooleanPref("pref_key__animated_clock_icon", false)
+    val animatedClockIconAlternativeClockApps by BooleanPref("pref_key_animated_alternative_clock_apps", false)
+
 
     // Desktop
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
@@ -59,9 +62,22 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
     val dockSearchBar = true
 
+    //Folder
+    val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
+
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+    fun getNumPredictedApps(): String {
+        return sharedPrefs.getString("pref_predictive_apps_values", "5")
+    }
+
+    val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
+
+    //Notification
+    val notificationCount: Boolean by BooleanPref("pref_notification_count", true)
+    val notificationBackground by IntPref("pref_notification_background", R.color.notification_background)
+
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -77,10 +93,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val recentBackups = object : MutableListPref<Uri>(
             Utilities.getDevicePrefs(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
-    }
-
-    public fun removeAlternateIcon(key: String) {
-        sharedPrefs.edit().remove("alternateIcon_" + key).apply()
     }
 
     private fun recreate() {

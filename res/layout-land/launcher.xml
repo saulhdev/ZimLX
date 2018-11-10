@@ -92,6 +92,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:id="@+id/dlview"
             android:background="@color/colorPrimary">
 
             <org.zimmob.zimlx.minibar.SwipeListView

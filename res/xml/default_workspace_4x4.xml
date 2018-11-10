@@ -17,5 +17,67 @@
 
     <!-- Hotseat -->
     <include launcher:workspace="@xml/dw_hotseat_4" />
+    <!-- Google Folder -->
+    <folder
+        launcher:screen="0"
+        launcher:title="@string/google_title"
+        launcher:x="0"
+        launcher:y="4">
+        <favorite
+            launcher:className="com.google.android.googlequicksearchbox.SearchActivity"
+            launcher:packageName="com.google.android.googlequicksearchbox" />
+        <favorite
+            launcher:className="com.google.android.apps.chrome.Main"
+            launcher:packageName="com.android.chrome" />
+        <favorite
+            launcher:className="com.google.android.gm.ConversationListActivityGmail"
+            launcher:packageName="com.google.android.gm" />
+        <favorite
+            launcher:className="com.google.android.maps.MapsActivity"
+            launcher:packageName="com.google.android.apps.maps" />
+        <favorite
+            launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"
+            launcher:packageName="com.google.android.youtube" />
+        <favorite
+            launcher:className="com.google.android.apps.docs.app.NewMainProxyActivity"
+            launcher:packageName="com.google.android.apps.docs" />
+        <favorite
+            launcher:className="com.google.android.talk.SigningInActivity"
+            launcher:packageName="com.google.android.talk" />
+        <favorite
+            launcher:className="com.google.android.apps.photos.home.HomeActivity"
+            launcher:packageName="com.google.android.apps.photos" />
+        <favorite
+            launcher:className="com.google.android.apps.wallet.entrypoint.WalletRootActivity"
+            launcher:packageName="com.google.android.apps.walletnfcrel" />
+        <favorite
+            launcher:className="com.android.calendar.AllInOneActivity"
+            launcher:packageName="com.google.android.calendar" />
+        <favorite
+            launcher:className="com.google.android.apps.plus.phone.HomeActivity"
+            launcher:packageName="com.google.android.apps.plus" />
+    </folder>
 
+    <!-- Play Folder -->
+    <folder
+        launcher:screen="0"
+        launcher:title="@string/play_folder_title"
+        launcher:x="1"
+        launcher:y="4">
+        <favorite
+            launcher:className="com.android.music.activitymanagement.TopLevelActivity"
+            launcher:packageName="com.google.android.music" />
+        <favorite
+            launcher:className="com.google.android.youtube.videos.EntryPoint"
+            launcher:packageName="com.google.android.videos" />
+        <favorite
+            launcher:className="com.google.android.gms.games.ui.destination.main.MainActivity"
+            launcher:packageName="com.google.android.play.games" />
+        <favorite
+            launcher:className="com.google.android.apps.books.app.BooksActivity"
+            launcher:packageName="com.google.android.apps.books" />
+        <favorite
+            launcher:className="com.google.apps.dots.android.app.activity.CurrentsStartActivity"
+            launcher:packageName="com.google.android.apps.magazines" />
+    </folder>
 </favorites>

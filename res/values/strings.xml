@@ -409,7 +409,7 @@
     <string name="grid_size_default">Default</string>
     <string name="developer_options_title">Developer options</string>
     <string name="developer_options_enabled">Developer options enabled</string>
-    <string name="restart_lawnchair_pref_title">Restart Lawnchair</string>
+    <string name="restart_lawnchair_pref_title">Restart Launcher</string>
     <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
     <string name="show_debug_info_pref_title">Show debug info</string>
     <string name="debug_pref_title">Debug</string>
@@ -423,6 +423,26 @@
     <string name="grid_size_width">Width</string>
     <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
+
+    <!-- Label of tab to indicate personal apps -->
+    <string name="all_apps_personal_tab">Personal</string>
+
+    <!-- Label of tab to indicate work apps -->
+    <string name="all_apps_work_tab">Work</string>
+
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. This is a label for a toggle to turn the work profile on and off. "Work profile" means a separate profile on a user's phone that's specifically for their work apps and managed by their company. "Work" is used as an adjective.-->
+    <string name="work_profile_toggle_label">Work profile</string>
+    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
+    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
+    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
+    <string name="bottom_work_tab_user_education_body">Each work app has a badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
+    <!-- This string is in the work profile tab when a user has All Apps open on their phone. It describes the label of a toggle, "Work profile," as being managed by the user's employer.
+    "Organization" is used to represent a variety of businesses, non-profits, and educational institutions).-->
+    <string name="work_mode_on_label">Managed by your organization</string>
+    <!-- This string appears under a the label of a toggle in the work profile tab on a user's phone. It describes the status of the toggle, "Work profile," when it's turned off. "Work profile" means a separate profile on a user's phone that's speficially for their work apps and is managed by their company.-->
+    <string name="work_mode_off_label">Notifications and apps are off</string>
+    <string name="bottom_work_tab_user_education_close_button">Close</string>
+    <string name="bottom_work_tab_user_education_closed">Closed</string>
 
     <!-- Dialogs -->
     <string name="on">On</string>
@@ -471,10 +491,16 @@
     <string name="pref_title__notification_count">Show Notification Count</string>
     <string name="pref_title__predictive_apps_num">Predicted apps number</string>
     <string name="pref_title__label_two_lines">Icon labels use two lines</string>
-    <string name="pref_summary__advanced">Languaje and backup</string>
+    <string name="pref_title__gestures">Gestures</string>
+    <string name="pref_title__pull_down_action">Pull down action</string>
+
+    <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
+
+    <string name="pref_summary__advanced">Language and backup</string>
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
     <string name="pref_summary__developer">Restart the app if it is needed</string>
     <string name="pref_summary__folder">Change folder shape and color</string>
+    <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
     <string name="pref_summary__inputs">Configure gestures</string>
     <string name="pref_summary__language">Change language of this app</string>
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
@@ -495,4 +521,50 @@
     <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
     <string name="pref_key__overall_animation_speed_modifier" translatable="false">pref_key__overall_animation_speed_modifier</string>
     <string name="pref_key__language" translatable="false">pref_key__language</string>
+
+    <string name="pull_down_do_nothing">Do nothing</string>
+    <string name="pull_down_notis">Show notifications</string>
+    <string name="pull_down_search">Open search</string>
+    <string name="pull_down_apps_search">Apps search</string>
+
+    <!-- PREFERENCES ABOUT-->
+    <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
+    <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>
+    <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
+    <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
+    <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
+    <string name="pref_key__more_info__help" translatable="false">pref_key__more_info__help</string>
+    <string name="pref_key__more_info__rate_app" translatable="false">pref_key__more_info__rate_app</string>
+    <string name="pref_key__more_info__translate" translatable="false">pref_key__more_info__translate</string>
+    <string name="pref_key__more_info__android_contribution_guide" translatable="false">pref_key__more_info__android_contribution_guide</string>
+    <string name="pref_key__more_info__donate" translatable="false">pref_key__more_info__donate</string>
+    <string name="pref_key__more_info__project_contribution_info" translatable="false">pref_key__more_info__project_contribution_info</string>
+    <string name="pref_key__more_info__project_team" translatable="false">pref_key__more_info__project_team</string>
+    <string name="pref_key__more_info__contributors_public_info" translatable="false">pref_key__more_info__contributors_public_info</string>
+    <string name="pref_key__more_info__copy_build_information" translatable="false">pref_key__more_info__copy_build_information</string>
+    <string name="pref_key__more_info__app" translatable="false">pref_key__more_info__app</string>
+    <string name="app_license_name" translatable="false">Apache 2.0</string>
+    <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
+    <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
+    <string name="app_web_url" translatable="false">https://github.com/otakuhqz</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
+    <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
+    <string name="app_contribution_info_url" translatable="false">https://github.com/otakuhqz/zimlx/blob/master/README.md#contributions</string>
+    <string name="contributors">Contributors</string>
+    <string name="changelog">Changelog</string>
+    <string name="more">More</string>
+    <string name="rate_the_app">Rate this app</string>
+    <string name="contribute">Contribute</string>
+    <string name="donate">Donate</string>
+    <string name="bug_reports">Report bugs</string>
+    <string name="help">Help</string>
+    <string name="project_team">Project Team</string>
+    <string name="project_license">Project License</string>
+    <string name="more_info_licence">Open Source</string>
+    <string name="help_this_app">More information and help about this app</string>
+    <string name="more_info_support">More information on donating or otherwise supporting this project</string>
+    <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
+    <string name="source_code">Source Code</string>
+    <string name="licenses">Licenses</string>
+    <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
 </resources>

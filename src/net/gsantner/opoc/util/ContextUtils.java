@@ -173,6 +173,17 @@ public class ContextUtils {
         }
     }
 
+    public String getAppVersionCode() {
+        try {
+            PackageManager manager = _context.getPackageManager();
+            PackageInfo info = manager.getPackageInfo(getPackageName(), 0);
+            return String.valueOf(info.versionCode);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+            return "?";
+        }
+    }
+
     public String getAppInstallationSource() {
         String src = null;
         try {

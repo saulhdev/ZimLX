@@ -99,6 +99,8 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private SpringAnimationHandler mSpringAnimationHandler;
     private NotificationState mNotificationState;
 
+    private int allAppsAlpha;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);
@@ -356,7 +358,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private void updateAllAppsBg(float progress) {
         // gradient
         if (mGradientView == null) {
-            mGradientView = (GradientView) mLauncher.findViewById(R.id.gradient_bg);
+            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
             mGradientView.setVisibility(View.VISIBLE);
         }
         mGradientView.setProgress(progress, mShiftRange);

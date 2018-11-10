@@ -80,17 +80,22 @@ import java.util.concurrent.Executor;
  */
 public class LauncherModel extends BroadcastReceiver
         implements LauncherAppsCompat.OnAppsChangedCallbackCompat {
+    private static final boolean DEBUG_RECEIVER = false;
+
     static final String TAG = "Launcher.Model";
+
+    private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     @Thunk
     static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk
+    LoaderTask mLoaderTask;
     /**
      * All the static data should be accessed on the background thread, A lock should be acquired
      * on this object when accessing any data from this model.
      */
     static final BgDataModel sBgDataModel = new BgDataModel();
-    private static final boolean DEBUG_RECEIVER = false;
 
     static {
         sWorkerThread.start();
@@ -100,20 +105,32 @@ public class LauncherModel extends BroadcastReceiver
     final LauncherAppState mApp;
     @Thunk
     final Object mLock = new Object();
-    private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
-    // < only access in worker thread >
-    private final AllAppsList mBgAllAppsList;
-    @Thunk
-    LoaderTask mLoaderTask;
-    @Thunk
-    boolean mIsLoaderTaskRunning;
-    @Thunk
-    WeakReference<Callbacks> mCallbacks;
+
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
     // our monitoring of the package manager provides all updates and we never
     // need to do a requery. This is only ever touched from the loader thread.
     private boolean mModelLoaded;
+    // < only access in worker thread >
+    private final AllAppsList mBgAllAppsList;
+    @Thunk
+    boolean mIsLoaderTaskRunning;
+    @Thunk
+    WeakReference<Callbacks> mCallbacks;
+
+    /**
+     * Runs the specified runnable immediately if called from the worker thread, otherwise it is
+     * posted on the worker thread handler.
+     */
+    private static void runOnWorkerThread(Runnable r) {
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            // If we are not on the worker thread, then post to the worker handler
+            sWorker.post(r);
+        }
+    }
+
     // Runnable to check if the shortcuts permission has changed.
     private final Runnable mShortcutPermissionCheckRunnable = new Runnable() {
         @Override
@@ -128,22 +145,52 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
+    /**
+     * Loads the workspace screen ids in an ordered list.
+     */
+    public static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+
+        // Get screens ordered by rank.
+        return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
+                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+    }
+
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
         mApp = app;
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
     }
 
     /**
-     * Runs the specified runnable immediately if called from the worker thread, otherwise it is
-     * posted on the worker thread handler.
+     * @return the looper for the worker thread which can be used to start background tasks.
      */
-    private static void runOnWorkerThread(Runnable r) {
-        if (sWorkerThread.getThreadId() == Process.myTid()) {
-            r.run();
-        } else {
-            // If we are not on the worker thread, then post to the worker handler
-            sWorker.post(r);
+    public static Looper getWorkerLooper() {
+        return sWorkerThread.getLooper();
+    }
+
+    public static void setWorkerPriority(final int priority) {
+        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
+    }
+
+    public boolean isModelLoaded() {
+        synchronized (mLock) {
+            return mModelLoaded && mLoaderTask == null;
         }
+    }
+
+    public void setPackageState(PackageInstallInfo installInfo) {
+        enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
+    }
+
+    /**
+     * Updates the icons and label of all pending icons for the provided package name.
+     */
+    public void updateSessionDisplayInfo(final String packageName) {
+        HashSet<String> packages = new HashSet<>();
+        packages.add(packageName);
+        enqueueModelUpdateTask(new CacheDataUpdatedTask(
+                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
     }
 
     static void checkItemInfoLocked(
@@ -243,61 +290,6 @@ public class LauncherModel extends BroadcastReceiver
             }
         };
         runOnWorkerThread(r);
-    }
-
-    /**
-     * Loads the workspace screen ids in an ordered list.
-     */
-    public static ArrayList<Long> loadWorkspaceScreensDb(Context context) {
-        final ContentResolver contentResolver = context.getContentResolver();
-        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
-
-        // Get screens ordered by rank.
-        return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
-                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
-    }
-
-    /**
-     * @return the looper for the worker thread which can be used to start background tasks.
-     */
-    public static Looper getWorkerLooper() {
-        return sWorkerThread.getLooper();
-    }
-
-    public static void setWorkerPriority(final int priority) {
-        Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
-    }
-
-    public boolean isModelLoaded() {
-        synchronized (mLock) {
-            return mModelLoaded && mLoaderTask == null;
-        }
-    }
-
-    public void setPackageState(PackageInstallInfo installInfo) {
-        enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
-    }
-
-    /**
-     * Updates the icons and label of all pending icons for the provided package name.
-     */
-    public void updateSessionDisplayInfo(final String packageName) {
-        HashSet<String> packages = new HashSet<>();
-        packages.add(packageName);
-        enqueueModelUpdateTask(new CacheDataUpdatedTask(
-                CacheDataUpdatedTask.OP_SESSION_UPDATE, Process.myUserHandle(), packages));
-    }
-
-    /**
-     * Adds the provided items to the workspace.
-     */
-    public void addAndBindAddedWorkspaceItems(
-            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
-        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
-    }
-
-    public ModelWriter getWriter(boolean hasVerticalHotseat) {
-        return new ModelWriter(mApp.getContext(), sBgDataModel, hasVerticalHotseat);
     }
 
     /**
@@ -454,7 +446,6 @@ public class LauncherModel extends BroadcastReceiver
 
     /**
      * Starts the loader. Tries to bind {@params synchronousBindPage} synchronously if possible.
-     *
      * @return true if the page could be bound synchronously.
      */
     public boolean startLoader(int synchronousBindPage) {
@@ -514,6 +505,14 @@ public class LauncherModel extends BroadcastReceiver
         }
     }
 
+    /**
+     * Adds the provided items to the workspace.
+     */
+    public void addAndBindAddedWorkspaceItems(
+            Provider<List<Pair<ItemInfo, Object>>> appsProvider) {
+        enqueueModelUpdateTask(new AddWorkspaceItemsTask(appsProvider));
+    }
+
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
         enqueueModelUpdateTask(new BaseModelUpdateTask() {
             @Override
@@ -531,6 +530,10 @@ public class LauncherModel extends BroadcastReceiver
                 }
             }
         });
+    }
+
+    public ModelWriter getWriter(boolean hasVerticalHotseat) {
+        return new ModelWriter(mApp.getContext(), sBgDataModel, hasVerticalHotseat);
     }
 
     public LoaderTransaction beginLoader(LoaderTask task) throws CancellationException {
@@ -562,6 +565,61 @@ public class LauncherModel extends BroadcastReceiver
     public void enqueueModelUpdateTask(ModelUpdateTask task) {
         task.init(mApp, this, sBgDataModel, mBgAllAppsList, mUiExecutor);
         runOnWorkerThread(task);
+    }
+
+    public interface Callbacks extends LauncherAppWidgetHost.ProviderChangedListener {
+        boolean setLoadOnResume();
+
+        int getCurrentWorkspaceScreen();
+
+        void clearPendingBinds();
+
+        void startBinding();
+
+        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
+
+        void bindScreens(ArrayList<Long> orderedScreenIds);
+
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+
+        void finishBindingItems();
+
+        void bindAllApplications(ArrayList<AppInfo> apps);
+
+        void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
+
+        void bindAppsAdded(ArrayList<Long> newScreens,
+                           ArrayList<ItemInfo> addNotAnimated,
+                           ArrayList<ItemInfo> addAnimated);
+
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
+
+        void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
+
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+
+        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
+
+        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
+
+        void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
+
+        void onPageBoundSynchronously(int page);
+
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+
+        void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
+    }
+
+    /**
+     * A task to be executed on the current callbacks on the UI thread.
+     * If there is no current callbacks, the task is ignored.
+     */
+    public interface CallbackTask {
+
+        void execute(Callbacks callbacks);
     }
 
     public void updateAndBindShortcutInfo(final ShortcutInfo si, final ShortcutInfoCompat info) {
@@ -613,61 +671,6 @@ public class LauncherModel extends BroadcastReceiver
 
     public Callbacks getCallback() {
         return mCallbacks != null ? mCallbacks.get() : null;
-    }
-
-    public interface Callbacks extends LauncherAppWidgetHost.ProviderChangedListener {
-        public boolean setLoadOnResume();
-
-        public int getCurrentWorkspaceScreen();
-
-        public void clearPendingBinds();
-
-        public void startBinding();
-
-        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
-
-        public void bindScreens(ArrayList<Long> orderedScreenIds);
-
-        public void finishFirstPageBind(ViewOnDrawExecutor executor);
-
-        public void finishBindingItems();
-
-        public void bindAllApplications(ArrayList<AppInfo> apps);
-
-        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
-
-        public void bindAppsAdded(ArrayList<Long> newScreens,
-                                  ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated);
-
-        public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
-
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-
-        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
-
-        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-
-        public void bindAllWidgets(MultiHashMap<PackageItemInfo, WidgetItem> widgets);
-
-        public void onPageBoundSynchronously(int page);
-
-        public void executeOnNextDraw(ViewOnDrawExecutor executor);
-
-        public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
-    }
-
-    /**
-     * A task to be executed on the current callbacks on the UI thread.
-     * If there is no current callbacks, the task is ignored.
-     */
-    public interface CallbackTask {
-
-        void execute(Callbacks callbacks);
     }
 
     /**

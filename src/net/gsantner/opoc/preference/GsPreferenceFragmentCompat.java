@@ -61,6 +61,8 @@ import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.android.launcher3.Launcher;
+
 import net.gsantner.opoc.util.Callback;
 import net.gsantner.opoc.util.ContextUtils;
 
@@ -147,7 +149,7 @@ public abstract class GsPreferenceFragmentCompat<AS extends SharedPreferencesPro
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         Activity activity = getActivity();
         _appSettings = getAppSettings(activity);
-        _cu = new ContextUtils(activity);
+        _cu = new ContextUtils(Launcher.mContext);
         getPreferenceManager().setSharedPreferencesName(getSharedPreferencesName());
         addPreferencesFromResource(getPreferenceResourceForInflation());
         if (activity != null && activity.getTheme() != null) {

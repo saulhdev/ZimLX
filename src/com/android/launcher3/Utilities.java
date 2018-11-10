@@ -59,6 +59,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.ShadowGenerator;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
@@ -68,6 +69,7 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -430,6 +432,13 @@ public final class Utilities {
         return (int) Math.ceil(fm.bottom - fm.top);
     }
 
+    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
+        Paint p = new Paint();
+        p.setTextSize(textSizePx);
+        Paint.FontMetrics fm = p.getFontMetrics();
+        int result = (int) Math.ceil(fm.bottom - fm.top);
+        return twoLines ? result * 2 : result;
+    }
     /**
      * Convenience println with multiple args.
      */
@@ -481,12 +490,12 @@ public final class Utilities {
     }
 
     public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
                 size, metrics));
     }
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 
@@ -743,5 +752,37 @@ public final class Utilities {
         config.locale = locale;
         Resources baseResources = activity.getBaseContext().getResources();
         baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
+    }
+
+    public static Bitmap addShadowToIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance(Launcher.mContext).recreateIcon(icon);
+    }
+
+    public static Bitmap getShadowForIcon(Bitmap icon, int size) {
+        return ShadowGenerator.getInstance(Launcher.mContext).createShadow(icon, size);
+    }
+
+    public static boolean isAnimatedClock(Context context, ComponentName componentName) {
+        return Utilities.getZimPrefs(context).getAnimatedClockIcon() &&
+                Utilities.isComponentClock(componentName, !Utilities.getZimPrefs(context).getAnimatedClockIconAlternativeClockApps());
+    }
+
+    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
+        if (componentName == null) {
+            return false;
+        }
+
+        if (stockAppOnly) {
+            return "com.google.android.deskclock/com.android.deskclock.DeskClock".equals(componentName.flattenToString());
+        }
+
+        // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
+        // Or that contain .clock./.deskclock or end with those?
+        ArrayList<String> clockApps = new ArrayList<>();
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClock"); // Stock
+        clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
+        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
+
+        return clockApps.contains(componentName.flattenToString());
     }
 }

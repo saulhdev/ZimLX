@@ -67,4 +67,8 @@ public abstract class UserManagerCompat {
     public abstract boolean isUserUnlocked(UserHandle user);
 
     public abstract boolean isDemoUser();
+
+    public abstract boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user);
+
+    public abstract boolean isAnyProfileQuietModeEnabled();
 }

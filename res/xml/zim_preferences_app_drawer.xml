@@ -11,6 +11,7 @@
         android:entries="@array/predictive_apps_values"
         android:entryValues="@array/predictive_apps_values"
         android:key="pref_predictive_apps_values"
+        android:dependency="pref_show_predictions"
         android:persistent="true"
         android:summary="%s"
         android:title="@string/pref_title__predictive_apps_num" />
@@ -28,7 +29,7 @@
 
     <SwitchPreference
         android:defaultValue="true"
-        android:key="pref_iconLabelsInTwoLines"
+        android:key="pref_key__labels_two_lines"
         android:persistent="true"
         android:title="@string/pref_title__label_two_lines" />
 </PreferenceScreen>

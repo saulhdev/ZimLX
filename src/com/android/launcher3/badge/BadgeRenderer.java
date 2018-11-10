@@ -20,7 +20,6 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -29,6 +28,7 @@ import android.support.annotation.Nullable;
 import android.util.SparseArray;
 
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.ShadowGenerator;
 
@@ -39,7 +39,7 @@ import com.android.launcher3.graphics.ShadowGenerator;
  */
 public class BadgeRenderer {
 
-    private static final boolean DOTS_ONLY = true;
+    private static final boolean DOTS_ONLY = false;
 
     // The badge sizes are defined as percentages of the app icon size.
     private static final float SIZE_PERCENTAGE = 0.38f;
@@ -65,6 +65,9 @@ public class BadgeRenderer {
             | Paint.FILTER_BITMAP_FLAG);
     private final SparseArray<Bitmap> mBackgroundsWithShadow;
 
+    private boolean showNotificationCount;
+    private int backgroundColor;
+
     public BadgeRenderer(Context context, int iconSizePx) {
         mContext = context;
         Resources res = context.getResources();
@@ -83,6 +86,9 @@ public class BadgeRenderer {
         mTextHeight = tempTextHeight.height();
 
         mBackgroundsWithShadow = new SparseArray<>(3);
+
+        showNotificationCount = Utilities.getZimPrefs(context).getNotificationCount();
+
     }
 
     /**
@@ -98,6 +104,7 @@ public class BadgeRenderer {
     public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
                      Rect iconBounds, float badgeScale, Point spaceForOffset) {
         mTextPaint.setColor(palette.textColor);
+        showNotificationCount = Utilities.getZimPrefs(mContext).getNotificationCount();
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;
         Shader icon = badgeInfo == null ? null : badgeInfo.getNotificationIconForBadge(
@@ -105,11 +112,14 @@ public class BadgeRenderer {
         String notificationCount = badgeInfo == null ? "0"
                 : String.valueOf(badgeInfo.getNotificationCount());
         int numChars = notificationCount.length();
-        int width = DOTS_ONLY ? mSize : mSize + mCharSize * (numChars - 1);
+        int width = showNotificationCount ? mSize : mSize + mCharSize * (numChars - 1);
+        //int width = DOTS_ONLY ? mSize : mSize + mCharSize * (numChars - 1);
         // Lazily load the background with shadow.
         Bitmap backgroundWithShadow = mBackgroundsWithShadow.get(numChars);
+
+        backgroundColor = Utilities.getZimPrefs(mContext).getNotificationBackground();
         if (backgroundWithShadow == null) {
-            backgroundWithShadow = new ShadowGenerator.Builder(Color.WHITE)
+            backgroundWithShadow = new ShadowGenerator.Builder(backgroundColor)
                     .setupBlurForSize(mSize).createPill(width, mSize);
             mBackgroundsWithShadow.put(numChars, backgroundWithShadow);
         }
@@ -117,9 +127,13 @@ public class BadgeRenderer {
         // We draw the badge relative to its center.
         int badgeCenterX = iconBounds.right - width / 2;
         int badgeCenterY = iconBounds.top + mSize / 2;
-        boolean isText = !DOTS_ONLY && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
-        boolean isIcon = !DOTS_ONLY && icon != null;
+        //boolean isText = !DOTS_ONLY && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
+        //boolean isIcon = !DOTS_ONLY && icon != null;
+        //boolean isDot = !(isText || isIcon);
+        boolean isText = showNotificationCount && badgeInfo != null && badgeInfo.getNotificationCount() != 0;
+        boolean isIcon = showNotificationCount && icon != null;
         boolean isDot = !(isText || isIcon);
+
         if (isDot) {
             badgeScale *= DOT_SCALE;
         }

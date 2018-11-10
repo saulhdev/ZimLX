@@ -18,8 +18,7 @@
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/launcher"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
+    android:layout_height="match_parent">
 
     <android.support.v4.widget.DrawerLayout
         android:id="@+id/drawer_layout"
@@ -33,7 +32,6 @@
             android:background="?attr/workspaceStatusBarScrim"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:fitsSystemWindows="true"
             android:importantForAccessibility="no">
 
             <!-- The workspace contains 5 screens of cells -->
@@ -44,7 +42,7 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:theme="@style/HomeScreenElementTheme"
-                launcher:pageIndicator="@+id/page_indicator"></com.android.launcher3.Workspace>
+                launcher:pageIndicator="@+id/page_indicator" />
 
             <include layout="@layout/all_apps_bg" />
 
@@ -53,8 +51,7 @@
                 android:id="@+id/hotseat"
                 layout="@layout/hotseat"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                launcher:layout_ignoreInsets="true" />
+                android:layout_height="match_parent" />
 
             <include
                 android:id="@+id/overview_panel"
@@ -92,6 +89,7 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:id="@+id/dlview"
             android:background="@color/colorPrimary">
 
             <org.zimmob.zimlx.minibar.SwipeListView

@@ -1,18 +1,17 @@
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.2.50'
-    // https://github.com/JakeWharton/butterknife/releases
+    ext.kotlin_version = '1.2.51'
     ext.version_library_butterknife = "8.8.1"
     ext.version_plugin_kotlin = "1.2.50"
     ext.enable_plugin_kotlin = true
     repositories {
-        mavenCentral()
-        jcenter()
         google()
+        jcenter()
+        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.1.4'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -20,9 +19,13 @@ buildscript {
 }
 
 apply plugin: 'com.android.application'
-apply plugin: 'kotlin-android'
-apply plugin: 'kotlin-kapt'
 apply plugin: 'com.google.protobuf'
+
+if (enable_plugin_kotlin) {
+    apply plugin: 'kotlin-android'
+    apply plugin: 'kotlin-android-extensions'
+    apply plugin: 'kotlin-kapt'
+}
 
 android {
     compileSdkVersion 27
@@ -36,6 +39,7 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
+
     def versionPropsFile = file('version.properties')
 
     if (versionPropsFile.canRead()) {
@@ -52,17 +56,18 @@ android {
             minSdkVersion 21
             targetSdkVersion 27
 
-            /*if (System.getenv("TRAVIS") == "true") {
-                versionCode = Integer.valueOf(System.getenv("TRAVIS_BUILD_NUMBER"))
-                versionName = System.getenv("MAJOR_MINOR") + (System.getenv("DRONE") ? "-" : ".") + System.getenv("TRAVIS_BUILD_NUMBER")
-            } else {
-                versionCode 1
-                versionName "2.0"
-            }*/
+            buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
+            buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
+            buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+            buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
+            buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
+            buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
+            applicationId "org.zimmob.zimlx"
             versionName name
             versionCode code
 
             testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+            vectorDrawables.useSupportLibrary = true
         }
     } else {
         throw new GradleException("Could not read version.properties!")
@@ -102,8 +107,8 @@ android {
 
         dev {
             dimension "build"
-            applicationIdSuffix ".dev"
-            versionNameSuffix "-dev"
+            //applicationIdSuffix ".dev"
+            //versionNameSuffix "-dev"
         }
 
         ci {
@@ -150,7 +155,6 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -164,9 +168,9 @@ afterEvaluate {
 }
 
 repositories {
-    mavenCentral()
-    jcenter()
     google()
+    jcenter()
+    mavenCentral()
 }
 
 final String SUPPORT_LIBS_VERSION = '27.0.1'
@@ -234,9 +238,16 @@ protobuf {
     }
 }
 
+final String[] ROOT_TO_RAW_COPY_FILES = ["README.md", "CHANGELOG.md", "CONTRIBUTORS.md", "LICENSE.txt", "LICENSE.md", "LICENSE"]
+task copyRepoFiles(type: Copy) {
+    from rootProject.files(ROOT_TO_RAW_COPY_FILES)
+    into "res/raw"
+    rename { String fileName -> fileName.replace(fileName, fileName.toLowerCase()) }
+}
+
 @SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
 // Returns used android languages as a buildConfig array: {'de', 'it', ..}"
-static String findUsedAndroidLocales() {
+static String findAndroidLocales() {
     Set<String> langs = new HashSet<>()
     new File('.').eachFileRecurse(groovy.io.FileType.DIRECTORIES) {
         final foldername = it.name
@@ -251,7 +262,7 @@ static String findUsedAndroidLocales() {
     return '{' + langs.collect { "\"${it}\"" }.join(",") + '}'
 }
 
-ext.getGitHash = { ->
+static String getGitHash(){
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -271,5 +282,3 @@ static String getBuildDate() {
     RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
     return RFC3339_LIKE.format(new Date())
 }
-
-apply plugin: 'kotlin-android-extensions'

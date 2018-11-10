@@ -23,13 +23,12 @@ import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static final int MAX_PREDICTIONS = 10;
+    private static int MAX_PREDICTIONS = 10;
     private static final int BOOST_ON_OPEN = 9;
     private static final String PREDICTION_SET = "pref_prediction_set";
     private static final String PREDICTION_PREFIX = "pref_prediction_count_";
@@ -77,6 +76,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         mPrefs = Utilities.getPrefs(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mPackageManager = context.getPackageManager();
+        MAX_PREDICTIONS = Integer.valueOf(Utilities.getZimPrefs(context).getNumPredictedApps());
     }
 
     List<ComponentKeyMapper<AppInfo>> getPredictions() {
@@ -86,12 +86,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
             List<String> predictionList = new ArrayList<>(getStringSetCopy());
 
-            Collections.sort(predictionList, new Comparator<String>() {
-                @Override
-                public int compare(String o1, String o2) {
-                    return Integer.compare(getLaunchCount(o2), getLaunchCount(o1));
-                }
-            });
+            Collections.sort(predictionList, (o1, o2) -> Integer.compare(getLaunchCount(o2), getLaunchCount(o1)));
 
             for (String prediction : predictionList) {
                 list.add(getComponentFromString(prediction));
@@ -105,7 +100,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                         if (componentInfo != null) {
                             ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
                             if (!predictionList.contains(key.toString())) {
-                                list.add(new ComponentKeyMapper<AppInfo>(key));
+                                list.add(new ComponentKeyMapper<>(key));
                             }
                         }
                     }

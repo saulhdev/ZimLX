@@ -14,17 +14,18 @@ import android.view.ViewDebug;
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
-public class LauncherRootView extends InsettableFrameLayout {
 
-    private final Paint mOpaquePaint;
-    private final Rect mConsumedInsets = new Rect();
+public class LauncherRootView extends InsettableFrameLayout {
     private final Launcher mLauncher;
+    private final Paint mOpaquePaint;
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mDrawSideInsetBar;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mLeftInsetBarWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mRightInsetBarWidth;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private final Rect mConsumedInsets = new Rect();
     private View mAlignedView;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
@@ -33,6 +34,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         mOpaquePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mOpaquePaint.setColor(Color.BLACK);
         mOpaquePaint.setStyle(Paint.Style.FILL);
+
         mLauncher = Launcher.getLauncher(context);
     }
 
@@ -49,10 +51,8 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
+        boolean rawInsetsChanged = !mInsets.equals(insets);
         mConsumedInsets.setEmpty();
-        mDrawSideInsetBar = (insets.right > 0 || insets.left > 0) &&
-                (!Utilities.ATLEAST_MARSHMALLOW ||
-                        getContext().getSystemService(ActivityManager.class).isLowRamDevice());
         boolean drawInsetBar = false;
         if (mLauncher.isInMultiWindowModeCompat()
                 && (insets.left > 0 || insets.right > 0 || insets.bottom > 0)) {
@@ -73,7 +73,9 @@ public class LauncherRootView extends InsettableFrameLayout {
         mLauncher.getSystemUiController().updateUiState(
                 UI_STATE_ROOT_VIEW, drawInsetBar ? FLAG_DARK_NAV : 0);
 
-        boolean rawInsetsChanged = !mInsets.equals(insets);
+        // Update device profile before notifying th children.
+        mLauncher.getDeviceProfile().updateInsets(insets);
+        boolean resetState = !insets.equals(mInsets);
         setInsets(insets);
 
         if (mAlignedView != null) {
@@ -88,7 +90,6 @@ public class LauncherRootView extends InsettableFrameLayout {
                 mAlignedView.setLayoutParams(lp);
             }
         }
-
         if (rawInsetsChanged) {
             // Update the grid again
             Launcher launcher = Launcher.getLauncher(getContext());
@@ -99,18 +100,33 @@ public class LauncherRootView extends InsettableFrameLayout {
     }
 
     @Override
+    public void setInsets(Rect insets) {
+        // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
+        // modifying child layout params.
+        if (!insets.equals(mInsets)) {
+            super.setInsets(insets);
+        }
+    }
+
+    public void dispatchInsets() {
+        mLauncher.getDeviceProfile().updateInsets(mInsets);
+        super.setInsets(mInsets);
+    }
+    @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
 
         // If the right inset is opaque, draw a black rectangle to ensure that is stays opaque.
-        if (mDrawSideInsetBar) {
-            if (mRightInsetBarWidth > 0) {
-                int width = getWidth();
-                canvas.drawRect(width - mRightInsetBarWidth, 0, width, getHeight(), mOpaquePaint);
-            }
-            if (mLeftInsetBarWidth > 0) {
-                canvas.drawRect(0, 0, mLeftInsetBarWidth, getHeight(), mOpaquePaint);
-            }
+        if (mConsumedInsets.right > 0) {
+            int width = getWidth();
+            canvas.drawRect(width - mConsumedInsets.right, 0, width, getHeight(), mOpaquePaint);
+        }
+        if (mConsumedInsets.left > 0) {
+            canvas.drawRect(0, 0, mConsumedInsets.left, getHeight(), mOpaquePaint);
+        }
+        if (mConsumedInsets.bottom > 0) {
+            int height = getHeight();
+            canvas.drawRect(0, height - mConsumedInsets.bottom, getWidth(), height, mOpaquePaint);
         }
     }
 }

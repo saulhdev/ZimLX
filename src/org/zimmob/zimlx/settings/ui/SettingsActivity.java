@@ -96,7 +96,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Utilities.setLightUi(getWindow());
+        //Utilities.setLightUi(getWindow());
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
@@ -256,63 +256,73 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             mContext = getActivity();
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
-            if (getContent() == R.xml.zim_preferences_desktop) {
-                findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
-
-                if (SmartspaceController.get(mContext).cY()) {
-                    findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                } else {
-                    getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
-                }
-
-                ContentResolver resolver = getActivity().getContentResolver();
-
-                // Setup allow rotation preference
-                Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
-                if (getResources().getBoolean(R.bool.allow_rotation)) {
-                    // Launcher supports rotation by default. No need to show this setting.
-                    getPreferenceScreen().removePreference(rotationPref);
-                } else {
-                    mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
-
-                    // Register a content observer to listen for system setting changes while
-                    // this UI is active.
-                    mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
-
-                    // Initialize the UI once
-                    rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
-                }
-
-                ButtonPreference iconBadgingPref =
-                        (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-                if (!Utilities.ATLEAST_OREO) {
-                    getPreferenceScreen().removePreference(
-                            findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
-                }
-                if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                    getPreferenceScreen().removePreference(iconBadgingPref);
-                } else {
-                    // Listen to system notification badge settings while this UI is active.
-                    mIconBadgingObserver = new IconBadgingObserver(
-                            iconBadgingPref, resolver, getFragmentManager());
-                    mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
-                }
-            } else if (getContent() == R.xml.zim_preferences_theme) {
-                Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
-                if (iconShapeOverride != null) {
-                    if (IconShapeOverride.isSupported(getActivity())) {
-                        IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
+            int preference = getContent();
+            ContentResolver resolver = getActivity().getContentResolver();
+            switch (preference) {
+                case R.xml.zim_preferences_desktop:
+                    if (SmartspaceController.get(mContext).cY()) {
+                        findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
                     } else {
-                        getPreferenceScreen().removePreference(iconShapeOverride);
+                        getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
                     }
-                }
 
-                mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
-                mIconPackPref.setOnPreferenceChangeListener(this);
-            } else if (getContent() == R.xml.zim_preferences_app_drawer) {
-                findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
-            } else if (getContent() == R.xml.zim_preferences_dev_options) {
-                findPreference("kill").setOnPreferenceClickListener(this);
+                    break;
+
+                case R.xml.zim_preferences_theme:
+                    Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
+                    if (iconShapeOverride != null) {
+                        if (IconShapeOverride.isSupported(getActivity())) {
+                            IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
+                        } else {
+                            getPreferenceScreen().removePreference(iconShapeOverride);
+                        }
+                    }
+
+                    mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
+                    mIconPackPref.setOnPreferenceChangeListener(this);
+                    break;
+
+                case R.xml.zim_preferences_app_drawer:
+                    findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                    break;
+                case R.xml.zim_preferences_dev_options:
+                    findPreference("kill").setOnPreferenceClickListener(this);
+                    break;
+
+                case R.xml.zim_preferences_behavior:
+                    findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
+                    // Setup allow rotation preference
+                    Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
+                    if (getResources().getBoolean(R.bool.allow_rotation)) {
+                        // Launcher supports rotation by default. No need to show this setting.
+                        getPreferenceScreen().removePreference(rotationPref);
+                    } else {
+                        mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
+
+                        // Register a content observer to listen for system setting changes while
+                        // this UI is active.
+                        mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
+
+                        // Initialize the UI once
+                        rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+                    }
+                    break;
+                case R.xml.zim_preferences_notification:
+                    ButtonPreference iconBadgingPref =
+                            (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
+                    if (!Utilities.ATLEAST_OREO) {
+                        getPreferenceScreen().removePreference(
+                                findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+                    }
+                    if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                        getPreferenceScreen().removePreference(iconBadgingPref);
+                    } else {
+                        // Listen to system notification badge settings while this UI is active.
+                        mIconBadgingObserver = new IconBadgingObserver(
+                                iconBadgingPref, resolver, getFragmentManager());
+                        mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+                    }
+                    break;
             }
         }
 

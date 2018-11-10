@@ -28,6 +28,7 @@ import org.zimmob.zimlx.util.ThemeActivity;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -57,7 +58,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         ZimPreferences prefs = Utilities.getZimPrefs(this);
         toolbar.setBackgroundColor(prefs.getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.minibar);
 
         _adapter = new FastItemAdapter<>();
@@ -86,8 +87,22 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);
+        updateUpButton();
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        updateUpButton();
+    }
+
+    private void updateUpButton() {
+        updateUpButton(getSupportFragmentManager().getBackStackEntryCount() != 0);
+    }
+
+    private void updateUpButton(boolean enabled) {
+        Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(enabled);
+    }
     @Override
     protected void onPause() {
         ArrayList<String> minibarArrangement = new ArrayList<>();
@@ -141,6 +156,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             return R.layout.item_minibar_edit;
         }
 
+        @NonNull
         @Override
         public ViewHolder getViewHolder(@NonNull View v) {
             return new ViewHolder(v);
@@ -159,7 +175,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             super.bindView(holder, payloads);
         }
 
-        public static class ViewHolder extends RecyclerView.ViewHolder {
+        static class ViewHolder extends RecyclerView.ViewHolder {
             TextView _tv;
             TextView _tv2;
             ImageView _iv;

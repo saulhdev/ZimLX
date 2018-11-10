@@ -85,6 +85,16 @@ public class UserManagerCompatVL extends UserManagerCompat {
     }
 
     @Override
+    public boolean requestQuietModeEnabled(boolean enableQuietMode, UserHandle user) {
+        return false;
+    }
+
+    @Override
+    public boolean isAnyProfileQuietModeEnabled() {
+        return false;
+    }
+
+    @Override
     public void enableAndResetCache() {
         synchronized (this) {
             mUsers = new LongArrayMap<>();
@@ -109,7 +119,7 @@ public class UserManagerCompatVL extends UserManagerCompat {
         }
 
         List<UserHandle> users = mUserManager.getUserProfiles();
-        return users == null ? Collections.<UserHandle>emptyList() : users;
+        return users == null ? Collections.emptyList() : users;
     }
 
     @Override

@@ -360,6 +360,7 @@ public class DeviceProfile {
     }
 
     private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
+        boolean iconLabelsInTwoLines = Utilities.getZimPrefs(mContext).getIconLabelsInTwoLines();
         // Workspace
         float invIconSizePx = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
         iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
@@ -378,12 +379,23 @@ public class DeviceProfile {
             iconDrawablePaddingPx = cellYPadding;
         }
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
+        /*if (!Utilities.getZimPrefs(mContext).getHideAppLabels()) {
+            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
+        }*/
 
         // All apps
         allAppsIconTextSizePx = iconTextSizePx;
         allAppsIconSizePx = iconSizePx;
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
+        /*if (!Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
+            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx, iconLabelsInTwoLines);
+        }
+
+        cellHeightPx = iconSizePx;
+        if (!Utilities.getZimPrefs(mContext).getHideAppLabels()) {
+            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
+        }*/
 
         if (isVerticalBarLayout()) {
             // Always hide the Workspace text with vertical bar layout.
@@ -648,14 +660,14 @@ public class DeviceProfile {
         searchBar.setLayoutParams(lp);
 
         // Layout the workspace
-        PagedView workspace = (PagedView) launcher.findViewById(R.id.workspace);
+        PagedView workspace = launcher.findViewById(R.id.workspace);
         Rect workspacePadding = getWorkspacePadding(null);
         workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
                 workspacePadding.bottom);
         workspace.setPageSpacing(getWorkspacePageSpacing());
 
         // Layout the hotseat
-        Hotseat hotseat = (Hotseat) launcher.findViewById(R.id.hotseat);
+        Hotseat hotseat = launcher.findViewById(R.id.hotseat);
         lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
         // We want the edges of the hotseat to line up with the edges of the workspace, but the
         // icons in the hotseat are a different size, and so don't line up perfectly. To account for
