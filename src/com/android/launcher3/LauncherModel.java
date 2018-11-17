@@ -89,6 +89,7 @@ public class LauncherModel extends BroadcastReceiver
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     @Thunk
     static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+
     @Thunk
     LoaderTask mLoaderTask;
     /**
@@ -96,15 +97,15 @@ public class LauncherModel extends BroadcastReceiver
      * on this object when accessing any data from this model.
      */
     static final BgDataModel sBgDataModel = new BgDataModel();
+    @Thunk
+    final LauncherAppState mApp;
 
     static {
         sWorkerThread.start();
     }
-
-    @Thunk
-    final LauncherAppState mApp;
     @Thunk
     final Object mLock = new Object();
+
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that

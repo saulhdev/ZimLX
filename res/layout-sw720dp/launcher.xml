@@ -12,20 +12,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
-<!-- Full screen view projects under the status bar and contains the background -->
-<com.android.launcher3.LauncherRootView xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/launcher"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fitsSystemWindows="true">
-
-    <android.support.v4.widget.DrawerLayout
-        android:id="@+id/drawer_layout"
+    launcher:layout_ignoreInsets="true">
+    <!-- Full screen view projects under the status bar and contains the background -->
+    <com.android.launcher3.LauncherRootView
+        android:id="@+id/launcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        launcher:layout_ignoreInsets="true">
+        android:fitsSystemWindows="true">
 
         <com.android.launcher3.dragndrop.DragLayer
             android:id="@+id/drag_layer"
@@ -87,26 +85,27 @@
 
         </com.android.launcher3.dragndrop.DragLayer>
 
-        <FrameLayout
-            android:id="@+id/dlview"
-            android:layout_width="wrap_content"
+    </com.android.launcher3.LauncherRootView>
+
+    <FrameLayout
+        android:id="@+id/dlview"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="@color/colorPrimary">
+
+        <org.zimmob.zimlx.minibar.SwipeListView
+            android:id="@+id/minibar"
+            android:layout_width="75dp"
             android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:background="@color/colorPrimary">
+            android:layout_gravity="center_vertical|start"
+            android:clipToPadding="true"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:listSelector="@android:color/transparent"
+            android:paddingTop="15dp"
+            android:scrollbars="none" />
 
-            <org.zimmob.zimlx.minibar.SwipeListView
-                android:id="@+id/minibar"
-                android:layout_width="75dp"
-                android:layout_height="match_parent"
-                android:layout_gravity="center_vertical|start"
-                android:clipToPadding="true"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="0dp"
-                android:listSelector="@android:color/transparent"
-                android:paddingTop="15dp"
-                android:scrollbars="none" />
+    </FrameLayout>
 
-        </FrameLayout>
-
-    </android.support.v4.widget.DrawerLayout>
-</com.android.launcher3.LauncherRootView>
+</android.support.v4.widget.DrawerLayout>

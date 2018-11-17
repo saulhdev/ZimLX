@@ -13,7 +13,6 @@ import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ViewOnDrawExecutor;
 import com.google.android.libraries.launcherclient.GoogleNow;
 
-import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.util.List;
@@ -32,7 +31,6 @@ public class NexusLauncherActivity extends Launcher {
         FeatureFlags.QSB_ON_FIRST_SCREEN = showSmartspace();
         super.onCreate(savedInstanceState);
         mContext = this;
-        appSettings = new AppSettings(mContext);
         SharedPreferences prefs = Utilities.getPrefs(this);
         if (mIsReload = prefs.getBoolean(PREF_IS_RELOAD, false)) {
             prefs.edit().remove(PREF_IS_RELOAD).apply();

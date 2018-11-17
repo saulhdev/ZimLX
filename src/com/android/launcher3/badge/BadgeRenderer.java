@@ -20,6 +20,7 @@ import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -103,7 +104,8 @@ public class BadgeRenderer {
      */
     public void draw(Canvas canvas, IconPalette palette, @Nullable BadgeInfo badgeInfo,
                      Rect iconBounds, float badgeScale, Point spaceForOffset) {
-        mTextPaint.setColor(palette.textColor);
+        //mTextPaint.setColor(palette.textColor);
+        mTextPaint.setColor(Color.WHITE);
         showNotificationCount = Utilities.getZimPrefs(mContext).getNotificationCount();
         IconDrawer iconDrawer = badgeInfo != null && badgeInfo.isIconLarge()
                 ? mLargeIconDrawer : mSmallIconDrawer;

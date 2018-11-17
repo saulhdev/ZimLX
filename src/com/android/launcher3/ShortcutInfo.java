@@ -26,6 +26,7 @@ import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
@@ -122,6 +123,18 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
      * The installation progress [0-100] of the package that this shortcut represents.
      */
     private int mInstallProgress;
+    /**
+     * If this shortcut is a placeholder, then intent will be a market intent for the package, and
+     * this will hold the original intent from the database.  Otherwise, null.
+     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINSTALL_ICON}
+     */
+    Intent promisedIntent;
+    private Bitmap mUnbadgedIcon;
+    /**
+     * The application icon.
+     */
+    private Bitmap mIcon;
+    private Bitmap mCustomIcon;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -132,6 +145,7 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         title = info.title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
+        mIcon = info.mIcon;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
         isDisabled = info.isDisabled;
@@ -290,5 +304,39 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @Override
     public void setOriginalTitle(CharSequence originalTitle) {
         this.originalTitle = originalTitle;
+    }
+
+    public Bitmap getIcon(IconCache iconCache) {
+        if (mCustomIcon != null)
+            return mCustomIcon;
+        if (mIcon == null)
+            updateIcon(iconCache);
+        return mIcon;
+    }
+
+    public Bitmap getUnbadgedIcon(IconCache iconCache) {
+        if (mUnbadgedIcon == null) {
+            return getIcon(iconCache);
+        }
+        return mUnbadgedIcon;
+    }
+
+    public void updateIcon(IconCache iconCache, boolean useLowRes) {
+        if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
+            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
+                    useLowRes);
+        }
+    }
+
+    public void updateIcon(IconCache iconCache) {
+        updateIcon(iconCache, shouldUseLowResIcon());
+    }
+
+    public boolean shouldUseLowResIcon() {
+        return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
+    }
+
+    public void setIcon(Bitmap b) {
+        mIcon = b;
     }
 }

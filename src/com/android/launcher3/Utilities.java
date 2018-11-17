@@ -37,6 +37,7 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -44,6 +45,7 @@ import android.os.Bundle;
 import android.os.DeadObjectException;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.os.UserHandle;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -59,10 +61,12 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.graphics.ShadowGenerator;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
+import org.zimmob.zimlx.pixelify.AdaptiveIconDrawableCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -79,6 +83,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.android.launcher3.graphics.LauncherIcons.badgeIconForUser;
+import static com.android.launcher3.graphics.LauncherIcons.createIconBitmap;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -764,7 +771,28 @@ public final class Utilities {
 
     public static boolean isAnimatedClock(Context context, ComponentName componentName) {
         return Utilities.getZimPrefs(context).getAnimatedClockIcon() &&
-                Utilities.isComponentClock(componentName, !Utilities.getZimPrefs(context).getAnimatedClockIconAlternativeClockApps());
+                Utilities.isComponentClock(componentName, !Utilities.getZimPrefs(context).getAnimatedClockIconAlternative());
+    }
+
+    public static UserHandle myUserHandle() {
+        return android.os.Process.myUserHandle();
+    }
+
+    /**
+     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
+     * The bitmap is also visually normalized with other icons.
+     */
+    public static Bitmap createBadgedIconBitmap(
+            Drawable icon, UserHandle user, Context context) {
+        float scale = IconNormalizer.getInstance(Launcher.mContext).getScale(icon, null, null, null);
+        Bitmap bitmap = createIconBitmap(icon, context, scale);
+        if (isAdaptive(icon))
+            bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
+        return badgeIconForUser(bitmap, user, context);
+    }
+
+    public static boolean isAdaptive(Drawable drawable) {
+        return drawable != null && (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat);
     }
 
     private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {

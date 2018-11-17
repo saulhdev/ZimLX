@@ -19,7 +19,7 @@
             app:cpv_showAlphaSlider="true" />
     </android.support.v7.preference.PreferenceCategory>
 
-    <PreferenceScreen
+    <SwitchPreference
         android:key="pref_smartspace"
         android:persistent="false"
         android:summary="@string/smartspace_preferences_in_settings_desc"

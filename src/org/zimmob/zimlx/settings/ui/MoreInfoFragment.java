@@ -167,6 +167,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
             summary += (tmp = _cu.getAppInstallationSource()).isEmpty() ? "" : ("\n<b>ISource:</b> " + tmp);
             summary += (tmp = _cu.bcstr("GITHASH", "")).isEmpty() ? "" : ("\n<b>VCS Hash:</b> " + tmp);
             pref.setSummary(_cu.htmlToSpanned(summary.trim().replace("\n", "<br/>")));
+
         }
 
         // Extract project team from raw resource, where 1 person = 4 lines

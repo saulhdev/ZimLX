@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
@@ -18,12 +19,6 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 public class LauncherRootView extends InsettableFrameLayout {
     private final Launcher mLauncher;
     private final Paint mOpaquePaint;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private boolean mDrawSideInsetBar;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mLeftInsetBarWidth;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mRightInsetBarWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
     private final Rect mConsumedInsets = new Rect();
     private View mAlignedView;
@@ -43,6 +38,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (getChildCount() > 0) {
             // LauncherRootView contains only one child, which should be aligned
             // based on the horizontal insets.
+            DrawerLayout drawerLayout = findViewById(R.id.drawer_layout);
             mAlignedView = getChildAt(0);
         }
         super.onFinishInflate();
@@ -66,7 +62,7 @@ public class LauncherRootView extends InsettableFrameLayout {
                         getContext().getSystemService(ActivityManager.class).isLowRamDevice())) {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
-            insets = new Rect(0, insets.top, 0, insets.bottom);
+            insets = new Rect(insets.left, 0, insets.right, 0);
             drawInsetBar = true;
         }
 
@@ -81,8 +77,10 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mAlignedView != null) {
             // Apply margins on aligned view to handle consumed insets.
             MarginLayoutParams lp = (MarginLayoutParams) mAlignedView.getLayoutParams();
-            if (lp.leftMargin != mConsumedInsets.left || lp.rightMargin != mConsumedInsets.right ||
-                    lp.bottomMargin != mConsumedInsets.bottom) {
+            if (lp.leftMargin != mConsumedInsets.left ||
+                    lp.rightMargin != mConsumedInsets.right ||
+                    lp.bottomMargin != mConsumedInsets.bottom ||
+                    lp.topMargin != mConsumedInsets.top) {
                 lp.leftMargin = mConsumedInsets.left;
                 lp.rightMargin = mConsumedInsets.right;
                 lp.topMargin = mConsumedInsets.top;
@@ -90,6 +88,7 @@ public class LauncherRootView extends InsettableFrameLayout {
                 mAlignedView.setLayoutParams(lp);
             }
         }
+
         if (rawInsetsChanged) {
             // Update the grid again
             Launcher launcher = Launcher.getLauncher(getContext());

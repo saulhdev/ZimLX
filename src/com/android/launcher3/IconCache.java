@@ -258,7 +258,7 @@ public class IconCache {
             // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
             // is called by the icon cache when the job is complete.
             updateDBIcons(user, apps, Process.myUserHandle().equals(user)
-                    ? ignorePackagesForMainUser : Collections.<String>emptySet());
+                    ? ignorePackagesForMainUser : Collections.emptySet());
         }
     }
 
@@ -435,7 +435,7 @@ public class IconCache {
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
         CacheEntry entry = cacheLocked(application.componentName,
-                Provider.<LauncherActivityInfo>of(null),
+                Provider.of(null),
                 application.user, false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);
@@ -481,6 +481,47 @@ public class IconCache {
         applyCacheEntry(entry, infoInOut);
     }
 
+    /**
+     * Fill in {@param shortcutInfo} with the icon and label for {@param intent}. If the
+     * corresponding activity is not found, it reverts to the package icon.
+     */
+    public synchronized void getTitleAndIcon(ShortcutInfo shortcutInfo, Intent intent,
+                                             UserHandle user, boolean useLowResIcon) {
+        ComponentName component = intent.getComponent();
+        // null info means not installed, but if we have a component from the intent then
+        // we should still look in the cache for restored app icons.
+        if (component == null) {
+            shortcutInfo.setIcon(getDefaultIcon(user));
+            shortcutInfo.title = "";
+            shortcutInfo.contentDescription = "";
+            //shortcutInfo.usingFallbackIcon = true;
+            shortcutInfo.usingLowResIcon = false;
+        } else {
+            LauncherActivityInfo info = mLauncherApps.resolveActivity(intent, user);
+            getTitleAndIcon(shortcutInfo, component, info, user, true, useLowResIcon);
+        }
+    }
+
+    private Bitmap getNonNullIcon(CacheEntry entry, UserHandle user) {
+        return entry.icon == null ? getDefaultIcon(user) : entry.icon;
+    }
+
+    /**
+     * Fill in {@param shortcutInfo} with the icon and label for {@param info}
+     */
+    public synchronized void getTitleAndIcon(
+            ShortcutInfo shortcutInfo, ComponentName component, LauncherActivityInfo info,
+            UserHandle user, boolean usePkgIcon, boolean useLowResIcon) {
+        CacheEntry entry = cacheLocked(component, info, user, usePkgIcon, useLowResIcon);
+        Bitmap iBitmap = getNonNullIcon(entry, user);
+        shortcutInfo.setIcon(iBitmap);
+        String title = Utilities.trim(entry.title);
+        String key = component.flattenToString();
+        //shortcutInfo.title = Utilities.getZimPrefs(mContext).itemAlias(key, title);
+        shortcutInfo.contentDescription = entry.contentDescription;
+        //shortcutInfo.usingFallbackIcon = isDefaultIcon(entry.icon, user);
+        shortcutInfo.usingLowResIcon = entry.isLowResIcon;
+    }
     /**
      * Fill in {@param infoInOut} with the corresponding icon and label.
      */
@@ -577,6 +618,48 @@ public class IconCache {
             entry.originalTitle = entry.title;
         }
 
+        return entry;
+    }
+
+    /**
+     * Retrieves the entry from the cache. If the entry is not present, it creates a new entry.
+     * This method is not thread safe, it must be called from a synchronized method.
+     */
+    private CacheEntry cacheLocked(ComponentName componentName, LauncherActivityInfo info,
+                                   UserHandle user, boolean usePackageIcon, boolean useLowResIcon) {
+        ComponentKey cacheKey = new ComponentKey(componentName, user);
+        CacheEntry entry = mCache.get(cacheKey);
+        if (entry == null || (entry.isLowResIcon && !useLowResIcon)) {
+            entry = new CacheEntry();
+            mCache.put(cacheKey, entry);
+
+            // Check the DB first.
+            if (!getEntryFromDB(cacheKey, entry, useLowResIcon)) {
+                if (info != null) {
+                    entry.icon = Utilities.createBadgedIconBitmap(
+                            info.getIcon(mIconDpi), info.getUser(),
+                            mContext);
+                } else {
+                    if (usePackageIcon) {
+                        CacheEntry packageEntry = getEntryForPackageLocked(
+                                componentName.getPackageName(), user, false);
+                        if (packageEntry != null) {
+                            entry.icon = packageEntry.icon;
+                            entry.title = packageEntry.title;
+                            entry.contentDescription = packageEntry.contentDescription;
+                        }
+                    }
+                    if (entry.icon == null) {
+                        entry.icon = getDefaultIcon(user);
+                    }
+                }
+            }
+
+            if (TextUtils.isEmpty(entry.title) && info != null) {
+                entry.title = info.getLabel();
+                entry.contentDescription = mUserManager.getBadgedLabelForUser(entry.title, user);
+            }
+        }
         return entry;
     }
 

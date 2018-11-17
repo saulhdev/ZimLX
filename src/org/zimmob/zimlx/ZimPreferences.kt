@@ -49,7 +49,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var iconPack by StringPref("pref_icon_pack", "", doNothing)
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
     val animatedClockIcon by BooleanPref("pref_key__animated_clock_icon", false)
-    val animatedClockIconAlternativeClockApps by BooleanPref("pref_key_animated_alternative_clock_apps", false)
+    val animatedClockIconAlternative by BooleanPref("pref_key_animated_alternative_clock_apps", false)
 
 
     // Desktop

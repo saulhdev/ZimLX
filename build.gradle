@@ -27,18 +27,10 @@ if (enable_plugin_kotlin) {
     apply plugin: 'kotlin-kapt'
 }
 
+
 android {
     compileSdkVersion 27
     buildToolsVersion '28.0.3'
-
-    signingConfigs {
-        travis {
-            storeFile file("debug.jks")
-            storePassword System.getenv("STORE_PASSWORD")
-            keyAlias "ZimLX"
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
 
     def versionPropsFile = file('version.properties')
 
@@ -59,9 +51,6 @@ android {
             buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
             buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
             buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
-            buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
-            buildConfigField "boolean", "TAGGED_BUILD", System.getenv("TRAVIS_TAG") ? "true" : "false"
-            buildConfigField "int", "TRAVIS_BUILD_NUMBER", System.getenv("TRAVIS_BUILD_NUMBER") ?: "0"
             applicationId "org.zimmob.zimlx"
             versionName name
             versionCode code
@@ -262,7 +251,15 @@ static String findAndroidLocales() {
     return '{' + langs.collect { "\"${it}\"" }.join(",") + '}'
 }
 
-static String getGitHash(){
+@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
+// Returns the build date in a RFC3339 compatible format. TZ is always converted to UTC
+static String getBuildDate() {
+    final SimpleDateFormat RFC3339_LIKE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
+    RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
+    return RFC3339_LIKE.format(new Date())
+}
+
+static String getGitHash (){
     try {
         def stdout = new ByteArrayOutputStream()
         exec {
@@ -273,12 +270,4 @@ static String getGitHash(){
     } catch (Exception ignored) {
         return 'unknown'
     }
-}
-
-@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
-// Returns the build date in a RFC3339 compatible format. TZ is always converted to UTC
-static String getBuildDate() {
-    final SimpleDateFormat RFC3339_LIKE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-    RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
-    return RFC3339_LIKE.format(new Date())
 }

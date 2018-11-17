@@ -195,8 +195,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
         }
+        applyBadgeState(info, false);
 
-        applyBadgeState(info, false /* animate */);
     }
 
     private void applyClockIcon(ComponentName componentName) {

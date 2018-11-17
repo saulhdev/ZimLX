@@ -17,10 +17,14 @@ package com.android.launcher3.graphics;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.SystemClock;
 import android.support.annotation.NonNull;
 import android.support.v7.preference.ListPreference;
 import android.support.v7.preference.Preference;
@@ -185,7 +189,15 @@ public class IconShapeOverride {
             } catch (Exception e) {
                 Log.e(TAG, "Error waiting", e);
             }
-
+            // Schedule an alarm before we kill ourself.
+            Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+                    .addCategory(Intent.CATEGORY_HOME)
+                    .setPackage(mContext.getPackageName())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            PendingIntent pi = PendingIntent.getActivity(mContext, RESTART_REQUEST_CODE,
+                    homeIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
+            mContext.getSystemService(AlarmManager.class).setExact(
+                    AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pi);
             restartLauncher(mContext);
         }
     }
