@@ -247,7 +247,8 @@ public class ContextUtils {
      * Falls back to applicationId of the app which may differ from manifest.
      */
     public Object getBuildConfigValue(String fieldName) {
-        String pkg = getPackageName() + ".BuildConfig";
+        //String pkg = getPackageName() + ".BuildConfig";
+        String pkg = "com.android.launcher3.BuildConfig";
         try {
             Class<?> c = Class.forName(pkg);
             return c.getField(fieldName).get(null);

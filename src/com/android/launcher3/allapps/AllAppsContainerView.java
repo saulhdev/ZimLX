@@ -90,6 +90,7 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
 
         mLauncher = Launcher.getLauncher(context);
         mApps = new AlphabeticalAppsList(context);
+
         mAdapter = new AllAppsGridAdapter(mLauncher, mApps, mLauncher, this);
         mSpringAnimationHandler = mAdapter.getSpringAnimationHandler();
         mApps.setAdapter(mAdapter);

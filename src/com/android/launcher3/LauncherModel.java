@@ -87,8 +87,6 @@ public class LauncherModel extends BroadcastReceiver
     private final MainThreadExecutor mUiExecutor = new MainThreadExecutor();
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
-    @Thunk
-    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
 
     @Thunk
     LoaderTask mLoaderTask;
@@ -103,6 +101,9 @@ public class LauncherModel extends BroadcastReceiver
     static {
         sWorkerThread.start();
     }
+
+    @Thunk
+    static final Handler sWorker = new Handler(sWorkerThread.getLooper());
     @Thunk
     final Object mLock = new Object();
 

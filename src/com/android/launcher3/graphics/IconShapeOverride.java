@@ -37,6 +37,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LooperExecutor;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.lang.reflect.Field;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
@@ -110,6 +112,23 @@ public class IconShapeOverride {
 
     public static String getAppliedValue(Context context) {
         return getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+    }
+
+    public static ShapeInfo getAppliedValueX(Context context) {
+        String planeMask = "M21,16V14L13,9V3.5A1.5,1.5 0 0,0 11.5,2A1.5,1.5 0 0,0 10,3.5V9L2,14V16L10,13.5V19L8,20.5V22L11.5,21L15,22V20.5L13,19V13.5L21,16Z";
+        String defaultMask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
+
+        ZimPreferences prefs = Utilities.getZimPrefs(context);
+        if (!Utilities.ATLEAST_NOUGAT) {
+            String mask = (prefs.getUsePixelIcons()) ? defaultMask : "";
+            return new ShapeInfo(mask, mask, 100, prefs.getUsePixelIcons());
+        }
+        //val enablePlanes = prefs.enablePlanes
+        String iconShape = planeMask;//if (enablePlanes) planeMask else prefs.overrideIconShape
+        String savedPref = iconShape;
+        boolean useRoundIcon = iconShape != "none";
+        return new ShapeInfo((iconShape == "none") ? "" : iconShape, savedPref, 100, useRoundIcon);
+
     }
 
     public static void handlePreferenceUi(ListPreference preference) {
@@ -201,4 +220,36 @@ public class IconShapeOverride {
             restartLauncher(mContext);
         }
     }
+
+    public static class ShapeInfo {
+        private String maskPath;
+        private String savedMask;
+        private int maskSize = 0;
+        private boolean useRoundIcon;
+        String xmlAttrName = (useRoundIcon) ? "roundIcon" : "icon";
+
+        public ShapeInfo(String mask, String saveMask, int size, boolean usePixelIcons) {
+            this.maskPath = mask;
+            this.savedMask = saveMask;
+            this.maskSize = size;
+            this.useRoundIcon = usePixelIcons;
+        }
+
+        public String getMaskPath() {
+            return maskPath;
+        }
+
+        public String getSavedMask() {
+            return savedMask;
+        }
+
+        public int getSize() {
+            return maskSize;
+        }
+
+        public boolean useRoundIcon() {
+            return useRoundIcon;
+        }
+    }
+
 }

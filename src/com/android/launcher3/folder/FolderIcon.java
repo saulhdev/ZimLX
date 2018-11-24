@@ -155,7 +155,7 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 .inflate(resId, group, false);
 
         icon.setClipToPadding(false);
-        icon.mFolderName = (BubbleTextView) icon.findViewById(R.id.folder_icon_name);
+        icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
@@ -331,8 +331,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, index + 1, center);
-            center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
-            center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+            center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
+            center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                     center[1] - animateView.getMeasuredHeight() / 2);

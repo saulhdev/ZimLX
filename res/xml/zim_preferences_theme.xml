@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <ListPreference
-        android:defaultValue=""
+        android:defaultValue=" "
         android:entries="@array/icon_shape_override_paths_names"
         android:entryValues="@array/icon_shape_override_paths_values"
         android:key="pref_override_icon_shape"
@@ -18,11 +18,19 @@
         android:summary="%s"
         android:title="@string/pref_icon_pack" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_key__pixel_icons"
+        android:persistent="true"
+        android:summary="@string/pref_summary__pixel_style_icons"
+        android:title="@string/pref_title__pixel_style_icons" />
+
     <android.support.v14.preference.SwitchPreference
         android:defaultValue="false"
         android:key="pref_override_launcher_theme"
         android:persistent="true"
         android:title="@string/launcher_theme_override_label" />
+
     <org.zimmob.zimlx.preferences.ColorPreferenceCompat
         android:defaultValue="@color/colorPrimary"
         android:key="pref_primary_color"

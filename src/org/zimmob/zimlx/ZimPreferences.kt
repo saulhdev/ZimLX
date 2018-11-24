@@ -50,6 +50,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
     val animatedClockIcon by BooleanPref("pref_key__animated_clock_icon", false)
     val animatedClockIconAlternative by BooleanPref("pref_key_animated_alternative_clock_apps", false)
+    val usePixelIcons by BooleanPref("pref_key__pixel_icons", true)
 
 
     // Desktop
@@ -90,6 +91,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
+
+
     val recentBackups = object : MutableListPref<Uri>(
             Utilities.getDevicePrefs(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
@@ -276,6 +279,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    private inner class MutableStringPref(key: String, defaultValue: String = "") :
+            StringPref(key, defaultValue), MutablePrefDelegate<String> {
+        fun onSetValue(thisRef: Any?, property: KProperty<*>, value: String) {
+            edit { putString(key, value) }
+        }
+    }
+
+    private interface MutablePrefDelegate<T> {
+        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
+    }
     // ----------------
     // Helper functions and class
     // ----------------

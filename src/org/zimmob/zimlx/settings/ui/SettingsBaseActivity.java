@@ -37,11 +37,6 @@ public class SettingsBaseActivity extends ThemeActivity {
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        /*if (!Utilities.ATLEAST_OREO_MR1 && Utilities.ATLEAST_OREO) {
-            Utilities.setLightUi(window);
-            window.setStatusBarColor(0);
-            window.setNavigationBarColor(0);
-        }*/
     }
 
     public void setContentView(View v) {
