@@ -22,7 +22,7 @@
         launcher:screen="0"
         launcher:title="@string/google_title"
         launcher:x="0"
-        launcher:y="4">
+        launcher:y="3">
         <favorite
             launcher:className="com.google.android.googlequicksearchbox.SearchActivity"
             launcher:packageName="com.google.android.googlequicksearchbox" />
@@ -63,7 +63,7 @@
         launcher:screen="0"
         launcher:title="@string/play_folder_title"
         launcher:x="1"
-        launcher:y="4">
+        launcher:y="3">
         <favorite
             launcher:className="com.android.music.activitymanagement.TopLevelActivity"
             launcher:packageName="com.google.android.music" />

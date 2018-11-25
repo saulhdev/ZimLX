@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RelativeLayout;
@@ -57,6 +58,10 @@ public class AllAppsRecyclerViewContainerView extends RelativeLayout
         // Make the feedback view large enough to hold the blur bitmap.
         int size = grid.allAppsIconSizePx + mTouchFeedbackView.getExtraSize();
         addView(mTouchFeedbackView, size, size);
+        LayoutInflater inflater = LayoutInflater.from(context);
+
+        AllAppsRecyclerView appsVerticalView = (AllAppsRecyclerView) inflater.inflate(R.layout.all_apps_vertical, this, false);
+        addView(appsVerticalView);
     }
 
     @Override

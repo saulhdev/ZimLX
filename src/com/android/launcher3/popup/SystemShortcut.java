@@ -63,17 +63,14 @@ public abstract class SystemShortcut extends ItemInfo {
             if (widgets == null) {
                 return null;
             }
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AbstractFloatingView.closeAllOpenViews(launcher);
-                    WidgetsBottomSheet widgetsBottomSheet =
-                            (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
-                                    R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
-                    widgetsBottomSheet.populateAndShow(itemInfo);
-                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                            ControlType.WIDGETS_BUTTON, view);
-                }
+            return view -> {
+                AbstractFloatingView.closeAllOpenViews(launcher);
+                WidgetsBottomSheet widgetsBottomSheet =
+                        (WidgetsBottomSheet) launcher.getLayoutInflater().inflate(
+                                R.layout.widgets_bottom_sheet, launcher.getDragLayer(), false);
+                widgetsBottomSheet.populateAndShow(itemInfo);
+                launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                        ControlType.WIDGETS_BUTTON, view);
             };
         }
     }
@@ -86,15 +83,12 @@ public abstract class SystemShortcut extends ItemInfo {
         @Override
         public View.OnClickListener getOnClickListener(final Launcher launcher,
                                                        final ItemInfo itemInfo) {
-            return new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Rect sourceBounds = launcher.getViewBounds(view);
-                    Bundle opts = launcher.getActivityLaunchOptions(view);
-                    InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
-                    launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                            ControlType.APPINFO_TARGET, view);
-                }
+            return view -> {
+                Rect sourceBounds = launcher.getViewBounds(view);
+                Bundle opts = launcher.getActivityLaunchOptions(view);
+                InfoDropTarget.startDetailsActivityForInfo(itemInfo, launcher, null, sourceBounds, opts);
+                launcher.getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
+                        ControlType.APPINFO_TARGET, view);
             };
         }
     }

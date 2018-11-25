@@ -43,13 +43,13 @@
             android:summary="@string/pixel_ui_pref_summary"
             android:title="@string/pixel_ui_pref_title"
             app:content="@xml/zim_preferences_theme" />
-
+        <!--
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_folder_open"
             android:layout="@layout/sub_preference"
             android:summary="@string/pref_summary__folder"
             android:title="@string/pref_title__folder"
-            app:content="@xml/zim_preferences_folder" />
+            app:content="@xml/zim_preferences_folder" />-->
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_title__inputs">
@@ -60,19 +60,19 @@
             android:title="@string/pref_title__notifications"
             app:content="@xml/zim_preferences_notification" />
 
-        <org.zimmob.zimlx.settings.ui.SubPreference
+        <!--<org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_gesture"
             android:layout="@layout/sub_preference"
             android:summary="@string/pref_summary__inputs"
             android:title="@string/pref_title__inputs"
-            app:content="@xml/zim_preferences_gestures" />
-
+            app:content="@xml/zim_preferences_gestures" />-->
+        <!--
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_behavior"
             android:layout="@layout/sub_preference"
             android:summary="@string/pref_summary__behavior"
             android:title="@string/pref_title__behavior"
-            app:content="@xml/zim_preferences_behavior" />
+            app:content="@xml/zim_preferences_behavior" />-->
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_title__others">

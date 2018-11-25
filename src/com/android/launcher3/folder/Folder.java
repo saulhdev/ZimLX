@@ -64,7 +64,6 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.UninstallDropTarget.DropTargetSource;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.anim.AnimationLayerSet;
 import com.android.launcher3.anim.CircleRevealOutlineProvider;
@@ -100,17 +99,13 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public static final int SCROLL_LEFT = 0;
     public static final int SCROLL_RIGHT = 1;
     // Compares item position based on rank and position giving priority to the rank.
-    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = new Comparator<ItemInfo>() {
-
-        @Override
-        public int compare(ItemInfo lhs, ItemInfo rhs) {
-            if (lhs.rank != rhs.rank) {
-                return lhs.rank - rhs.rank;
-            } else if (lhs.cellY != rhs.cellY) {
-                return lhs.cellY - rhs.cellY;
-            } else {
-                return lhs.cellX - rhs.cellX;
-            }
+    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = (lhs, rhs) -> {
+        if (lhs.rank != rhs.rank) {
+            return lhs.rank - rhs.rank;
+        } else if (lhs.cellY != rhs.cellY) {
+            return lhs.cellY - rhs.cellY;
+        } else {
+            return lhs.cellX - rhs.cellX;
         }
     };
     static final int STATE_NONE = -1;
@@ -139,7 +134,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     final Alarm mScrollPauseAlarm = new Alarm();
 
     @Thunk
-    final ArrayList<View> mItemsInReadingOrder = new ArrayList<View>();
+    final ArrayList<View> mItemsInReadingOrder = new ArrayList<>();
     private final Alarm mReorderAlarm = new Alarm();
     private final Alarm mOnExitAlarm = new Alarm();
     private final Alarm mOnScrollHintAlarm = new Alarm();
@@ -189,11 +184,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     private boolean mRearrangeOnClose = false;
     private View mCurrentDragView;
     private boolean mIsExternalDrag;
-    OnAlarmListener mOnExitAlarmListener = new OnAlarmListener() {
-        public void onAlarm(Alarm alarm) {
-            completeDragExit();
-        }
-    };
+    OnAlarmListener mOnExitAlarmListener = alarm -> completeDragExit();
     private boolean mDragInProgress = false;
     private boolean mDeleteFolderOnDropCompleted = false;
     private boolean mSuppressFolderDeletion = false;
@@ -256,11 +247,11 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mContent = (FolderPagedView) findViewById(R.id.folder_content);
+        mContent = findViewById(R.id.folder_content);
         mContent.setFolder(this);
 
-        mPageIndicator = (PageIndicatorDots) findViewById(R.id.folder_page_indicator);
-        mFolderName = (ExtendedEditText) findViewById(R.id.folder_name);
+        mPageIndicator = findViewById(R.id.folder_page_indicator);
+        mFolderName = findViewById(R.id.folder_name);
         mFolderName.setOnBackKeyListener(this);
         mFolderName.setOnFocusChangeListener(this);
 
@@ -376,12 +367,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public void startEditingFolderName() {
-        post(new Runnable() {
-            @Override
-            public void run() {
-                mFolderName.setHint("");
-                mIsEditingName = true;
-            }
+        post(() -> {
+            mFolderName.setHint("");
+            mIsEditingName = true;
         });
     }
 
@@ -498,11 +486,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         }
 
         // In case any children didn't come across during loading, clean up the folder accordingly
-        mFolderIcon.post(new Runnable() {
-            public void run() {
-                if (getItemCount() <= 1) {
-                    replaceFolderWithFinalItem();
-                }
+        mFolderIcon.post(() -> {
+            if (getItemCount() <= 1) {
+                replaceFolderWithFinalItem();
             }
         });
     }
@@ -644,12 +630,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         AnimatorSet anim = FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION
                 ? new FolderAnimationManager(this, true /* isOpening */).getAnimator()
                 : getOpeningAnimator();
-        onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
-            }
-        };
+        onCompleteRunnable = () -> mLauncher.getUserEventDispatcher().resetElapsedContainerMillis();
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -989,11 +970,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
                                 final boolean isFlingToDelete, final boolean success) {
         if (mDeferDropAfterUninstall) {
             Log.d(TAG, "Deferred handling drop because waiting for uninstall.");
-            mDeferredAction = new Runnable() {
-                public void run() {
-                    onDropCompleted(target, d, isFlingToDelete, success);
-                    mDeferredAction = null;
-                }
+            mDeferredAction = () -> {
+                onDropCompleted(target, d, isFlingToDelete, success);
+                mDeferredAction = null;
             };
             return;
         }
@@ -1087,7 +1066,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
 
     private void updateItemLocationsInDatabaseBatch() {
         ArrayList<View> list = getItemsInReadingOrder();
-        ArrayList<ItemInfo> items = new ArrayList<ItemInfo>();
+        ArrayList<ItemInfo> items = new ArrayList<>();
         for (int i = 0; i < list.size(); i++) {
             View v = list.get(i);
             ItemInfo info = (ItemInfo) v.getTag();
@@ -1105,10 +1084,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     public boolean isDropEnabled() {
-        if (FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION) {
-            return mState != STATE_ANIMATING;
-        }
-        return true;
+        return !FeatureFlags.LAUNCHER3_NEW_FOLDER_ANIMATION || mState != STATE_ANIMATING;
     }
 
     public boolean isFull() {
@@ -1119,7 +1095,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
         DragLayer.LayoutParams lp = (DragLayer.LayoutParams) getLayoutParams();
-        DragLayer parent = (DragLayer) mLauncher.findViewById(R.id.drag_layer);
+        DragLayer parent = mLauncher.findViewById(R.id.drag_layer);
         int width = getFolderWidth();
         int height = getFolderHeight();
 
@@ -1259,39 +1235,36 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     @Thunk
     void replaceFolderWithFinalItem() {
         // Add the last remaining child to the workspace in place of the folder
-        Runnable onCompleteRunnable = new Runnable() {
-            @Override
-            public void run() {
-                int itemCount = mInfo.contents.size();
-                if (itemCount <= 1) {
-                    View newIcon = null;
+        Runnable onCompleteRunnable = () -> {
+            int itemCount = mInfo.contents.size();
+            if (itemCount <= 1) {
+                View newIcon = null;
 
-                    if (itemCount == 1) {
-                        // Move the item from the folder to the workspace, in the position of the
-                        // folder
-                        CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
-                                mInfo.screenId);
-                        ShortcutInfo finalItem = mInfo.contents.remove(0);
-                        newIcon = mLauncher.createShortcut(cellLayout, finalItem);
-                        mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
-                                mInfo.container, mInfo.screenId, mInfo.cellX, mInfo.cellY);
-                    }
+                if (itemCount == 1) {
+                    // Move the item from the folder to the workspace, in the position of the
+                    // folder
+                    CellLayout cellLayout = mLauncher.getCellLayout(mInfo.container,
+                            mInfo.screenId);
+                    ShortcutInfo finalItem = mInfo.contents.remove(0);
+                    newIcon = mLauncher.createShortcut(cellLayout, finalItem);
+                    mLauncher.getModelWriter().addOrMoveItemInDatabase(finalItem,
+                            mInfo.container, mInfo.screenId, mInfo.cellX, mInfo.cellY);
+                }
 
-                    // Remove the folder
-                    mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
-                    if (mFolderIcon instanceof DropTarget) {
-                        mDragController.removeDropTarget((DropTarget) mFolderIcon);
-                    }
+                // Remove the folder
+                mLauncher.removeItem(mFolderIcon, mInfo, true /* deleteFromDb */);
+                if (mFolderIcon instanceof DropTarget) {
+                    mDragController.removeDropTarget((DropTarget) mFolderIcon);
+                }
 
-                    if (newIcon != null) {
-                        // We add the child after removing the folder to prevent both from existing
-                        // at the same time in the CellLayout.  We need to add the new item with
-                        // addInScreenFromBind() to ensure that hotseat items are placed correctly.
-                        mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo);
+                if (newIcon != null) {
+                    // We add the child after removing the folder to prevent both from existing
+                    // at the same time in the CellLayout.  We need to add the new item with
+                    // addInScreenFromBind() to ensure that hotseat items are placed correctly.
+                    mLauncher.getWorkspace().addInScreenFromBind(newIcon, mInfo);
 
-                        // Focus the newly created child
-                        newIcon.requestFocus();
-                    }
+                    // Focus the newly created child
+                    newIcon.requestFocus();
                 }
             }
         };
@@ -1328,16 +1301,13 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
             this.setNextFocusLeftId(firstChild.getId());
             this.setNextFocusUpId(firstChild.getId());
             // When pressing shift+tab in the above state, give the focus to the last item.
-            setOnKeyListener(new OnKeyListener() {
-                @Override
-                public boolean onKey(View v, int keyCode, KeyEvent event) {
-                    boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
-                            event.hasModifiers(KeyEvent.META_SHIFT_ON);
-                    if (isShiftPlusTab && Folder.this.isFocused()) {
-                        return lastChild.requestFocus();
-                    }
-                    return false;
+            setOnKeyListener((v, keyCode, event) -> {
+                boolean isShiftPlusTab = keyCode == KeyEvent.KEYCODE_TAB &&
+                        event.hasModifiers(KeyEvent.META_SHIFT_ON);
+                if (isShiftPlusTab && Folder.this.isFocused()) {
+                    return lastChild.requestFocus();
                 }
+                return false;
             });
         }
     }
@@ -1348,14 +1318,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
         // If we are coming from All Apps space, we defer removing the extra empty screen
         // until the folder closes
         if (d.dragSource != mLauncher.getWorkspace() && !(d.dragSource instanceof Folder)) {
-            cleanUpRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    mLauncher.exitSpringLoadedDragModeDelayed(true,
-                            Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
-                            null);
-                }
-            };
+            cleanUpRunnable = () -> mLauncher.exitSpringLoadedDragModeDelayed(true,
+                    Launcher.EXIT_SPRINGLOADED_MODE_SHORT_TIMEOUT,
+                    null);
         }
 
         // If the icon was dropped while the page was being scrolled, we need to compute
@@ -1498,13 +1463,7 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     }
 
     private View getViewForInfo(final ShortcutInfo item) {
-        return mContent.iterateOverItems(new ItemOperator() {
-
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info == item;
-            }
-        });
+        return mContent.iterateOverItems((info, view) -> info == item);
     }
 
     @Override
@@ -1523,13 +1482,9 @@ public class Folder extends AbstractFloatingView implements DragSource, View.OnC
     public ArrayList<View> getItemsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
-            mContent.iterateOverItems(new ItemOperator() {
-
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    mItemsInReadingOrder.add(view);
-                    return false;
-                }
+            mContent.iterateOverItems((info, view) -> {
+                mItemsInReadingOrder.add(view);
+                return false;
             });
             mItemsInvalidated = false;
         }

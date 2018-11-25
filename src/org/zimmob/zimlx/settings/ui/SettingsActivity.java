@@ -265,10 +265,30 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     } else {
                         getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
                     }
-
+                    if (!Utilities.ATLEAST_OREO) {
+                        getPreferenceScreen().removePreference(
+                                findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+                    }
                     break;
 
                 case R.xml.zim_preferences_theme:
+                    findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
+                    // Setup allow rotation preference
+                    Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
+                    if (getResources().getBoolean(R.bool.allow_rotation)) {
+                        // Launcher supports rotation by default. No need to show this setting.
+                        getPreferenceScreen().removePreference(rotationPref);
+                    } else {
+                        mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
+
+                        // Register a content observer to listen for system setting changes while
+                        // this UI is active.
+                        mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
+
+                        // Initialize the UI once
+                        rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+                    }
+
                     Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_PREFERENCE);
                     if (iconShapeOverride != null) {
                         if (IconShapeOverride.isSupported(getActivity())) {
@@ -289,7 +309,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;
 
-                case R.xml.zim_preferences_behavior:
+                /*case R.xml.zim_preferences_behavior:
                     findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
                     // Setup allow rotation preference
                     Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
@@ -306,14 +326,10 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         // Initialize the UI once
                         rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
                     }
-                    break;
+                    break;*/
                 case R.xml.zim_preferences_notification:
                     ButtonPreference iconBadgingPref =
                             (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-                    if (!Utilities.ATLEAST_OREO) {
-                        getPreferenceScreen().removePreference(
-                                findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
-                    }
                     if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
                         getPreferenceScreen().removePreference(iconBadgingPref);
                     } else {

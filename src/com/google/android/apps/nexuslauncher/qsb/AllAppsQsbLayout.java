@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
-import android.view.ViewGroup;
 
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.CellLayout;
@@ -73,17 +72,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     public void addOnScrollRangeChangeListener(final SearchUiManager.OnScrollRangeChangeListener onScrollRangeChangeListener) {
-        mActivity.getHotseat().addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-                    onScrollRangeChangeListener.onScrollRangeChanged(bottom);
-                } else {
-                    onScrollRangeChangeListener.onScrollRangeChanged(bottom
-                            - HotseatQsbWidget.getBottomMargin(mActivity)
-                            - (((ViewGroup.MarginLayoutParams) getLayoutParams()).topMargin
-                            + (int) getTranslationY() + getResources().getDimensionPixelSize(R.dimen.qsb_widget_height)));
-                }
+        mActivity.getHotseat().addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
+            if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
+                onScrollRangeChangeListener.onScrollRangeChanged(bottom);
+            } else {
+                onScrollRangeChangeListener.onScrollRangeChanged(bottom
+                        - HotseatQsbWidget.getBottomMargin(mActivity)
+                        - (((MarginLayoutParams) getLayoutParams()).topMargin
+                        + (int) getTranslationY() + getResources().getDimensionPixelSize(R.dimen.qsb_widget_height)));
             }
         });
     }

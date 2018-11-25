@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.Region;
@@ -142,7 +143,6 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public static FolderIcon fromXml(int resId, Launcher launcher, ViewGroup group,
                                      FolderInfo folderInfo) {
-        @SuppressWarnings("all") // suppress dead code warning
         final boolean error = INITIAL_ITEM_ANIMATION_DURATION >= DROP_IN_ANIMATION_DURATION;
         if (error) {
             throw new IllegalStateException("DROP_IN_ANIMATION_DURATION must be greater than " +
@@ -153,6 +153,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         DeviceProfile grid = launcher.getDeviceProfile();
         FolderIcon icon = (FolderIcon) LayoutInflater.from(group.getContext())
                 .inflate(resId, group, false);
+        // For performance and compatibility reasons we render the preview using a software layer.
+        // In particular, hardware path clipping has spotty ecosystem support and bad performance.
+        // Software rendering also allows us to use shadow layers.
+        icon.setLayerType(LAYER_TYPE_SOFTWARE, new Paint(Paint.FILTER_BITMAP_FLAG));
 
         icon.setClipToPadding(false);
         icon.mFolderName = icon.findViewById(R.id.folder_icon_name);
@@ -183,9 +187,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
+        /*mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
                 new StackFolderIconLayoutRule() :
-                new ClippedFolderIconLayoutRule();
+                new ClippedFolderIconLayoutRule();*/
+        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
     }
@@ -349,12 +354,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
             if (!itemAdded) mPreviewItemManager.hidePreviewItem(index, true);
             final int finalIndex = index;
-            postDelayed(new Runnable() {
-                public void run() {
-                    mPreviewItemManager.hidePreviewItem(finalIndex, false);
-                    mFolder.showItem(item);
-                    invalidate();
-                }
+            postDelayed(() -> {
+                mPreviewItemManager.hidePreviewItem(finalIndex, false);
+                mFolder.showItem(item);
+                invalidate();
             }, DROP_IN_ANIMATION_DURATION);
         } else {
             addItem(item);
