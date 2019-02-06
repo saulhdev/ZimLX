@@ -7,6 +7,9 @@
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
 
+[<img src="https://f-droid.org/badge/get-it-on.png"
+     alt="Get it on F-Droid"
+     height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 ## Main Features   
 
