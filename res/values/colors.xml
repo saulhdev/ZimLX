@@ -61,4 +61,6 @@
     <color name="settings_icons">?android:attr/textColorPrimary</color>
 
     <color name="blue_grey_100">#ffcfd8dc</color>
+
+    <color name="transparentish">#B0101010</color>
 </resources>

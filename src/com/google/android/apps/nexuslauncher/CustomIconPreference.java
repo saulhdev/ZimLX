@@ -10,20 +10,21 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class CustomIconPreference extends ListPreference {
-    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
-        super(context, attrs, defStyleAttr, defStyleRes);
-    }
 
-    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
+    public CustomIconPreference(Context context) {
+        super(context);
     }
 
     public CustomIconPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public CustomIconPreference(Context context) {
-        super(context);
+    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr) {
+        super(context, attrs, defStyleAttr);
+    }
+
+    public CustomIconPreference(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+        super(context, attrs, defStyleAttr, defStyleRes);
     }
 
     @Override

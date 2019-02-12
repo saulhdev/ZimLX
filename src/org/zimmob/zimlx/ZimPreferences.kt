@@ -62,6 +62,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Dock
     val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
     val dockSearchBar = true
+    fun numHotseatIcons(default: String): String {
+        return sharedPrefs.getString("pref_numHotseatIcons", default)
+    }
 
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)

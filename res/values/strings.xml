@@ -359,6 +359,7 @@
     <string name="pixel_ui_pref_summary">Theme different elements</string>
     <string name="app_drawer_pref_title">App drawer</string>
     <string name="app_drawer_pref_summary">Customize your app drawer</string>
+    <string name="default_text">Default</string>
     <string name="general_pref_title">Desktop</string>
     <string name="general_pref_summary">Customize your desktop</string>
     <string name="about_pref_summary">Get to know about the Lawnchair team</string>
@@ -367,6 +368,7 @@
     <string name="hide_app_reset">Reset</string>
     <string name="hide_app_apply">Apply</string>
     <string name="hide_dock_gradient">Hide gradient</string>
+    <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
     <string name="dock_pref_summary">Customize your dock</string>
     <string name="dock_pref_title">Dock</string>
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>

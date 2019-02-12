@@ -32,6 +32,7 @@ import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.zimmob.zimlx.ZimPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -74,6 +75,8 @@ public class InvariantDeviceProfile {
     public DeviceProfile landscapeProfile;
     public DeviceProfile portraitProfile;
     public Point defaultWallpaperSize;
+    public int numHotseatIconsOriginal;
+
     // Profile-defining invariant properties
     String name;
     float minWidthDps;
@@ -115,7 +118,7 @@ public class InvariantDeviceProfile {
     }
 
     @TargetApi(23)
-    InvariantDeviceProfile(Context context) {
+    public InvariantDeviceProfile(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
@@ -146,6 +149,8 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
         minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
 
+        numHotseatIconsOriginal = numHotseatIcons;
+
         iconSize = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
@@ -155,6 +160,8 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
+        customizationHook(context);
+
 
         Point realSize = new Point();
         display.getRealSize(realSize);
@@ -176,6 +183,20 @@ public class InvariantDeviceProfile {
                     largeSide);
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+        }
+    }
+
+    private void customizationHook(Context context) {
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+        ZimPreferences prefs = Utilities.getZimPrefs(context);
+        String valueDefault = "default";
+        if (!prefs.numHotseatIcons(valueDefault).equals(valueDefault)) {
+            numHotseatIcons = Integer.valueOf(prefs.numHotseatIcons(""));
+        } else {
+            numHotseatIcons = numHotseatIconsOriginal;
         }
     }
 

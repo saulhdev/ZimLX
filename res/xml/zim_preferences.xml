@@ -79,7 +79,7 @@
 
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_debug"
-            android:key="developerOptions"
+            android:key="pref_key__developer_options"
             android:layout="@layout/sub_preference"
             android:summary="@string/pref_summary__developer"
             android:title="@string/developer_options_title"

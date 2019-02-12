@@ -30,9 +30,9 @@
     </style>
 
     <style name="SettingsTheme.V2" parent="SettingsTheme.Base">
-        <item name="android:windowLightStatusBar">true</item>
+        <item name="android:windowLightStatusBar">false</item>
         <item name="android:windowLightNavigationBar">true</item>
-        <item name="android:navigationBarColor">@android:color/white</item>
+        <item name="android:navigationBarColor">@color/transparentish</item>
         <item name="android:navigationBarDividerColor">#1f000000</item>
     </style>
 </resources>

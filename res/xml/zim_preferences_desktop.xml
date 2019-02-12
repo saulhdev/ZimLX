@@ -20,12 +20,6 @@
     </android.support.v7.preference.PreferenceCategory>
 
     <SwitchPreference
-        android:key="pref_smartspace"
-        android:persistent="false"
-        android:summary="@string/smartspace_preferences_in_settings_desc"
-        android:title="@string/smartspace_preferences_in_settings" />
-
-    <SwitchPreference
         android:defaultValue="false"
         android:disableDependentsState="false"
         android:key="pref_smartspace_time"

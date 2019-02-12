@@ -40,7 +40,7 @@ abstract class BaseFlags {
     // When enabled the all-apps icon is not added to the hotseat.
     public static final boolean NO_ALL_APPS_ICON = false;
     // When enabled fling down gesture on the first workspace triggers search.
-    public static final boolean PULLDOWN_SEARCH = false;
+    public static final boolean PULLDOWN_SEARCH = true;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = true;
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
@@ -54,7 +54,7 @@ abstract class BaseFlags {
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
     // Custom flags go below this
-    public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = true;
+    public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
     public static boolean LAUNCHER3_LEGACY_FOLDER_ICON = false;
     public static boolean LAUNCHER3_DISABLE_PINCH_TO_OVERVIEW = false;
     public static boolean LAUNCHER3_NEW_FOLDER_ANIMATION = true;

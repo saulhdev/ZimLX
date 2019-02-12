@@ -6,4 +6,14 @@
         android:key="pref_hideDockGradient"
         android:persistent="true"
         android:title="@string/hide_dock_gradient" />
+
+    <ListPreference
+        android:defaultValue="@string/default_text"
+        android:entries="@array/numHotseatIconsTexts"
+        android:entryValues="@array/numHotseatIconsValues"
+        android:key="pref_numHotseatIcons"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/num_hotseat_icons_pref_title" />
+
 </PreferenceScreen>

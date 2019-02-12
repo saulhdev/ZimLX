@@ -17,7 +17,6 @@
 
 package org.zimmob.zimlx.settings.ui;
 
-import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.ProgressDialog;
@@ -96,7 +95,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //Utilities.setLightUi(getWindow());
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);
@@ -189,7 +187,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.zim_preferences);
             if (!Utilities.getZimPrefs(getActivity()).getDeveloperOptionsEnabled()) {
-                mDeveloperOptions = getPreferenceScreen().findPreference("developerOptions");
+                mDeveloperOptions = getPreferenceScreen().findPreference("pref_key__developer_options");
                 getPreferenceScreen().removePreference(mDeveloperOptions);
             }
         }
@@ -260,11 +258,11 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             ContentResolver resolver = getActivity().getContentResolver();
             switch (preference) {
                 case R.xml.zim_preferences_desktop:
-                    if (SmartspaceController.get(mContext).cY()) {
+                    /*if (SmartspaceController.get(mContext).cY()) {
                         findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
                     } else {
                         getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
-                    }
+                    }*/
                     if (!Utilities.ATLEAST_OREO) {
                         getPreferenceScreen().removePreference(
                                 findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
@@ -412,22 +410,18 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                             true /* indeterminate */,
                             false /* cancelable */);
 
-                    new LooperExecutor(LauncherModel.getWorkerLooper()).execute(new Runnable() {
-                        @SuppressLint("ApplySharedPref")
-                        @Override
-                        public void run() {
-                            // Clear the icon cache.
-                            LauncherAppState.getInstance(mContext).getIconCache().clear();
+                    new LooperExecutor(LauncherModel.getWorkerLooper()).execute(() -> {
+                        // Clear the icon cache.
+                        LauncherAppState.getInstance(mContext).getIconCache().clear();
 
-                            // Wait for it
-                            try {
-                                Thread.sleep(1000);
-                            } catch (Exception e) {
-                                Log.e("SettingsActivity", "Error waiting", e);
-                            }
-
-                            restartLauncher(mContext);
+                        // Wait for it
+                        try {
+                            Thread.sleep(1000);
+                        } catch (Exception e) {
+                            Log.e("SettingsActivity", "Error waiting", e);
                         }
+
+                        restartLauncher(mContext);
                     });
                     return true;
                 case SHOW_PREDICTIONS_PREF:

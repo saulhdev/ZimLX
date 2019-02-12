@@ -84,11 +84,11 @@ public class NotificationListener extends NotificationListenerService {
                             activeNotifications = filterNotifications(getActiveNotifications());
                         } catch (SecurityException ex) {
                             Log.e(TAG, "SecurityException: failed to fetch notifications");
-                            activeNotifications = new ArrayList<StatusBarNotification>();
+                            activeNotifications = new ArrayList<>();
 
                         }
                     } else {
-                        activeNotifications = new ArrayList<StatusBarNotification>();
+                        activeNotifications = new ArrayList<>();
                     }
 
                     mUiHandler.obtainMessage(message.what, activeNotifications).sendToTarget();
@@ -149,7 +149,7 @@ public class NotificationListener extends NotificationListenerService {
             // User turned off badging globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
-                    Collections.<StatusBarNotification>emptyList());
+                    Collections.emptyList());
         }
     }
 
@@ -221,7 +221,7 @@ public class NotificationListener extends NotificationListenerService {
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
         return notifications == null
-                ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
+                ? Collections.emptyList() : Arrays.asList(notifications);
     }
 
     /**
