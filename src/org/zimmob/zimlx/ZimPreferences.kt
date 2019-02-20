@@ -9,6 +9,7 @@ import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zimmob.zimlx.ConfigFlags.FOLDER_SHAPE_SQUARE
 import org.zimmob.zimlx.settings.GridSize
 import java.io.File
 import java.util.*
@@ -51,6 +52,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val animatedClockIcon by BooleanPref("pref_key__animated_clock_icon", false)
     val animatedClockIconAlternative by BooleanPref("pref_key_animated_alternative_clock_apps", false)
     val usePixelIcons by BooleanPref("pref_key__pixel_icons", true)
+    val primaryColor by IntPref("pref_key__primary_color", R.color.colorPrimary)
+    val accentColor by IntPref("pref_key__accent_color", R.color.colorAccent)
+    val minibarColor by IntPref("pref_key__minibar_color", R.color.colorPrimary)
 
 
     // Desktop
@@ -58,16 +62,24 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
+    val iconScaleSB by FloatPref("pref_iconScaleSB", 1f)
 
     // Dock
-    val hideDockGradient by BooleanPref("pref_hideDockGradient", false, recreate)
+    val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
+    val hideDockButton by BooleanPref("pref_title__hide_dock_button", false, recreate)
     val dockSearchBar = true
+    val hotseatIconScale by FloatPref("pref_hotseatIconScale", 1f)
+    val hotseatHeightScale by FloatPref("pref_hotseatHeightScale", 1f)
+
+    val hotseatShowArrow by BooleanPref("pref_hotseatShowArrow", true)
+    val twoRowDock by BooleanPref("pref_twoRowDock", false)
     fun numHotseatIcons(default: String): String {
-        return sharedPrefs.getString("pref_numHotseatIcons", default)
+        return sharedPrefs.getString("pref_title__num_hotseat_icons", default)
     }
 
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
+    val folderShape by IntPref("pref_key__folder_shape", FOLDER_SHAPE_SQUARE)
 
     // Drawer
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
@@ -75,6 +87,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     fun getNumPredictedApps(): String {
         return sharedPrefs.getString("pref_predictive_apps_values", "5")
     }
+
+    val allAppsIconScale by FloatPref("pref_allAppsIconScale", 1f)
+
+
 
     val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
 
@@ -94,7 +110,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
-
 
     val recentBackups = object : MutableListPref<Uri>(
             Utilities.getDevicePrefs(context), "pref_recentBackups") {
@@ -397,9 +412,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.unregisterOnSharedPreferenceChangeListener(this)
         onChangeCallback = null
     }
-
-    val primaryColor by IntPref("pref_primary_color", R.color.colorPrimary)
-    val minibarColor by IntPref("pref_minibar_color", R.color.colorPrimary)
 
     init {
         migrateConfig()
