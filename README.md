@@ -1,8 +1,8 @@
 # ZimLX
 
-<h1 align="center" >
+<div align="center" >
 <img src="Logo/logotype.png" width="50%">
-</h1>
+</div>
 
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
