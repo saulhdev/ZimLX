@@ -330,7 +330,7 @@ public class PreviewBackground {
         mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
-        drawCircle(canvas, 1 /* deltaRadius */);
+        drawCircle(canvas, 1);
     }
 
     public void drawLeaveBehind(Canvas canvas) {
@@ -339,7 +339,7 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        drawCircle(canvas, 0 /* deltaRadius */);
+        drawCircle(canvas, 0);
 
         mScale = originalScale;
     }
@@ -461,18 +461,8 @@ public class PreviewBackground {
         final int cellX = delegateCellX;
         final int cellY = delegateCellY;
 
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
-        Runnable onEnd = new Runnable() {
-            @Override
-            public void run() {
-                clearDrawingDelegate();
-            }
-        };
+        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
+        Runnable onEnd = () -> clearDrawingDelegate();
         animateScale(1f, 1f, onStart, onEnd);
     }
 

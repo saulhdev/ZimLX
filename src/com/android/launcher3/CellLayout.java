@@ -158,6 +158,9 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private int mDragOutlineCurrent = 0;
     private boolean mItemPlacementDirty = false;
     private boolean mDragging = false;
+    private boolean mIsHotseat = false;
+    private float mHotseatScale = 1f;
+
     // Related to accessible drag and drop
     private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
@@ -200,6 +203,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
+
+        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
 
         mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
@@ -312,11 +317,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mUseTouchHelper ||
-                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
-            return true;
-        }
-        return false;
+        return mUseTouchHelper ||
+                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
     @Override
@@ -339,6 +341,19 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     public void buildHardwareLayer() {
         mShortcutsAndWidgets.buildLayer();
+    }
+
+    public void setIsHotseat(boolean isHotseat) {
+        mIsHotseat = isHotseat;
+        //mShortcutsAndWidgets.setIsHotseat(isHotseat);
+    }
+
+    public boolean isHotseat() {
+        return mIsHotseat;
+    }
+
+    public float getChildrenScale() {
+        return mIsHotseat ? mHotseatScale : 1.0f;
     }
 
     public void setCellDimensions(int width, int height) {

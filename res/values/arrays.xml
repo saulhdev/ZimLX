@@ -34,4 +34,28 @@
         <item>6</item>
         <item>7</item>
     </string-array>
+
+    <string-array name="entries__desktop_indicator_mode" translatable="false">
+        <item>@string/desktop_indicator_mode_normal</item>
+        <item>@string/desktop_indicator_mode_arrow</item>
+        <item>@string/desktop_indicator_mode_lines</item>
+    </string-array>
+
+    <string-array name="values__zero_to_two" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+    <string-array name="values__zero_to_three" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+    </string-array>
+    <string-array name="entries__folder_shape">
+        <item>@string/title_folder_circle</item>
+        <item>@string/title_folder_circle_bg</item>
+        <item>@string/title_folder_square</item>
+        <item>@string/title_folder_square_bg</item>
+    </string-array>
 </resources>

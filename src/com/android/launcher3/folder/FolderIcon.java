@@ -187,10 +187,10 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     private void init() {
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
-        /*mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
+        mPreviewLayoutRule = FeatureFlags.LAUNCHER3_LEGACY_FOLDER_ICON ?
                 new StackFolderIconLayoutRule() :
-                new ClippedFolderIconLayoutRule();*/
-        mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
+                new ClippedFolderIconLayoutRule();
+        //mPreviewLayoutRule = new ClippedFolderIconLayoutRule();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
         mPreviewItemManager = new PreviewItemManager(this);
     }

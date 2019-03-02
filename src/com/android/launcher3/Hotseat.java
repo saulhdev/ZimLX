@@ -115,7 +115,7 @@ public class Hotseat extends FrameLayout
         }
         */
         DeviceProfile grid = mLauncher.getDeviceProfile();
-        mContent = (CellLayout) findViewById(R.id.layout);
+        mContent = findViewById(R.id.layout);
         if (grid.isVerticalBarLayout()) {
             mContent.setGridSize(1, grid.inv.numHotseatIcons);
         } else {

@@ -44,13 +44,13 @@ abstract class BaseFlags {
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = true;
     // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
-    public static final boolean LEGACY_ICON_TREATMENT = true;
+    public static final boolean LEGACY_ICON_TREATMENT = false;
     // When enabled, adaptive icons would have shadows baked when being stored to icon cache.
     public static final boolean ADAPTIVE_ICON_SHADOW = true;
     // When enabled, app discovery will be enabled if service is implemented
     public static final boolean DISCOVERY_ENABLED = true;
     // When enabled, the qsb will be moved to the hotseat.
-    public static final boolean QSB_IN_HOTSEAT = true;
+    public static final boolean QSB_IN_HOTSEAT = false;
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
     // Custom flags go below this
@@ -61,7 +61,7 @@ abstract class BaseFlags {
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
     public static boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static boolean QSB_ON_FIRST_SCREEN = true;
+    public static boolean QSB_ON_FIRST_SCREEN = false;
 
     BaseFlags() {
     }

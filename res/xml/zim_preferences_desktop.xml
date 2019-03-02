@@ -1,23 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <android.support.v7.preference.PreferenceCategory
-        android:key="prefCat_desktopOptions"
-        android:title="@string/pref_category_homescreen">
-
-        <Preference
-            android:key="pref_key__minibar"
-            android:summary="@string/pref_summary__minibar"
-            android:title="@string/pref_title__minibar" />
-
-        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-            android:defaultValue="@color/colorPrimaryDark"
-            android:key="pref_minibar_color"
-            android:title="@string/pref_title__minibar_background_color"
-            app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
-            app:cpv_showAlphaSlider="true" />
-    </android.support.v7.preference.PreferenceCategory>
+    <Preference
+        android:key="pref_key__minibar"
+        android:summary="@string/pref_summary__minibar"
+        android:title="@string/pref_title__minibar" />
 
     <SwitchPreference
         android:defaultValue="false"
@@ -39,6 +26,17 @@
         android:persistent="true"
         android:summary="@string/auto_add_shortcuts_description"
         android:title="@string/auto_add_shortcuts_label" />
+
+    <org.zimmob.zimlx.preferences.SeekbarPreference
+        android:key="pref_iconScaleSB"
+        android:persistent="true"
+        android:title="@string/title__desktop_icon_scale"
+        app:defaultSeekbarValue="1.0"
+        app:maxValue="1.5"
+        app:minValue="0.3"
+        app:steps="120"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100" />
 
     <SwitchPreference
         android:defaultValue="false"

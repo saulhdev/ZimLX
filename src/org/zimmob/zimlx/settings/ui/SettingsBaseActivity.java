@@ -21,19 +21,19 @@ public class SettingsBaseActivity extends ThemeActivity {
     public Toolbar toolbar;
     private DecorLayout decorLayout;
     private Window window;
-    private ZimPreferences sharedPrefs;
 
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
+        ZimPreferences prefs = Utilities.getZimPrefs(this);
+
         window = getWindow();
         decorLayout = new DecorLayout(this, window);
         super.setContentView(decorLayout);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
-        sharedPrefs = Utilities.getZimPrefs(this);
         setSupportActionBar(toolbar);
-        toolbar.setBackgroundColor(sharedPrefs.getPrimaryColor());
+        toolbar.setBackgroundColor(prefs.getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -55,10 +55,6 @@ public class SettingsBaseActivity extends ThemeActivity {
         ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         contentParent.addView(v, lp);
-    }
-
-    public Float getActionBarElevation() {
-        return decorLayout.getActionBarElevation();
     }
 
     public void setActionBarElevation(int value) {

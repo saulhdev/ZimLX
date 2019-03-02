@@ -679,6 +679,10 @@ public final class Utilities {
         return ZimPreferences.Companion.getInstance(context);
     }
 
+    public static int getNumberOfHotseatRows(Context context) {
+        boolean twoLines = getZimPrefs(context).getTwoRowDock();
+        return twoLines ? 2 : 1;
+    }
     public static void restartLauncher(Context context) {
         PackageManager pm = context.getPackageManager();
 

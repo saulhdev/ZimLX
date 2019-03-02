@@ -25,6 +25,7 @@ import java.util.zip.ZipOutputStream
 
 class ZimBackup(val context: Context, val uri: Uri) {
 
+    val _context: Context = context
     val meta by lazy { readMeta() }
 
     private fun readMeta(): Meta? {
@@ -174,7 +175,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
     }
 
     companion object {
-        const val TAG = "LawnchairBackup"
+        const val TAG = "ZimBackup"
 
         const val INCLUDE_HOMESCREEN = 1 shl 0
         const val INCLUDE_SETTINGS = 1 shl 1
@@ -189,7 +190,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
 
         fun getFolder(): File {
-            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "Lawnchair/backup")
+            val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "ZimLX/backup")
             Log.d(TAG, "path: $folder")
             if (!folder.exists()) {
                 folder.mkdirs()

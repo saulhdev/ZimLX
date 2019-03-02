@@ -171,8 +171,6 @@
     <string name="allow_rotation_desc">When phone is rotated</string>
     <!-- Text explaining that rotation is disabled in Display settings. 'Display' refers to the Display section in system settings [CHAR LIMIT=100] -->
     <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
-    <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
-    <string name="icon_badging_title">Notification dots</string>
     <!-- Text to indicate that the system icon badging setting is on [CHAR LIMIT=100] -->
     <string name="icon_badging_desc_on">On</string>
     <!-- Text to indicate that the system icon badging setting is off [CHAR LIMIT=100] -->
@@ -332,12 +330,12 @@
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
     <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
-    <string name="about">About</string>
+
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Display app suggestions</string>
     <string name="summary_app_suggestions">At the top of your All Apps list</string>
     <string name="about_app_version">Version</string>
-    <string name="app_releases_url">https://github.com/amirzaidi/launcher3/releases</string>
+    <string name="app_releases_url" translatable="false">https://github.com/otakuhqz/zimlx/releases</string>
     <string name="app_name_pixel_launcher">Pixel Launcher</string>
     <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
     <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
@@ -351,26 +349,19 @@
     <string name="about_changelog">Changelog</string>
     <string name="about_contributors_title">Contributors</string>
     <string name="about_icon_designer">App Icon Designer</string>
-    <string name="pixel_ui_pref_title">Theme</string>
+
     <string name="action_edit">Edit</string>
     <string name="hide_app_sum">Hide app from the app drawer</string>
     <string name="hide_app">Hide app</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="pixel_ui_pref_summary">Theme different elements</string>
-    <string name="app_drawer_pref_title">App drawer</string>
-    <string name="app_drawer_pref_summary">Customize your app drawer</string>
+
     <string name="default_text">Default</string>
-    <string name="general_pref_title">Desktop</string>
-    <string name="general_pref_summary">Customize your desktop</string>
-    <string name="about_pref_summary">Get to know about the Lawnchair team</string>
+
     <string name="hidden_app">Hide apps</string>
     <string name="hide_app_selected">&#160; hidden</string>
     <string name="hide_app_reset">Reset</string>
     <string name="hide_app_apply">Apply</string>
-    <string name="hide_dock_gradient">Hide gradient</string>
-    <string name="num_hotseat_icons_pref_title">Number of icons in dock</string>
-    <string name="dock_pref_summary">Customize your dock</string>
-    <string name="dock_pref_title">Dock</string>
+
     <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
     <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
     <string name="backups">Backups</string>
@@ -409,7 +400,6 @@
     <string name="hide_apps_sum">Hide app from the app drawer</string>
     <string name="grid_size">Grid size</string>
     <string name="grid_size_default">Default</string>
-    <string name="developer_options_title">Developer options</string>
     <string name="developer_options_enabled">Developer options enabled</string>
     <string name="restart_lawnchair_pref_title">Restart Launcher</string>
     <string name="restart_lawnchair_pref_summary">Can be helpful if some settings are not properly applied</string>
@@ -468,53 +458,107 @@
     <string name="minibar_8">Open the app drawer.</string>
     <string name="minibar_9">Open the search bar.</string>
     <string name="minibar_10">Mobile network settings.</string>
+    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
+    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <string name="pref_title__minibar" translatable="false">@string/minibar</string>
+    <string name="pref_title__minibar_background_color" translatable="false">Minibar Color</string>
 
     <!-- FOLDER TITLES -->
     <string name="google_title" translatable="false">Google</string>
     <string name="play_folder_title">Play</string>
 
-    <string name="pref_category_homescreen">Desktop</string>
+    <string name="about">About</string>
+    <!-- PREFERENCES GENERAL  -->
+    <string name="pref_category__interfaces">Interfaces</string>
+    <string name="pref_category__inputs">Gestures</string>
+    <string name="pref_category__others">Others</string>
 
-    <string name="pref_title__animated_clock_icon">Animate clock icon</string>
-    <string name="pref_title__minibar" translatable="false">@string/minibar</string>
-    <string name="pref_title__minibar_background_color" translatable="false">Minibar Color</string>
-    <string name="pref_title__interfaces">Interfaces</string>
-    <string name="pref_title__inputs">Gestures</string>
-    <string name="pref_title__others">Others</string>
+    <string name="pref_title__desktop">Desktop</string>
+    <string name="pref_title__dock">Dock</string>
+    <string name="pref_title__app_drawer">App drawer</string>
+    <string name="pref_title__theme">Theme</string>
+    <string name="pref_title__search">Search</string>
     <string name="pref_title__folder">Folder</string>
-    <string name="pref_title__primary_color">Primary Color</string>
-    <string name="pref_title__advanced">Advanced</string>
-    <string name="pref_title__behavior">Behavior</string>
     <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_title__developer">Developer options</string>
+    <string name="pref_title__gestures">Gestures</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__about">About</string>
+    <string name="pref_title__animated_clock_icon">Animate clock icon</string>
+    <string name="pref_title__behavior">Behavior</string>
+
+    <string name="pref_summary__app_drawer">Customize your app drawer</string>
+    <string name="pref_summary__dock">Customize your dock</string>
+    <string name="pref_summary__desktop">Customize your desktop</string>
+    <string name="pref_summary__theme">Theme different elements</string>
+    <string name="pref_summary__notifications">Configure notifications</string>
+    <string name="pref_summary__search">Configure search engine</string>
+    <string name="pref_summary__developer">Restart the app if it is needed</string>
+    <string name="pref_summary__advanced">Language and backup</string>
+    <string name="pref_summary__about">More information about Zim Launcher</string>
+    <string name="pref_summary__inputs">Configure gestures</string>
+    <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
+    <string name="pref_summary__folder">Change folder shape and color</string>
+
     <string name="pref_title__language">Language</string>
     <string name="pref_title__folder_badge_count">Show folder badge Count</string>
-    <string name="pref_title__notification_access">Notification badges and preview</string>
-    <string name="pref_title__notification_background_color">Notification Background Color</string>
-    <string name="pref_title__notification_count">Show Notification Count</string>
+
     <string name="pref_title__predictive_apps_num">Predicted apps number</string>
     <string name="pref_title__label_two_lines">Icon labels use two lines</string>
-    <string name="pref_title__gestures">Gestures</string>
     <string name="pref_title__pull_down_action">Pull down action</string>
     <string name="pref_title__pixel_style_icons">Use Pixel icons</string>
     <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
 
-    <string name="pref_summary__advanced">Language and backup</string>
-    <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
-    <string name="pref_summary__developer">Restart the app if it is needed</string>
-    <string name="pref_summary__folder">Change folder shape and color</string>
     <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
-    <string name="pref_summary__inputs">Configure gestures</string>
+
     <string name="pref_summary__language">Change language of this app</string>
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
-    <string name="pref_summary__notifications">Configure notifications</string>
     <string name="pref_summary__notification_access">Allow ZimLX to access your notifications to enable this feature</string>
     <string name="pref_summary__pixel_style_icons">When enabled circular icons will be used where possible</string>
 
     <string name="animated_clock_icon_alternative_clock_apps_title">Animate alternative clock apps</string>
     <string name="animated_clock_icon_alternative_clock_apps_summary">Enable this if you don\'t use Google Clock as your default clock app</string>
+    <!-- PREFERENCES DESKTOP -->
+    <string name="title__desktop_indicator_style">Indicator Style</string>
+    <string name="desktop_indicator_mode_normal">Normal</string>
+    <string name="desktop_indicator_mode_arrow">Arrow</string>
+    <string name="desktop_indicator_mode_lines">Line</string>
+    <string name="title__desktop_icon_scale">Icon scale</string>
 
-    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
-    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
+    <!-- PREFERENCES APP DRAWER  -->
+    <string name="cat__app_icons">Icons</string>
+    <string name="cat__app_search">Search Bar</string>
+    <string name="title__app_spring">Spring effect</string>
+    <string name="title__app_search">Show Search Bar</string>
+    <string name="title__app_search_global">Global search in app drawer</string>
+    <string name="title__app_search_hidden">Search hidden Apps</string>
+    <string name="title__app_icon_scale">Icon scale</string>
+    <string name="title__app_all_apps_opacity">Drawer opacity</string>
+    <string name="summary__app_search_show">Show or hide search bar</string>
+    <string name="summary__app_search_global">Display global search instead of app search</string>
+    <string name="summary__app_search_hidden">Display hidden apps</string>
+    <string name="key__search_show" translatable="false">pref_key__show_search</string>
+    <string name="key__search_global" translatable="false">pref_key__global_search</string>
+    <string name="key__search_hidden" translatable="false">pref_key__app_search_hidden</string>
+
+    <!-- PREFERENCES BEHAVIOR -->
+    <string name="title__behav_folder_shape">Folder Shape</string>
+
+    <string name="pref_key__folder_preview" translatable="false">pref_key__folder_preview</string>
+    <string name="pref_key__folder_transition" translatable="false">pref_key__folder_transition</string>
+    <string name="pref_key__folder_label" translatable="false">pref_key__folder_label</string>
+
+
+    <!-- PREFERENCES THEME -->
+    <string name="pref_cat__theme_icons">Icons</string>
+    <string name="pref_cat__theme_style">Style</string>
+    <string name="pref_title__theme_adaptative_icons">Adaptative Icons</string>
+    <string name="pref_title__theme_colored_icons">Background Icons</string>
+    <string name="pref_title__primary_color">Primary Color</string>
+    <string name="pref_title__accent_color">Accent Color</string>
+    <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+
+    <!-- PREFERENCES GESTURES -->
     <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
     <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
     <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
@@ -529,6 +573,33 @@
     <string name="pull_down_notis">Show notifications</string>
     <string name="pull_down_search">Open search</string>
     <string name="pull_down_apps_search">Apps search</string>
+
+    <!-- PREFERENCES NOTIFICATIONS  -->
+    <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
+    <string name="icon_badging_title">Enable Notifications</string>
+
+    <string name="pref_title__notification_access">Notification badges and preview</string>
+    <string name="pref_title__notification_background_color">Notification Background Color</string>
+    <string name="pref_title__notification_count">Show Notification Count</string>
+
+    <!-- PREFERENCES DOCK  -->
+    <string name="title__hotseat_hide_gradient">Hide gradient</string>
+    <string name="title__hotseat_hide_button">Hide dock button</string>
+    <string name="title__hotseat_two_row">Two row dock</string>
+    <string name="title__hotseat_height_scale">Height scale</string>
+    <string name="title__hotseat_num_icons">Number of icons in dock</string>
+    <string name="title__hotseat_custom_opacity">Dock opacity</string>
+    <string name="title__hotseat_uses_custom_opacity">Custom dock opacity</string>
+    <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
+    <string name="title__hotseat_show_arrow">Show arrow</string>
+    <string name="hotseat_show_page_indicator">Show page indicator</string>
+    <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
+    <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
+    <string name="title__hotseat_icon_scale">Icon scale</string>
+
+    <string name="pref_key__dock_hotseat_icons" translatable="false">pref_key__num_hotseat_icons</string>
+    <string name="pref_key__dock_hide_menu_button" translatable="false">pref_hide_dock_button</string>
+    <string name="pref_key__dock_hide_gradient" translatable="false">pref_key__hide_dock_gradient</string>
 
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
@@ -570,4 +641,10 @@
     <string name="source_code">Source Code</string>
     <string name="licenses">Licenses</string>
     <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
+
+    <string name="title_folder_circle">Circle</string>
+    <string name="title_folder_circle_bg">Circle Shadow</string>
+    <string name="title_folder_square">Square</string>
+    <string name="title_folder_square_bg">Square Shadow</string>
+
 </resources>

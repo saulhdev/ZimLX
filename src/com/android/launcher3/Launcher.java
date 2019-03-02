@@ -86,7 +86,6 @@ import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
@@ -290,7 +289,6 @@ public class Launcher extends BaseActivity
     private boolean mHasFocus = false;
     private ObjectAnimator mScrimAnimator;
     private boolean mShouldFadeInScrim;
-    private boolean reloadIcons;
     private PopupDataProvider mPopupDataProvider;
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -337,18 +335,19 @@ public class Launcher extends BaseActivity
     private float mLastDispatchTouchEventX = 0.0f;
     private boolean mRotationEnabled = false;
     private RotationPrefChangeHandler mRotationPrefChangeHandler;
-    private ZimPreferencesChangeCallback mLawnchairPrefChangeCallback;
+    private ZimPreferencesChangeCallback mZimPrefChangeCallback;
     private boolean mRestart = false;
     private LauncherCallbacks mLauncherCallbacks;
     public static boolean showNotificationCount;
 
+    /*
     public static CustomAppWidget getCustomAppWidget(String name) {
         return sCustomAppWidgets.get(name);
     }
 
     public static HashMap<String, CustomAppWidget> getCustomAppWidgets() {
         return sCustomAppWidgets;
-    }
+    }*/
 
     public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
@@ -483,8 +482,8 @@ public class Launcher extends BaseActivity
             mRotationPrefChangeHandler = new RotationPrefChangeHandler();
             mSharedPrefs.registerOnSharedPreferenceChangeListener(mRotationPrefChangeHandler);
         }
-        mLawnchairPrefChangeCallback = new ZimPreferencesChangeCallback(this);
-        Utilities.getZimPrefs(this).registerCallback(mLawnchairPrefChangeCallback);
+        mZimPrefChangeCallback = new ZimPreferencesChangeCallback(this);
+        Utilities.getZimPrefs(this).registerCallback(mZimPrefChangeCallback);
 
         if (PinItemDragListener.handleDragRequest(this, getIntent())) {
             // Temporarily enable the rotation
@@ -1500,12 +1499,7 @@ public class Launcher extends BaseActivity
     }
 
     public FolderIcon findFolderIcon(final long folderIconId) {
-        return (FolderIcon) mWorkspace.getFirstMatch(new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View view) {
-                return info != null && info.id == folderIconId;
-            }
-        });
+        return (FolderIcon) mWorkspace.getFirstMatch((info, view) -> info != null && info.id == folderIconId);
     }
 
     /**
@@ -1553,16 +1547,13 @@ public class Launcher extends BaseActivity
     }
 
     public void updateIconBadges(final Set<PackageUserKey> updatedBadges) {
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                mWorkspace.updateIconBadges(updatedBadges);
-                mAppsView.updateIconBadges(updatedBadges);
+        Runnable r = () -> {
+            mWorkspace.updateIconBadges(updatedBadges);
+            mAppsView.updateIconBadges(updatedBadges);
 
-                PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
-                if (popup != null) {
-                    popup.updateNotificationHeader(updatedBadges);
-                }
+            PopupContainerWithArrow popup = PopupContainerWithArrow.getOpen(Launcher.this);
+            if (popup != null) {
+                popup.updateNotificationHeader(updatedBadges);
             }
         };
         if (!waitUntilResume(r)) {

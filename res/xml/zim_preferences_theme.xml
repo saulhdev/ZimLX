@@ -1,72 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory android:title="@string/pref_cat__theme_icons">
+        <com.google.android.apps.nexuslauncher.CustomIconPreference
+            android:defaultValue=""
+            android:key="pref_icon_pack"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/pref_icon_pack" />
 
-    <ListPreference
-        android:defaultValue=" "
-        android:entries="@array/icon_shape_override_paths_names"
-        android:entryValues="@array/icon_shape_override_paths_values"
-        android:key="pref_override_icon_shape"
-        android:persistent="false"
-        android:summary="%s"
-        android:title="@string/icon_shape_override_label" />
+        <ListPreference
+            android:defaultValue=" "
+            android:entries="@array/icon_shape_override_paths_names"
+            android:entryValues="@array/icon_shape_override_paths_values"
+            android:key="pref_override_icon_shape"
+            android:persistent="false"
+            android:summary="%s"
+            android:title="@string/icon_shape_override_label" />
 
-    <com.google.android.apps.nexuslauncher.CustomIconPreference
-        android:defaultValue=""
-        android:key="pref_icon_pack"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/pref_icon_pack" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:persistent="true"
+            android:key="pref_key__adaptative_icons"
+            android:title="@string/pref_title__theme_adaptative_icons" />
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_key__pixel_icons"
-        android:persistent="true"
-        android:summary="@string/pref_summary__pixel_style_icons"
-        android:title="@string/pref_title__pixel_style_icons" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:persistent="true"
+            android:key="pref_key__colored_icons"
+            android:summary="@string/pref_summary__theme_colored_icons"
+            android:title="@string/pref_title__theme_colored_icons" />
 
-    <android.support.v14.preference.SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_override_launcher_theme"
-        android:persistent="true"
-        android:title="@string/launcher_theme_override_label" />
+    </PreferenceCategory>
+    <PreferenceCategory android:title="@string/pref_cat__theme_style">
+        <android.support.v14.preference.SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_override_launcher_theme"
+            android:persistent="true"
+            android:title="@string/launcher_theme_override_label" />
 
-    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-        android:defaultValue="@color/colorPrimary"
-        android:key="pref_primary_color"
-        android:title="@string/pref_title__primary_color"
-        app:cpv_dialogTitle="@string/pref_title__primary_color"
-        app:cpv_showAlphaSlider="true" />
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimary"
+            android:key="pref_key__primary_color"
+            android:title="@string/pref_title__primary_color"
+            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_showAlphaSlider="true" />
 
-    <!--<SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_key__animated_clock_icon"
-        android:persistent="true"
-        android:title="@string/pref_title__animated_clock_icon" />
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorAccent"
+            android:key="pref_key__accent_color"
+            android:title="@string/pref_title__accent_color"
+            app:cpv_dialogTitle="@string/pref_title__accent_color"
+            app:cpv_showAlphaSlider="true" />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:dependency="pref_key__animated_clock_icon"
-        android:key="pref_key_animated_alternative_clock_apps"
-        android:persistent="true"
-        android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
-        android:title="@string/animated_clock_icon_alternative_clock_apps_title" />-->
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_enable_minus_one"
-        android:summary="@string/pref_show_google_now_summary"
-        android:title="@string/title_show_google_app" />
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimaryDark"
+            android:key="pref_key__minibar_color"
+            android:title="@string/pref_title__minibar_background_color"
+            app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
+            app:cpv_showAlphaSlider="true" />
 
-    <SwitchPreference
-        android:defaultValue="@bool/allow_rotation"
-        android:key="pref_allowRotation"
-        android:persistent="true"
-        android:title="@string/allow_rotation_title" />
+    </PreferenceCategory>
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_homeOpensDrawer"
-        android:persistent="true"
-        android:summary="@string/pref_summary__home_opens_drawer"
-        android:title="@string/pref_title__home_opens_drawer" />
 </PreferenceScreen>

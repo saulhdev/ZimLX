@@ -99,8 +99,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
     private SpringAnimationHandler mSpringAnimationHandler;
     private NotificationState mNotificationState;
 
-    private int allAppsAlpha;
-
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mDetector = new SwipeDetector(l, this, SwipeDetector.VERTICAL);

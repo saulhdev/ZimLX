@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <ListPreference
+        android:defaultValue="2"
+        android:entries="@array/entries__folder_shape"
+        android:entryValues="@array/values__zero_to_three"
+        android:key="pref_key__folder_shape"
+        android:title="@string/title__behav_folder_shape" />
+
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_enable_minus_one"
@@ -18,4 +26,19 @@
         android:persistent="true"
         android:summary="@string/pref_summary__home_opens_drawer"
         android:title="@string/pref_title__home_opens_drawer" />
+
+    <!--<SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_key__animated_clock_icon"
+        android:persistent="true"
+        android:title="@string/pref_title__animated_clock_icon" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_key__animated_clock_icon"
+        android:key="pref_key_animated_alternative_clock_apps"
+        android:persistent="true"
+        android:summary="@string/animated_clock_icon_alternative_clock_apps_summary"
+        android:title="@string/animated_clock_icon_alternative_clock_apps_title" />-->
+
 </PreferenceScreen>

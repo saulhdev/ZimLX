@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory android:title="@string/pref_title__gestures">
         <ListPreference
             android:defaultValue="1"
             android:entries="@array/pullDownActionTexts"
@@ -9,6 +8,4 @@
             android:persistent="true"
             android:summary="%s"
             android:title="@string/pref_title__pull_down_action" />
-
-    </PreferenceCategory>
 </PreferenceScreen>
