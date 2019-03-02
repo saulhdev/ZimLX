@@ -1,7 +1,7 @@
 # ZimLX
 
-<h1 align=center>
-<img src="Logo/logotype.png" width=50%>
+<h1 align="center" >
+<img src="Logo/logotype.png" width="50%">
 </h1>
 
 Free and Open Source Launcher for Android.
