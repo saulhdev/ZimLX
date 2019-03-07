@@ -1,3 +1,8 @@
+### v0.5.0
+* Quick actions per apps support.
+* Change to Lawnchair base.
+* Accent color change setting.
+
 ### v0.4.4
 * Fix setting theme
 * Add enable-disable minibar

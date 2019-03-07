@@ -28,7 +28,7 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         ArrayList<String> ret = getStringList(R.string.pref_key__minibar_items);
         if (ret.isEmpty()) {
             for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
-                if (Arrays.asList(98, 36, 24, 50, 71, 25, 73).contains(item.id)) {
+                if (Arrays.asList(98, 36, 50, 71, 25, 46, 54, 73).contains(item.id)) {
                     ret.add(Integer.toString(item.id));
                 }
             }

@@ -57,9 +57,7 @@ android {
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
-
     def versionPropsFile = file('version.properties')
-
     if (versionPropsFile.canRead()) {
         Properties versionProps = new Properties()
 
@@ -73,9 +71,6 @@ android {
         defaultConfig {
             minSdkVersion 21
             targetSdkVersion 27
-
-            flavorDimensions "versionCode"
-            multiDexEnabled false
 
             buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
             buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
@@ -91,7 +86,6 @@ android {
     } else {
         throw new GradleException("Could not read version.properties!")
     }
-
     buildTypes {
         debug {
             minifyEnabled false
@@ -103,50 +97,28 @@ android {
             jniDebuggable true
             renderscriptDebuggable true
             pseudoLocalesEnabled true
-        }
-        optimized {
-            initWith debug
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'),
-                    'proguard.flags'
-            if (System.getenv("TRAVIS") == "true") {
-                if (System.getenv("TRAVIS_EVENT_TYPE") != "pull_request") {
-                    signingConfig signingConfigs.travis
-                }
-            }
+            signingConfig signingConfigs.travis
         }
     }
-
-    flavorDimensions "tier", "build"
+    flavorDimensions "default"
     productFlavors {
         aosp {
-            dimension "tier"
+            dimension "default"
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
-
         l3go {
-            dimension "tier"
-            applicationId 'com.google.android.apps.nexuslauncher'
+            dimension "default"
+            applicationId 'com.android.launcher3'
+            //applicationId 'com.google.android.apps.nexuslauncher'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+        quickstep {
+            dimension "default"
+            applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
 
-        dev {
-            dimension "build"
-            //applicationIdSuffix ".dev"
-            //versionNameSuffix "-dev"
-        }
-
-        ci {
-            dimension "build"
-            applicationIdSuffix ".ci"
-            versionNameSuffix "-ci"
-        }
-
-        plah {
-            dimension "build"
-            applicationIdSuffix ".plah"
-        }
     }
     lintOptions {
         disable 'MissingTranslation'
@@ -190,6 +162,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    defaultConfig {
+        applicationId 'org.zimmob.zimlx'
+    }
 }
 
 afterEvaluate {
@@ -217,10 +192,8 @@ dependencies {
     implementation "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-
     implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
     implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
     implementation 'com.mikepenz:fastadapter:3.2.6@aar'
@@ -229,7 +202,6 @@ dependencies {
     implementation 'com.balysv:material-ripple:1.0.2'
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
-
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {
@@ -300,17 +272,3 @@ static String getBuildDate() {
     RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
     return RFC3339_LIKE.format(new Date())
 }
-/*
-static String getGitHash(){
-    try {
-        def stdout = new ByteArrayOutputStream()
-        exec {
-            commandLine 'git', 'rev-parse', 'HEAD'
-            standardOutput = stdout+";"
-        }
-        return stdout.toString().trim()
-    } catch (Exception ignored) {
-        return 'unknown'
-
-    }
-}*/

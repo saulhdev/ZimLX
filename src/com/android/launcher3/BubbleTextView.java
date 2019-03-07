@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.animation.ObjectAnimator;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.content.res.TypedArray;
@@ -53,8 +52,6 @@ import com.android.launcher3.graphics.HolographicOutlineHelper;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
-
-import org.zimmob.zimlx.pixelify.ClockIconDrawable;
 
 import java.text.NumberFormat;
 
@@ -190,8 +187,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info.iconBitmap, info);
         setTag(info);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)
-            applyClockIcon(info.getTargetComponent());
+        //if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION)
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
         }
@@ -199,15 +195,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
 
     }
 
-    private void applyClockIcon(ComponentName componentName) {
-        if (Utilities.isAnimatedClock(getContext(), componentName)) {
-            setIcon(ClockIconDrawable.Companion.createWrapped(getContext()));
-        }
-    }
-
     public void applyFromApplicationInfo(AppInfo info) {
         applyIconAndLabel(info.iconBitmap, info);
-        applyClockIcon(info.getTargetComponent());
 
         // We don't need to check the info since it's not a ShortcutInfo
         super.setTag(info);

@@ -9,8 +9,9 @@ import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
-import org.zimmob.zimlx.ConfigFlags.FOLDER_SHAPE_SQUARE
 import org.zimmob.zimlx.settings.GridSize
+import org.zimmob.zimlx.util.ZimFlags
+import org.zimmob.zimlx.util.ZimFlags.FOLDER_SHAPE_SQUARE
 import java.io.File
 import java.util.*
 import java.util.concurrent.Callable
@@ -47,14 +48,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
     // Theme
-    var iconPack by StringPref("pref_icon_pack", "", doNothing)
-    var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
-    val animatedClockIcon by BooleanPref("pref_key__animated_clock_icon", false)
-    val animatedClockIconAlternative by BooleanPref("pref_key_animated_alternative_clock_apps", false)
-    val usePixelIcons by BooleanPref("pref_key__pixel_icons", true)
-    val primaryColor by IntPref("pref_key__primary_color", R.color.colorPrimary)
-    val accentColor by IntPref("pref_key__accent_color", R.color.colorAccent)
-    val minibarColor by IntPref("pref_key__minibar_color", R.color.colorPrimary)
+    var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
+    var overrideLauncherTheme by BooleanPref(ZimFlags.OVERRIDE_LAUNCHER_THEME, false, recreate)
+    val usePixelIcons by BooleanPref(ZimFlags.USE_PIXEL_ICONS, true)
+    val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
+    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
+    val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
 
     // Desktop
@@ -62,14 +61,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val iconScaleSB by FloatPref("pref_iconScaleSB", 1f)
+    val iconScaleSB by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f)
 
     // Dock
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
-    val hideDockButton by BooleanPref("pref_title__hide_dock_button", false, recreate)
+    val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
     val dockSearchBar = true
     val hotseatIconScale by FloatPref("pref_hotseatIconScale", 1f)
-    val hotseatHeightScale by FloatPref("pref_hotseatHeightScale", 1f)
+    val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f)
 
     val hotseatShowArrow by BooleanPref("pref_hotseatShowArrow", true)
     val twoRowDock by BooleanPref("pref_twoRowDock", false)
@@ -88,10 +87,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sharedPrefs.getString("pref_predictive_apps_values", "5")
     }
 
-    val allAppsIconScale by FloatPref("pref_allAppsIconScale", 1f)
-
-
-
+    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, restart)
     val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
 
     //Notification

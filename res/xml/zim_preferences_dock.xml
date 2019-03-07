@@ -7,8 +7,8 @@
         android:persistent="true"
         android:title="@string/title__hotseat_height_scale"
         app:defaultSeekbarValue="1.0"
-        app:maxValue="1.5"
-        app:minValue="0.5"
+        app:maxValue="1.25"
+        app:minValue="0.75"
         app:summaryFormat="%.0f%%"
         app:summaryMultiplier="100" />
 

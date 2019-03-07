@@ -773,11 +773,6 @@ public final class Utilities {
         return ShadowGenerator.getInstance(Launcher.mContext).createShadow(icon, size);
     }
 
-    public static boolean isAnimatedClock(Context context, ComponentName componentName) {
-        return Utilities.getZimPrefs(context).getAnimatedClockIcon() &&
-                Utilities.isComponentClock(componentName, !Utilities.getZimPrefs(context).getAnimatedClockIconAlternative());
-    }
-
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }
