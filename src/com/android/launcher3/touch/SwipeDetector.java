@@ -17,12 +17,13 @@ package com.android.launcher3.touch;
 
 import android.content.Context;
 import android.graphics.PointF;
-import android.support.annotation.NonNull;
-import android.support.annotation.VisibleForTesting;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.VisibleForTesting;
 
 import static android.view.MotionEvent.INVALID_POINTER_ID;
 

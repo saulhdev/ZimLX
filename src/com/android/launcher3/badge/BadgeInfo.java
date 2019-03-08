@@ -22,7 +22,6 @@ import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Shader;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
@@ -30,6 +29,8 @@ import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * Contains data to be used in an icon badge.

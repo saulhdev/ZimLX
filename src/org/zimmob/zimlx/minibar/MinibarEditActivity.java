@@ -1,13 +1,6 @@
 package org.zimmob.zimlx.minibar;
 
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.SwitchCompat;
-import android.support.v7.widget.Toolbar;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
@@ -30,6 +23,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

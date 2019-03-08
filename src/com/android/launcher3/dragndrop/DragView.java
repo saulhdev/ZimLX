@@ -39,9 +39,6 @@ import android.graphics.drawable.InsetDrawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.animation.FloatPropertyCompat;
-import android.support.animation.SpringAnimation;
-import android.support.animation.SpringForce;
 import android.view.View;
 import android.view.animation.DecelerateInterpolator;
 
@@ -68,6 +65,10 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 public class DragView extends View {
     public static final int COLOR_CHANGE_DURATION = 120;
@@ -450,7 +451,8 @@ public class DragView extends View {
             canvas.drawBitmap(mBitmap, 0.0f, 0.0f, mPaint);
             if (crossFade) {
                 mPaint.setAlpha((int) (255 * mCrossFadeProgress));
-                final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                //final int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+                final int saveCount = canvas.save();
                 float sX = (mBitmap.getWidth() * 1.0f) / mCrossFadeBitmap.getWidth();
                 float sY = (mBitmap.getHeight() * 1.0f) / mCrossFadeBitmap.getHeight();
                 canvas.scale(sX, sY);

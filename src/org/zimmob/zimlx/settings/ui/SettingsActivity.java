@@ -30,16 +30,6 @@ import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceRecyclerViewAccessibilityDelegate;
-import android.support.v7.preference.TwoStatePreference;
-import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -69,6 +59,16 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import androidx.preference.TwoStatePreference;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.ButterKnife;
 
 import static com.android.launcher3.Utilities.restartLauncher;
@@ -77,21 +77,16 @@ import static com.android.launcher3.Utilities.restartLauncher;
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
  */
 public class SettingsActivity extends SettingsBaseActivity implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-    /**
-     * Hidden field Settings.Secure.NOTIFICATION_BADGING
-     */
+
+    private int mAppBarHeight;
+
     public static final String NOTIFICATION_BADGING = "notification_badging";
     public final static String ICON_PACK_PREF = "pref_icon_pack";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
-    private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
-    /**
-     * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
-     */
-    private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
-    private int mAppBarHeight;
-
+    public static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
+    public static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -258,11 +253,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             ContentResolver resolver = getActivity().getContentResolver();
             switch (preference) {
                 case R.xml.zim_preferences_desktop:
-                    /*if (SmartspaceController.get(mContext).cY()) {
-                        findPreference(SMARTSPACE_PREF).setOnPreferenceClickListener(this);
-                    } else {
-                        getPreferenceScreen().removePreference(findPreference(SMARTSPACE_PREF));
-                    }*/
                     if (!Utilities.ATLEAST_OREO) {
                         getPreferenceScreen().removePreference(
                                 findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));

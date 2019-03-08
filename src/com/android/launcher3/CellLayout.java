@@ -33,8 +33,6 @@ import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.support.annotation.IntDef;
-import android.support.v4.view.ViewCompat;
 import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -68,6 +66,9 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
+
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
 
 public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;

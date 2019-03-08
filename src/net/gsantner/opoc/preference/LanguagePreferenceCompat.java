@@ -48,8 +48,6 @@ package net.gsantner.opoc.preference;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.support.annotation.Nullable;
-import android.support.v7.preference.ListPreference;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 
@@ -59,6 +57,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.Nullable;
+import androidx.preference.ListPreference;
 
 /**
  * A {@link android.preference.ListPreference} that displays a list of languages to select from

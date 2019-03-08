@@ -9,7 +9,6 @@ import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
 import android.support.test.InstrumentationRegistry;
 import android.test.ProviderTestCase2;
 
@@ -36,6 +35,8 @@ import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.Executor;
+
+import androidx.annotation.NonNull;
 
 import static org.mockito.Matchers.anyBoolean;
 import static org.mockito.Mockito.atLeast;

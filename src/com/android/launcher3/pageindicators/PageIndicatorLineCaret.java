@@ -11,7 +11,6 @@ import android.graphics.Color;
 import android.graphics.Paint;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
@@ -24,6 +23,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * A PageIndicator that briefly shows a fraction of a line when moving between pages.

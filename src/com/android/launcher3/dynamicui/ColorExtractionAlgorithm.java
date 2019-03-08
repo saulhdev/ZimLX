@@ -18,9 +18,6 @@ package com.android.launcher3.dynamicui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 import android.util.Pair;
 import android.util.Range;
@@ -32,6 +29,10 @@ import com.android.launcher3.compat.WallpaperColorsCompat;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Implementation of tonal color extraction

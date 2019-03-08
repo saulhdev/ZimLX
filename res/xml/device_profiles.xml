@@ -18,7 +18,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        launcher:iconSize="56"
+        launcher:zIconSize="56"
         launcher:hotseatIconSize="48"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="54"
@@ -34,7 +34,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        launcher:iconSize="56"
+        launcher:zIconSize="56"
         launcher:hotseatIconSize="48"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="54"
@@ -50,7 +50,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:iconSize="54"
+        launcher:zIconSize="54"
         launcher:hotseatIconSize="54"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="48"
@@ -66,7 +66,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:iconSize="56"
+        launcher:zIconSize="56"
         launcher:hotseatIconSize="56"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="54"
@@ -82,7 +82,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:iconSize="56"
+        launcher:zIconSize="56"
         launcher:hotseatIconSize="56"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="54"
@@ -98,7 +98,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:iconSize="54"
+        launcher:zIconSize="54"
         launcher:hotseatIconSize="54"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="52"
@@ -114,7 +114,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_6x6"
-        launcher:iconSize="52"
+        launcher:zIconSize="52"
         launcher:hotseatIconSize="52"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="50"
@@ -130,7 +130,7 @@
 
     <profile
         launcher:defaultLayoutId="@xml/default_workspace_5x6"
-        launcher:iconSize="64"
+        launcher:zIconSize="64"
         launcher:hotseatIconSize="64"
         launcher:iconTextSize="13.0"
         launcher:landscapeIconSize="64"

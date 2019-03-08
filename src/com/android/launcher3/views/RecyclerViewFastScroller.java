@@ -22,7 +22,6 @@ import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Paint;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -36,6 +35,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -276,7 +277,8 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY < 0) {
             return;
         }
-        int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        //int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        int saveCount = canvas.save();
         canvas.translate(getWidth() / 2, mRv.getPaddingTop());
         // Draw the track
         float halfW = mWidth / 2;

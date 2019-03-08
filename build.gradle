@@ -1,9 +1,9 @@
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.2.51'
-    ext.version_library_butterknife = "8.8.1"
-    ext.version_plugin_kotlin = "1.2.50"
+    ext.kotlin_version = '1.3.21'
+    ext.version_library_butterknife = "10.1.0"
+    ext.version_plugin_kotlin = "1.3.21"
     ext.enable_plugin_kotlin = true
 
     ext.getGitHash = { ->
@@ -25,7 +25,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.6'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -42,7 +42,7 @@ if (enable_plugin_kotlin) {
 }
 
 android {
-    compileSdkVersion 27
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     Properties localProps = new Properties()
     File localPropsFile = project.rootProject.file('local.properties')
@@ -70,7 +70,7 @@ android {
         versionProps.store(versionPropsFile.newWriter(), null)
         defaultConfig {
             minSdkVersion 21
-            targetSdkVersion 27
+            targetSdkVersion 28
 
             buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
             buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
@@ -179,23 +179,22 @@ repositories {
     mavenCentral()
 }
 
-final String SUPPORT_LIBS_VERSION = '27.0.1'
+final String SUPPORT_LIBS_VERSION = '1.0.0-beta01'
 dependencies {
-    implementation "com.android.support:appcompat-v7:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:cardview-v7:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:design:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:support-v4:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:support-dynamic-animation:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:recyclerview-v7:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:palette-v7:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:preference-v7:${SUPPORT_LIBS_VERSION}"
-    implementation "com.android.support:preference-v14:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
+    implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-    implementation 'com.android.support.constraint:constraint-layout:1.0.2'
+    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.afollestad.material-dialogs:commons:0.9.6.0'
-    implementation 'com.afollestad.material-dialogs:core:0.9.6.0'
+    implementation 'com.afollestad.material-dialogs:core:2.0.3'
     implementation 'com.mikepenz:fastadapter:3.2.6@aar'
     implementation 'com.mikepenz:fastadapter-commons:3.2.6@aar'
     implementation 'com.mikepenz:fastadapter-extensions:3.2.6@aar'

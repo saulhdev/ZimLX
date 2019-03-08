@@ -15,10 +15,6 @@
  */
 package com.android.launcher3.anim;
 
-import android.support.animation.FloatPropertyCompat;
-import android.support.animation.SpringAnimation;
-import android.support.animation.SpringForce;
-import android.support.annotation.IntDef;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.VelocityTracker;
@@ -29,6 +25,11 @@ import com.android.launcher3.R;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
+
+import androidx.annotation.IntDef;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * Handler class that manages springs for a set of views that should all move based on the same

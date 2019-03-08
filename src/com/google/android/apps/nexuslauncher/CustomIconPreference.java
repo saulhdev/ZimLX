@@ -1,13 +1,14 @@
 package com.google.android.apps.nexuslauncher;
 
 import android.content.Context;
-import android.support.v7.preference.ListPreference;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import androidx.preference.ListPreference;
 
 public class CustomIconPreference extends ListPreference {
 

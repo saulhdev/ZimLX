@@ -36,15 +36,16 @@ package net.gsantner.opoc.preference;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.support.annotation.ColorRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.StringRes;
-import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import androidx.annotation.ColorRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.StringRes;
+import androidx.core.content.ContextCompat;
 
 
 /**

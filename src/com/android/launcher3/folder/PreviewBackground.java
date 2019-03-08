@@ -31,7 +31,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.support.v4.graphics.ColorUtils;
 import android.text.TextUtils;
 import android.util.Property;
 import android.view.View;
@@ -45,6 +44,8 @@ import com.android.launcher3.util.Themes;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -270,10 +271,11 @@ public class PreviewBackground {
         if (canvas.isHardwareAccelerated()) {
             saveCount = canvas.saveLayer(offsetX - mStrokeWidth, offsetY,
                     offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius,
-                    null, Canvas.CLIP_TO_LAYER_SAVE_FLAG | Canvas.HAS_ALPHA_LAYER_SAVE_FLAG);
+                    null, Canvas.ALL_SAVE_FLAG);
 
         } else {
-            saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            //saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            saveCount = canvas.save();
             canvas.clipPath(getClipPath(), Region.Op.DIFFERENCE);
         }
 

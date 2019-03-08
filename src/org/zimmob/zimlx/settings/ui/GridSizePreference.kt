@@ -1,8 +1,8 @@
 package org.zimmob.zimlx.settings.ui
 
 import android.content.Context
-import android.support.v7.preference.DialogPreference
 import android.util.AttributeSet
+import androidx.preference.DialogPreference
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 

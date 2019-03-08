@@ -18,9 +18,6 @@ package com.android.launcher3.dynamicui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.Nullable;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
@@ -28,6 +25,10 @@ import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+
+import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
+import androidx.palette.graphics.Palette;
 
 /**
  * Saves and loads colors extracted from the wallpaper, as well as the associated wallpaper id.

@@ -56,9 +56,6 @@ import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.Trace;
 import android.os.UserHandle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
@@ -157,6 +154,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Executor;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_APPS;
 import static com.android.launcher3.util.RunnableWithId.RUNNABLE_ID_BIND_WIDGETS;

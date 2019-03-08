@@ -3,11 +3,6 @@ package com.google.android.apps.nexuslauncher.qsb;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.support.animation.FloatPropertyCompat;
-import android.support.animation.SpringAnimation;
-import android.support.annotation.NonNull;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
@@ -21,6 +16,12 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, WallpaperColorInfo.OnChangeListener {
     private AllAppsRecyclerView mRecyclerView;

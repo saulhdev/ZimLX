@@ -47,17 +47,6 @@ import android.content.SharedPreferences;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.ColorInt;
-import android.support.annotation.DrawableRes;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
-import android.support.annotation.XmlRes;
-import android.support.v4.app.Fragment;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceFragmentCompat;
-import android.support.v7.preference.PreferenceGroup;
-import android.support.v7.preference.PreferenceScreen;
 import android.text.TextUtils;
 import android.view.View;
 
@@ -70,6 +59,18 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.DrawableRes;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.annotation.XmlRes;
+import androidx.fragment.app.Fragment;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceScreen;
 
 /**
  * Baseclass to use as preference fragment (with support libraries)
@@ -305,7 +306,7 @@ public abstract class GsPreferenceFragmentCompat<AS extends SharedPreferencesPro
      *
      * @param key The key of the preference to retrieve.
      * @return The {@link Preference} with the key, or null.
-     * @see android.support.v7.preference.PreferenceGroup#findPreference(CharSequence)
+     * @see androidx.preference.PreferenceGroup#findPreference(CharSequence)
      */
     public Preference findPreference(@StringRes int key) {
         return findPreference(getString(key));

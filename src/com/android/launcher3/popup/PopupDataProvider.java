@@ -20,7 +20,6 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.pm.LauncherApps;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.NonNull;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
@@ -44,6 +43,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import androidx.annotation.NonNull;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.

@@ -22,7 +22,6 @@ import android.animation.ValueAnimator;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
 import android.view.View;
 import android.widget.TextView;
 
@@ -33,6 +32,8 @@ import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static com.android.launcher3.folder.FolderIcon.DROP_IN_ANIMATION_DURATION;
 
@@ -161,7 +162,8 @@ public class PreviewItemManager {
     }
 
     private void drawPreviewItem(Canvas canvas, PreviewItemDrawingParams params) {
-        canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        //canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        canvas.save();
         canvas.translate(params.transX, params.transY);
         canvas.scale(params.scale, params.scale);
         Drawable d = params.drawable;

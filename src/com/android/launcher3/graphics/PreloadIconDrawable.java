@@ -167,7 +167,8 @@ public class PreloadIconDrawable extends FastBitmapDrawable {
         }
         canvas.drawPath(mScaledProgressPath, mProgressPaint);
 
-        int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        //int saveCount = canvas.save(Canvas.MATRIX_SAVE_FLAG);
+        int saveCount = canvas.save();
         Rect bounds = getBounds();
 
         canvas.scale(mIconScale, mIconScale, bounds.exactCenterX(), bounds.exactCenterY());

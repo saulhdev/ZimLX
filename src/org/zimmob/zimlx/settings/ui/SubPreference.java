@@ -3,11 +3,12 @@ package org.zimmob.zimlx.settings.ui;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Bundle;
-import android.support.v7.preference.Preference;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.R;
+
+import androidx.preference.Preference;
 
 public class SubPreference extends Preference implements View.OnLongClickListener {
 

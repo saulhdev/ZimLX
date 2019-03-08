@@ -24,7 +24,6 @@ import android.content.Context;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -39,6 +38,8 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 public class Hotseat extends FrameLayout
         implements UserEventDispatcher.LogContainerProvider {

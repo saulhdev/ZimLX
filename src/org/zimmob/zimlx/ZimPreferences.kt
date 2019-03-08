@@ -52,7 +52,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var overrideLauncherTheme by BooleanPref(ZimFlags.OVERRIDE_LAUNCHER_THEME, false, recreate)
     val usePixelIcons by BooleanPref(ZimFlags.USE_PIXEL_ICONS, true)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
-    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
+    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
 

@@ -18,7 +18,6 @@ package com.android.launcher3;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -28,6 +27,8 @@ import com.android.launcher3.dragndrop.DragLayer;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+
+import androidx.annotation.IntDef;
 
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.

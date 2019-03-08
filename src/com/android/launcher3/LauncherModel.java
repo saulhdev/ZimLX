@@ -28,7 +28,6 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.Pair;
@@ -72,6 +71,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
+
+import androidx.annotation.Nullable;
 
 /**
  * Maintains in-memory state of the Launcher. It is expected that there should be only one

@@ -37,8 +37,6 @@ import android.graphics.Region;
 import android.graphics.Shader;
 import android.graphics.Shader.TileMode;
 import android.graphics.drawable.Drawable;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -56,6 +54,9 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * <p>This class can also be created via XML inflation using <code>&lt;adaptive-icon></code> tag

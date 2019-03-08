@@ -9,8 +9,8 @@ import android.graphics.BitmapFactory
 import android.net.Uri
 import android.os.AsyncTask
 import android.os.Environment
-import android.support.v4.content.FileProvider
 import android.util.Log
+import androidx.core.content.FileProvider
 import com.android.launcher3.BuildConfig
 import com.android.launcher3.LauncherFiles
 import com.android.launcher3.Utilities

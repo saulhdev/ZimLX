@@ -1,11 +1,11 @@
 package org.zimmob.zimlx.preferences
 
 import android.content.Context
-import android.support.v7.preference.Preference
-import android.support.v7.preference.PreferenceViewHolder
 import android.util.AttributeSet
 import android.widget.SeekBar
 import android.widget.TextView
+import androidx.preference.Preference
+import androidx.preference.PreferenceViewHolder
 import com.android.launcher3.R
 
 class SeekbarPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener {

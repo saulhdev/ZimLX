@@ -27,7 +27,6 @@ import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.drawable.Drawable;
 import android.os.Parcelable;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
@@ -71,6 +70,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
@@ -463,10 +464,13 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         final int saveCount;
 
         if (canvas.isHardwareAccelerated()) {
-            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
-                    Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+            //saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null,
+            //        Canvas.HAS_ALPHA_LAYER_SAVE_FLAG | Canvas.CLIP_TO_LAYER_SAVE_FLAG);
+            saveCount = canvas.saveLayer(0, 0, getWidth(), getHeight(), null, Canvas.ALL_SAVE_FLAG);
+
         } else {
-            saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            //saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
+            saveCount = canvas.save();
             if (mPreviewLayoutRule.clipToBackground()) {
                 canvas.clipPath(mBackground.getClipPath(), Region.Op.INTERSECT);
             }

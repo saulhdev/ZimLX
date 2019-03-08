@@ -9,9 +9,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.graphics.Color;
-import android.support.animation.SpringAnimation;
-import android.support.v4.graphics.ColorUtils;
-import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.animation.AccelerateInterpolator;
@@ -37,6 +34,10 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TouchController;
 
 import java.lang.reflect.InvocationTargetException;
+
+import androidx.core.graphics.ColorUtils;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.interpolator.view.animation.FastOutSlowInInterpolator;
 
 /**
  * Handles AllApps view transition.

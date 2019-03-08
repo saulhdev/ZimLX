@@ -16,11 +16,12 @@
 package com.android.launcher3.views;
 
 import android.content.Context;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
+
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 /**
  * Extension of {@link Preference} which makes the widget layout clickable.

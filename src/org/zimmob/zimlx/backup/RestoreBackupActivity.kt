@@ -7,8 +7,6 @@ import android.net.Uri
 import android.os.AsyncTask
 import android.os.Bundle
 import android.os.Handler
-import android.support.design.widget.FloatingActionButton
-import android.support.design.widget.Snackbar
 import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
@@ -16,6 +14,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import org.zimmob.zimlx.settings.ui.SettingsBaseActivity
 
 class RestoreBackupActivity : SettingsBaseActivity(), ZimBackup.MetaLoader.Callback {

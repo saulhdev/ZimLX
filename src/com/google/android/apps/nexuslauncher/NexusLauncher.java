@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.RemoteException;
-import android.support.v4.graphics.ColorUtils;
 import android.view.Menu;
 import android.view.View;
 
@@ -30,6 +29,8 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.core.graphics.ColorUtils;
 
 public class NexusLauncher {
     public final LauncherCallbacks fA;

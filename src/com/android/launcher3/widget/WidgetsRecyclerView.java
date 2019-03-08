@@ -17,11 +17,12 @@
 package com.android.launcher3.widget;
 
 import android.content.Context;
-import android.support.v7.widget.LinearLayoutManager;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.BaseRecyclerView;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * The widgets recycler view.

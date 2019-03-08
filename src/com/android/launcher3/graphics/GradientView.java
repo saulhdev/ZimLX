@@ -25,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.RadialGradient;
 import android.graphics.RectF;
 import android.graphics.Shader;
-import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -37,6 +36,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
+
+import androidx.core.graphics.ColorUtils;
 
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a

@@ -18,8 +18,6 @@ package com.android.launcher3.allapps;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
 import android.os.Process;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.android.launcher3.AppInfo;
@@ -47,6 +45,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * The alphabetically sorted list of applications.

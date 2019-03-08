@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <Preference
+    <androidx.android.Preference
         android:key="pref_key__minibar"
         android:summary="@string/pref_summary__minibar"
         android:title="@string/pref_title__minibar" />

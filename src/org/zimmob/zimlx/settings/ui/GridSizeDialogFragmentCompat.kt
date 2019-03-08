@@ -1,10 +1,10 @@
 package org.zimmob.zimlx.settings.ui
 
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.preference.PreferenceDialogFragmentCompat
 import android.view.View
 import android.widget.NumberPicker
+import androidx.appcompat.app.AlertDialog
+import androidx.preference.PreferenceDialogFragmentCompat
 import com.android.launcher3.R
 
 class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {

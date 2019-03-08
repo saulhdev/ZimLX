@@ -1,14 +1,14 @@
 package org.zimmob.zimlx.settings.ui;
 
 import android.os.Bundle;
-import android.support.v4.app.FragmentTransaction;
-import android.support.v7.widget.Toolbar;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 import org.zimmob.zimlx.util.ThemeActivity;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.FragmentTransaction;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

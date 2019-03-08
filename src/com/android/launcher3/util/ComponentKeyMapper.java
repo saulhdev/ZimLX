@@ -16,9 +16,9 @@ package com.android.launcher3.util;
  * limitations under the License.
  */
 
-import android.support.annotation.Nullable;
-
 import java.util.Map;
+
+import androidx.annotation.Nullable;
 
 public class ComponentKeyMapper<T> {
 

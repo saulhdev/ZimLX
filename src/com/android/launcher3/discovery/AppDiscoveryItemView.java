@@ -17,7 +17,6 @@
 package com.android.launcher3.discovery;
 
 import android.content.Context;
-import android.support.annotation.NonNull;
 import android.util.AttributeSet;
 import android.view.View;
 import android.widget.ImageView;
@@ -28,6 +27,8 @@ import com.android.launcher3.R;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
+
+import androidx.annotation.NonNull;
 
 public class AppDiscoveryItemView extends RelativeLayout {
 

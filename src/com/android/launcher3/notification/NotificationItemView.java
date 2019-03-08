@@ -22,7 +22,6 @@ import android.animation.ObjectAnimator;
 import android.app.Notification;
 import android.content.Context;
 import android.graphics.Rect;
-import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.View;
@@ -42,6 +41,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 /**
  * A {@link FrameLayout} that contains a header, main view and a footer.

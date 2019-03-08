@@ -3,10 +3,6 @@ package org.zimmob.zimlx.preferences;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.annotation.NonNull;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceViewHolder;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
@@ -14,6 +10,11 @@ import com.jaredrummler.android.colorpicker.ColorPanelView;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 import com.jaredrummler.android.colorpicker.ColorShape;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.NonNull;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceViewHolder;
 
 /**
  * Created by saul on 04-25-18.

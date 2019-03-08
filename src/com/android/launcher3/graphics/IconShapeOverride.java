@@ -25,9 +25,6 @@ import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
 import android.os.SystemClock;
-import android.support.annotation.NonNull;
-import android.support.v7.preference.ListPreference;
-import android.support.v7.preference.Preference;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -40,6 +37,10 @@ import com.android.launcher3.util.LooperExecutor;
 import org.zimmob.zimlx.ZimPreferences;
 
 import java.lang.reflect.Field;
+
+import androidx.annotation.NonNull;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.restartLauncher;

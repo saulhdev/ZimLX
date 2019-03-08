@@ -30,7 +30,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.ParcelFileDescriptor;
-import android.support.v7.graphics.Palette;
 import android.util.Log;
 
 import com.android.launcher3.LauncherProvider;
@@ -40,6 +39,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.io.IOException;
+
+import androidx.palette.graphics.Palette;
 
 /**
  * Extracts colors from the wallpaper, and saves results to {@link LauncherProvider}.

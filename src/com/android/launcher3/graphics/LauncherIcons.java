@@ -35,7 +35,6 @@ import android.graphics.drawable.PaintDrawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
@@ -48,6 +47,8 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.Provider;
+
+import androidx.annotation.Nullable;
 
 /**
  * Helper methods for generating various launcher icons
@@ -279,7 +280,7 @@ public class LauncherIcons {
             } else {
                 icon.setBounds(left, top, left + width, top + height);
             }
-            canvas.save(Canvas.MATRIX_SAVE_FLAG);
+            canvas.save();// .save(Canvas.ALL_SAVE_FLAG);
             canvas.scale(scale, scale, textureWidth / 2, textureHeight / 2);
             icon.draw(canvas);
             canvas.restore();

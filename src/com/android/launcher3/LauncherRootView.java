@@ -7,10 +7,11 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.support.v4.widget.DrawerLayout;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
+
+import androidx.drawerlayout.widget.DrawerLayout;
 
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;

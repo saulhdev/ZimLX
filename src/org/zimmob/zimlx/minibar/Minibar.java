@@ -2,19 +2,17 @@ package org.zimmob.zimlx.minibar;
 
 import android.app.NotificationManager;
 import android.app.admin.DevicePolicyManager;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
-import android.support.v4.widget.DrawerLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
-import org.zimmob.zimlx.util.DialogHelper;
-import org.zimmob.zimlx.util.Tool;
+
+import androidx.drawerlayout.widget.DrawerLayout;
 
 public class Minibar {
     public static Context mContext = Launcher.mContext;
@@ -54,7 +52,7 @@ public class Minibar {
                 try {
                     ((DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE)).lockNow();
                 } catch (Exception e) {
-                    DialogHelper.alertDialog(context,
+                    /*DialogHelper.alertDialog(context,
                             "Device Admin Required",
                             context.getResources().getString(R.string.device_admin_message),
                             "Enable", (dialog, which) -> {
@@ -63,6 +61,8 @@ public class Minibar {
                                 intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
                                 context.startActivity(intent);
                             });
+*/
+
                 }
                 break;
             case DeviceSettings:

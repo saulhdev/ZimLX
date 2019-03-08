@@ -9,8 +9,6 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
-import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +33,9 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 public class ConfigBuilder {
     private final c_search cl;
@@ -108,7 +109,7 @@ public class ConfigBuilder {
     }
 
     private int bY() {
-        return android.support.v4.graphics.ColorUtils.compositeColors(Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor), android.support.v4.graphics.ColorUtils.setAlphaComponent(WallpaperColorInfo.getInstance(mActivity).getMainColor(), 255));
+        return androidx.core.graphics.ColorUtils.compositeColors(Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor), androidx.core.graphics.ColorUtils.setAlphaComponent(WallpaperColorInfo.getInstance(mActivity).getMainColor(), 255));
     }
 
     private b_search bZ(final AppInfo appInfo, final int n) {

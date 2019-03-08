@@ -1,9 +1,7 @@
 package org.zimmob.zimlx.settings.ui;
 
 import android.os.Bundle;
-import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
 
@@ -13,6 +11,7 @@ import com.android.launcher3.Utilities;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.util.ThemeActivity;
 
+import androidx.appcompat.widget.Toolbar;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -21,7 +20,6 @@ public class SettingsBaseActivity extends ThemeActivity {
     public Toolbar toolbar;
     private DecorLayout decorLayout;
     private Window window;
-
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
@@ -39,24 +37,12 @@ public class SettingsBaseActivity extends ThemeActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
-    public void setContentView(View v) {
-        ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
-        contentParent.removeAllViews();
-        contentParent.addView(v);
-    }
-
     public void setContentView(int resId) {
+        setAccentColor(this);
         ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         LayoutInflater.from(this).inflate(resId, contentParent);
     }
-
-    public void setContentView(View v, ViewGroup.LayoutParams lp) {
-        ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
-        contentParent.removeAllViews();
-        contentParent.addView(v, lp);
-    }
-
     public void setActionBarElevation(int value) {
         decorLayout.setActionBarElevation(value);
     }

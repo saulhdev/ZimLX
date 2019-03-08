@@ -25,7 +25,6 @@ import android.os.Looper;
 import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.ArraySet;
 import android.util.Log;
@@ -41,6 +40,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+
+import androidx.annotation.Nullable;
 
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
 

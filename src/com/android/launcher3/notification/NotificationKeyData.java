@@ -18,12 +18,13 @@ package com.android.launcher3.notification;
 
 import android.app.Notification;
 import android.service.notification.StatusBarNotification;
-import android.support.annotation.NonNull;
 
 import com.android.launcher3.Utilities;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import androidx.annotation.NonNull;
 
 /**
  * The key data associated with the notification, used to determine what to include

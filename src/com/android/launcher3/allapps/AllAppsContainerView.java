@@ -20,7 +20,6 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.InsetDrawable;
-import android.support.v7.widget.LinearLayoutManager;
 import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
@@ -54,6 +53,8 @@ import com.android.launcher3.util.PackageUserKey;
 
 import java.util.List;
 import java.util.Set;
+
+import androidx.recyclerview.widget.LinearLayoutManager;
 
 /**
  * The all apps view container.

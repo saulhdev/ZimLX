@@ -3,9 +3,6 @@ package org.zimmob.zimlx.settings.ui;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.v7.preference.Preference;
-import android.support.v7.preference.PreferenceGroup;
 
 import com.android.launcher3.R;
 
@@ -18,6 +15,10 @@ import org.zimmob.zimlx.settings.AppSettings;
 
 import java.io.IOException;
 import java.util.Locale;
+
+import androidx.annotation.NonNull;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceGroup;
 
 /**
  * Created by saul on 04-25-18.
