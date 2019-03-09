@@ -1,6 +1,6 @@
 pipeline:
   changelog:
-    image: lawnchairlauncher/drone-changelog:dev
+    image: Zimlauncher/drone-changelog:dev
     output: changelog.txt
     volumes:
       - /opt/drone/cache:/cache
@@ -17,9 +17,9 @@ pipeline:
     commands:
       - bash ./gradlew assembleAospCiOptimized;
   deploy:
-    image: lawnchairlauncher/drone-telegram:dev
+    image: zimlauncher/drone-telegram:dev
     secrets: [ bot_token, channel_id ]
-    apk_path: build/outputs/apk/aospCi/optimized/LawnchairWIP-aosp-ci-optimized.apk
+    apk_path: build/outputs/apk/aospCi/optimized/ZimWIP-aosp-ci-optimized.apk
     mapping_path: build/outputs/mapping/aospCi/optimized/mapping.txt
     channel_id: "-1001390439747"
     environment:

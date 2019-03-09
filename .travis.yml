@@ -3,3 +3,8 @@ android:
   components:
   - build-tools-28.0.3
   - android-26
+  - extra-android-support # because I'm use support library
+  - extra-android-m2repository # because I'm use support library
+
+  script:
+  - ./gradlew assembleRelease --stacktrace

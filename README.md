@@ -11,6 +11,8 @@ Our mission is to bring a powerful launcher with smart features to make your dev
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
+[![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
+
 ## Main Features   
 
 #### * Desktop

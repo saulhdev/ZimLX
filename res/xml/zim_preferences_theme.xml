@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="@string/pref_cat__theme_icons">
+    <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_icons">
         <com.google.android.apps.nexuslauncher.CustomIconPreference
             android:defaultValue=""
             app:iconSpaceReserved="false"
@@ -41,7 +41,7 @@
             android:summary="@string/pref_summary__theme_colored_icons"
             android:title="@string/pref_title__theme_colored_icons" />
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
     <PreferenceCategory android:title="@string/pref_cat__theme_style">
         <androidx.preference.SwitchPreference
             android:defaultValue="false"
