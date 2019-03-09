@@ -22,17 +22,23 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 /**
  * Various utility methods associated with theming.
  */
 public class Themes {
 
     public static int getColorAccent(Context context) {
+        ZimPreferences pref = new ZimPreferences(context);
+
+        //return getAttrColor(context, pref.getAccentColor());
         return getAttrColor(context, android.R.attr.colorAccent);
     }
 
     public static int getAttrColor(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+
         int colorAccent = ta.getColor(0, 0);
         ta.recycle();
         return colorAccent;

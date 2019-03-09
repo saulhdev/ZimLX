@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <com.android.launcher3.views.ButtonPreference
         android:key="pref_icon_badging"
@@ -31,4 +31,4 @@
         android:title="@string/pref_title__notification_background_color"
         app:cpv_dialogTitle="@string/pref_title__notification_background_color"
         app:cpv_showAlphaSlider="true" />
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

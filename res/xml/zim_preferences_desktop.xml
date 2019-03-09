@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.android.Preference
+    <Preference
         android:key="pref_key__minibar"
         android:summary="@string/pref_summary__minibar"
         android:title="@string/pref_title__minibar" />
@@ -56,4 +56,4 @@
         android:summary="@string/full_width_widgets_pref_summary"
         android:title="@string/full_width_width_widgets_pref_title" />
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

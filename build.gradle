@@ -179,20 +179,20 @@ repositories {
     mavenCentral()
 }
 
-final String SUPPORT_LIBS_VERSION = '1.0.0-beta01'
+final String SUPPORT_LIBS_VERSION = '1.0.0'
 dependencies {
     implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
-    implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.preference:preference:1.1.0-alpha03"
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
-    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
+    implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
+    implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-    implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.3'
     implementation 'com.mikepenz:fastadapter:3.2.6@aar'

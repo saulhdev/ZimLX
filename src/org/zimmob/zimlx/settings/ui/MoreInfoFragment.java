@@ -35,7 +35,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
 
     @Override
     public int getPreferenceResourceForInflation() {
-        return R.xml.prefactions__more_information;
+        return R.xml.zim_preferences_about;
     }
 
     @Override

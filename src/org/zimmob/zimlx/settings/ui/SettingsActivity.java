@@ -67,6 +67,7 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import androidx.preference.PreferenceScreen;
 import androidx.preference.TwoStatePreference;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.ButterKnife;
@@ -145,6 +146,15 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     }
 
     private abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+        @Override
+        public void setPreferenceScreen(PreferenceScreen preferenceScreen) {
+            super.setPreferenceScreen(preferenceScreen);
+            if (preferenceScreen != null) {
+                int count = preferenceScreen.getPreferenceCount();
+                for (int i = 0; i < count; i++)
+                    preferenceScreen.getPreference(i).setIconSpaceReserved(false);
+            }
+        }
 
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {

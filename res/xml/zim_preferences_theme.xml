@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/pref_cat__theme_icons">
         <com.google.android.apps.nexuslauncher.CustomIconPreference
             android:defaultValue=""
+            app:iconSpaceReserved="false"
             android:key="pref_icon_pack"
             android:persistent="true"
             android:summary="%s"
@@ -11,6 +12,7 @@
 
         <ListPreference
             android:defaultValue=" "
+            app:iconSpaceReserved="false"
             android:entries="@array/icon_shape_override_paths_names"
             android:entryValues="@array/icon_shape_override_paths_values"
             android:key="pref_override_icon_shape"
@@ -19,6 +21,7 @@
             android:title="@string/icon_shape_override_label" />
         <ListPreference
             android:defaultValue="2"
+            app:iconSpaceReserved="false"
             android:entries="@array/entries__folder_shape"
             android:entryValues="@array/values__zero_to_three"
             android:key="pref_key__folder_shape"
@@ -26,12 +29,14 @@
         <SwitchPreference
             android:defaultValue="true"
             android:persistent="true"
+            app:iconSpaceReserved="false"
             android:key="pref_key__adaptative_icons"
             android:title="@string/pref_title__theme_adaptative_icons" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:persistent="true"
+            app:iconSpaceReserved="false"
             android:key="pref_key__colored_icons"
             android:summary="@string/pref_summary__theme_colored_icons"
             android:title="@string/pref_title__theme_colored_icons" />
@@ -40,6 +45,7 @@
     <PreferenceCategory android:title="@string/pref_cat__theme_style">
         <androidx.preference.SwitchPreference
             android:defaultValue="false"
+            app:iconSpaceReserved="false"
             android:key="pref_override_launcher_theme"
             android:persistent="true"
             android:title="@string/launcher_theme_override_label" />
@@ -48,6 +54,7 @@
             android:defaultValue="@color/colorPrimary"
             android:key="pref_key__primary_color"
             android:title="@string/pref_title__primary_color"
+            app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__primary_color"
             app:cpv_showAlphaSlider="true" />
 
@@ -55,6 +62,7 @@
             android:defaultValue="@color/colorAccent"
             android:key="pref_key__accent_color"
             android:title="@string/pref_title__accent_color"
+            app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__accent_color"
             app:cpv_showAlphaSlider="true" />
 
@@ -62,9 +70,10 @@
             android:defaultValue="@color/colorPrimaryDark"
             android:key="pref_key__minibar_color"
             android:title="@string/pref_title__minibar_background_color"
+            app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
             app:cpv_showAlphaSlider="true" />
 
     </PreferenceCategory>
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

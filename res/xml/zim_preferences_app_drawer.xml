@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <org.zimmob.zimlx.preferences.SeekbarPreference
@@ -28,30 +28,35 @@
             android:defaultValue="false"
             android:key="pref_hideAllAppsAppLabels"
             android:persistent="true"
+            app:iconSpaceReserved="false"
             android:title="@string/hide_all_apps_icon_labels_pref_title" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:key="pref_key__labels_two_lines"
             android:persistent="true"
+            app:iconSpaceReserved="false"
             android:title="@string/pref_title__label_two_lines" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/cat__app_search">
         <SwitchPreference
             android:defaultValue="true"
+            app:iconSpaceReserved="false"
             android:key="@string/key__search_show"
             android:summary="@string/summary__app_search_show"
             android:title="@string/title__app_search" />
 
         <SwitchPreference
             android:defaultValue="true"
+            app:iconSpaceReserved="false"
             android:key="@string/key__search_global"
             android:summary="@string/summary__app_search_global"
             android:title="@string/title__app_search_global" />
 
         <SwitchPreference
             android:defaultValue="true"
+            app:iconSpaceReserved="false"
             android:key="@string/key__search_hidden"
             android:summary="@string/summary__app_search_hidden"
             android:title="@string/title__app_search_hidden" />
@@ -83,4 +88,4 @@
         android:persistent="true"
         android:title="@string/title__app_spring" />
 
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>
