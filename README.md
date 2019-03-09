@@ -1,7 +1,7 @@
 # ZimLX
 
 <div align="center" >
-<img src="Logo/logotype.png" width="50%">
+<img src="Logo/logotype.png" width="25%">
 </div>
 
 Free and Open Source Launcher for Android.
@@ -12,7 +12,6 @@ Our mission is to bring a powerful launcher with smart features to make your dev
      height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
-
 ## Main Features   
 
 #### * Desktop

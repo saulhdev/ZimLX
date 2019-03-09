@@ -5,6 +5,8 @@ android:
   - android-26
   - extra-android-support # because I'm use support library
   - extra-android-m2repository # because I'm use support library
+licenses:
+- '.+'
 
   script:
   - ./gradlew assembleRelease --stacktrace
