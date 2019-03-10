@@ -215,8 +215,8 @@ public class InvariantDeviceProfile {
         } else {
             numHotseatIcons = numHotseatIconsOriginal;
         }
-        if (prefs.getIconScaleSB() != 1f) {
-            float iconScale = prefs.getIconScaleSB();
+        if (prefs.getDesktopIconScale() != 1f) {
+            float iconScale = prefs.getDesktopIconScale();
             iconSize *= iconScale;
         }
         if (prefs.getHotseatIconScale() != 1f) {
@@ -288,7 +288,7 @@ public class InvariantDeviceProfile {
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
                             a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_hotseatIconSize, iconSize),
+                            a.getFloat(R.styleable.InvariantDeviceProfile_hotseatIconSize, hotseatIconSize),
                             a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
                             a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
                     a.recycle();

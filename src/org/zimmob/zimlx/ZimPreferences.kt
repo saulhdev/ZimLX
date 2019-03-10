@@ -55,13 +55,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
-
     // Desktop
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val iconScaleSB by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f)
+    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f)
+    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
 
     // Dock
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
@@ -69,9 +69,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockSearchBar = true
     val hotseatIconScale by FloatPref("pref_hotseatIconScale", 1f)
     val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f)
-
     val hotseatShowArrow by BooleanPref("pref_hotseatShowArrow", true)
-    val twoRowDock by BooleanPref("pref_twoRowDock", false)
+    val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
+    val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
+    val hideHotseat by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+
     fun numHotseatIcons(default: String): String {
         return sharedPrefs.getString("pref_title__num_hotseat_icons", default)
     }
@@ -81,14 +83,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val folderShape by IntPref("pref_key__folder_shape", FOLDER_SHAPE_SQUARE)
 
     // Drawer
-    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
+    val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
+    val allAppsIconPaddingScale by FloatPref(ZimFlags.APPDRAWER_ALL_APPS_ICON_PADDING_SCALE, 1f)
+
     fun getNumPredictedApps(): String {
         return sharedPrefs.getString("pref_predictive_apps_values", "5")
     }
-
-    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, restart)
-    val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true)

@@ -31,7 +31,7 @@
         android:focusable="false"
         android:visibility="invisible" />
 
-
+    <!-- DO NOT CHANGE THE ID -->
     <com.android.launcher3.allapps.AllAppsRecyclerViewContainerView
         android:id="@+id/main_content"
         android:layout_width="match_parent"
@@ -43,18 +43,6 @@
         android:focusableInTouchMode="true"
         android:saveEnabled="false"
         android:visibility="gone">
-
-        <!-- DO NOT CHANGE THE ID -->
-        <!--<com.android.launcher3.allapps.AllAppsRecyclerView
-            android:id="@+id/apps_list_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_below="@id/search_container_all_apps"
-            android:layout_gravity="center_horizontal|top"
-            android:clipToPadding="false"
-            android:descendantFocusability="afterDescendants"
-            android:focusable="true"
-            android:overScrollMode="never" /> -->
 
         <include layout="@layout/search_container_all_apps_include" />
 

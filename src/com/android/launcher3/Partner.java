@@ -22,8 +22,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 
-import java.io.File;
-
 /**
  * Utilities to discover and interact with partner customizations. There can
  * only be one set of customizations on a device, and it must be bundled with
@@ -87,6 +85,7 @@ public class Partner {
         return defaultLayout != 0;
     }
 
+    /*
     public boolean hasFolder() {
         int folder = getResources().getIdentifier(Partner.RES_FOLDER,
                 "xml", getPackageName());
@@ -110,7 +109,7 @@ public class Partner {
                 getPackageName());
         return resId != 0 && getResources().getBoolean(resId);
     }
-
+*/
     public void applyInvariantDeviceProfileOverrides(InvariantDeviceProfile inv, DisplayMetrics dm) {
         int numRows = -1;
         int numColumns = -1;

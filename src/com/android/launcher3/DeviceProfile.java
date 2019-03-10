@@ -34,6 +34,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.util.ArrayList;
 
 public class DeviceProfile {
@@ -412,48 +414,63 @@ public class DeviceProfile {
         float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
         return Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
     }
-/*
+
     private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
                                 Resources res, DisplayMetrics dm) {
-        boolean iconLabelsInTwoLines = Utilities.getZimPrefs(mContext).getIconLabelsInTwoLines();
-        iconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * workspaceScale);
-        iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * workspaceScale);
+
+        ZimPreferences pref = new ZimPreferences(mContext);
+        boolean iconLabelsInTwoLines = pref.getIconLabelsInTwoLines();
+
+        // Workspace
+        float invIconSizePx = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
+        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
+        //iconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
         iconDrawablePaddingPx = workspaceDrawablePadding;
+
+        int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
+        int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
+        if (iconDrawablePaddingPx > cellYPadding && !isVerticalBarLayout()
+                && !inMultiWindowMode()) {
+            // Ensures that the label is closer to its corresponding icon. This is not an issue
+            // with vertical bar layout or multi-window mode since the issue is handled separately
+            // with their calls to {@link #adjustToHideWorkspaceLabels}.
+            cellHeightPx -= (iconDrawablePaddingPx - cellYPadding);
+            iconDrawablePaddingPx = cellYPadding;
+        }
+        cellWidthPx = iconSizePx + iconDrawablePaddingPx;
+        if (pref.getHideAppLabels()) {
+            cellHeightPx -= textHeight;
+        }
+        // All apps
+        allAppsIconTextSizePx = iconTextSizePx;
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
+        float allAppsPaddingScale = pref.getAllAppsIconPaddingScale();
+        allAppsIconDrawablePaddingPx = Math.round(allAppsDrawablePadding * allAppsPaddingScale);
+
+        allAppsCellHeightPx = getCellSize().y;
+
+        if (isVerticalBarLayout()) {
+            // Always hide the Workspace text with vertical bar layout.
+            adjustToHideWorkspaceLabels();
+        }
+        if (Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
+            allAppsCellHeightPx -= textHeight;
+        }
+        // Hotseat
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
         hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        float allAppsPaddingScale =1f;//= Utilities.getZimPrefs(mContext).getAllAppsIconPaddingScale();
-        allAppsIconDrawablePaddingPx = Math.round(allAppsDrawablePadding * allAppsPaddingScale);
-        allAppsIconTextSizePx = (int) (Utilities.pxFromSp(inv.allAppsIconTextSize, dm) * allAppsScale);
-
-        cellWidthPx = iconSizePx;
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx;
-        if (!Utilities.getZimPrefs(mContext).getHideAppLabels()) {
-            cellHeightPx += Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
-        }
-        allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx;
-        if (!Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx += Utilities.calculateTextHeight(allAppsIconTextSizePx, iconLabelsInTwoLines);
-        }
-        cellHeightPx = iconSizePx;
-        if (!Utilities.getZimPrefs(mContext).getHideAppLabels()) {
-            cellHeightPx += iconDrawablePaddingPx + Utilities.calculateTextHeight(iconTextSizePx, iconLabelsInTwoLines);
-        }
-        allAppsCellWidthPx = allAppsIconSizePx;
-        allAppsCellHeightPx = allAppsIconSizePx;
-        if (!Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx += allAppsIconDrawablePaddingPx + Utilities.calculateTextHeight(allAppsIconTextSizePx, iconLabelsInTwoLines);
-        }
-
-        // Hotseat
         hotseatCellWidthPx = hotseatIconSizePx;
+        hotseatCellHeightPx = hotseatIconSizePx;
+        if (isVerticalBarLayout()) {
+            hotseatBarSizePx = hotseatIconSizePx;
+        }
         hotseatCellHeightPx = hotseatIconSizePx;
 
         if (!isVerticalBarLayout()) {
-            int expectedWorkspaceHeight = availableHeightPx - getHotseatHeight()
-                    - pageIndicatorHeightPx - topWorkspacePadding;
+            int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
+                    - pageIndicatorSizePx - topWorkspacePadding;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -463,7 +480,7 @@ public class DeviceProfile {
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
 
-        // Folder cell
+        /// Folder cell
         int cellPaddingX = res.getDimensionPixelSize(R.dimen.folder_cell_x_padding);
         int cellPaddingY = res.getDimensionPixelSize(R.dimen.folder_cell_y_padding);
         final int folderChildTextSize =
@@ -486,80 +503,6 @@ public class DeviceProfile {
         folderBackgroundOffset = -edgeMarginPx;
         folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
         folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
-    }
-    public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - hotseatBarTopPaddingPx) * Utilities.getNumberOfHotseatRows(mContext) + hotseatBarTopPaddingPx;
-    }
-*/
-
-    private void updateIconSize(float workspaceScale, float allAppsScale, float hotseatScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
-                                Resources res, DisplayMetrics dm) {
-        // Workspace
-        float invIconSizePx = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
-        //iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
-        iconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
-        hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
-        hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
-
-        int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
-        int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
-        if (iconDrawablePaddingPx > cellYPadding && !isVerticalBarLayout()
-                && !inMultiWindowMode()) {
-            // Ensures that the label is closer to its corresponding icon. This is not an issue
-            // with vertical bar layout or multi-window mode since the issue is handled separately
-            // with their calls to {@link #adjustToHideWorkspaceLabels}.
-            cellHeightPx -= (iconDrawablePaddingPx - cellYPadding);
-            iconDrawablePaddingPx = cellYPadding;
-        }
-        cellWidthPx = iconSizePx + iconDrawablePaddingPx;
-
-        // All apps
-        allAppsIconTextSizePx = iconTextSizePx;
-        //allAppsIconSizePx = iconSizePx;
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
-        allAppsCellHeightPx = getCellSize().y;
-
-        if (isVerticalBarLayout()) {
-            // Always hide the Workspace text with vertical bar layout.
-            adjustToHideWorkspaceLabels();
-        }
-
-        // Hotseat
-        hotseatCellWidthPx = hotseatIconSizePx;
-        hotseatCellHeightPx = hotseatIconSizePx;
-
-        if (isVerticalBarLayout()) {
-            hotseatBarSizePx = hotseatIconSizePx;
-        }
-        hotseatCellHeightPx = hotseatIconSizePx;
-
-        if (!isVerticalBarLayout()) {
-            int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
-                    - pageIndicatorSizePx - topWorkspacePadding;
-            float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
-            workspaceSpringLoadShrinkFactor = Math.min(
-                    res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
-                    1 - (minRequiredHeight / expectedWorkspaceHeight));
-        } else {
-            workspaceSpringLoadShrinkFactor =
-                    res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
-        }
-
-        // Folder icon
-        folderBackgroundOffset = -iconDrawablePaddingPx;
-        folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
-        folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
-
-        if (Utilities.getZimPrefs(mContext).getHideAppLabels()) {
-            cellHeightPx -= textHeight;
-        }
-        if (Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx -= textHeight;
-        }
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {

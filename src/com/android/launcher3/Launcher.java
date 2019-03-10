@@ -188,7 +188,7 @@ public class Launcher extends BaseActivity
             "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
     static final String APPS_VIEW_SHOWN = "launcher.apps_view_shown";
     @Thunk
-    static final int NEW_APPS_ANIMATION_DELAY = 500;
+    private static final int NEW_APPS_ANIMATION_DELAY = 500;
     private static final int REQUEST_CREATE_SHORTCUT = 1;
     private static final int REQUEST_CREATE_APPWIDGET = 5;
     private static final int REQUEST_PICK_APPWIDGET = 9;
@@ -373,7 +373,7 @@ public class Launcher extends BaseActivity
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
                     .detectDiskReads()
                     .detectDiskWrites()
-                    .detectNetwork()   // or .detectAll() for all detectable problems
+                    .detectNetwork()
                     .penaltyLog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
@@ -655,7 +655,7 @@ public class Launcher extends BaseActivity
      * Invoked by subclasses to signal a change to the {@link #addToCustomContentPage} value to
      * ensure the custom content page is added or removed if necessary.
      */
-    protected void invalidateHasCustomContentToLeft() {
+    /*protected void invalidateHasCustomContentToLeft() {
         if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
             // Not bound yet, wait for bindScreens to be called.
             return;
@@ -668,7 +668,7 @@ public class Launcher extends BaseActivity
         } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
             mWorkspace.removeCustomContentPage();
         }
-    }
+    }*/
 
     public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view

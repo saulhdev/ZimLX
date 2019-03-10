@@ -1,8 +1,13 @@
-# ZimLX
+<table>
+    <tr>
+        <td># ZimLX</td>
+        <td><div align="center" >
+            <img src="Logo/logotype.png" width="25%">
+            </div>
+        </td>
+    </tr>
+</table>
 
-<div align="center" >
-<img src="Logo/logotype.png" width="25%">
-</div>
 
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
@@ -55,7 +60,7 @@ Our mission is to bring a powerful launcher with smart features to make your dev
     * Transitions and animations
     * Horizontal layout  
     * Most used sort mode
-    * Adapative icon support
+    * Adaptive icon support
     
 ## Donations
 Want to buy me a coffee? https://paypal.me/saulhenriquez

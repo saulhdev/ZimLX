@@ -39,6 +39,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import androidx.core.graphics.ColorUtils;
 
 public class Hotseat extends FrameLayout
@@ -81,9 +83,10 @@ public class Hotseat extends FrameLayout
     /**
      * Returns whether there are other icons than the all apps button in the hotseat.
      */
-    public boolean hasIcons() {
+    /*public boolean hasIcons() {
         return mContent.getShortcutsAndWidgets().getChildCount() > 1;
     }
+    */
 
     /**
      * Registers the specified listener on the cell layout of the hotseat.
@@ -110,11 +113,6 @@ public class Hotseat extends FrameLayout
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-
-        /*if (Utilities.getZimPrefs(getContext()).getDockSearchBar()) {
-            inflate(getContext(), R.layout.search_container_hotseat, this);
-        }
-        */
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = findViewById(R.id.layout);
         if (grid.isVerticalBarLayout()) {
@@ -128,40 +126,42 @@ public class Hotseat extends FrameLayout
 
     void resetLayout() {
         mContent.removeAllViewsInLayout();
-
+        ZimPreferences pref = new ZimPreferences(getContext());
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
-            // Add the Apps button
-            Context context = getContext();
-            DeviceProfile grid = mLauncher.getDeviceProfile();
-            int allAppsButtonRank = grid.inv.getAllAppsButtonRank();
+            if (!pref.getHideDockButton()) {
+                // Add the Apps button
+                Context context = getContext();
+                DeviceProfile grid = mLauncher.getDeviceProfile();
+                int allAppsButtonRank = grid.inv.getAllAppsButtonRank();
 
-            LayoutInflater inflater = LayoutInflater.from(context);
-            TextView allAppsButton = (TextView)
-                    inflater.inflate(R.layout.all_apps_button, mContent, false);
-            Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
-            d.setBounds(0, 0, grid.iconSizePx, grid.iconSizePx);
+                LayoutInflater inflater = LayoutInflater.from(context);
+                TextView allAppsButton = (TextView)
+                        inflater.inflate(R.layout.all_apps_button, mContent, false);
+                Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
+                d.setBounds(0, 0, grid.hotseatIconSizePx, grid.hotseatIconSizePx);
 
-            int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
-            Rect bounds = d.getBounds();
-            d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
-                    bounds.bottom - scaleDownPx / 2);
-            allAppsButton.setCompoundDrawables(null, d, null, null);
+                int scaleDownPx = getResources().getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+                Rect bounds = d.getBounds();
+                d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
+                        bounds.bottom - scaleDownPx / 2);
+                allAppsButton.setCompoundDrawables(null, d, null, null);
 
-            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
-            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
-            if (mLauncher != null) {
-                mLauncher.setAllAppsButton(allAppsButton);
-                allAppsButton.setOnClickListener(mLauncher);
-                allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
+                allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+                allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
+                if (mLauncher != null) {
+                    mLauncher.setAllAppsButton(allAppsButton);
+                    allAppsButton.setOnClickListener(mLauncher);
+                    allAppsButton.setOnFocusChangeListener(mLauncher.mFocusHandler);
+                }
+
+                // Note: We do this to ensure that the hotseat is always laid out in the orientation of
+                // the hotseat in order regardless of which orientation they were added
+                int x = getCellXFromOrder(allAppsButtonRank);
+                int y = getCellYFromOrder(allAppsButtonRank);
+                CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x, y, 1, 1);
+                lp.canReorder = false;
+                mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
             }
-
-            // Note: We do this to ensure that the hotseat is always laid out in the orientation of
-            // the hotseat in order regardless of which orientation they were added
-            int x = getCellXFromOrder(allAppsButtonRank);
-            int y = getCellYFromOrder(allAppsButtonRank);
-            CellLayout.LayoutParams lp = new CellLayout.LayoutParams(x, y, 1, 1);
-            lp.canReorder = false;
-            mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
         }
     }
 

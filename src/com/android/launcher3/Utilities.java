@@ -446,24 +446,6 @@ public final class Utilities {
         int result = (int) Math.ceil(fm.bottom - fm.top);
         return twoLines ? result * 2 : result;
     }
-    /**
-     * Convenience println with multiple args.
-     */
-    public static void println(String key, Object... args) {
-        StringBuilder b = new StringBuilder();
-        b.append(key);
-        b.append(": ");
-        boolean isFirstArgument = true;
-        for (Object arg : args) {
-            if (isFirstArgument) {
-                isFirstArgument = false;
-            } else {
-                b.append(", ");
-            }
-            b.append(arg);
-        }
-        System.out.println(b.toString());
-    }
 
     public static boolean isRtl(Resources res) {
         return res.getConfiguration().getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
