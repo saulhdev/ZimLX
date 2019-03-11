@@ -115,10 +115,11 @@ public class Hotseat extends FrameLayout
         super.onFinishInflate();
         DeviceProfile grid = mLauncher.getDeviceProfile();
         mContent = findViewById(R.id.layout);
+        int numRows = Utilities.getNumberOfHotseatRows(getContext());
         if (grid.isVerticalBarLayout()) {
-            mContent.setGridSize(1, grid.inv.numHotseatIcons);
+            mContent.setGridSize(numRows, grid.inv.numHotseatIcons);
         } else {
-            mContent.setGridSize(grid.inv.numHotseatIcons, 1);
+            mContent.setGridSize(grid.inv.numHotseatIcons, numRows);
         }
 
         resetLayout();
@@ -195,12 +196,7 @@ public class Hotseat extends FrameLayout
             } else {
                 mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
                 mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
-                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mBackground.setColor((Integer) animation.getAnimatedValue());
-                    }
-                });
+                mBackgroundColorAnimator.addUpdateListener(animation -> mBackground.setColor((Integer) animation.getAnimatedValue()));
                 mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
                     @Override
                     public void onAnimationEnd(Animator animation) {

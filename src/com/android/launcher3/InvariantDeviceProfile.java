@@ -60,8 +60,6 @@ public class InvariantDeviceProfile {
     public int numColumnsOriginal;
     public float allAppsIconSize;
     public float iconSizeOriginal;
-    public float hotseatIconSize;
-    public float hotseatIconSizeOriginal;
     public float allAppsIconTextSize;
     /**
      * Number of icons per row and column in the folder.
@@ -81,6 +79,8 @@ public class InvariantDeviceProfile {
     public DeviceProfile portraitProfile;
     public Point defaultWallpaperSize;
     public int numHotseatIconsOriginal;
+    public float hotseatIconSize;
+    public float hotseatIconSizeOriginal;
 
     // Profile-defining invariant properties
     String name;
@@ -203,6 +203,7 @@ public class InvariantDeviceProfile {
         portraitProfile.refresh();
         customizationHook(context);
     }
+
     private void customizationHook(Context context) {
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         Display display = wm.getDefaultDisplay();

@@ -91,6 +91,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Utilities.setLightUi(getWindow());
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         mAppBarHeight = getResources().getDimensionPixelSize(R.dimen.app_bar_elevation);

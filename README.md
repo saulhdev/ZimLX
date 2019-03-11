@@ -1,13 +1,7 @@
-<table>
-    <tr>
-        <td># ZimLX</td>
-        <td><div align="center" >
-            <img src="Logo/logotype.png" width="25%">
-            </div>
-        </td>
-    </tr>
-</table>
-
+# ZimLX
+<div align="center" >
+    <img src="Logo/logotype.png" width="25%">
+</div>
 
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
@@ -52,15 +46,10 @@ Our mission is to bring a powerful launcher with smart features to make your dev
     -> Icon badge color configuration.
 
 ## Development Features
-* Desktop
-    * Transitions and animations.
-    * Pages management
-    
 * App Drawer
     * Transitions and animations
     * Horizontal layout  
     * Most used sort mode
-    * Adaptive icon support
     
 ## Donations
 Want to buy me a coffee? https://paypal.me/saulhenriquez

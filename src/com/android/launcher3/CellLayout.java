@@ -160,7 +160,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     private boolean mItemPlacementDirty = false;
     private boolean mDragging = false;
     private boolean mIsHotseat = false;
-    private float mHotseatScale = 1f;
+    private float mHotseatScale;
 
     // Related to accessible drag and drop
     private DragAndDropAccessibilityDelegate mTouchHelper;
@@ -606,8 +606,8 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
         }
 
-        child.setScaleX(mChildScale);
-        child.setScaleY(mChildScale);
+        child.setScaleX(getChildrenScale());
+        child.setScaleY(getChildrenScale());
 
         // Generate an id for each view, this assumes we have at most 256x256 cells
         // per workspace screen

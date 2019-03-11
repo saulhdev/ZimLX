@@ -85,19 +85,22 @@ public class DeviceProfile {
     private final int pageIndicatorLandWorkspaceOffsetPx;
     private final int mBottomMarginHw;
     public float workspaceSpringLoadShrinkFactor;
-    public int iconSizePxOriginal;
+
     // Workspace icons
     public int iconSizePx;
+    public int iconSizePxOriginal;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
     public int cellWidthPx;
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
+
     // Folder
     public int folderBackgroundOffset;
     public int folderIconSizePx;
     public int folderIconPreviewPadding;
+
     // Folder cell
     public int folderCellWidthPx;
     public int folderCellHeightPx;
@@ -106,6 +109,7 @@ public class DeviceProfile {
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
+
     // Hotseat
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
@@ -120,6 +124,7 @@ public class DeviceProfile {
     public int hotseatBarLeftNavBarRightPaddingPx;
     public int hotseatBarRightNavBarLeftPaddingPx;
     public int hotseatBarRightNavBarRightPaddingPx;
+
     // All apps
     public int allAppsCellHeightPx;
     public int allAppsNumCols;
@@ -128,7 +133,6 @@ public class DeviceProfile {
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
-    public int allAppsCellWidthPx;
 
     // Drop Target
     public int dropTargetBarSizePx;
@@ -252,7 +256,7 @@ public class DeviceProfile {
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
+            int extraSpace = getCellSize().y - hotseatIconSizePx - iconDrawablePaddingPx;
             hotseatBarSizePx += extraSpace - pageIndicatorSizePx;
 
             // Recalculate the available dimensions using the new hotseat size.
@@ -302,7 +306,7 @@ public class DeviceProfile {
 
     public int getHotseatSize(InvariantDeviceProfile inv, Resources res, DisplayMetrics dm) {
         return isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
+                ? Utilities.pxFromDp(inv.hotseatIconSize, dm)
                 : res.getDimensionPixelSize(Utilities.getZimPrefs(mContext).getDockSearchBar() ?
                 R.dimen.dynamic_grid_hotseat_size : R.dimen.v1_dynamic_grid_hotseat_size)
                 + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
@@ -378,11 +382,12 @@ public class DeviceProfile {
     private void computeAllAppsButtonSize(Context context) {
         Resources res = context.getResources();
         float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
-        allAppsButtonVisualSize = (int) (iconSizePx * (1 - padding)) - context.getResources()
+        allAppsButtonVisualSize = (int) (hotseatIconSizePx * (1 - padding)) - context.getResources()
                 .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
     }
 
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
+        ZimPreferences pref = new ZimPreferences(mContext);
         float workspaceScale = 1f;
         float allAppsScale = 1f;
         float hotseatScale = 1f;
@@ -396,15 +401,14 @@ public class DeviceProfile {
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
-            float scale = maxHeight / usedHeight;
-            //updateIconSize(scale, res, dm);
-            updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding,
-                    allAppsDrawablePadding, res, dm);
+            workspaceScale = maxHeight / usedHeight;
         }
         float usedHotseatWidth = (hotseatCellWidthPx * inv.numHotseatIcons);
         float maxHotseatWidth = availableWidthPx - (getHotseatAdjustment() * 2 + getTotalWorkspacePadding().x);
         if (usedHotseatWidth > maxHotseatWidth) {
             hotseatScale = maxHotseatWidth / usedHotseatWidth;
+            updateIconSize(workspaceScale, allAppsScale, hotseatScale, workspaceDrawablePadding,
+                    allAppsDrawablePadding, res, dm);
         }
         updateAvailableFolderCellDimensions(dm, res);
     }
@@ -424,10 +428,9 @@ public class DeviceProfile {
         // Workspace
         float invIconSizePx = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
         iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
+        iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * workspaceScale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
-        //iconDrawablePaddingPx = iconDrawablePaddingOriginalPx;
         iconDrawablePaddingPx = workspaceDrawablePadding;
-
         int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
@@ -458,6 +461,7 @@ public class DeviceProfile {
         if (Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
             allAppsCellHeightPx -= textHeight;
         }
+
         // Hotseat
         hotseatIconSizePx = (int) (Utilities.pxFromDp(inv.hotseatIconSize, dm) * hotseatScale);
         hotseatIconSizePxOriginal = (int) (Utilities.pxFromDp(inv.hotseatIconSizeOriginal, dm) * hotseatScale);
@@ -655,6 +659,7 @@ public class DeviceProfile {
         }
         return padding;
     }
+
 
     /**
      * @return the bounds for which the open folders should be contained within

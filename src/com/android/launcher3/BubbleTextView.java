@@ -78,6 +78,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver {
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
+    private static final int DISPLAY_HOTSEAT = 5;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
     private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY

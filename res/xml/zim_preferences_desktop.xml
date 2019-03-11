@@ -28,7 +28,7 @@
         android:title="@string/auto_add_shortcuts_label" />
 
     <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:key="fpref_iconScaleSB"
+        android:key="pref_iconScaleSB"
         android:persistent="true"
         android:title="@string/title__desktop_icon_scale"
         app:defaultSeekbarValue="1.0"

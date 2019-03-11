@@ -73,7 +73,6 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Locale;
@@ -751,10 +750,6 @@ public final class Utilities {
         return ShadowGenerator.getInstance(Launcher.mContext).recreateIcon(icon);
     }
 
-    public static Bitmap getShadowForIcon(Bitmap icon, int size) {
-        return ShadowGenerator.getInstance(Launcher.mContext).createShadow(icon, size);
-    }
-
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }
@@ -774,24 +769,5 @@ public final class Utilities {
 
     public static boolean isAdaptive(Drawable drawable) {
         return drawable != null && (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat);
-    }
-
-    private static boolean isComponentClock(ComponentName componentName, boolean stockAppOnly) {
-        if (componentName == null) {
-            return false;
-        }
-
-        if (stockAppOnly) {
-            return "com.google.android.deskclock/com.android.deskclock.DeskClock".equals(componentName.flattenToString());
-        }
-
-        // TODO: Maybe we can add all apps that end with .clockpackage/.DeskClock/.clock/???
-        // Or that contain .clock./.deskclock or end with those?
-        ArrayList<String> clockApps = new ArrayList<>();
-        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClock"); // Stock
-        clockApps.add("com.sec.android.app.clockpackage/com.sec.android.app.clockpackage.ClockPackage"); // Samsung
-        clockApps.add("com.android.deskclock/com.android.deskclock.DeskClockTabActivity"); // MIUI
-
-        return clockApps.contains(componentName.flattenToString());
     }
 }
