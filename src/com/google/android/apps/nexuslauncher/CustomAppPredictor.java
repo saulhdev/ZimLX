@@ -19,13 +19,13 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 
-import org.zimmob.zimlx.settings.ui.SettingsActivity;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import static org.zimmob.zimlx.util.ZimFlags.APPDRAWER_SHOW_PREDICTIONS;
 
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static int MAX_PREDICTIONS = 10;
@@ -163,7 +163,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
      * @param component serialized component
      * @return the number of launches, at least zero
      */
-    private int getLaunchCount(String component) {
+    public int getLaunchCount(String component) {
         return mPrefs.getInt(PREDICTION_PREFIX + component, 0);
     }
 
@@ -181,12 +181,12 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private boolean isPredictorEnabled() {
-        return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, true);
+        return Utilities.getPrefs(mContext).getBoolean(APPDRAWER_SHOW_PREDICTIONS, true);
     }
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(SettingsActivity.SHOW_PREDICTIONS_PREF) && !isPredictorEnabled()) {
+        if (key.equals(APPDRAWER_SHOW_PREDICTIONS) && !isPredictorEnabled()) {
             Set<String> predictionSet = getStringSetCopy();
 
             SharedPreferences.Editor edit = mPrefs.edit();

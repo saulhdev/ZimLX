@@ -73,6 +73,8 @@ import androidx.recyclerview.widget.RecyclerView;
 import butterknife.ButterKnife;
 
 import static com.android.launcher3.Utilities.restartLauncher;
+import static org.zimmob.zimlx.util.ZimFlags.APPDRAWER_SHOW_PREDICTIONS;
+import static org.zimmob.zimlx.util.ZimFlags.APPDRAWER_SORT_MODE;
 
 /**
  * Settings activity for Launcher. Currently implements the following setting: Allow rotation
@@ -83,7 +85,6 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     public static final String NOTIFICATION_BADGING = "notification_badging";
     public final static String ICON_PACK_PREF = "pref_icon_pack";
-    public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     public static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
@@ -285,7 +286,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
 
                 case R.xml.zim_preferences_app_drawer:
-                    findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                    findPreference(APPDRAWER_SHOW_PREDICTIONS).setOnPreferenceChangeListener(this);
                     break;
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
@@ -313,7 +314,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
                 case R.xml.zim_preferences_notification:
                     ButtonPreference iconBadgingPref =
-                            (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
+                            findPreference(ICON_BADGING_PREFERENCE_KEY);
                     if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
                         getPreferenceScreen().removePreference(iconBadgingPref);
                     } else {
@@ -410,10 +411,11 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         restartLauncher(mContext);
                     });
                     return true;
-                case SHOW_PREDICTIONS_PREF:
+                case APPDRAWER_SHOW_PREDICTIONS:
                     if ((boolean) newValue) {
+                        findPreference(APPDRAWER_SORT_MODE).setEnabled(false);
                         return true;
-                    }
+                    } else findPreference(APPDRAWER_SORT_MODE).setEnabled(true);
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
@@ -466,7 +468,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public static class SuggestionConfirmationFragment extends DialogFragment implements DialogInterface.OnClickListener {
         public void onClick(final DialogInterface dialogInterface, final int n) {
             if (getTargetFragment() instanceof PreferenceFragmentCompat) {
-                Preference preference = ((PreferenceFragmentCompat) getTargetFragment()).findPreference(SHOW_PREDICTIONS_PREF);
+                Preference preference = ((PreferenceFragmentCompat) getTargetFragment()).findPreference(APPDRAWER_SHOW_PREDICTIONS);
                 if (preference instanceof TwoStatePreference) {
                     ((TwoStatePreference) preference).setChecked(false);
                 }

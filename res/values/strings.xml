@@ -535,9 +535,15 @@
     <string name="title__app_search_hidden">Search hidden Apps</string>
     <string name="title__app_icon_scale">Icon scale</string>
     <string name="title__app_all_apps_opacity">Drawer opacity</string>
+    <string name="title__sort_mode">App Sort</string>
+    <string name="title__sort_alphabetical_az">Alphabetical AZ</string>
+    <string name="title__sort_alphabetical_za">Alphabetical ZA</string>
+    <string name="title__sort_last_installed">Last Installed</string>
+    <string name="title__sort_most_used">Most Used</string>
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
     <string name="summary__app_search_hidden">Display hidden apps</string>
+    <string name="summary__sort_mode">Choose the sort mode</string>
     <string name="key__search_show" translatable="false">pref_key__show_search</string>
     <string name="key__search_global" translatable="false">pref_key__global_search</string>
     <string name="key__search_hidden" translatable="false">pref_key__app_search_hidden</string>

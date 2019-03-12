@@ -63,7 +63,7 @@
     </PreferenceCategory>
 
     <SwitchPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pref_show_predictions"
         android:summary="@string/summary_app_suggestions"
         android:title="@string/title_app_suggestions" />
@@ -76,6 +76,16 @@
         android:persistent="true"
         android:summary="%s"
         android:title="@string/pref_title__predictive_apps_num" />
+
+    <ListPreference
+        android:defaultValue="0"
+        android:entries="@array/entries__sort_mode"
+        android:entryValues="@array/values__zero_to_three"
+        android:key="pref_key__sort_mode"
+        android:persistent="true"
+        android:summary="@string/summary__sort_mode"
+        android:title="@string/title__sort_mode" />/>
+
     <Preference
         android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
         android:key="pref_hiddenApps"

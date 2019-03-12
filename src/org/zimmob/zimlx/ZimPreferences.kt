@@ -10,8 +10,8 @@ import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.settings.GridSize
+import org.zimmob.zimlx.util.Config.FOLDER_SHAPE_SQUARE
 import org.zimmob.zimlx.util.ZimFlags
-import org.zimmob.zimlx.util.ZimFlags.FOLDER_SHAPE_SQUARE
 import java.io.File
 import java.util.*
 import java.util.concurrent.Callable
@@ -86,10 +86,17 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
     val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
+    val showPredictionApps by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, recreate)
     val allAppsIconPaddingScale by FloatPref(ZimFlags.APPDRAWER_ALL_APPS_ICON_PADDING_SCALE, 1f)
+    val useGlobalSearch by BooleanPref(ZimFlags.APPDRAWER_GLOBAL_SEARCH, false, recreate)
 
-    fun getNumPredictedApps(): String {
-        return sharedPrefs.getString("pref_predictive_apps_values", "5")
+    fun getSortMode(): Int {
+        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
+        return sort.toInt();
+    }
+
+    fun getNumPredictedApps(): Int {
+        return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
     }
 
     //Notification
@@ -100,7 +107,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
-
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
@@ -295,13 +301,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
-    private inner class MutableStringPref(key: String, defaultValue: String = "") :
-            StringPref(key, defaultValue), MutablePrefDelegate<String> {
-        fun onSetValue(thisRef: Any?, property: KProperty<*>, value: String) {
-            edit { putString(key, value) }
+    /*
+        private inner class MutableStringPref(key: String, defaultValue: String = "") :
+                StringPref(key, defaultValue), MutablePrefDelegate<String> {
+            fun onSetValue(thisRef: Any?, property: KProperty<*>, value: String) {
+                edit { putString(key, value) }
+            }
         }
-    }
-
+    */
     private interface MutablePrefDelegate<T> {
         operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
     }

@@ -1,3 +1,8 @@
+### v0.5.2
+* Added support to sort apps. (AZ, ZA, Last Installed, most used).
+* Fix Icon Scale on app drawer
+
+
 ### v0.5.0
 * Quick actions per apps support.
 * Change to Lawnchair base.

@@ -189,6 +189,13 @@
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
 
+    <style name="NormalSearch" parent="LauncherTheme">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
+    </style>
+
+    <style name="NormalSearchDark" parent="LauncherThemeDark">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
+    </style>
     <!-- Pixel -->
     <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
