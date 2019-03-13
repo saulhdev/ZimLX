@@ -205,8 +205,6 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         setAlwaysDrawnWithCacheEnabled(false);
         final Resources res = getResources();
 
-        mHotseatScale = (float) grid.hotseatIconSizePx / grid.iconSizePx;
-
         mBackground = res.getDrawable(R.drawable.bg_celllayout);
         mBackground.setCallback(this);
         mBackground.setAlpha((int) (mBackgroundAlpha * 255));

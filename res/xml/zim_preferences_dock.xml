@@ -60,16 +60,6 @@
         android:persistent="true"
         android:title="@string/title__hotseat_hide_gradient" />
 
-    <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:key="pref_hotseatIconScale"
-        android:persistent="true"
-        android:title="@string/title__hotseat_icon_scale"
-        app:defaultSeekbarValue="1.0"
-        app:maxValue="1.5"
-        app:minValue="0.75"
-        app:steps="120"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100" />
     <ListPreference
         android:defaultValue="@string/default_text"
         android:entries="@array/numHotseatIconsTexts"

@@ -68,6 +68,7 @@ import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.recyclerview.widget.RecyclerView;
 import butterknife.ButterKnife;
@@ -286,7 +287,14 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
 
                 case R.xml.zim_preferences_app_drawer:
-                    findPreference(APPDRAWER_SHOW_PREDICTIONS).setOnPreferenceChangeListener(this);
+                    SwitchPreference showPrediction = findPreference(APPDRAWER_SHOW_PREDICTIONS);
+                    showPrediction.setOnPreferenceChangeListener(this);
+                    if (showPrediction.isChecked()) {
+                        findPreference(APPDRAWER_SORT_MODE).setEnabled(false);
+                    } else {
+                        findPreference(APPDRAWER_SORT_MODE).setEnabled(true);
+                    }
+
                     break;
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);

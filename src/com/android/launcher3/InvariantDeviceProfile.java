@@ -79,8 +79,6 @@ public class InvariantDeviceProfile {
     public DeviceProfile portraitProfile;
     public Point defaultWallpaperSize;
     public int numHotseatIconsOriginal;
-    public float hotseatIconSize;
-    public float hotseatIconSizeOriginal;
 
     // Profile-defining invariant properties
     String name;
@@ -100,12 +98,12 @@ public class InvariantDeviceProfile {
     public InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
                 p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
-                p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons, p.hotseatIconSize,
+                p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
                 p.defaultLayoutId, p.demoModeLayoutId);
     }
 
     InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
-                           float is, float lis, float its, int hs, float his, int dlId, int dmlId) {
+                           float is, float lis, float its, int hs, int dlId, int dmlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -119,7 +117,6 @@ public class InvariantDeviceProfile {
         iconTextSize = its;
         numHotseatIcons = hs;
         defaultLayoutId = dlId;
-        hotseatIconSize = his;
         demoModeLayoutId = dmlId;
     }
 
@@ -160,8 +157,8 @@ public class InvariantDeviceProfile {
         iconSize = interpolatedDeviceProfileOut.iconSize;
         iconSizeOriginal = iconSize;
         allAppsIconSize = iconSize;
-        hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
-        hotseatIconSizeOriginal = hotseatIconSize;
+        //hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
+        //hotseatIconSizeOriginal = hotseatIconSize;
 
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
@@ -220,15 +217,11 @@ public class InvariantDeviceProfile {
             float iconScale = prefs.getDesktopIconScale();
             iconSize *= iconScale;
         }
-        if (prefs.getHotseatIconScale() != 1f) {
-            float iconScale = prefs.getHotseatIconScale();
-            hotseatIconSize *= iconScale;
-        }
         if (prefs.getAllAppsIconScale() != 1f) {
             float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;
         }
-        float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), hotseatIconSize);
+        float maxSize = Math.max(iconSize, allAppsIconSize);
         iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
     }
@@ -289,7 +282,6 @@ public class InvariantDeviceProfile {
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
                             a.getInt(R.styleable.InvariantDeviceProfile_numHotseatIcons, numColumns),
-                            a.getFloat(R.styleable.InvariantDeviceProfile_hotseatIconSize, hotseatIconSize),
                             a.getResourceId(R.styleable.InvariantDeviceProfile_defaultLayoutId, 0),
                             a.getResourceId(R.styleable.InvariantDeviceProfile_demoModeLayoutId, 0)));
                     a.recycle();
@@ -385,14 +377,12 @@ public class InvariantDeviceProfile {
         iconSize += p.iconSize;
         landscapeIconSize += p.landscapeIconSize;
         iconTextSize += p.iconTextSize;
-        hotseatIconSize += p.hotseatIconSize;
     }
 
     private InvariantDeviceProfile multiply(float w) {
         iconSize *= w;
         landscapeIconSize *= w;
         iconTextSize *= w;
-        hotseatIconSize *= w;
 
         return this;
     }
