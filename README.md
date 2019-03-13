@@ -13,43 +13,23 @@ Our mission is to bring a powerful launcher with smart features to make your dev
 [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
 ## Main Features   
 
-#### * Desktop
-    -> Row and Columns config
-    -> Three indicator Style mode
-    -> Minibar support with custom color configuration (see the screenshots below).
-    
-#### * Dock
-    -> Two rows support 
-    -> Background Size
-
-#### * App Drawer
-    -> Row and Columns configuration
-    -> Vertical Layout
-    -> Hide Apps
-    -> Label Size and color configuration
-    -> Custom Scrollbar
-    -> Most used apps support and configuration (5 or 10)
-    -> Widgets by long click
-
-#### * Appearance
-    -> Theme Color Change
-    -> Theme Black, Dark and Light
-    -> Icon Size
-    -> Icon Pack support
-    -> Icon Shape support
-
-#### * Folder
-    -> Show notification counts in folder
-    
-#### * Notifications
-    -> Icon Badge support in apps and Folder
-    -> Icon badge color configuration.
+-> Row and Columns config
+-> Minibar support with custom color configuration (see the screenshots below).
+-> Hide Apps
+-> Custom Scrollbar
+-> Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
+-> Theme Color Change
+-> Icon Size configuration
+-> Icon Pack support
+-> Icon Shape support
+-> Show notification counts in folder
+-> Icon Badge support in apps and Folder
+-> Icon badge color configuration.
 
 ## Development Features
 * App Drawer
     * Transitions and animations
-    * Horizontal layout  
-    * Most used sort mode
+    * Horizontal layout
     
 ## Donations
 Want to buy me a coffee? https://paypal.me/saulhenriquez
@@ -58,9 +38,9 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
 ## Screenshots
 <table>
     <tr>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_paged.jpg" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/zlxdesktop.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/app_drawer_vertical.jpg" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/zlxfolder.jpg" width="256" />
         </td>
         <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop.jpg" width="256" />
                         </td>
@@ -69,8 +49,9 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
             <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_option.jpg" width="256" />
             </td>
             <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_grid.jpg" width="256" />
-            </td><td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_list.jpg" width="256" />
-                             </td>
+            </td>
+            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_list.jpg" width="256" />
+             </td>
         </tr>
     <tr>
         <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/folder_view.jpg" width="256" />
