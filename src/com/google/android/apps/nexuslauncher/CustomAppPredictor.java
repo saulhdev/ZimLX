@@ -19,6 +19,8 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 
+import org.zimmob.zimlx.util.DbHelper;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -135,6 +137,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                 edit.putStringSet(PREDICTION_SET, predictionSet);
                 edit.apply();
             }
+        } else {
+            ComponentName componentInfo = intent.getComponent();
+            DbHelper myDb = new DbHelper(mContext);
+            myDb.updateAppCount(componentInfo.getPackageName());
+            myDb.close();
         }
     }
 

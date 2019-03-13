@@ -36,11 +36,10 @@ import com.android.launcher3.discovery.AppDiscoveryUpdateState;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.LabelComparator;
-import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.util.InstallTimeComparator;
+import org.zimmob.zimlx.util.MostUsedComparator;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -126,6 +125,43 @@ public class AlphabeticalAppsList {
      */
     public List<AppInfo> getApps() {
         return mApps;
+    }
+
+    public void sortApps(int sortType) {
+        switch (sortType) {
+            //SORT BY NAME AZ
+            case SORT_AZ:
+                Collections.sort(mApps, mAppNameComparator);
+                Log.i("apps", "sorting by AZ");
+                break;
+
+            //SORT BY NAME ZA
+            case SORT_ZA:
+                Log.i("apps", "sorting by ZA");
+                Collections.sort(mApps, (p2, p1) -> Collator
+                        .getInstance()
+                        .compare(p1.originalTitle, p2.originalTitle));
+                break;
+
+            //SORT BY LAST INSTALLED
+            case SORT_LAST_INSTALLED:
+                Log.i("apps", "sorting by Last Installed");
+                PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
+                InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
+                Collections.sort(mApps, installTimeComparator);
+                break;
+
+            //SORT BY MOST USED DESC
+            case SORT_MOST_USED:
+                Log.i("apps", "sorting by Most Used");
+                MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
+                Collections.sort(mApps, mostUsedComparator);
+                break;
+            default:
+                Collections.sort(mApps, mAppNameComparator);
+                break;
+
+        }
     }
 
     /**
@@ -247,8 +283,7 @@ public class AlphabeticalAppsList {
             return Collections.emptyList();
         }
 
-        String sPredictedApps = Utilities.getZimPrefs(AppSettings.get().getContext()).getNumPredictedApps();
-        int nPredictedApps = Integer.valueOf(sPredictedApps);
+        int nPredictedApps = Utilities.getZimPrefs(mLauncher.getApplicationContext()).getNumPredictedApps();
         List<AppInfo> predictedApps = new ArrayList<>();
         for (ComponentKeyMapper<AppInfo> mapper : components) {
             AppInfo info = mapper.getItem(mComponentToAppMap);
@@ -319,44 +354,7 @@ public class AlphabeticalAppsList {
         Context context = mLauncher.getApplicationContext();
         ZimPreferences pref = new ZimPreferences(context);
         if (!pref.getShowPredictionApps()) {
-            int sortMode = pref.getSortMode();
-            switch (sortMode) {
-                //SORT BY NAME AZ
-                case SORT_AZ:
-                    Collections.sort(mApps, mAppNameComparator);
-                    Log.i("apps", "sorting by AZ");
-                    break;
-
-                //SORT BY NAME ZA
-                case SORT_ZA:
-                    Log.i("apps", "sorting by ZA");
-                    Collections.sort(mApps, (p2, p1) -> Collator
-                            .getInstance()
-                            .compare(p1.originalTitle, p2.originalTitle));
-                    break;
-
-                //SORT BY LAST INSTALLED
-                case SORT_LAST_INSTALLED:
-                    Log.i("apps", "sorting by Last Installed");
-                    PackageManager pm = context.getPackageManager();
-                    InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
-                    Collections.sort(mApps, installTimeComparator);
-                    break;
-
-                //SORT BY MOST USED DESC
-                case SORT_MOST_USED:
-                    Log.i("apps", "sorting by Most Used");
-                    CustomAppPredictor appPredictor = new CustomAppPredictor(context);
-                    Collections.sort(mApps, (o1, o2) ->
-                            Integer.compare(appPredictor.getLaunchCount(o2.componentName.toString()),
-                                    appPredictor.getLaunchCount(o1.componentName.toString())));
-
-                    break;
-                default:
-                    Collections.sort(mApps, mAppNameComparator);
-                    break;
-
-            }
+            sortApps(pref.getSortMode());
         } else {
             Collections.sort(mApps, mAppNameComparator);
         }

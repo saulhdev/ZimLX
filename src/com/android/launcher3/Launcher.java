@@ -144,6 +144,7 @@ import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.minibar.MinibarAdapter;
 import org.zimmob.zimlx.minibar.SwipeListView;
 import org.zimmob.zimlx.settings.AppSettings;
+import org.zimmob.zimlx.util.DbHelper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -218,7 +219,6 @@ public class Launcher extends BaseActivity
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
     public static Context mContext;
-
     static {
         if (TestingUtils.ENABLE_CUSTOM_WIDGET_TEST) {
             TestingUtils.addDummyWidget(sCustomAppWidgets);
@@ -446,7 +446,7 @@ public class Launcher extends BaseActivity
         ((AccessibilityManager) getSystemService(ACCESSIBILITY_SERVICE))
                 .addAccessibilityStateChangeListener(this);
 
-        lockAllApps();
+        //lockAllApps();
 
         restoreState(savedInstanceState);
 
@@ -485,7 +485,6 @@ public class Launcher extends BaseActivity
         }
         mZimPrefChangeCallback = new ZimPreferencesChangeCallback(this);
         Utilities.getZimPrefs(this).registerCallback(mZimPrefChangeCallback);
-
         if (PinItemDragListener.handleDragRequest(this, getIntent())) {
             // Temporarily enable the rotation
             mRotationEnabled = true;
@@ -512,6 +511,13 @@ public class Launcher extends BaseActivity
         }
         initMinibar();
         Utilities.checkRestoreSuccess(this);
+    }
+
+    public void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onPostCreate(savedInstanceState);
+        }
     }
 
     public void initMinibar() {
@@ -593,13 +599,6 @@ public class Launcher extends BaseActivity
             mExtractedColors.load(this);
             mHotseat.updateColor(mExtractedColors, !mPaused);
             mWorkspace.getPageIndicator().updateColor(mExtractedColors);
-        }
-    }
-
-    public void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.onPostCreate(savedInstanceState);
         }
     }
 
@@ -1021,7 +1020,6 @@ public class Launcher extends BaseActivity
 
         super.onResume();
         getUserEventDispatcher().resetElapsedSessionMillis();
-
         // Restore the previous launcher state
         if (mOnResumeState == State.WORKSPACE) {
             showWorkspace(false);
@@ -1035,7 +1033,10 @@ public class Launcher extends BaseActivity
             showWidgetsView(false, false);
         }
         if (mOnResumeState != State.APPS) {
-            tryAndUpdatePredictedApps();
+            /*if(Utilities.getZimPrefs(this).getSortMode()==Config.SORT_MOST_USED){
+                trySortApps();
+            }
+            tryAndUpdatePredictedApps();*/
         }
         mOnResumeState = State.NONE;
 
@@ -1147,6 +1148,12 @@ public class Launcher extends BaseActivity
             mLauncherCallbacks.onPause();
         }
     }
+
+    public void trySortApps() {
+        Log.w(TAG, "Reset apps view");
+        mAppsView.forceSort();
+    }
+
 
     protected boolean hasSettings() {
         if (mLauncherCallbacks != null) {
@@ -2457,10 +2464,10 @@ public class Launcher extends BaseActivity
         }
         boolean success = startActivitySafely(v, intent, item);
         getUserEventDispatcher().logAppLaunch(v, intent, item.user); // TODO for discovered apps b/35802115
-
         if (success && v instanceof BubbleTextView) {
             mWaitingForResume = (BubbleTextView) v;
             mWaitingForResume.setStayPressed(true);
+
         }
     }
 
@@ -3247,11 +3254,7 @@ public class Launcher extends BaseActivity
     public void bindAppsAdded(final ArrayList<Long> newScreens,
                               final ArrayList<ItemInfo> addNotAnimated,
                               final ArrayList<ItemInfo> addAnimated) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppsAdded(newScreens, addNotAnimated, addAnimated);
-            }
-        };
+        Runnable r = () -> bindAppsAdded(newScreens, addNotAnimated, addAnimated);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3727,11 +3730,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public void bindPromiseAppProgressUpdated(final PromiseAppInfo app) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindPromiseAppProgressUpdated(app);
-            }
-        };
+        Runnable r = () -> bindPromiseAppProgressUpdated(app);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3743,11 +3742,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public void bindWidgetsRestored(final ArrayList<LauncherAppWidgetInfo> widgets) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindWidgetsRestored(widgets);
-            }
-        };
+        Runnable r = () -> bindWidgetsRestored(widgets);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3762,11 +3757,7 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindShortcutsChanged(final ArrayList<ShortcutInfo> updated, final UserHandle user) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindShortcutsChanged(updated, user);
-            }
-        };
+        Runnable r = () -> bindShortcutsChanged(updated, user);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3783,11 +3774,7 @@ public class Launcher extends BaseActivity
      */
     @Override
     public void bindRestoreItemsChange(final HashSet<ItemInfo> updates) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindRestoreItemsChange(updates);
-            }
-        };
+        Runnable r = () -> bindRestoreItemsChange(updates);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3818,11 +3805,7 @@ public class Launcher extends BaseActivity
 
     @Override
     public void bindAppInfosRemoved(final ArrayList<AppInfo> appInfos) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindAppInfosRemoved(appInfos);
-            }
-        };
+        Runnable r = () -> bindAppInfosRemoved(appInfos);
         if (waitUntilResume(r)) {
             return;
         }
@@ -3830,6 +3813,11 @@ public class Launcher extends BaseActivity
         // Update AllApps
         if (mAppsView != null) {
             mAppsView.removeApps(appInfos);
+            DbHelper db = new DbHelper(mContext);
+            for (AppInfo app : appInfos) {
+                db.deleteApp(app.componentName.getPackageName());
+                db.close();
+            }
             tryAndUpdatePredictedApps();
         }
     }

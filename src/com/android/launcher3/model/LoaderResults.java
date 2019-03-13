@@ -352,12 +352,10 @@ public class LoaderResults {
         // shallow copy
         @SuppressWarnings("unchecked") final ArrayList<AppInfo> list = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
 
-        Runnable r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindAllApplications(list);
-                }
+        Runnable r = () -> {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                callbacks.bindAllApplications(list);
             }
         };
         mUiExecutor.execute(r);

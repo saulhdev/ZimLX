@@ -1,7 +1,6 @@
 package org.zimmob.zimlx.minibar;
 
 import android.app.NotificationManager;
-import android.app.admin.DevicePolicyManager;
 import android.content.Context;
 import android.content.Intent;
 import android.media.AudioManager;
@@ -19,7 +18,6 @@ public class Minibar {
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
             new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Launcher.getLauncher(mContext).getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
             new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Launcher.getLauncher(mContext).getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
-            new ActionDisplayItem(Action.LockScreen, "LockScreen", Launcher.getLauncher(mContext).getString(R.string.minibar_2), R.drawable.ic_lock_black_24dp, 24),
             new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
             new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
             new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 25),
@@ -48,23 +46,7 @@ public class Minibar {
             case SetWallpaper:
                 context.startActivity(Intent.createChooser(new Intent(Intent.ACTION_SET_WALLPAPER), context.getString(R.string.wallpaper_pick)));
                 break;
-            case LockScreen:
-                try {
-                    ((DevicePolicyManager) context.getSystemService(Context.DEVICE_POLICY_SERVICE)).lockNow();
-                } catch (Exception e) {
-                    /*DialogHelper.alertDialog(context,
-                            "Device Admin Required",
-                            context.getResources().getString(R.string.device_admin_message),
-                            "Enable", (dialog, which) -> {
-                                Tool.toast(context, context.getString(R.string.toast_device_admin_required));
-                                Intent intent = new Intent();
-                                intent.setComponent(new ComponentName("com.android.settings", "com.android.settings.DeviceAdminSettings"));
-                                context.startActivity(intent);
-                            });
-*/
 
-                }
-                break;
             case DeviceSettings:
                 context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                 break;
