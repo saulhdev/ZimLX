@@ -35,7 +35,7 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
         installedApps = getAppsList(context).apply { sortBy { it.label.toString().toLowerCase() } }
         adapter = HiddenAppsAdapter(view.context, installedApps, this)
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter
     }
 

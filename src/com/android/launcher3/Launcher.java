@@ -144,6 +144,7 @@ import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.minibar.MinibarAdapter;
 import org.zimmob.zimlx.minibar.SwipeListView;
 import org.zimmob.zimlx.settings.AppSettings;
+import org.zimmob.zimlx.util.Config;
 import org.zimmob.zimlx.util.DbHelper;
 
 import java.io.FileDescriptor;
@@ -1033,10 +1034,7 @@ public class Launcher extends BaseActivity
             showWidgetsView(false, false);
         }
         if (mOnResumeState != State.APPS) {
-            /*if(Utilities.getZimPrefs(this).getSortMode()==Config.SORT_MOST_USED){
-                trySortApps();
-            }
-            tryAndUpdatePredictedApps();*/
+            tryAndUpdatePredictedApps();
         }
         mOnResumeState = State.NONE;
 
@@ -1123,6 +1121,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+        if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+            Log.i(TAG, "Reloading apps to get them sorted");
+            Utilities.getZimPrefs(this).getReloadApps();
+        }
         if (mRestart) {
             Utilities.restartLauncher(this);
         }
@@ -1149,10 +1151,11 @@ public class Launcher extends BaseActivity
         }
     }
 
-    public void trySortApps() {
+    /*public void trySortApps() {
         Log.w(TAG, "Reset apps view");
+
         mAppsView.forceSort();
-    }
+    }*/
 
 
     protected boolean hasSettings() {
@@ -2932,10 +2935,15 @@ public class Launcher extends BaseActivity
      * Shows the apps view.
      */
     public void showAppsView(boolean animated, boolean updatePredictedApps) {
+        if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+            Log.i(TAG, "Reloading apps to get them sorted");
+            Utilities.getZimPrefs(this).getReloadApps();
+        }
         markAppsViewShown();
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
         }
+
         showAppsOrWidgets(State.APPS, animated);
     }
 
@@ -2949,12 +2957,7 @@ public class Launcher extends BaseActivity
         }
         showAppsOrWidgets(State.WIDGETS, animated);
 
-        mWidgetsView.post(new Runnable() {
-            @Override
-            public void run() {
-                mWidgetsView.requestFocus();
-            }
-        });
+        mWidgetsView.post(() -> mWidgetsView.requestFocus());
     }
 
     /**

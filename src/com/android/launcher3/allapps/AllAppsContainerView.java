@@ -51,8 +51,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.PackageUserKey;
 
-import org.zimmob.zimlx.util.Config;
-
 import java.util.List;
 import java.util.Set;
 
@@ -192,11 +190,11 @@ public class AllAppsContainerView extends BaseContainerView implements DragSourc
         mSearchUiManager.reset();
     }
 
-    public void forceSort() {
+    /*public void forceSort() {
         mApps.sortApps(Config.SORT_MOST_USED);
         reset();
     }
-
+*/
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();

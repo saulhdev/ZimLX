@@ -39,7 +39,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     private val doNothing = { }
     private val recreate = { recreate() }
-    private val reloadApps = { reloadApps() }
+    val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }

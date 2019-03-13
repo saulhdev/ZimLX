@@ -13,18 +13,18 @@ Our mission is to bring a powerful launcher with smart features to make your dev
 [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
 ## Main Features   
 
--> Row and Columns config
--> Minibar support with custom color configuration (see the screenshots below).
--> Hide Apps
--> Custom Scrollbar
--> Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
--> Theme Color Change
--> Icon Size configuration
--> Icon Pack support
--> Icon Shape support
--> Show notification counts in folder
--> Icon Badge support in apps and Folder
--> Icon badge color configuration.
+> *Row and Columns config
+> *Minibar support with custom color configuration (see the screenshots below).
+> *Hide Apps
+> *Custom Scrollbar
+> *Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
+> *Theme Color Change
+> *Icon Size configuration
+> *Icon Pack support
+> *Icon Shape support
+> *Show notification counts in folder
+> *Icon Badge support in apps and Folder
+> *Icon badge color configuration.
 
 ## Development Features
 * App Drawer

@@ -27,14 +27,11 @@ public class CustomEditShortcut extends SystemShortcut {
         if (itemInfo instanceof EditableItemInfo) {
             enabled = true;
         }
-        return enabled ? new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AbstractFloatingView.closeAllOpenViews(launcher);
-                CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
-                        .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
-                cbs.populateAndShow(itemInfo);
-            }
+        return enabled ? view -> {
+            AbstractFloatingView.closeAllOpenViews(launcher);
+            CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
+                    .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
+            cbs.populateAndShow(itemInfo);
         } : null;
     }
 }
