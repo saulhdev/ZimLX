@@ -103,14 +103,12 @@ android {
         }
         l3go {
             dimension "default"
-            applicationId 'com.android.launcher3'
-            //applicationId 'com.google.android.apps.nexuslauncher'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId "com.android.launcher3"
         }
         quickstep {
             dimension "default"
-            applicationId 'com.android.launcher3'
-            testApplicationId 'com.android.launcher3.tests'
+            applicationId "com.android.launcher3"
+            testApplicationId "com.android.launcher3.tests"
         }
 
     }
