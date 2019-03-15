@@ -1,4 +1,6 @@
-# ZimLX
+# ZimLX -- [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
+         - [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
+         - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/saulhenriquez)
 <div align="center" >
     <img src="Logo/logotype.png" width="25%">
 </div>
@@ -10,8 +12,7 @@ Our mission is to bring a powerful launcher with smart features to make your dev
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
-[![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX)
-## Main Features   
+## Main Features
 
 > *Row and Columns config
 > *Minibar support with custom color configuration (see the screenshots below).
@@ -42,23 +43,8 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
         </td>
         <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/zlxfolder.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop.jpg" width="256" />
-                        </td>
-    </tr>
-    <tr>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_option.jpg" width="256" />
-            </td>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_grid.jpg" width="256" />
-            </td>
-            <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/desktop_search_list.jpg" width="256" />
-             </td>
-        </tr>
-    <tr>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/folder_view.jpg" width="256" />
-        </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings.jpg" width="256" />
-        </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/app/src/protos/settings_desktop.jpg" width="256" />
-                        </td>
     </tr>
 <table>
+
+## Want to contribute?
+you can open issues and I will be happy to work on features you would like to include.
