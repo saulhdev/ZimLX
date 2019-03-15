@@ -3,25 +3,25 @@
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
 
-[<img src="Logo/logotype.png" width="25%" alt="Zim Launcher">](https://github.com/otakuhqz/ZimLX)  [<img src="https://f-droid.org/badge/get-it-on.png"
+[<img src="Logo/logotype.png" width="25%" alt="Zim Launcher">](https://github.com/otakuhqz/ZimLX)         [<img src="https://f-droid.org/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 
 ## Main Features
 
-*Row and Columns config
-*Minibar support with custom color configuration (see the screenshots below).
-*Hide Apps
-*Custom Scrollbar
-*Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
-*Theme Color Change
-*Icon Size configuration
-*Icon Pack support
-*Icon Shape support
-*Show notification counts in folder
-*Icon Badge support in apps and Folder
-*Icon badge color configuration.
+* Row and Columns config
+* Minibar support with custom color configuration (see the screenshots below).
+* Hide Apps
+* Custom Scrollbar
+* Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
+* Theme Color Change
+* Icon Size configuration
+* Icon Pack support
+* Icon Shape support
+* Show notification counts in folder
+* Icon Badge support in apps and Folder
+* Icon badge color configuration.
 
 ## Development Features
 * App Drawer

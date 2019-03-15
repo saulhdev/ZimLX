@@ -51,9 +51,9 @@ android {
     }
     signingConfigs {
         travis {
-            storeFile file("debug.jks")
+            storeFile file("zimlx.jks")
             storePassword System.getenv("STORE_PASSWORD")
-            keyAlias "ZimLX"
+            keyAlias "zlxkey"
             keyPassword System.getenv("KEY_PASSWORD")
         }
     }
@@ -72,6 +72,7 @@ android {
             minSdkVersion 21
             targetSdkVersion 28
 
+            buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
             buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
             buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
             buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
@@ -100,6 +101,8 @@ android {
             signingConfig signingConfigs.travis
         }
     }
+
+
     flavorDimensions "default"
     productFlavors {
         aosp {
