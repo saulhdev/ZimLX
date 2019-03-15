@@ -49,14 +49,7 @@ android {
     if (localPropsFile.exists()) {
         localProps.load(localPropsFile.newDataInputStream())
     }
-    signingConfigs {
-        travis {
-            storeFile file("zimlx.jks")
-            storePassword System.getenv("STORE_PASSWORD")
-            keyAlias "zlxkey"
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
+
     def versionPropsFile = file('version.properties')
     if (versionPropsFile.canRead()) {
         Properties versionProps = new Properties()
@@ -72,7 +65,6 @@ android {
             minSdkVersion 21
             targetSdkVersion 28
 
-            buildConfigField "boolean", "TRAVIS", System.getenv("TRAVIS") ?: "false"
             buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
             buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
             buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
@@ -98,7 +90,6 @@ android {
             jniDebuggable true
             renderscriptDebuggable true
             pseudoLocalesEnabled true
-            signingConfig signingConfigs.travis
         }
     }
 
