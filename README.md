@@ -1,14 +1,14 @@
 # ZimLX -- [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX) - [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/saulhenriquez)
-<div align="center" >
-    <img src="Logo/logotype.png" width="25%">
-</div>
 
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
 
+[<img src="Logo/logotype.png" width="25%" alt="Zim Launcher">]
+
 [<img src="https://f-droid.org/badge/get-it-on.png"
      alt="Get it on F-Droid"
      height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
+
 
 ## Main Features
 
