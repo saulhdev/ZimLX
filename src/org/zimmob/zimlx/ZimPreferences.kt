@@ -39,7 +39,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     private val doNothing = { }
     private val recreate = { recreate() }
-    val reloadApps = { reloadApps() }
+    private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
@@ -117,6 +117,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val recentBackups = object : MutableListPref<Uri>(
             Utilities.getDevicePrefs(context), "pref_recentBackups") {
         override fun unflattenValue(value: String) = Uri.parse(value)
+    }
+
+    public fun zReloadApps() {
+        reloadApps();
     }
 
     private fun recreate() {

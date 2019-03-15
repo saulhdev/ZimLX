@@ -1121,10 +1121,10 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
-        if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+        /*if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
             Log.i(TAG, "Reloading apps to get them sorted");
-            Utilities.getZimPrefs(this).getReloadApps();
-        }
+            Utilities.getZimPrefs(this).zReloadApps();
+        }*/
         if (mRestart) {
             Utilities.restartLauncher(this);
         }
@@ -2828,7 +2828,11 @@ public class Launcher extends BaseActivity
     }
 
     public boolean isAppsViewVisible() {
-        return (mState == State.APPS) || (mOnResumeState == State.APPS);
+        boolean visible = (mState == State.APPS) || (mOnResumeState == State.APPS);
+        if (!visible && Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+            Utilities.getZimPrefs(this).zReloadApps();
+        }
+        return visible;
     }
 
     public boolean isWidgetsViewVisible() {
@@ -2935,10 +2939,10 @@ public class Launcher extends BaseActivity
      * Shows the apps view.
      */
     public void showAppsView(boolean animated, boolean updatePredictedApps) {
-        if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+        /*if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
             Log.i(TAG, "Reloading apps to get them sorted");
-            Utilities.getZimPrefs(this).getReloadApps();
-        }
+            Utilities.getZimPrefs(this).zReloadApps();
+        }*/
         markAppsViewShown();
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();
