@@ -129,16 +129,12 @@
     <string name="smartspace_preferences">Hobespenak</string>
     <string name="label_search">Bilatu</string>
     <string name="label_voice_search">Ahozko bilaketa</string>
-    <string name="smartspace_preferences_in_settings">Begiratu hutsa</string>
-    <string name="smartspace_preferences_in_settings_desc">Hasierako pantailaren goialdean</string>
     <string name="title_show_google_app">Erakutsi %1$s</string>
     <string name="msg_minus_one_on_left">Hasierako pantailaren ezkerrean</string>
     <string name="about">Honi buruz</string>
     <string name="title_google_app">Google aplikazioa</string>
     <string name="title_app_suggestions">Erakutsi aplikazioen iradokizunak</string>
     <string name="summary_app_suggestions">\"Aplikazio guztiak\" zerrendaren goialdean</string>
-    <string name="about_app_version">Bertsioa</string>
-    <string name="app_name_pixel_launcher">Pixel abiarazlea</string>
     <string name="title_disable_suggestions_prompt">Iradokitako aplikazioak desaktibatu nahi dituzu?</string>
     <string name="msg_disable_suggestions_prompt">Ez dira agertuko iradokizunak aplikazio-zerrendaren goialdean, eta horiek sortzeko erabilitako erabilera-datuak betiko ezabatuko dira.</string>
     <string name="label_turn_off_suggestions">DESAKTIBATU</string>

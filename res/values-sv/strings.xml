@@ -131,16 +131,12 @@
     <string name="label_voice_search">Röstsökning</string>
     <string name="pref_icon_pack">Ikonpaket</string>
     <string name="state_loading">Tillämpar…</string>
-    <string name="smartspace_preferences_in_settings">Snabböversikt</string>
-    <string name="smartspace_preferences_in_settings_desc">Högst upp på startskärmen</string>
     <string name="title_show_google_app">Visa %1$s</string>
     <string name="msg_minus_one_on_left">Till vänster om huvudstartskärmen</string>
     <string name="about">Om</string>
     <string name="title_google_app">Google-appen</string>
     <string name="title_app_suggestions">Visa appförslag</string>
     <string name="summary_app_suggestions">Högst upp i listan Alla appar</string>
-    <string name="about_app_version">Version</string>
-    <string name="app_name_pixel_launcher">Översikt för Pixel</string>
     <string name="title_disable_suggestions_prompt">Vill du stänga av appförslag?</string>
     <string name="msg_disable_suggestions_prompt">Förslag visas inte längst upp i applistan och användaruppgifterna som används för att skapa dem raderas permanent.</string>
     <string name="label_turn_off_suggestions">INAKTIVERA</string>

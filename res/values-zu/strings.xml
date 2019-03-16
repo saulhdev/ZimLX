@@ -129,16 +129,12 @@
     <string name="smartspace_preferences">Okuncamelayo</string>
     <string name="label_search">Sesha</string>
     <string name="label_voice_search">Ukusesha ngezwi</string>
-    <string name="smartspace_preferences_in_settings">Ngokubuka nje</string>
-    <string name="smartspace_preferences_in_settings_desc">Ngaphezulu kwesikrini sakho sasekhaya</string>
     <string name="title_show_google_app">Bonisa i-%1$s</string>
     <string name="msg_minus_one_on_left">Ngasokunxele sesikrini sasekhaya esiyinhloko</string>
     <string name="about">Mayelana</string>
     <string name="title_google_app">Uhlelo lokusebenza le-Google</string>
     <string name="title_app_suggestions">Bonisa iziphakamiso zohlelo lokusebenza</string>
     <string name="summary_app_suggestions">Ngaphezulu kohlu lwakho lwazo zonke izinhlelo zokusebenza</string>
-    <string name="about_app_version">Inhlobo</string>
-    <string name="app_name_pixel_launcher">Isiqalisi Sephikseli</string>
     <string name="title_disable_suggestions_prompt">Vala iziphakamiso zohlelo lokusebenza?</string>
     <string name="msg_disable_suggestions_prompt">Iziphakamiso ngeke zivele ngaphezulu kohlu lwezinhlelo zakho zokusebenza, futhi idatha yokusetshenziswa esetshenziselwe ukuzidala izosulwa ingunaphakade.</string>
     <string name="label_turn_off_suggestions">VALA</string>

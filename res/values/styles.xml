@@ -205,10 +205,6 @@
         <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
     </style>
 
-    <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherThemeDarkText">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
-
     <style name="HotseatQsbTheme">
         <item name="gIcon">@drawable/ic_super_g_shadow</item>
         <item name="micIcon">@drawable/ic_mic_shadow</item>
@@ -217,19 +213,6 @@
     <style name="HotseatQsbTheme.Colored" parent="@style/HotseatQsbTheme">
         <item name="gIcon">@drawable/ic_super_g_color</item>
         <item name="micIcon">@drawable/ic_mic_color</item>
-    </style>
-
-    <style name="SettingsTheme" parent="@android:style/Theme.Material.Settings">
-        <item name="android:actionBarTheme">@style/SettingsTheme.ActionBar</item>
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:statusBarColor">@color/colorPrimary</item>
-    </style>
-
-    <style name="SettingsTheme.ActionBar">
-        <item name="android:textColorPrimary">@color/colorAccent</item>
-        <item name="android:colorControlNormal">@color/colorAccent</item>
     </style>
 
     <style name="SettingsTheme.Base" parent="@style/Theme.AppCompat.Light.NoActionBar">
@@ -250,11 +233,6 @@
         <item name="android:textColorPrimary">?attr/colorAccent</item>
         <item name="android:textColorSecondary">?attr/colorAccent</item>
         <item name="android:colorControlNormal">@color/white</item>
-    </style>
-
-    <style name="BorderlessButton" parent="Theme.AppCompat.Light">
-        <item name="android:buttonStyle">@style/Widget.AppCompat.Button.Borderless.Colored</item>
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.Dark.ActionBar">

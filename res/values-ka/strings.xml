@@ -129,16 +129,12 @@
     <string name="smartspace_preferences">პარამეტრები</string>
     <string name="label_search">ძიება</string>
     <string name="label_voice_search">ხმოვანი ძიება</string>
-    <string name="smartspace_preferences_in_settings">მოკლე მიმოხილვა</string>
-    <string name="smartspace_preferences_in_settings_desc">მთავარი ეკრანის სათავეში</string>
     <string name="title_show_google_app">%1$s-ის ჩვენება</string>
     <string name="msg_minus_one_on_left">მთავარი ეკრანის მარცხნივ</string>
     <string name="about">ინფორმაცია</string>
     <string name="title_google_app">Google აპი</string>
     <string name="title_app_suggestions">აპების შემოთავაზებების ჩვენება</string>
     <string name="summary_app_suggestions">თქვენი სიის „ყველა აპი“ სათავეში</string>
-    <string name="about_app_version">ვერსია</string>
-    <string name="app_name_pixel_launcher">Pixel გამშვები</string>
     <string name="title_disable_suggestions_prompt">გსურთ აპების შეთავაზებების გამორთვა?</string>
     <string name="msg_disable_suggestions_prompt">შეთავაზებები არ გამოჩნდება თქვენი აპების სიის თავში, ხოლო გამოყენების მონაცემები, რომელთა მეშვეობითაც ისინი შეიქმნა, სამუდამოდ წაიშლება.</string>
     <string name="label_turn_off_suggestions">გამორთვა</string>
