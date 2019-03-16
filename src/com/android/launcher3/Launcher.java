@@ -137,6 +137,9 @@ import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetsContainerView;
+import com.microsoft.appcenter.AppCenter;
+import com.microsoft.appcenter.analytics.Analytics;
+import com.microsoft.appcenter.crashes.Crashes;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimPreferencesChangeCallback;
@@ -391,6 +394,8 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.preOnCreate();
         }
+
+        AppCenter.start(getApplication(), "bc21ea9b-4a4d-4190-ad5a-442c35360819", Analytics.class, Crashes.class);
 
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);

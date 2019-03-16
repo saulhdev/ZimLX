@@ -193,6 +193,12 @@ dependencies {
     implementation 'com.balysv:material-ripple:1.0.2'
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
+
+    //appms
+    def appCenterSdkVersion = '1.11.4'
+    implementation "com.microsoft.appcenter:appcenter-analytics:${appCenterSdkVersion}"
+    implementation "com.microsoft.appcenter:appcenter-crashes:${appCenterSdkVersion}"
+
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {
