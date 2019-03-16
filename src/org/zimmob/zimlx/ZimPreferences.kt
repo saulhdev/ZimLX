@@ -67,7 +67,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
     val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
     val dockSearchBar = true
-    val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f)
+    val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f, recreate)
     val hotseatShowArrow by BooleanPref("pref_hotseatShowArrow", true)
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)

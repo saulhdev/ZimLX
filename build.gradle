@@ -142,13 +142,13 @@ android {
             manifest.srcFile "AndroidManifest.xml"
         }
 
-        l3go {
-            res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags']
+        //l3go {
+        //    res.srcDirs = ['go/res']
+        //    java.srcDirs = ['go/src_flags']
             // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
             // different attributes than the build system.
-            manifest.srcFile "AndroidManifest.xml"
-        }
+        //    manifest.srcFile "AndroidManifest.xml"
+        //}
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
