@@ -118,7 +118,10 @@ public class PageIndicatorLineCaret extends PageIndicator {
         mLinePaint.setAlpha(0);
 
         mLauncher = Launcher.getLauncher(context);
-        mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+        if (Utilities.getZimPrefs(context).getHotseatShowPageIndicator())
+            mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
+        else
+            mLineHeight = 0;
         setCaretDrawable(new CaretDrawable(context));
 
         boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
