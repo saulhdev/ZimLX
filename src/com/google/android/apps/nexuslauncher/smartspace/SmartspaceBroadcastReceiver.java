@@ -12,7 +12,7 @@ import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 
 public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
-    private void cg(b b, Context context, Intent intent, boolean b2) throws PackageManager.NameNotFoundException {
+    private void cg(b b, Context context, Intent intent, boolean b2) {
         if (b.cy) {
             SmartspaceController.get(context).cV(null);
             return;
@@ -43,7 +43,7 @@ public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
                     }
                     ++i;
                 }
-            } catch (InvalidProtocolBufferNanoException | PackageManager.NameNotFoundException ex) {
+            } catch (InvalidProtocolBufferNanoException ex) {
                 Log.e("SmartspaceReceiver", "proto", ex);
             }
         } else {

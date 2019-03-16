@@ -147,7 +147,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                     return;
                 }
                 AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
-                        (Context) mLauncher, mWidgetLoadingId, pInfo);
+                        mLauncher, mWidgetLoadingId, pInfo);
                 mInfo.boundWidget = hostView;
 
                 // We used up the widget Id in binding the above view.

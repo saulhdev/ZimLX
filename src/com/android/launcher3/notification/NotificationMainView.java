@@ -66,15 +66,15 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mTextAndBackground = (ViewGroup) findViewById(R.id.text_and_background);
+        mTextAndBackground = findViewById(R.id.text_and_background);
         ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
         mBackgroundColor = colorBackground.getColor();
         RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
                 Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
                 colorBackground, null);
         mTextAndBackground.setBackground(rippleBackground);
-        mTitleView = (TextView) mTextAndBackground.findViewById(R.id.title);
-        mTextView = (TextView) mTextAndBackground.findViewById(R.id.text);
+        mTitleView = mTextAndBackground.findViewById(R.id.title);
+        mTextView = mTextAndBackground.findViewById(R.id.text);
     }
 
     public void applyNotificationInfo(NotificationInfo mainNotification, View iconView) {

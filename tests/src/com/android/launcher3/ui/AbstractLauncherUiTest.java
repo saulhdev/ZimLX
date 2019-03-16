@@ -24,7 +24,6 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Point;
 import android.os.Process;
-import android.os.RemoteException;
 import android.os.SystemClock;
 import android.support.test.InstrumentationRegistry;
 import android.support.test.uiautomator.By;
@@ -81,7 +80,7 @@ public abstract class AbstractLauncherUiTest {
         mTargetPackage = mTargetContext.getPackageName();
     }
 
-    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
+    protected void lockRotation(boolean naturalOrientation) {
         Utilities.getPrefs(mTargetContext)
                 .edit()
                 .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
@@ -209,7 +208,7 @@ public abstract class AbstractLauncherUiTest {
     /**
      * Removes all icons from homescreen and hotseat.
      */
-    public void clearHomescreen() throws Throwable {
+    public void clearHomescreen() {
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
         LauncherSettings.Settings.call(mTargetContext.getContentResolver(),
@@ -251,7 +250,7 @@ public abstract class AbstractLauncherUiTest {
         LauncherAppWidgetProviderInfo info =
                 getOnUiThread(new Callable<LauncherAppWidgetProviderInfo>() {
                     @Override
-                    public LauncherAppWidgetProviderInfo call() throws Exception {
+                    public LauncherAppWidgetProviderInfo call() {
                         ComponentName cn = new ComponentName(getInstrumentation().getContext(),
                                 hasConfigureScreen ? AppWidgetWithConfig.class : AppWidgetNoConfig.class);
                         return AppWidgetManagerCompat.getInstance(mTargetContext)

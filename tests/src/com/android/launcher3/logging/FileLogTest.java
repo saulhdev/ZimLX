@@ -17,7 +17,7 @@ public class FileLogTest extends AndroidTestCase {
     private File mTempDir;
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         super.setUp();
         int count = 0;
         do {
@@ -28,7 +28,7 @@ public class FileLogTest extends AndroidTestCase {
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() {
         // Clear existing logs
         new File(mTempDir, "log-0").delete();
         new File(mTempDir, "log-1").delete();

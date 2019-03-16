@@ -97,7 +97,7 @@ public class BaseModelUpdateTaskTestCase extends ProviderTestCase2<TestLauncherP
     /**
      * Synchronously executes the task and returns all the UI callbacks posted.
      */
-    public List<Runnable> executeTaskForTest(ModelUpdateTask task) throws Exception {
+    public List<Runnable> executeTaskForTest(ModelUpdateTask task) {
         when(model.isModelLoaded()).thenReturn(true);
 
         Executor mockExecutor = mock(Executor.class);

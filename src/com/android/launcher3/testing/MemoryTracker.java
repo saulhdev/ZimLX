@@ -43,7 +43,6 @@ public class MemoryTracker extends Service {
     private static final int MSG_STOP = 2;
     private static final int MSG_UPDATE = 3;
     public final LongSparseArray<ProcessMemInfo> mData = new LongSparseArray<ProcessMemInfo>();
-    ;
     public final ArrayList<Long> mPids = new ArrayList<Long>();
     private final Object mLock = new Object();
     private final IBinder mBinder = new MemoryTrackerInterface();

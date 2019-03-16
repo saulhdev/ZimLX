@@ -360,9 +360,7 @@ public class DeviceProfile {
     }
 
     public void removeLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
-        if (mListeners.contains(listener)) {
-            mListeners.remove(listener);
-        }
+        mListeners.remove(listener);
     }
 
     /**

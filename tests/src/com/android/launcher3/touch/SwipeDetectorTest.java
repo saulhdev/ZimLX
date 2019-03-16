@@ -68,7 +68,7 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragStart_vertical() throws Exception {
+    public void testDragStart_vertical() {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -76,7 +76,7 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragStart_failed() throws Exception {
+    public void testDragStart_failed() {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100 + mTouchSlop, 100);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -84,7 +84,7 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragStart_horizontal() throws Exception {
+    public void testDragStart_horizontal() {
         mDetector = new SwipeDetector(mTouchSlop, mMockListener, SwipeDetector.HORIZONTAL);
         mDetector.setDetectableScrollConditions(SwipeDetector.DIRECTION_BOTH, false);
 
@@ -95,7 +95,7 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDrag() throws Exception {
+    public void testDrag() {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         // TODO: actually calculate the following parameters and do exact value checks.
@@ -103,7 +103,7 @@ public class SwipeDetectorTest {
     }
 
     @Test
-    public void testDragEnd() throws Exception {
+    public void testDragEnd() {
         mGenerator.put(0, 100, 100);
         mGenerator.move(0, 100, 100 + mTouchSlop);
         mGenerator.move(0, 100, 100 + mTouchSlop * 2);

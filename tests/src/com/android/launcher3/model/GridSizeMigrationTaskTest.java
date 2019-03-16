@@ -43,7 +43,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
     }
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         super.setUp();
         mValidPackages = new HashSet<>();
         mValidPackages.add(TEST_PACKAGE);
@@ -364,7 +364,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
      * @param type {@link #APPLICATION} or {@link #SHORTCUT} or >= 2 for
      *             folder (where the type represents the number of items in the folder).
      */
-    private long addItem(int type, long screen, long container, int x, int y) throws Exception {
+    private long addItem(int type, long screen, long container, int x, int y) {
         long id = LauncherSettings.Settings.call(getMockContentResolver(),
                 LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
                 .getLong(LauncherSettings.Settings.EXTRA_VALUE);
@@ -432,7 +432,7 @@ public class GridSizeMigrationTaskTest extends ProviderTestCase2<TestLauncherPro
         }
 
         @Override
-        protected boolean runStepTask(Point sourceSize, Point nextSize) throws Exception {
+        protected boolean runStepTask(Point sourceSize, Point nextSize) {
             assertEquals(sourceSize, mPoints.poll());
             assertEquals(nextSize, mPoints.poll());
             return false;

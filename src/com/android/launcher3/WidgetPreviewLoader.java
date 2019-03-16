@@ -452,7 +452,7 @@ public class WidgetPreviewLoader {
         try {
             return mMainThreadExecutor.submit(new Callable<Drawable>() {
                 @Override
-                public Drawable call() throws Exception {
+                public Drawable call() {
                     return drawable.mutate();
                 }
             }).get();

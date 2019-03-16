@@ -82,7 +82,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun getFolderShape(): Int {
         val folderShape: String = sharedPrefs.getString(ZimFlags.THEME_FOLDER_SHAPE, "0")
-        return folderShape.toInt();
+        return folderShape.toInt()
     }
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
@@ -94,7 +94,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
-        return sort.toInt();
+        return sort.toInt()
     }
 
     fun getNumPredictedApps(): Int {
@@ -122,8 +122,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
 
-    public fun zReloadApps() {
-        reloadApps();
+    fun zReloadApps() {
+        reloadApps()
     }
 
     private fun recreate() {

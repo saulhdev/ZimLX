@@ -78,13 +78,13 @@ public class WidgetsListAdapterTest {
     }
 
     @Test
-    public void test_notifyDataSetChanged() throws Exception {
+    public void test_notifyDataSetChanged() {
         mAdapter.setWidgets(generateSampleMap(1));
         verify(mListener, times(1)).notifyDataSetChanged();
     }
 
     @Test
-    public void test_notifyItemInserted() throws Exception {
+    public void test_notifyItemInserted() {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(2));
         verify(mListener, times(1)).notifyDataSetChanged();
@@ -92,7 +92,7 @@ public class WidgetsListAdapterTest {
     }
 
     @Test
-    public void test_notifyItemRemoved() throws Exception {
+    public void test_notifyItemRemoved() {
         mAdapter.setWidgets(generateSampleMap(2));
         mAdapter.setWidgets(generateSampleMap(1));
         verify(mListener, times(1)).notifyDataSetChanged();
@@ -100,7 +100,7 @@ public class WidgetsListAdapterTest {
     }
 
     @Test
-    public void testNotifyItemChanged_PackageIconDiff() throws Exception {
+    public void testNotifyItemChanged_PackageIconDiff() {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(1));
         verify(mListener, times(1)).notifyDataSetChanged();
@@ -108,12 +108,12 @@ public class WidgetsListAdapterTest {
     }
 
     @Test
-    public void testNotifyItemChanged_widgetItemInfoDiff() throws Exception {
+    public void testNotifyItemChanged_widgetItemInfoDiff() {
         // TODO: same package name but item number changed
     }
 
     @Test
-    public void testNotifyItemInsertedRemoved_hodgepodge() throws Exception {
+    public void testNotifyItemInsertedRemoved_hodgepodge() {
         // TODO: insert and remove combined.          curMap
         // newMap [A, C, D]                           [A, B, E]
         // B - C < 0, removed B from index 1          [A, E]

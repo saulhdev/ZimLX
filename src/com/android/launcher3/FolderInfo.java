@@ -150,14 +150,14 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        public void onAdd(ShortcutInfo item, int rank);
+        void onAdd(ShortcutInfo item, int rank);
 
-        public void onRemove(ShortcutInfo item);
+        void onRemove(ShortcutInfo item);
 
-        public void onTitleChanged(CharSequence title);
+        void onTitleChanged(CharSequence title);
 
-        public void onItemsChanged(boolean animate);
+        void onItemsChanged(boolean animate);
 
-        public void prepareAutoUpdate();
+        void prepareAutoUpdate();
     }
 }

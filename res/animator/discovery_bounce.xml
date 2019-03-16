@@ -19,7 +19,7 @@
     android:ordering="sequentially">
     <objectAnimator
         android:duration="166"
-        android:interpolator="@interpolator/disco_bounce"
+        android:interpolator="@anim/disco_bounce"
         android:propertyName="progress"
         android:startOffset="750"
         android:valueFrom="1f"
@@ -27,7 +27,7 @@
         android:valueType="floatType" />
     <objectAnimator
         android:duration="500"
-        android:interpolator="@interpolator/disco_bounce"
+        android:interpolator="@anim/disco_bounce"
         android:propertyName="progress"
         android:valueTo="1f"
         android:valueType="floatType" />

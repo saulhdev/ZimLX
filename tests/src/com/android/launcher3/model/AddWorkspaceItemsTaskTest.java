@@ -167,7 +167,7 @@ public class AddWorkspaceItemsTaskTest extends BaseModelUpdateTaskTestCase {
         return startId;
     }
 
-    private void commitScreensToDb() throws Exception {
+    private void commitScreensToDb() {
         LauncherSettings.Settings.call(getMockContentResolver(),
                 LauncherSettings.Settings.METHOD_CREATE_EMPTY_DB);
 

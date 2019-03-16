@@ -475,10 +475,7 @@ public class AppWidgetResizeFrame extends FrameLayout
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
-            return true;
-        }
-        return false;
+        return ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev);
     }
 
     /**

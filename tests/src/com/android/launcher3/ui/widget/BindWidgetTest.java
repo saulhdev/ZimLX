@@ -97,7 +97,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
     }
 
     @After
-    public void tearDown() throws Exception {
+    public void tearDown() {
         if (mCursor != null) {
             mCursor.close();
         }
@@ -335,7 +335,7 @@ public class BindWidgetTest extends AbstractLauncherUiTest {
 
         Set<String> activePackage = getOnUiThread(new Callable<Set<String>>() {
             @Override
-            public Set<String> call() throws Exception {
+            public Set<String> call() {
                 return PackageInstallerCompat.getInstance(mTargetContext)
                         .updateAndGetActiveSessionCache().keySet();
             }

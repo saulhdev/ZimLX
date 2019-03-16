@@ -20,7 +20,7 @@ public class RestoreDbTaskTest extends AndroidTestCase {
         assertEquals(23, new RestoreDbTask().getDefaultProfileId(db));
     }
 
-    public void testMigrateProfileId() throws Exception {
+    public void testMigrateProfileId() {
         SQLiteDatabase db = new MyDatabaseHelper(42).getWritableDatabase();
         // Add some dummy data
         for (int i = 0; i < 5; i++) {

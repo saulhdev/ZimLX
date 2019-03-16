@@ -39,7 +39,7 @@ public class AllAppsAppLaunchTest extends AbstractLauncherUiTest {
         performTest();
     }
 
-    private void performTest() throws Exception {
+    private void performTest() {
         mActivityMonitor.startLauncher();
 
         LauncherActivityInfo settingsApp = getSettingsApp();

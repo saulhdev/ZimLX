@@ -27,13 +27,13 @@ import android.view.KeyEvent;
 public final class FocusLogicTest extends AndroidTestCase {
 
     @Override
-    protected void setUp() throws Exception {
+    protected void setUp() {
         super.setUp();
         // Nothing to set up as this class only tests static methods.
     }
 
     @Override
-    protected void tearDown() throws Exception {
+    protected void tearDown() {
         // Nothing to tear down as this class only tests static methods.
     }
 

@@ -589,11 +589,11 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         }
                     });
                 }
-                return Pair.create((ItemInfo) si, (Object) activityInfo);
+                return Pair.create(si, activityInfo);
             } else if (shortcutInfo != null) {
                 ShortcutInfo si = new ShortcutInfo(shortcutInfo, mContext);
                 si.iconBitmap = LauncherIcons.createShortcutIcon(shortcutInfo, mContext);
-                return Pair.create((ItemInfo) si, (Object) shortcutInfo);
+                return Pair.create(si, shortcutInfo);
             } else if (providerInfo != null) {
                 LauncherAppWidgetProviderInfo info = LauncherAppWidgetProviderInfo
                         .fromProviderInfo(mContext, providerInfo);
@@ -605,10 +605,10 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 widgetInfo.minSpanY = info.minSpanY;
                 widgetInfo.spanX = Math.min(info.spanX, idp.numColumns);
                 widgetInfo.spanY = Math.min(info.spanY, idp.numRows);
-                return Pair.create((ItemInfo) widgetInfo, (Object) providerInfo);
+                return Pair.create(widgetInfo, providerInfo);
             } else {
                 ShortcutInfo si = createShortcutInfo(data, LauncherAppState.getInstance(mContext));
-                return Pair.create((ItemInfo) si, null);
+                return Pair.create(si, null);
             }
         }
 

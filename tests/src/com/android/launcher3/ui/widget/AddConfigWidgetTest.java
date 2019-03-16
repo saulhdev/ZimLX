@@ -130,7 +130,7 @@ public class AddConfigWidgetTest extends AbstractLauncherUiTest {
             // Verify that the widget id is deleted.
             assertTrue(Wait.atMost(new Condition() {
                 @Override
-                public boolean isTrue() throws Throwable {
+                public boolean isTrue() {
                     return mAppWidgetManager.getAppWidgetInfo(mWidgetId) == null;
                 }
             }, DEFAULT_ACTIVITY_TIMEOUT));

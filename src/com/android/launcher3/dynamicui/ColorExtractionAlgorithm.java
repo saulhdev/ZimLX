@@ -777,10 +777,7 @@ public class ColorExtractionAlgorithm {
                 return false;
             } else if (!mSaturation.contains(s)) {
                 return false;
-            } else if (!mLightness.contains(l)) {
-                return false;
-            }
-            return true;
+            } else return mLightness.contains(l);
         }
 
         float[] getCenter() {

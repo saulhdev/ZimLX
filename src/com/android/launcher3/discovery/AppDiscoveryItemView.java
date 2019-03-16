@@ -57,12 +57,12 @@ public class AppDiscoveryItemView extends RelativeLayout {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        this.mImage = (ImageView) findViewById(R.id.image);
-        this.mTitle = (TextView) findViewById(R.id.title);
-        this.mRatingText = (TextView) findViewById(R.id.rating);
-        this.mRatingView = (RatingView) findViewById(R.id.rating_view);
-        this.mPrice = (TextView) findViewById(R.id.price);
-        this.mReviewCount = (TextView) findViewById(R.id.review_count);
+        this.mImage = findViewById(R.id.image);
+        this.mTitle = findViewById(R.id.title);
+        this.mRatingText = findViewById(R.id.rating);
+        this.mRatingView = findViewById(R.id.rating_view);
+        this.mPrice = findViewById(R.id.price);
+        this.mReviewCount = findViewById(R.id.review_count);
     }
 
     public void init(OnClickListener clickListener,

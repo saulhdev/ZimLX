@@ -30,7 +30,7 @@ public class WidgetsRowViewHolder extends ViewHolder {
     public WidgetsRowViewHolder(ViewGroup v) {
         super(v);
 
-        cellContainer = (ViewGroup) v.findViewById(R.id.widgets_cell_list);
-        title = (BubbleTextView) v.findViewById(R.id.section);
+        cellContainer = v.findViewById(R.id.widgets_cell_list);
+        title = v.findViewById(R.id.section);
     }
 }

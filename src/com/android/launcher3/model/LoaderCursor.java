@@ -424,7 +424,7 @@ public class LoaderCursor extends CursorWrapper {
                 return true;
             }
         } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            if (!workspaceScreens.contains((Long) item.screenId)) {
+            if (!workspaceScreens.contains(item.screenId)) {
                 // The item has an invalid screen id.
                 return false;
             }

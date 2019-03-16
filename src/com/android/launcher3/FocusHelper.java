@@ -92,7 +92,7 @@ public class FocusHelper {
         }
 
         // Initialize the variables.
-        final Workspace workspace = (Workspace) v.getRootView().findViewById(R.id.workspace);
+        final Workspace workspace = v.getRootView().findViewById(R.id.workspace);
         final ShortcutAndWidgetContainer hotseatParent = (ShortcutAndWidgetContainer) v.getParent();
         final CellLayout hotseatLayout = (CellLayout) hotseatParent.getParent();
 
@@ -224,8 +224,8 @@ public class FocusHelper {
         CellLayout iconLayout = (CellLayout) parent.getParent();
         final Workspace workspace = (Workspace) iconLayout.getParent();
         final ViewGroup dragLayer = (ViewGroup) workspace.getParent();
-        final ViewGroup tabs = (ViewGroup) dragLayer.findViewById(R.id.drop_target_bar);
-        final Hotseat hotseat = (Hotseat) dragLayer.findViewById(R.id.hotseat);
+        final ViewGroup tabs = dragLayer.findViewById(R.id.drop_target_bar);
+        final Hotseat hotseat = dragLayer.findViewById(R.id.hotseat);
 
         final ItemInfo itemInfo = (ItemInfo) v.getTag();
         final int iconIndex = parent.indexOfChild(v);

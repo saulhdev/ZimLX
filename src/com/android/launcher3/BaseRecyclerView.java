@@ -21,7 +21,6 @@ import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
@@ -63,7 +62,7 @@ public abstract class BaseRecyclerView extends RecyclerView
         super.onAttachedToWindow();
         ViewGroup parent = (ViewGroup) getParent();
         mScrollbar = parent.findViewById(R.id.fast_scroller);
-        mScrollbar.setRecyclerView(this, (TextView) parent.findViewById(R.id.fast_scroller_popup));
+        mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
     }
 
     /**

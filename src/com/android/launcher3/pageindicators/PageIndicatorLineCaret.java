@@ -132,7 +132,7 @@ public class PageIndicatorLineCaret extends PageIndicator {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mAllAppsHandle = (ImageView) findViewById(R.id.all_apps_handle);
+        mAllAppsHandle = findViewById(R.id.all_apps_handle);
         mAllAppsHandle.setImageDrawable(getCaretDrawable());
         mAllAppsHandle.setOnClickListener(mLauncher);
         mAllAppsHandle.setOnFocusChangeListener(mLauncher.mFocusHandler);

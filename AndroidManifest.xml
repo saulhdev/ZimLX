@@ -185,7 +185,6 @@
 
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
                 <data android:mimeType="application/vnd.zim.backup" />
                 <data android:mimeType="application/octet-stream" />
                 <data android:mimeType="application/x-zip-compressed" />

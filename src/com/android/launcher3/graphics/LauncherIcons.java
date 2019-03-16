@@ -308,7 +308,7 @@ public class LauncherIcons {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) iconWrapper.getForeground());
                 fsd.setDrawable(drawable);
                 fsd.setScale(scale);
-                return (Drawable) iconWrapper;
+                return iconWrapper;
             }
         } catch (Exception e) {
             return drawable;

@@ -128,8 +128,8 @@ public class WidgetsBottomSheet extends AbstractFloatingView implements Insettab
         List<WidgetItem> widgets = mLauncher.getWidgetsForPackageUser(new PackageUserKey(
                 mOriginalItemInfo.getTargetComponent().getPackageName(), mOriginalItemInfo.user));
 
-        ViewGroup widgetRow = (ViewGroup) findViewById(R.id.widgets);
-        ViewGroup widgetCells = (ViewGroup) widgetRow.findViewById(R.id.widgets_cell_list);
+        ViewGroup widgetRow = findViewById(R.id.widgets);
+        ViewGroup widgetCells = widgetRow.findViewById(R.id.widgets_cell_list);
 
         widgetCells.removeAllViews();
 

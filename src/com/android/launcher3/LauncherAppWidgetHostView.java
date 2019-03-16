@@ -146,10 +146,7 @@ public class LauncherAppWidgetHostView extends AppWidgetHostView
 
     public boolean isReinflateRequired(int orientation) {
         // Re-inflate is required if the orientation has changed since last inflated.
-        if (mPreviousOrientation != orientation) {
-            return true;
-        }
-        return false;
+        return mPreviousOrientation != orientation;
     }
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {

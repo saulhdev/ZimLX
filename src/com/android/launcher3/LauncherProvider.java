@@ -81,7 +81,7 @@ public class LauncherProvider extends ContentProvider {
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
     public static final int SCHEMA_VERSION = 29;
-    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings").intern();
+    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings");
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
     private static final String TAG = "LauncherProvider";
     private static final boolean LOGD = false;
@@ -670,7 +670,7 @@ public class LauncherProvider extends ContentProvider {
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
 
             // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.<UserHandle>emptyList(),
+            ManagedProfileHeuristic.processAllUsers(Collections.emptyList(),
                     mContext);
         }
 

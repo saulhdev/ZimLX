@@ -964,9 +964,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                         lp.isLockedToGrid = true;
                         child.requestLayout();
                     }
-                    if (mReorderAnimators.containsKey(lp)) {
-                        mReorderAnimators.remove(lp);
-                    }
+                    mReorderAnimators.remove(lp);
                 }
 
                 public void onAnimationCancel(Animator animation) {

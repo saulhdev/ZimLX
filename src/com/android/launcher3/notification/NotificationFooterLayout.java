@@ -91,7 +91,7 @@ public class NotificationFooterLayout extends FrameLayout {
     protected void onFinishInflate() {
         super.onFinishInflate();
         mOverflowEllipsis = findViewById(R.id.overflow);
-        mIconRow = (LinearLayout) findViewById(R.id.icon_row);
+        mIconRow = findViewById(R.id.icon_row);
         mBackgroundColor = ((ColorDrawable) getBackground()).getColor();
     }
 
@@ -187,7 +187,7 @@ public class NotificationFooterLayout extends FrameLayout {
 
     private void removeViewFromIconRow(View child) {
         mIconRow.removeView(child);
-        mNotifications.remove((NotificationInfo) child.getTag());
+        mNotifications.remove(child.getTag());
         updateOverflowEllipsisVisibility();
         if (mIconRow.getChildCount() == 0) {
             // There are no more icons in the footer, so hide it.

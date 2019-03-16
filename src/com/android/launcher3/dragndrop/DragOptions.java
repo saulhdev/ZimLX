@@ -52,7 +52,7 @@ public class DragOptions {
      */
     public interface PreDragCondition {
 
-        public boolean shouldStartDrag(double distanceDragged);
+        boolean shouldStartDrag(double distanceDragged);
 
         /**
          * The pre-drag has started, but onDragStart() is

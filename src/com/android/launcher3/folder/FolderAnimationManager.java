@@ -99,11 +99,11 @@ public class FolderAnimationManager {
         mDelay = mContext.getResources().getInteger(R.integer.config_folderDelay);
 
         mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.folder_interpolator);
+                R.anim.folder_interpolator);
         mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_open_interpolator);
+                R.anim.large_folder_preview_item_open_interpolator);
         mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_close_interpolator);
+                R.anim.large_folder_preview_item_close_interpolator);
     }
 
 

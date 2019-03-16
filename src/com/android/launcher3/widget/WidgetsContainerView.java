@@ -97,7 +97,7 @@ public class WidgetsContainerView extends BaseContainerView
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mRecyclerView = (WidgetsRecyclerView) getContentView().findViewById(R.id.widgets_list_view);
+        mRecyclerView = getContentView().findViewById(R.id.widgets_list_view);
         mRecyclerView.setAdapter(mAdapter);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
     }
@@ -176,7 +176,7 @@ public class WidgetsContainerView extends BaseContainerView
 
     private boolean beginDraggingWidget(WidgetCell v) {
         // Get the widget preview as the drag representation
-        WidgetImageView image = (WidgetImageView) v.findViewById(R.id.widget_preview);
+        WidgetImageView image = v.findViewById(R.id.widget_preview);
 
         // If the ImageView doesn't have a drawable yet, the widget preview hasn't been loaded and
         // we abort the drag.

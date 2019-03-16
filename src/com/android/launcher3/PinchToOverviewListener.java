@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.animation.TimeInterpolator;
-import android.content.Context;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 
@@ -58,7 +57,7 @@ public class PinchToOverviewListener extends ScaleGestureDetector.SimpleOnScaleG
 
     public PinchToOverviewListener(Launcher launcher) {
         mLauncher = launcher;
-        mPinchDetector = new ScaleGestureDetector((Context) mLauncher, this);
+        mPinchDetector = new ScaleGestureDetector(mLauncher, this);
     }
 
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {

@@ -187,9 +187,7 @@ public class DragLayer extends InsettableFrameLayout {
             } else if (!isEventOverView(topView, ev)) {
                 if (isInAccessibleDrag()) {
                     // Do not close the container if in drag and drop.
-                    if (!isEventOverDropTargetBar(ev)) {
-                        return true;
-                    }
+                    return !isEventOverDropTargetBar(ev);
                 } else {
                     mLauncher.getUserEventDispatcher().logActionTapOutside(
                             LoggerUtils.newContainerTarget(topView.getLogContainerType()));
@@ -871,7 +869,7 @@ public class DragLayer extends InsettableFrameLayout {
     }
 
     public interface TouchCompleteListener {
-        public void onTouchComplete();
+        void onTouchComplete();
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {

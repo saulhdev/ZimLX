@@ -214,7 +214,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
 
     public void initParentViews(View parent) {
         if (mPageIndicatorViewId > -1) {
-            mPageIndicator = (PageIndicator) parent.findViewById(mPageIndicatorViewId);
+            mPageIndicator = parent.findViewById(mPageIndicatorViewId);
             mPageIndicator.setMarkersCount(getChildCount());
             mPageIndicator.setContentDescription(getPageIndicatorDescription());
         }
@@ -1355,7 +1355,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
             int minIndex = indexOfChild(mDragView);
             for (int i = mTempVisiblePagesRange[0]; i <= mTempVisiblePagesRange[1]; i++) {
                 View page = getPageAt(i);
-                int pageX = (int) (page.getLeft() + page.getMeasuredWidth() / 2);
+                int pageX = (page.getLeft() + page.getMeasuredWidth() / 2);
                 int d = Math.abs(dragX - pageX);
                 if (d < minDistance) {
                     minIndex = i;
@@ -1743,7 +1743,7 @@ public abstract class PagedView extends ViewGroup implements ViewGroup.OnHierarc
         int minDistanceFromScreenCenterIndex = -1;
         final int childCount = getChildCount();
         for (int i = 0; i < childCount; ++i) {
-            View layout = (View) getPageAt(i);
+            View layout = getPageAt(i);
             int childWidth = layout.getMeasuredWidth();
             int halfChildWidth = (childWidth / 2);
             int childCenter = getViewportOffsetX() + getChildOffset(i) + halfChildWidth;

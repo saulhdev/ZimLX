@@ -77,7 +77,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         try {
             return new MainThreadExecutor().submit(new Callable<FolderAdaptiveIcon>() {
                 @Override
-                public FolderAdaptiveIcon call() throws Exception {
+                public FolderAdaptiveIcon call() {
                     FolderIcon icon = launcher.findFolderIcon(folderId);
                     return icon == null ? null : createDrawableOnUiThread(icon, badge, preview);
                 }

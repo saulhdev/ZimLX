@@ -75,7 +75,7 @@ public class LooperExecutor extends AbstractExecutorService {
      */
     @Override
     @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
+    public boolean awaitTermination(long l, TimeUnit timeUnit) {
         throw new UnsupportedOperationException();
     }
 }

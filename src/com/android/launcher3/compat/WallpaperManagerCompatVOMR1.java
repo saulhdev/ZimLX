@@ -36,7 +36,7 @@ public class WallpaperManagerCompatVOMR1 extends WallpaperManagerCompat {
     private final WallpaperManager mWm;
     private Method mWCColorHintsMethod;
 
-    WallpaperManagerCompatVOMR1(Context context) throws Throwable {
+    WallpaperManagerCompatVOMR1(Context context) {
         mWm = context.getSystemService(WallpaperManager.class);
         String className = WallpaperColors.class.getName();
         try {

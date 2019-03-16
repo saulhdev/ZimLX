@@ -140,7 +140,7 @@ public class DbDowngradeHelperTest {
         helper.getReadableDatabase().getVersion();
     }
 
-    private void setupTestDb() throws Exception {
+    private void setupTestDb() {
         mSchemaFile.delete();
         mDbFile.delete();
 

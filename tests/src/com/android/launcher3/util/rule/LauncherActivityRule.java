@@ -58,7 +58,7 @@ public class LauncherActivityRule implements TestRule {
         return new Callable<Boolean>() {
 
             @Override
-            public Boolean call() throws Exception {
+            public Boolean call() {
                 Launcher launcher = getActivity();
                 if (launcher == null) {
                     return false;
@@ -89,7 +89,7 @@ public class LauncherActivityRule implements TestRule {
         }
 
         @Override
-        public void evaluate() throws Throwable {
+        public void evaluate() {
             Application app = (Application)
                     InstrumentationRegistry.getTargetContext().getApplicationContext();
             app.registerActivityLifecycleCallbacks(this);

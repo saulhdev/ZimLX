@@ -282,7 +282,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         }
                     }
 
-                    mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
+                    mIconPackPref = findPreference(ICON_PACK_PREF);
                     mIconPackPref.setOnPreferenceChangeListener(this);
                     break;
 
