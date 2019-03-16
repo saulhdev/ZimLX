@@ -25,6 +25,7 @@
             android:entries="@array/entries__folder_shape"
             android:entryValues="@array/values__zero_to_three"
             android:key="pref_key__folder_shape"
+            android:summary="%s"
             android:title="@string/title__behav_folder_shape" />
         <SwitchPreference
             android:defaultValue="true"

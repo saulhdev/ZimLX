@@ -74,7 +74,6 @@ public class DeviceProfile {
     private final int overviewModeBarItemWidthPx;
     private final int overviewModeBarSpacerWidthPx;
     private final float overviewModeIconZoneRatio;
-    private final int pageIndicatorHeightPx;
 
     // Workspace
     private final int desiredWorkspaceLeftRightMarginPx;
@@ -113,6 +112,7 @@ public class DeviceProfile {
     // Hotseat
     public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
+    private int hotseatLandGutterPx;
 
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
@@ -139,7 +139,11 @@ public class DeviceProfile {
     private Context mContext;
     // Page indicator
     private int pageIndicatorSizePx;
+    private final int pageIndicatorHeightPx;
     private int hotseatBarHeightPx;
+    private final int pageIndicatorLandGutterLeftNavBarPx;
+    private final int pageIndicatorLandGutterRightNavBarPx;
+
     // Insets
     private Rect mInsets = new Rect();
     // Listeners
@@ -211,7 +215,9 @@ public class DeviceProfile {
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
-        hotseatBarTopPaddingPx = getHotseatTopPadding(res);
+        hotseatBarTopPaddingPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
+        hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
         hotseatBarBottomPaddingPx = getHotseatBottomPadding(res);
         hotseatBarLeftNavBarRightPaddingPx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_hotseat_land_left_nav_bar_right_padding);
@@ -263,14 +269,14 @@ public class DeviceProfile {
 
         if (Utilities.getZimPrefs(mContext).getHotseatShowArrow()) {
             pageIndicatorHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
-            //pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
-            //        R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
-            //pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
-            //        R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
+            pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
+            pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
+                    R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
         } else {
             pageIndicatorHeightPx = 0;
-            //pageIndicatorLandGutterLeftNavBarPx = 0;
-            //pageIndicatorLandGutterRightNavBarPx = 0;
+            pageIndicatorLandGutterLeftNavBarPx = 0;
+            pageIndicatorLandGutterRightNavBarPx = 0;
         }
 
         computeAllAppsButtonSize(context);
@@ -458,7 +464,7 @@ public class DeviceProfile {
 
         if (!isVerticalBarLayout()) {
             int expectedWorkspaceHeight = availableHeightPx - getHotseatHeight()
-                    - pageIndicatorSizePx - topWorkspacePadding;
+                    - pageIndicatorHeightPx - topWorkspacePadding;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -601,18 +607,11 @@ public class DeviceProfile {
         Rect padding = recycle == null ? new Rect() : recycle;
         if (isVerticalBarLayout()) {
             if (mInsets.left > 0) {
-                padding.set(mInsets.left + pageIndicatorLandLeftNavBarGutterPx,
-                        0,
-                        getHotseatHeight() + hotseatBarLeftNavBarRightPaddingPx
-                                + hotseatBarLeftNavBarLeftPaddingPx
-                                - mInsets.left,
-                        edgeMarginPx);
+                padding.set(mInsets.left + pageIndicatorLandGutterLeftNavBarPx, 0,
+                        getHotseatHeight() + hotseatLandGutterPx - mInsets.left, 2 * edgeMarginPx);
             } else {
-                padding.set(pageIndicatorLandRightNavBarGutterPx,
-                        0,
-                        getHotseatHeight() + hotseatBarRightNavBarRightPaddingPx
-                                + hotseatBarRightNavBarLeftPaddingPx,
-                        edgeMarginPx);
+                padding.set(pageIndicatorLandGutterRightNavBarPx, 0,
+                        getHotseatHeight() + hotseatLandGutterPx, 2 * edgeMarginPx);
             }
         } else {
             int paddingBottom = (Utilities.getZimPrefs(mContext).getTransparentHotseat() && Utilities.getZimPrefs(mContext).getHideHotseat() ? 0 : getHotseatHeight()) + pageIndicatorHeightPx;
@@ -661,7 +660,7 @@ public class DeviceProfile {
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.left + availableWidthPx,
                     mInsets.top + availableHeightPx - getHotseatHeight()
-                            - pageIndicatorSizePx - edgeMarginPx);
+                            - pageIndicatorHeightPx - edgeMarginPx);
         }
     }
 
@@ -793,16 +792,18 @@ public class DeviceProfile {
             lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
             if (isVerticalBarLayout()) {
                 if (mInsets.left > 0) {
-                    lp.leftMargin = mInsets.left;
+                    lp.leftMargin = mInsets.left + pageIndicatorLandGutterLeftNavBarPx -
+                            lp.width - pageIndicatorLandWorkspaceOffsetPx;
                 } else {
-                    lp.leftMargin = pageIndicatorLandWorkspaceOffsetPx;
+                    lp.leftMargin = pageIndicatorLandGutterRightNavBarPx - lp.width -
+                            pageIndicatorLandWorkspaceOffsetPx;
                 }
                 lp.bottomMargin = workspacePadding.bottom;
             } else {
                 // Put the page indicators above the hotseat
                 lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.height = pageIndicatorSizePx;
-                lp.bottomMargin = hotseatBarSizePx + mInsets.bottom;
+                lp.height = pageIndicatorHeightPx;
+                lp.bottomMargin = mInsets.bottom + (hideHotseat ? 0 : getHotseatHeight());
             }
             pageIndicator.setLayoutParams(lp);
         }

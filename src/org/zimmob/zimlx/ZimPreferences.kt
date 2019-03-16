@@ -10,7 +10,6 @@ import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.settings.GridSize
-import org.zimmob.zimlx.util.Config.FOLDER_SHAPE_SQUARE
 import org.zimmob.zimlx.util.ZimFlags
 import java.io.File
 import java.util.*
@@ -72,6 +71,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
     val hideHotseat by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+    val hotseatShowPageIndicator by BooleanPref(ZimFlags.HOTSEAT_SHOW_PAGE_INDICATOR, true)
 
     fun numHotseatIcons(default: String): String {
         return sharedPrefs.getString("pref_title__num_hotseat_icons", default)
@@ -79,8 +79,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
-    val folderShape by IntPref("pref_key__folder_shape", FOLDER_SHAPE_SQUARE)
 
+    fun getFolderShape(): Int {
+        val folderShape: String = sharedPrefs.getString(ZimFlags.THEME_FOLDER_SHAPE, "0")
+        return folderShape.toInt();
+    }
     // Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
