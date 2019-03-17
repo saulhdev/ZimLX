@@ -1,4 +1,4 @@
-# ZimLX -- [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX) - [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/saulhenriquez) - ![Latest Release](https://img.shields.io/github/release/USER/REPO.svg?logo=github)
+# ZimLX -- [![Build Status](https://travis-ci.org/otakuhqz/ZimLX.svg?branch=master)](https://travis-ci.org/otakuhqz/ZimLX) - [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) - [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-brightgreen.svg)](https://paypal.me/saulhenriquez) - [![Latest Release](https://img.shields.io/github/release/USER/REPO.svg?logo=github)](https://github.com/otakuhqz/ZimLX/releases)
 
 Free and Open Source Launcher for Android.
 Our mission is to bring a powerful launcher with smart features to make your device easy to use.
