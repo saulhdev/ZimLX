@@ -12,6 +12,8 @@ cache:
   - $HOME/.android/build-cache
 
 env:
+  matrix:
+  - ANDROID_TARGET=android-24 ANDROID_ABI=armeabi-v7a
   global:
   - ANDROID_API=26
   - EMULATOR_API=25
@@ -26,7 +28,6 @@ android:
   - extra-android-support # because I'm use support library
   - extra-android-m2repository # because I'm use support library
   - sys-img-armeabi-v7a-android-24
-
 licenses:
 - android-sdk-preview-license-.+
 - android-sdk-license-.+
@@ -38,10 +39,11 @@ before_install:
 - yes | sdkmanager "platforms;android-28"
 
 before_script:
-- echo no | android create avd --force -n test -t android-24 --abi armeabi-v7a
-- emulator -avd test -no-skin -no-audio -no-window &
-- android-wait-for-emulator
-- adb shell input keyevent 82 &
+- chmod +x gradlew      #Grand permissions
+- android list targets
+- echo no | android create avd --force --name test --target $ANDROID_TARGET --abi $ANDROID_ABI    #Create AVD for given api
+- emulator -avd test -no-skin -no-audio -no-window &    #Start emulator
+
 script:
 - "./gradlew clean build connectedCheck -PdisablePreDex --stacktrace"
 
