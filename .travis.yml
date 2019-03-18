@@ -25,6 +25,8 @@ android:
   - android-$EMULATOR_API_LEVEL
   - extra-android-support # because I'm use support library
   - extra-android-m2repository # because I'm use support library
+  - sys-img-armeabi-v7a-android-24
+
 licenses:
 - android-sdk-preview-license-.+
 - android-sdk-license-.+
