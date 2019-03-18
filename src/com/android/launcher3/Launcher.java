@@ -1120,10 +1120,6 @@ public class Launcher extends BaseActivity
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
-        /*if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
-            Log.i(TAG, "Reloading apps to get them sorted");
-            Utilities.getZimPrefs(this).zReloadApps();
-        }*/
         if (mRestart) {
             Utilities.restartLauncher(this);
         }
@@ -2297,6 +2293,13 @@ public class Launcher extends BaseActivity
             onClickAllAppsButton(v);
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v);
+
+            if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
+                Utilities.getZimPrefs(this).updateSortApps();
+
+                Log.w(TAG, "clicking an app 1");
+            }
+
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v);
@@ -2353,8 +2356,7 @@ public class Launcher extends BaseActivity
     protected void onClickAllAppsButton(View v) {
         if (LOGD) Log.d(TAG, "onClickAllAppsButton");
         if (!isAppsViewVisible()) {
-            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP,
-                    ControlType.ALL_APPS_BUTTON);
+            getUserEventDispatcher().logActionOnControl(Action.Touch.TAP, ControlType.ALL_APPS_BUTTON);
             showAppsView(true /* animated */, true /* updatePredictedApps */);
         } else {
             showWorkspace(true);
@@ -2828,9 +2830,6 @@ public class Launcher extends BaseActivity
 
     public boolean isAppsViewVisible() {
         boolean visible = (mState == State.APPS) || (mOnResumeState == State.APPS);
-        if (!visible && Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
-            Utilities.getZimPrefs(this).zReloadApps();
-        }
         return visible;
     }
 
@@ -2938,10 +2937,6 @@ public class Launcher extends BaseActivity
      * Shows the apps view.
      */
     public void showAppsView(boolean animated, boolean updatePredictedApps) {
-        /*if (Utilities.getZimPrefs(this).getSortMode() == Config.SORT_MOST_USED) {
-            Log.i(TAG, "Reloading apps to get them sorted");
-            Utilities.getZimPrefs(this).zReloadApps();
-        }*/
         markAppsViewShown();
         if (updatePredictedApps) {
             tryAndUpdatePredictedApps();

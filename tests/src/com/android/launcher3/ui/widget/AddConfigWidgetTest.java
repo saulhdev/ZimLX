@@ -17,10 +17,6 @@ package com.android.launcher3.ui.widget;
 
 import android.appwidget.AppWidgetManager;
 import android.content.Intent;
-import android.support.test.filters.LargeTest;
-import android.support.test.runner.AndroidJUnit4;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.UiObject2;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
@@ -39,6 +35,11 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.filters.LargeTest;
+import androidx.test.runner.AndroidJUnit4;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.UiObject2;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;

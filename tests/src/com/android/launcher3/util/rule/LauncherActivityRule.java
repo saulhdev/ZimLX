@@ -20,7 +20,6 @@ import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.test.InstrumentationRegistry;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace.ItemOperator;
@@ -30,6 +29,8 @@ import org.junit.runner.Description;
 import org.junit.runners.model.Statement;
 
 import java.util.concurrent.Callable;
+
+import androidx.test.InstrumentationRegistry;
 
 /**
  * Test rule to get the current Launcher activity.
@@ -95,6 +96,8 @@ public class LauncherActivityRule implements TestRule {
             app.registerActivityLifecycleCallbacks(this);
             try {
                 mBase.evaluate();
+            } catch (Throwable throwable) {
+                throwable.printStackTrace();
             } finally {
                 app.unregisterActivityLifecycleCallbacks(this);
             }

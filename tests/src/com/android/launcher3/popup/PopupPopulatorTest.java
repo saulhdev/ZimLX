@@ -17,7 +17,6 @@
 package com.android.launcher3.popup;
 
 import android.content.pm.ShortcutInfo;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
@@ -27,6 +26,8 @@ import org.junit.runner.RunWith;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
 import static com.android.launcher3.popup.PopupPopulator.NUM_DYNAMIC;

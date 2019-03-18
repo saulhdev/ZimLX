@@ -1,8 +1,8 @@
 package com.android.launcher3.util;
 
-import android.test.suitebuilder.annotation.SmallTest;
-
 import junit.framework.TestCase;
+
+import androidx.test.filters.SmallTest;
 
 /**
  * Unit tests for {@link GridOccupancy}

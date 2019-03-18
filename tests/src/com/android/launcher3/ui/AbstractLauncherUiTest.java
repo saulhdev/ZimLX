@@ -24,14 +24,8 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.graphics.Point;
 import android.os.Process;
+import android.os.RemoteException;
 import android.os.SystemClock;
-import android.support.test.InstrumentationRegistry;
-import android.support.test.uiautomator.By;
-import android.support.test.uiautomator.BySelector;
-import android.support.test.uiautomator.Direction;
-import android.support.test.uiautomator.UiDevice;
-import android.support.test.uiautomator.UiObject2;
-import android.support.test.uiautomator.Until;
 import android.view.MotionEvent;
 
 import com.android.launcher3.LauncherAppState;
@@ -53,6 +47,14 @@ import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
+
+import androidx.test.InstrumentationRegistry;
+import androidx.test.uiautomator.By;
+import androidx.test.uiautomator.BySelector;
+import androidx.test.uiautomator.Direction;
+import androidx.test.uiautomator.UiDevice;
+import androidx.test.uiautomator.UiObject2;
+import androidx.test.uiautomator.Until;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -80,14 +82,18 @@ public abstract class AbstractLauncherUiTest {
         mTargetPackage = mTargetContext.getPackageName();
     }
 
-    protected void lockRotation(boolean naturalOrientation) {
+    protected void lockRotation(boolean naturalOrientation) throws RemoteException {
         Utilities.getPrefs(mTargetContext)
                 .edit()
                 .putBoolean(Utilities.ALLOW_ROTATION_PREFERENCE_KEY, !naturalOrientation)
                 .commit();
 
         if (naturalOrientation) {
-            mDevice.setOrientationNatural();
+            try {
+                mDevice.setOrientationNatural();
+            } catch (RemoteException e) {
+                e.printStackTrace();
+            }
         } else {
             mDevice.setOrientationRight();
         }

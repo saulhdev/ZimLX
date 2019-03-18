@@ -19,7 +19,7 @@ public class CustomAppFilter extends org.zimmob.zimlx.ZimAppFilter {
     }
 
     static void resetAppFilter(Context context) {
-        Utilities.getZimPrefs(context).setHiddenAppSet(new HashSet<String>());
+        Utilities.getZimPrefs(context).setHiddenAppSet(new HashSet<>());
     }
 
     static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {

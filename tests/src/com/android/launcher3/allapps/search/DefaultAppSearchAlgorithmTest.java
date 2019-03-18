@@ -16,13 +16,14 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.ComponentName;
-import android.support.test.runner.AndroidJUnit4;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Utilities;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import androidx.test.runner.AndroidJUnit4;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;

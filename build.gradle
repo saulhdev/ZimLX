@@ -101,15 +101,6 @@ android {
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
-        //l3go {
-        //    dimension "default"
-        //    applicationId "com.android.launcher3"
-        //}
-        //quickstep {
-        //    dimension "default"
-        //    applicationId "com.android.launcher3"
-        //    testApplicationId "com.android.launcher3.tests"
-        //}
 
     }
     lintOptions {
@@ -141,14 +132,6 @@ android {
             java.srcDirs = ['src_flags']
             manifest.srcFile "AndroidManifest.xml"
         }
-
-        //l3go {
-        //    res.srcDirs = ['go/res']
-        //    java.srcDirs = ['go/src_flags']
-            // Note: we are using the Launcher3 manifest here because the gradle manifest-merger uses
-            // different attributes than the build system.
-        //    manifest.srcFile "AndroidManifest.xml"
-        //}
     }
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
@@ -179,7 +162,7 @@ dependencies {
     implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.preference:preference:1.1.0-alpha03"
+    implementation "androidx.preference:preference:1.1.0-alpha04"
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
     implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
@@ -208,6 +191,11 @@ dependencies {
             annotationProcessor anpro
         }
     }
+    androidTestImplementation 'org.mockito:mockito-core:2.7.22'
+    androidTestImplementation 'androidx.test:core:1.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.1'
+    androidTestImplementation 'androidx.test:rules:1.1.1'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
 }
 
 protobuf {

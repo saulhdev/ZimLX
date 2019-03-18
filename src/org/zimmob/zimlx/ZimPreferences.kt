@@ -122,8 +122,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun unflattenValue(value: String) = Uri.parse(value)
     }
 
-    fun zReloadApps() {
-        reloadApps()
+    fun updateSortApps() {
+        onChangeCallback?.reloadApps()
     }
 
     private fun recreate() {
