@@ -79,8 +79,6 @@ public class DeviceProfile {
     private final int desiredWorkspaceLeftRightMarginPx;
     private final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
-    private final int pageIndicatorLandLeftNavBarGutterPx;
-    private final int pageIndicatorLandRightNavBarGutterPx;
     private final int pageIndicatorLandWorkspaceOffsetPx;
     private final int mBottomMarginHw;
     public float workspaceSpringLoadShrinkFactor;
@@ -187,10 +185,6 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
         pageIndicatorSizePx = res.getDimensionPixelSize(
                 R.dimen.dynamic_grid_min_page_indicator_size);
-        pageIndicatorLandLeftNavBarGutterPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_land_left_nav_bar_gutter_width);
-        pageIndicatorLandRightNavBarGutterPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_page_indicator_land_right_nav_bar_gutter_width);
         pageIndicatorLandWorkspaceOffsetPx =
                 res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
         defaultPageSpacingPx =
@@ -393,7 +387,6 @@ public class DeviceProfile {
     }
 
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        ZimPreferences pref = new ZimPreferences(mContext);
         float workspaceScale = 1f;
         float allAppsScale = 1f;
         int workspaceDrawablePadding = iconDrawablePaddingOriginalPx;
@@ -404,9 +397,9 @@ public class DeviceProfile {
         // Check to see if the icons fit within the available height.  If not, then scale down.
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
-        if (usedHeight > maxHeight) {
-            workspaceScale = maxHeight / usedHeight;
-        }
+        //if (usedHeight > maxHeight) {
+        //    workspaceScale = maxHeight / usedHeight;
+        //}
         updateAvailableFolderCellDimensions(dm, res);
     }
 

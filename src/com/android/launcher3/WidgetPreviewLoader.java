@@ -71,14 +71,12 @@ public class WidgetPreviewLoader {
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
-    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
 
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
-        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());

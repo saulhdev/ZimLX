@@ -8,9 +8,6 @@ import java.util.Locale;
 
 public class IconProvider {
 
-    private static final boolean DBG = false;
-    private static final String TAG = "IconProvider";
-
     protected String mSystemState;
 
     public IconProvider() {

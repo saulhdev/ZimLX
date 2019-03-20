@@ -51,10 +51,6 @@ public class AllAppsPagedView extends PagedView implements DragSource,
 
     }
 
-    private void updatePageCounts() {
-        mNumAppsPages = (int) Math.ceil((float) mApps.getApps().size() / (mNumAppsRows * mNumAppsColums));
-    }
-
 
     @Override
     public void onDropCompleted(View target, DropTarget.DragObject d, boolean isFlingToDelete,

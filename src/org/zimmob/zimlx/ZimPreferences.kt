@@ -19,6 +19,10 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.reflect.KProperty
 
+/*
+* Class to handle all the preferences within the application
+*
+* */
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
@@ -59,7 +63,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f)
+    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
 
     // Dock

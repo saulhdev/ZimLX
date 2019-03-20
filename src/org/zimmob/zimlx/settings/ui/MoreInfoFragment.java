@@ -102,7 +102,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                 case R.string.pref_key__more_info__open_source_licenses: {
                     try {
                         au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
-                                getResources().openRawResource(R.raw.licenses_3rd_party),
+                                getResources().openRawResource(R.raw.opensource),
                                 "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
                     } catch (IOException e) {
                         e.printStackTrace();
@@ -174,7 +174,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
         // Extract project team from raw resource, where 1 person = 4 lines
         // 1) Name/Title, 2) Description/Summary, 3) Link/View-Intent, 4) Empty line
         if ((pref = findPreference(R.string.pref_key__more_info__project_team)) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
-            String[] data = (_cu.readTextfileFromRawRes(R.raw.project_team, "", "").trim() + "\n\n").split("\n");
+            String[] data = (_cu.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
             for (int i = 0; i + 2 < data.length; i += 4) {
                 Preference person = new Preference(context);
                 person.setTitle(data[i]);

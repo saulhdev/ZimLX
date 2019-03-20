@@ -1,6 +1,6 @@
 pipeline:
   changelog:
-    image: Zimlauncher/drone-changelog:dev
+    image: ZimLauncher/drone-changelog:dev
     output: changelog.txt
     volumes:
       - /opt/drone/cache:/cache
@@ -39,5 +39,4 @@ pipeline:
         {{/success}}
 
 branches:
-  include: alpha
-  exclude: [ l10n_alpha2, v2-alpha ]
+  include: master
