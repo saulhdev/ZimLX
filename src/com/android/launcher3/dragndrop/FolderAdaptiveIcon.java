@@ -38,8 +38,6 @@ import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.util.Preconditions;
 
-import java.util.concurrent.Callable;
-
 /**
  * {@link AdaptiveIconDrawable} representation of a {@link FolderIcon}
  */
@@ -75,15 +73,11 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
         try {
-            return new MainThreadExecutor().submit(new Callable<FolderAdaptiveIcon>() {
-                @Override
-                public FolderAdaptiveIcon call() {
-                    FolderIcon icon = launcher.findFolderIcon(folderId);
-                    return icon == null ? null : createDrawableOnUiThread(icon, badge, preview);
-                }
+            return new MainThreadExecutor().submit(() -> {
+                FolderIcon icon = launcher.findFolderIcon(folderId);
+                return icon == null ? null : createDrawableOnUiThread(icon, badge, preview);
             }).get();
         } catch (Exception e) {
-            Log.e(TAG, "Unable to create folder icon", e);
             return null;
         }
     }
@@ -118,13 +112,18 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
 
         // Initialize mask
         Path mask = new Path();
+
         Matrix m = new Matrix();
         m.setTranslate(margin, margin);
+
         bg.getClipPath().transform(m, mask);
 
         ShiftedBitmapDrawable badge = new ShiftedBitmapDrawable(badgeBitmap, margin, margin);
         ShiftedBitmapDrawable foreground = new ShiftedBitmapDrawable(previewBitmap,
                 margin - previewShiftX, margin - previewShiftY);
+
+        Log.e(TAG, mask.toString());
+
 
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
     }

@@ -227,7 +227,7 @@ public class IconShapeOverride {
         private String savedMask;
         private int maskSize = 0;
         private boolean useRoundIcon;
-        String xmlAttrName = (useRoundIcon) ? "roundIcon" : "icon";
+        //String xmlAttrName = (useRoundIcon) ? "roundIcon" : "icon";
 
         public ShapeInfo(String mask, String saveMask, int size, boolean usePixelIcons) {
             this.maskPath = mask;
@@ -240,16 +240,8 @@ public class IconShapeOverride {
             return maskPath;
         }
 
-        public String getSavedMask() {
-            return savedMask;
-        }
-
         public int getSize() {
             return maskSize;
-        }
-
-        public boolean useRoundIcon() {
-            return useRoundIcon;
         }
     }
 

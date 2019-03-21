@@ -1,7 +1,7 @@
 ## The MIT License (MIT)
 * **CircularReveal**
 ~° Copyright (c) Abdullaev Ozodrukh  
-~° https://github.com/ozodrukh/CircularReveal<br/>
+~° ![https://github.com/ozodrukh/CircularReveal](https://github.com/ozodrukh/CircularReveal)<br/>
 
 * **Material Dialogs**
 ~° Copyright (c) Aidan Follestad  

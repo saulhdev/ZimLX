@@ -187,7 +187,10 @@ public class PreviewBackground {
         }
     }
 
-    @SuppressWarnings("Duplicates")
+    public Path getPath() {
+        return mPath;
+    }
+
     private String getMaskPath() {
         String mask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
         MASK_SIZE = 100f;
@@ -415,14 +418,11 @@ public class PreviewBackground {
 
         mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
-        mScaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float prog = animation.getAnimatedFraction();
-                mScale = prog * scale1 + (1 - prog) * scale0;
-                mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
-                invalidate();
-            }
+        mScaleAnimator.addUpdateListener(animation -> {
+            float prog = animation.getAnimatedFraction();
+            mScale = prog * scale1 + (1 - prog) * scale0;
+            mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
+            invalidate();
         });
         mScaleAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -446,12 +446,7 @@ public class PreviewBackground {
     }
 
     public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
+        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
         animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
     }
 
@@ -470,9 +465,5 @@ public class PreviewBackground {
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-    }
-
-    public float getStrokeWidth() {
-        return mStrokeWidth;
     }
 }
