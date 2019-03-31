@@ -47,7 +47,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.Nullable;
@@ -434,8 +433,11 @@ public class WidgetPreviewLoader {
         }
         RectF boxRect = drawBoxWithShadow(c, size, size);
 
-        Bitmap icon = LauncherIcons.createScaledBitmapWithoutShadow(
-                mutateOnMainThread(info.getFullResIcon(mIconCache)), mContext, 0);
+        LauncherIcons li = LauncherIcons.obtain(mContext);
+        Bitmap icon = li.createScaledBitmapWithoutShadow(
+                mutateOnMainThread(info.getFullResIcon(mIconCache)), 0);
+        li.recycle();
+
         Rect src = new Rect(0, 0, icon.getWidth(), icon.getHeight());
 
         boxRect.set(0, 0, iconSize, iconSize);
@@ -448,12 +450,7 @@ public class WidgetPreviewLoader {
 
     private Drawable mutateOnMainThread(final Drawable drawable) {
         try {
-            return mMainThreadExecutor.submit(new Callable<Drawable>() {
-                @Override
-                public Drawable call() {
-                    return drawable.mutate();
-                }
-            }).get();
+            return mMainThreadExecutor.submit(() -> drawable.mutate()).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);

@@ -32,6 +32,7 @@ import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.util.SparseArray;
 
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
@@ -78,6 +79,7 @@ public class FastBitmapDrawable extends Drawable {
     };
     protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
     private final Bitmap mBitmap;
+    protected final int mIconColor;
     private boolean mIsPressed;
     private boolean mIsDisabled;
     private IconPalette mIconPalette;
@@ -92,7 +94,20 @@ public class FastBitmapDrawable extends Drawable {
     private ObjectAnimator mBrightnessAnimator;
 
     public FastBitmapDrawable(Bitmap b) {
+        this(b, Color.TRANSPARENT);
+    }
+
+    public FastBitmapDrawable(BitmapInfo info) {
+        this(info.icon, info.color);
+    }
+
+    public FastBitmapDrawable(ItemInfoWithIcon info) {
+        this(info.iconBitmap, info.iconColor);
+    }
+
+    protected FastBitmapDrawable(Bitmap b, int iconColor) {
         mBitmap = b;
+        mIconColor = iconColor;
         setFilterBitmap(true);
     }
 

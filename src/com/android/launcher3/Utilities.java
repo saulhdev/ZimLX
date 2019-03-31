@@ -37,12 +37,13 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
+import android.os.Handler;
+import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
 import android.os.UserHandle;
@@ -61,12 +62,9 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconNormalizer;
-import com.android.launcher3.graphics.ShadowGenerator;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
-import org.zimmob.zimlx.pixelify.AdaptiveIconDrawableCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -83,14 +81,13 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.android.launcher3.graphics.LauncherIcons.badgeIconForUser;
-import static com.android.launcher3.graphics.LauncherIcons.createIconBitmap;
-
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
 
+    public static final boolean ATLEAST_P =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
     public static final boolean ATLEAST_OREO_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
     public static final boolean ATLEAST_OREO =
@@ -560,6 +557,15 @@ public final class Utilities {
         return powerManager.isPowerSaveMode();
     }
 
+    public static boolean isPowerSaverPreventingAnimation(Context context) {
+        if (ATLEAST_P) {
+            // Battery saver mode no longer prevents animations.
+            return false;
+        }
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isPowerSaveMode();
+    }
+
     public static boolean isWallpaperAllowed(Context context) {
         if (ATLEAST_NOUGAT) {
             try {
@@ -746,28 +752,17 @@ public final class Utilities {
         baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
     }
 
-    public static Bitmap addShadowToIcon(Bitmap icon, int size) {
-        return ShadowGenerator.getInstance(Launcher.mContext).recreateIcon(icon);
-    }
 
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
     }
 
     /**
-     * Returns a bitmap suitable for the all apps view. The icon is badged for {@param user}.
-     * The bitmap is also visually normalized with other icons.
+     * Utility method to post a runnable on the handler, skipping the synchronization barriers.
      */
-    public static Bitmap createBadgedIconBitmap(
-            Drawable icon, UserHandle user, Context context) {
-        float scale = IconNormalizer.getInstance(Launcher.mContext).getScale(icon, null, null, null);
-        Bitmap bitmap = createIconBitmap(icon, context, scale);
-        if (isAdaptive(icon))
-            bitmap = addShadowToIcon(bitmap, bitmap.getWidth());
-        return badgeIconForUser(bitmap, user, context);
-    }
-
-    public static boolean isAdaptive(Drawable drawable) {
-        return drawable != null && (ATLEAST_OREO && drawable instanceof AdaptiveIconDrawable || drawable instanceof AdaptiveIconDrawableCompat);
+    public static void postAsyncCallback(Handler handler, Runnable callback) {
+        Message msg = Message.obtain(handler, callback);
+        msg.setAsynchronous(true);
+        handler.sendMessage(msg);
     }
 }

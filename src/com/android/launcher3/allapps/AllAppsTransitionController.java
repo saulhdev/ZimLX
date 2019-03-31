@@ -53,7 +53,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         SearchUiManager.OnScrollRangeChangeListener {
 
     private static final String TAG = "AllAppsTrans";
-    private static final boolean DBG = false;
     private static final float PARALLAX_COEFFICIENT = .125f;
     private static final int SINGLE_FRAME_MS = 16;
     private static final float DEFAULT_SHIFT_RANGE = 10;
@@ -194,7 +193,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (mAppsView == null) {
             return false;   // early termination.
         }
-
         //Locked means do not use any notification code
         if (mNotificationState != NotificationState.Locked) {
             if (mProgress < 1f) {
@@ -258,7 +256,6 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
         if (mAppsView == null) {
             return; // early termination.
         }
-
         final int containerType = mTouchEventStartedOnHotseat
                 ? ContainerType.HOTSEAT : ContainerType.WORKSPACE;
 
@@ -272,11 +269,14 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true /* animated */, false /* updatePredictedApps */);
+
+
+                mLauncher.showAppsView(true, false);
                 if (hasSpringAnimationHandler()) {
                     mSpringAnimationHandler.add(mSearchSpring, true /* setDefaultValues */);
                     // The icons are moving upwards, so we go to 0 from 1. (y-axis 1 is below 0.)
                     mSpringAnimationHandler.animateToFinalPosition(0 /* pos */, 1 /* startValue */);
+
                 }
             } else {
                 calculateDuration(velocity, Math.abs(mShiftRange - mAppsView.getTranslationY()));
@@ -295,7 +295,7 @@ public class AllAppsTransitionController implements TouchController, SwipeDetect
                             Action.Direction.UP,
                             containerType);
                 }
-                mLauncher.showAppsView(true, /* animated */ false /* updatePredictedApps */);
+
             }
         }
     }

@@ -85,7 +85,7 @@ public class MoreInfoFragment extends GsPreferenceFragmentCompat<AppSettings> {
                                     _cu.context().getPackageName(), getString(R.string.app_name), getString(R.string.app_web_url).replace("=", "%3D")));
                     return true;
                 }
-                case R.string.pref_key__more_info__source_code: {
+                case R.string.pref_key__source_code: {
                     _cu.openWebpageInExternalBrowser(getString(R.string.app_source_code_url));
                     return true;
                 }

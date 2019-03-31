@@ -89,7 +89,7 @@ public class IconNormalizer {
     private float mAdaptiveIconScale;
     private int mFileId;
 
-    private IconNormalizer(Context context) {
+    public IconNormalizer(Context context) {
         // Use twice the icon size as maximum size to avoid scaling down twice.
         mMaxSize = LauncherAppState.getIDP(context).iconBitmapSize * 2;
         mBitmap = Bitmap.createBitmap(mMaxSize, mMaxSize, Bitmap.Config.ALPHA_8);

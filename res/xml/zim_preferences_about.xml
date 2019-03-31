@@ -55,7 +55,7 @@
             android:title="@string/more_info_licence" />
         <Preference
             android:icon="@drawable/ic_code_black_24dp"
-            android:key="@string/pref_key__more_info__source_code"
+            android:key="pref_key__source_code"
             android:summary="@string/contribute_code"
             android:title="@string/source_code" />
 

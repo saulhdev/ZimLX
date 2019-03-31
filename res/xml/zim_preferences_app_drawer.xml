@@ -43,21 +43,21 @@
         <SwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
-            android:key="@string/key__search_show"
+            android:key="pref_key__show_search"
             android:summary="@string/summary__app_search_show"
             android:title="@string/title__app_search" />
 
         <SwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
-            android:key="@string/key__search_global"
+            android:key="pref_key__global_search"
             android:summary="@string/summary__app_search_global"
             android:title="@string/title__app_search_global" />
 
         <SwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
-            android:key="@string/key__search_hidden"
+            android:key="pref_key__app_search_hidden"
             android:summary="@string/summary__app_search_hidden"
             android:title="@string/title__app_search_hidden" />
     </PreferenceCategory>

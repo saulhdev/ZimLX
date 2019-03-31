@@ -53,8 +53,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Theme
     var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
     var overrideLauncherTheme by BooleanPref(ZimFlags.OVERRIDE_LAUNCHER_THEME, false, recreate)
-    val usePixelIcons by BooleanPref(ZimFlags.USE_PIXEL_ICONS, true)
+    val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, true, recreate)
+    val adaptiveBackgroud by BooleanPref(ZimFlags.THEME_ADAPTIVE_BACKGROUND, true, recreate)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
+    val Theme by StringPref(ZimFlags.THEME_COLOR, "0", recreate)
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
@@ -63,7 +65,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
+    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, refreshGrid)
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
 
     // Dock
@@ -109,6 +111,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true)
     val notificationBackground by IntPref("pref_notification_background", R.color.notification_background)
 
+    //Gestures
+    val gestureSwipeUp by StringPref(ZimFlags.GESTURES_SWIPE_UP, "1", recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -311,17 +315,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
-    /*
-        private inner class MutableStringPref(key: String, defaultValue: String = "") :
-                StringPref(key, defaultValue), MutablePrefDelegate<String> {
-            fun onSetValue(thisRef: Any?, property: KProperty<*>, value: String) {
-                edit { putString(key, value) }
-            }
-        }
-    */
-    private interface MutablePrefDelegate<T> {
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T)
-    }
     // ----------------
     // Helper functions and class
     // ----------------
@@ -467,10 +460,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
                 }
             }
-            return INSTANCE!!
-        }
-
-        fun getInstanceNoCreate(): ZimPreferences {
             return INSTANCE!!
         }
     }

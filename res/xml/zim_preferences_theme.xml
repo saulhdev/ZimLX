@@ -27,17 +27,19 @@
             android:key="pref_key__folder_shape"
             android:summary="%s"
             android:title="@string/title__behav_folder_shape" />
+
         <SwitchPreference
             android:defaultValue="true"
             android:persistent="true"
             app:iconSpaceReserved="false"
-            android:key="pref_key__adaptative_icons"
+            android:key="pref_key__adaptive_icons"
             android:title="@string/pref_title__theme_adaptative_icons" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:persistent="true"
             app:iconSpaceReserved="false"
+            android:dependency="pref_key__adaptive_icons"
             android:key="pref_key__colored_icons"
             android:summary="@string/pref_summary__theme_colored_icons"
             android:title="@string/pref_title__theme_colored_icons" />
@@ -50,7 +52,15 @@
             android:key="pref_override_launcher_theme"
             android:persistent="true"
             android:title="@string/launcher_theme_override_label" />
-
+        <ListPreference
+            android:defaultValue="0"
+            app:iconSpaceReserved="false"
+            android:entries="@array/theme_colors"
+            android:entryValues="@array/values__zero_to_two"
+            android:key="pref_key__theme_color"
+            android:persistent="false"
+            android:summary="%s"
+            android:title="@string/title__theme_color" />
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
             android:key="pref_key__primary_color"

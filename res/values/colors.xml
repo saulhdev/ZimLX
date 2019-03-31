@@ -56,6 +56,5 @@
 
     <!-- NOTIFICATION -->
     <color name="notification_background">#FFAF174A</color>
-
     <color name="transparentish">#B0101010</color>
 </resources>

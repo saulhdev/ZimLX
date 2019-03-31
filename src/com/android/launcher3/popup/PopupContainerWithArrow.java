@@ -63,18 +63,22 @@ import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
+import com.android.launcher3.dragndrop.DragView;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.TriangleShape;
 import com.android.launcher3.notification.NotificationItemView;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
+import com.android.launcher3.shortcuts.ShortcutDragPreviewProvider;
 import com.android.launcher3.shortcuts.ShortcutsItemView;
+import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Themes;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -92,11 +96,14 @@ import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
  */
 @TargetApi(Build.VERSION_CODES.N)
 public class PopupContainerWithArrow extends AbstractFloatingView implements DragSource,
-        DragController.DragListener {
+        DragController.DragListener, View.OnLongClickListener, View.OnTouchListener {
 
     public static final int ROUNDED_TOP_CORNERS = 1 << 0;
     public static final int ROUNDED_BOTTOM_CORNERS = 1 << 1;
     protected final Launcher mLauncher;
+    private final List<DeepShortcutView> mShortcuts = new ArrayList<>();
+    private final PointF mInterceptTouchDown = new PointF();
+    private final Point mIconLastTouchPos = new Point();
     private final int mStartDragThreshold;
     private final boolean mIsRtl;
     private final Rect mTempRect = new Rect();
@@ -108,7 +115,6 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     protected Animator mOpenCloseAnimator;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
     private NotificationItemView mNotificationItemView;
-    private PointF mInterceptTouchDown = new PointF();
     private boolean mIsLeftAligned;
     private View mArrow;
     private int mGravity;
@@ -178,6 +184,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         return mAccessibilityDelegate;
     }
 
+    @TargetApi(Build.VERSION_CODES.P)
     public void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
                                 final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         final Resources resources = getResources();
@@ -248,8 +255,7 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
-                this, shortcutIds, shortcutViews, notificationKeys, mNotificationItemView,
-                systemShortcuts, systemShortcutViews));
+                this, shortcutIds, mShortcuts, notificationKeys));
     }
 
     private void addDummyViews(PopupPopulator.Item[] itemTypesToPopulate, int numNotifications) {
@@ -957,6 +963,43 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
         mOriginalIcon.forceHideBadge(false);
         mLauncher.getDragController().removeDragListener(this);
         mLauncher.getDragLayer().removeView(this);
+    }
+
+    @Override
+    public boolean onTouch(View v, MotionEvent ev) {
+        // Touched a shortcut, update where it was touched so we can drag from there on long click.
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
+                break;
+        }
+        return false;
+    }
+
+    @Override
+    public boolean onLongClick(View v) {
+        if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
+        // Return early if not the correct view
+        if (!(v.getParent() instanceof DeepShortcutView)) return false;
+
+        // Long clicked on a shortcut.
+        DeepShortcutView sv = (DeepShortcutView) v.getParent();
+        sv.setWillDrawIcon(false);
+
+        // Move the icon to align with the center-top of the touch point
+        Point iconShift = new Point();
+        iconShift.x = mIconLastTouchPos.x - sv.getIconCenter().x;
+        iconShift.y = mIconLastTouchPos.y - mLauncher.getDeviceProfile().iconSizePx;
+
+        DragView dv = mLauncher.getWorkspace().beginDragShared(sv.getIconView(),
+                this, sv.getFinalInfo(),
+                new ShortcutDragPreviewProvider(sv.getIconView(), iconShift), new DragOptions());
+        dv.animateShift(-iconShift.x, -iconShift.y);
+
+        // TODO: support dragging from within folder without having to close it
+        AbstractFloatingView.closeOpenContainer(mLauncher, AbstractFloatingView.TYPE_FOLDER);
+        return false;
     }
 
     @Override

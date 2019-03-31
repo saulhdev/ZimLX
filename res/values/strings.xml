@@ -79,6 +79,9 @@
 
     <!-- All applications label -->
     <string name="all_apps_button_label">Apps list</string>
+    <string name="all_apps_button_personal_label">Personal apps list</string>
+    <string name="all_apps_button_work_label">Work apps list</string>
+
     <!-- Label for button in all applications label to go back home (to the workspace / desktop)
          for accessibilty (spoken when the button gets focus). -->
     <string name="all_apps_home_button_label">Home</string>
@@ -428,10 +431,8 @@
     <string name="minibar_8">Open the app drawer.</string>
     <string name="minibar_10">Mobile network settings.</string>
     <string name="minibar_11">Applications Manager</string>
-    <string name="pref_key__minibar_enable" translatable="false">pref_key__minibar_enable</string>
-    <string name="pref_key__minibar_items" translatable="false">pref_key__minibar_items</string>
-    <string name="pref_title__minibar" translatable="false">@string/minibar</string>
-    <string name="pref_title__minibar_background_color" translatable="false">Minibar Color</string>
+    <string name="pref_title__minibar">@string/minibar</string>
+    <string name="pref_title__minibar_background_color">Minibar Color</string>
 
     <!-- FOLDER TITLES -->
     <string name="google_title" translatable="false">Google</string>
@@ -469,7 +470,6 @@
 
     <string name="pref_title__predictive_apps_num">Predicted apps number</string>
     <string name="pref_title__label_two_lines">Icon labels use two lines</string>
-    <string name="pref_title__pull_down_action">Pull down action</string>
     <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
 
     <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
@@ -502,9 +502,6 @@
     <string name="summary__app_search_global">Display global search instead of app search</string>
     <string name="summary__app_search_hidden">Display hidden apps</string>
     <string name="summary__sort_mode">Choose the sort mode</string>
-    <string name="key__search_show" translatable="false">pref_key__show_search</string>
-    <string name="key__search_global" translatable="false">pref_key__global_search</string>
-    <string name="key__search_hidden" translatable="false">pref_key__app_search_hidden</string>
 
     <!-- PREFERENCES BEHAVIOR -->
     <string name="title__behav_folder_shape">Folder Shape</string>
@@ -518,21 +515,19 @@
     <string name="pref_title__primary_color">Primary Color</string>
     <string name="pref_title__accent_color">Accent Color</string>
     <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+    <string name="title__theme_color">Theme Color</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_black">Black</string>
 
     <!-- PREFERENCES GESTURES -->
-    <string name="pref_key__gesture_feedback" translatable="false">pref_key__gesture_feedback</string>
-    <string name="pref_key__gesture_quick_swipe" translatable="false">pref_key__gesture_quick_swipe</string>
-    <string name="pref_key__gesture_double_tap" translatable="false">pref_key__gesture_double_tap</string>
-    <string name="pref_key__gesture_swipe_up" translatable="false">pref_key__gesture_swipe_up</string>
-    <string name="pref_key__gesture_swipe_down" translatable="false">pref_key__gesture_swipe_down</string>
-    <string name="pref_key__gesture_pinch" translatable="false">pref_key__gesture_pinch</string>
-    <string name="pref_key__gesture_unpinch" translatable="false">pref_key__gesture_unpinch</string>
-    <string name="pref_key__language" translatable="false">pref_key__language</string>
-
-    <string name="pull_down_do_nothing">Do nothing</string>
-    <string name="pull_down_notis">Show notifications</string>
-    <string name="pull_down_search">Open search</string>
-    <string name="pull_down_apps_search">Apps search</string>
+    <string name="gestures_none">None</string>
+    <string name="gestures_open_drawer">Open App drawer</string>
+    <string name="gestures_launch_app">Launch app</string>
+    <string name="gestures_search">Open search</string>
+    <string name="gestures_global_search">Open global search</string>
+    <string name="title__gesture_swipe_down">Swipe down</string>
+    <string name="title__gesture_swipe_up">Swipe Upwards</string>
 
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
@@ -553,8 +548,8 @@
     <string name="hotseat_show_page_indicator">Show page indicator</string>
 
     <!-- PREFERENCES ABOUT-->
+    <string name="pref_key__source_code" translatable="false">pref_key__source_code</string>
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
-    <string name="pref_key__more_info__source_code" translatable="false">pref_key__more_info__source_code</string>
     <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
     <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
     <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
@@ -598,4 +593,10 @@
     <string name="title_folder_square">Square</string>
     <string name="title_folder_square_bg">Square Shadow</string>
 
+    <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
+    <string name="bottom_work_tab_user_education_title">Find work apps here</string>
+    <!-- Text in an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer.-->
+    <string name="bottom_work_tab_user_education_body">Each work app has a badge and is kept secure by your organization. Move apps to your Home screen for easier access.</string>
+    <string name="bottom_work_tab_user_education_close_button">Close</string>
+    <string name="bottom_work_tab_user_education_closed">Closed</string>
 </resources>

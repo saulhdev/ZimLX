@@ -26,7 +26,6 @@ import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
@@ -227,9 +226,9 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         contentDescription = UserManagerCompat.getInstance(context)
                 .getBadgedLabelForUser(label, user);
         if (shortcutInfo.isEnabled()) {
-            isDisabled &= ~FLAG_DISABLED_BY_PUBLISHER;
+            runtimeStatusFlags &= ~FLAG_DISABLED_BY_PUBLISHER;
         } else {
-            isDisabled |= FLAG_DISABLED_BY_PUBLISHER;
+            runtimeStatusFlags |= FLAG_DISABLED_BY_PUBLISHER;
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
     }
@@ -304,36 +303,6 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
     @Override
     public void setOriginalTitle(CharSequence originalTitle) {
         this.originalTitle = originalTitle;
-    }
-
-    public Bitmap getIcon(IconCache iconCache) {
-        if (mCustomIcon != null)
-            return mCustomIcon;
-        if (mIcon == null)
-            updateIcon(iconCache);
-        return mIcon;
-    }
-
-    public Bitmap getUnbadgedIcon(IconCache iconCache) {
-        if (mUnbadgedIcon == null) {
-            return getIcon(iconCache);
-        }
-        return mUnbadgedIcon;
-    }
-
-    public void updateIcon(IconCache iconCache, boolean useLowRes) {
-        if (itemType == Favorites.ITEM_TYPE_APPLICATION) {
-            iconCache.getTitleAndIcon(this, promisedIntent != null ? promisedIntent : intent, user,
-                    useLowRes);
-        }
-    }
-
-    public void updateIcon(IconCache iconCache) {
-        updateIcon(iconCache, shouldUseLowResIcon());
-    }
-
-    public boolean shouldUseLowResIcon() {
-        return usingLowResIcon && container >= 0 && rank >= FolderIcon.NUM_ITEMS_IN_PREVIEW;
     }
 
     public void setIcon(Bitmap b) {

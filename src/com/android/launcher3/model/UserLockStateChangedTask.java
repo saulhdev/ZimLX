@@ -30,12 +30,15 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
+import com.android.launcher3.util.Provider;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+
+import static com.android.launcher3.ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
 
 /**
  * Task to handle changing of lock state of the user
@@ -87,12 +90,15 @@ public class UserLockStateChangedTask extends BaseModelUpdateTask {
                         removedKeys.add(key);
                         continue;
                     }
-                    si.isDisabled &= ~ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                    si.runtimeStatusFlags &= ~FLAG_DISABLED_LOCKED_USER;
                     si.updateFromDeepShortcutInfo(shortcut, context);
-                    si.iconBitmap = LauncherIcons.createShortcutIcon(shortcut, context,
-                            si.iconBitmap);
+                    // If the shortcut is pinned but no longer has an icon in the system,
+                    // keep the current icon instead of reverting to the default icon.
+                    LauncherIcons li = LauncherIcons.obtain(context);
+                    li.createShortcutIcon(shortcut, true, Provider.of(si.iconBitmap)).applyTo(si);
+                    li.recycle();
                 } else {
-                    si.isDisabled |= ShortcutInfo.FLAG_DISABLED_LOCKED_USER;
+                    si.runtimeStatusFlags |= FLAG_DISABLED_LOCKED_USER;
                 }
                 updatedShortcutInfos.add(si);
             }

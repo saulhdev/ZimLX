@@ -44,7 +44,7 @@ public class ShadowGenerator {
     private static final float HALF_DISTANCE = 0.5f;
     private static final int KEY_SHADOW_ALPHA = 61;
 
-    private static final int AMBIENT_SHADOW_ALPHA = 30;
+    public static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private static final Object LOCK = new Object();
     // Singleton object guarded by {@link #LOCK}
@@ -57,7 +57,7 @@ public class ShadowGenerator {
     private final Paint mDrawPaint;
     private final BlurMaskFilter mDefaultBlurMaskFilter;
 
-    private ShadowGenerator(Context context) {
+    public ShadowGenerator(Context context) {
         mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
         mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -100,6 +100,29 @@ public class ShadowGenerator {
     public synchronized Bitmap recreateIcon(Bitmap icon) {
         return recreateIcon(icon, true, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA,
                 KEY_SHADOW_ALPHA);
+    }
+
+    public synchronized void recreateIcon(Bitmap icon, Canvas out) {
+        recreateIcon(icon, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA, KEY_SHADOW_ALPHA, out);
+    }
+
+    public synchronized void recreateIcon(Bitmap icon, BlurMaskFilter blurMaskFilter,
+                                          int ambientAlpha, int keyAlpha, Canvas out) {
+        int[] offset = new int[2];
+        mBlurPaint.setMaskFilter(blurMaskFilter);
+        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
+
+        // Draw ambient shadow
+        mDrawPaint.setAlpha(ambientAlpha);
+        out.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
+
+        // Draw key shadow
+        mDrawPaint.setAlpha(keyAlpha);
+        out.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
+
+        // Draw the icon
+        mDrawPaint.setAlpha(255);
+        out.drawBitmap(icon, 0, 0, mDrawPaint);
     }
 
     public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize,

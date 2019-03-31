@@ -27,11 +27,16 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      * A bitmap version of the application icon.
      */
     public Bitmap iconBitmap;
-
+    /**
+     * Dominant color in the {@link #iconBitmap}.
+     */
+    public int iconColor;
     /**
      * Indicates whether we're using a low res icon
      */
     public boolean usingLowResIcon;
+
+    public int runtimeStatusFlags = 0;
 
     protected ItemInfoWithIcon() {
     }
@@ -39,6 +44,8 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);
         iconBitmap = info.iconBitmap;
+        iconColor = info.iconColor;
         usingLowResIcon = info.usingLowResIcon;
+        runtimeStatusFlags = info.runtimeStatusFlags;
     }
 }

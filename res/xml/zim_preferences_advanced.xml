@@ -3,7 +3,7 @@
     <net.gsantner.opoc.preference.LanguagePreferenceCompat
         android:defaultValue=""
         android:icon="@drawable/ic_language"
-        android:key="@string/pref_key__language"
+        android:key="pref_key__language"
         android:summary="@string/pref_summary__language"
         android:title="@string/pref_title__language" />
 

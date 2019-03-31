@@ -50,10 +50,10 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 
+import com.android.launcher3.Launcher;
+
 import net.gsantner.opoc.util.Callback;
 import net.gsantner.opoc.util.ContextUtils;
-
-import org.zimmob.zimlx.settings.AppSettings;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -150,7 +150,7 @@ public abstract class GsPreferenceFragmentCompat<AS extends SharedPreferencesPro
     public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
         Activity activity = getActivity();
         _appSettings = getAppSettings(activity);
-        _cu = new ContextUtils(AppSettings.get().getContext());
+        _cu = new ContextUtils(Launcher.mContext);
         getPreferenceManager().setSharedPreferencesName(getSharedPreferencesName());
         addPreferencesFromResource(getPreferenceResourceForInflation());
         if (activity != null && activity.getTheme() != null) {

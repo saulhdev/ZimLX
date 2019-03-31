@@ -41,10 +41,15 @@ public class DragOptions {
     public PreDragCondition preDragCondition = null;
 
     /**
+     * Scale of the icons over the workspace icon size.
+     */
+    public float intrinsicIconScaleFactor = 1f;
+
+    /**
      * Specifies a condition that must be met before DragListener#onDragStart() is called.
      * By default, there is no condition and onDragStart() is called immediately following
      * DragController#startDrag().
-     * <p>
+     *
      * This condition can be overridden, and callbacks are provided for the following cases:
      * - The pre-drag starts, but onDragStart() is deferred (onPreDragStart()).
      * - The pre-drag ends before the condition is met (onPreDragEnd(false)).

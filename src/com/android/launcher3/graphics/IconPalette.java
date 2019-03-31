@@ -198,7 +198,7 @@ public class IconPalette {
         return ColorUtils.LABToColor(low, a, b);
     }
 
-    private static int getMutedColor(int color, float whiteScrimAlpha) {
+    public static int getMutedColor(int color, float whiteScrimAlpha) {
         int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
         return ColorUtils.compositeColors(whiteScrim, color);
     }

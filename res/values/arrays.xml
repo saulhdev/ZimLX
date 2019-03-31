@@ -5,19 +5,6 @@
         <item>10</item>
     </string-array>
 
-    <string-array name="pullDownActionTexts">
-        <item>@string/pull_down_do_nothing</item>
-        <item>@string/pull_down_notis</item>
-        <item>@string/pull_down_search</item>
-        <item>@string/pull_down_apps_search</item>
-    </string-array>
-
-    <string-array name="pullDownActionValues">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
-        <item>3</item>
-    </string-array>
     <string-array name="numHotseatIconsValues">
         <item>default</item>
         <item>3</item>
@@ -35,12 +22,24 @@
         <item>7</item>
     </string-array>
 
+    <string-array name="theme_colors">
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_black</item>
+    </string-array>
+
     <string-array name="entries__desktop_indicator_mode" translatable="false">
         <item>@string/desktop_indicator_mode_normal</item>
         <item>@string/desktop_indicator_mode_arrow</item>
         <item>@string/desktop_indicator_mode_lines</item>
     </string-array>
-
+    <string-array name="entries__gestures">
+        <item>@string/gestures_none</item>
+        <item>@string/gestures_open_drawer</item>
+        <item>@string/gestures_launch_app</item>
+        <item>@string/gestures_search</item>
+        <item>@string/gestures_global_search</item>
+    </string-array>
     <string-array name="values__zero_to_two" translatable="false">
         <item>0</item>
         <item>1</item>
@@ -51,6 +50,13 @@
         <item>1</item>
         <item>2</item>
         <item>3</item>
+    </string-array>
+    <string-array name="values__zero_to_four" translatable="false">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
     </string-array>
     <string-array name="entries__sort_mode">
         <item>@string/title__sort_alphabetical_az</item>
