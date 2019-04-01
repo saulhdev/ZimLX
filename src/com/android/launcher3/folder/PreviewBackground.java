@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.annotation.SuppressLint;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -31,7 +30,6 @@ import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
 import android.graphics.Region;
 import android.graphics.Shader;
-import android.text.TextUtils;
 import android.util.Property;
 import android.view.View;
 
@@ -39,11 +37,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.util.Themes;
-
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 import androidx.core.graphics.ColorUtils;
 
@@ -61,32 +55,6 @@ public class PreviewBackground {
     private static final int BG_OPACITY = 160;
     private static final int MAX_BG_OPACITY = 225;
     private static final int SHADOW_OPACITY = 40;
-    private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mStrokeAlpha;
-                }
-
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mStrokeAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
-    private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
-            new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
-                @Override
-                public Integer get(PreviewBackground previewBackground) {
-                    return previewBackground.mShadowAlpha;
-                }
-
-                @Override
-                public void set(PreviewBackground previewBackground, Integer alpha) {
-                    previewBackground.mShadowAlpha = alpha;
-                    previewBackground.invalidate();
-                }
-            };
     private final PorterDuffXfermode mClipPorterDuffXfermode
             = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
     // Create a RadialGradient such that it draws a black circle and then extends with
@@ -122,13 +90,34 @@ public class PreviewBackground {
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
 
-    private static float MASK_SIZE = 100f;
-    private static Path sMask;
+    private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
+            new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
+                @Override
+                public Integer get(PreviewBackground previewBackground) {
+                    return previewBackground.mStrokeAlpha;
+                }
 
-    private static Method methodCreatePathFromPathData;
-    private final Matrix mMaskMatrix = new Matrix();
-    private boolean mAdaptive = false;
-    private Path mMask;
+                @Override
+                public void set(PreviewBackground previewBackground, Integer alpha) {
+                    previewBackground.mStrokeAlpha = alpha;
+                    previewBackground.invalidate();
+                }
+            };
+
+    private static final Property<PreviewBackground, Integer> SHADOW_ALPHA =
+            new Property<PreviewBackground, Integer>(Integer.class, "shadowAlpha") {
+                @Override
+                public Integer get(PreviewBackground previewBackground) {
+                    return previewBackground.mShadowAlpha;
+                }
+
+                @Override
+                public void set(PreviewBackground previewBackground, Integer alpha) {
+                    previewBackground.mShadowAlpha = alpha;
+                    previewBackground.invalidate();
+                }
+            };
+
 
     public void setup(Launcher launcher, View invalidateDelegate,
                       int availableSpace, int topPadding) {
@@ -155,55 +144,11 @@ public class PreviewBackground {
                 new float[]{radius / shadowRadius, 1},
                 Shader.TileMode.CLAMP);
 
-        initAdaptive();
-
         invalidate();
-    }
-
-    private void setMaskRadius(float radius) {
-        setMaskSize(radius * 2);
-    }
-
-    private void setMaskSize(float size) {
-        mMaskMatrix.setScale(size / MASK_SIZE, size / MASK_SIZE);
-        sMask.transform(mMaskMatrix, mMask);
-    }
-
-    @SuppressLint("PrivateApi")
-    private void initAdaptive() {
-        Class<?> pathParser;
-        try {
-            if (methodCreatePathFromPathData == null) {
-                pathParser = getClass().getClassLoader().loadClass("android.util.PathParser");
-                methodCreatePathFromPathData = pathParser.getDeclaredMethod("createPathFromPathData", String.class);
-            }
-            if (sMask == null) {
-                sMask = (Path) methodCreatePathFromPathData.invoke(null, getMaskPath());
-            }
-            mMask = (Path) methodCreatePathFromPathData.invoke(null, getMaskPath());
-            mAdaptive = true;
-        } catch (ClassNotFoundException | NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
-            e.printStackTrace();
-        }
     }
 
     public Path getPath() {
         return mPath;
-    }
-
-    private String getMaskPath() {
-        String mask = "M50 0C77.6 0 100 22.4 100 50C100 77.6 77.6 100 50 100C22.4 100 0 77.6 0 50C0 22.4 22.4 0 50 0Z";
-        MASK_SIZE = 100f;
-        try {
-            IconShapeOverride.ShapeInfo override = IconShapeOverride.getAppliedValueX(Launcher.mContext);
-            if (!TextUtils.isEmpty(override.getMaskPath())) {
-                mask = override.getMaskPath();
-                MASK_SIZE = (float) override.getSize();
-            }
-        } catch (Exception ignored) {
-
-        }
-        return mask;
     }
 
     int getRadius() {
@@ -400,7 +345,7 @@ public class PreviewBackground {
         invalidate();
     }
 
-    boolean drawingDelegated() {
+    public boolean drawingDelegated() {
         return mDrawingDelegate != null;
     }
 
@@ -459,7 +404,7 @@ public class PreviewBackground {
         final int cellY = delegateCellY;
 
         Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
-        Runnable onEnd = () -> clearDrawingDelegate();
+        Runnable onEnd = this::clearDrawingDelegate;
         animateScale(1f, 1f, onStart, onEnd);
     }
 

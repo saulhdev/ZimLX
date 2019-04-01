@@ -8,11 +8,11 @@ Our mission is to bring a powerful launcher with smart features to make your dev
 
 ## Main Features
 * Row and Columns config
-* Minibar support with custom color configuration (see the screenshots below).
-* Hide Apps
-* Custom Scrollbar
+* Minibar support with custom color configuration.
+* Hide Apps.
+* Custom Scrollbar.
 * Allow to to sort apps in the drawer by AZ, ZA, Last Installed, Most used.
-* Theme Color Change
+* Theme Color Change.
 * Icon Size configuration
 * Icon Pack support
 * Icon Shape support
