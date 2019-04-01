@@ -65,6 +65,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Objects;
 import java.util.Stack;
 
 import androidx.annotation.IntDef;
@@ -1421,7 +1422,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
     }
 
     private boolean addViewsToTempLocation(ArrayList<View> views, Rect rectOccupiedByPotentialDrop,
-                                           int[] direction, View dragView, ItemConfiguration currentState) {
+                                           int[] direction, ItemConfiguration currentState) {
         if (views.size() == 0) return true;
 
         boolean success = false;
@@ -1610,7 +1611,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         }
 
         // Next we try moving the views as a block, but without requiring the push mechanic.
-        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction, ignoreView,
+        if (addViewsToTempLocation(mIntersectingViews, mOccupiedRect, direction,
                 solution)) {
             return true;
         }
@@ -1741,7 +1742,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
     // This method starts or changes the reorder preview animations
     private void beginOrAdjustReorderPreviewAnimations(ItemConfiguration solution,
-                                                       View dragView, int delay, int mode) {
+                                                       View dragView, int mode) {
         int childCount = mShortcutsAndWidgets.getChildCount();
         for (int i = 0; i < childCount; i++) {
             View child = mShortcutsAndWidgets.getChildAt(i);
@@ -1948,8 +1949,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 completeAndClearReorderPreviewAnimations();
                 setItemPlacementDirty(false);
             } else {
-                beginOrAdjustReorderPreviewAnimations(swapSolution, dragView,
-                        REORDER_ANIMATION_DURATION, ReorderPreviewAnimation.MODE_PREVIEW);
+                beginOrAdjustReorderPreviewAnimations(swapSolution, dragView, ReorderPreviewAnimation.MODE_PREVIEW);
             }
             mShortcutsAndWidgets.requestLayout();
         }
@@ -2003,7 +2003,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
         if (mode == MODE_SHOW_REORDER_HINT) {
             if (finalSolution != null) {
-                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, 0,
+                beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
                         ReorderPreviewAnimation.MODE_HINT);
                 result[0] = finalSolution.cellX;
                 result[1] = finalSolution.cellY;
@@ -2042,8 +2042,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     completeAndClearReorderPreviewAnimations();
                     setItemPlacementDirty(false);
                 } else {
-                    beginOrAdjustReorderPreviewAnimations(finalSolution, dragView,
-                            REORDER_ANIMATION_DURATION, ReorderPreviewAnimation.MODE_PREVIEW);
+                    beginOrAdjustReorderPreviewAnimations(finalSolution, dragView, ReorderPreviewAnimation.MODE_PREVIEW);
                 }
             }
         } else {
@@ -2263,7 +2262,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
         void restore() {
             // Restore current state from savedMap
             for (View v : savedMap.keySet()) {
-                map.get(v).copyFrom(savedMap.get(v));
+                Objects.requireNonNull(map.get(v)).copyFrom(savedMap.get(v));
             }
         }
 
@@ -2538,7 +2537,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                         }
                         break;
                     case RIGHT:
-                        int right = cs.cellX + cs.spanX;
+                        int right = Objects.requireNonNull(cs).cellX + cs.spanX;
                         for (int j = cs.cellY; j < cs.cellY + cs.spanY; j++) {
                             if (right > rightEdge[j]) {
                                 rightEdge[j] = right;
@@ -2589,7 +2588,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                     }
                     break;
                 case TOP:
-                    for (int i = cs.cellX; i < cs.cellX + cs.spanX; i++) {
+                    for (int i = Objects.requireNonNull(cs).cellX; i < cs.cellX + cs.spanX; i++) {
                         if (topEdge[i] == cs.cellY + cs.spanY) {
                             return true;
                         }
@@ -2611,17 +2610,17 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
                 CellAndSpan c = config.map.get(v);
                 switch (whichEdge) {
                     case LEFT:
-                        c.cellX -= delta;
+                        Objects.requireNonNull(c).cellX -= delta;
                         break;
                     case RIGHT:
-                        c.cellX += delta;
+                        Objects.requireNonNull(c).cellX += delta;
                         break;
                     case TOP:
-                        c.cellY -= delta;
+                        Objects.requireNonNull(c).cellY -= delta;
                         break;
                     case BOTTOM:
                     default:
-                        c.cellY += delta;
+                        Objects.requireNonNull(c).cellY += delta;
                         break;
                 }
             }
@@ -2633,14 +2632,14 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
             resetEdges();
         }
 
-        public Rect getBoundingRect() {
+        private Rect getBoundingRect() {
             if (boundingRectDirty) {
                 config.getBoundingRectForViews(views, boundingRect);
             }
             return boundingRect;
         }
 
-        public void sortConfigurationForEdgePush(int edge) {
+        private void sortConfigurationForEdgePush(int edge) {
             comparator.whichEdge = edge;
             Collections.sort(config.sortedViews, comparator);
         }
@@ -2743,7 +2742,7 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             if (mShakeAnimators.containsKey(child)) {
                 ReorderPreviewAnimation oldAnimation = mShakeAnimators.get(child);
-                oldAnimation.cancel();
+                Objects.requireNonNull(oldAnimation).cancel();
                 mShakeAnimators.remove(child);
                 if (noMovement) {
                     completeAnimationImmediately();
@@ -2766,19 +2765,16 @@ public class CellLayout extends ViewGroup implements BubbleTextShadowHandler {
 
             va.setDuration(mode == MODE_HINT ? HINT_DURATION : PREVIEW_DURATION);
             va.setStartDelay((int) (Math.random() * 60));
-            va.addUpdateListener(new AnimatorUpdateListener() {
-                @Override
-                public void onAnimationUpdate(ValueAnimator animation) {
-                    float r = (Float) animation.getAnimatedValue();
-                    float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
-                    float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
-                    float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
-                    child.setTranslationX(x);
-                    child.setTranslationY(y);
-                    float s = r * finalScale + (1 - r) * initScale;
-                    child.setScaleX(s);
-                    child.setScaleY(s);
-                }
+            va.addUpdateListener(animation -> {
+                float r = (Float) animation.getAnimatedValue();
+                float r1 = (mode == MODE_HINT && repeating) ? 1.0f : r;
+                float x = r1 * finalDeltaX + (1 - r1) * initDeltaX;
+                float y = r1 * finalDeltaY + (1 - r1) * initDeltaY;
+                child.setTranslationX(x);
+                child.setTranslationY(y);
+                float s = r * finalScale + (1 - r) * initScale;
+                child.setScaleX(s);
+                child.setScaleY(s);
             });
             va.addListener(new AnimatorListenerAdapter() {
                 public void onAnimationRepeat(Animator animation) {
