@@ -968,11 +968,10 @@ public class PopupContainerWithArrow extends AbstractFloatingView implements Dra
     @Override
     public boolean onTouch(View v, MotionEvent ev) {
         // Touched a shortcut, update where it was touched so we can drag from there on long click.
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-                mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
-                break;
+        int i = ev.getAction();
+        if (i == MotionEvent.ACTION_DOWN || i == MotionEvent.ACTION_MOVE) {
+            mIconLastTouchPos.set((int) ev.getX(), (int) ev.getY());
+
         }
         return false;
     }

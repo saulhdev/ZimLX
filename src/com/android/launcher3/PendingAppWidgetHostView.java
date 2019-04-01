@@ -33,6 +33,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
+import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.Themes;
@@ -158,7 +159,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     }
 
     private void updateSettingColor() {
-        int color = Utilities.findDominantColorByHue(mIcon, 20);
+        int color = ColorExtractor.findDominantColorByHue(mIcon, 20);
         // Make the dominant color bright.
         float[] hsv = new float[3];
         Color.colorToHSV(color, hsv);

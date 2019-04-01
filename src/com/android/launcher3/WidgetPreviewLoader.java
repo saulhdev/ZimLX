@@ -62,8 +62,7 @@ public class WidgetPreviewLoader {
      * be posted to a background thread.
      */
     @Thunk
-    final Set<Bitmap> mUnusedBitmaps =
-            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+    final Set<Bitmap> mUnusedBitmaps = Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
     @Thunk
     final Handler mWorkerHandler;
     private final HashMap<String, long[]> mPackageVersions = new HashMap<>();

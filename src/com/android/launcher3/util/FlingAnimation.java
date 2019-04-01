@@ -89,12 +89,9 @@ public class FlingAnimation implements AnimatorUpdateListener, Runnable {
             }
         };
 
-        Runnable onAnimationEndRunnable = new Runnable() {
-            @Override
-            public void run() {
-                mLauncher.exitSpringLoadedDragMode();
-                mDropTarget.completeDrop(mDragObject);
-            }
+        Runnable onAnimationEndRunnable = () -> {
+            mLauncher.exitSpringLoadedDragMode();
+            mDropTarget.completeDrop(mDragObject);
         };
 
         mDragLayer.animateView(mDragObject.dragView, this, duration, tInterpolator,

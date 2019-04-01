@@ -84,12 +84,6 @@ public class IconCache {
     @Thunk
     static final Object ICON_UPDATE_TOKEN = new Object();
 
-    public static class CacheEntry extends BitmapInfo {
-        public CharSequence title = "";
-        public CharSequence contentDescription = "";
-        public boolean isLowResIcon;
-    }
-
     private final HashMap<UserHandle, BitmapInfo> mDefaultIcons = new HashMap<>();
     @Thunk
     final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
@@ -100,8 +94,7 @@ public class IconCache {
     @Thunk
     final UserManagerCompat mUserManager;
     private final LauncherAppsCompat mLauncherApps;
-    private final HashMap<ComponentKey, CacheEntry> mCache =
-            new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
+    private final HashMap<ComponentKey, CacheEntry> mCache = new HashMap<>(INITIAL_ICON_CACHE_CAPACITY);
     private final InstantAppResolver mInstantAppResolver;
     private final int mIconDpi;
     @Thunk
@@ -900,5 +893,11 @@ public class IconCache {
     public interface ItemInfoUpdateReceiver {
 
         void reapplyItemInfo(ItemInfoWithIcon info);
+    }
+
+    public static class CacheEntry extends BitmapInfo {
+        public CharSequence title = "";
+        public CharSequence contentDescription = "";
+        public boolean isLowResIcon;
     }
 }

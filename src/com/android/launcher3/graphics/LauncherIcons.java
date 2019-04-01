@@ -67,6 +67,23 @@ public class LauncherIcons implements AutoCloseable {
     public static final Object sPoolSync = new Object();
     private static LauncherIcons sPool;
 
+    private final Rect mOldBounds = new Rect();
+    private final Context mContext;
+    private final Canvas mCanvas;
+    private final PackageManager mPm;
+
+    private final int mFillResIconDpi;
+    private final int mIconBitmapSize;
+
+    private IconNormalizer mNormalizer;
+    private ShadowGenerator mShadowGenerator;
+
+    private Drawable mWrapperIcon;
+    private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+
+    // sometimes we store linked lists of these things
+    private LauncherIcons next;
+
     /**
      * Return a new Message instance from the global pool. Allows us to
      * avoid allocating new objects in many cases.
@@ -100,23 +117,6 @@ public class LauncherIcons implements AutoCloseable {
     public void close() {
         recycle();
     }
-
-    private final Rect mOldBounds = new Rect();
-    private final Context mContext;
-    private final Canvas mCanvas;
-    private final PackageManager mPm;
-
-    private final int mFillResIconDpi;
-    private final int mIconBitmapSize;
-
-    private IconNormalizer mNormalizer;
-    private ShadowGenerator mShadowGenerator;
-
-    private Drawable mWrapperIcon;
-    private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
-
-    // sometimes we store linked lists of these things
-    private LauncherIcons next;
 
     private LauncherIcons(Context context) {
         mContext = context.getApplicationContext();
@@ -258,9 +258,10 @@ public class LauncherIcons implements AutoCloseable {
         mWrapperBackgroundColor = (Color.alpha(color) < 255) ? DEFAULT_WRAPPER_BACKGROUND : color;
     }
 
-    private Drawable normalizeAndWrapToAdaptiveIcon(Drawable icon, int iconAppTargetSdk,
+    private Drawable normalizeAndWrapToAdaptiveIcon(Drawable mIcon, int iconAppTargetSdk,
                                                     RectF outIconBounds, float[] outScale, UserHandle user) {
         float scale = 1f;
+        Drawable icon = mIcon;
         if (Utilities.getZimPrefs(mContext).getAdaptiveIcons()) {
             BitmapInfo mBitmapInfo = null;
             int colorBackground = Color.WHITE;

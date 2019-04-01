@@ -33,6 +33,7 @@ import android.util.Property;
 import android.util.SparseArray;
 
 import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.graphics.IconPalette;
 
 public class FastBitmapDrawable extends Drawable {
@@ -118,7 +119,7 @@ public class FastBitmapDrawable extends Drawable {
 
     public IconPalette getIconPalette() {
         if (mIconPalette == null) {
-            mIconPalette = IconPalette.fromDominantColor(Utilities
+            mIconPalette = IconPalette.fromDominantColor(ColorExtractor
                     .findDominantColorByHue(mBitmap, 20), true /* desaturateBackground */);
         }
         return mIconPalette;
