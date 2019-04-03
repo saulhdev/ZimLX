@@ -43,7 +43,7 @@ import com.android.launcher3.util.Themes;
  * {@link PageIndicator} which shows dots per page. The active page is shown with the current
  * accent color.
  */
-public class PageIndicatorDots extends PageIndicator {
+public class PageIndicatorDots extends View implements PageIndicator {
 
     private static final float SHIFT_PER_ANIMATION = 0.5f;
     private static final float SHIFT_THRESHOLD = 0.1f;
@@ -79,16 +79,17 @@ public class PageIndicatorDots extends PageIndicator {
     private final int mInActiveColor;
     private final boolean mIsRtl;
 
+    private int mNumPages;
     private int mActivePage;
 
     /**
      * The current position of the active dot including the animation progress.
      * For ex:
-     * 0.0  => Active dot is at position 0
-     * 0.33 => Active dot is at position 0 and is moving towards 1
-     * 0.50 => Active dot is at position [0, 1]
-     * 0.77 => Active dot has left position 0 and is collapsing towards position 1
-     * 1.0  => Active dot is at position 1
+     *   0.0  => Active dot is at position 0
+     *   0.33 => Active dot is at position 0 and is moving towards 1
+     *   0.50 => Active dot is at position [0, 1]
+     *   0.77 => Active dot has left position 0 and is collapsing towards position 1
+     *   1.0  => Active dot is at position 1
      */
     private float mCurrentPosition;
     private float mFinalPosition;
@@ -221,7 +222,8 @@ public class PageIndicatorDots extends PageIndicator {
     }
 
     @Override
-    protected void onPageCountChanged() {
+    public void setMarkersCount(int numMarkers) {
+        mNumPages = numMarkers;
         requestLayout();
     }
 
@@ -242,7 +244,7 @@ public class PageIndicatorDots extends PageIndicator {
         float startX = (getWidth() - mNumPages * circleGap + mDotRadius) / 2;
 
         float x = startX + mDotRadius;
-        float y = canvas.getHeight() / 2;
+        float y = getHeight() / 2;
 
         if (mEntryAnimationRadiusFactors != null) {
             // During entry animation, only draw the circles
