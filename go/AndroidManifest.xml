@@ -21,29 +21,28 @@
     package="com.android.launcher3">
 
     <uses-sdk
-        android:minSdkVersion="21"
-        android:targetSdkVersion="23" />
+        android:targetSdkVersion="23"
+        android:minSdkVersion="21" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
-        android:fullBackupContent="@xml/backupscheme"
         android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
+        android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true"
-        android:theme="@style/LauncherTheme">
+        android:supportsRtl="true">
 
         <!-- Activity for handling PinItemRequest. Only supports shortcuts -->
         <activity
             android:name="com.android.launcher3.dragndrop.AddItemActivity"
-            android:autoRemoveFromRecents="true"
-            android:excludeFromRecents="true"
-            android:label="@string/action_add_to_workspace"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
-            tools:merge="override">
+            android:excludeFromRecents="true"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/action_add_to_workspace"
+            tools:node="replace">
             <intent-filter>
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
             </intent-filter>

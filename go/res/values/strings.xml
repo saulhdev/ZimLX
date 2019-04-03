@@ -27,6 +27,6 @@
 
     <!-- Strings for widgets & more in the popup container/bottom sheet -->
     <!-- Title for a bottom sheet that shows shortcuts for a particular app -->
-    <string name="widgets_bottom_sheet_title"><xliff:g example="Messenger" id="name">%1$s</xliff:g> shortcuts</string>
+    <string name="widgets_bottom_sheet_title"><xliff:g id="name" example="Messenger">%1$s</xliff:g> shortcuts</string>
 
 </resources>
