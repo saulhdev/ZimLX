@@ -17,9 +17,9 @@
 package com.android.launcher3;
 
 import android.content.Context;
-import android.graphics.Canvas;
 import android.util.AttributeSet;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -30,12 +30,11 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * A base {@link RecyclerView}, which does the following:
  * <ul>
- * <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
- * <li> Enable fast scroller.
+ *   <li> NOT intercept a touch unless the scrolling velocity is below a predefined threshold.
+ *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class BaseRecyclerView extends RecyclerView
-        implements RecyclerView.OnItemTouchListener {
+public abstract class BaseRecyclerView extends RecyclerView {
 
     protected RecyclerViewFastScroller mScrollbar;
 
@@ -52,86 +51,46 @@ public abstract class BaseRecyclerView extends RecyclerView
     }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        addOnItemTouchListener(this);
-    }
-
-    @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        ViewGroup parent = (ViewGroup) getParent();
+        bindFastScrollbar();
+    }
+
+    public void bindFastScrollbar() {
+        ViewGroup parent = (ViewGroup) getParent().getParent();
         mScrollbar = parent.findViewById(R.id.fast_scroller);
         mScrollbar.setRecyclerView(this, parent.findViewById(R.id.fast_scroller_popup));
+        onUpdateScrollbar(0);
     }
 
-    /**
-     * We intercept the touch handling only to support fast scrolling when initiated from the
-     * scroll bar.  Otherwise, we fall back to the default RecyclerView touch handling.
-     */
-    @Override
-    public boolean onInterceptTouchEvent(RecyclerView rv, MotionEvent ev) {
-        return handleTouchEvent(ev);
+    public RecyclerViewFastScroller getScrollbar() {
+        return mScrollbar;
     }
 
-    @Override
-    public void onTouchEvent(RecyclerView rv, MotionEvent ev) {
-        handleTouchEvent(ev);
-    }
-
-    /**
-     * Handles the touch event and determines whether to show the fast scroller (or updates it if
-     * it is already showing).
-     */
-    private boolean handleTouchEvent(MotionEvent ev) {
-        // Move to mScrollbar's coordinate system.
-        int left = getLeft() - mScrollbar.getLeft();
-        int top = getTop() - mScrollbar.getTop();
-        ev.offsetLocation(left, top);
-        try {
-            return mScrollbar.handleTouchEvent(ev);
-        } finally {
-            ev.offsetLocation(-left, -top);
-        }
-    }
-
-    public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
-        // DO NOT REMOVE, NEEDED IMPLEMENTATION FOR M BUILDS
+    public int getScrollBarTop() {
+        return getPaddingTop();
     }
 
     /**
      * Returns the height of the fast scroll bar
      */
     public int getScrollbarTrackHeight() {
-        return getHeight() - getPaddingTop() - getPaddingBottom();
+        return mScrollbar.getHeight() - getScrollBarTop() - getPaddingBottom();
     }
 
     /**
      * Returns the available scroll height:
-     * AvailableScrollHeight = Total height of the all items - last page height
+     *   AvailableScrollHeight = Total height of the all items - last page height
      */
     protected abstract int getAvailableScrollHeight();
 
     /**
      * Returns the available scroll bar height:
-     * AvailableScrollBarHeight = Total height of the visible view - thumb height
+     *   AvailableScrollBarHeight = Total height of the visible view - thumb height
      */
     protected int getAvailableScrollBarHeight() {
         int availableScrollBarHeight = getScrollbarTrackHeight() - mScrollbar.getThumbHeight();
         return availableScrollBarHeight;
-    }
-
-    /**
-     * Returns the scrollbar for this recycler view.
-     */
-    public RecyclerViewFastScroller getScrollBar() {
-        return mScrollbar;
-    }
-
-    @Override
-    protected void dispatchDraw(Canvas canvas) {
-        onUpdateScrollbar(0);
-        super.dispatchDraw(canvas);
     }
 
     /**
@@ -157,6 +116,29 @@ public abstract class BaseRecyclerView extends RecyclerView
 
         // Calculate the position and size of the scroll bar
         mScrollbar.setThumbOffsetY(scrollBarY);
+    }
+
+    /**
+     * Returns whether the view itself will handle the touch event or not.
+     *
+     * @param ev MotionEvent in {@param eventSource}
+     */
+    public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
+        int[] point = new int[2];
+        point[0] = (int) ev.getX();
+        point[1] = (int) ev.getY();
+        Utilities.mapCoordInSelfToDescendant(mScrollbar, eventSource, point);
+        // IF the MotionEvent is inside the thumb, container should not be pulled down.
+        if (mScrollbar.shouldBlockIntercept(point[0], point[1])) {
+            return false;
+        }
+
+        // IF scroller is at the very top OR there is no scroll bar because there is probably not
+        // enough items to scroll, THEN it's okay for the container to be pulled down.
+        if (getCurrentScrollY() == 0) {
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -189,6 +171,5 @@ public abstract class BaseRecyclerView extends RecyclerView
     /**
      * <p>Override in each subclass of this base class.
      */
-    public void onFastScrollCompleted() {
-    }
+    public void onFastScrollCompleted() {}
 }
