@@ -48,13 +48,7 @@ import androidx.core.graphics.ColorUtils;
 public class PreviewBackground {
 
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
-    // Drawing / animation configurations
-    private static final float ACCEPT_SCALE_FACTOR = 1.20f;
-    private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
-    // Expressed on a scale from 0 to 255.
-    private static final int BG_OPACITY = 160;
-    private static final int MAX_BG_OPACITY = 225;
-    private static final int SHADOW_OPACITY = 40;
+
     private final PorterDuffXfermode mClipPorterDuffXfermode
             = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
     // Create a RadialGradient such that it draws a black circle and then extends with
@@ -64,28 +58,45 @@ public class PreviewBackground {
             new int[]{Color.BLACK, Color.BLACK, Color.TRANSPARENT},
             new float[]{0, 0.999f, 1},
             Shader.TileMode.CLAMP);
+
     private final PorterDuffXfermode mShadowPorterDuffXfermode
             = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+    private RadialGradient mShadowShader = null;
+
     private final Matrix mShaderMatrix = new Matrix();
     private final Path mPath = new Path();
+
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    public int delegateCellX;
-    public int delegateCellY;
-    // When the PreviewBackground is drawn under an icon (for creating a folder) the border
-    // should not occlude the icon
-    public boolean isClipping = true;
+
     float mScale = 1f;
-    int previewSize;
-    int basePreviewOffsetX;
-    int basePreviewOffsetY;
-    private RadialGradient mShadowShader = null;
     private float mColorMultiplier = 1f;
     private int mBgColor;
     private float mStrokeWidth;
     private int mStrokeAlpha = MAX_BG_OPACITY;
     private int mShadowAlpha = 255;
     private View mInvalidateDelegate;
+
+    int previewSize;
+    int basePreviewOffsetX;
+    int basePreviewOffsetY;
+
     private CellLayout mDrawingDelegate;
+    public int delegateCellX;
+    public int delegateCellY;
+
+    // When the PreviewBackground is drawn under an icon (for creating a folder) the border
+    // should not occlude the icon
+    public boolean isClipping = true;
+
+    // Drawing / animation configurations
+    private static final float ACCEPT_SCALE_FACTOR = 1.20f;
+    private static final float ACCEPT_COLOR_MULTIPLIER = 1.5f;
+
+    // Expressed on a scale from 0 to 255.
+    private static final int BG_OPACITY = 160;
+    private static final int MAX_BG_OPACITY = 225;
+    private static final int SHADOW_OPACITY = 40;
+
     private ValueAnimator mScaleAnimator;
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
@@ -118,20 +129,16 @@ public class PreviewBackground {
                 }
             };
 
-
     public void setup(Launcher launcher, View invalidateDelegate,
-                      int availableSpace, int topPadding) {
+                      int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
         mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
 
         DeviceProfile grid = launcher.getDeviceProfile();
-        final int previewSize = grid.folderIconSizePx;
-        final int previewPadding = grid.folderIconPreviewPadding;
+        previewSize = grid.folderIconSizePx;
 
-        this.previewSize = (previewSize - 2 * previewPadding);
-
-        basePreviewOffsetX = (availableSpace - this.previewSize) / 2;
-        basePreviewOffsetY = previewPadding + grid.folderBackgroundOffset + topPadding;
+        basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
+        basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
 
         // Stroke width is 1dp
         mStrokeWidth = launcher.getResources().getDisplayMetrics().density;
@@ -145,10 +152,6 @@ public class PreviewBackground {
                 Shader.TileMode.CLAMP);
 
         invalidate();
-    }
-
-    public Path getPath() {
-        return mPath;
     }
 
     int getRadius() {
@@ -195,6 +198,10 @@ public class PreviewBackground {
         return ColorUtils.setAlphaComponent(mBgColor, alpha);
     }
 
+    public int getBadgeColor() {
+        return mBgColor;
+    }
+
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
@@ -218,11 +225,9 @@ public class PreviewBackground {
         final int saveCount;
         if (canvas.isHardwareAccelerated()) {
             saveCount = canvas.saveLayer(offsetX - mStrokeWidth, offsetY,
-                    offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius,
-                    null, Canvas.ALL_SAVE_FLAG);
+                    offsetX + radius + shadowRadius, offsetY + shadowRadius + shadowRadius, null);
 
         } else {
-            //saveCount = canvas.save(Canvas.CLIP_SAVE_FLAG);
             saveCount = canvas.save();
             canvas.clipPath(getClipPath(), Region.Op.DIFFERENCE);
         }
@@ -280,7 +285,7 @@ public class PreviewBackground {
         mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
-        drawCircle(canvas, 1);
+        drawCircle(canvas, 1 /* deltaRadius */);
     }
 
     public void drawLeaveBehind(Canvas canvas) {
@@ -289,7 +294,7 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        drawCircle(canvas, 0);
+        drawCircle(canvas, 0 /* deltaRadius */);
 
         mScale = originalScale;
     }
@@ -345,7 +350,7 @@ public class PreviewBackground {
         invalidate();
     }
 
-    public boolean drawingDelegated() {
+    boolean drawingDelegated() {
         return mDrawingDelegate != null;
     }
 
@@ -363,11 +368,14 @@ public class PreviewBackground {
 
         mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
-        mScaleAnimator.addUpdateListener(animation -> {
-            float prog = animation.getAnimatedFraction();
-            mScale = prog * scale1 + (1 - prog) * scale0;
-            mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
-            invalidate();
+        mScaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float prog = animation.getAnimatedFraction();
+                mScale = prog * scale1 + (1 - prog) * scale0;
+                mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
+                invalidate();
+            }
         });
         mScaleAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -391,7 +399,12 @@ public class PreviewBackground {
     }
 
     public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
+        Runnable onStart = new Runnable() {
+            @Override
+            public void run() {
+                delegateDrawing(cl, cellX, cellY);
+            }
+        };
         animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
     }
 
@@ -403,12 +416,26 @@ public class PreviewBackground {
         final int cellX = delegateCellX;
         final int cellY = delegateCellY;
 
-        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
-        Runnable onEnd = this::clearDrawingDelegate;
+        Runnable onStart = new Runnable() {
+            @Override
+            public void run() {
+                delegateDrawing(cl, cellX, cellY);
+            }
+        };
+        Runnable onEnd = new Runnable() {
+            @Override
+            public void run() {
+                clearDrawingDelegate();
+            }
+        };
         animateScale(1f, 1f, onStart, onEnd);
     }
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+    }
+
+    public float getStrokeWidth() {
+        return mStrokeWidth;
     }
 }
