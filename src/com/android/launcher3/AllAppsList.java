@@ -41,23 +41,19 @@ import androidx.annotation.Nullable;
  * Stores the list of all applications for the all apps view.
  */
 public class AllAppsList {
-    public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
     private static final String TAG = "AllAppsList";
+
+    public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
+
     /**
      * The list off all apps.
      */
     public final ArrayList<AppInfo> data = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
-    /**
-     * The list of apps that have been added since the last notify() call.
-     */
+    /** The list of apps that have been added since the last notify() call. */
     public ArrayList<AppInfo> added = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
-    /**
-     * The list of apps that have been removed since the last notify() call.
-     */
+    /** The list of apps that have been removed since the last notify() call. */
     public ArrayList<AppInfo> removed = new ArrayList<>();
-    /**
-     * The list of apps that have been modified since the last notify() call.
-     */
+    /** The list of apps that have been modified since the last notify() call. */
     public ArrayList<AppInfo> modified = new ArrayList<>();
 
     private IconCache mIconCache;
@@ -73,26 +69,13 @@ public class AllAppsList {
     }
 
     /**
-     * Returns whether <em>apps</em> contains <em>component</em>.
-     */
-    private static boolean findActivity(List<LauncherActivityInfo> apps,
-                                        ComponentName component) {
-        for (LauncherActivityInfo info : apps) {
-            if (info.getComponentName().equals(component)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Add the supplied ApplicationInfo objects to the list, and enqueue it into the
      * list to broadcast when notify() is called.
-     * <p>
+     *
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, LauncherActivityInfo activityInfo) {
-        if (!mAppFilter.shouldShowApp(info.componentName, info.user)) {
+        if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findAppInfo(info.componentName, info.user) != null) {
@@ -174,7 +157,7 @@ public class AllAppsList {
         for (int i = data.size() - 1; i >= 0; i--) {
             AppInfo info = data.get(i);
             if (matcher.matches(info, info.componentName)) {
-                info.isDisabled = op.apply(info.isDisabled);
+                info.runtimeStatusFlags = op.apply(info.runtimeStatusFlags);
                 modified.add(info);
             }
         }
@@ -237,24 +220,18 @@ public class AllAppsList {
         }
     }
 
-    /**
-     * Add and remove icons for this package, depending on visibility.
-     */
-    public void reloadPackages(Context context, UserHandle user) {
-        for (final LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
-            AppInfo applicationInfo = findAppInfo(info.getComponentName(), user);
-            if (applicationInfo == null) {
-                add(new AppInfo(context, info, user), info);
-            }
-        }
 
-        for (int i = data.size() - 1; i >= 0; i--) {
-            final AppInfo applicationInfo = data.get(i);
-            if (user.equals(applicationInfo.user) && !mAppFilter.shouldShowApp(applicationInfo.componentName, applicationInfo.user)) {
-                removed.add(applicationInfo);
-                data.remove(i);
+    /**
+     * Returns whether <em>apps</em> contains <em>component</em>.
+     */
+    private static boolean findActivity(List<LauncherActivityInfo> apps,
+                                        ComponentName component) {
+        for (LauncherActivityInfo info : apps) {
+            if (info.getComponentName().equals(component)) {
+                return true;
             }
         }
+        return false;
     }
 
     /**
@@ -265,7 +242,7 @@ public class AllAppsList {
     private @Nullable
     AppInfo findAppInfo(@NonNull ComponentName componentName,
                         @NonNull UserHandle user) {
-        for (AppInfo info : data) {
+        for (AppInfo info: data) {
             if (componentName.equals(info.componentName) && user.equals(info.user)) {
                 return info;
             }

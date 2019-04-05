@@ -31,6 +31,8 @@ import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import java.util.ArrayList;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 /**
  * Extension of {@link LauncherAccessibilityDelegate} with actions specific to shortcuts in
  * deep shortcuts menu.
@@ -79,9 +81,7 @@ public class ShortcutMenuAccessibilityDelegate extends LauncherAccessibilityDele
                 }
             };
 
-            if (!mLauncher.showWorkspace(true, onComplete)) {
-                onComplete.run();
-            }
+            mLauncher.getStateManager().goToState(NORMAL, true, onComplete);
             return true;
         } else if (action == DISMISS_NOTIFICATION) {
             if (!(host instanceof NotificationMainView)) {

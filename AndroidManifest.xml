@@ -44,8 +44,6 @@
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
@@ -74,7 +72,7 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/derived_app_name"
         android:restoreAnyVersion="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
         android:theme="@style/LauncherTheme">
 
@@ -83,9 +81,9 @@
         attributes and intent filters the same
         -->
         <activity
-            android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
+            android:name="com.android.launcher3.Launcher"
             android:clearTaskOnLaunch="true"
-            android:configChanges="keyboard|keyboardHidden|navigation"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
             android:excludeFromRecents="true"
             android:launchMode="singleTask"
@@ -131,40 +129,6 @@
             android:readPermission="${applicationId}.permission.READ_SETTINGS"
             android:writePermission="${applicationId}.permission.WRITE_SETTINGS" />
 
-        <!-- Pixel -->
-        <activity
-            android:name="com.google.android.apps.nexuslauncher.search.AppLaunchActivity"
-            android:theme="@android:style/Theme.NoDisplay">
-            <intent-filter android:priority="1">
-                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:mimeType="vnd.android.cursor.dir/vnd.android.search.suggest"
-                    android:scheme="content" />
-            </intent-filter>
-        </activity>
-
-        <receiver
-            android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
-            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
-            <intent-filter>
-                <action android:name="com.google.android.systemui.OPA_ENABLED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
-            <intent-filter>
-                <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
-
-        <provider
-            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
-            android:authorities="${applicationId}.appssearch"
-            android:exported="true" />
-
         <activity
             android:name="org.zimmob.zimlx.backup.BackupListActivity"
             android:label="@string/backups"
@@ -182,7 +146,6 @@
             android:theme="@style/SettingsTheme.V2">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
                 <data android:mimeType="application/vnd.zim.backup" />

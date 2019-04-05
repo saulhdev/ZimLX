@@ -41,6 +41,9 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.logging.FileLog;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.FlagOp;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LongArrayMap;
@@ -51,12 +54,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Handles updates due to changes in package manager (app installed/updated/removed)
  * or when a user availability changes.
  */
 public class PackageUpdatedTask extends BaseModelUpdateTask {
+
+    private static final boolean DEBUG = false;
+    private static final String TAG = "PackageUpdatedTask";
 
     public static final int OP_NONE = 0;
     public static final int OP_ADD = 1;
@@ -66,9 +73,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
     public static final int OP_SUSPEND = 5; // package suspended
     public static final int OP_UNSUSPEND = 6; // package unsuspended
     public static final int OP_USER_AVAILABILITY_CHANGE = 7; // user available/unavailable
-    public static final int OP_RELOAD = 8; // clears cache
-    private static final boolean DEBUG = false;
-    private static final String TAG = "PackageUpdatedTask";
+
     private final int mOp;
     private final UserHandle mUser;
     private final String[] mPackages;
@@ -147,10 +152,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 matcher = ItemInfoMatcher.ofUser(mUser);
                 appsList.updateDisabledFlags(matcher, flagOp);
                 break;
-            case OP_RELOAD:
-                if (DEBUG) Log.d(TAG, "mAllAppsList.reloadPackages");
-                appsList.reloadPackages(context, mUser);
-                break;
         }
 
         final ArrayList<AppInfo> addedOrModified = new ArrayList<>();
@@ -163,13 +164,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         appsList.removed.clear();
 
         final ArrayMap<ComponentName, AppInfo> addedOrUpdatedApps = new ArrayMap<>();
-        if (!addedOrModified.isEmpty() || mOp == OP_UPDATE) {
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.bindAppsAddedOrUpdated(addedOrModified);
-                }
-            });
+        if (!addedOrModified.isEmpty()) {
+            scheduleCallbackTask((callbacks) -> callbacks.bindAppsAddedOrUpdated(addedOrModified));
             for (AppInfo ai : addedOrModified) {
                 addedOrUpdatedApps.put(ai.componentName, ai);
             }
@@ -215,11 +211,26 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                             }
 
                             if (si.isPromise() && isNewApkAvailable) {
+                                boolean isTargetValid = true;
+                                if (si.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                                    List<ShortcutInfoCompat> shortcut = DeepShortcutManager
+                                            .getInstance(context).queryForPinnedShortcuts(
+                                                    cn.getPackageName(),
+                                                    Arrays.asList(si.getDeepShortcutId()), mUser);
+                                    if (shortcut.isEmpty()) {
+                                        isTargetValid = false;
+                                    } else {
+                                        si.updateFromDeepShortcutInfo(shortcut.get(0), context);
+                                        infoUpdated = true;
+                                    }
+                                } else if (!cn.getClassName().equals(IconCache.EMPTY_CLASS_NAME)) {
+                                    isTargetValid = LauncherAppsCompat.getInstance(context)
+                                            .isActivityEnabledForProfile(cn, mUser);
+                                }
+
                                 if (si.hasStatusFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
                                     // Auto install icon
-                                    LauncherAppsCompat launcherApps
-                                            = LauncherAppsCompat.getInstance(context);
-                                    if (!launcherApps.isActivityEnabledForProfile(cn, mUser)) {
+                                    if (!isTargetValid) {
                                         // Try to find the best match activity.
                                         Intent intent = new PackageManagerHelper(context)
                                                 .getAppLaunchIntent(cn.getPackageName(), mUser);
@@ -237,6 +248,11 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                             continue;
                                         }
                                     }
+                                } else if (!isTargetValid) {
+                                    removedShortcuts.put(si.id, true);
+                                    FileLog.e(TAG, "Restored shortcut no longer valid "
+                                            + si.intent);
+                                    continue;
                                 } else {
                                     si.status = ShortcutInfo.DEFAULT;
                                     infoUpdated = true;
@@ -249,9 +265,9 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                                 infoUpdated = true;
                             }
 
-                            int oldDisabledFlags = si.isDisabled;
-                            si.isDisabled = flagOp.apply(si.isDisabled);
-                            if (si.isDisabled != oldDisabledFlags) {
+                            int oldRuntimeFlags = si.runtimeStatusFlags;
+                            si.runtimeStatusFlags = flagOp.apply(si.runtimeStatusFlags);
+                            if (si.runtimeStatusFlags != oldRuntimeFlags) {
                                 shortcutUpdated = true;
                             }
                         }
@@ -341,17 +357,7 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
             });
         }
 
-        // Notify launcher of widget update. From marshmallow onwards we use AppWidgetHost to
-        // get widget update signals.
-        if (!Utilities.ATLEAST_MARSHMALLOW &&
-                (mOp == OP_ADD || mOp == OP_REMOVE || mOp == OP_UPDATE)) {
-            scheduleCallbackTask(new CallbackTask() {
-                @Override
-                public void execute(Callbacks callbacks) {
-                    callbacks.notifyWidgetProvidersChanged();
-                }
-            });
-        } else if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
+        if (Utilities.ATLEAST_OREO && mOp == OP_ADD) {
             // Load widgets for the new package. Changes due to app updates are handled through
             // AppWidgetHost events, this is just to initialize the long-press options.
             for (int i = 0; i < N; i++) {

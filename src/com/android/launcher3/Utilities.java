@@ -98,6 +98,8 @@ public final class Utilities {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+    public static final int SINGLE_FRAME_MS = 16;
+
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
@@ -261,6 +263,10 @@ public final class Utilities {
             r.bottom -= deltaY;
         }
         return scale;
+    }
+
+    public static float mapRange(float value, float min, float max) {
+        return min + (value * (max - min));
     }
 
     public static boolean isSystemApp(Context context, Intent intent) {

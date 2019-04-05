@@ -2,13 +2,13 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_icons">
-        <com.google.android.apps.nexuslauncher.CustomIconPreference
+        <!--<com.google.android.apps.nexuslauncher.CustomIconPreference
             android:defaultValue=""
             app:iconSpaceReserved="false"
             android:key="pref_icon_pack"
             android:persistent="true"
             android:summary="%s"
-            android:title="@string/pref_icon_pack" />
+            android:title="@string/pref_icon_pack" />-->
 
         <ListPreference
             android:defaultValue=" "

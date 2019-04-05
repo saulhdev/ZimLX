@@ -51,6 +51,51 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     private final Handler mWorker;
     private final Context mAppContext;
     private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
+
+    PackageInstallerCompatVL(Context context) {
+        mAppContext = context.getApplicationContext();
+        mInstaller = context.getPackageManager().getPackageInstaller();
+        mCache = LauncherAppState.getInstance(context).getIconCache();
+        mWorker = new Handler(LauncherModel.getWorkerLooper());
+        mInstaller.registerSessionCallback(mCallback, mWorker);
+    }
+
+    @Override
+    public HashMap<String, SessionInfo> updateAndGetActiveSessionCache() {
+        HashMap<String, SessionInfo> activePackages = new HashMap<>();
+        UserHandle user = Process.myUserHandle();
+        for (SessionInfo info : getAllVerifiedSessions()) {
+            addSessionInfoToCache(info, user);
+            if (info.getAppPackageName() != null) {
+                activePackages.put(info.getAppPackageName(), info);
+                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
+            }
+        }
+        return activePackages;
+    }
+
+    @Thunk
+    void addSessionInfoToCache(SessionInfo info, UserHandle user) {
+        String packageName = info.getAppPackageName();
+        if (packageName != null) {
+            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
+                    info.getAppLabel());
+        }
+    }
+
+    @Override
+    public void onStop() {
+        mInstaller.unregisterSessionCallback(mCallback);
+    }
+
+    @Thunk
+    void sendUpdate(PackageInstallInfo info) {
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.getModel().setPackageState(info);
+        }
+    }
+
     private final SessionCallback mCallback = new SessionCallback() {
 
         @Override
@@ -110,50 +155,6 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
             return null;
         }
     };
-
-    PackageInstallerCompatVL(Context context) {
-        mAppContext = context.getApplicationContext();
-        mInstaller = context.getPackageManager().getPackageInstaller();
-        mCache = LauncherAppState.getInstance(context).getIconCache();
-        mWorker = new Handler(LauncherModel.getWorkerLooper());
-        mInstaller.registerSessionCallback(mCallback, mWorker);
-    }
-
-    @Override
-    public HashMap<String, Integer> updateAndGetActiveSessionCache() {
-        HashMap<String, Integer> activePackages = new HashMap<>();
-        UserHandle user = Process.myUserHandle();
-        for (SessionInfo info : getAllVerifiedSessions()) {
-            addSessionInfoToCache(info, user);
-            if (info.getAppPackageName() != null) {
-                activePackages.put(info.getAppPackageName(), (int) (info.getProgress() * 100));
-                mActiveSessions.put(info.getSessionId(), info.getAppPackageName());
-            }
-        }
-        return activePackages;
-    }
-
-    @Thunk
-    void addSessionInfoToCache(SessionInfo info, UserHandle user) {
-        String packageName = info.getAppPackageName();
-        if (packageName != null) {
-            mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
-                    info.getAppLabel());
-        }
-    }
-
-    @Override
-    public void onStop() {
-        mInstaller.unregisterSessionCallback(mCallback);
-    }
-
-    @Thunk
-    void sendUpdate(PackageInstallInfo info) {
-        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
-        if (app != null) {
-            app.getModel().setPackageState(info);
-        }
-    }
 
     private PackageInstaller.SessionInfo verify(PackageInstaller.SessionInfo sessionInfo) {
         if (sessionInfo == null

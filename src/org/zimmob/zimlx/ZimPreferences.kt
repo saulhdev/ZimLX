@@ -19,10 +19,6 @@ import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 import kotlin.reflect.KProperty
 
-/*
-* Class to handle all the preferences within the application
-*
-* */
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
@@ -53,11 +49,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Theme
     var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
     var overrideLauncherTheme by BooleanPref(ZimFlags.OVERRIDE_LAUNCHER_THEME, false, recreate)
-    val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, true, recreate)
+    val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, false, recreate)
     val adaptiveBackgroud by BooleanPref(ZimFlags.THEME_ADAPTIVE_BACKGROUND, true, recreate)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
     val Theme by StringPref(ZimFlags.THEME_COLOR, "0", recreate)
-    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent)
+    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
     // Desktop

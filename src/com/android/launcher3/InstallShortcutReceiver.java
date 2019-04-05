@@ -27,7 +27,9 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.os.Handler;
 import android.os.Looper;
+import android.os.Message;
 import android.os.Parcelable;
 import android.os.Process;
 import android.os.UserHandle;
@@ -62,96 +64,151 @@ import java.util.Set;
 
 public class InstallShortcutReceiver extends BroadcastReceiver {
 
+    private static final int MSG_ADD_TO_QUEUE = 1;
+    private static final int MSG_FLUSH_QUEUE = 2;
+
     public static final int FLAG_ACTIVITY_PAUSED = 1;
     public static final int FLAG_LOADER_RUNNING = 2;
     public static final int FLAG_DRAG_AND_DROP = 4;
     public static final int FLAG_BULK_ADD = 4;
-    public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
-    public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
+
+    // Determines whether to defer installing shortcuts immediately until
+    // processAllPendingInstalls() is called.
+    private static int sInstallQueueDisabledFlags = 0;
+
     private static final String TAG = "InstallShortcutReceiver";
     private static final boolean DBG = false;
+
     private static final String ACTION_INSTALL_SHORTCUT =
             "com.android.launcher.action.INSTALL_SHORTCUT";
+
     private static final String LAUNCH_INTENT_KEY = "intent.launch";
     private static final String NAME_KEY = "name";
     private static final String ICON_KEY = "icon";
     private static final String ICON_RESOURCE_NAME_KEY = "iconResource";
     private static final String ICON_RESOURCE_PACKAGE_NAME_KEY = "iconResourcePackage";
+
     private static final String APP_SHORTCUT_TYPE_KEY = "isAppShortcut";
     private static final String DEEPSHORTCUT_TYPE_KEY = "isDeepShortcut";
     private static final String APP_WIDGET_TYPE_KEY = "isAppWidget";
     private static final String USER_HANDLE_KEY = "userHandle";
+
     // The set of shortcuts that are pending install
     private static final String APPS_PENDING_INSTALL = "apps_to_install";
-    private static final Object sLock = new Object();
-    // Determines whether to defer installing shortcuts immediately until
-    // processAllPendingInstalls() is called.
-    private static int sInstallQueueDisabledFlags = 0;
 
-    private static void addToInstallQueue(
-            SharedPreferences sharedPrefs, PendingInstallShortcutInfo info) {
-        synchronized (sLock) {
-            String encoded = info.encodeToString();
-            if (encoded != null) {
-                Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
-                strings = (strings != null) ? new HashSet<>(strings) : new HashSet<String>(1);
-                strings.add(encoded);
-                sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
+    public static final int NEW_SHORTCUT_BOUNCE_DURATION = 450;
+    public static final int NEW_SHORTCUT_STAGGER_DELAY = 85;
+
+    private static final Handler sHandler = new Handler(LauncherModel.getWorkerLooper()) {
+
+        @Override
+        public void handleMessage(Message msg) {
+            switch (msg.what) {
+                case MSG_ADD_TO_QUEUE: {
+                    Pair<Context, PendingInstallShortcutInfo> pair =
+                            (Pair<Context, PendingInstallShortcutInfo>) msg.obj;
+                    String encoded = pair.second.encodeToString();
+                    SharedPreferences prefs = Utilities.getPrefs(pair.first);
+                    Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
+                    strings = (strings != null) ? new HashSet<>(strings) : new HashSet<String>(1);
+                    strings.add(encoded);
+                    prefs.edit().putStringSet(APPS_PENDING_INSTALL, strings).apply();
+                    return;
+                }
+                case MSG_FLUSH_QUEUE: {
+                    Context context = (Context) msg.obj;
+                    LauncherModel model = LauncherAppState.getInstance(context).getModel();
+                    if (model.getCallback() == null) {
+                        // Launcher not loaded
+                        return;
+                    }
+
+                    ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
+                    SharedPreferences prefs = Utilities.getPrefs(context);
+                    Set<String> strings = prefs.getStringSet(APPS_PENDING_INSTALL, null);
+                    if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
+                    if (strings == null) {
+                        return;
+                    }
+
+                    LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
+                    for (String encoded : strings) {
+                        PendingInstallShortcutInfo info = decode(encoded, context);
+                        if (info == null) {
+                            continue;
+                        }
+
+                        String pkg = getIntentPackage(info.launchIntent);
+                        if (!TextUtils.isEmpty(pkg)
+                                && !launcherApps.isPackageEnabledForProfile(pkg, info.user)) {
+                            if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
+                                    + info.launchIntent);
+                            continue;
+                        }
+
+                        // Generate a shortcut info to add into the model
+                        installQueue.add(info.getItemInfo());
+                    }
+                    prefs.edit().remove(APPS_PENDING_INSTALL).apply();
+                    if (!installQueue.isEmpty()) {
+                        model.addAndBindAddedWorkspaceItems(installQueue);
+                    }
+                    return;
+                }
             }
         }
-    }
+    };
 
     public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
                                               UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
+        Preconditions.assertWorkerThread();
+
         SharedPreferences sp = Utilities.getPrefs(context);
-        synchronized (sLock) {
-            Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
-            if (DBG) {
-                Log.d(TAG, "APPS_PENDING_INSTALL: " + strings
-                        + ", removing packages: " + packageNames);
-            }
-            if (Utilities.isEmpty(strings)) {
-                return;
-            }
-            Set<String> newStrings = new HashSet<>(strings);
-            Iterator<String> newStringsIter = newStrings.iterator();
-            while (newStringsIter.hasNext()) {
-                String encoded = newStringsIter.next();
-                try {
-                    Decoder decoder = new Decoder(encoded, context);
-                    if (packageNames.contains(getIntentPackage(decoder.launcherIntent)) &&
-                            user.equals(decoder.user)) {
-                        newStringsIter.remove();
-                    }
-                } catch (JSONException | URISyntaxException e) {
-                    Log.d(TAG, "Exception reading shortcut to add: " + e);
+        Set<String> strings = sp.getStringSet(APPS_PENDING_INSTALL, null);
+        if (DBG) {
+            Log.d(TAG, "APPS_PENDING_INSTALL: " + strings
+                    + ", removing packages: " + packageNames);
+        }
+        if (Utilities.isEmpty(strings)) {
+            return;
+        }
+        Set<String> newStrings = new HashSet<>(strings);
+        Iterator<String> newStringsIter = newStrings.iterator();
+        while (newStringsIter.hasNext()) {
+            String encoded = newStringsIter.next();
+            try {
+                Decoder decoder = new Decoder(encoded, context);
+                if (packageNames.contains(getIntentPackage(decoder.launcherIntent)) &&
+                        user.equals(decoder.user)) {
                     newStringsIter.remove();
                 }
+            } catch (JSONException | URISyntaxException e) {
+                Log.d(TAG, "Exception reading shortcut to add: " + e);
+                newStringsIter.remove();
             }
-            sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
         }
+        sp.edit().putStringSet(APPS_PENDING_INSTALL, newStrings).apply();
     }
 
-    private static ArrayList<PendingInstallShortcutInfo> getAndClearInstallQueue(Context context) {
-        SharedPreferences sharedPrefs = Utilities.getPrefs(context);
-        synchronized (sLock) {
-            ArrayList<PendingInstallShortcutInfo> infos = new ArrayList<>();
-            Set<String> strings = sharedPrefs.getStringSet(APPS_PENDING_INSTALL, null);
-            if (DBG) Log.d(TAG, "Getting and clearing APPS_PENDING_INSTALL: " + strings);
-            if (strings == null) {
-                return infos;
-            }
-            for (String encoded : strings) {
-                PendingInstallShortcutInfo info = decode(encoded, context);
-                if (info != null) {
-                    infos.add(info);
+    public void onReceive(Context context, Intent data) {
+        if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
+            return;
+        }
+        PendingInstallShortcutInfo info = createPendingInfo(context, data);
+        if (info != null) {
+            if (!info.isLauncherActivity()) {
+                // Since its a custom shortcut, verify that it is safe to launch.
+                if (!new PackageManagerHelper(context).hasPermissionForActivity(
+                        info.launchIntent, null)) {
+                    // Target cannot be launched, or requires some special permission to launch
+                    Log.e(TAG, "Ignoring malicious intent " + info.launchIntent.toUri(0));
+                    return;
                 }
             }
-            sharedPrefs.edit().putStringSet(APPS_PENDING_INSTALL, new HashSet<String>()).apply();
-            return infos;
+            queuePendingShortcutInfo(info, context);
         }
     }
 
@@ -230,31 +287,23 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
 
     private static void queuePendingShortcutInfo(PendingInstallShortcutInfo info, Context context) {
         // Queue the item up for adding if launcher has not loaded properly yet
-        addToInstallQueue(Utilities.getPrefs(context), info);
+        Message.obtain(sHandler, MSG_ADD_TO_QUEUE, Pair.create(context, info)).sendToTarget();
         flushInstallQueue(context);
     }
 
     public static void enableInstallQueue(int flag) {
         sInstallQueueDisabledFlags |= flag;
     }
-
     public static void disableAndFlushInstallQueue(int flag, Context context) {
         sInstallQueueDisabledFlags &= ~flag;
         flushInstallQueue(context);
     }
 
     static void flushInstallQueue(Context context) {
-        LauncherModel model = LauncherAppState.getInstance(context).getModel();
-        boolean launcherNotLoaded = model.getCallback() == null;
-        if (sInstallQueueDisabledFlags != 0 || launcherNotLoaded) {
+        if (sInstallQueueDisabledFlags != 0) {
             return;
         }
-
-        ArrayList<PendingInstallShortcutInfo> items = getAndClearInstallQueue(context);
-        if (!items.isEmpty()) {
-            model.addAndBindAddedWorkspaceItems(
-                    new LazyShortcutsProvider(context.getApplicationContext(), items));
-        }
+        Message.obtain(sHandler, MSG_FLUSH_QUEUE, context.getApplicationContext()).sendToTarget();
     }
 
     /**
@@ -273,154 +322,6 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
             }
         }
         return name;
-    }
-
-    private static String getIntentPackage(Intent intent) {
-        return intent.getComponent() == null
-                ? intent.getPackage() : intent.getComponent().getPackageName();
-    }
-
-    private static PendingInstallShortcutInfo decode(String encoded, Context context) {
-        try {
-            Decoder decoder = new Decoder(encoded, context);
-            if (decoder.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
-                LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
-                        .resolveActivity(decoder.launcherIntent, decoder.user);
-                return info == null ? null : new PendingInstallShortcutInfo(info, context);
-            } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
-                DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
-                List<ShortcutInfoCompat> si = sm.queryForFullDetails(
-                        decoder.launcherIntent.getPackage(),
-                        Arrays.asList(decoder.launcherIntent.getStringExtra(
-                                ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
-                        decoder.user);
-                if (si.isEmpty()) {
-                    return null;
-                } else {
-                    return new PendingInstallShortcutInfo(si.get(0), context);
-                }
-            } else if (decoder.optBoolean(APP_WIDGET_TYPE_KEY)) {
-                int widgetId = decoder.launcherIntent
-                        .getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
-                AppWidgetProviderInfo info = AppWidgetManager.getInstance(context)
-                        .getAppWidgetInfo(widgetId);
-                if (info == null || !info.provider.equals(decoder.launcherIntent.getComponent()) ||
-                        !info.getProfile().equals(decoder.user)) {
-                    return null;
-                }
-                return new PendingInstallShortcutInfo(info, widgetId, context);
-            }
-
-            Intent data = new Intent();
-            data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, decoder.launcherIntent);
-            data.putExtra(Intent.EXTRA_SHORTCUT_NAME, decoder.getString(NAME_KEY));
-
-            String iconBase64 = decoder.optString(ICON_KEY);
-            String iconResourceName = decoder.optString(ICON_RESOURCE_NAME_KEY);
-            String iconResourcePackageName = decoder.optString(ICON_RESOURCE_PACKAGE_NAME_KEY);
-            if (iconBase64 != null && !iconBase64.isEmpty()) {
-                byte[] iconArray = Base64.decode(iconBase64, Base64.DEFAULT);
-                Bitmap b = BitmapFactory.decodeByteArray(iconArray, 0, iconArray.length);
-                data.putExtra(Intent.EXTRA_SHORTCUT_ICON, b);
-            } else if (iconResourceName != null && !iconResourceName.isEmpty()) {
-                Intent.ShortcutIconResource iconResource =
-                        new Intent.ShortcutIconResource();
-                iconResource.resourceName = iconResourceName;
-                iconResource.packageName = iconResourcePackageName;
-                data.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
-            }
-
-            return new PendingInstallShortcutInfo(data, decoder.user, context);
-        } catch (JSONException | URISyntaxException e) {
-            Log.d(TAG, "Exception reading shortcut to add: " + e);
-        }
-        return null;
-    }
-
-    /**
-     * Tries to create a new PendingInstallShortcutInfo which represents the same target,
-     * but is an app target and not a shortcut.
-     *
-     * @return the newly created info or the original one.
-     */
-    private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
-            PendingInstallShortcutInfo original) {
-        if (original.isLauncherActivity()) {
-            // Already an activity target
-            return original;
-        }
-        if (!Utilities.isLauncherAppTarget(original.launchIntent)) {
-            return original;
-        }
-
-        LauncherActivityInfo info = LauncherAppsCompat.getInstance(original.mContext)
-                .resolveActivity(original.launchIntent, original.user);
-        if (info == null) {
-            return original;
-        }
-        // Ignore any conflicts in the label name, as that can change based on locale.
-        return new PendingInstallShortcutInfo(info, original.mContext);
-    }
-
-    private static ShortcutInfo createShortcutInfo(Intent data, LauncherAppState app) {
-        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
-        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
-        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
-
-        if (intent == null) {
-            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
-            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
-            return null;
-        }
-
-        final ShortcutInfo info = new ShortcutInfo();
-
-        // Only support intents for current user for now. Intents sent from other
-        // users wouldn't get here without intent forwarding anyway.
-        info.user = Process.myUserHandle();
-
-        BitmapInfo iconInfo = null;
-        LauncherIcons li = LauncherIcons.obtain(app.getContext());
-        if (bitmap instanceof Bitmap) {
-            iconInfo = li.createIconBitmap((Bitmap) bitmap);
-        } else {
-            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
-            if (extra instanceof Intent.ShortcutIconResource) {
-                info.iconResource = (Intent.ShortcutIconResource) extra;
-                iconInfo = li.createIconBitmap(info.iconResource);
-            }
-        }
-        li.recycle();
-
-        if (iconInfo == null) {
-            iconInfo = app.getIconCache().getDefaultIcon(info.user);
-        }
-        iconInfo.applyTo(info);
-
-        info.title = Utilities.trim(name);
-        info.contentDescription = UserManagerCompat.getInstance(app.getContext())
-                .getBadgedLabelForUser(info.title, info.user);
-        info.intent = intent;
-        return info;
-    }
-
-    public void onReceive(Context context, Intent data) {
-        if (!ACTION_INSTALL_SHORTCUT.equals(data.getAction())) {
-            return;
-        }
-        PendingInstallShortcutInfo info = createPendingInfo(context, data);
-        if (info != null) {
-            if (!info.isLauncherActivity()) {
-                // Since its a custom shortcut, verify that it is safe to launch.
-                if (!new PackageManagerHelper(context).hasPermissionForActivity(
-                        info.launchIntent, null)) {
-                    // Target cannot be launched, or requires some special permission to launch
-                    Log.e(TAG, "Ignoring malicious intent " + info.launchIntent.toUri(0));
-                    return;
-                }
-            }
-            queuePendingShortcutInfo(info, context);
-        }
     }
 
     private static class PendingInstallShortcutInfo {
@@ -595,7 +496,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                         }
                     });
                 }
-                return Pair.create(si, activityInfo);
+                return Pair.create((ItemInfo) si, (Object) activityInfo);
             } else if (shortcutInfo != null) {
                 ShortcutInfo si = new ShortcutInfo(shortcutInfo, mContext);
                 LauncherIcons li = LauncherIcons.obtain(mContext);
@@ -613,16 +514,78 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 widgetInfo.minSpanY = info.minSpanY;
                 widgetInfo.spanX = Math.min(info.spanX, idp.numColumns);
                 widgetInfo.spanY = Math.min(info.spanY, idp.numRows);
-                return Pair.create(widgetInfo, providerInfo);
+                return Pair.create((ItemInfo) widgetInfo, (Object) providerInfo);
             } else {
                 ShortcutInfo si = createShortcutInfo(data, LauncherAppState.getInstance(mContext));
-                return Pair.create(si, null);
+                return Pair.create((ItemInfo) si, null);
             }
         }
 
         public boolean isLauncherActivity() {
             return activityInfo != null;
         }
+    }
+
+    private static String getIntentPackage(Intent intent) {
+        return intent.getComponent() == null
+                ? intent.getPackage() : intent.getComponent().getPackageName();
+    }
+
+    private static PendingInstallShortcutInfo decode(String encoded, Context context) {
+        try {
+            Decoder decoder = new Decoder(encoded, context);
+            if (decoder.optBoolean(APP_SHORTCUT_TYPE_KEY)) {
+                LauncherActivityInfo info = LauncherAppsCompat.getInstance(context)
+                        .resolveActivity(decoder.launcherIntent, decoder.user);
+                return info == null ? null : new PendingInstallShortcutInfo(info, context);
+            } else if (decoder.optBoolean(DEEPSHORTCUT_TYPE_KEY)) {
+                DeepShortcutManager sm = DeepShortcutManager.getInstance(context);
+                List<ShortcutInfoCompat> si = sm.queryForFullDetails(
+                        decoder.launcherIntent.getPackage(),
+                        Arrays.asList(decoder.launcherIntent.getStringExtra(
+                                ShortcutInfoCompat.EXTRA_SHORTCUT_ID)),
+                        decoder.user);
+                if (si.isEmpty()) {
+                    return null;
+                } else {
+                    return new PendingInstallShortcutInfo(si.get(0), context);
+                }
+            } else if (decoder.optBoolean(APP_WIDGET_TYPE_KEY)) {
+                int widgetId = decoder.launcherIntent
+                        .getIntExtra(AppWidgetManager.EXTRA_APPWIDGET_ID, 0);
+                AppWidgetProviderInfo info = AppWidgetManager.getInstance(context)
+                        .getAppWidgetInfo(widgetId);
+                if (info == null || !info.provider.equals(decoder.launcherIntent.getComponent()) ||
+                        !info.getProfile().equals(decoder.user)) {
+                    return null;
+                }
+                return new PendingInstallShortcutInfo(info, widgetId, context);
+            }
+
+            Intent data = new Intent();
+            data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, decoder.launcherIntent);
+            data.putExtra(Intent.EXTRA_SHORTCUT_NAME, decoder.getString(NAME_KEY));
+
+            String iconBase64 = decoder.optString(ICON_KEY);
+            String iconResourceName = decoder.optString(ICON_RESOURCE_NAME_KEY);
+            String iconResourcePackageName = decoder.optString(ICON_RESOURCE_PACKAGE_NAME_KEY);
+            if (iconBase64 != null && !iconBase64.isEmpty()) {
+                byte[] iconArray = Base64.decode(iconBase64, Base64.DEFAULT);
+                Bitmap b = BitmapFactory.decodeByteArray(iconArray, 0, iconArray.length);
+                data.putExtra(Intent.EXTRA_SHORTCUT_ICON, b);
+            } else if (iconResourceName != null && !iconResourceName.isEmpty()) {
+                Intent.ShortcutIconResource iconResource =
+                        new Intent.ShortcutIconResource();
+                iconResource.resourceName = iconResourceName;
+                iconResource.packageName = iconResourcePackageName;
+                data.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);
+            }
+
+            return new PendingInstallShortcutInfo(data, decoder.user, context);
+        } catch (JSONException | URISyntaxException e) {
+            Log.d(TAG, "Exception reading shortcut to add: " + e);
+        }
+        return null;
     }
 
     private static class Decoder extends JSONObject {
@@ -641,40 +604,71 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
         }
     }
 
-    private static class LazyShortcutsProvider extends Provider<List<Pair<ItemInfo, Object>>> {
-
-        private final Context mContext;
-        private final ArrayList<PendingInstallShortcutInfo> mPendingItems;
-
-        public LazyShortcutsProvider(Context context, ArrayList<PendingInstallShortcutInfo> items) {
-            mContext = context;
-            mPendingItems = items;
+    /**
+     * Tries to create a new PendingInstallShortcutInfo which represents the same target,
+     * but is an app target and not a shortcut.
+     *
+     * @return the newly created info or the original one.
+     */
+    private static PendingInstallShortcutInfo convertToLauncherActivityIfPossible(
+            PendingInstallShortcutInfo original) {
+        if (original.isLauncherActivity()) {
+            // Already an activity target
+            return original;
+        }
+        if (!Utilities.isLauncherAppTarget(original.launchIntent)) {
+            return original;
         }
 
-        /**
-         * This must be called on the background thread as this requires multiple calls to
-         * packageManager and icon cache.
-         */
-        @Override
-        public ArrayList<Pair<ItemInfo, Object>> get() {
-            Preconditions.assertNonUiThread();
-            ArrayList<Pair<ItemInfo, Object>> installQueue = new ArrayList<>();
-            LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mContext);
-            for (PendingInstallShortcutInfo pendingInfo : mPendingItems) {
-                // If the intent specifies a package, make sure the package exists
-                String packageName = getIntentPackage(pendingInfo.launchIntent);
-                if (!TextUtils.isEmpty(packageName) && !launcherApps.isPackageEnabledForProfile(
-                        packageName, pendingInfo.user)) {
-                    if (DBG) Log.d(TAG, "Ignoring shortcut for absent package: "
-                            + pendingInfo.launchIntent);
-                    continue;
-                }
+        LauncherActivityInfo info = LauncherAppsCompat.getInstance(original.mContext)
+                .resolveActivity(original.launchIntent, original.user);
+        if (info == null) {
+            return original;
+        }
+        // Ignore any conflicts in the label name, as that can change based on locale.
+        return new PendingInstallShortcutInfo(info, original.mContext);
+    }
 
-                // Generate a shortcut info to add into the model
-                installQueue.add(pendingInfo.getItemInfo());
+    private static ShortcutInfo createShortcutInfo(Intent data, LauncherAppState app) {
+        Intent intent = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_INTENT);
+        String name = data.getStringExtra(Intent.EXTRA_SHORTCUT_NAME);
+        Parcelable bitmap = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
+
+        if (intent == null) {
+            // If the intent is null, we can't construct a valid ShortcutInfo, so we return null
+            Log.e(TAG, "Can't construct ShorcutInfo with null intent");
+            return null;
+        }
+
+        final ShortcutInfo info = new ShortcutInfo();
+
+        // Only support intents for current user for now. Intents sent from other
+        // users wouldn't get here without intent forwarding anyway.
+        info.user = Process.myUserHandle();
+
+        BitmapInfo iconInfo = null;
+        LauncherIcons li = LauncherIcons.obtain(app.getContext());
+        if (bitmap instanceof Bitmap) {
+            iconInfo = li.createIconBitmap((Bitmap) bitmap);
+        } else {
+            Parcelable extra = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+            if (extra instanceof Intent.ShortcutIconResource) {
+                info.iconResource = (Intent.ShortcutIconResource) extra;
+                iconInfo = li.createIconBitmap(info.iconResource);
             }
-            return installQueue;
         }
+        li.recycle();
+
+        if (iconInfo == null) {
+            iconInfo = app.getIconCache().getDefaultIcon(info.user);
+        }
+        iconInfo.applyTo(info);
+
+        info.title = Utilities.trim(name);
+        info.contentDescription = UserManagerCompat.getInstance(app.getContext())
+                .getBadgedLabelForUser(info.title, info.user);
+        info.intent = intent;
+        return info;
     }
 
 }

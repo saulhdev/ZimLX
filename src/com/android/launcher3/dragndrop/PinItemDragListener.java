@@ -18,13 +18,11 @@ package com.android.launcher3.dragndrop;
 
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetManager;
-import android.content.Intent;
 import android.content.pm.LauncherApps.PinItemRequest;
 import android.graphics.Rect;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcel;
-import android.os.Parcelable;
+import android.os.CancellationSignal;
 import android.view.DragEvent;
 import android.view.View;
 import android.widget.RemoteViews;
@@ -34,7 +32,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PendingAddItemInfo;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
@@ -46,68 +44,16 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
  * in the source window and is passed on to the Launcher activity as an Intent extra.
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class PinItemDragListener extends BaseItemDragListener implements Parcelable {
+public class PinItemDragListener extends BaseItemDragListener {
 
-    public static final String EXTRA_PIN_ITEM_DRAG_LISTENER = "pin_item_drag_listener";
-    public static final Parcelable.Creator<PinItemDragListener> CREATOR =
-            new Parcelable.Creator<PinItemDragListener>() {
-                public PinItemDragListener createFromParcel(Parcel source) {
-                    return new PinItemDragListener(source);
-                }
-
-                public PinItemDragListener[] newArray(int size) {
-                    return new PinItemDragListener[size];
-                }
-            };
     private final PinItemRequest mRequest;
+    private final CancellationSignal mCancelSignal;
 
     public PinItemDragListener(PinItemRequest request, Rect previewRect,
                                int previewBitmapWidth, int previewViewWidth) {
         super(previewRect, previewBitmapWidth, previewViewWidth);
         mRequest = request;
-    }
-
-    private PinItemDragListener(Parcel parcel) {
-        super(parcel);
-        mRequest = PinItemRequest.CREATOR.createFromParcel(parcel);
-    }
-
-    public static RemoteViews getPreview(PinItemRequest request) {
-        Bundle extras = request.getExtras();
-        if (extras != null &&
-                extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
-            return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
-        }
-        return null;
-    }
-
-    public static boolean handleDragRequest(Launcher launcher, Intent intent) {
-        if (!Utilities.ATLEAST_OREO) {
-            return false;
-        }
-        if (intent == null || !Intent.ACTION_MAIN.equals(intent.getAction())) {
-            return false;
-        }
-        Parcelable dragExtra = intent.getParcelableExtra(EXTRA_PIN_ITEM_DRAG_LISTENER);
-        if (dragExtra instanceof PinItemDragListener) {
-            PinItemDragListener dragListener = (PinItemDragListener) dragExtra;
-            dragListener.setLauncher(launcher);
-
-            launcher.getDragLayer().setOnDragListener(dragListener);
-            return true;
-        }
-        return false;
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        super.writeToParcel(parcel, i);
-        mRequest.writeToParcel(parcel, i);
+        mCancelSignal = new CancellationSignal();
     }
 
     @Override
@@ -116,6 +62,15 @@ public class PinItemDragListener extends BaseItemDragListener implements Parcela
             return false;
         }
         return super.onDragStart(event);
+    }
+
+    @Override
+    public boolean init(Launcher launcher, boolean alreadyOnHome) {
+        super.init(launcher, alreadyOnHome);
+        if (!alreadyOnHome) {
+            UiFactory.useFadeOutAnimationForLauncherStart(launcher, mCancelSignal);
+        }
+        return false;
     }
 
     @Override
@@ -152,5 +107,20 @@ public class PinItemDragListener extends BaseItemDragListener implements Parcela
     public void fillInLogContainerData(View v, ItemInfo info, LauncherLogProto.Target target,
                                        LauncherLogProto.Target targetParent) {
         targetParent.containerType = LauncherLogProto.ContainerType.PINITEM;
+    }
+
+    @Override
+    protected void postCleanup() {
+        super.postCleanup();
+        mCancelSignal.cancel();
+    }
+
+    public static RemoteViews getPreview(PinItemRequest request) {
+        Bundle extras = request.getExtras();
+        if (extras != null &&
+                extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW) instanceof RemoteViews) {
+            return (RemoteViews) extras.get(AppWidgetManager.EXTRA_APPWIDGET_PREVIEW);
+        }
+        return null;
     }
 }

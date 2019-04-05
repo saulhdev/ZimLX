@@ -16,11 +16,15 @@
 package com.android.launcher3;
 
 import android.content.Context;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.view.DragEvent;
 import android.view.KeyEvent;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+
+import com.android.launcher3.util.UiThreadHelper;
 
 
 /**
@@ -30,6 +34,14 @@ public class ExtendedEditText extends EditText {
 
     private boolean mShowImeAfterFirstLayout;
     private boolean mForceDisableSuggestions = false;
+
+    /**
+     * Implemented by listeners of the back key.
+     */
+    public interface OnBackKeyListener {
+        public boolean onBackKey();
+    }
+
     private OnBackKeyListener mBackKeyListener;
 
     public ExtendedEditText(Context context) {
@@ -87,6 +99,10 @@ public class ExtendedEditText extends EditText {
         mShowImeAfterFirstLayout = !showSoftInput();
     }
 
+    public void hideKeyboard() {
+        UiThreadHelper.hideKeyboardAsync(getContext(), getWindowToken());
+    }
+
     private boolean showSoftInput() {
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
@@ -94,8 +110,7 @@ public class ExtendedEditText extends EditText {
     }
 
     public void dispatchBackKey() {
-        ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-                .hideSoftInputFromWindow(getWindowToken(), 0);
+        hideKeyboard();
         if (mBackKeyListener != null) {
             mBackKeyListener.onBackKey();
         }
@@ -114,10 +129,16 @@ public class ExtendedEditText extends EditText {
         return !mForceDisableSuggestions && super.isSuggestionsEnabled();
     }
 
-    /**
-     * Implemented by listeners of the back key.
-     */
-    public interface OnBackKeyListener {
-        boolean onBackKey();
+    public void reset() {
+        if (!TextUtils.isEmpty(getText())) {
+            setText("");
+        }
+        if (isFocused()) {
+            View nextFocus = focusSearch(View.FOCUS_DOWN);
+            if (nextFocus != null) {
+                nextFocus.requestFocus();
+            }
+        }
+        hideKeyboard();
     }
 }

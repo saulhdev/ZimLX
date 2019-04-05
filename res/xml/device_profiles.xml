@@ -17,131 +17,120 @@
 <profiles xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
     <profile
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        launcher:zIconSize="56"
-        launcher:hotseatIconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="54"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="496"
-        launcher:minWidthDps="296"
-        launcher:name="Pixel (Display Size set to Largest)"
+        launcher:name="Short Stubby"
+        launcher:minWidthDps="275"
+        launcher:minHeightDps="420"
+        launcher:numRows="3"
         launcher:numColumns="4"
-        launcher:numFolderColumns="4"
         launcher:numFolderRows="3"
-        launcher:numHotseatIcons="4"
-        launcher:numRows="4" />
+        launcher:numFolderColumns="4"
+        launcher:zIconSize="48"
+        launcher:iconTextSize="13.0"
+        launcher:numHotseatIcons="5"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
-        launcher:defaultLayoutId="@xml/default_workspace_4x4"
-        launcher:zIconSize="56"
-        launcher:hotseatIconSize="48"
-        launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="54"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="545"
-        launcher:minWidthDps="296"
-        launcher:name="High DPI (4x4)"
+        launcher:name="Stubby"
+        launcher:minWidthDps="255"
+        launcher:minHeightDps="450"
+        launcher:numRows="3"
         launcher:numColumns="4"
-        launcher:numFolderColumns="4"
         launcher:numFolderRows="3"
-        launcher:numHotseatIcons="4"
-        launcher:numRows="4" />
+        launcher:numFolderColumns="4"
+        launcher:zIconSize="48"
+        launcher:iconTextSize="13.0"
+        launcher:numHotseatIcons="5"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:zIconSize="54"
-        launcher:hotseatIconSize="54"
-        launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="48"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="568"
+        launcher:name="Nexus S"
         launcher:minWidthDps="296"
-        launcher:name="Taimen (Display size set to Largest)"
-        launcher:numColumns="5"
-        launcher:numFolderColumns="4"
+        launcher:minHeightDps="491.33"
+        launcher:numRows="4"
+        launcher:numColumns="4"
         launcher:numFolderRows="4"
-        launcher:numHotseatIcons="5"
-        launcher:numRows="5" />
-
-    <profile
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:zIconSize="56"
-        launcher:hotseatIconSize="56"
+        launcher:numFolderColumns="4"
+        launcher:zIconSize="48"
         launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="54"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="557"
-        launcher:minWidthDps="322"
-        launcher:name="High DPI (5x4)"
-        launcher:numColumns="5"
-        launcher:numFolderColumns="4"
-        launcher:numFolderRows="4"
         launcher:numHotseatIcons="5"
-        launcher:numRows="4" />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
-        launcher:zIconSize="56"
-        launcher:hotseatIconSize="56"
-        launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="54"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="659"
-        launcher:minWidthDps="387"
-        launcher:name="Pixel"
-        launcher:numColumns="5"
-        launcher:numFolderColumns="4"
+        launcher:name="Nexus 4"
+        launcher:minWidthDps="359"
+        launcher:minHeightDps="567"
+        launcher:numRows="4"
+        launcher:numColumns="4"
         launcher:numFolderRows="4"
-        launcher:numHotseatIcons="5"
-        launcher:numRows="5" />
-
-    <profile
-        launcher:defaultLayoutId="@xml/default_workspace_5x5"
+        launcher:numFolderColumns="4"
         launcher:zIconSize="54"
-        launcher:hotseatIconSize="54"
         launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="52"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="750"
-        launcher:minWidthDps="387"
-        launcher:name="Taimen"
-        launcher:numColumns="5"
-        launcher:numFolderColumns="4"
-        launcher:numFolderRows="4"
         launcher:numHotseatIcons="5"
-        launcher:numRows="5" />
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
 
     <profile
-        launcher:defaultLayoutId="@xml/default_workspace_6x6"
-        launcher:zIconSize="52"
-        launcher:hotseatIconSize="52"
+        launcher:name="Nexus 5"
+        launcher:minWidthDps="335"
+        launcher:minHeightDps="567"
+        launcher:numRows="4"
+        launcher:numColumns="4"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:zIconSize="54"
         launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="50"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="750"
-        launcher:minWidthDps="525"
-        launcher:name="Low DPI"
+        launcher:numHotseatIcons="5"
+        launcher:defaultLayoutId="@xml/default_workspace_4x4" />
+
+    <profile
+        launcher:name="Large Phone"
+        launcher:minWidthDps="406"
+        launcher:minHeightDps="694"
+        launcher:numRows="5"
+        launcher:numColumns="5"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="4"
+        launcher:zIconSize="56"
+        launcher:iconTextSize="14.4"
+        launcher:numHotseatIcons="5"
+        launcher:defaultLayoutId="@xml/default_workspace_5x5" />
+
+    <profile
+        launcher:name="Nexus 7"
+        launcher:minWidthDps="575"
+        launcher:minHeightDps="904"
+        launcher:numRows="6"
         launcher:numColumns="6"
-        launcher:numFolderColumns="4"
         launcher:numFolderRows="4"
-        launcher:numHotseatIcons="6"
-        launcher:numRows="6" />
-
-    <profile
-        launcher:defaultLayoutId="@xml/default_workspace_5x6"
+        launcher:numFolderColumns="5"
         launcher:zIconSize="64"
-        launcher:hotseatIconSize="64"
-        launcher:iconTextSize="13.0"
-        launcher:landscapeIconSize="64"
-        launcher:minAllAppsPredictionColumns="4"
-        launcher:minHeightDps="1200"
-        launcher:minWidthDps="820"
-        launcher:name="Pixel C"
-        launcher:numColumns="6"
-        launcher:numFolderColumns="4"
-        launcher:numFolderRows="4"
+        launcher:iconTextSize="14.4"
         launcher:numHotseatIcons="6"
-        launcher:numRows="5" />
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
+
+    <profile
+        launcher:name="Nexus 10"
+        launcher:minWidthDps="727"
+        launcher:minHeightDps="1207"
+        launcher:numRows="6"
+        launcher:numColumns="7"
+        launcher:numFolderRows="4"
+        launcher:numFolderColumns="5"
+        launcher:zIconSize="76"
+        launcher:iconTextSize="14.4"
+        launcher:numHotseatIcons="7"
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
+
+    <profile
+        launcher:name="20-inch Tablet"
+        launcher:minWidthDps="1527"
+        launcher:minHeightDps="2527"
+        launcher:numRows="7"
+        launcher:numColumns="7"
+        launcher:numFolderRows="6"
+        launcher:numFolderColumns="6"
+        launcher:zIconSize="100"
+        launcher:iconTextSize="20.0"
+        launcher:numHotseatIcons="7"
+        launcher:defaultLayoutId="@xml/default_workspace_5x6" />
 
 </profiles>

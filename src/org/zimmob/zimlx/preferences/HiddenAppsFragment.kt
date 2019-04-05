@@ -3,7 +3,6 @@ package org.zimmob.zimlx.preferences
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.os.Bundle
-import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -11,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.google.android.apps.nexuslauncher.CustomAppFilter
 import org.zimmob.zimlx.HiddenAppsAdapter
 
 class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
@@ -42,13 +40,13 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
     override fun onAttach(context: Context) {
         super.onAttach(context)
 
-        val hiddenApps = CustomAppFilter.getHiddenApps(context)
+        /*val hiddenApps = CustomAppFilter.getHiddenApps(context)
         if (!hiddenApps.isEmpty()) {
             hiddenApps.forEach { Log.d("HiddenAppsFragment", it) }
             activity!!.title = hiddenApps.size.toString() + getString(R.string.hide_app_selected)
         } else {
             activity!!.title = getString(R.string.hidden_app)
-        }
+        }*/
     }
 
     override fun setTitle(newTitle: String) {

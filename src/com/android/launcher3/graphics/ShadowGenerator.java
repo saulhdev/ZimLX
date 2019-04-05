@@ -37,69 +37,27 @@ import androidx.core.graphics.ColorUtils;
  */
 public class ShadowGenerator {
 
-    public static final float BLUR_FACTOR = 0.5f / 48;
-    // Percent of actual icon size
-    public static final float KEY_SHADOW_DISTANCE = 1f / 48;
     // Percent of actual icon size
     private static final float HALF_DISTANCE = 0.5f;
+    public static final float BLUR_FACTOR = 0.5f / 48;
+
+    // Percent of actual icon size
+    public static final float KEY_SHADOW_DISTANCE = 1f / 48;
     private static final int KEY_SHADOW_ALPHA = 61;
 
-    public static final int AMBIENT_SHADOW_ALPHA = 30;
-
-    private static final Object LOCK = new Object();
-    // Singleton object guarded by {@link #LOCK}
-    private static ShadowGenerator sShadowGenerator;
+    private static final int AMBIENT_SHADOW_ALPHA = 30;
 
     private final int mIconSize;
 
-    private final Canvas mCanvas;
     private final Paint mBlurPaint;
     private final Paint mDrawPaint;
     private final BlurMaskFilter mDefaultBlurMaskFilter;
 
     public ShadowGenerator(Context context) {
         mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
-        mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDefaultBlurMaskFilter = new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL);
-    }
-
-    public static ShadowGenerator getInstance(Context context) {
-        // TODO: This currently fails as the system default icon also needs a shadow as it
-        // uses adaptive icon.
-        // Preconditions.assertNonUiThread();
-        synchronized (LOCK) {
-            if (sShadowGenerator == null) {
-                sShadowGenerator = new ShadowGenerator(context);
-            }
-        }
-        return sShadowGenerator;
-    }
-
-    /**
-     * Returns the minimum amount by which an icon with {@param bounds} should be scaled
-     * so that the shadows do not get clipped.
-     */
-    public static float getScaleForBounds(RectF bounds) {
-        float scale = 1;
-
-        // For top, left & right, we need same space.
-        float minSide = Math.min(Math.min(bounds.left, bounds.right), bounds.top);
-        if (minSide < BLUR_FACTOR) {
-            scale = (HALF_DISTANCE - BLUR_FACTOR) / (HALF_DISTANCE - minSide);
-        }
-
-        float bottomSpace = BLUR_FACTOR + KEY_SHADOW_DISTANCE;
-        if (bounds.bottom < bottomSpace) {
-            scale = Math.min(scale, (HALF_DISTANCE - bottomSpace) / (HALF_DISTANCE - bounds.bottom));
-        }
-        return scale;
-    }
-
-    public synchronized Bitmap recreateIcon(Bitmap icon) {
-        return recreateIcon(icon, true, mDefaultBlurMaskFilter, AMBIENT_SHADOW_ALPHA,
-                KEY_SHADOW_ALPHA);
     }
 
     public synchronized void recreateIcon(Bitmap icon, Canvas out) {
@@ -125,49 +83,24 @@ public class ShadowGenerator {
         out.drawBitmap(icon, 0, 0, mDrawPaint);
     }
 
-    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize,
-                                            BlurMaskFilter blurMaskFilter, int ambientAlpha, int keyAlpha) {
-        int width = resize ? mIconSize : icon.getWidth();
-        int height = resize ? mIconSize : icon.getHeight();
-        int[] offset = new int[2];
+    /**
+     * Returns the minimum amount by which an icon with {@param bounds} should be scaled
+     * so that the shadows do not get clipped.
+     */
+    public static float getScaleForBounds(RectF bounds) {
+        float scale = 1;
 
-        mBlurPaint.setMaskFilter(blurMaskFilter);
-        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(width, height, Config.ARGB_8888);
-        mCanvas.setBitmap(result);
+        // For top, left & right, we need same space.
+        float minSide = Math.min(Math.min(bounds.left, bounds.right), bounds.top);
+        if (minSide < BLUR_FACTOR) {
+            scale = (HALF_DISTANCE - BLUR_FACTOR) / (HALF_DISTANCE - minSide);
+        }
 
-        // Draw ambient shadow
-        mDrawPaint.setAlpha(ambientAlpha);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
-
-        // Draw key shadow
-        mDrawPaint.setAlpha(keyAlpha);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
-
-        // Draw the icon
-        mDrawPaint.setAlpha(255);
-        mCanvas.drawBitmap(icon, 0, 0, mDrawPaint);
-
-        mCanvas.setBitmap(null);
-        return result;
-    }
-
-    public synchronized Bitmap createShadow(Bitmap icon, int size) {
-        int[] offset = new int[2];
-        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
-        Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
-        mCanvas.setBitmap(result);
-
-        // Draw ambient shadow
-        mDrawPaint.setAlpha(AMBIENT_SHADOW_ALPHA);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
-
-        // Draw key shadow
-        mDrawPaint.setAlpha(KEY_SHADOW_ALPHA);
-        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * size, mDrawPaint);
-
-        mCanvas.setBitmap(null);
-        return result;
+        float bottomSpace = BLUR_FACTOR + KEY_SHADOW_DISTANCE;
+        if (bounds.bottom < bottomSpace) {
+            scale = Math.min(scale, (HALF_DISTANCE - bottomSpace) / (HALF_DISTANCE - bounds.bottom));
+        }
+        return scale;
     }
 
     public static class Builder {
@@ -194,13 +127,13 @@ public class ShadowGenerator {
         }
 
         public Bitmap createPill(int width, int height) {
-            radius = height / 2;
+            radius = height / 2f;
 
-            int centerX = Math.round(width / 2 + shadowBlur);
+            int centerX = Math.round(width / 2f + shadowBlur);
             int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
             int center = Math.max(centerX, centerY);
             bounds.set(0, 0, width, height);
-            bounds.offsetTo(center - width / 2, center - height / 2);
+            bounds.offsetTo(center - width / 2f, center - height / 2f);
 
             int size = center * 2;
             Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
@@ -223,10 +156,12 @@ public class ShadowGenerator {
             c.drawRoundRect(bounds, radius, radius, p);
 
             if (Color.alpha(color) < 255) {
+                // Clear any content inside the pill-rect for translucent fill.
                 p.setXfermode(new PorterDuffXfermode(PorterDuff.Mode.CLEAR));
                 p.clearShadowLayer();
                 p.setColor(Color.BLACK);
                 c.drawRoundRect(bounds, radius, radius, p);
+
                 p.setXfermode(null);
                 p.setColor(color);
                 c.drawRoundRect(bounds, radius, radius, p);

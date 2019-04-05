@@ -6,57 +6,69 @@ import android.animation.PropertyValuesHolder;
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.appwidget.AppWidgetHostView;
+import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.ViewGroup;
 
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.FocusLogic;
-import com.android.launcher3.util.TouchController;
+import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-public class AppWidgetResizeFrame extends FrameLayout
-        implements View.OnKeyListener, TouchController {
+public class AppWidgetResizeFrame extends AbstractFloatingView implements View.OnKeyListener {
     private static final int SNAP_DURATION = 150;
     private static final float DIMMED_HANDLE_ALPHA = 0f;
     private static final float RESIZE_THRESHOLD = 0.66f;
 
     private static final Rect sTmpRect = new Rect();
+
+    // Represents the cell size on the grid in the two orientations.
+    private static Point[] sCellSize;
+
     private static final int HANDLE_COUNT = 4;
     private static final int INDEX_LEFT = 0;
     private static final int INDEX_TOP = 1;
     private static final int INDEX_RIGHT = 2;
     private static final int INDEX_BOTTOM = 3;
-    // Represents the cell size on the grid in the two orientations.
-    private static Point[] sCellSize;
+
     private final Launcher mLauncher;
     private final DragViewStateAnnouncer mStateAnnouncer;
 
     private final View[] mDragHandles = new View[HANDLE_COUNT];
-    private final int mBackgroundPadding;
-    private final int mTouchTargetWidth;
-    private final int[] mDirectionVector = new int[2];
-    private final int[] mLastDirectionVector = new int[2];
-    private final IntRange mTempRange1 = new IntRange();
-    private final IntRange mTempRange2 = new IntRange();
-    private final IntRange mDeltaXRange = new IntRange();
-    private final IntRange mBaselineX = new IntRange();
-    private final IntRange mDeltaYRange = new IntRange();
-    private final IntRange mBaselineY = new IntRange();
+
     private LauncherAppWidgetHostView mWidgetView;
     private CellLayout mCellLayout;
     private DragLayer mDragLayer;
+
     private Rect mWidgetPadding;
+
+    private final int mBackgroundPadding;
+    private final int mTouchTargetWidth;
+
+    private final int[] mDirectionVector = new int[2];
+    private final int[] mLastDirectionVector = new int[2];
+
+    private final IntRange mTempRange1 = new IntRange();
+    private final IntRange mTempRange2 = new IntRange();
+
+    private final IntRange mDeltaXRange = new IntRange();
+    private final IntRange mBaselineX = new IntRange();
+
+    private final IntRange mDeltaYRange = new IntRange();
+    private final IntRange mBaselineY = new IntRange();
+
     private boolean mLeftBorderActive;
     private boolean mRightBorderActive;
     private boolean mTopBorderActive;
     private boolean mBottomBorderActive;
+
+    private int mResizeMode;
 
     private int mRunningHInc;
     private int mRunningVInc;
@@ -91,72 +103,54 @@ public class AppWidgetResizeFrame extends FrameLayout
         mTouchTargetWidth = 2 * mBackgroundPadding;
     }
 
-    private static int getSpanIncrement(float deltaFrac) {
-        return Math.abs(deltaFrac) > RESIZE_THRESHOLD ? Math.round(deltaFrac) : 0;
-    }
-
-    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
-                                       int spanX, int spanY) {
-        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
-        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
-                sTmpRect.right, sTmpRect.bottom);
-    }
-
-    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
-        if (sCellSize == null) {
-            InvariantDeviceProfile inv = LauncherAppState.getIDP(context);
-
-            // Initiate cell sizes.
-            sCellSize = new Point[2];
-            sCellSize[0] = inv.landscapeProfile.getCellSize();
-            sCellSize[1] = inv.portraitProfile.getCellSize();
-        }
-
-        if (rect == null) {
-            rect = new Rect();
-        }
-        final float density = context.getResources().getDisplayMetrics().density;
-
-        // Compute landscape size
-        int landWidth = (int) ((spanX * sCellSize[0].x) / density);
-        int landHeight = (int) ((spanY * sCellSize[0].y) / density);
-
-        // Compute portrait size
-        int portWidth = (int) ((spanX * sCellSize[1].x) / density);
-        int portHeight = (int) ((spanY * sCellSize[1].y) / density);
-        rect.set(portWidth, landHeight, landWidth, portHeight);
-        return rect;
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
+        ViewGroup content = (ViewGroup) getChildAt(0);
         for (int i = 0; i < HANDLE_COUNT; i++) {
-            mDragHandles[i] = getChildAt(i);
+            mDragHandles[i] = content.getChildAt(i);
         }
     }
 
-    public void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
-                               DragLayer dragLayer) {
+    public static void showForWidget(LauncherAppWidgetHostView widget, CellLayout cellLayout) {
+        Launcher launcher = Launcher.getLauncher(cellLayout.getContext());
+        AbstractFloatingView.closeAllOpenViews(launcher);
+
+        DragLayer dl = launcher.getDragLayer();
+        AppWidgetResizeFrame frame = (AppWidgetResizeFrame) launcher.getLayoutInflater()
+                .inflate(R.layout.app_widget_resize_frame, dl, false);
+        frame.setupForWidget(widget, cellLayout, dl);
+        ((DragLayer.LayoutParams) frame.getLayoutParams()).customPosition = true;
+
+        dl.addView(frame);
+        frame.mIsOpen = true;
+        frame.snapToWidget(false);
+    }
+
+    private void setupForWidget(LauncherAppWidgetHostView widgetView, CellLayout cellLayout,
+                                DragLayer dragLayer) {
         mCellLayout = cellLayout;
         mWidgetView = widgetView;
         LauncherAppWidgetProviderInfo info = (LauncherAppWidgetProviderInfo)
                 widgetView.getAppWidgetInfo();
+        mResizeMode = info.resizeMode;
         mDragLayer = dragLayer;
 
         mMinHSpan = info.minSpanX;
         mMinVSpan = info.minSpanY;
 
-        if (!info.isCustomWidget) {
-            mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
-                    widgetView.getAppWidgetInfo().provider, null);
-        } else {
-            Resources r = getContext().getResources();
-            int padding = r.getDimensionPixelSize(R.dimen.default_widget_padding);
-            mWidgetPadding = new Rect(padding, padding, padding, padding);
+        mWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(getContext(),
+                widgetView.getAppWidgetInfo().provider, null);
 
+        if (mResizeMode == AppWidgetProviderInfo.RESIZE_HORIZONTAL) {
+            mDragHandles[INDEX_TOP].setVisibility(GONE);
+            mDragHandles[INDEX_BOTTOM].setVisibility(GONE);
+        } else if (mResizeMode == AppWidgetProviderInfo.RESIZE_VERTICAL) {
+            mDragHandles[INDEX_LEFT].setVisibility(GONE);
+            mDragHandles[INDEX_RIGHT].setVisibility(GONE);
         }
+
         // When we create the resize frame, we first mark all cells as unoccupied. The appropriate
         // cells (same if not resized, or different) will be marked as occupied when the resize
         // frame is dismissed.
@@ -166,10 +160,14 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     public boolean beginResizeIfPointInRegion(int x, int y) {
-        mLeftBorderActive = x < mTouchTargetWidth;
-        mRightBorderActive = x > getWidth() - mTouchTargetWidth;
-        mTopBorderActive = y < mTouchTargetWidth + mTopTouchRegionAdjustment;
-        mBottomBorderActive = y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment;
+        boolean horizontalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_HORIZONTAL) != 0;
+        boolean verticalActive = (mResizeMode & AppWidgetProviderInfo.RESIZE_VERTICAL) != 0;
+
+        mLeftBorderActive = (x < mTouchTargetWidth) && horizontalActive;
+        mRightBorderActive = (x > getWidth() - mTouchTargetWidth) && horizontalActive;
+        mTopBorderActive = (y < mTouchTargetWidth + mTopTouchRegionAdjustment) && verticalActive;
+        mBottomBorderActive = (y > getHeight() - mTouchTargetWidth + mBottomTouchRegionAdjustment)
+                && verticalActive;
 
         boolean anyBordersActive = mLeftBorderActive || mRightBorderActive
                 || mTopBorderActive || mBottomBorderActive;
@@ -203,7 +201,7 @@ public class AppWidgetResizeFrame extends FrameLayout
     }
 
     /**
-     * Based on the deltas, we resize the frame.
+     *  Based on the deltas, we resize the frame.
      */
     public void visualizeResizeForDelta(int deltaX, int deltaY) {
         mDeltaX = mDeltaXRange.clamp(deltaX);
@@ -241,8 +239,12 @@ public class AppWidgetResizeFrame extends FrameLayout
         requestLayout();
     }
 
+    private static int getSpanIncrement(float deltaFrac) {
+        return Math.abs(deltaFrac) > RESIZE_THRESHOLD ? Math.round(deltaFrac) : 0;
+    }
+
     /**
-     * Based on the current deltas, we determine if and how to resize the widget.
+     *  Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         float xThreshold = mCellLayout.getCellWidth();
@@ -316,6 +318,39 @@ public class AppWidgetResizeFrame extends FrameLayout
         mWidgetView.requestLayout();
     }
 
+    static void updateWidgetSizeRanges(AppWidgetHostView widgetView, Launcher launcher,
+                                       int spanX, int spanY) {
+        getWidgetSizeRanges(launcher, spanX, spanY, sTmpRect);
+        widgetView.updateAppWidgetSize(null, sTmpRect.left, sTmpRect.top,
+                sTmpRect.right, sTmpRect.bottom);
+    }
+
+    public static Rect getWidgetSizeRanges(Context context, int spanX, int spanY, Rect rect) {
+        if (sCellSize == null) {
+            InvariantDeviceProfile inv = LauncherAppState.getIDP(context);
+
+            // Initiate cell sizes.
+            sCellSize = new Point[2];
+            sCellSize[0] = inv.landscapeProfile.getCellSize();
+            sCellSize[1] = inv.portraitProfile.getCellSize();
+        }
+
+        if (rect == null) {
+            rect = new Rect();
+        }
+        final float density = context.getResources().getDisplayMetrics().density;
+
+        // Compute landscape size
+        int landWidth = (int) ((spanX * sCellSize[0].x) / density);
+        int landHeight = (int) ((spanY * sCellSize[0].y) / density);
+
+        // Compute portrait size
+        int portWidth = (int) ((spanX * sCellSize[1].x) / density);
+        int portHeight = (int) ((spanY * sCellSize[1].y) / density);
+        rect.set(portWidth, landHeight, landWidth, portHeight);
+        return rect;
+    }
+
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
@@ -364,7 +399,7 @@ public class AppWidgetResizeFrame extends FrameLayout
         out.bottom = out.top + height;
     }
 
-    public void snapToWidget(boolean animate) {
+    private void snapToWidget(boolean animate) {
         getSnappedRectRelativeToDragLayer(sTmpRect);
         int newWidth = sTmpRect.width();
         int newHeight = sTmpRect.height();
@@ -428,7 +463,7 @@ public class AppWidgetResizeFrame extends FrameLayout
     public boolean onKey(View v, int keyCode, KeyEvent event) {
         // Clear the frame and give focus to the widget host view when a directional key is pressed.
         if (FocusLogic.shouldConsume(keyCode)) {
-            mDragLayer.clearResizeFrame();
+            close(false);
             mWidgetView.requestFocus();
             return true;
         }
@@ -475,7 +510,26 @@ public class AppWidgetResizeFrame extends FrameLayout
 
     @Override
     public boolean onControllerInterceptTouchEvent(MotionEvent ev) {
-        return ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev);
+        if (ev.getAction() == MotionEvent.ACTION_DOWN && handleTouchDown(ev)) {
+            return true;
+        }
+        close(false);
+        return false;
+    }
+
+    @Override
+    protected void handleClose(boolean animate) {
+        mDragLayer.removeView(this);
+    }
+
+    @Override
+    public void logActionCommand(int command) {
+        // TODO: Log this case.
+    }
+
+    @Override
+    protected boolean isOfType(int type) {
+        return (type & TYPE_WIDGET_RESIZE_FRAME) != 0;
     }
 
     /**
@@ -510,11 +564,10 @@ public class AppWidgetResizeFrame extends FrameLayout
         /**
          * Applies delta similar to {@link #applyDelta(boolean, boolean, int, IntRange)},
          * with extra conditions.
-         *
          * @param minSize minimum size after with the moving edge should not be shifted any further.
          *                For eg, if delta = -3 when moving the endEdge brings the size to less than
          *                minSize, only delta = -2 will applied
-         * @param maxEnd  The maximum value to the end edge (start edge is always restricted to 0)
+         * @param maxEnd The maximum value to the end edge (start edge is always restricted to 0)
          * @return the amount of increase when endEdge was moves and the amount of decrease when
          * the start edge was moved.
          */

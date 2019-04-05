@@ -13,7 +13,7 @@
      limitations under the License.
 -->
 
-<org.zimmob.zimlx.views.MinibarLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -46,15 +46,10 @@
                 android:theme="@style/HomeScreenElementTheme"
                 launcher:pageIndicator="@+id/page_indicator" />
 
-            <include layout="@layout/all_apps_bg" />
-
-            <!-- DO NOT CHANGE THE ID -->
             <include
-                android:id="@+id/hotseat"
-                layout="@layout/hotseat"
-                launcher:layout_ignoreInsets="true"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
+                android:id="@+id/overview_panel"
+                layout="@layout/overview_panel"
+                android:visibility="gone" />
 
             <include
                 android:id="@+id/overview_panel"
@@ -62,28 +57,34 @@
                 android:visibility="gone" />
 
             <!-- Keep these behind the workspace so that they are not visible when
-                 we go into AllApps -->
-            <include
+         we go into AllApps -->
+            <com.android.launcher3.pageindicators.WorkspacePageIndicator
                 android:id="@+id/page_indicator"
-                layout="@layout/page_indicator" />
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/vertical_drag_handle_size"
+                android:layout_gravity="bottom|center_horizontal"
+                android:theme="@style/HomeScreenElementTheme" />
 
             <include
                 android:id="@+id/drop_target_bar"
-                layout="@layout/drop_target_bar_horz" />
+                layout="@layout/drop_target_bar" />
 
             <include
-                android:id="@+id/widgets_view"
-                layout="@layout/widgets_view"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible" />
-
+                android:id="@+id/scrim_view"
+                layout="@layout/scrim_view" />
             <include
                 android:id="@+id/apps_view"
                 layout="@layout/all_apps"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible" />
+
+            <!-- DO NOT CHANGE THE ID -->
+            <include
+                android:id="@+id/hotseat"
+                layout="@layout/hotseat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </com.android.launcher3.dragndrop.DragLayer>
 
@@ -110,4 +111,4 @@
 
     </FrameLayout>
 
-</org.zimmob.zimlx.views.MinibarLayout>
+</androidx.drawerlayout.widget.DrawerLayout>

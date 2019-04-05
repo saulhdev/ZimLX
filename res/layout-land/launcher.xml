@@ -43,32 +43,27 @@
                 android:theme="@style/HomeScreenElementTheme"
                 launcher:pageIndicator="@id/page_indicator" />
 
-            <include layout="@layout/all_apps_bg" />
-
-            <!-- DO NOT CHANGE THE ID -->
-            <include
-                android:id="@+id/hotseat"
-                layout="@layout/hotseat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_gravity="right"
-                launcher:layout_ignoreInsets="false" />
-
-            <include
-                android:id="@+id/drop_target_bar"
-                layout="@layout/drop_target_bar_vert" />
-
             <include
                 android:id="@+id/overview_panel"
                 layout="@layout/overview_panel"
                 android:visibility="gone" />
 
-            <include
-                android:id="@+id/widgets_view"
-                layout="@layout/widgets_view"
+            <!-- Keep these behind the workspace so that they are not visible when
+        we go into AllApps -->
+            <com.android.launcher3.pageindicators.WorkspacePageIndicator
+                android:id="@+id/page_indicator"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:visibility="invisible" />
+                android:layout_height="@dimen/vertical_drag_handle_size"
+                android:layout_gravity="bottom|center_horizontal"
+                android:theme="@style/HomeScreenElementTheme" />
+
+            <include
+                android:id="@+id/drop_target_bar"
+                layout="@layout/drop_target_bar" />
+
+            <include
+                android:id="@+id/scrim_view"
+                layout="@layout/scrim_view" />
 
             <include
                 android:id="@+id/apps_view"
@@ -77,12 +72,12 @@
                 android:layout_height="match_parent"
                 android:visibility="invisible" />
 
-            <com.android.launcher3.pageindicators.PageIndicatorCaretLandscape
-                android:id="@+id/page_indicator"
-                android:layout_width="@dimen/dynamic_grid_min_page_indicator_size"
-                android:layout_height="@dimen/dynamic_grid_min_page_indicator_size"
-                android:layout_gravity="bottom|left"
-                android:theme="@style/HomeScreenElementTheme" />
+            <!-- DO NOT CHANGE THE ID -->
+            <include
+                android:id="@+id/hotseat"
+                layout="@layout/hotseat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
 
         </com.android.launcher3.dragndrop.DragLayer>
 

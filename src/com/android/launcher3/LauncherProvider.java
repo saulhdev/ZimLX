@@ -34,7 +34,6 @@ import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.database.sqlite.SQLiteQueryBuilder;
 import android.database.sqlite.SQLiteStatement;
 import android.net.Uri;
@@ -44,7 +43,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
-import android.os.Trace;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.text.TextUtils;
@@ -55,15 +53,12 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.provider.RestoreDbTask;
-import com.android.launcher3.util.ManagedProfileHeuristic;
-import com.android.launcher3.util.NoLocaleSqliteContext;
+import com.android.launcher3.util.NoLocaleSQLiteHelper;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.Thunk;
 
@@ -77,60 +72,26 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 
 public class LauncherProvider extends ContentProvider {
+    private static final String TAG = "LauncherProvider";
+    private static final boolean LOGD = false;
+
+    private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
+
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
-    public static final int SCHEMA_VERSION = 29;
-    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings");
+    public static final int SCHEMA_VERSION = 27;
+
+    public static final String AUTHORITY = FeatureFlags.AUTHORITY;
+
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
-    private static final String TAG = "LauncherProvider";
-    private static final boolean LOGD = false;
-    private static final String DOWNGRADE_SCHEMA_FILE = "downgrade_schema.json";
+
     private static final String RESTRICTION_PACKAGE_NAME = "workspace.configuration.package.name";
 
     private final ChangeListenerWrapper mListenerWrapper = new ChangeListenerWrapper();
-    protected DatabaseHelper mOpenHelper;
     private Handler mListenerHandler;
 
-    @Thunk
-    static long dbInsertAndCheck(DatabaseHelper helper,
-                                 SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
-        if (values == null) {
-            throw new RuntimeException("Error: attempting to insert null values");
-        }
-        if (!values.containsKey(LauncherSettings.ChangeLogColumns._ID)) {
-            throw new RuntimeException("Error: attempting to add item without specifying an id");
-        }
-        helper.checkId(table, values);
-        return db.insert(table, nullColumnHack, values);
-    }
-
-    @Thunk
-    static void addModifiedTime(ContentValues values) {
-        values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
-    }
-
-    /**
-     * @return the max _id in the provided table.
-     */
-    @Thunk
-    static long getMaxId(SQLiteDatabase db, String table) {
-        Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
-        // get the result
-        long id = -1;
-        if (c != null && c.moveToNext()) {
-            id = c.getLong(0);
-        }
-        if (c != null) {
-            c.close();
-        }
-
-        if (id == -1) {
-            throw new RuntimeException("Error: could not query max id in " + table);
-        }
-
-        return id;
-    }
+    protected DatabaseHelper mOpenHelper;
 
     /**
      * $ adb shell dumpsys activity provider com.android.launcher3
@@ -152,11 +113,8 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler = new Handler(mListenerWrapper);
 
         // The content provider exists for the entire duration of the launcher main process and
-        // is the first component to get created. Initializing FileLog here ensures that it's
-        // always available in the main process.
-        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(getContext());
-        SessionCommitReceiver.applyDefaultUserPrefs(getContext());
+        // is the first component to get created.
+        MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }
 
@@ -183,9 +141,6 @@ public class LauncherProvider extends ContentProvider {
      */
     protected synchronized void createDbIfNotExists() {
         if (mOpenHelper == null) {
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.beginSection("Opening workspace DB");
-            }
             mOpenHelper = new DatabaseHelper(getContext(), mListenerHandler);
 
             if (RestoreDbTask.isPending(getContext())) {
@@ -195,10 +150,6 @@ public class LauncherProvider extends ContentProvider {
                 // Set is pending to false irrespective of the result, so that it doesn't get
                 // executed again.
                 RestoreDbTask.setPending(getContext(), false);
-            }
-
-            if (LauncherAppState.PROFILE_STARTUP) {
-                Trace.endSection();
             }
         }
     }
@@ -217,6 +168,19 @@ public class LauncherProvider extends ContentProvider {
         result.setNotificationUri(getContext().getContentResolver(), uri);
 
         return result;
+    }
+
+    @Thunk
+    static long dbInsertAndCheck(DatabaseHelper helper,
+                                 SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+        if (values == null) {
+            throw new RuntimeException("Error: attempting to insert null values");
+        }
+        if (!values.containsKey(LauncherSettings.ChangeLogColumns._ID)) {
+            throw new RuntimeException("Error: attempting to add item without specifying an id");
+        }
+        helper.checkId(table, values);
+        return db.insert(table, nullColumnHack, values);
     }
 
     private void reloadLauncherIfExternal() {
@@ -394,19 +358,6 @@ public class LauncherProvider extends ContentProvider {
         createDbIfNotExists();
 
         switch (method) {
-            case LauncherSettings.Settings.METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID: {
-                String extractedColors = extras.getString(
-                        LauncherSettings.Settings.EXTRA_EXTRACTED_COLORS);
-                int wallpaperId = extras.getInt(LauncherSettings.Settings.EXTRA_WALLPAPER_ID);
-                Utilities.getPrefs(getContext()).edit()
-                        .putString(ExtractionUtils.EXTRACTED_COLORS_PREFERENCE_KEY, extractedColors)
-                        .putInt(ExtractionUtils.WALLPAPER_ID_PREFERENCE_KEY, wallpaperId)
-                        .apply();
-                mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_EXTRACTED_COLORS_CHANGED);
-                Bundle result = new Bundle();
-                result.putString(LauncherSettings.Settings.EXTRA_VALUE, extractedColors);
-                return result;
-            }
             case LauncherSettings.Settings.METHOD_CLEAR_EMPTY_DB_FLAG: {
                 clearFlagEmptyDbCreated();
                 return null;
@@ -450,7 +401,6 @@ public class LauncherProvider extends ContentProvider {
 
     /**
      * Deletes any empty folder from the DB.
-     *
      * @return Ids of deleted folders.
      */
     private ArrayList<Long> deleteEmptyFolders() {
@@ -487,16 +437,21 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
+    @Thunk
+    static void addModifiedTime(ContentValues values) {
+        values.put(LauncherSettings.ChangeLogColumns.MODIFIED, System.currentTimeMillis());
+    }
+
     private void clearFlagEmptyDbCreated() {
         Utilities.getPrefs(getContext()).edit().remove(EMPTY_DATABASE_CREATED).commit();
     }
 
     /**
      * Loads the default workspace based on the following priority scheme:
-     * 1) From the app restrictions
-     * 2) From a package provided by play store
-     * 3) From a partner configuration APK, already in the system image
-     * 4) The default configuration for the particular device
+     *   1) From the app restrictions
+     *   2) From a package provided by play store
+     *   3) From a partner configuration APK, already in the system image
+     *   4) The default configuration for the particular device
      */
     synchronized private void loadDefaultFavoritesIfNecessary() {
         SharedPreferences sp = Utilities.getPrefs(getContext());
@@ -586,7 +541,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * The class is subclassed in tests to create an in-memory db.
      */
-    public static class DatabaseHelper extends SQLiteOpenHelper implements LayoutParserCallback {
+    public static class DatabaseHelper extends NoLocaleSQLiteHelper implements LayoutParserCallback {
         private final Handler mWidgetHostResetHandler;
         private final Context mContext;
         private long mMaxItemId = -1;
@@ -612,7 +567,7 @@ public class LauncherProvider extends ContentProvider {
          */
         public DatabaseHelper(
                 Context context, Handler widgetHostResetHandler, String tableName) {
-            super(new NoLocaleSqliteContext(context), tableName, null, SCHEMA_VERSION);
+            super(context, tableName, SCHEMA_VERSION);
             mContext = context;
             mWidgetHostResetHandler = widgetHostResetHandler;
         }
@@ -668,10 +623,6 @@ public class LauncherProvider extends ContentProvider {
 
             // Set the flag for empty DB
             Utilities.getPrefs(mContext).edit().putBoolean(EMPTY_DATABASE_CREATED, true).commit();
-
-            // When a new DB is created, remove all previously stored managed profile information.
-            ManagedProfileHeuristic.processAllUsers(Collections.emptyList(),
-                    mContext);
         }
 
         public long getDefaultUserSerial() {
@@ -835,7 +786,7 @@ public class LauncherProvider extends ContentProvider {
                 case 23:
                     // No-op
                 case 24:
-                    ManagedProfileHeuristic.markExistingUsersForNoFolderCreation(mContext);
+                    // No-op
                 case 25:
                     convertShortcutsToLauncherActivities(db);
                 case 26:
@@ -845,8 +796,7 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 case 27:
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                    // DB Upgraded successfully
                     return;
             }
 
@@ -1127,6 +1077,28 @@ public class LauncherProvider extends ContentProvider {
         }
     }
 
+    /**
+     * @return the max _id in the provided table.
+     */
+    @Thunk
+    static long getMaxId(SQLiteDatabase db, String table) {
+        Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
+        // get the result
+        long id = -1;
+        if (c != null && c.moveToNext()) {
+            id = c.getLong(0);
+        }
+        if (c != null) {
+            c.close();
+        }
+
+        if (id == -1) {
+            throw new RuntimeException("Error: could not query max id in " + table);
+        }
+
+        return id;
+    }
+
     static class SqlArguments {
         public final String table;
         public final String where;
@@ -1162,8 +1134,7 @@ public class LauncherProvider extends ContentProvider {
     private static class ChangeListenerWrapper implements Handler.Callback {
 
         private static final int MSG_LAUNCHER_PROVIDER_CHANGED = 1;
-        private static final int MSG_EXTRACTED_COLORS_CHANGED = 2;
-        private static final int MSG_APP_WIDGET_HOST_RESET = 3;
+        private static final int MSG_APP_WIDGET_HOST_RESET = 2;
 
         private LauncherProviderChangeListener mListener;
 
@@ -1173,9 +1144,6 @@ public class LauncherProvider extends ContentProvider {
                 switch (msg.what) {
                     case MSG_LAUNCHER_PROVIDER_CHANGED:
                         mListener.onLauncherProviderChanged();
-                        break;
-                    case MSG_EXTRACTED_COLORS_CHANGED:
-                        mListener.onExtractedColorsChanged();
                         break;
                     case MSG_APP_WIDGET_HOST_RESET:
                         mListener.onAppWidgetHostReset();

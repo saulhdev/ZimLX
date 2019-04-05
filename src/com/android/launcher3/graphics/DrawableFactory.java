@@ -17,6 +17,7 @@
 package com.android.launcher3.graphics;
 
 import android.content.Context;
+import android.content.pm.ActivityInfo;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -31,7 +32,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsBackgroundDrawable;
@@ -44,10 +45,10 @@ import androidx.annotation.UiThread;
 public class DrawableFactory {
 
     private static final String TAG = "DrawableFactory";
-    private static final Object LOCK = new Object();
+
     private static DrawableFactory sInstance;
-    protected final UserHandle mMyUser = Process.myUserHandle();
-    protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
+    private static final Object LOCK = new Object();
+
     private Path mPreloadProgressPath;
 
     public static DrawableFactory get(Context context) {
@@ -60,23 +61,31 @@ public class DrawableFactory {
         }
     }
 
+    protected final UserHandle mMyUser = Process.myUserHandle();
+    protected final ArrayMap<UserHandle, Bitmap> mUserBadges = new ArrayMap<>();
+
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
-    public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
-        return new FastBitmapDrawable(icon);
+    public FastBitmapDrawable newIcon(ItemInfoWithIcon info) {
+        FastBitmapDrawable drawable = new FastBitmapDrawable(info);
+        drawable.setIsDisabled(info.isDisabled());
+        return drawable;
+    }
+
+    public FastBitmapDrawable newIcon(BitmapInfo info, ActivityInfo target) {
+        return new FastBitmapDrawable(info);
     }
 
     /**
      * Returns a FastBitmapDrawable with the icon.
      */
-    public PreloadIconDrawable newPendingIcon(Bitmap icon, Context context) {
+    public PreloadIconDrawable newPendingIcon(ItemInfoWithIcon info, Context context) {
         if (mPreloadProgressPath == null) {
             mPreloadProgressPath = getPreloadProgressPath(context);
         }
-        return new PreloadIconDrawable(icon, mPreloadProgressPath, context);
+        return new PreloadIconDrawable(info, mPreloadProgressPath, context);
     }
-
 
     protected Path getPreloadProgressPath(Context context) {
         if (Utilities.ATLEAST_OREO) {

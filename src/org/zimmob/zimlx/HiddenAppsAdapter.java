@@ -16,7 +16,6 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.util.ComponentKey;
-import com.google.android.apps.nexuslauncher.CustomAppFilter;
 
 import java.util.HashSet;
 import java.util.List;
@@ -38,7 +37,7 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
 
         mCallback = callback;
 
-        Set<String> hiddenApps = CustomAppFilter.getHiddenApps(mContext);
+        Set<String> hiddenApps = null;//CustomAppFilter.getHiddenApps(mContext);
         mSelections = new HashSet<>();
         //add already hidden apps to selections
         for (String hiddenApp : hiddenApps) {
@@ -81,7 +80,6 @@ public class HiddenAppsAdapter extends RecyclerView.Adapter<HiddenAppsAdapter.Vi
         for (ComponentKey component : mSelections) {
             selections.add(component.toString());
         }
-        CustomAppFilter.setHiddenApps(mContext, selections);
         if (!mSelections.isEmpty()) {
             return mSelections.size() + mContext.getString(R.string.hide_app_selected);
         } else {

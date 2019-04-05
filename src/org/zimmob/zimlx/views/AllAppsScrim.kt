@@ -11,7 +11,6 @@ import com.android.launcher3.DeviceProfile
 import com.android.launcher3.Insettable
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
-import com.android.launcher3.config.FeatureFlags
 import com.android.launcher3.graphics.GradientView
 import com.android.launcher3.graphics.ShadowGenerator
 import org.zimmob.zimlx.graphics.NinePatchDrawHelper
@@ -34,7 +33,7 @@ import org.zimmob.zimlx.graphics.NinePatchDrawHelper
 
 class AllAppsScrim(context: Context, attrs: AttributeSet?)
     : GradientView(context, attrs), Insettable {
-    private val pStyle = FeatureFlags.LAUNCHER3_P_ALL_APPS
+    //private val pStyle = FeatureFlags.LAUNCHER3_P_ALL_APPS
 
     private val mFillPaint = Paint(1)
     private val mDrawRect = Rect()
@@ -71,17 +70,17 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun updateColors() {
         super.updateColors()
 
-        if (pStyle) {
+        /*if (pStyle) {
             mFillPaint.color = mScrimColor
-        }
+        }*/
     }
 
     override fun createRadialShader() {
-        if (!pStyle) super.createRadialShader()
+        //if (!pStyle) super.createRadialShader()
     }
 
     override fun onDraw(canvas: Canvas) {
-        if (pStyle) {
+        /*if (pStyle) {
             val height = height.toFloat() + mDrawOffsetY - mDrawHeight + mPadding.top.toFloat()
             val width = (width - mPadding.right).toFloat()
             if (mPadding.left <= 0 && mPadding.right <= 0) {
@@ -103,7 +102,8 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
             }
         } else {
             super.onDraw(canvas)
-        }
+        }*/
+        super.onDraw(canvas)
     }
 
     fun invalidateDrawRect() {
@@ -114,7 +114,7 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     override fun setInsets(insets: Rect) {
         mInsets.set(insets)
         if (mDeviceProfile.isVerticalBarLayout) {
-            mPadding.set(mDeviceProfile.getWorkspacePadding(null))
+            //mPadding.set(mDeviceProfile.getWorkspacePadding(null))
             mPadding.bottom = 0
             val rect = mPadding
             rect.left += mInsets.left
@@ -141,13 +141,14 @@ class AllAppsScrim(context: Context, attrs: AttributeSet?)
     }
 
     override fun setProgress(progress: Float, shiftRange: Float) {
-        if (pStyle) {
+        /*if (pStyle) {
             val interpolatedAlpha = mAlphaRange * mAccelerator.getInterpolation(progress)
             mFillPaint.alpha = (mMinAlpha + interpolatedAlpha).toInt()
             mDrawOffsetY = -shiftRange * progress
             invalidateDrawRect()
         } else {
             super.setProgress(progress, shiftRange)
-        }
+        }*/
+        super.setProgress(progress, shiftRange)
     }
 }

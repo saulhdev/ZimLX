@@ -17,6 +17,8 @@
 package com.android.launcher3.util;
 
 import android.app.AppOpsManager;
+import android.content.ActivityNotFoundException;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ApplicationInfo;
@@ -24,13 +26,22 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
+import android.widget.Toast;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherAppWidgetInfo;
+import com.android.launcher3.PendingAddItemInfo;
+import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
@@ -42,6 +53,8 @@ import java.util.List;
  */
 public class PackageManagerHelper {
 
+    private static final String TAG = "PackageManagerHelper";
+
     private final Context mContext;
     private final PackageManager mPm;
     private final LauncherAppsCompat mLauncherApps;
@@ -50,46 +63,6 @@ public class PackageManagerHelper {
         mContext = context;
         mPm = context.getPackageManager();
         mLauncherApps = LauncherAppsCompat.getInstance(context);
-    }
-
-    /**
-     * Returns whether an application is suspended as per
-     * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
-     */
-    public static boolean isAppSuspended(ApplicationInfo info) {
-        // The value of FLAG_SUSPENDED was reused by a hidden constant
-        // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
-        // or later.
-        if (Utilities.ATLEAST_NOUGAT) {
-            return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
-        } else {
-            return false;
-        }
-    }
-
-    public static Intent getMarketIntent(String packageName) {
-        return new Intent(Intent.ACTION_VIEW)
-                .setData(new Uri.Builder()
-                        .scheme("market")
-                        .authority("details")
-                        .appendQueryParameter("id", packageName)
-                        .build());
-    }
-
-    /**
-     * Creates a new market search intent.
-     */
-    public static Intent getMarketSearchIntent(Context context, String query) {
-        try {
-            Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
-            if (!TextUtils.isEmpty(query)) {
-                intent.setData(
-                        intent.getData().buildUpon().appendQueryParameter("q", query).build());
-            }
-            return intent;
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -119,6 +92,21 @@ public class PackageManagerHelper {
         List<LauncherActivityInfo> activities = mLauncherApps.getActivityList(pkg, user);
         return activities.isEmpty() ? null :
                 AppInfo.makeLaunchIntent(activities.get(0));
+    }
+
+    /**
+     * Returns whether an application is suspended as per
+     * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
+     */
+    public static boolean isAppSuspended(ApplicationInfo info) {
+        // The value of FLAG_SUSPENDED was reused by a hidden constant
+        // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
+        // or later.
+        if (Utilities.ATLEAST_NOUGAT) {
+            return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -167,5 +155,63 @@ public class PackageManagerHelper {
         }
 
         return false;
+    }
+
+    public Intent getMarketIntent(String packageName) {
+        return new Intent(Intent.ACTION_VIEW)
+                .setData(new Uri.Builder()
+                        .scheme("market")
+                        .authority("details")
+                        .appendQueryParameter("id", packageName)
+                        .build())
+                .putExtra(Intent.EXTRA_REFERRER, new Uri.Builder().scheme("android-app")
+                        .authority(mContext.getPackageName()).build());
+    }
+
+    /**
+     * Creates a new market search intent.
+     */
+    public static Intent getMarketSearchIntent(Context context, String query) {
+        try {
+            Intent intent = Intent.parseUri(context.getString(R.string.market_search_intent), 0);
+            if (!TextUtils.isEmpty(query)) {
+                intent.setData(
+                        intent.getData().buildUpon().appendQueryParameter("q", query).build());
+            }
+            return intent;
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+    /**
+     * Starts the details activity for {@code info}
+     */
+    public void startDetailsActivityForInfo(ItemInfo info, Rect sourceBounds, Bundle opts) {
+        if (info instanceof PromiseAppInfo) {
+            PromiseAppInfo promiseAppInfo = (PromiseAppInfo) info;
+            mContext.startActivity(promiseAppInfo.getMarketIntent(mContext));
+            return;
+        }
+        ComponentName componentName = null;
+        if (info instanceof AppInfo) {
+            componentName = ((AppInfo) info).componentName;
+        } else if (info instanceof ShortcutInfo) {
+            componentName = info.getTargetComponent();
+        } else if (info instanceof PendingAddItemInfo) {
+            componentName = ((PendingAddItemInfo) info).componentName;
+        } else if (info instanceof LauncherAppWidgetInfo) {
+            componentName = ((LauncherAppWidgetInfo) info).providerName;
+        }
+        if (componentName != null) {
+            try {
+                mLauncherApps.showAppDetailsForProfile(
+                        componentName, info.user, sourceBounds, opts);
+            } catch (SecurityException | ActivityNotFoundException e) {
+                Toast.makeText(mContext, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+                Log.e(TAG, "Unable to launch settings", e);
+            }
+        }
     }
 }

@@ -20,25 +20,18 @@ import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.text.TextUtils;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.zimmob.zimlx.EditableItemInfo;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
  */
-public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
+public class ShortcutInfo extends ItemInfoWithIcon {
 
     public static final int DEFAULT = 0;
 
@@ -71,69 +64,29 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
      */
     public static final int FLAG_SUPPORTS_WEB_UI = 16; //0B10000;
 
-    @Deprecated
-    public static final int FLAG_RESTORED_APP_TYPE = 0B0011110000;
-    /**
-     * Indicates that the icon is disabled due to safe mode restrictions.
-     */
-    public static final int FLAG_DISABLED_SAFEMODE = 1 << 0;
-    /**
-     * Indicates that the icon is disabled as the app is not available.
-     */
-    public static final int FLAG_DISABLED_NOT_AVAILABLE = 1 << 1;
-    /**
-     * Indicates that the icon is disabled as the app is suspended
-     */
-    public static final int FLAG_DISABLED_SUSPENDED = 1 << 2;
-    /**
-     * Indicates that the icon is disabled as the user is in quiet mode.
-     */
-    public static final int FLAG_DISABLED_QUIET_USER = 1 << 3;
-    /**
-     * Indicates that the icon is disabled as the publisher has disabled the actual shortcut.
-     */
-    public static final int FLAG_DISABLED_BY_PUBLISHER = 1 << 4;
-    /**
-     * Indicates that the icon is disabled as the user partition is currently locked.
-     */
-    public static final int FLAG_DISABLED_LOCKED_USER = 1 << 5;
     /**
      * The intent used to start the application.
      */
     public Intent intent;
+
     /**
      * If isShortcut=true and customIcon=false, this contains a reference to the
      * shortcut icon as an application's resource.
      */
     public Intent.ShortcutIconResource iconResource;
-    /**
-     * Could be disabled, if the the app is installed but unavailable (eg. in safe mode or when
-     * sd-card is not available).
-     */
-    public int isDisabled = DEFAULT;
-    public int status;
+
     /**
      * A message to display when the user tries to start a disabled shortcut.
      * This is currently only used for deep shortcuts.
      */
-    CharSequence disabledMessage;
-    CharSequence originalTitle;
+    public CharSequence disabledMessage;
+
+    public int status;
+
     /**
      * The installation progress [0-100] of the package that this shortcut represents.
      */
     private int mInstallProgress;
-    /**
-     * If this shortcut is a placeholder, then intent will be a market intent for the package, and
-     * this will hold the original intent from the database.  Otherwise, null.
-     * Refer {@link #FLAG_RESTORED_ICON}, {@link #FLAG_AUTOINSTALL_ICON}
-     */
-    Intent promisedIntent;
-    private Bitmap mUnbadgedIcon;
-    /**
-     * The application icon.
-     */
-    private Bitmap mIcon;
-    private Bitmap mCustomIcon;
 
     public ShortcutInfo() {
         itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
@@ -144,10 +97,8 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         title = info.title;
         intent = new Intent(info.intent);
         iconResource = info.iconResource;
-        mIcon = info.mIcon;
         status = info.status;
         mInstallProgress = info.mInstallProgress;
-        isDisabled = info.isDisabled;
     }
 
     /**
@@ -157,7 +108,6 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         super(info);
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        isDisabled = info.isDisabled;
     }
 
     /**
@@ -233,17 +183,10 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
         disabledMessage = shortcutInfo.getDisabledMessage();
     }
 
-    /**
-     * Returns the ShortcutInfo id associated with the deep shortcut.
-     */
+    /** Returns the ShortcutInfo id associated with the deep shortcut. */
     public String getDeepShortcutId() {
         return itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT ?
                 getIntent().getStringExtra(ShortcutInfoCompat.EXTRA_SHORTCUT_ID) : null;
-    }
-
-    @Override
-    public boolean isDisabled() {
-        return isDisabled != 0;
     }
 
     @Override
@@ -258,54 +201,5 @@ public class ShortcutInfo extends ItemInfoWithIcon implements EditableItemInfo {
             return pkg == null ? null : new ComponentName(pkg, IconCache.EMPTY_CLASS_NAME);
         }
         return cn;
-    }
-
-    private void updateDatabase(Context context, String title, Bitmap icon, boolean updateIcon) {
-        ModelWriter.modifyItemInDatabase(context, this, title, icon, updateIcon);
-    }
-
-    public void onLoadTitleAlias(Context context, String titleAlias) {
-        if (getOriginalTitle() == null)
-            setOriginalTitle(title);
-        if (titleAlias == null) {
-            titleAlias = Utilities.getZimPrefs(context).getCustomAppName()
-                    .get(new ComponentKey(getTargetComponent(), user));
-            if (titleAlias == null) {
-                titleAlias = (String) originalTitle;
-            }
-        }
-        title = titleAlias;
-    }
-
-    @Nullable
-    @Override
-    public String getTitle(@NotNull Context context) {
-        return (String) (title != null && !title.equals(originalTitle) ? title : null);
-    }
-
-    @Override
-    public void setTitle(@NotNull Context context, @Nullable String title) {
-        updateDatabase(context, title, null, false);
-    }
-
-    @NotNull
-    @Override
-    public String getDefaultTitle(@NotNull Context context) {
-        return (String) (originalTitle != null ? originalTitle : title);
-    }
-
-    @Nullable
-    @Override
-    public CharSequence getOriginalTitle() {
-        return originalTitle;
-    }
-
-    @Override
-    public void setOriginalTitle(CharSequence originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
-    public void setIcon(Bitmap b) {
-        mIcon = b;
     }
 }

@@ -39,6 +39,7 @@
     <uses-permission android:name="android.permission.BIND_APPWIDGET" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -49,7 +50,6 @@
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
 
         <!-- Intent received used to install shortcuts from other applications -->
@@ -75,6 +75,13 @@
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
+            android:exported="false"
+            android:process=":wallpaper_chooser"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
+
 
         <service
             android:name="com.android.launcher3.dynamicui.ColorExtractionService"

@@ -29,6 +29,9 @@ import com.android.launcher3.folder.Folder;
 
 import static android.view.View.INVISIBLE;
 import static android.view.View.VISIBLE;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
@@ -44,7 +47,7 @@ public class ItemLongClickListener {
     private static boolean onWorkspaceItemLongClick(View v) {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
-        //if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW)) return false;
+        if (!launcher.isInState(NORMAL) && !launcher.isInState(OVERVIEW)) return false;
         if (!(v.getTag() instanceof ItemInfo)) return false;
 
         launcher.setWaitingForResult(null);
@@ -74,7 +77,7 @@ public class ItemLongClickListener {
         Launcher launcher = Launcher.getLauncher(v.getContext());
         if (!canStartDrag(launcher)) return false;
         // When we have exited all apps or are in transition, disregard long clicks
-        //if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW)) return false;
+        if (!launcher.isInState(ALL_APPS) && !launcher.isInState(OVERVIEW)) return false;
         if (launcher.getWorkspace().isSwitchingState()) return false;
 
         // Start the drag
@@ -107,6 +110,8 @@ public class ItemLongClickListener {
         // that is subsequently removed from the workspace in startBinding().
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
-        return !launcher.getDragController().isDragging();
+        if (launcher.getDragController().isDragging()) return false;
+
+        return true;
     }
 }

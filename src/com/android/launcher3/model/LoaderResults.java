@@ -35,6 +35,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.ViewOnDrawExecutor;
+import com.android.launcher3.widget.WidgetListRowEntry;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -97,6 +98,7 @@ public class LoaderResults {
             workspaceItems.addAll(mBgDataModel.workspaceItems);
             appWidgets.addAll(mBgDataModel.appWidgets);
             orderedScreenIds.addAll(mBgDataModel.workspaceScreens);
+            mBgDataModel.lastBindId++;
         }
 
         final int currentScreen;
@@ -159,7 +161,7 @@ public class LoaderResults {
         // This ensures that the first screen is immediately visible (eg. during rotation)
         // In case of !validFirstPage, bind all pages one after other.
         final Executor deferredExecutor =
-                validFirstPage ? new ViewOnDrawExecutor(mUiExecutor) : mainExecutor;
+                validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
 
         mainExecutor.execute(new Runnable() {
             @Override
@@ -209,10 +211,10 @@ public class LoaderResults {
      * Filters the set of items who are directly or indirectly (via another container) on the
      * specified screen.
      */
-    private <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
-                                                                  ArrayList<T> allWorkspaceItems,
-                                                                  ArrayList<T> currentScreenItems,
-                                                                  ArrayList<T> otherScreenItems) {
+    public static <T extends ItemInfo> void filterCurrentWorkspaceItems(long currentScreenId,
+                                                                        ArrayList<T> allWorkspaceItems,
+                                                                        ArrayList<T> currentScreenItems,
+                                                                        ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
         Iterator<T> iter = allWorkspaceItems.iterator();
         while (iter.hasNext()) {
@@ -254,10 +256,8 @@ public class LoaderResults {
         }
     }
 
-    /**
-     * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
-     * right)
-     */
+    /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
+     * right) */
     private void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
         final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
         final int screenCols = profile.numColumns;
@@ -302,7 +302,7 @@ public class LoaderResults {
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
             final int start = i;
-            final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N - i);
+            final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
             final Runnable r = new Runnable() {
                 @Override
                 public void run() {
@@ -352,18 +352,20 @@ public class LoaderResults {
         // shallow copy
         @SuppressWarnings("unchecked") final ArrayList<AppInfo> list = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
 
-        Runnable r = () -> {
-            Callbacks callbacks = mCallbacks.get();
-            if (callbacks != null) {
-                callbacks.bindAllApplications(list);
+        Runnable r = new Runnable() {
+            public void run() {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    callbacks.bindAllApplications(list);
+                }
             }
         };
         mUiExecutor.execute(r);
     }
 
     public void bindWidgets() {
-        final MultiHashMap<PackageItemInfo, WidgetItem> widgets
-                = mBgDataModel.widgetsModel.getWidgetsMap();
+        final ArrayList<WidgetListRowEntry> widgets =
+                mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
         Runnable r = new Runnable() {
             public void run() {
                 Callbacks callbacks = mCallbacks.get();

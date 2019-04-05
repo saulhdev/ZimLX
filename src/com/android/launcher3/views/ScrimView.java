@@ -61,6 +61,8 @@ import androidx.customview.widget.ExploreByTouchHelper;
 
 import static android.content.Context.ACCESSIBILITY_SERVICE;
 import static android.view.MotionEvent.ACTION_DOWN;
+import static androidx.core.graphics.ColorUtils.compositeColors;
+import static androidx.core.graphics.ColorUtils.setAlphaComponent;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.anim.Interpolators.ACCEL;

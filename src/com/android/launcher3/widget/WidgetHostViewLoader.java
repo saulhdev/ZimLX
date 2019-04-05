@@ -22,52 +22,33 @@ import com.android.launcher3.util.Thunk;
 public class WidgetHostViewLoader implements DragController.DragListener {
     private static final String TAG = "WidgetHostViewLoader";
     private static final boolean LOGD = false;
-    @Thunk
-    final View mView;
-    @Thunk
-    final PendingAddWidgetInfo mInfo;
+
     /* Runnables to handle inflation and binding. */
     @Thunk
     Runnable mInflateWidgetRunnable = null;
+    private Runnable mBindWidgetRunnable = null;
+
     // TODO: technically, this class should not have to know the existence of the launcher.
     @Thunk
     Launcher mLauncher;
     @Thunk
     Handler mHandler;
+    @Thunk
+    final View mView;
+    @Thunk
+    final PendingAddWidgetInfo mInfo;
+
     // Widget id generated for binding a widget host view or -1 for invalid id. The id is
     // not is use as long as it is stored here and can be deleted safely. Once its used, this value
     // to be set back to -1.
     @Thunk
     int mWidgetLoadingId = -1;
-    private Runnable mBindWidgetRunnable = null;
 
     public WidgetHostViewLoader(Launcher launcher, View view) {
         mLauncher = launcher;
         mHandler = new Handler();
         mView = view;
         mInfo = (PendingAddWidgetInfo) view.getTag();
-    }
-
-    public static Bundle getDefaultOptionsForWidget(Context context, PendingAddWidgetInfo info) {
-        Rect rect = new Rect();
-        AppWidgetResizeFrame.getWidgetSizeRanges(context, info.spanX, info.spanY, rect);
-        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context,
-                info.componentName, null);
-
-        float density = context.getResources().getDisplayMetrics().density;
-        int xPaddingDips = (int) ((padding.left + padding.right) / density);
-        int yPaddingDips = (int) ((padding.top + padding.bottom) / density);
-
-        Bundle options = new Bundle();
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
-                rect.left - xPaddingDips);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
-                rect.top - yPaddingDips);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
-                rect.right - xPaddingDips);
-        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
-                rect.bottom - yPaddingDips);
-        return options;
     }
 
     @Override
@@ -110,7 +91,7 @@ public class WidgetHostViewLoader implements DragController.DragListener {
     private boolean preloadWidget() {
         final LauncherAppWidgetProviderInfo pInfo = mInfo.info;
 
-        if (pInfo.isCustomWidget) {
+        if (pInfo.isCustomWidget()) {
             return false;
         }
         final Bundle options = getDefaultOptionsForWidget(mLauncher, mInfo);
@@ -147,14 +128,14 @@ public class WidgetHostViewLoader implements DragController.DragListener {
                     return;
                 }
                 AppWidgetHostView hostView = mLauncher.getAppWidgetHost().createView(
-                        mLauncher, mWidgetLoadingId, pInfo);
+                        (Context) mLauncher, mWidgetLoadingId, pInfo);
                 mInfo.boundWidget = hostView;
 
                 // We used up the widget Id in binding the above view.
                 mWidgetLoadingId = -1;
 
                 hostView.setVisibility(View.INVISIBLE);
-                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo, false, true);
+                int[] unScaledSize = mLauncher.getWorkspace().estimateItemSize(mInfo);
                 // We want the first widget layout to be the correct size. This will be important
                 // for width size reporting to the AppWidgetManager.
                 DragLayer.LayoutParams lp = new DragLayer.LayoutParams(unScaledSize[0],
@@ -175,5 +156,27 @@ public class WidgetHostViewLoader implements DragController.DragListener {
         }
         mHandler.post(mBindWidgetRunnable);
         return true;
+    }
+
+    public static Bundle getDefaultOptionsForWidget(Context context, PendingAddWidgetInfo info) {
+        Rect rect = new Rect();
+        AppWidgetResizeFrame.getWidgetSizeRanges(context, info.spanX, info.spanY, rect);
+        Rect padding = AppWidgetHostView.getDefaultPaddingForWidget(context,
+                info.componentName, null);
+
+        float density = context.getResources().getDisplayMetrics().density;
+        int xPaddingDips = (int) ((padding.left + padding.right) / density);
+        int yPaddingDips = (int) ((padding.top + padding.bottom) / density);
+
+        Bundle options = new Bundle();
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_WIDTH,
+                rect.left - xPaddingDips);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MIN_HEIGHT,
+                rect.top - yPaddingDips);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_WIDTH,
+                rect.right - xPaddingDips);
+        options.putInt(AppWidgetManager.OPTION_APPWIDGET_MAX_HEIGHT,
+                rect.bottom - yPaddingDips);
+        return options;
     }
 }

@@ -14,20 +14,12 @@
 -->
 
 <resources>
+    <dimen name="click_shadow_elevation">4dp</dimen>
+
     <!-- Dynamic Grid -->
     <dimen name="dynamic_grid_edge_margin">8dp</dimen>
-    <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_height">28dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_line_height">2dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">0dp</dimen>
-    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">0dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_line_height">1dp</dimen>
     <dimen name="dynamic_grid_icon_drawable_padding">8dp</dimen>
-    <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
-    <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
-    <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
     <dimen name="dynamic_grid_workspace_top_padding">8dp</dimen>
     <dimen name="dynamic_grid_workspace_page_spacing">8dp</dimen>
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
@@ -39,8 +31,54 @@
 
     <!-- Hotseat -->
     <dimen name="dynamic_grid_hotseat_top_padding">8dp</dimen>
-    <dimen name="dynamic_grid_hotseat_bottom_padding">0dp</dimen>
-    <dimen name="dynamic_grid_hotseat_size">45dp</dimen>
+    <dimen name="dynamic_grid_hotseat_bottom_padding">2dp</dimen>
+    <!-- Extra bottom padding for non-tall devices. -->
+    <dimen name="dynamic_grid_hotseat_bottom_non_tall_padding">0dp</dimen>
+    <dimen name="dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="dynamic_grid_hotseat_side_padding">0dp</dimen>
+
+    <!-- Hotseat/all-apps scrim -->
+    <dimen name="vertical_drag_handle_size">24dp</dimen>
+    <dimen name="vertical_drag_handle_overlap_workspace">0dp</dimen>
+
+    <!-- Drop target bar -->
+    <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
+    <dimen name="drop_target_vertical_gap">20dp</dimen>
+
+    <!-- App Widget resize frame -->
+    <dimen name="widget_handle_margin">13dp</dimen>
+    <dimen name="resize_frame_background_padding">24dp</dimen>
+
+    <!-- Fast scroll -->
+    <dimen name="fastscroll_track_min_width">6dp</dimen>
+    <dimen name="fastscroll_track_max_width">8dp</dimen>
+    <dimen name="fastscroll_thumb_padding">1dp</dimen>
+    <dimen name="fastscroll_thumb_height">52dp</dimen>
+    <dimen name="fastscroll_thumb_touch_inset">-24dp</dimen>
+
+    <dimen name="fastscroll_popup_width">75dp</dimen>
+    <dimen name="fastscroll_popup_height">62dp</dimen>
+    <dimen name="fastscroll_popup_padding">13dp</dimen>
+    <dimen name="fastscroll_popup_text_size">32dp</dimen>
+    <dimen name="fastscroll_popup_margin">19dp</dimen>
+
+
+    <dimen name="all_apps_scrim_radius">8dp</dimen>
+    <dimen name="all_apps_scrim_blur">4dp</dimen>
+    <dimen name="all_apps_scrim_margin">8dp</dimen>
+
+    <dimen name="dynamic_grid_min_page_indicator_size">32dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_height">28dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_left_nav_bar">38dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_gutter_width_right_nav_bar">48dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_left_nav_bar_gutter_width">0dp</dimen>
+    <dimen name="dynamic_grid_page_indicator_land_right_nav_bar_gutter_width">0dp</dimen>
+    <dimen name="dynamic_grid_overview_min_icon_zone_height">80dp</dimen>
+    <dimen name="dynamic_grid_overview_max_icon_zone_height">120dp</dimen>
+    <dimen name="dynamic_grid_overview_bar_item_width">80dp</dimen>
+    <dimen name="dynamic_grid_overview_bar_spacer_width">25dp</dimen>
+
+
     <dimen name="dynamic_grid_hotseat_height">88dp</dimen>
     <dimen name="dynamic_grid_hotseat_gutter_width">24dp</dimen>
     <dimen name="dynamic_grid_hotseat_land_left_nav_bar_right_padding">0dp</dimen>
@@ -51,27 +89,9 @@
     <dimen name="v1_dynamic_grid_hotseat_bottom_padding">2dp</dimen>
     <dimen name="v1_dynamic_grid_hotseat_size">80dp</dimen>
 
-    <!-- Drop target bar -->
-    <dimen name="dynamic_grid_drop_target_size">48dp</dimen>
-    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
-    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
-
     <!-- App Widget resize frame -->
     <dimen name="default_widget_padding">8dp</dimen>
-    <dimen name="widget_handle_margin">13dp</dimen>
-    <dimen name="resize_frame_background_padding">24dp</dimen>
 
-    <!-- Fast scroll -->
-    <dimen name="fastscroll_track_min_width">6dp</dimen>
-    <dimen name="fastscroll_track_max_width">8dp</dimen>
-    <dimen name="fastscroll_thumb_padding">1dp</dimen>
-    <dimen name="fastscroll_thumb_height">52dp</dimen>
-
-    <dimen name="fastscroll_popup_width">75dp</dimen>
-    <dimen name="fastscroll_popup_height">62dp</dimen>
-    <dimen name="fastscroll_popup_padding">13dp</dimen>
-    <dimen name="fastscroll_popup_text_size">32dp</dimen>
-    <dimen name="fastscroll_popup_margin">30dp</dimen>
 
     <!--
       Fast scroller draws the content horizontally centered. The end of the track should be
@@ -82,23 +102,29 @@
     <dimen name="fastscroll_end_margin">-26dp</dimen>
 
     <!-- All Apps -->
-    <dimen name="all_apps_button_scale_down">0dp</dimen>
-    <dimen name="all_apps_search_bar_field_height">48dp</dimen>
-    <dimen name="all_apps_search_bar_height">60dp</dimen>
-    <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
-    <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
-    <dimen name="all_apps_background_canvas_width">700dp</dimen>
-    <dimen name="all_apps_background_canvas_height">475dp</dimen>
     <dimen name="all_apps_caret_stroke_width">2dp</dimen>
     <dimen name="all_apps_caret_shadow_spread">1dp</dimen>
     <dimen name="all_apps_caret_size">13dp</dimen>
     <dimen name="all_apps_caret_workspace_offset">18dp</dimen>
+    <dimen name="all_apps_button_scale_down">0dp</dimen>
+    <dimen name="all_apps_search_bar_field_height">48dp</dimen>
+    <dimen name="all_apps_search_bar_bottom_padding">30dp</dimen>
+    <dimen name="all_apps_empty_search_message_top_offset">40dp</dimen>
+    <dimen name="all_apps_empty_search_bg_top_offset">144dp</dimen>
+    <dimen name="all_apps_background_canvas_width">700dp</dimen>
+    <dimen name="all_apps_background_canvas_height">475dp</dimen>
+    <dimen name="all_apps_header_tab_height">50dp</dimen>
+    <dimen name="all_apps_tabs_indicator_height">2dp</dimen>
+    <dimen name="all_apps_header_top_padding">36dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_top_padding">16dp</dimen>
     <dimen name="all_apps_work_profile_tab_footer_bottom_padding">20dp</dimen>
+    <dimen name="all_apps_tabs_side_padding">12dp</dimen>
+    <dimen name="all_apps_divider_height">1dp</dimen>
 
     <!-- Search bar in All Apps -->
     <dimen name="all_apps_header_max_elevation">3dp</dimen>
     <dimen name="all_apps_header_scroll_to_elevation">16dp</dimen>
+    <dimen name="all_apps_header_shadow_height">6dp</dimen>
 
     <dimen name="all_apps_divider_margin_vertical">8dp</dimen>
 
@@ -247,7 +273,13 @@
     <dimen name="all_apps_extra_search_padding">8dp</dimen>
     <dimen name="app_bar_elevation">4dp</dimen>
     <dimen name="nav_bar_divider_size">1dp</dimen>
-    <dimen name="all_apps_scrim_radius">8dp</dimen>
-    <dimen name="all_apps_scrim_blur">4dp</dimen>
-    <dimen name="all_apps_scrim_margin">8dp</dimen>
+    <!-- Overview -->
+    <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_thumb_size">32dp</dimen>
+
+    <!-- Drop target bar -->
+    <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
+    <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
+
+
 </resources>

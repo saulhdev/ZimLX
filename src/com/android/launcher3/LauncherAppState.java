@@ -28,20 +28,19 @@ import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractionUtils;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsObserver;
-import com.android.launcher3.util.TestingUtils;
 
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
 
 public class LauncherAppState {
 
-    public static final boolean PROFILE_STARTUP = FeatureFlags.IS_DOGFOOD_BUILD;
+    public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     private static LauncherAppState INSTANCE;
@@ -52,7 +51,34 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SettingsObserver mNotificationBadgingObserver;
-    private Launcher mLauncher;
+
+    public static LauncherAppState getInstance(final Context context) {
+        if (INSTANCE == null) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                INSTANCE = new LauncherAppState(context.getApplicationContext());
+            } else {
+                try {
+                    return new MainThreadExecutor().submit(new Callable<LauncherAppState>() {
+                        @Override
+                        public LauncherAppState call() throws Exception {
+                            return LauncherAppState.getInstance(context);
+                        }
+                    }).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return INSTANCE;
+    }
+
+    public static LauncherAppState getInstanceNoCreate() {
+        return INSTANCE;
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
 
     private LauncherAppState(Context context) {
         if (getLocalProvider(context) == null) {
@@ -62,10 +88,6 @@ public class LauncherAppState {
         Log.v(Launcher.TAG, "LauncherAppState initiated");
         Preconditions.assertUIThread();
         mContext = context;
-
-        if (TestingUtils.MEMORY_DUMP_ENABLED) {
-            TestingUtils.startTrackingMemory(mContext);
-        }
 
         mInvariantDeviceProfile = new InvariantDeviceProfile(mContext);
         mIconCache = new IconCache(mContext, mInvariantDeviceProfile);
@@ -83,17 +105,14 @@ public class LauncherAppState {
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_AVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNAVAILABLE);
         filter.addAction(Intent.ACTION_MANAGED_PROFILE_UNLOCKED);
-        // For extracting colors from the wallpaper
-        if (Utilities.ATLEAST_NOUGAT) {
-            // TODO: add a broadcast entry to the manifest for pre-N.
-            filter.addAction(Intent.ACTION_WALLPAPER_CHANGED);
+
+        if (FeatureFlags.IS_DOGFOOD_BUILD) {
+            filter.addAction(ACTION_FORCE_ROLOAD);
         }
 
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         new ConfigMonitor(mContext).register();
-
-        ExtractionUtils.startColorExtractionServiceIfNecessary(mContext);
 
         if (!mContext.getResources().getBoolean(R.bool.notification_badging_enabled)) {
             mNotificationBadgingObserver = null;
@@ -103,7 +122,7 @@ public class LauncherAppState {
                     mContext.getContentResolver()) {
                 @Override
                 public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                    if (isNotificationBadgingEnabled && Utilities.ATLEAST_NOUGAT) {
+                    if (isNotificationBadgingEnabled) {
                         NotificationListener.requestRebind(new ComponentName(
                                 mContext, NotificationListener.class));
                     }
@@ -111,43 +130,6 @@ public class LauncherAppState {
             };
             mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
         }
-    }
-
-    public static LauncherAppState getInstance(final Context context) {
-        if (INSTANCE == null) {
-            if (Looper.myLooper() == Looper.getMainLooper()) {
-                INSTANCE = new LauncherAppState(context.getApplicationContext());
-            } else {
-                try {
-                    return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance(context)).get();
-                } catch (InterruptedException | ExecutionException e) {
-                    throw new RuntimeException(e);
-                }
-            }
-        }
-        return INSTANCE;
-    }
-
-    public static LauncherAppState getInstanceNoCreate() {
-        return INSTANCE;
-    }
-
-    /**
-     * Shorthand for {@link #getInvariantDeviceProfile()}
-     */
-    public static InvariantDeviceProfile getIDP(Context context) {
-        return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
-    }
-
-    private static LauncherProvider getLocalProvider(Context context) {
-        ContentProviderClient cl = context.getContentResolver().acquireContentProviderClient(LauncherProvider.AUTHORITY);
-        LauncherProvider provider = (LauncherProvider) cl.getLocalContentProvider();
-        cl.release();
-        return provider;
-    }
-
-    public Context getContext() {
-        return mContext;
     }
 
     /**
@@ -164,14 +146,9 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
-        mLauncher = launcher;
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         return mModel;
-    }
-
-    public Launcher getLauncher() {
-        return mLauncher;
     }
 
     public IconCache getIconCache() {
@@ -188,5 +165,19 @@ public class LauncherAppState {
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;
+    }
+
+    /**
+     * Shorthand for {@link #getInvariantDeviceProfile()}
+     */
+    public static InvariantDeviceProfile getIDP(Context context) {
+        return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
+    }
+
+    private static LauncherProvider getLocalProvider(Context context) {
+        try (ContentProviderClient cl = context.getContentResolver()
+                .acquireContentProviderClient(LauncherProvider.AUTHORITY)) {
+            return (LauncherProvider) cl.getLocalContentProvider();
+        }
     }
 }

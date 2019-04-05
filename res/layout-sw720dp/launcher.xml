@@ -42,9 +42,8 @@
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
                 android:theme="@style/HomeScreenElementTheme"
-                launcher:pageIndicator="@id/page_indicator"></com.android.launcher3.Workspace>
+                launcher:pageIndicator="@id/page_indicator" />
 
-            <include layout="@layout/all_apps_bg" />
 
             <!-- DO NOT CHANGE THE ID -->
             <include
@@ -63,11 +62,6 @@
                 layout="@layout/overview_panel"
                 android:visibility="gone" />
 
-            <!-- Keep these behind the workspace so that they are not visible when
-                 we go into AllApps -->
-            <include
-                android:id="@+id/page_indicator"
-                layout="@layout/page_indicator" />
 
             <include
                 android:id="@+id/widgets_view"

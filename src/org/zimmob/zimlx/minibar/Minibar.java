@@ -54,10 +54,14 @@ public class Minibar {
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
             case AppDrawer:
-                if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
+                Launcher.getLauncher(mContext).getAppsView();
+                ((DrawerLayout) Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
+
+
+                /*if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
                     Launcher.getLauncher(mContext).showAppsView(true, true);
                     ((DrawerLayout) Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
-                }
+                }*/
                 break;
             case VolumeDialog:
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

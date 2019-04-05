@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.animation.ObjectAnimator;
-import android.animation.TimeInterpolator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -28,33 +27,24 @@ import android.graphics.Paint;
 import android.graphics.PixelFormat;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffColorFilter;
+import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.util.SparseArray;
 
 import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.ColorExtractor;
-import com.android.launcher3.graphics.IconPalette;
+
+import static com.android.launcher3.anim.Interpolators.ACCEL;
 
 public class FastBitmapDrawable extends Drawable {
 
-    public static final TimeInterpolator CLICK_FEEDBACK_INTERPOLATOR = new TimeInterpolator() {
+    private static final float PRESSED_SCALE = 1.1f;
 
-        @Override
-        public float getInterpolation(float input) {
-            if (input < 0.05f) {
-                return input / 0.05f;
-            } else if (input < 0.3f) {
-                return 1;
-            } else {
-                return (1 - input) / 0.7f;
-            }
-        }
-    };
-    public static final int CLICK_FEEDBACK_DURATION = 2000;
-    private static final float PRESSED_BRIGHTNESS = 100f / 255f;
     private static final float DISABLED_DESATURATION = 1f;
     private static final float DISABLED_BRIGHTNESS = 0.5f;
+
+    public static final int CLICK_FEEDBACK_DURATION = 200;
+
     // Since we don't need 256^2 values for combinations of both the brightness and saturation, we
     // reduce the value space to a smaller value V, which reduces the number of cached
     // ColorMatrixColorFilters that we need to keep to V^2
@@ -66,33 +56,38 @@ public class FastBitmapDrawable extends Drawable {
     // Temporary matrices used for calculation
     private static final ColorMatrix sTempBrightnessMatrix = new ColorMatrix();
     private static final ColorMatrix sTempFilterMatrix = new ColorMatrix();
-    private static final Property<FastBitmapDrawable, Float> BRIGHTNESS
-            = new Property<FastBitmapDrawable, Float>(Float.TYPE, "brightness") {
+
+    protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
+    protected Bitmap mBitmap;
+    protected final int mIconColor;
+
+    private boolean mIsPressed;
+    private boolean mIsDisabled;
+
+    // Animator and properties for the fast bitmap drawable's scale
+    private static final Property<FastBitmapDrawable, Float> SCALE
+            = new Property<FastBitmapDrawable, Float>(Float.TYPE, "scale") {
         @Override
         public Float get(FastBitmapDrawable fastBitmapDrawable) {
-            return fastBitmapDrawable.getBrightness();
+            return fastBitmapDrawable.mScale;
         }
 
         @Override
         public void set(FastBitmapDrawable fastBitmapDrawable, Float value) {
-            fastBitmapDrawable.setBrightness(value);
+            fastBitmapDrawable.mScale = value;
+            fastBitmapDrawable.invalidateSelf();
         }
     };
-    protected final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG | Paint.ANTI_ALIAS_FLAG);
-    private final Bitmap mBitmap;
-    protected final int mIconColor;
-    private boolean mIsPressed;
-    private boolean mIsDisabled;
-    private IconPalette mIconPalette;
+    private ObjectAnimator mScaleAnimation;
+    private float mScale = 1;
+
+
     // The saturation and brightness are values that are mapped to REDUCED_FILTER_VALUE_SPACE and
     // as a result, can be used to compose the key for the cached ColorMatrixColorFilters
     private int mDesaturation = 0;
     private int mBrightness = 0;
     private int mAlpha = 255;
     private int mPrevUpdateKey = Integer.MAX_VALUE;
-
-    // Animators for the fast bitmap drawable's brightness
-    private ObjectAnimator mBrightnessAnimator;
 
     public FastBitmapDrawable(Bitmap b) {
         this(b, Color.TRANSPARENT);
@@ -113,21 +108,36 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        canvas.drawBitmap(mBitmap, null, getBounds(), mPaint);
+    public final void draw(Canvas canvas) {
+        if (mScaleAnimation != null) {
+            int count = canvas.save();
+            Rect bounds = getBounds();
+            canvas.scale(mScale, mScale, bounds.exactCenterX(), bounds.exactCenterY());
+            drawInternal(canvas, bounds);
+            canvas.restoreToCount(count);
+        } else {
+            drawInternal(canvas, getBounds());
+        }
     }
 
-    public IconPalette getIconPalette() {
-        if (mIconPalette == null) {
-            mIconPalette = IconPalette.fromDominantColor(ColorExtractor
-                    .findDominantColorByHue(mBitmap, 20), true /* desaturateBackground */);
-        }
-        return mIconPalette;
+    protected void drawInternal(Canvas canvas, Rect bounds) {
+        canvas.drawBitmap(mBitmap, null, bounds, mPaint);
+    }
+
+    @Override
+    public void setColorFilter(ColorFilter cf) {
+        // No op
     }
 
     @Override
     public int getOpacity() {
         return PixelFormat.TRANSLUCENT;
+    }
+
+    @Override
+    public void setAlpha(int alpha) {
+        mAlpha = alpha;
+        mPaint.setAlpha(alpha);
     }
 
     @Override
@@ -140,10 +150,8 @@ public class FastBitmapDrawable extends Drawable {
         return mAlpha;
     }
 
-    @Override
-    public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        mPaint.setAlpha(alpha);
+    public float getAnimatedScale() {
+        return mScaleAnimation == null ? 1 : mScale;
     }
 
     @Override
@@ -166,10 +174,6 @@ public class FastBitmapDrawable extends Drawable {
         return getBounds().height();
     }
 
-    public Bitmap getBitmap() {
-        return mBitmap;
-    }
-
     @Override
     public boolean isStateful() {
         return true;
@@ -178,11 +182,6 @@ public class FastBitmapDrawable extends Drawable {
     @Override
     public ColorFilter getColorFilter() {
         return mPaint.getColorFilter();
-    }
-
-    @Override
-    public void setColorFilter(ColorFilter cf) {
-        // No op
     }
 
     @Override
@@ -197,19 +196,20 @@ public class FastBitmapDrawable extends Drawable {
         if (mIsPressed != isPressed) {
             mIsPressed = isPressed;
 
-            if (mBrightnessAnimator != null) {
-                mBrightnessAnimator.cancel();
+            if (mScaleAnimation != null) {
+                mScaleAnimation.cancel();
+                mScaleAnimation = null;
             }
 
             if (mIsPressed) {
                 // Animate when going to pressed state
-                mBrightnessAnimator = ObjectAnimator.ofFloat(
-                        this, BRIGHTNESS, getExpectedBrightness());
-                mBrightnessAnimator.setDuration(CLICK_FEEDBACK_DURATION);
-                mBrightnessAnimator.setInterpolator(CLICK_FEEDBACK_INTERPOLATOR);
-                mBrightnessAnimator.start();
+                mScaleAnimation = ObjectAnimator.ofFloat(this, SCALE, PRESSED_SCALE);
+                mScaleAnimation.setDuration(CLICK_FEEDBACK_DURATION);
+                mScaleAnimation.setInterpolator(ACCEL);
+                mScaleAnimation.start();
             } else {
-                setBrightness(getExpectedBrightness());
+                mScale = 1f;
+                invalidateSelf();
             }
             return true;
         }
@@ -218,12 +218,7 @@ public class FastBitmapDrawable extends Drawable {
 
     private void invalidateDesaturationAndBrightness() {
         setDesaturation(mIsDisabled ? DISABLED_DESATURATION : 0);
-        setBrightness(getExpectedBrightness());
-    }
-
-    private float getExpectedBrightness() {
-        return mIsDisabled ? DISABLED_BRIGHTNESS :
-                (mIsPressed ? PRESSED_BRIGHTNESS : 0);
+        setBrightness(mIsDisabled ? DISABLED_BRIGHTNESS : 0);
     }
 
     public void setIsDisabled(boolean isDisabled) {
@@ -231,10 +226,6 @@ public class FastBitmapDrawable extends Drawable {
             mIsDisabled = isDisabled;
             invalidateDesaturationAndBrightness();
         }
-    }
-
-    public float getDesaturation() {
-        return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
     }
 
     /**
@@ -248,8 +239,8 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
-    private float getBrightness() {
-        return (float) mBrightness / REDUCED_FILTER_VALUE_SPACE;
+    public float getDesaturation() {
+        return (float) mDesaturation / REDUCED_FILTER_VALUE_SPACE;
     }
 
     /**
@@ -263,10 +254,14 @@ public class FastBitmapDrawable extends Drawable {
         }
     }
 
+    private float getBrightness() {
+        return (float) mBrightness / REDUCED_FILTER_VALUE_SPACE;
+    }
+
     /**
      * Updates the paint to reflect the current brightness and saturation.
      */
-    private void updateFilter() {
+    protected void updateFilter() {
         boolean usePorterDuffFilter = false;
         int key = -1;
         if (mDesaturation > 0) {
@@ -318,5 +313,30 @@ public class FastBitmapDrawable extends Drawable {
             mPaint.setColorFilter(null);
         }
         invalidateSelf();
+    }
+
+    @Override
+    public ConstantState getConstantState() {
+        return new MyConstantState(mBitmap, mIconColor);
+    }
+
+    protected static class MyConstantState extends ConstantState {
+        protected final Bitmap mBitmap;
+        protected final int mIconColor;
+
+        public MyConstantState(Bitmap bitmap, int color) {
+            mBitmap = bitmap;
+            mIconColor = color;
+        }
+
+        @Override
+        public Drawable newDrawable() {
+            return new FastBitmapDrawable(mBitmap, mIconColor);
+        }
+
+        @Override
+        public int getChangingConfigurations() {
+            return 0;
+        }
     }
 }

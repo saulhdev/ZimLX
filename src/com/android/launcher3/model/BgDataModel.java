@@ -27,7 +27,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.ShortcutInfo;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
@@ -90,18 +89,26 @@ public class BgDataModel {
      * Map of ShortcutKey to the number of times it is pinned.
      */
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();
-    /**
-     * Maps all launcher activities to the id's of their shortcuts (if they have any).
-     */
-    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
-    /**
-     * Entire list of widgets.
-     */
-    public final WidgetsModel widgetsModel = new WidgetsModel();
+
     /**
      * True if the launcher has permission to access deep shortcuts.
      */
     public boolean hasShortcutHostPermission;
+
+    /**
+     * Maps all launcher activities to the id's of their shortcuts (if they have any).
+     */
+    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+
+    /**
+     * Entire list of widgets.
+     */
+    public final WidgetsModel widgetsModel = new WidgetsModel();
+
+    /**
+     * Id when the model was last bound
+     */
+    public int lastBindId = 0;
 
     /**
      * Clears all the data
@@ -118,7 +125,7 @@ public class BgDataModel {
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
                                   String[] args) {
-        if (args.length > 0 && TextUtils.equals(args[0], "--proto")) {
+        if (Arrays.asList(args).contains("--proto")) {
             dumpProto(prefix, fd, writer, args);
             return;
         }
@@ -217,7 +224,7 @@ public class BgDataModel {
             targetList.addAll(workspaces.valueAt(i).getFlattenedList());
         }
 
-        if (args.length > 1 && TextUtils.equals(args[1], "--debug")) {
+        if (Arrays.asList(args).contains("--debug")) {
             for (int i = 0; i < targetList.size(); i++) {
                 writer.println(prefix + DumpTargetWrapper.getDumpTargetStr(targetList.get(i)));
             }
@@ -262,17 +269,15 @@ public class BgDataModel {
                     workspaceItems.remove(item);
                     break;
                 case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                    if (Utilities.ATLEAST_NOUGAT_MR1) {
-                        // Decrement pinned shortcut count
-                        ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                        MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                        if ((count == null || --count.value == 0)
-                                && !InstallShortcutReceiver.getPendingShortcuts(context)
-                                .contains(pinnedShortcut)) {
-                            DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
-                        }
-                        // Fall through.
+                    // Decrement pinned shortcut count
+                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                    if ((count == null || --count.value == 0)
+                            && !InstallShortcutReceiver.getPendingShortcuts(context)
+                            .contains(pinnedShortcut)) {
+                        DeepShortcutManager.getInstance(context).unpinShortcut(pinnedShortcut);
                     }
+                    // Fall through.
                 }
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
@@ -295,23 +300,21 @@ public class BgDataModel {
                 workspaceItems.add(item);
                 break;
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT: {
-                if (Utilities.ATLEAST_NOUGAT_MR1) {
-                    // Increment the count for the given shortcut
-                    ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
-                    MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
-                    if (count == null) {
-                        count = new MutableInt(1);
-                        pinnedShortcutCounts.put(pinnedShortcut, count);
-                    } else {
-                        count.value++;
-                    }
-
-                    // Since this is a new item, pin the shortcut in the system server.
-                    if (newItem && count.value == 1) {
-                        DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
-                    }
-                    // Fall through
+                // Increment the count for the given shortcut
+                ShortcutKey pinnedShortcut = ShortcutKey.fromItemInfo(item);
+                MutableInt count = pinnedShortcutCounts.get(pinnedShortcut);
+                if (count == null) {
+                    count = new MutableInt(1);
+                    pinnedShortcutCounts.put(pinnedShortcut, count);
+                } else {
+                    count.value++;
                 }
+
+                // Since this is a new item, pin the shortcut in the system server.
+                if (newItem && count.value == 1) {
+                    DeepShortcutManager.getInstance(context).pinShortcut(pinnedShortcut);
+                }
+                // Fall through
             }
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:

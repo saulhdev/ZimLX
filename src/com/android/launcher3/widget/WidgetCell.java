@@ -41,7 +41,7 @@ import com.android.launcher3.model.WidgetItem;
 /**
  * Represents the individual cell of the widget inside the widget tray. The preview is drawn
  * horizontally centered, and scaled down if needed.
- * <p>
+ *
  * This view does not support padding. Since the image is scaled down to fit the view, padding will
  * further decrease the scaling factor. Drag-n-drop uses the view bounds for showing a smooth
  * transition from the view to drag view, so when adding padding support, DnD would need to
@@ -59,21 +59,28 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
      */
     private static final float WIDTH_SCALE = 2.6f;
 
-    /**
-     * Widget preview width is calculated by multiplying this factor to the widget cell width.
-     */
+    /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
     private static final float PREVIEW_SCALE = 0.8f;
-    protected final BaseActivity mActivity;
+
     protected int mPresetPreviewSize;
-    protected WidgetItem mItem;
-    protected CancellationSignal mActiveRequest;
     private int mCellSize;
+
     private WidgetImageView mWidgetImage;
     private TextView mWidgetName;
     private TextView mWidgetDims;
+
+    protected WidgetItem mItem;
+
     private WidgetPreviewLoader mWidgetPreviewLoader;
     private StylusEventHelper mStylusEventHelper;
+
+    protected CancellationSignal mActiveRequest;
     private boolean mAnimatePreview = true;
+
+    private boolean mApplyBitmapDeferred = false;
+    private Bitmap mDeferredBitmap;
+
+    protected final BaseActivity mActivity;
 
     public WidgetCell(Context context) {
         this(context, null);
@@ -105,9 +112,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWidgetImage = findViewById(R.id.widget_preview);
-        mWidgetName = findViewById(R.id.widget_name);
-        mWidgetDims = findViewById(R.id.widget_dims);
+        mWidgetImage = (WidgetImageView) findViewById(R.id.widget_preview);
+        mWidgetName = ((TextView) findViewById(R.id.widget_name));
+        mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
 
     /**
@@ -148,15 +155,31 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
         return mWidgetImage;
     }
 
+    /**
+     * Sets if applying bitmap preview should be deferred. The UI will still load the bitmap, but
+     * will not cause invalidate, so that when deferring is disabled later, all the bitmaps are
+     * ready.
+     * This prevents invalidates while the animation is running.
+     */
+    public void setApplyBitmapDeferred(boolean isDeferred) {
+        if (mApplyBitmapDeferred != isDeferred) {
+            mApplyBitmapDeferred = isDeferred;
+            if (!mApplyBitmapDeferred && mDeferredBitmap != null) {
+                applyPreview(mDeferredBitmap);
+                mDeferredBitmap = null;
+            }
+        }
+    }
+
     public void setAnimatePreview(boolean shouldAnimate) {
         mAnimatePreview = shouldAnimate;
     }
 
     public void applyPreview(Bitmap bitmap) {
-        applyPreview(bitmap, true);
-    }
-
-    public void applyPreview(Bitmap bitmap, boolean animate) {
+        if (mApplyBitmapDeferred) {
+            mDeferredBitmap = bitmap;
+            return;
+        }
         if (bitmap != null) {
             mWidgetImage.setBitmap(bitmap,
                     DrawableFactory.get(getContext()).getBadgeForUser(mItem.user, getContext()));
@@ -171,15 +194,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     }
 
     public void ensurePreview() {
-        ensurePreview(true);
-    }
-
-    public void ensurePreview(boolean animate) {
         if (mActiveRequest != null) {
             return;
         }
         mActiveRequest = mWidgetPreviewLoader.getPreview(
-                mItem, mPresetPreviewSize, mPresetPreviewSize, this, animate);
+                mItem, mPresetPreviewSize, mPresetPreviewSize, this);
     }
 
     @Override

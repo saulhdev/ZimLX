@@ -47,6 +47,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import androidx.annotation.Nullable;
@@ -55,6 +56,9 @@ public class WidgetPreviewLoader {
 
     private static final String TAG = "WidgetPreviewLoader";
     private static final boolean DEBUG = false;
+
+    private final HashMap<String, long[]> mPackageVersions = new HashMap<>();
+
     /**
      * Weak reference objects, do not prevent their referents from being made finalizable,
      * finalized, and then reclaimed.
@@ -62,19 +66,23 @@ public class WidgetPreviewLoader {
      * be posted to a background thread.
      */
     @Thunk
-    final Set<Bitmap> mUnusedBitmaps = Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
-    @Thunk
-    final Handler mWorkerHandler;
-    private final HashMap<String, long[]> mPackageVersions = new HashMap<>();
+    final Set<Bitmap> mUnusedBitmaps =
+            Collections.newSetFromMap(new WeakHashMap<Bitmap, Boolean>());
+
     private final Context mContext;
     private final IconCache mIconCache;
     private final UserManagerCompat mUserManager;
+    private final AppWidgetManagerCompat mWidgetManager;
     private final CacheDb mDb;
+
     private final MainThreadExecutor mMainThreadExecutor = new MainThreadExecutor();
+    @Thunk
+    final Handler mWorkerHandler;
 
     public WidgetPreviewLoader(Context context, IconCache iconCache) {
         mContext = context;
         mIconCache = iconCache;
+        mWidgetManager = AppWidgetManagerCompat.getInstance(context);
         mUserManager = UserManagerCompat.getInstance(context);
         mDb = new CacheDb(context);
         mWorkerHandler = new Handler(LauncherModel.getWorkerLooper());
@@ -87,17 +95,51 @@ public class WidgetPreviewLoader {
      * @return a request id which can be used to cancel the request.
      */
     public CancellationSignal getPreview(WidgetItem item, int previewWidth,
-                                         int previewHeight, WidgetCell caller, boolean animate) {
+                                         int previewHeight, WidgetCell caller) {
         String size = previewWidth + "x" + previewHeight;
         WidgetCacheKey key = new WidgetCacheKey(item.componentName, item.user, size);
 
-        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller,
-                animate);
+        PreviewLoadTask task = new PreviewLoadTask(key, item, previewWidth, previewHeight, caller);
         task.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
 
         CancellationSignal signal = new CancellationSignal();
         signal.setOnCancelListener(task);
         return signal;
+    }
+
+    /**
+     * The DB holds the generated previews for various components. Previews can also have different
+     * sizes (landscape vs portrait).
+     */
+    private static class CacheDb extends SQLiteCacheHelper {
+        private static final int DB_VERSION = 9;
+
+        private static final String TABLE_NAME = "shortcut_and_widget_previews";
+        private static final String COLUMN_COMPONENT = "componentName";
+        private static final String COLUMN_USER = "profileId";
+        private static final String COLUMN_SIZE = "size";
+        private static final String COLUMN_PACKAGE = "packageName";
+        private static final String COLUMN_LAST_UPDATED = "lastUpdated";
+        private static final String COLUMN_VERSION = "version";
+        private static final String COLUMN_PREVIEW_BITMAP = "preview_bitmap";
+
+        public CacheDb(Context context) {
+            super(context, LauncherFiles.WIDGET_PREVIEWS_DB, DB_VERSION, TABLE_NAME);
+        }
+
+        @Override
+        public void onCreateTable(SQLiteDatabase database) {
+            database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
+                    COLUMN_COMPONENT + " TEXT NOT NULL, " +
+                    COLUMN_USER + " INTEGER NOT NULL, " +
+                    COLUMN_SIZE + " TEXT NOT NULL, " +
+                    COLUMN_PACKAGE + " TEXT NOT NULL, " +
+                    COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
+                    COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
+                    COLUMN_PREVIEW_BITMAP + " BLOB, " +
+                    "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ", " + COLUMN_SIZE + ") " +
+                    ");");
+        }
     }
 
     @Thunk
@@ -129,8 +171,8 @@ public class WidgetPreviewLoader {
 
     /**
      * Updates the persistent DB:
-     * 1. Any preview generated for an old package version is removed
-     * 2. Any preview for an absent package is removed
+     *   1. Any preview generated for an old package version is removed
+     *   2. Any preview for an absent package is removed
      * This ensures that we remove entries for packages which changed while the launcher was dead.
      *
      * @param packageUser if provided, specifies that list only contains previews for the
@@ -265,10 +307,10 @@ public class WidgetPreviewLoader {
      * and add badge at the bottom right corner.
      *
      * @param launcher
-     * @param info              information about the widget
-     * @param maxPreviewWidth   width of the preview on either workspace or tray
-     * @param preview           bitmap that can be recycled
-     * @param preScaledWidthOut return the width of the returned bitmap
+     * @param info                        information about the widget
+     * @param maxPreviewWidth             width of the preview on either workspace or tray
+     * @param preview                     bitmap that can be recycled
+     * @param preScaledWidthOut           return the width of the returned bitmap
      * @return
      */
     public Bitmap generateWidgetPreview(BaseActivity launcher, LauncherAppWidgetProviderInfo info,
@@ -301,7 +343,8 @@ public class WidgetPreviewLoader {
         int previewWidth;
         int previewHeight;
 
-        if (widgetPreviewExists) {
+        if (widgetPreviewExists && drawable.getIntrinsicWidth() > 0
+                && drawable.getIntrinsicHeight() > 0) {
             previewWidth = drawable.getIntrinsicWidth();
             previewHeight = drawable.getIntrinsicHeight();
         } else {
@@ -321,8 +364,8 @@ public class WidgetPreviewLoader {
             scale = maxPreviewWidth / (float) (previewWidth);
         }
         if (scale != 1f) {
-            previewWidth = (int) (scale * previewWidth);
-            previewHeight = (int) (scale * previewHeight);
+            previewWidth = Math.max((int) (scale * previewWidth), 1);
+            previewHeight = Math.max((int) (scale * previewHeight), 1);
         }
 
         // If a bitmap is passed in, we use it; otherwise, we create a bitmap of the right size
@@ -373,7 +416,8 @@ public class WidgetPreviewLoader {
 
             // Draw icon in the center.
             try {
-                Drawable icon = info.getIcon(launcher, mIconCache);
+                Drawable icon =
+                        mIconCache.getFullResIcon(info.provider.getPackageName(), info.icon);
                 if (icon != null) {
                     int appIconSize = launcher.getDeviceProfile().iconSizePx;
                     int iconSize = (int) Math.min(appIconSize * scale,
@@ -449,7 +493,12 @@ public class WidgetPreviewLoader {
 
     private Drawable mutateOnMainThread(final Drawable drawable) {
         try {
-            return mMainThreadExecutor.submit(() -> drawable.mutate()).get();
+            return mMainThreadExecutor.submit(new Callable<Drawable>() {
+                @Override
+                public Drawable call() throws Exception {
+                    return drawable.mutate();
+                }
+            }).get();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
             throw new RuntimeException(e);
@@ -481,62 +530,6 @@ public class WidgetPreviewLoader {
         }
     }
 
-    /**
-     * The DB holds the generated previews for various components. Previews can also have different
-     * sizes (landscape vs portrait).
-     */
-    private static class CacheDb extends SQLiteCacheHelper {
-        private static final int DB_VERSION = 9;
-
-        private static final String TABLE_NAME = "shortcut_and_widget_previews";
-        private static final String COLUMN_COMPONENT = "componentName";
-        private static final String COLUMN_USER = "profileId";
-        private static final String COLUMN_SIZE = "size";
-        private static final String COLUMN_PACKAGE = "packageName";
-        private static final String COLUMN_LAST_UPDATED = "lastUpdated";
-        private static final String COLUMN_VERSION = "version";
-        private static final String COLUMN_PREVIEW_BITMAP = "preview_bitmap";
-
-        public CacheDb(Context context) {
-            super(context, LauncherFiles.WIDGET_PREVIEWS_DB, DB_VERSION, TABLE_NAME);
-        }
-
-        @Override
-        public void onCreateTable(SQLiteDatabase database) {
-            database.execSQL("CREATE TABLE IF NOT EXISTS " + TABLE_NAME + " (" +
-                    COLUMN_COMPONENT + " TEXT NOT NULL, " +
-                    COLUMN_USER + " INTEGER NOT NULL, " +
-                    COLUMN_SIZE + " TEXT NOT NULL, " +
-                    COLUMN_PACKAGE + " TEXT NOT NULL, " +
-                    COLUMN_LAST_UPDATED + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_VERSION + " INTEGER NOT NULL DEFAULT 0, " +
-                    COLUMN_PREVIEW_BITMAP + " BLOB, " +
-                    "PRIMARY KEY (" + COLUMN_COMPONENT + ", " + COLUMN_USER + ", " + COLUMN_SIZE + ") " +
-                    ");");
-        }
-    }
-
-    private static final class WidgetCacheKey extends ComponentKey {
-
-        @Thunk
-        final String size;
-
-        public WidgetCacheKey(ComponentName componentName, UserHandle user, String size) {
-            super(componentName, user);
-            this.size = size;
-        }
-
-        @Override
-        public int hashCode() {
-            return super.hashCode() ^ size.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object o) {
-            return super.equals(o) && ((WidgetCacheKey) o).size.equals(size);
-        }
-    }
-
     public class PreviewLoadTask extends AsyncTask<Void, Void, Bitmap>
             implements CancellationSignal.OnCancelListener {
         @Thunk
@@ -545,7 +538,6 @@ public class WidgetPreviewLoader {
         private final int mPreviewHeight;
         private final int mPreviewWidth;
         private final WidgetCell mCaller;
-        private final boolean mAnimatePreviewIn;
         private final BaseActivity mActivity;
         @Thunk
         long[] mVersions;
@@ -553,13 +545,12 @@ public class WidgetPreviewLoader {
         Bitmap mBitmapToRecycle;
 
         PreviewLoadTask(WidgetCacheKey key, WidgetItem info, int previewWidth,
-                        int previewHeight, WidgetCell caller, boolean animate) {
+                        int previewHeight, WidgetCell caller) {
             mKey = key;
             mInfo = info;
             mPreviewHeight = previewHeight;
             mPreviewWidth = previewWidth;
             mCaller = caller;
-            mAnimatePreviewIn = animate;
             mActivity = BaseActivity.fromContext(mCaller.getContext());
             if (DEBUG) {
                 Log.d(TAG, String.format("%s, %s, %d, %d",
@@ -615,7 +606,7 @@ public class WidgetPreviewLoader {
 
         @Override
         protected void onPostExecute(final Bitmap preview) {
-            mCaller.applyPreview(preview, mAnimatePreviewIn);
+            mCaller.applyPreview(preview);
 
             // Write the generated preview to the DB in the worker thread
             if (mVersions != null) {
@@ -680,6 +671,27 @@ public class WidgetPreviewLoader {
                     }
                 });
             }
+        }
+    }
+
+    private static final class WidgetCacheKey extends ComponentKey {
+
+        @Thunk
+        final String size;
+
+        public WidgetCacheKey(ComponentName componentName, UserHandle user, String size) {
+            super(componentName, user);
+            this.size = size;
+        }
+
+        @Override
+        public int hashCode() {
+            return super.hashCode() ^ size.hashCode();
+        }
+
+        @Override
+        public boolean equals(Object o) {
+            return super.equals(o) && ((WidgetCacheKey) o).size.equals(size);
         }
     }
 }

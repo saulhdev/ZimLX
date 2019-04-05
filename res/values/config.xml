@@ -13,7 +13,7 @@
 
     <!-- A string pointer to the original app name string. This allows derived projects to
      easily override the app name without providing all translations -->
-    <string name="derived_app_name" translatable="false">@string/app_name_lawnchair</string>
+    <string name="derived_app_name" translatable="false">@string/app_name_zimlx</string>
 
     <!-- String representing the intent for search on the apps market. To specify a query, add
     q=<query> to the data to the intent -->
@@ -103,16 +103,16 @@
 
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
+    <string name="app_filter_class" translatable="false"></string>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.CustomIconProvider</string>
+    <string name="icon_provider_class" translatable="false"></string>
 
     <!-- Name of a drawable factory class. -->
-    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
+    <string name="drawable_factory_class" translatable="false"></string>
 
     <!-- Name of a user event dispatcher class. -->
-    <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
+    <string name="user_event_dispatcher_class" translatable="false"></string>
 
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
@@ -138,24 +138,33 @@
     <integer name="config_removeNotificationViewDuration">300</integer>
 
     <!-- Accessibility actions -->
-    <item name="action_remove" type="id" />
-    <item name="action_uninstall" type="id" />
-    <item name="action_info" type="id" />
-    <item name="action_add_to_workspace" type="id" />
-    <item name="action_move" type="id" />
-    <item name="action_move_to_workspace" type="id" />
-    <item name="action_move_screen_backwards" type="id" />
-    <item name="action_move_screen_forwards" type="id" />
-    <item name="action_resize" type="id" />
-    <item name="action_deep_shortcuts" type="id" />
-    <item name="action_dismiss_notification" type="id" />
+    <item type="id" name="action_info" />
+    <item type="id" name="action_remove" />
+    <item type="id" name="action_uninstall" />
+    <item type="id" name="action_reconfigure" />
+    <item type="id" name="action_add_to_workspace" />
+    <item type="id" name="action_move" />
+    <item type="id" name="action_move_to_workspace" />
+    <item type="id" name="action_move_screen_backwards" />
+    <item type="id" name="action_move_screen_forwards" />
+    <item type="id" name="action_resize" />
+    <item type="id" name="action_deep_shortcuts" />
+    <item type="id" name="action_shortcuts_and_notifications" />
+    <item type="id" name="action_dismiss_notification" />
 
     <!-- QSB IDs. DO not change -->
-    <item name="search_container_workspace" type="id" />
-    <item name="search_container_hotseat" type="id" />
-    <item name="search_container_all_apps" type="id" />
+    <item type="id" name="search_container_workspace" />
+    <item type="id" name="search_container_hotseat" />
+    <item type="id" name="search_container_all_apps" />
 
     <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
     <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
 
+    <!-- Name of an app transition manager class. -->
+    <string name="app_transition_manager_class" translatable="false"></string>
+    <item name="workspace_page_container" type="id" />
+    <!-- Tag id used for view scrim -->
+    <item type="id" name="view_scrim" />
+    <!-- Name of a main process initializer class. -->
+    <string name="main_process_initializer_class" translatable="false"></string>
 </resources>

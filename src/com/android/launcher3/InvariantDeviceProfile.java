@@ -32,18 +32,21 @@ import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.zimmob.zimlx.ZimPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
+import androidx.annotation.VisibleForTesting;
+
 public class InvariantDeviceProfile {
 
-    private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
     // This is a static that we use for the default icon size on a 4/5-inch phone
     private static float DEFAULT_ICON_SIZE_DP = 60;
+
+    private static final float ICON_SIZE_DEFINED_IN_APP_DP = 48;
+
     // Constants that affects the interpolation curve between statically defined device profile
     // buckets.
     private static float KNEARESTNEIGHBOR = 3;
@@ -51,6 +54,12 @@ public class InvariantDeviceProfile {
 
     // used to offset float not being able to express extremely small weights in extreme cases.
     private static float WEIGHT_EFFICIENT = 100000f;
+
+    // Profile-defining invariant properties
+    String name;
+    float minWidthDps;
+    float minHeightDps;
+
     /**
      * Number of icons per row and column in the workspace.
      */
@@ -58,9 +67,7 @@ public class InvariantDeviceProfile {
     public int numRowsOriginal;
     public int numColumns;
     public int numColumnsOriginal;
-    public float allAppsIconSize;
-    public float iconSizeOriginal;
-    public float allAppsIconTextSize;
+
     /**
      * Number of icons per row and column in the folder.
      */
@@ -71,39 +78,33 @@ public class InvariantDeviceProfile {
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+
     /**
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
-    public DeviceProfile landscapeProfile;
-    public DeviceProfile portraitProfile;
-    public Point defaultWallpaperSize;
-    public int numHotseatIconsOriginal;
 
-    // Profile-defining invariant properties
-    String name;
-    float minWidthDps;
-    float minHeightDps;
-    /**
-     * The minimum number of predicted apps in all apps.
-     */
-    @Deprecated
-    int minAllAppsPredictionColumns;
     int defaultLayoutId;
     int demoModeLayoutId;
 
+    public DeviceProfile landscapeProfile;
+    public DeviceProfile portraitProfile;
+
+    public Point defaultWallpaperSize;
+
+    @VisibleForTesting
     public InvariantDeviceProfile() {
     }
 
-    public InvariantDeviceProfile(InvariantDeviceProfile p) {
+    private InvariantDeviceProfile(InvariantDeviceProfile p) {
         this(p.name, p.minWidthDps, p.minHeightDps, p.numRows, p.numColumns,
-                p.numFolderRows, p.numFolderColumns, p.minAllAppsPredictionColumns,
+                p.numFolderRows, p.numFolderColumns,
                 p.iconSize, p.landscapeIconSize, p.iconTextSize, p.numHotseatIcons,
                 p.defaultLayoutId, p.demoModeLayoutId);
     }
 
-    InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc, int maapc,
-                           float is, float lis, float its, int hs, int dlId, int dmlId) {
+    private InvariantDeviceProfile(String n, float w, float h, int r, int c, int fr, int fc,
+                                   float is, float lis, float its, int hs, int dlId, int dmlId) {
         name = n;
         minWidthDps = w;
         minHeightDps = h;
@@ -111,7 +112,6 @@ public class InvariantDeviceProfile {
         numColumns = c;
         numFolderRows = fr;
         numFolderColumns = fc;
-        minAllAppsPredictionColumns = maapc;
         iconSize = is;
         landscapeIconSize = lis;
         iconTextSize = its;
@@ -150,27 +150,16 @@ public class InvariantDeviceProfile {
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;
         numFolderColumns = closestProfile.numFolderColumns;
-        minAllAppsPredictionColumns = closestProfile.minAllAppsPredictionColumns;
-
-        numHotseatIconsOriginal = numHotseatIcons;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
-        iconSizeOriginal = iconSize;
-        allAppsIconSize = iconSize;
-        //hotseatIconSize = interpolatedDeviceProfileOut.hotseatIconSize;
-        //hotseatIconSizeOriginal = hotseatIconSize;
-
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
-        allAppsIconTextSize = iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
-        customizationHook(context);
-
 
         Point realSize = new Point();
         display.getRealSize(realSize);
@@ -180,9 +169,9 @@ public class InvariantDeviceProfile {
         int largeSide = Math.max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                largeSide, smallSide, true /* isLandscape */);
+                largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
         portraitProfile = new DeviceProfile(context, this, smallestSize, largestSize,
-                smallSide, largeSide, false /* isLandscape */);
+                smallSide, largeSide, false /* isLandscape */, false /* isMultiWindowMode */);
 
         // We need to ensure that there is enough extra space in the wallpaper
         // for the intended parallax effects
@@ -193,66 +182,6 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
-    }
-
-    public void refresh(Context context) {
-        landscapeProfile.refresh();
-        portraitProfile.refresh();
-        customizationHook(context);
-    }
-
-    private void customizationHook(Context context) {
-        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
-        DisplayMetrics dm = new DisplayMetrics();
-        display.getMetrics(dm);
-        ZimPreferences prefs = Utilities.getZimPrefs(context);
-        String valueDefault = "default";
-        if (!prefs.numHotseatIcons(valueDefault).equals(valueDefault)) {
-            numHotseatIcons = Integer.valueOf(prefs.numHotseatIcons(""));
-        } else {
-            numHotseatIcons = numHotseatIconsOriginal;
-        }
-        if (prefs.getDesktopIconScale() != 1f) {
-            float iconScale = prefs.getDesktopIconScale();
-            iconSize *= iconScale;
-        }
-        if (prefs.getAllAppsIconScale() != 1f) {
-            float iconScale = prefs.getAllAppsIconScale();
-            allAppsIconSize *= iconScale;
-        }
-        float maxSize = Math.max(iconSize, allAppsIconSize);
-        iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
-        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
-    }
-
-    /**
-     * As a ratio of screen height, the total distance we want the parallax effect to span
-     * horizontally
-     */
-    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
-        float aspectRatio = width / (float) height;
-
-        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
-        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
-        // We will use these two data points to extrapolate how much the wallpaper parallax effect
-        // to span (ie travel) at any aspect ratio:
-
-        final float ASPECT_RATIO_LANDSCAPE = 16 / 10f;
-        final float ASPECT_RATIO_PORTRAIT = 10 / 16f;
-        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
-        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
-
-        // To find out the desired width at different aspect ratios, we use the following two
-        // formulas, where the coefficient on x is the aspect ratio (width/height):
-        //   (16/10)x + y = 1.5
-        //   (10/16)x + y = 1.2
-        // We solve for x and y and end up with a final formula:
-        final float x =
-                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
-                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
-        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
-        return x * aspectRatio + y;
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
@@ -277,7 +206,6 @@ public class InvariantDeviceProfile {
                             numColumns,
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderRows, numRows),
                             a.getInt(R.styleable.InvariantDeviceProfile_numFolderColumns, numColumns),
-                            a.getInt(R.styleable.InvariantDeviceProfile_minAllAppsPredictionColumns, numColumns),
                             iconSize,
                             a.getFloat(R.styleable.InvariantDeviceProfile_landscapeIconSize, iconSize),
                             a.getFloat(R.styleable.InvariantDeviceProfile_iconTextSize, 0),
@@ -319,7 +247,7 @@ public class InvariantDeviceProfile {
 
     /**
      * Apply any Partner customization grid overrides.
-     * <p>
+     *
      * Currently we support: all apps row / column count.
      */
     private void applyPartnerDeviceProfileOverrides(Context context, DisplayMetrics dm) {
@@ -383,7 +311,6 @@ public class InvariantDeviceProfile {
         iconSize *= w;
         landscapeIconSize *= w;
         iconTextSize *= w;
-
         return this;
     }
 
@@ -409,6 +336,35 @@ public class InvariantDeviceProfile {
             return Float.POSITIVE_INFINITY;
         }
         return (float) (WEIGHT_EFFICIENT / Math.pow(d, pow));
+    }
+
+    /**
+     * As a ratio of screen height, the total distance we want the parallax effect to span
+     * horizontally
+     */
+    private static float wallpaperTravelToScreenWidthRatio(int width, int height) {
+        float aspectRatio = width / (float) height;
+
+        // At an aspect ratio of 16/10, the wallpaper parallax effect should span 1.5 * screen width
+        // At an aspect ratio of 10/16, the wallpaper parallax effect should span 1.2 * screen width
+        // We will use these two data points to extrapolate how much the wallpaper parallax effect
+        // to span (ie travel) at any aspect ratio:
+
+        final float ASPECT_RATIO_LANDSCAPE = 16 / 10f;
+        final float ASPECT_RATIO_PORTRAIT = 10 / 16f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE = 1.5f;
+        final float WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT = 1.2f;
+
+        // To find out the desired width at different aspect ratios, we use the following two
+        // formulas, where the coefficient on x is the aspect ratio (width/height):
+        //   (16/10)x + y = 1.5
+        //   (10/16)x + y = 1.2
+        // We solve for x and y and end up with a final formula:
+        final float x =
+                (WALLPAPER_WIDTH_TO_SCREEN_RATIO_LANDSCAPE - WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT) /
+                        (ASPECT_RATIO_LANDSCAPE - ASPECT_RATIO_PORTRAIT);
+        final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
+        return x * aspectRatio + y;
     }
 
 }

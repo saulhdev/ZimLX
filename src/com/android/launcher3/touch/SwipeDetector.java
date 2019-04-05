@@ -20,7 +20,6 @@ import android.graphics.PointF;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.ViewConfiguration;
-import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
@@ -29,25 +28,55 @@ import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 /**
  * One dimensional scroll/drag/swipe gesture detector.
- * <p>
+ *
  * Definition of swipe is different from android system in that this detector handles
  * 'swipe to dismiss', 'swiping up/down a container' but also keeps scrolling state before
  * swipe action happens
  */
 public class SwipeDetector {
 
+    private static final boolean DBG = false;
+    private static final String TAG = "SwipeDetector";
+
+    private int mScrollConditions;
     public static final int DIRECTION_POSITIVE = 1 << 0;
     public static final int DIRECTION_NEGATIVE = 1 << 1;
     public static final int DIRECTION_BOTH = DIRECTION_NEGATIVE | DIRECTION_POSITIVE;
+
+    private static final float ANIMATION_DURATION = 1200;
+
+    protected int mActivePointerId = INVALID_POINTER_ID;
+
     /**
      * The minimum release velocity in pixels per millisecond that triggers fling..
      */
     public static final float RELEASE_VELOCITY_PX_MS = 1.0f;
+
     /**
      * The time constant used to calculate dampening in the low-pass filter of scroll velocity.
      * Cutoff frequency is set at 10 Hz.
      */
     public static final float SCROLL_VELOCITY_DAMPENING_RC = 1000f / (2f * (float) Math.PI * 10);
+
+    /* Scroll state, this is set to true during dragging and animation. */
+    private ScrollState mState = ScrollState.IDLE;
+
+    enum ScrollState {
+        IDLE,
+        DRAGGING,      // onDragStart, onDrag
+        SETTLING       // onDragEnd
+    }
+
+    public static abstract class Direction {
+
+        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint);
+
+        /**
+         * Distance in pixels a touch can wander before we think the user is scrolling.
+         */
+        abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
+    }
+
     public static final Direction VERTICAL = new Direction() {
 
         @Override
@@ -60,6 +89,7 @@ public class SwipeDetector {
             return Math.abs(ev.getX(pointerIndex) - downPos.x);
         }
     };
+
     public static final Direction HORIZONTAL = new Direction() {
 
         @Override
@@ -72,16 +102,6 @@ public class SwipeDetector {
             return Math.abs(ev.getY(pointerIndex) - downPos.y);
         }
     };
-    private static final boolean DBG = false;
-    private static final String TAG = "SwipeDetector";
-    private static final float ANIMATION_DURATION = 1200;
-    private static final float FAST_FLING_PX_MS = 10;
-    private final PointF mDownPos = new PointF();
-    private final PointF mLastPos = new PointF();
-    private final Direction mDir;
-    private final float mTouchSlop;
-    /* Client of this gesture detector can register a callback. */
-    private final Listener mListener;
 
     //------------------- ScrollState transition diagram -----------------------------------
     //
@@ -89,52 +109,6 @@ public class SwipeDetector {
     // DRAGGING -> (MotionEvent#ACTION_UP, MotionEvent#ACTION_CANCEL) -> SETTLING
     // SETTLING -> (MotionEvent#ACTION_DOWN) -> DRAGGING
     // SETTLING -> (View settled) -> IDLE
-    protected int mActivePointerId = INVALID_POINTER_ID;
-    private int mScrollConditions;
-    /* Scroll state, this is set to true during dragging and animation. */
-    private ScrollState mState = ScrollState.IDLE;
-    private long mCurrentMillis;
-    private float mVelocity;
-    private float mLastDisplacement;
-    private float mDisplacement;
-    private float mSubtractDisplacement;
-    private boolean mIgnoreSlopWhenSettling;
-
-    public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
-        this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
-    }
-
-    @VisibleForTesting
-    protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
-        mTouchSlop = touchSlope;
-        mListener = l;
-        mDir = dir;
-    }
-
-    /**
-     * Returns a time-dependent dampening factor using delta time.
-     */
-    private static float computeDampeningFactor(float deltaTime) {
-        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
-    }
-
-    /**
-     * Returns the linear interpolation between two values
-     */
-    private static float interpolate(float from, float to, float alpha) {
-        return (1.0f - alpha) * from + alpha * to;
-    }
-
-    public static long calculateDuration(float velocity, float progressNeeded) {
-        // TODO: make these values constants after tuning.
-        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
-        float travelDistance = Math.max(0.2f, progressNeeded);
-        long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
-        if (DBG) {
-            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
-        }
-        return duration;
-    }
 
     private void setState(ScrollState newState) {
         if (DBG) {
@@ -175,9 +149,54 @@ public class SwipeDetector {
         return mState == ScrollState.DRAGGING;
     }
 
+    private final PointF mDownPos = new PointF();
+    private final PointF mLastPos = new PointF();
+    private Direction mDir;
+
+    private final float mTouchSlop;
+
+    /* Client of this gesture detector can register a callback. */
+    private final Listener mListener;
+
+    private long mCurrentMillis;
+
+    private float mVelocity;
+    private float mLastDisplacement;
+    private float mDisplacement;
+
+    private float mSubtractDisplacement;
+    private boolean mIgnoreSlopWhenSettling;
+
+    public interface Listener {
+        void onDragStart(boolean start);
+
+        boolean onDrag(float displacement, float velocity);
+
+        void onDragEnd(float velocity, boolean fling);
+    }
+
+    public SwipeDetector(@NonNull Context context, @NonNull Listener l, @NonNull Direction dir) {
+        this(ViewConfiguration.get(context).getScaledTouchSlop(), l, dir);
+    }
+
+    @VisibleForTesting
+    protected SwipeDetector(float touchSlope, @NonNull Listener l, @NonNull Direction dir) {
+        mTouchSlop = touchSlope;
+        mListener = l;
+        mDir = dir;
+    }
+
+    public void updateDirection(Direction dir) {
+        mDir = dir;
+    }
+
     public void setDetectableScrollConditions(int scrollDirectionFlags, boolean ignoreSlop) {
         mScrollConditions = scrollDirectionFlags;
         mIgnoreSlopWhenSettling = ignoreSlop;
+    }
+
+    public int getScrollDirections() {
+        return mScrollConditions;
     }
 
     private boolean shouldScrollStart(MotionEvent ev, int pointerIndex) {
@@ -188,8 +207,11 @@ public class SwipeDetector {
         }
 
         // Check if the client is interested in scroll in current direction.
-        return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0) ||
-                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0);
+        if (((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDisplacement > 0) ||
+                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDisplacement < 0)) {
+            return true;
+        }
+        return false;
     }
 
     public boolean onTouchEvent(MotionEvent ev) {
@@ -273,6 +295,16 @@ public class SwipeDetector {
         }
     }
 
+    /**
+     * Returns if the start drag was towards the positive direction or negative.
+     *
+     * @see #setDetectableScrollConditions(int, boolean)
+     * @see #DIRECTION_BOTH
+     */
+    public boolean wasInitialTouchPositive() {
+        return mSubtractDisplacement < 0;
+    }
+
     private boolean reportDragging() {
         if (mDisplacement != mLastDisplacement) {
             if (DBG) {
@@ -313,45 +345,28 @@ public class SwipeDetector {
         return mVelocity;
     }
 
-    enum ScrollState {
-        IDLE,
-        DRAGGING,      // onDragStart, onDrag
-        SETTLING       // onDragEnd
+    /**
+     * Returns a time-dependent dampening factor using delta time.
+     */
+    private static float computeDampeningFactor(float deltaTime) {
+        return deltaTime / (SCROLL_VELOCITY_DAMPENING_RC + deltaTime);
     }
 
-    public interface Listener {
-        void onDragStart(boolean start);
-
-        boolean onDrag(float displacement, float velocity);
-
-        void onDragEnd(float velocity, boolean fling);
+    /**
+     * Returns the linear interpolation between two values
+     */
+    public static float interpolate(float from, float to, float alpha) {
+        return (1.0f - alpha) * from + alpha * to;
     }
 
-    public static abstract class Direction {
-
-        abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint);
-
-        /**
-         * Distance in pixels a touch can wander before we think the user is scrolling.
-         */
-        abstract float getActiveTouchSlop(MotionEvent ev, int pointerIndex, PointF downPos);
-    }
-
-    public static class ScrollInterpolator implements Interpolator {
-
-        boolean mSteeper;
-
-        public void setVelocityAtZero(float velocity) {
-            mSteeper = velocity > FAST_FLING_PX_MS;
+    public static long calculateDuration(float velocity, float progressNeeded) {
+        // TODO: make these values constants after tuning.
+        float velocityDivisor = Math.max(2f, Math.abs(0.5f * velocity));
+        float travelDistance = Math.max(0.2f, progressNeeded);
+        long duration = (long) Math.max(100, ANIMATION_DURATION / velocityDivisor * travelDistance);
+        if (DBG) {
+            Log.d(TAG, String.format("calculateDuration=%d, v=%f, d=%f", duration, velocity, progressNeeded));
         }
-
-        public float getInterpolation(float t) {
-            t -= 1.0f;
-            float output = t * t * t;
-            if (mSteeper) {
-                output *= t * t; // Make interpolation initial slope steeper
-            }
-            return output + 1;
-        }
+        return duration;
     }
 }

@@ -25,20 +25,21 @@ import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryCompara
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 /**
- * Do diff on widget's tray list items and call the {@link NotifyListener} methods accordingly.
+ * Do diff on widget's tray list items and call the {@link RecyclerView.Adapter}
+ * methods accordingly.
  */
 public class WidgetsDiffReporter {
-    private final boolean DEBUG = false;
-    private final String TAG = "WidgetsDiffReporter";
+    private static final boolean DEBUG = false;
+    private static final String TAG = "WidgetsDiffReporter";
+
     private final IconCache mIconCache;
-    private NotifyListener mListener;
+    private final RecyclerView.Adapter mListener;
 
-    public WidgetsDiffReporter(IconCache iconCache) {
+    public WidgetsDiffReporter(IconCache iconCache, RecyclerView.Adapter listener) {
         mIconCache = iconCache;
-    }
-
-    public void setListener(NotifyListener listener) {
         mListener = listener;
     }
 
@@ -48,9 +49,17 @@ public class WidgetsDiffReporter {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
                     + " newEntries#=" + newEntries.size());
         }
-        if (currentEntries.size() == 0 && newEntries.size() > 0) {
-            currentEntries.addAll(newEntries);
-            mListener.notifyDataSetChanged();
+        // Early exit if either of the list is empty
+        if (currentEntries.isEmpty() || newEntries.isEmpty()) {
+            // Skip if both list are empty.
+            // On rotation, we open the widget tray with empty. Then try to fetch the list again
+            // when the animation completes (which still gives empty). And we get the final result
+            // when the bind actually completes.
+            if (currentEntries.size() != newEntries.size()) {
+                currentEntries.clear();
+                currentEntries.addAll(newEntries);
+                mListener.notifyDataSetChanged();
+            }
             return;
         }
         ArrayList<WidgetListRowEntry> orgEntries =
@@ -130,15 +139,5 @@ public class WidgetsDiffReporter {
     private boolean isSamePackageItemInfo(PackageItemInfo curInfo, PackageItemInfo newInfo) {
         return curInfo.iconBitmap.equals(newInfo.iconBitmap) &&
                 !mIconCache.isDefaultIcon(curInfo.iconBitmap, curInfo.user);
-    }
-
-    public interface NotifyListener {
-        void notifyDataSetChanged();
-
-        void notifyItemChanged(int index);
-
-        void notifyItemInserted(int index);
-
-        void notifyItemRemoved(int index);
     }
 }

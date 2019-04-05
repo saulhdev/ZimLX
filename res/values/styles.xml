@@ -196,14 +196,6 @@
     <style name="NormalSearchDark" parent="LauncherThemeDark">
         <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
-    <!-- Pixel -->
-    <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
-
-    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherThemeDark">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
 
     <style name="HotseatQsbTheme">
         <item name="gIcon">@drawable/ic_super_g_shadow</item>

@@ -25,28 +25,16 @@ import android.graphics.Point;
 import android.graphics.PointF;
 import android.graphics.Rect;
 import android.util.DisplayMetrics;
-import android.view.Gravity;
-import android.view.View;
-import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
-import android.widget.FrameLayout;
+import android.util.Log;
+import android.view.Surface;
+import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
-
-import org.zimmob.zimlx.ZimPreferences;
-
-import java.util.ArrayList;
+import com.android.launcher3.graphics.IconNormalizer;
 
 public class DeviceProfile {
 
-    /**
-     * The maximum amount of left/right workspace padding as a percentage of the screen width.
-     * To be clear, this means that up to 7% of the screen width can be used as left padding, and
-     * 7% of the screen width can be used as right padding.
-     */
-    private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
-    private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
     public final InvariantDeviceProfile inv;
 
     // Device properties
@@ -57,46 +45,52 @@ public class DeviceProfile {
 
     // Device properties in current orientation
     public final boolean isLandscape;
+    public final boolean isMultiWindowMode;
+
     public final int widthPx;
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+    /**
+     * The maximum amount of left/right workspace padding as a percentage of the screen width.
+     * To be clear, this means that up to 7% of the screen width can be used as left padding, and
+     * 7% of the screen width can be used as right padding.
+     */
+    private static final float MAX_HORIZONTAL_PADDING_PERCENT = 0.14f;
+
+    private static final float TALL_DEVICE_ASPECT_RATIO_THRESHOLD = 2.0f;
+
+    // To evenly space the icons, increase the left/right margins for tablets in portrait mode.
+    private static final int PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER = 4;
+
+    // Workspace
+    public final int desiredWorkspaceLeftRightMarginPx;
     public final int cellLayoutPaddingLeftRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
     public final Rect defaultWidgetPadding;
-    public final int workspaceSpringLoadedBottomSpace;
-    // Widgets
-    public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
-    // Overview mode
-    private final int overviewModeMinIconZoneHeightPx;
-    private final int overviewModeMaxIconZoneHeightPx;
-    private final int overviewModeBarItemWidthPx;
-    private final int overviewModeBarSpacerWidthPx;
-    private final float overviewModeIconZoneRatio;
-
-    // Workspace
-    private final int desiredWorkspaceLeftRightMarginPx;
-    private final int defaultPageSpacingPx;
+    public final int defaultPageSpacingPx;
     private final int topWorkspacePadding;
-    private final int pageIndicatorLandWorkspaceOffsetPx;
-    private final int mBottomMarginHw;
     public float workspaceSpringLoadShrinkFactor;
+    public final int workspaceSpringLoadedBottomSpace;
+
+    // Drag handle
+    public final int verticalDragHandleSizePx;
+    private final int verticalDragHandleOverlapWorkspace;
 
     // Workspace icons
     public int iconSizePx;
-    public int iconSizePxOriginal;
     public int iconTextSizePx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
+
     public int cellWidthPx;
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
 
     // Folder
-    public int folderBackgroundOffset;
     public int folderIconSizePx;
-    public int folderIconPreviewPadding;
+    public int folderIconOffsetYPx;
 
     // Folder cell
     public int folderCellWidthPx;
@@ -108,52 +102,54 @@ public class DeviceProfile {
     public int folderChildDrawablePaddingPx;
 
     // Hotseat
-    public int hotseatCellWidthPx;
     public int hotseatCellHeightPx;
-    private int hotseatLandGutterPx;
-
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
-    public int hotseatBarTopPaddingPx;
+    public final int hotseatBarTopPaddingPx;
     public int hotseatBarBottomPaddingPx;
-    public int hotseatBarLeftNavBarLeftPaddingPx;
-    public int hotseatBarLeftNavBarRightPaddingPx;
-    public int hotseatBarRightNavBarLeftPaddingPx;
-    public int hotseatBarRightNavBarRightPaddingPx;
+    // Start is the side next to the nav bar, end is the side next to the workspace
+    public final int hotseatBarSidePaddingStartPx;
+    public final int hotseatBarSidePaddingEndPx;
 
     // All apps
     public int allAppsCellHeightPx;
-    public int allAppsNumCols;
-    public int allAppsNumPredictiveCols;
-    public int allAppsButtonVisualSize;
     public int allAppsIconSizePx;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
 
+    // Widgets
+    public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
+
     // Drop Target
     public int dropTargetBarSizePx;
-    // Icon badges
-    public BadgeRenderer mBadgeRenderer;
-    private Context mContext;
-    // Page indicator
-    private int pageIndicatorSizePx;
-    private final int pageIndicatorHeightPx;
-    private int hotseatBarHeightPx;
-    private final int pageIndicatorLandGutterLeftNavBarPx;
-    private final int pageIndicatorLandGutterRightNavBarPx;
 
     // Insets
-    private Rect mInsets = new Rect();
-    // Listeners
-    private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
+    private final Rect mInsets = new Rect();
+    public final Rect workspacePadding = new Rect();
+    private final Rect mHotseatPadding = new Rect();
+    private boolean mIsSeascape;
+
+    // Icon badges
+    public BadgeRenderer mBadgeRenderer;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
-                         int width, int height, boolean isLandscape) {
-        mContext = context;
+                         int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
 
         this.inv = inv;
         this.isLandscape = isLandscape;
+        this.isMultiWindowMode = isMultiWindowMode;
+
+        // Determine sizes.
+        widthPx = width;
+        heightPx = height;
+        if (isLandscape) {
+            availableWidthPx = maxSize.x;
+            availableHeightPx = minSize.y;
+        } else {
+            availableWidthPx = minSize.x;
+            availableHeightPx = maxSize.y;
+        }
 
         Resources res = context.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
@@ -162,6 +158,8 @@ public class DeviceProfile {
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
+        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
         transposeLayoutWithOrientation =
@@ -178,29 +176,20 @@ public class DeviceProfile {
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
-        cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() &&
-                Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets()) ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
+        int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
+                ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
+        cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier *
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
-        pageIndicatorSizePx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_min_page_indicator_size);
-        pageIndicatorLandWorkspaceOffsetPx =
-                res.getDimensionPixelSize(R.dimen.all_apps_caret_workspace_offset);
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
+        verticalDragHandleOverlapWorkspace =
+                res.getDimensionPixelSize(R.dimen.vertical_drag_handle_overlap_workspace);
         defaultPageSpacingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_page_spacing);
         topWorkspacePadding =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_workspace_top_padding);
-        overviewModeMinIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_min_icon_zone_height);
-        overviewModeMaxIconZoneHeightPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_max_icon_zone_height);
-        overviewModeBarItemWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_item_width);
-        overviewModeBarSpacerWidthPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_overview_bar_spacer_width);
-        overviewModeIconZoneRatio =
-                res.getInteger(R.integer.config_dynamic_grid_overview_icon_zone_percentage) / 100f;
         iconDrawablePaddingOriginalPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_icon_drawable_padding);
         dropTargetBarSizePx = res.getDimensionPixelSize(R.dimen.dynamic_grid_drop_target_size);
@@ -211,120 +200,50 @@ public class DeviceProfile {
 
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatLandGutterPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_gutter_width);
-        hotseatBarBottomPaddingPx = getHotseatBottomPadding(res);
-        hotseatBarLeftNavBarRightPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_right_padding);
-        hotseatBarRightNavBarRightPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_right_padding);
-        hotseatBarLeftNavBarLeftPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_left_nav_bar_left_padding);
-        hotseatBarRightNavBarLeftPaddingPx = res.getDimensionPixelSize(
-                R.dimen.dynamic_grid_hotseat_land_right_nav_bar_left_padding);
-        hotseatBarSizePx = getHotseatSize(inv, res, dm);
-        float hotseatBaseHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_height);
-        float hotseatScale = Utilities.getZimPrefs(mContext).getHotseatHeightScale();
-        hotseatBarHeightPx = Math.round(hotseatBaseHeight * hotseatScale);
-
-        mBottomMarginHw = 0; // res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw); (For now)
-        if (!isVerticalBarLayout()) {
-            hotseatBarSizePx += mBottomMarginHw;
-            hotseatBarBottomPaddingPx += mBottomMarginHw;
-        }
-
-        // Determine sizes.
-        widthPx = width;
-        heightPx = height;
-        if (isLandscape) {
-            availableWidthPx = maxSize.x;
-            availableHeightPx = minSize.y;
-        } else {
-            availableWidthPx = minSize.x;
-            availableHeightPx = maxSize.y;
-        }
+        hotseatBarBottomPaddingPx = (isTallDevice ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
+                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+        hotseatBarSidePaddingEndPx =
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
+        // Add a bit of space between nav bar and hotseat in multi-window vertical bar layout.
+        hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
+                ? edgeMarginPx : 0;
+        hotseatBarSizePx = isVerticalBarLayout()
+                ? Utilities.pxFromDp(inv.iconSize, dm) + hotseatBarSidePaddingStartPx
+                + hotseatBarSidePaddingEndPx
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
-        boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
             // Note: This calculation was created after noticing a pattern in the design spec.
-            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx;
-            hotseatBarSizePx += extraSpace - pageIndicatorSizePx;
+            int extraSpace = getCellSize().y - iconSizePx - iconDrawablePaddingPx * 2
+                    - verticalDragHandleSizePx;
+            hotseatBarSizePx += extraSpace;
+            hotseatBarBottomPaddingPx += extraSpace;
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
         }
-
-        if (Utilities.getZimPrefs(mContext).getHotseatShowArrow()) {
-            pageIndicatorHeightPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_height);
-            pageIndicatorLandGutterLeftNavBarPx = res.getDimensionPixelSize(
-                    R.dimen.dynamic_grid_page_indicator_gutter_width_left_nav_bar);
-            pageIndicatorLandGutterRightNavBarPx = res.getDimensionPixelSize(
-                    R.dimen.dynamic_grid_page_indicator_gutter_width_right_nav_bar);
-        } else {
-            pageIndicatorHeightPx = 0;
-            pageIndicatorLandGutterLeftNavBarPx = 0;
-            pageIndicatorLandGutterRightNavBarPx = 0;
-        }
-
-        computeAllAppsButtonSize(context);
+        updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(iconSizePx);
     }
 
-    public void refresh() {
-        Resources res = mContext.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
-        updateAvailableDimensions(dm, res);
-        computeAllAppsButtonSize(mContext);
-        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
+    public DeviceProfile copy(Context context) {
+        Point size = new Point(availableWidthPx, availableHeightPx);
+        return new DeviceProfile(context, inv, size, size, widthPx, heightPx, isLandscape,
+                isMultiWindowMode);
     }
 
-    public static int calculateCellWidth(int width, int countX) {
-        return width / countX;
-    }
-
-    public static int calculateCellHeight(int height, int countY) {
-        return height / countY;
-    }
-
-    private static Context getContext(Context c, int orientation) {
-        Configuration context = new Configuration(c.getResources().getConfiguration());
-        context.orientation = orientation;
-        return c.createConfigurationContext(context);
-
-    }
-
-    public final int getHotseatHeight() {
-        return (hotseatBarHeightPx - hotseatBarTopPaddingPx) * Utilities.getNumberOfHotseatRows(mContext) + hotseatBarTopPaddingPx;
-    }
-
-    public int getHotseatSize(InvariantDeviceProfile inv, Resources res, DisplayMetrics dm) {
-        return isVerticalBarLayout()
-                ? Utilities.pxFromDp(inv.iconSize, dm)
-                : res.getDimensionPixelSize(Utilities.getZimPrefs(mContext).getDockSearchBar() ?
-                R.dimen.dynamic_grid_hotseat_size : R.dimen.v1_dynamic_grid_hotseat_size)
-                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
-    }
-
-    public int getHotseatBottomPadding(Resources res) {
-        return res.getDimensionPixelSize(Utilities.getZimPrefs(mContext).getDockSearchBar() ?
-                R.dimen.dynamic_grid_hotseat_bottom_padding : R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
-    }
-
-    public int getHotseatTopPadding(Resources res) {
-        return res.getDimensionPixelSize(Utilities.getZimPrefs(mContext).getDockSearchBar() ?
-                R.dimen.dynamic_grid_hotseat_top_padding : R.dimen.v1_dynamic_grid_hotseat_top_padding);
-    }
-
-    DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
+    public DeviceProfile getMultiWindowProfile(Context context, Point mwSize) {
         // We take the minimum sizes of this profile and it's multi-window variant to ensure that
         // the system decor is always excluded.
         mwSize.set(Math.min(availableWidthPx, mwSize.x), Math.min(availableHeightPx, mwSize.y));
@@ -333,28 +252,32 @@ public class DeviceProfile {
         // and heightPx = availableHeightPx because Launcher uses the InvariantDeviceProfiles'
         // widthPx and heightPx values where it's needed.
         DeviceProfile profile = new DeviceProfile(context, inv, mwSize, mwSize, mwSize.x, mwSize.y,
-                isLandscape);
+                isLandscape, true);
 
-        // Hide labels on the workspace.
-        profile.adjustToHideWorkspaceLabels();
+        // If there isn't enough vertical cell padding with the labels displayed, hide the labels.
+        float workspaceCellPaddingY = profile.getCellSize().y - profile.iconSizePx
+                - iconDrawablePaddingPx - profile.iconTextSizePx;
+        if (workspaceCellPaddingY < profile.iconDrawablePaddingPx * 2) {
+            profile.adjustToHideWorkspaceLabels();
+        }
 
         // We use these scales to measure and layout the widgets using their full invariant profile
         // sizes and then draw them scaled and centered to fit in their multi-window mode cellspans.
         float appWidgetScaleX = (float) profile.getCellSize().x / getCellSize().x;
         float appWidgetScaleY = (float) profile.getCellSize().y / getCellSize().y;
         profile.appWidgetScale.set(appWidgetScaleX, appWidgetScaleY);
+        profile.updateWorkspacePadding();
 
         return profile;
     }
 
-    public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
-        if (!mListeners.contains(listener)) {
-            mListeners.add(listener);
-        }
-    }
-
-    public void removeLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
-        mListeners.remove(listener);
+    /**
+     * Inverse of {@link #getMultiWindowProfile(Context, Point)}
+     *
+     * @return device profile corresponding to the current orientation in non multi-window mode.
+     */
+    public DeviceProfile getFullScreenProfile() {
+        return isLandscape ? inv.landscapeProfile : inv.portraitProfile;
     }
 
     /**
@@ -375,51 +298,34 @@ public class DeviceProfile {
                 + topBottomPadding * 2;
     }
 
-    /**
-     * Determine the exact visual footprint of the all apps button, taking into account scaling
-     * and internal padding of the drawable.
-     */
-    private void computeAllAppsButtonSize(Context context) {
-        Resources res = context.getResources();
-        float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
-        allAppsButtonVisualSize = (int) (iconSizePx * (1 - padding)) - context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
-    }
-
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        float workspaceScale = 1f;
-        float allAppsScale = 1f;
-        int workspaceDrawablePadding = iconDrawablePaddingOriginalPx;
-        int allAppsDrawablePadding = iconDrawablePaddingOriginalPx;
+        updateIconSize(1f, res, dm);
 
-        updateIconSize(workspaceScale, allAppsScale, workspaceDrawablePadding,
-                allAppsDrawablePadding, res, dm);
         // Check to see if the icons fit within the available height.  If not, then scale down.
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
-        //if (usedHeight > maxHeight) {
-        //    workspaceScale = maxHeight / usedHeight;
-        //}
+        if (usedHeight > maxHeight) {
+            float scale = maxHeight / usedHeight;
+            updateIconSize(scale, res, dm);
+        }
         updateAvailableFolderCellDimensions(dm, res);
     }
 
-    private void updateIconSize(float workspaceScale, float allAppsScale, int workspaceDrawablePadding, int allAppsDrawablePadding,
-                                Resources res, DisplayMetrics dm) {
-
-        ZimPreferences pref = new ZimPreferences(mContext);
-        boolean iconLabelsInTwoLines = pref.getIconLabelsInTwoLines();
-
+    private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
         // Workspace
-        float invIconSizePx = isVerticalBarLayout() ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
-        iconSizePxOriginal = (int) (Utilities.pxFromDp(inv.iconSizeOriginal, dm) * workspaceScale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
-        iconDrawablePaddingPx = workspaceDrawablePadding;
-        int textHeight = Utilities.calculateTextHeight(iconTextSizePx);
-        cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
+        final boolean isVerticalLayout = isVerticalBarLayout();
+        float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
+        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
+        Log.w("DP Device Profile", "Icon Size" + iconSizePx);
+
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+
+        cellHeightPx = iconSizePx + iconDrawablePaddingPx
+                + Utilities.calculateTextHeight(iconTextSizePx);
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
-        if (iconDrawablePaddingPx > cellYPadding && !isVerticalBarLayout()
-                && !inMultiWindowMode()) {
+        if (iconDrawablePaddingPx > cellYPadding && !isVerticalLayout
+                && !isMultiWindowMode) {
             // Ensures that the label is closer to its corresponding icon. This is not an issue
             // with vertical bar layout or multi-window mode since the issue is handled separately
             // with their calls to {@link #adjustToHideWorkspaceLabels}.
@@ -427,35 +333,28 @@ public class DeviceProfile {
             iconDrawablePaddingPx = cellYPadding;
         }
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
-        if (pref.getHideAppLabels()) {
-            cellHeightPx -= textHeight;
-        }
+
         // All apps
         allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        float allAppsPaddingScale = pref.getAllAppsIconPaddingScale();
-        allAppsIconDrawablePaddingPx = Math.round(allAppsDrawablePadding * allAppsPaddingScale);
-
+        allAppsIconSizePx = iconSizePx;
+        allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
 
-        if (isVerticalBarLayout()) {
+        if (isVerticalLayout) {
             // Always hide the Workspace text with vertical bar layout.
             adjustToHideWorkspaceLabels();
         }
-        if (Utilities.getZimPrefs(mContext).getHideAllAppsAppLabels()) {
-            allAppsCellHeightPx -= textHeight;
-        }
 
         // Hotseat
-        hotseatCellWidthPx = iconSizePx;
-        hotseatCellHeightPx = iconSizePx;
-        if (isVerticalBarLayout()) {
-            hotseatBarSizePx = iconSizePx;
+        if (isVerticalLayout) {
+            hotseatBarSizePx = iconSizePx + hotseatBarSidePaddingStartPx
+                    + hotseatBarSidePaddingEndPx;
         }
+        hotseatCellHeightPx = iconSizePx;
 
-        if (!isVerticalBarLayout()) {
-            int expectedWorkspaceHeight = availableHeightPx - getHotseatHeight()
-                    - pageIndicatorHeightPx - topWorkspacePadding;
+        if (!isVerticalLayout) {
+            int expectedWorkspaceHeight = availableHeightPx - hotseatBarSizePx
+                    - verticalDragHandleSizePx - topWorkspacePadding;
             float minRequiredHeight = dropTargetBarSizePx + workspaceSpringLoadedBottomSpace;
             workspaceSpringLoadShrinkFactor = Math.min(
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f,
@@ -465,29 +364,9 @@ public class DeviceProfile {
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
 
-        /// Folder cell
-        int cellPaddingX = res.getDimensionPixelSize(R.dimen.folder_cell_x_padding);
-        int cellPaddingY = res.getDimensionPixelSize(R.dimen.folder_cell_y_padding);
-        final int folderChildTextSize =
-                Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_child_text_size), iconLabelsInTwoLines);
-
-        final int folderBottomPanelSize =
-                res.getDimensionPixelSize(R.dimen.folder_label_padding_top)
-                        + res.getDimensionPixelSize(R.dimen.folder_label_padding_bottom)
-                        + Utilities.calculateTextHeight(res.getDimension(R.dimen.folder_label_text_size), iconLabelsInTwoLines);
-
-        // Don't let the folder get too close to the edges of the screen.
-        folderCellWidthPx = Math.min(iconSizePx + 2 * cellPaddingX,
-                (availableWidthPx - 4 * edgeMarginPx) / inv.numFolderColumns);
-        folderCellHeightPx = Math.min(iconSizePx + 3 * cellPaddingY + folderChildTextSize,
-                (availableHeightPx - 4 * edgeMarginPx - folderBottomPanelSize) / inv.numFolderRows);
-        folderChildDrawablePaddingPx = Math.max(0,
-                (folderCellHeightPx - iconSizePx - folderChildTextSize) / 3);
-
         // Folder icon
-        folderBackgroundOffset = -edgeMarginPx;
-        folderIconSizePx = iconSizePx + 2 * -folderBackgroundOffset;
-        folderIconPreviewPadding = res.getDimensionPixelSize(R.dimen.folder_preview_padding);
+        folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
+        folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {
@@ -499,15 +378,16 @@ public class DeviceProfile {
 
         // Don't let the folder get too close to the edges of the screen.
         int folderMargin = edgeMarginPx;
+        Point totalWorkspacePadding = getTotalWorkspacePadding();
 
         // Check if the icons fit within the available height.
         float usedHeight = folderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
-        int maxHeight = availableHeightPx - getTotalWorkspacePadding().y - folderMargin;
+        int maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
         float scaleY = maxHeight / usedHeight;
 
         // Check if the icons fit within the available width.
         float usedWidth = folderCellWidthPx * inv.numFolderColumns;
-        int maxWidth = availableWidthPx - getTotalWorkspacePadding().x - folderMargin;
+        int maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
         float scaleX = maxWidth / usedWidth;
 
         float scale = Math.min(scaleX, scaleY);
@@ -532,46 +412,12 @@ public class DeviceProfile {
     }
 
     public void updateInsets(Rect insets) {
-        if (!isVerticalBarLayout()) {
-            if (mInsets.bottom == 0 && insets.bottom != 0) {
-                //Navbar is now shown, remove padding
-                hotseatBarSizePx -= mBottomMarginHw;
-                hotseatBarBottomPaddingPx -= mBottomMarginHw;
-            } else if (mInsets.bottom != 0 && insets.bottom == 0) {
-                //Navbar is now hidden, show padding
-                hotseatBarSizePx += mBottomMarginHw;
-                hotseatBarBottomPaddingPx += mBottomMarginHw;
-            }
-        }
         mInsets.set(insets);
+        updateWorkspacePadding();
     }
 
-    public void updateAppsViewNumCols() {
-        allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
-    }
-
-    /**
-     * Returns the width and height of the search bar, ignoring any padding.
-     */
-    public Point getSearchBarDimensForWidgetOpts() {
-        if (isVerticalBarLayout()) {
-            return new Point(dropTargetBarSizePx, availableHeightPx - 2 * edgeMarginPx);
-        } else {
-            int gap;
-            if (isTablet) {
-                // Pad the left and right of the workspace to ensure consistent spacing
-                // between all icons
-                int width = getCurrentWidth();
-                // XXX: If the icon size changes across orientations, we will have to take
-                //      that into account here too.
-                gap = ((width - 2 * edgeMarginPx
-                        - (inv.numColumns * cellWidthPx)) / (2 * (inv.numColumns + 1)))
-                        + edgeMarginPx;
-            } else {
-                gap = desiredWorkspaceLeftRightMarginPx - defaultWidgetPadding.right;
-            }
-            return new Point(availableWidthPx - 2 * gap, dropTargetBarSizePx);
-        }
+    public Rect getInsets() {
+        return mInsets;
     }
 
     public Point getCellSize() {
@@ -587,38 +433,39 @@ public class DeviceProfile {
     }
 
     public Point getTotalWorkspacePadding() {
-        Rect padding = getWorkspacePadding(null);
-        return new Point(padding.left + padding.right, padding.top + padding.bottom);
+        updateWorkspacePadding();
+        return new Point(workspacePadding.left + workspacePadding.right,
+                workspacePadding.top + workspacePadding.bottom);
     }
 
     /**
-     * Returns the workspace padding in the specified orientation.
+     * Updates {@link #workspacePadding} as a result of any internal value change to reflect the
+     * new workspace padding
      */
-    public Rect getWorkspacePadding(Rect recycle) {
-        Rect padding = recycle == null ? new Rect() : recycle;
+    private void updateWorkspacePadding() {
+        Rect padding = workspacePadding;
         if (isVerticalBarLayout()) {
-            if (mInsets.left > 0) {
-                padding.set(mInsets.left + pageIndicatorLandGutterLeftNavBarPx, 0,
-                        getHotseatHeight() + hotseatLandGutterPx - mInsets.left, 2 * edgeMarginPx);
+            padding.top = 0;
+            padding.bottom = edgeMarginPx;
+            if (isSeascape()) {
+                padding.left = hotseatBarSizePx;
+                padding.right = verticalDragHandleSizePx;
             } else {
-                padding.set(pageIndicatorLandGutterRightNavBarPx, 0,
-                        getHotseatHeight() + hotseatLandGutterPx, 2 * edgeMarginPx);
+                padding.left = verticalDragHandleSizePx;
+                padding.right = hotseatBarSizePx;
             }
         } else {
-            int paddingBottom = (Utilities.getZimPrefs(mContext).getTransparentHotseat() && Utilities.getZimPrefs(mContext).getHideHotseat() ? 0 : getHotseatHeight()) + pageIndicatorHeightPx;
-            if (Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets()) {
-                padding.set(0, 0, 0, paddingBottom);
-            } else if (isTablet) {
+            int paddingBottom = hotseatBarSizePx + verticalDragHandleSizePx
+                    - verticalDragHandleOverlapWorkspace;
+            if (isTablet) {
                 // Pad the left and right of the workspace to ensure consistent spacing
                 // between all icons
-                int width = getCurrentWidth();
-                int height = getCurrentHeight();
                 // The amount of screen space available for left/right padding.
-                int availablePaddingX = Math.max(0, width - ((inv.numColumns * cellWidthPx) +
+                int availablePaddingX = Math.max(0, widthPx - ((inv.numColumns * cellWidthPx) +
                         ((inv.numColumns - 1) * cellWidthPx)));
                 availablePaddingX = (int) Math.min(availablePaddingX,
-                        width * MAX_HORIZONTAL_PADDING_PERCENT);
-                int availablePaddingY = Math.max(0, height - topWorkspacePadding - paddingBottom
+                        widthPx * MAX_HORIZONTAL_PADDING_PERCENT);
+                int availablePaddingY = Math.max(0, heightPx - topWorkspacePadding - paddingBottom
                         - (2 * inv.numRows * cellHeightPx) - hotseatBarTopPaddingPx
                         - hotseatBarBottomPaddingPx);
                 padding.set(availablePaddingX / 2, topWorkspacePadding + availablePaddingY / 2,
@@ -631,9 +478,34 @@ public class DeviceProfile {
                         paddingBottom);
             }
         }
-        return padding;
     }
 
+    public Rect getHotseatLayoutPadding() {
+        if (isVerticalBarLayout()) {
+            if (isSeascape()) {
+                mHotseatPadding.set(mInsets.left + hotseatBarSidePaddingStartPx,
+                        mInsets.top, hotseatBarSidePaddingEndPx, mInsets.bottom);
+            } else {
+                mHotseatPadding.set(hotseatBarSidePaddingEndPx, mInsets.top,
+                        mInsets.right + hotseatBarSidePaddingStartPx, mInsets.bottom);
+            }
+        } else {
+
+            // We want the edges of the hotseat to line up with the edges of the workspace, but the
+            // icons in the hotseat are a different size, and so don't line up perfectly. To account
+            // for this, we pad the left and right of the hotseat with half of the difference of a
+            // workspace cell vs a hotseat cell.
+            float workspaceCellWidth = (float) widthPx / inv.numColumns;
+            float hotseatCellWidth = (float) widthPx / inv.numHotseatIcons;
+            int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
+            mHotseatPadding.set(
+                    hotseatAdjustment + workspacePadding.left + cellLayoutPaddingLeftRightPx,
+                    hotseatBarTopPaddingPx,
+                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
+                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
+        }
+        return mHotseatPadding;
+    }
 
     /**
      * @return the bounds for which the open folders should be contained within
@@ -643,35 +515,24 @@ public class DeviceProfile {
             // Folders should only appear right of the drop target bar and left of the hotseat
             return new Rect(mInsets.left + dropTargetBarSizePx + edgeMarginPx,
                     mInsets.top,
-                    mInsets.left + availableWidthPx - getHotseatHeight() - edgeMarginPx,
+                    mInsets.left + availableWidthPx - hotseatBarSizePx - edgeMarginPx,
                     mInsets.top + availableHeightPx);
         } else {
             // Folders should only appear below the drop target bar and above the hotseat
-            return new Rect(mInsets.left,
+            return new Rect(mInsets.left + edgeMarginPx,
                     mInsets.top + dropTargetBarSizePx + edgeMarginPx,
-                    mInsets.left + availableWidthPx,
-                    mInsets.top + availableHeightPx - getHotseatHeight()
-                            - pageIndicatorHeightPx - edgeMarginPx);
+                    mInsets.left + availableWidthPx - edgeMarginPx,
+                    mInsets.top + availableHeightPx - hotseatBarSizePx
+                            - verticalDragHandleSizePx - edgeMarginPx);
         }
     }
 
-    private int getWorkspacePageSpacing() {
-        if (isVerticalBarLayout() || isLargeTablet) {
-            // In landscape mode the page spacing is set to the default.
-            return defaultPageSpacingPx;
-        } else {
-            // In portrait, we want the pages spaced such that there is no
-            // overhang of the previous / next page into the current page viewport.
-            // We assume symmetrical padding in portrait mode.
-            return Math.max(defaultPageSpacingPx, getWorkspacePadding(null).left + 1);
-        }
+    public static int calculateCellWidth(int width, int countX) {
+        return width / countX;
     }
 
-    int getOverviewModeButtonBarHeight() {
-        int zoneHeight = (int) (overviewModeIconZoneRatio * availableHeightPx);
-        return Utilities.boundToRange(zoneHeight,
-                overviewModeMinIconZoneHeightPx,
-                overviewModeMaxIconZoneHeightPx);
+    public static int calculateCellHeight(int height, int countY) {
+        return height / countY;
     }
 
     /**
@@ -683,159 +544,26 @@ public class DeviceProfile {
         return isLandscape && transposeLayoutWithOrientation;
     }
 
-    boolean shouldFadeAdjacentWorkspaceScreens() {
+    /**
+     * Updates orientation information and returns true if it has changed from the previous value.
+     */
+    public boolean updateIsSeascape(WindowManager wm) {
+        if (isVerticalBarLayout()) {
+            boolean isSeascape = wm.getDefaultDisplay().getRotation() == Surface.ROTATION_270;
+            if (mIsSeascape != isSeascape) {
+                mIsSeascape = isSeascape;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean isSeascape() {
+        return isVerticalBarLayout() && mIsSeascape;
+    }
+
+    public boolean shouldFadeAdjacentWorkspaceScreens() {
         return isVerticalBarLayout() || isLargeTablet;
-    }
-
-    private int getVisibleChildCount(ViewGroup parent) {
-        int visibleChildren = 0;
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            if (parent.getChildAt(i).getVisibility() != View.GONE) {
-                visibleChildren++;
-            }
-        }
-        return visibleChildren;
-    }
-
-    public void layout(Launcher launcher, boolean notifyListeners) {
-        FrameLayout.LayoutParams lp;
-        boolean hasVerticalBarLayout = isVerticalBarLayout();
-
-        // Layout the search bar space
-        Point searchBarBounds = getSearchBarDimensForWidgetOpts();
-        View searchBar = launcher.getDropTargetBar();
-        lp = (FrameLayout.LayoutParams) searchBar.getLayoutParams();
-        lp.width = searchBarBounds.x;
-        lp.height = searchBarBounds.y;
-        lp.topMargin = mInsets.top + edgeMarginPx;
-        searchBar.setLayoutParams(lp);
-
-        // Layout the workspace
-        PagedView workspace = launcher.findViewById(R.id.workspace);
-        Rect workspacePadding = getWorkspacePadding(null);
-        workspace.setPadding(workspacePadding.left, workspacePadding.top, workspacePadding.right,
-                workspacePadding.bottom);
-        workspace.setPageSpacing(getWorkspacePageSpacing());
-
-        // Layout the hotseat
-        Hotseat hotseat = launcher.findViewById(R.id.hotseat);
-        lp = (FrameLayout.LayoutParams) hotseat.getLayoutParams();
-        // We want the edges of the hotseat to line up with the edges of the workspace, but the
-        // icons in the hotseat are a different size, and so don't line up perfectly. To account for
-        // this, we pad the left and right of the hotseat with half of the difference of a workspace
-        // cell vs a hotseat cell.
-        float workspaceCellWidth = (float) getCurrentWidth() / inv.numColumns;
-        float hotseatCellWidth = (float) getCurrentWidth() / inv.numHotseatIcons;
-        int hotseatAdjustment = Math.round((workspaceCellWidth - hotseatCellWidth) / 2);
-        boolean hideHotseat = Utilities.getZimPrefs(mContext).getTransparentHotseat() && Utilities.getZimPrefs(mContext).getHideHotseat();
-
-        if (hasVerticalBarLayout) {
-            // Vertical hotseat -- The hotseat is fixed in the layout to be on the right of the
-            //                     screen regardless of RTL
-            int paddingRight = mInsets.left > 0
-                    ? hotseatBarLeftNavBarRightPaddingPx
-                    : hotseatBarRightNavBarRightPaddingPx;
-            int paddingLeft = mInsets.left > 0
-                    ? hotseatBarLeftNavBarLeftPaddingPx
-                    : hotseatBarRightNavBarLeftPaddingPx;
-
-            lp.gravity = Gravity.RIGHT;
-            lp.width = getHotseatHeight() + mInsets.left + mInsets.right
-                    + paddingLeft + paddingRight;
-            lp.height = LayoutParams.MATCH_PARENT;
-
-            hotseat.getLayout().setPadding(mInsets.left + cellLayoutPaddingLeftRightPx
-                            + paddingLeft,
-                    mInsets.top,
-                    mInsets.right + cellLayoutPaddingLeftRightPx + paddingRight,
-                    workspacePadding.bottom + cellLayoutBottomPaddingPx);
-        } else if (isTablet) {
-            // Pad the hotseat with the workspace padding calculated above
-            lp.gravity = Gravity.BOTTOM;
-            lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = getHotseatHeight() + mInsets.bottom;
-            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
-                            + cellLayoutPaddingLeftRightPx,
-                    hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
-                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
-        } else {
-            // For phones, layout the hotseat without any bottom margin
-            // to ensure that we have space for the folders
-            lp.gravity = Gravity.BOTTOM;
-            lp.width = LayoutParams.MATCH_PARENT;
-            lp.height = hotseatBarSizePx + mInsets.bottom;
-            lp.height = hideHotseat ? 0 : (getHotseatHeight() + mInsets.bottom);
-            if (hideHotseat) {
-                lp.bottomMargin += pageIndicatorHeightPx;
-            }
-            hotseat.getLayout().setPadding(hotseatAdjustment + workspacePadding.left
-                            + cellLayoutPaddingLeftRightPx,
-                    hotseatBarTopPaddingPx,
-                    hotseatAdjustment + workspacePadding.right + cellLayoutPaddingLeftRightPx,
-                    hotseatBarBottomPaddingPx + mInsets.bottom + cellLayoutBottomPaddingPx);
-        }
-        hotseat.setLayoutParams(lp);
-
-        // Layout the page indicators
-        View pageIndicator = launcher.findViewById(R.id.page_indicator);
-        if (pageIndicator != null) {
-            lp = (FrameLayout.LayoutParams) pageIndicator.getLayoutParams();
-            if (isVerticalBarLayout()) {
-                if (mInsets.left > 0) {
-                    lp.leftMargin = mInsets.left + pageIndicatorLandGutterLeftNavBarPx -
-                            lp.width - pageIndicatorLandWorkspaceOffsetPx;
-                } else {
-                    lp.leftMargin = pageIndicatorLandGutterRightNavBarPx - lp.width -
-                            pageIndicatorLandWorkspaceOffsetPx;
-                }
-                lp.bottomMargin = workspacePadding.bottom;
-            } else {
-                // Put the page indicators above the hotseat
-                lp.gravity = Gravity.CENTER_HORIZONTAL | Gravity.BOTTOM;
-                lp.height = pageIndicatorHeightPx;
-                lp.bottomMargin = mInsets.bottom + (hideHotseat ? 0 : getHotseatHeight());
-            }
-            pageIndicator.setLayoutParams(lp);
-        }
-
-        // Layout the Overview Mode
-        ViewGroup overviewMode = launcher.getOverviewPanel();
-        if (overviewMode != null) {
-            int visibleChildCount = getVisibleChildCount(overviewMode);
-            int totalItemWidth = visibleChildCount * overviewModeBarItemWidthPx;
-            int maxWidth = totalItemWidth + (visibleChildCount - 1) * overviewModeBarSpacerWidthPx;
-
-            lp = (FrameLayout.LayoutParams) overviewMode.getLayoutParams();
-            lp.width = Math.min(availableWidthPx, maxWidth);
-            lp.height = getOverviewModeButtonBarHeight();
-            lp.bottomMargin = mInsets.bottom;
-            overviewMode.setLayoutParams(lp);
-        }
-
-        // Layout the AllAppsRecyclerView
-        View view = launcher.findViewById(R.id.apps_list_view);
-        int paddingLeftRight = desiredWorkspaceLeftRightMarginPx + cellLayoutPaddingLeftRightPx;
-        view.setPadding(paddingLeftRight, view.getPaddingTop(), paddingLeftRight,
-                view.getPaddingBottom());
-
-        if (notifyListeners) {
-            for (int i = mListeners.size() - 1; i >= 0; i--) {
-                mListeners.get(i).onLauncherLayoutChanged();
-            }
-        }
-    }
-
-    private int getCurrentWidth() {
-        return isLandscape
-                ? Math.max(widthPx, heightPx)
-                : Math.min(widthPx, heightPx);
-    }
-
-    private int getCurrentHeight() {
-        return isLandscape
-                ? Math.min(widthPx, heightPx)
-                : Math.max(widthPx, heightPx);
     }
 
     public int getCellHeight(@ContainerType int containerType) {
@@ -852,31 +580,23 @@ public class DeviceProfile {
         }
     }
 
+    private static Context getContext(Context c, int orientation) {
+        Configuration context = new Configuration(c.getResources().getConfiguration());
+        context.orientation = orientation;
+        return c.createConfigurationContext(context);
+    }
+
     /**
-     * @return the left/right paddings for all containers.
+     * Callback when a component changes the DeviceProfile associated with it, as a result of
+     * configuration change
      */
-    public final int[] getContainerPadding() {
-        // No paddings for portrait phone
-        if (isPhone && !isVerticalBarLayout()) {
-            return new int[]{0, 0};
-        }
+    public interface OnDeviceProfileChangeListener {
 
-        // In landscape, we match the width of the workspace
-        Rect padding = getWorkspacePadding(null);
-        return new int[]{padding.left - mInsets.left, padding.right + mInsets.left};
-    }
-
-    public boolean inMultiWindowMode() {
-        return this != inv.landscapeProfile && this != inv.portraitProfile;
-    }
-
-    public boolean shouldIgnoreLongPressToOverview(float touchX) {
-        boolean touchedLhsEdge = mInsets.left == 0 && touchX < edgeMarginPx;
-        boolean touchedRhsEdge = mInsets.right == 0 && touchX > (widthPx - edgeMarginPx);
-        return !inMultiWindowMode() && (touchedLhsEdge || touchedRhsEdge);
-    }
-
-    public interface LauncherLayoutChangeListener {
-        void onLauncherLayoutChanged();
+        /**
+         * Called when the device profile is reassigned. Note that for layout and measurements, it
+         * is sufficient to listen for inset changes. Use this callback when you need to perform
+         * a one time operation.
+         */
+        void onDeviceProfileChanged(DeviceProfile dp);
     }
 }
