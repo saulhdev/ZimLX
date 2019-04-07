@@ -18,7 +18,7 @@ public class LauncherFiles {
     public static final String OLD_SHARED_PREFERENCES_KEY = "org.zimmob.zimlx.prefs";
     public static final String MANAGED_USER_PREFERENCES_KEY = "org.zimmob.zimlx.managedusers.prefs";
     // This preference file is not backed up to cloud.
-    public static final String DEVICE_PREFERENCES_KEY = "corg.zimmob.zimlx.device.prefs";
+    public static final String DEVICE_PREFERENCES_KEY = "org.zimmob.zimlx.device.prefs";
     public static final String WIDGET_PREVIEWS_DB = "widgetpreviews.db";
     public static final String APP_ICONS_DB = "app_icons.db";
     private static final String XML = ".xml";

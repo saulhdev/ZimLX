@@ -8,10 +8,13 @@ import android.provider.Settings;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import androidx.drawerlayout.widget.DrawerLayout;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
 
 public class Minibar {
     public static Context mContext = Launcher.mContext;
@@ -54,14 +57,14 @@ public class Minibar {
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
             case AppDrawer:
-                Launcher.getLauncher(mContext).getAppsView();
-                ((DrawerLayout) Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
-
-
-                /*if (!Launcher.getLauncher(mContext).isAppsViewVisible()) {
-                    Launcher.getLauncher(mContext).showAppsView(true, true);
+                if (!Launcher.getLauncher(mContext).isInState(ALL_APPS)) {
+                    Launcher.getLauncher(mContext).getUserEventDispatcher()
+                            .logActionOnControl(LauncherLogProto.Action.Touch.TAP,
+                                    LauncherLogProto.ControlType.ALL_APPS_BUTTON);
+                    Launcher.getLauncher(mContext).getStateManager().goToState(ALL_APPS);
                     ((DrawerLayout) Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
-                }*/
+                }
+
                 break;
             case VolumeDialog:
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {

@@ -261,7 +261,7 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
     }
 
     public DeviceProfile copy(Context context) {

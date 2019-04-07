@@ -47,6 +47,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.StringRes;
 import androidx.core.content.ContextCompat;
 
+import static com.android.launcher3.LauncherFiles.DEVICE_PREFERENCES_KEY;
+
 
 /**
  * Wrapper for settings based on SharedPreferences, optionally with keys in resources
@@ -54,7 +56,7 @@ import androidx.core.content.ContextCompat;
  */
 @SuppressWarnings({"WeakerAccess", "unused", "SpellCheckingInspection", "SameParameterValue"})
 public class SharedPreferencesPropertyBackend implements PropertyBackend<String, SharedPreferencesPropertyBackend> {
-    public static final String SHARED_PREF_APP = "app";
+    public static final String SHARED_PREF_APP = DEVICE_PREFERENCES_KEY;
     protected static final String ARRAY_SEPARATOR = "%%%";
     protected static final String ARRAY_SEPARATOR_SUBSTITUTE = "§§§";
     //

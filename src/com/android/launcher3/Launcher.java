@@ -127,6 +127,7 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
+import com.android.launcher3.widget.WidgetsFullSheet;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.minibar.Minibar;
@@ -190,7 +191,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Type: SparseArray<Parcelable>
     private static final String RUNTIME_STATE_WIDGET_PANEL = "launcher.widget_panel";
 
-    private LauncherStateManager mStateManager;
+    public LauncherStateManager mStateManager;
 
     private static final int ON_ACTIVITY_RESULT_ANIMATION_DELAY = 500;
 
@@ -546,27 +547,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-
-
-    /**
-     * Invoked by subclasses to signal a change to the  value to
-     * ensure the custom content page is added or removed if necessary.
-     */
-    /*protected void invalidateHasCustomContentToLeft() {
-        if (mWorkspace == null || mWorkspace.getScreenOrder().isEmpty()) {
-            // Not bound yet, wait for bindScreens to be called.
-            return;
-        }
-
-        if (!mWorkspace.hasCustomContent() && hasCustomContentToLeft()) {
-            // Create the custom content page and call the subclass to populate it.
-            mWorkspace.createCustomContentContainer();
-            populateCustomContentContainer();
-        } else if (mWorkspace.hasCustomContent() && !hasCustomContentToLeft()) {
-            mWorkspace.removeCustomContentPage();
-        }
-    }*/
-
     public boolean isDraggingEnabled() {
         // We prevent dragging when we are loading the workspace as it is possible to pick up a view
         // that is subsequently removed from the workspace in startBinding().
@@ -835,12 +815,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             final AppWidgetHostView layout = mAppWidgetHost.createView(this, appWidgetId,
                     requestArgs.getWidgetHandler().getProviderInfo(this));
             boundWidget = layout;
-            onCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    completeAddAppWidget(appWidgetId, requestArgs, layout, null);
-                    mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-                }
+            onCompleteRunnable = () -> {
+                completeAddAppWidget(appWidgetId, requestArgs, layout, null);
+                mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
             };
         } else if (resultCode == RESULT_CANCELED) {
             mAppWidgetHost.deleteAppWidgetId(appWidgetId);
@@ -940,6 +917,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
+    @Override
+    protected void onUserLeaveHint() {
+        super.onUserLeaveHint();
+        UiFactory.onLauncherStateOrResumeChanged(this);
+    }
+
     public boolean isInState(LauncherState state) {
         return mStateManager.getState() == state;
     }
@@ -1033,12 +1016,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return;
         }
 
-        int stateOrdinal = savedState.getInt(RUNTIME_STATE, State.WORKSPACE.ordinal());
-        State[] stateValues = State.values();
-        State state = (stateOrdinal >= 0 && stateOrdinal < stateValues.length)
-                ? stateValues[stateOrdinal] : State.WORKSPACE;
-        if (state == State.APPS || state == State.WIDGETS) {
-            mOnResumeState = state;
+        int stateOrdinal = savedState.getInt(RUNTIME_STATE, NORMAL.ordinal);
+        LauncherState[] stateValues = LauncherState.values();
+        LauncherState state = stateValues[stateOrdinal];
+        if (!state.disableRestore) {
+            mStateManager.goToState(state, false /* animated */);
         }
 
         PendingRequestArgs requestArgs = savedState.getParcelable(RUNTIME_STATE_PENDING_REQUEST_ARGS);
@@ -1047,6 +1029,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         mPendingActivityResult = savedState.getParcelable(RUNTIME_STATE_PENDING_ACTIVITY_RESULT);
+
+        SparseArray<Parcelable> widgetsState =
+                savedState.getSparseParcelableArray(RUNTIME_STATE_WIDGET_PANEL);
+        if (widgetsState != null) {
+            WidgetsFullSheet.show(this, false).restoreHierarchyState(widgetsState);
+        }
     }
 
     /**
@@ -1741,6 +1729,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onBackPressed() {
+        DrawerLayout dl = findViewById(R.id.drawer_layout);
+        FrameLayout sl = findViewById(R.id.dlview);
+        if (dl.isDrawerOpen(sl)) {
+            ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+            return;
+        }
         if (finishAutoCancelActionMode()) {
             return;
         }
@@ -2301,6 +2295,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         executor.attachTo(this);
     }
+
     public void clearPendingExecutor(ViewOnDrawExecutor executor) {
         if (mPendingExecutor == executor) {
             mPendingExecutor = null;
@@ -2556,19 +2551,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             List<KeyboardShortcutGroup> data, Menu menu, int deviceId) {
 
         ArrayList<KeyboardShortcutInfo> shortcutInfos = new ArrayList<>();
-        if (mState == State.WORKSPACE) {
+        if (isInState(NORMAL)) {
             shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.all_apps_button_label),
                     KeyEvent.KEYCODE_A, KeyEvent.META_CTRL_ON));
+            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.widget_button_text),
+                    KeyEvent.KEYCODE_W, KeyEvent.META_CTRL_ON));
         }
-        View currentFocus = getCurrentFocus();
-        if (new CustomActionsPopup(this, currentFocus).canShow()) {
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
-                    KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
-        }
-        if (currentFocus.getTag() instanceof ItemInfo
-                && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
-            shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.action_deep_shortcut),
-                    KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
+        final View currentFocus = getCurrentFocus();
+        if (currentFocus != null) {
+            if (new CustomActionsPopup(this, currentFocus).canShow()) {
+                shortcutInfos.add(new KeyboardShortcutInfo(getString(R.string.custom_actions),
+                        KeyEvent.KEYCODE_O, KeyEvent.META_CTRL_ON));
+            }
+            if (currentFocus.getTag() instanceof ItemInfo
+                    && DeepShortcutManager.supportsShortcuts((ItemInfo) currentFocus.getTag())) {
+                shortcutInfos.add(new KeyboardShortcutInfo(
+                        getString(R.string.shortcuts_menu_with_notifications_description),
+                        KeyEvent.KEYCODE_S, KeyEvent.META_CTRL_ON));
+            }
         }
         if (!shortcutInfos.isEmpty()) {
             data.add(new KeyboardShortcutGroup(getString(R.string.home_screen), shortcutInfos));

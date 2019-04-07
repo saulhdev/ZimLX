@@ -33,7 +33,6 @@ import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsObserver;
 
-import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
@@ -58,12 +57,7 @@ public class LauncherAppState {
                 INSTANCE = new LauncherAppState(context.getApplicationContext());
             } else {
                 try {
-                    return new MainThreadExecutor().submit(new Callable<LauncherAppState>() {
-                        @Override
-                        public LauncherAppState call() throws Exception {
-                            return LauncherAppState.getInstance(context);
-                        }
-                    }).get();
+                    return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance(context)).get();
                 } catch (InterruptedException | ExecutionException e) {
                     throw new RuntimeException(e);
                 }

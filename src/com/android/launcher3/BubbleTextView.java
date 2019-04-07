@@ -114,7 +114,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private BadgeInfo mBadgeInfo;
     private BadgeRenderer mBadgeRenderer;
-    private IconPalette mBadgePalette;
     private int mBadgeColor;
     private float mBadgeScale;
     private boolean mForceHideBadge;
@@ -370,7 +369,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
-            mBadgeRenderer.draw(canvas, mBadgePalette, mBadgeInfo, mTempIconBounds, mBadgeScale,
+            mBadgeRenderer.draw(canvas, mBadgeInfo, mTempIconBounds, mBadgeScale,
                     mTempSpaceForBadgeOffset);
             canvas.translate(-scrollX, -scrollY);
         }
@@ -525,10 +524,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             float newBadgeScale = isBadged ? 1f : 0;
             mBadgeRenderer = mActivity.getDeviceProfile().mBadgeRenderer;
             if (wasBadged || isBadged) {
-                /*mBadgePalette = IconPalette.getBadgePalette(getResources());
-                if (mBadgePalette == null) {
-                    mBadgePalette = ((FastBitmapDrawable) mIcon).getIconPalette();
-                }*/
                 // Animate when a badge is first added or when it is removed.
                 if (animate && (wasBadged ^ isBadged) && isShown()) {
                     ObjectAnimator.ofFloat(this, BADGE_SCALE_PROPERTY, newBadgeScale).start();

@@ -46,7 +46,35 @@
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
 
-    <style name="LauncherThemeDarkText" parent="@style/LauncherTheme">
+    <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="allAppsInterimScrimAlpha">128</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
+    </style>
+
+    <style name="LauncherTheme.Dark" parent="@style/LauncherTheme">
+        <item name="android:textColorPrimary">#FFFFFFFF</item>
+        <item name="android:textColorSecondary">#FFFFFFFF</item>
+        <item name="android:textColorTertiary">#CCFFFFFF</item>
+        <item name="android:textColorHint">#A0FFFFFF</item>
+        <item name="android:colorControlHighlight">#A0FFFFFF</item>
+        <item name="android:colorPrimary">#FF212121</item>
+        <item name="allAppsScrimColor">#EA212121</item>
+        <item name="allAppsInterimScrimAlpha">102</item>
+        <item name="allAppsNavBarScrimColor">#80000000</item>
+        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
+        <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
+        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
+        <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
+        <item name="isMainColorDark">true</item>
+    </style>
+
+    <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
+        <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
@@ -55,21 +83,15 @@
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
-    <style name="LauncherThemeDark" parent="@style/LauncherTheme">
-        <item name="android:textColorPrimary">#FFFFFFFF</item>
-        <item name="android:textColorSecondary">#FFFFFFFF</item>
-        <item name="android:textColorTertiary">#CCFFFFFF</item>
-        <item name="android:textColorHint">#A0FFFFFF</item>
-        <item name="android:colorControlHighlight">#A0FFFFFF</item>
-        <item name="android:colorPrimary">#FF333333</item>
-        <item name="allAppsScrimColor">#7A212121</item>
-        <item name="allAppsNavBarScrimColor">#80000000</item>
-        <item name="popupColorPrimary">?android:attr/colorPrimary</item>
-        <item name="popupColorSecondary">#424242</item> <!-- Gray 800 -->
-        <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
-        <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
-        <item name="isMainColorDark">true</item>
-    </style>
+    <!-- A derivative project can extend these themes to customize the application theme without
+        affecting the base theme -->
+    <style name="AppTheme" parent="@style/LauncherTheme" />
+
+    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
+
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
+
+    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
@@ -97,7 +119,7 @@
         <item name="android:colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="WidgetContainerTheme.Dark" parent="LauncherThemeDark">
+    <style name="WidgetContainerTheme.Dark" parent="LauncherTheme.Dark">
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
@@ -193,7 +215,7 @@
         <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
-    <style name="NormalSearchDark" parent="LauncherThemeDark">
+    <style name="NormalSearchDark" parent="LauncherTheme.Dark">
         <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
