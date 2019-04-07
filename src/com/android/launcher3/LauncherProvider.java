@@ -80,9 +80,9 @@ public class LauncherProvider extends ContentProvider {
     /**
      * Represents the schema of the database. Changes in scheme need not be backwards compatible.
      */
-    public static final int SCHEMA_VERSION = 27;
+    public static final int SCHEMA_VERSION = 29;
 
-    public static final String AUTHORITY = FeatureFlags.AUTHORITY;
+    public static final String AUTHORITY = (BuildConfig.APPLICATION_ID + ".settings");
 
     static final String EMPTY_DATABASE_CREATED = "EMPTY_DATABASE_CREATED";
 

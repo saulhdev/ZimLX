@@ -97,7 +97,7 @@ android {
     productFlavors {
         aosp {
             dimension "default"
-            applicationId 'com.android.launcher3'
+            applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
 
@@ -129,6 +129,8 @@ android {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src']
+            aidl.srcDirs = ['src']
+            assets.srcDirs = ['assets']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
@@ -149,11 +151,12 @@ android {
 
         aosp {
             java.srcDirs = ['src_flags', "src_ui_overrides"]
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            java.srcDirs = ['go/src_flags']
             manifest.srcFile "go/AndroidManifest.xml"
         }
         quickstep {
@@ -167,9 +170,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    defaultConfig {
-        applicationId 'org.zimmob.zimlx'
-    }
 }
 
 afterEvaluate {
@@ -182,6 +182,9 @@ repositories {
     google()
     jcenter()
     mavenCentral()
+}
+tasks.matching { task -> task.name.matches('.*generate.*Resources') }.all {
+    task -> task.dependsOn copyRepoFiles
 }
 
 final String SUPPORT_LIBS_VERSION = '1.0.0'
@@ -243,6 +246,8 @@ protobuf {
                         option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
+                        option "java_package=search.proto|com.google.android.apps.nexuslauncher.search.nano"
+                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
                         option "enum_style=java"
                     }
                 }
