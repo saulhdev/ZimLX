@@ -321,6 +321,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel = app.setLauncher(this);
         initDeviceProfile(app.getInvariantDeviceProfile());
 
+        showNotificationCount = Utilities.getZimPrefs(this).getFolderBadgeCount();
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);

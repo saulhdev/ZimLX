@@ -86,7 +86,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         val folderShape: String = sharedPrefs.getString(ZimFlags.THEME_FOLDER_SHAPE, "0")
         return folderShape.toInt()
     }
-    // Drawer
+
+    // App Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
     val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
