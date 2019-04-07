@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
@@ -27,6 +28,11 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.InstallTimeComparator;
+import org.zimmob.zimlx.util.MostUsedComparator;
+
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -34,6 +40,11 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
+
+import static org.zimmob.zimlx.util.Config.SORT_AZ;
+import static org.zimmob.zimlx.util.Config.SORT_LAST_INSTALLED;
+import static org.zimmob.zimlx.util.Config.SORT_MOST_USED;
+import static org.zimmob.zimlx.util.Config.SORT_ZA;
 
 /**
  * The alphabetically sorted list of applications.
@@ -185,6 +196,43 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return mApps;
     }
 
+    public void sortApps(int sortType) {
+        switch (sortType) {
+            //SORT BY NAME AZ
+            case SORT_AZ:
+                Collections.sort(mApps, mAppNameComparator);
+                Log.i("apps", "sorting by AZ");
+                break;
+
+            //SORT BY NAME ZA
+            case SORT_ZA:
+                Log.i("apps", "sorting by ZA");
+                Collections.sort(mApps, (p2, p1) -> Collator
+                        .getInstance()
+                        .compare(p1.title, p2.title));
+                break;
+
+            //SORT BY LAST INSTALLED
+            case SORT_LAST_INSTALLED:
+                Log.i("apps", "sorting by Last Installed");
+                PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
+                InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
+                Collections.sort(mApps, installTimeComparator);
+                break;
+
+            //SORT BY MOST USED DESC
+            case SORT_MOST_USED:
+                Log.i("apps", "sorting by Most Used");
+                MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
+                Collections.sort(mApps, mostUsedComparator);
+                break;
+            default:
+                Collections.sort(mApps, mAppNameComparator);
+                break;
+
+        }
+    }
+
     /**
      * Returns fast scroller sections of all the current filtered applications.
      */
@@ -254,7 +302,15 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
-        Collections.sort(mApps, mAppNameComparator);
+        //Collections.sort(mApps, mAppNameComparator);
+        Context context = mLauncher.getApplicationContext();
+        ZimPreferences pref = new ZimPreferences(context);
+        if (!pref.getShowPredictionApps()) {
+            sortApps(pref.getSortMode());
+        } else {
+            Collections.sort(mApps, mAppNameComparator);
+        }
+
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections

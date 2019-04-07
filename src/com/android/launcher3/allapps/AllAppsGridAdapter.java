@@ -264,12 +264,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mLauncher.startActivitySafely(v, mMarketSearchIntent, null);
-                    }
-                });
+                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(

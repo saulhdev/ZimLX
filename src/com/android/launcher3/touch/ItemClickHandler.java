@@ -19,6 +19,7 @@ import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Process;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Toast;
@@ -33,12 +34,16 @@ import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
+
+import org.zimmob.zimlx.util.Config;
+import org.zimmob.zimlx.util.DbHelper;
 
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_BY_PUBLISHER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
@@ -47,6 +52,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.Launcher.REQUEST_BIND_PENDING_APPWIDGET;
 import static com.android.launcher3.Launcher.REQUEST_RECONFIGURE_APPWIDGET;
+import static com.android.launcher3.Launcher.mContext;
 
 /**
  * Class for handling clicks on workspace and all-apps items
@@ -57,7 +63,7 @@ public class ItemClickHandler {
      * Instance used for click handling on items
      */
     public static final OnClickListener INSTANCE = ItemClickHandler::onClick;
-
+    public static String TAG = "ItemClickHandler";
     private static void onClick(View v) {
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
         // view has detached (it's possible for this to happen if the view is removed mid touch).
@@ -79,6 +85,11 @@ public class ItemClickHandler {
             }
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher);
+            if (Utilities.getZimPrefs(Launcher.mContext).getSortMode() == Config.SORT_MOST_USED) {
+                Utilities.getZimPrefs(Launcher.mContext).updateSortApps();
+            }
+
+
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
@@ -226,6 +237,12 @@ public class ItemClickHandler {
                 intent = new Intent(intent);
                 intent.setPackage(null);
             }
+        }
+        if (item instanceof AppInfo) {
+            Log.i(TAG, "Clicking App " + item.title);
+            DbHelper db = new DbHelper(mContext);
+            db.updateAppCount(((AppInfo) item).componentName.getPackageName());
+            db.close();
         }
         launcher.startActivitySafely(v, intent, item);
     }
