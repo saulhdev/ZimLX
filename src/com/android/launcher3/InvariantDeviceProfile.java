@@ -32,11 +32,11 @@ import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.zimmob.zimlx.ZimPreferences;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 
 import androidx.annotation.VisibleForTesting;
 
@@ -67,7 +67,8 @@ public class InvariantDeviceProfile {
     public int numRowsOriginal;
     public int numColumns;
     public int numColumnsOriginal;
-
+    public float allAppsIconSize;
+    public float iconSizeOriginal;
     /**
      * Number of icons per row and column in the folder.
      */
@@ -152,6 +153,8 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
+        iconSizeOriginal = iconSize;
+        allAppsIconSize = iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
         iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
@@ -160,7 +163,7 @@ public class InvariantDeviceProfile {
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
-
+        customizationHook(context);
         Point realSize = new Point();
         display.getRealSize(realSize);
         // The real size never changes. smallSide and largeSide will remain the
@@ -182,6 +185,22 @@ public class InvariantDeviceProfile {
         } else {
             defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
         }
+    }
+
+    private void customizationHook(Context context) {
+        ZimPreferences prefs = Utilities.getZimPrefs(context);
+        WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
+        Display display = wm.getDefaultDisplay();
+        DisplayMetrics dm = new DisplayMetrics();
+        display.getMetrics(dm);
+
+        if (prefs.getAllAppsIconScale() != 1f) {
+            float iconScale = prefs.getAllAppsIconScale();
+            allAppsIconSize *= iconScale;
+        }
+        float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), iconSize);
+        iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
     }
 
     ArrayList<InvariantDeviceProfile> getPredefinedDeviceProfiles(Context context) {
@@ -271,12 +290,8 @@ public class InvariantDeviceProfile {
 
         // Sort the profiles by their closeness to the dimensions
         ArrayList<InvariantDeviceProfile> pointsByNearness = points;
-        Collections.sort(pointsByNearness, new Comparator<InvariantDeviceProfile>() {
-            public int compare(InvariantDeviceProfile a, InvariantDeviceProfile b) {
-                return Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
-                        dist(width, height, b.minWidthDps, b.minHeightDps));
-            }
-        });
+        Collections.sort(pointsByNearness, (a, b) -> Float.compare(dist(width, height, a.minWidthDps, a.minHeightDps),
+                dist(width, height, b.minWidthDps, b.minHeightDps)));
 
         return pointsByNearness;
     }

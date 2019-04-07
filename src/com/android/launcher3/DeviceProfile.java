@@ -33,6 +33,8 @@ import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.graphics.IconNormalizer;
 
+import java.util.ArrayList;
+
 public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
@@ -87,6 +89,7 @@ public class DeviceProfile {
     public int cellWidthPx;
     public int cellHeightPx;
     public int workspaceCellPaddingXPx;
+    private final int mBottomMarginHw;
 
     // Folder
     public int folderIconSizePx;
@@ -105,21 +108,31 @@ public class DeviceProfile {
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
-    public final int hotseatBarTopPaddingPx;
-    public int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public final int hotseatBarSidePaddingStartPx;
     public final int hotseatBarSidePaddingEndPx;
+    public int hotseatBarTopPaddingPx;
+    public int hotseatBarBottomPaddingPx;
+    public int hotseatBarLeftNavBarLeftPaddingPx;
+    public int hotseatBarLeftNavBarRightPaddingPx;
+    public int hotseatBarRightNavBarLeftPaddingPx;
+    public int hotseatBarRightNavBarRightPaddingPx;
 
     // All apps
     public int allAppsCellHeightPx;
     public int allAppsIconSizePx;
+    public int allAppsButtonVisualSize;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
+    public int allAppsNumCols;
+    public int allAppsNumPredictiveCols;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
 
+    // Page indicator
+    private int pageIndicatorSizePx;
+    private int hotseatBarHeightPx;
     // Drop Target
     public int dropTargetBarSizePx;
 
@@ -131,10 +144,17 @@ public class DeviceProfile {
 
     // Icon badges
     public BadgeRenderer mBadgeRenderer;
+    private Context mContext;
+
+    // Listeners
+    private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
+
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
                          int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
+
+        mContext = context;
 
         this.inv = inv;
         this.isLandscape = isLandscape;
@@ -182,6 +202,7 @@ public class DeviceProfile {
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
         cellLayoutBottomPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_bottom_padding);
+
         verticalDragHandleSizePx = res.getDimensionPixelSize(
                 R.dimen.vertical_drag_handle_size);
         verticalDragHandleOverlapWorkspace =
@@ -214,6 +235,12 @@ public class DeviceProfile {
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_size)
                 + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
 
+        mBottomMarginHw = 0; // res.getDimensionPixelSize(R.dimen.qsb_hotseat_bottom_margin_hw); (For now)
+        if (!isVerticalBarLayout()) {
+            hotseatBarSizePx += mBottomMarginHw;
+            hotseatBarBottomPaddingPx += mBottomMarginHw;
+        }
+
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
 
@@ -234,7 +261,7 @@ public class DeviceProfile {
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(context, iconSizePx);
     }
 
     public DeviceProfile copy(Context context) {
@@ -280,6 +307,18 @@ public class DeviceProfile {
         return isLandscape ? inv.landscapeProfile : inv.portraitProfile;
     }
 
+    public void addLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
+        if (!mListeners.contains(listener)) {
+            mListeners.add(listener);
+        }
+    }
+
+    public void removeLauncherLayoutChangedListener(LauncherLayoutChangeListener listener) {
+        if (mListeners.contains(listener)) {
+            mListeners.remove(listener);
+        }
+    }
+
     /**
      * Adjusts the profile so that the labels on the Workspace are hidden.
      * It is important to call this method after the All Apps variables have been set.
@@ -298,31 +337,46 @@ public class DeviceProfile {
                 + topBottomPadding * 2;
     }
 
-    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
-        updateIconSize(1f, res, dm);
+    /**
+     * Determine the exact visual footprint of the all apps button, taking into account scaling
+     * and internal padding of the drawable.
+     */
+    private void computeAllAppsButtonSize(Context context) {
+        Resources res = context.getResources();
+        float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
+        allAppsButtonVisualSize = (int) (iconSizePx * (1 - padding)) - context.getResources()
+                .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
+    }
 
+
+    private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
+        updateIconSize(1f, 1f, res, dm);
+        float workspaceScale = 1f;
+        float allAppsScale = 1f;
         // Check to see if the icons fit within the available height.  If not, then scale down.
         float usedHeight = (cellHeightPx * inv.numRows);
         int maxHeight = (availableHeightPx - getTotalWorkspacePadding().y);
         if (usedHeight > maxHeight) {
-            float scale = maxHeight / usedHeight;
-            updateIconSize(scale, res, dm);
+            updateIconSize(workspaceScale, allAppsScale, res, dm);
         }
         updateAvailableFolderCellDimensions(dm, res);
     }
 
-    private void updateIconSize(float scale, Resources res, DisplayMetrics dm) {
+    private void updateIconSize(float workspaceScale, float allAppsScale, Resources res, DisplayMetrics dm) {
+
+        boolean labelsInTwoLines = Utilities.getZimPrefs(mContext).getIconLabelsInTwoLines();
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
-        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * scale);
+        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
         Log.w("DP Device Profile", "Icon Size" + iconSizePx);
 
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * scale);
-        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale);
+        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale);
 
         cellHeightPx = iconSizePx + iconDrawablePaddingPx
-                + Utilities.calculateTextHeight(iconTextSizePx);
+                + Utilities.calculateTextHeight(iconTextSizePx, labelsInTwoLines);
+
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
         if (iconDrawablePaddingPx > cellYPadding && !isVerticalLayout
                 && !isMultiWindowMode) {
@@ -336,7 +390,8 @@ public class DeviceProfile {
 
         // All apps
         allAppsIconTextSizePx = iconTextSizePx;
-        allAppsIconSizePx = iconSizePx;
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
+        ;
         allAppsIconDrawablePaddingPx = iconDrawablePaddingPx;
         allAppsCellHeightPx = getCellSize().y;
 
@@ -418,6 +473,22 @@ public class DeviceProfile {
 
     public Rect getInsets() {
         return mInsets;
+    }
+
+    public void updateAppsViewNumCols() {
+        allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
+    }
+
+    private int getCurrentWidth() {
+        return isLandscape
+                ? Math.max(widthPx, heightPx)
+                : Math.min(widthPx, heightPx);
+    }
+
+    private int getCurrentHeight() {
+        return isLandscape
+                ? Math.min(widthPx, heightPx)
+                : Math.max(widthPx, heightPx);
     }
 
     public Point getCellSize() {
@@ -544,6 +615,14 @@ public class DeviceProfile {
         return isLandscape && transposeLayoutWithOrientation;
     }
 
+    public void layout(Launcher launcher, boolean notifyListeners) {
+        if (notifyListeners) {
+            for (int i = mListeners.size() - 1; i >= 0; i--) {
+                mListeners.get(i).onLauncherLayoutChanged();
+            }
+        }
+    }
+
     /**
      * Updates orientation information and returns true if it has changed from the previous value.
      */
@@ -598,5 +677,9 @@ public class DeviceProfile {
          * a one time operation.
          */
         void onDeviceProfileChanged(DeviceProfile dp);
+    }
+
+    public interface LauncherLayoutChangeListener {
+        void onLauncherLayoutChanged();
     }
 }
