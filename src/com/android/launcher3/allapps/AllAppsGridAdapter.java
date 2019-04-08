@@ -31,8 +31,13 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.discovery.AppDiscoveryAppInfo;
+import com.android.launcher3.discovery.AppDiscoveryItemView;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -42,6 +47,8 @@ import java.util.List;
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -87,6 +94,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         void onBindView(ViewHolder holder);
     }
 
+    private SpringAnimationHandler<ViewHolder> mSpringAnimationHandler;
     /**
      * ViewHolder for each icon.
      */
@@ -214,6 +222,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
+        if (FeatureFlags.LAUNCHER3_PHYSICS) {
+            mSpringAnimationHandler = new SpringAnimationHandler<>(
+                    SpringAnimationHandler.Y_DIRECTION, new AllAppsSpringAnimationFactory());
+        }
     }
 
     public static boolean isDividerViewType(int viewType) {
@@ -271,6 +283,11 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
+
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryItemView appDiscoveryItemView = (AppDiscoveryItemView) mLayoutInflater
+                        .inflate(R.layout.all_apps_discovery_item, parent, false);
+
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
@@ -280,6 +297,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
                 return new ViewHolder(searchMarketView);
             case VIEW_TYPE_ALL_APPS_DIVIDER:
+            case VIEW_TYPE_PREDICTION_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
             case VIEW_TYPE_WORK_TAB_FOOTER:
@@ -299,6 +317,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 BubbleTextView icon = (BubbleTextView) holder.itemView;
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
+                break;
+            case VIEW_TYPE_DISCOVERY_ITEM:
+                AppDiscoveryAppInfo appDiscoveryAppInfo = (AppDiscoveryAppInfo)
+                        mApps.getAdapterItems().get(position).appInfo;
+                AppDiscoveryItemView view = (AppDiscoveryItemView) holder.itemView;
+                view.apply(appDiscoveryAppInfo);
                 break;
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
@@ -349,4 +373,133 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
+    public SpringAnimationHandler getSpringAnimationHandler() {
+        return mSpringAnimationHandler;
+    }
+
+    /**
+     * Helper class to set the SpringAnimation values for an item in the adapter.
+     */
+    private class AllAppsSpringAnimationFactory
+            implements SpringAnimationHandler.AnimationFactory<ViewHolder> {
+        private static final float DEFAULT_MAX_VALUE_PX = 100;
+        private static final float DEFAULT_MIN_VALUE_PX = -DEFAULT_MAX_VALUE_PX;
+
+        // Damping ratio range is [0, 1]
+        private static final float SPRING_DAMPING_RATIO = 0.55f;
+
+        // Stiffness is a non-negative number.
+        private static final float MIN_SPRING_STIFFNESS = 580f;
+        private static final float MAX_SPRING_STIFFNESS = 900f;
+
+        // The amount by which each adjacent rows' stiffness will differ.
+        private static final float ROW_STIFFNESS_COEFFICIENT = 50f;
+
+        @Override
+        public SpringAnimation initialize(ViewHolder vh) {
+            return SpringAnimationHandler.forView(vh.itemView, DynamicAnimation.TRANSLATION_Y, 0);
+        }
+
+        /**
+         * @param spring A new or recycled SpringAnimation.
+         * @param vh     The ViewHolder that {@param spring} is related to.
+         */
+        @Override
+        public void update(SpringAnimation spring, ViewHolder vh) {
+            int numPredictedApps = Math.min(mAppsPerRow, mApps.getPredictedApps().size());
+            int appPosition = getAppPosition(vh.getAdapterPosition(), numPredictedApps,
+                    mAppsPerRow);
+
+            int col = appPosition % mAppsPerRow;
+            int row = appPosition / mAppsPerRow;
+
+            int numTotalRows = mApps.getNumAppRows() - 1; // zero-based count
+            if (row > (numTotalRows / 2)) {
+                // Mirror the rows so that the top row acts the same as the bottom row.
+                row = Math.abs(numTotalRows - row);
+            }
+
+            calculateSpringValues(spring, row, col);
+        }
+
+        @Override
+        public void setDefaultValues(SpringAnimation spring) {
+            calculateSpringValues(spring, 0, mAppsPerRow / 2);
+        }
+
+        /**
+         * We manipulate the stiffness, min, and max values based on the items distance to the
+         * first row and the items distance to the center column to create the ^-shaped motion
+         * effect.
+         */
+        private void calculateSpringValues(SpringAnimation spring, int row, int col) {
+            float rowFactor = (1 + row) * 0.5f;
+            float colFactor = getColumnFactor(col, mAppsPerRow);
+
+            float minValue = DEFAULT_MIN_VALUE_PX * (rowFactor + colFactor);
+            float maxValue = DEFAULT_MAX_VALUE_PX * (rowFactor + colFactor);
+
+            float stiffness = Utilities.boundToRange(
+                    MAX_SPRING_STIFFNESS - (row * ROW_STIFFNESS_COEFFICIENT),
+                    MIN_SPRING_STIFFNESS,
+                    MAX_SPRING_STIFFNESS);
+
+            spring.setMinValue(minValue)
+                    .setMaxValue(maxValue)
+                    .getSpring()
+                    .setStiffness(stiffness)
+                    .setDampingRatio(SPRING_DAMPING_RATIO);
+        }
+
+        /**
+         * @return The app position is the position of the app in the Adapter if we ignored all
+         * other view types.
+         * <p>
+         * The first app is at position 0, and the first app each following row is at a
+         * position that is a multiple of {@param appsPerRow}.
+         * <p>
+         * ie. If there are 5 apps per row, and there are two rows of apps:
+         * 0 1 2 3 4
+         * 5 6 7 8 9
+         */
+        private int getAppPosition(int position, int numPredictedApps, int appsPerRow) {
+            if (position < numPredictedApps) {
+                // Predicted apps are first in the adapter.
+                return position;
+            }
+
+            // There is at most 1 divider view between the predicted apps and the alphabetical apps.
+            int numDividerViews = numPredictedApps == 0 ? 0 : 1;
+
+            // This offset takes into consideration an incomplete row of predicted apps.
+            int numPredictedAppsOffset = appsPerRow - numPredictedApps;
+            return position + numPredictedAppsOffset - numDividerViews;
+        }
+
+        /**
+         * Increase the column factor as the distance increases between the column and the center
+         * column(s).
+         */
+        private float getColumnFactor(int col, int numCols) {
+            float centerColumn = numCols / 2;
+            int distanceToCenter = (int) Math.abs(col - centerColumn);
+
+            boolean evenNumberOfColumns = numCols % 2 == 0;
+            if (evenNumberOfColumns && col < centerColumn) {
+                distanceToCenter -= 1;
+            }
+
+            float factor = 0;
+            while (distanceToCenter > 0) {
+                if (distanceToCenter == 1) {
+                    factor += 0.2f;
+                } else {
+                    factor += 0.1f;
+                }
+                --distanceToCenter;
+            }
+
+            return factor;
+        }
+    }
 }

@@ -14,6 +14,7 @@
 -->
 
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
+    android:background="?attr/popupColorPrimary"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -51,7 +52,6 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/notification_main_height"
-        android:background="@drawable/bg_notification_content"
         android:focusable="true">
 
         <LinearLayout

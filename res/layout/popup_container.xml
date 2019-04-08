@@ -17,11 +17,8 @@
     android:id="@+id/deep_shortcuts_container"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:clipChildren="false"
+    android:background="?attr/popupColorPrimary"
     android:clipToPadding="false"
+    android:clipChildren="false"
     android:elevation="@dimen/deep_shortcuts_elevation"
-    android:orientation="vertical"
-    android:paddingBottom="4dp"
-    android:paddingTop="4dp">
-
-</com.android.launcher3.popup.PopupContainerWithArrow>
+    android:orientation="vertical" />

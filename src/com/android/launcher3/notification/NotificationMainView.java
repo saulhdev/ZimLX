@@ -21,6 +21,7 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
@@ -97,7 +98,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
         mTextAndBackground = findViewById(R.id.text_and_background);
         ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
-        mBackgroundColor = colorBackground.getColor();
+        mBackgroundColor = Color.RED;//colorBackground.getColor();
         RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
                 Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
                 colorBackground, null);
