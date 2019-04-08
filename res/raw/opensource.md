@@ -1,15 +1,74 @@
+## Apache License
+Version 2.0, January 2004
+ 
+* **Android AOSP**
+~° Copyright (c) The Android Open Source Project
+~° ![https://android.googlesource.com/platform/packages/apps/Launcher3](https://android.googlesource.com/platform/packages/apps/Launcher3)<br/>
+
+* **Android Support Library**
+~° Copyright (c) The Android Open Source Project
+~° ![https://developer.android.com/topic/libraries/support-library](https://developer.android.com/topic/libraries/support-library)<br/>
+
+* **FastAdaptern**
+~° Copyright (c) Mike Penz
+~° ![https://github.com/mikepenz/FastAdapter](https://github.com/mikepenz/FastAdapter)<br/>
+
+* **Butterknife**
+~° Copyright (c) 2013 Jake Wharton
+~° ![https://github.com/JakeWharton/butterknife](https://github.com/JakeWharton/butterknife)<br/>
+
+* **MaterialScrollBar**
+~° Copyright (c) Turing Technologies
+~° ![https://github.com/turing-tech/MaterialScrollBar](https://github.com/turing-tech/MaterialScrollBar)<br/>
+
+* **Material Ripple Layout**
+~° Copyright (c) Balys Valentukevicius
+~° ![https://github.com/balysv/material-ripple](https://github.com/balysv/material-ripple)<br/>
+
+* **CustomActivityOnCrash**
+~° Copyright (c) Eduard Ereza Martínez
+~° ![https://github.com/Ereza/CustomActivityOnCrash](https://github.com/Ereza/CustomActivityOnCrash)<br/>
+
+* **jaredrummler colorpicker**
+~° Copyright (c) jaredrummler
+~° ![https://github.com/jaredrummler/ColorPicker](https://github.com/jaredrummler/ColorPicker)<br/>
+
+* **FiftyShadesOf**
+~° Copyright (c) Florent CHAMPIGNY
+~° ![https://github.com/florent37/FiftyShadesOf](https://github.com/florent37/FiftyShadesOf)<br/>
+
+`---------------`  
+<small>Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.</small>  
+`---------------`
+
+## GPL v3
+* **Lawnchair Launcher**
+~° Copyright (c) Till Kottmann
+~° ![https://github.com/LawnchairLauncher/Lawnchair](https://github.com/LawnchairLauncher/Lawnchair)<br/>
+
 ## The MIT License (MIT)
 * **CircularReveal**
-~° Copyright (c) Abdullaev Ozodrukh  
+~° Copyright (c) Abdullaev Ozodrukh
 ~° ![https://github.com/ozodrukh/CircularReveal](https://github.com/ozodrukh/CircularReveal)<br/>
 
 * **Material Dialogs**
-~° Copyright (c) Aidan Follestad  
-~° https://github.com/afollestad/material-dialogs<br/>
+~° Copyright (c) Aidan Follestad
+~° ![https://github.com/afollestad/material-dialogs](https://github.com/afollestad/material-dialogs)<br/>
 
 * **TextDrawable**
-~° Copyright (c) Amulya Khare  
-~° https://github.com/amulyakhare/TextDrawable <br/>
+~° Copyright (c) Amulya Khare
+~° ![https://github.com/amulyakhare/TextDrawable](https://github.com/amulyakhare/TextDrawable)<br/>
+
 
 `---------------`  
 <small>Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -30,65 +89,11 @@ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.</small>  
 `---------------`
-  
-  
-## Apache License
-Version 2.0, January 2004  
-
-* **FastAdaptern**
-~° Copyright (c) Mike Penz  
-~° https://github.com/mikepenz/FastAdapter<br/>
-
-* **Butterknife**
-~° Copyright (c) 2013 Jake Wharton  
-~° https://github.com/JakeWharton/butterknife<br/>
-
-* **MaterialScrollBar**
-~° Copyright (c) Turing Technologies  
-~° https://github.com/turing-tech/MaterialScrollBar<br/>
-
-* **Material Ripple Layout**
-~° Copyright (c) Balys Valentukevicius  
-~° https://github.com/balysv/material-ripple<br/>
-
-* **CustomActivityOnCrash**
-~° Copyright (c) Eduard Ereza Martínez  
-~° https://github.com/Ereza/CustomActivityOnCrash<br/>
-
-* **jaredrummler colorpicker**
-~° Copyright (c) jaredrummler  
-~° https://github.com/jaredrummler/ColorPicker<br/>
-
-* **FiftyShadesOf**
-~° Copyright (c) Florent CHAMPIGNY
-~° https://github.com/florent37/FiftyShadesOf<br/>
-
-* **Android Support Library**
-~° Copyright (c) The Android Open Source Project  
-~° https://developer.android.com/topic/libraries/support-library<br/>
-
-* **Android Support Library**
-~° Copyright (c) The Android Open Source Project
-~° https://developer.android.com/topic/libraries/support-library<br/>
-
-`---------------`  
-<small>Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.</small>  
-`---------------`
 
 ## BSD 2-Clause
 * **Protocol Buffer JavaNano API**
 ~° Copyright (c) Google
-~° https://developers.google.com/protocol-buffers/<br/>
+~° ![https://developers.google.com/protocol-buffers](https://developers.google.com/protocol-buffers)<br/>
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
