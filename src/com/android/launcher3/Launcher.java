@@ -85,6 +85,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.keyboard.CustomActionsPopup;
@@ -161,7 +162,8 @@ import static com.android.launcher3.logging.UserEventDispatcher.UserEventDelegat
  * Default launcher application.
  */
 public class Launcher extends BaseDraggingActivity implements LauncherExterns,
-        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate {
+        LauncherModel.Callbacks, LauncherProviderChangeListener, UserEventDelegate,
+        WallpaperColorInfo.OnThemeChangeListener {
     public static final String TAG = "Launcher";
     static final boolean LOGD = false;
 
@@ -227,15 +229,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public View mWeightWatcher;
     public ViewGroupFocusHelper mFocusHandler;
     protected AppSettings appSettings;
-    @Thunk
-    State mState = State.WORKSPACE;
 
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;
 
     @Thunk
     Workspace mWorkspace;
-
     @Thunk
     DragLayer mDragLayer;
     @Thunk
@@ -317,6 +316,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
         mContext = this;
         appSettings = new AppSettings(mContext);
+
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+        wallpaperColorInfo.setOnThemeChangeListener(this);
+        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
@@ -395,8 +399,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         TraceHelper.endSection("Launcher-onCreate");
     }
 
-
-
     public void initMinibar() {
         final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
         final ArrayList<String> labels = new ArrayList<>();
@@ -433,6 +435,15 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         return ((Launcher) ((ContextWrapper) context).getBaseContext());
     }
+
+    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
+        if (isDark) {
+            setTheme(R.style.LauncherTheme_Dark);
+        } else if (supportsDarkText) {
+            setTheme(R.style.LauncherTheme_DarkText);
+        }
+    }
+
 
     @Thunk
     void setOrientation() {
@@ -1266,6 +1277,40 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onDetachedFromWindow();
         }
+    }
+
+    /**
+     * Shows the overview button.
+     */
+    public void showOverviewMode(boolean animated) {
+        showOverviewMode(animated, false);
+    }
+
+    /**
+     * Shows the overview button, and if {@param requestButtonFocus} is set, will force the focus
+     * onto one of the overview panel buttons.
+     */
+    void showOverviewMode(boolean animated, boolean requestButtonFocus) {
+        Runnable postAnimRunnable = null;
+        if (requestButtonFocus) {
+            postAnimRunnable = new Runnable() {
+                @Override
+                public void run() {
+                    // Hitting the menu button when in touch mode does not trigger touch mode to
+                    // be disabled, so if requested, force focus on one of the overview panel
+                    // buttons.
+                    mOverviewPanel.requestFocusFromTouch();
+                }
+            };
+        }
+        mWorkspace.setVisibility(View.VISIBLE);
+        //mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
+        //        Workspace.State.OVERVIEW, animated, postAnimRunnable);
+        //setState(State.WORKSPACE);
+
+        // If animated from long press, then don't allow any of the controller in the drag
+        // layer to intercept any remaining touch.
+        mWorkspace.requestDisallowInterceptTouchEvent(animated);
     }
 
     public AllAppsTransitionController getAllAppsController() {
@@ -2632,6 +2677,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    @Override
+    public void onThemeChanged() {
+        recreate();
     }
 
 

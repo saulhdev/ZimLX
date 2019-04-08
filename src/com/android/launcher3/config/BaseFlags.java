@@ -51,4 +51,5 @@ public abstract class BaseFlags {
     public static boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
+    public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
 }

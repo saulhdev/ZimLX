@@ -48,7 +48,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     // Theme
     var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
-    var overrideLauncherTheme by BooleanPref(ZimFlags.OVERRIDE_LAUNCHER_THEME, false, recreate)
+    var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
     val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, false, recreate)
     val adaptiveBackgroud by BooleanPref(ZimFlags.THEME_ADAPTIVE_BACKGROUND, true, recreate)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)

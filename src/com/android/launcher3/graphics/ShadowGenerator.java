@@ -49,15 +49,33 @@ public class ShadowGenerator {
 
     private final int mIconSize;
 
+    private final Canvas mCanvas;
     private final Paint mBlurPaint;
     private final Paint mDrawPaint;
     private final BlurMaskFilter mDefaultBlurMaskFilter;
 
+    private static final Object LOCK = new Object();
+    // Singleton object guarded by {@link #LOCK}
+    private static ShadowGenerator sShadowGenerator;
+
     public ShadowGenerator(Context context) {
         mIconSize = LauncherAppState.getIDP(context).iconBitmapSize;
+        mCanvas = new Canvas();
         mBlurPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDrawPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         mDefaultBlurMaskFilter = new BlurMaskFilter(mIconSize * BLUR_FACTOR, Blur.NORMAL);
+    }
+
+    public static ShadowGenerator getInstance(Context context) {
+        // TODO: This currently fails as the system default icon also needs a shadow as it
+        // uses adaptive icon.
+        // Preconditions.assertNonUiThread();
+        synchronized (LOCK) {
+            if (sShadowGenerator == null) {
+                sShadowGenerator = new ShadowGenerator(context);
+            }
+        }
+        return sShadowGenerator;
     }
 
     public synchronized void recreateIcon(Bitmap icon, Canvas out) {
@@ -83,6 +101,32 @@ public class ShadowGenerator {
         out.drawBitmap(icon, 0, 0, mDrawPaint);
     }
 
+    public synchronized Bitmap recreateIcon(Bitmap icon, boolean resize,
+                                            BlurMaskFilter blurMaskFilter, int ambientAlpha, int keyAlpha) {
+        int width = resize ? mIconSize : icon.getWidth();
+        int height = resize ? mIconSize : icon.getHeight();
+        int[] offset = new int[2];
+
+        mBlurPaint.setMaskFilter(blurMaskFilter);
+        Bitmap shadow = icon.extractAlpha(mBlurPaint, offset);
+        Bitmap result = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+        mCanvas.setBitmap(result);
+
+        // Draw ambient shadow
+        mDrawPaint.setAlpha(ambientAlpha);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1], mDrawPaint);
+
+        // Draw key shadow
+        mDrawPaint.setAlpha(keyAlpha);
+        mCanvas.drawBitmap(shadow, offset[0], offset[1] + KEY_SHADOW_DISTANCE * mIconSize, mDrawPaint);
+
+        // Draw the icon
+        mDrawPaint.setAlpha(255);
+        mCanvas.drawBitmap(icon, 0, 0, mDrawPaint);
+
+        mCanvas.setBitmap(null);
+        return result;
+    }
     /**
      * Returns the minimum amount by which an icon with {@param bounds} should be scaled
      * so that the shadows do not get clipped.

@@ -219,6 +219,18 @@
         <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
     </style>
 
+    <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
+
+    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherTheme.Dark">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
+
+    <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherTheme.DarkText">
+        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
+    </style>
+
     <style name="HotseatQsbTheme">
         <item name="gIcon">@drawable/ic_super_g_shadow</item>
         <item name="micIcon">@drawable/ic_mic_shadow</item>

@@ -17,7 +17,6 @@ public class ZimFlags {
     public static final String THEME_ADAPTIVE_ICONS = "pref_key__adaptive_icons";
     public static final String THEME_ADAPTIVE_BACKGROUND = "pref_key__colored_icons";
     public static final String THEME_COLOR = "pref_key__theme_color";
-    public static final String OVERRIDE_LAUNCHER_THEME = "pref_override_launcher_theme";
 
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";
 

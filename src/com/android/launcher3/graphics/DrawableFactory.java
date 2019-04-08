@@ -32,6 +32,7 @@ import android.util.ArrayMap;
 import android.util.Log;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -77,6 +78,12 @@ public class DrawableFactory {
         return new FastBitmapDrawable(info);
     }
 
+    /**
+     * Returns a FastBitmapDrawable with the icon.
+     */
+    public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
+        return new FastBitmapDrawable(icon);
+    }
     /**
      * Returns a FastBitmapDrawable with the icon.
      */

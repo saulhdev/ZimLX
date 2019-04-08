@@ -21,6 +21,9 @@ package com.android.launcher3.config;
  */
 public final class FeatureFlags extends BaseFlags {
 
+    public static boolean LAUNCHER3_P_ALL_APPS = false;
+    public static boolean LEGACY_ALL_APPS_BACKGROUND = !LAUNCHER3_GRADIENT_ALL_APPS && !LAUNCHER3_P_ALL_APPS;
+
     private FeatureFlags() {
     }
 }

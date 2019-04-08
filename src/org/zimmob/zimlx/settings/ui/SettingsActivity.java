@@ -82,6 +82,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
     public final static String NOTIFICATION_BADGING = "notification_badging";
     public final static String ICON_PACK_PREF = "pref_icon_pack";
+    public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     public final static String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";

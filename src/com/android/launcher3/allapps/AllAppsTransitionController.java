@@ -3,12 +3,15 @@ package com.android.launcher3.allapps;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.Context;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.view.inputmethod.InputMethodManager;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -17,6 +20,9 @@ import com.android.launcher3.R;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.GradientView;
+import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
@@ -76,6 +82,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
 
     private float mScrollRangeDelta = 0;
+    private float mStatusBarHeight;
+
+    private GradientView mGradientView;
+
+    private Hotseat mHotseat;
+    private int mHotseatBackgroundColor;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
@@ -108,6 +120,61 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
+    private void updateAllAppsBg(float progress) {
+        // gradient
+        if (mGradientView == null) {
+            mGradientView = mLauncher.findViewById(R.id.gradient_bg);
+            mGradientView.setVisibility(View.VISIBLE);
+        }
+        mGradientView.setProgress(progress, mShiftRange);
+    }
+
+    /**
+     * @param start {@code true} if start of new drag.
+     */
+    public void preparePull(boolean start) {
+        if (start) {
+            if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND)
+                ((InputMethodManager) mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE))
+                        .hideSoftInputFromWindow(mGradientView.getWindowToken(), 0);
+            // Initialize values that should not change until #onDragEnd
+            mStatusBarHeight = mLauncher.getDragLayer().getInsets().top;
+            mHotseat.setVisibility(View.VISIBLE);
+            mHotseatBackgroundColor = mHotseat.getBackgroundDrawableColor();
+            mHotseat.setBackgroundTransparent(true /* transparent */);
+            /*if (!mLauncher.isAllAppsVisible()) {
+                mLauncher.tryAndUpdatePredictedApps();
+                mAppsView.setVisibility(View.VISIBLE);
+                if (FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
+                    mAppsView.setRevealDrawableColor(mHotseatBackgroundColor);
+                }
+            }*/
+        }
+    }
+
+
+    private void updateLightStatusBar(float shift) {
+        // Do not modify status bar on landscape as all apps is not full bleed.
+        boolean verticalBarLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
+        if (!FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS
+                && verticalBarLayout) {
+            return;
+        }
+
+        // Use a light system UI (dark icons) if all apps is behind at least half of the status bar.
+        boolean forceChange = FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS ?
+                shift <= mShiftRange / 4 :
+                shift <= mStatusBarHeight / 2;
+        if (forceChange) {
+            mLauncher.getSystemUiController().updateUiState(
+                    SystemUiController.UI_STATE_ALL_APPS, !mIsDarkTheme);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(
+                    SystemUiController.UI_STATE_ALL_APPS, 0);
+        }
+        //mCaretController.setHidden(FeatureFlags.LAUNCHER3_P_ALL_APPS && !verticalBarLayout);
+        //mCaretController.setForceDark(verticalBarLayout && forceChange && !mIsDarkTheme);
+    }
     /**
      * Note this method should not be called outside this class. This is public because it is used
      * in xml-based animations which also handle updating the appropriate UI.
@@ -139,6 +206,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         } else {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
+        updateLightStatusBar(shiftCurrent);
     }
 
     public float getProgress() {

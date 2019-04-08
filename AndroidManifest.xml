@@ -44,6 +44,8 @@
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
@@ -81,7 +83,7 @@
         attributes and intent filters the same
         -->
         <activity
-            android:name="com.android.launcher3.Launcher"
+            android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
@@ -128,6 +130,40 @@
             android:exported="true"
             android:readPermission="${applicationId}.permission.READ_SETTINGS"
             android:writePermission="${applicationId}.permission.WRITE_SETTINGS" />
+
+        <!-- Pixel -->
+        <activity
+            android:name="com.google.android.apps.nexuslauncher.search.AppLaunchActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter android:priority="1">
+                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:mimeType="vnd.android.cursor.dir/vnd.android.search.suggest"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
+
+        <receiver
+            android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
+            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
+            <intent-filter>
+                <action android:name="com.google.android.systemui.OPA_ENABLED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
+
+        <provider
+            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
+            android:authorities="${applicationId}.appssearch"
+            android:exported="true" />
 
         <activity
             android:name="org.zimmob.zimlx.backup.BackupListActivity"

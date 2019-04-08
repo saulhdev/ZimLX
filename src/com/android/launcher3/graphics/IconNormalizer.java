@@ -63,6 +63,9 @@ public class IconNormalizer {
     private static final float PIXEL_DIFF_PERCENTAGE_THRESHOLD = 0.005f;
     private static final float SCALE_NOT_INITIALIZED = 0;
 
+    private static final Object LOCK = new Object();
+    private static IconNormalizer sIconNormalizer;
+
     // Ratio of the diameter of an normalized circular icon to the actual icon size.
     public static final float ICON_VISIBLE_AREA_FACTOR = 0.92f;
 
@@ -111,6 +114,15 @@ public class IconNormalizer {
         mShapePath = new Path();
         mMatrix = new Matrix();
         mAdaptiveIconScale = SCALE_NOT_INITIALIZED;
+    }
+
+    public static IconNormalizer getInstance(Context context) {
+        synchronized (LOCK) {
+            if (sIconNormalizer == null) {
+                sIconNormalizer = new IconNormalizer(context);
+            }
+        }
+        return sIconNormalizer;
     }
 
     /**

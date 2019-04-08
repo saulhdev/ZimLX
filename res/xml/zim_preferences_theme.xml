@@ -45,36 +45,31 @@
             android:title="@string/pref_title__theme_colored_icons" />
 
     </androidx.preference.PreferenceCategory>
-    <PreferenceCategory android:title="@string/pref_cat__theme_style">
-        <androidx.preference.SwitchPreference
+    <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_style">
+
+        <ListPreference
+            android:defaultValue="0"
+            app:iconSpaceReserved="false"
+            android:entries="@array/theme_colors"
+            android:entryValues="@array/values__zero_to_three"
+            android:key="pref_key__theme_color"
+            android:persistent="false"
+            android:summary="%s"
+            android:title="@string/title__theme_color" />
+
+        <SwitchPreference
             android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_override_launcher_theme"
             android:persistent="true"
             android:title="@string/launcher_theme_override_label" />
-        <ListPreference
-            android:defaultValue="0"
-            app:iconSpaceReserved="false"
-            android:entries="@array/theme_colors"
-            android:entryValues="@array/values__zero_to_two"
-            android:key="pref_key__theme_color"
-            android:persistent="false"
-            android:summary="%s"
-            android:title="@string/title__theme_color" />
+
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
             android:key="pref_key__primary_color"
             android:title="@string/pref_title__primary_color"
             app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__primary_color"
-            app:cpv_showAlphaSlider="true" />
-
-        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-            android:defaultValue="@color/colorAccent"
-            android:key="pref_key__accent_color"
-            android:title="@string/pref_title__accent_color"
-            app:iconSpaceReserved="false"
-            app:cpv_dialogTitle="@string/pref_title__accent_color"
             app:cpv_showAlphaSlider="true" />
 
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
@@ -85,6 +80,6 @@
             app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
             app:cpv_showAlphaSlider="true" />
 
-    </PreferenceCategory>
+    </androidx.preference.PreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
