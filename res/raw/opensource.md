@@ -1,5 +1,5 @@
 ## Apache License
-Version 2.0, January 2004
+Version 2.0, January 2004<br/>
  
 * **Android AOSP**
 ~° Copyright (c) The Android Open Source Project

@@ -8,11 +8,13 @@ import android.content.pm.PackageManager;
 import android.os.SystemClock;
 import android.util.Log;
 
-import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
 import com.google.protobuf.nano.InvalidProtocolBufferNanoException;
 
+import static com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.a;
+import static com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.b;
+
 public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
-    private void cg(b b, Context context, Intent intent, boolean b2) throws PackageManager.NameNotFoundException {
+    private void cg(b b, Context context, Intent intent, boolean b2) {
         if (b.cy) {
             SmartspaceController.get(context).cV(null);
             return;
@@ -27,7 +29,7 @@ public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
         byte[] byteArrayExtra = intent.getByteArrayExtra("com.google.android.apps.nexuslauncher.extra.SMARTSPACE_CARD");
         if (byteArrayExtra != null) {
-            com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.a a = new com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.a();
+            a a = new a();
             try {
                 com.google.protobuf.nano.MessageNano.mergeFrom(a, byteArrayExtra);
                 b[] cw = a.cw;
