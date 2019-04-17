@@ -201,7 +201,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     /**
-     *  Based on the deltas, we resize the frame.
+     * Based on the deltas, we resize the frame.
      */
     public void visualizeResizeForDelta(int deltaX, int deltaY) {
         mDeltaX = mDeltaXRange.clamp(deltaX);
@@ -244,7 +244,7 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
     }
 
     /**
-     *  Based on the current deltas, we determine if and how to resize the widget.
+     * Based on the current deltas, we determine if and how to resize the widget.
      */
     private void resizeWidgetIfNeeded(boolean onDismiss) {
         float xThreshold = mCellLayout.getCellWidth();
@@ -564,10 +564,11 @@ public class AppWidgetResizeFrame extends AbstractFloatingView implements View.O
         /**
          * Applies delta similar to {@link #applyDelta(boolean, boolean, int, IntRange)},
          * with extra conditions.
+         *
          * @param minSize minimum size after with the moving edge should not be shifted any further.
          *                For eg, if delta = -3 when moving the endEdge brings the size to less than
          *                minSize, only delta = -2 will applied
-         * @param maxEnd The maximum value to the end edge (start edge is always restricted to 0)
+         * @param maxEnd  The maximum value to the end edge (start edge is always restricted to 0)
          * @return the amount of increase when endEdge was moves and the amount of decrease when
          * the start edge was moved.
          */
