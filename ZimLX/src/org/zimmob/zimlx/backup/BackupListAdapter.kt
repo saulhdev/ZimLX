@@ -5,10 +5,13 @@ import android.net.Uri
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
-import com.github.florent37.fiftyshadesof.FiftyShadesOf
+import org.zimmob.zimlx.color.ColorEngine
+import org.zimmob.zimlx.isVisible
 
 class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListAdapter.Holder>() {
 
@@ -32,9 +35,13 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     }
 
     fun removeItem(position: Int) {
-        backupList.removeAt(position)
-        backupMetaLoaderList.removeAt(position)
-        notifyItemRemoved(position + 1)
+        if (backupList[position].delete()) {
+            backupList.removeAt(position)
+            backupMetaLoaderList.removeAt(position)
+            notifyItemRemoved(position + 1)
+        } else {
+            Toast.makeText(context, R.string.backup_delete_failed, Toast.LENGTH_SHORT).show()
+        }
     }
 
     fun toUriList(): List<Uri> {
@@ -71,6 +78,10 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         }
     }
 
+    fun onDestroy() {
+        backupMetaLoaderList.forEach { it.meta?.recycle() }
+    }
+
     open class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
 
         open fun bind(position: Int) {
@@ -83,6 +94,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         init {
             itemView.findViewById<View>(R.id.action_new_backup).setOnClickListener(this)
             itemView.findViewById<View>(R.id.action_restore_backup).setOnClickListener(this)
+            itemView.findViewById<TextView>(R.id.local_backup_title).setTextColor(ColorEngine.getInstance(context).accent)
         }
 
         override fun onClick(v: View) {
@@ -93,17 +105,13 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         }
     }
 
-    inner class ItemHolder(itemView: View) : Holder(itemView), ZimBackup.MetaLoader.Callback,
-            View.OnClickListener, View.OnLongClickListener {
+    inner class ItemHolder(itemView: View) : Holder(itemView), View.OnClickListener, View.OnLongClickListener {
 
+        private val previewContainer = itemView.findViewById<View>(R.id.preview_container)
+        private val wallpaper = itemView.findViewById<ImageView>(R.id.wallpaper)
+        private val preview = itemView.findViewById<ImageView>(R.id.preview)
         private val title = itemView.findViewById<TextView>(android.R.id.title)
-        private var indicator: FiftyShadesOf? = null
-        private var metaLoader: ZimBackup.MetaLoader? = null
-            set(value) {
-                field?.callback = null
-                value?.callback = this
-                field = value
-            }
+        private val summary = itemView.findViewById<TextView>(android.R.id.summary)
 
         private val backupItem = itemView.findViewById<View>(R.id.backup_item)
 
@@ -113,21 +121,30 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         }
 
         override fun bind(position: Int) {
-            indicator?.stop()
-            indicator = FiftyShadesOf.with(context)
-                    .on(title)
-                    .fadein(true)
-                    .start()
-            metaLoader = backupMetaLoaderList[position - 1]
-            metaLoader?.loadMeta()
-            backupItem.isEnabled = false
-            title.text = context.getString(R.string.backup_loading)
-        }
-
-        override fun onMetaLoaded() {
-            indicator?.stop()
-            backupItem.isEnabled = true
-            title.text = metaLoader?.meta?.name ?: context.getString(R.string.backup_invalid)
+            val metaLoader = backupMetaLoaderList[position - 1]
+            if (metaLoader.loaded) {
+                previewContainer.isVisible = true
+                backupItem.isEnabled = true
+                title.text = metaLoader.meta?.name ?: context.getString(R.string.backup_invalid)
+                summary.text = metaLoader.meta?.localizedTimestamp
+                        ?: context.getString(R.string.backup_invalid)
+                metaLoader.meta?.preview?.apply {
+                    previewContainer.isVisible = true
+                    preview.setImageBitmap(first)
+                    wallpaper.setImageBitmap(second)
+                }
+            } else {
+                previewContainer.isVisible = false
+                backupItem.isEnabled = false
+                title.text = context.getString(R.string.backup_loading)
+                summary.text = context.getString(R.string.backup_loading)
+                metaLoader.callback = object : ZimBackup.MetaLoader.Callback {
+                    override fun onMetaLoaded() {
+                        notifyItemChanged(backupMetaLoaderList.indexOf(metaLoader) + 1)
+                    }
+                }
+                metaLoader.loadMeta(true)
+            }
         }
 
         override fun onClick(v: View) {

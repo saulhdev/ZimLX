@@ -1,19 +1,18 @@
 package org.zimmob.zimlx.backup
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import org.zimmob.zimlx.settings.ui.SettingsBaseActivity
 
@@ -21,19 +20,8 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
     private val permissionRequestReadExternalStorage = 0
 
-    private val bottomSheet by lazy { BottomSheetDialog(this) }
     private val recyclerView by lazy { findViewById<RecyclerView>(R.id.recyclerView) }
     private val adapter by lazy { BackupListAdapter(this) }
-
-    private val restoreBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_restore_backup) }
-    private val shareBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_share_backup) }
-    private val removeBackup by lazy { bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list) }
-    private val divider by lazy { bottomSheetView.findViewById<View>(R.id.divider) }
-
-    private val bottomSheetView by lazy {
-        layoutInflater.inflate(R.layout.backup_bottom_sheet,
-                findViewById(android.R.id.content), false)
-    }
 
     private var currentPosition = 0
 
@@ -41,27 +29,16 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_backup_list)
 
-
-        setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-        restoreBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            openRestore(currentPosition)
-        }
-        shareBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            shareBackup(currentPosition)
-        }
-        removeBackup.setOnClickListener {
-            bottomSheet.dismiss()
-            removeItem(currentPosition)
-        }
-        bottomSheet.setContentView(bottomSheetView)
 
         adapter.callbacks = this
         loadLocalBackups()
-        recyclerView.layoutManager = LinearLayoutManager(this)
+        recyclerView.layoutManager = GridLayoutManager(this, 2).apply {
+            spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                override fun getSpanSize(position: Int) = if (position == 0) 2 else 1
+            }
+        }
         recyclerView.adapter = adapter
 
         Utilities.checkRestoreSuccess(this)
@@ -117,12 +94,36 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     override fun openEdit(position: Int) {
         currentPosition = position
         val visibility = if (adapter[position].meta != null) View.VISIBLE else View.GONE
+
+        val bottomSheetView = layoutInflater.inflate(R.layout.backup_bottom_sheet,
+                findViewById(android.R.id.content), false)
+        bottomSheetView.findViewById<TextView>(android.R.id.title).text =
+                adapter[position].meta?.name ?: getString(R.string.backup_invalid)
+        bottomSheetView.findViewById<TextView>(android.R.id.summary).text =
+                adapter[position].meta?.localizedTimestamp ?: getString(R.string.backup_invalid)
+
+        val restoreBackup = bottomSheetView.findViewById<View>(R.id.action_restore_backup)
+        val shareBackup = bottomSheetView.findViewById<View>(R.id.action_share_backup)
+        val removeBackup = bottomSheetView.findViewById<View>(R.id.action_remove_backup_from_list)
+        val divider = bottomSheetView.findViewById<View>(R.id.divider)
         restoreBackup.visibility = visibility
         shareBackup.visibility = visibility
         divider.visibility = visibility
-        bottomSheetView.findViewById<TextView>(android.R.id.title).text =
-                adapter[position].meta?.name ?: getString(R.string.backup_invalid)
-        bottomSheet.show()
+
+        /*val bottomSheet = SettingsBottomSheet.inflate(this)
+        restoreBackup.setOnClickListener {
+            bottomSheet.close(true)
+            openRestore(currentPosition)
+        }
+        shareBackup.setOnClickListener {
+            bottomSheet.close(true)
+            shareBackup(currentPosition)
+        }
+        removeBackup.setOnClickListener {
+            bottomSheet.close(true)
+            removeItem(currentPosition)
+        }
+        bottomSheet.show(bottomSheetView, true)*/
     }
 
     private fun removeItem(position: Int) {
@@ -147,13 +148,18 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        adapter.onDestroy()
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1 && resultCode == AppCompatActivity.RESULT_OK) {
             if (resultData != null) {
                 adapter.addItem(ZimBackup(this, resultData.data))
                 saveChanges()
             }
-        } else if (requestCode == 2 && resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == 2 && resultCode == AppCompatActivity.RESULT_OK) {
             if (resultData != null) {
                 val takeFlags = intent.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or

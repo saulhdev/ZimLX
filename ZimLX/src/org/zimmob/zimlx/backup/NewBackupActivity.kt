@@ -2,7 +2,6 @@ package org.zimmob.zimlx.backup
 
 import android.Manifest
 import android.annotation.SuppressLint
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -13,6 +12,7 @@ import android.view.View
 import android.widget.CheckBox
 import android.widget.EditText
 import android.widget.RadioButton
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.android.launcher3.R
@@ -132,7 +132,7 @@ class NewBackupActivity : SettingsBaseActivity() {
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, resultData: Intent?) {
-        if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+        if (requestCode == 1 && resultCode == AppCompatActivity.RESULT_OK) {
             if (resultData != null) {
                 val takeFlags = intent.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or
@@ -187,7 +187,7 @@ class NewBackupActivity : SettingsBaseActivity() {
             super.onPostExecute(result)
 
             if (result) {
-                setResult(Activity.RESULT_OK, Intent().setData(backupUri))
+                setResult(AppCompatActivity.RESULT_OK, Intent().setData(backupUri))
                 finish()
             } else {
                 inProgress = false

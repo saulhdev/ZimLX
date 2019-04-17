@@ -17,6 +17,7 @@
 */
 -->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.android.launcher3">
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
@@ -58,25 +59,23 @@
     <uses-permission android:name="${applicationId}.permission.QSB" />
 
     <!-- Custom -->
-    <uses-permission android:name="android.permission.BIND_APPWIDGET" />
-    <uses-permission android:name="android.permission.EXPAND_STATUS_BAR" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.SET_WALLPAPER" />
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
     <application
-        android:name=".AppObject"
-        android:backupAgent=".LauncherBackupAgent"
-        android:fullBackupContent="@xml/backupscheme"
+        android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/derived_app_name"
+        android:theme="@style/AppTheme"
+        android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:roundIcon="@mipmap/ic_launcher"
         android:supportsRtl="true"
-        android:theme="@style/LauncherTheme">
+        tools:replace="android:icon,android:label">
 
         <!--
         Main launcher activity. When extending only change the name, and keep all the
@@ -106,132 +105,22 @@
             </intent-filter>
         </activity>
 
-        <!-- The settings activity. When extending keep the intent filter present -->
-        <activity
-            android:name="org.zimmob.zimlx.settings.ui.SettingsActivity"
-            android:autoRemoveFromRecents="true"
-            android:label="@string/settings_button_text"
-            android:theme="@style/SettingsTheme.V2">
-            <intent-filter>
-                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
         <!--
         The settings provider contains Home's data, like the workspace favorites. The permissions
         should be changed to what is defined above. The authorities should also be changed to
         represent the package name.
         -->
+        <!--
+       The settings provider contains Home's data, like the workspace favorites. The permissions
+       should be changed to what is defined above. The authorities should also be changed to
+       represent the package name.
+       -->
         <provider
-            android:name=".LauncherProvider"
+            android:name="com.android.launcher3.LauncherProvider"
             android:authorities="${applicationId}.settings"
             android:exported="true"
-            android:readPermission="${applicationId}.permission.READ_SETTINGS"
-            android:writePermission="${applicationId}.permission.WRITE_SETTINGS" />
-
-        <!-- Pixel -->
-        <activity
-            android:name="com.google.android.apps.nexuslauncher.search.AppLaunchActivity"
-            android:theme="@android:style/Theme.NoDisplay">
-            <intent-filter android:priority="1">
-                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-
-                <data
-                    android:mimeType="vnd.android.cursor.dir/vnd.android.search.suggest"
-                    android:scheme="content" />
-            </intent-filter>
-        </activity>
-
-        <receiver
-            android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
-            android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
-            <intent-filter>
-                <action android:name="com.google.android.systemui.OPA_ENABLED" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
-            <intent-filter>
-                <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
-            </intent-filter>
-        </receiver>
-        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
-
-        <provider
-            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
-            android:authorities="${applicationId}.appssearch"
-            android:exported="true" />
-
-        <activity
-            android:name="org.zimmob.zimlx.backup.BackupListActivity"
-            android:label="@string/backups"
-            android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme.V2" />
-        <activity
-            android:name="org.zimmob.zimlx.backup.NewBackupActivity"
-            android:label="@string/new_backup"
-            android:parentActivityName="org.zimmob.zimlx.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.V2" />
-        <activity
-            android:name="org.zimmob.zimlx.backup.RestoreBackupActivity"
-            android:label="@string/restore_backup"
-            android:parentActivityName="org.zimmob.zimlx.backup.BackupListActivity"
-            android:theme="@style/SettingsTheme.V2">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:mimeType="application/vnd.zim.backup" />
-                <data android:mimeType="application/octet-stream" />
-                <data android:mimeType="application/x-zip-compressed" />
-                <data android:mimeType="application/zip" />
-
-                <data android:scheme="file" />
-                <data android:scheme="content" />
-                <data android:mimeType="*/*" />
-                <!--
-                    Work around Android's ugly primitive PatternMatcher
-                    implementation that can't cope with finding a . early in
-                    the path unless it's explicitly matched.
-                -->
-                <data android:host="*" />
-                <data android:pathPattern=".*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.zbk" />
-                <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.zbk" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="org.zimmob.zimlx.minibar.MinibarEditActivity"
-            android:label="Edit Item"
-            android:parentActivityName=".Launcher"
-            android:theme="@style/SettingsTheme.V2" />
-
-        <activity
-            android:name="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
-            android:label="@string/about"
-            android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme.V2" />
-
-        <provider
-            android:name="androidx.core.content.FileProvider"
-            android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths" />
-        </provider>
+            android:writePermission="${applicationId}.permission.WRITE_SETTINGS"
+            android:readPermission="${applicationId}.permission.READ_SETTINGS" />
     </application>
 
 </manifest>

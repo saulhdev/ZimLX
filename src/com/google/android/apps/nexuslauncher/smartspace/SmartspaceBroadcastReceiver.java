@@ -45,7 +45,7 @@ public class SmartspaceBroadcastReceiver extends BroadcastReceiver {
                     }
                     ++i;
                 }
-            } catch (InvalidProtocolBufferNanoException | PackageManager.NameNotFoundException ex) {
+            } catch (InvalidProtocolBufferNanoException ex) {
                 Log.e("SmartspaceReceiver", "proto", ex);
             }
         } else {

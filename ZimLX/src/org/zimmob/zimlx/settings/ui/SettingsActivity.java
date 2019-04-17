@@ -25,6 +25,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -49,6 +51,8 @@ import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
+import com.google.android.apps.nexuslauncher.CustomIconPreference;
+import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -87,6 +91,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public final static String SMARTSPACE_PREF = "pref_smartspace";
     public final static String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     public final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -240,7 +245,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
 
-        //private CustomIconPreference mIconPackPref;
+        private CustomIconPreference mIconPackPref;
         private Context mContext;
 
         public static SubSettingsFragment newInstance(SubPreference preference) {
@@ -279,8 +284,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         }
                     }
 
-                    //mIconPackPref = findPreference(ICON_PACK_PREF);
-                    //mIconPackPref.setOnPreferenceChangeListener(this);
+                    mIconPackPref = findPreference(ICON_PACK_PREF);
+                    mIconPackPref.setOnPreferenceChangeListener(this);
                     break;
 
                 case R.xml.zim_preferences_app_drawer:
@@ -298,7 +303,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                     break;
 
                 case R.xml.zim_preferences_behavior:
-                    //findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
+                    findPreference(ENABLE_MINUS_ONE_PREF).setTitle(getDisplayGoogleTitle());
                     // Setup allow rotation preference
                     Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
                     if (getResources().getBoolean(R.bool.allow_rotation)) {
@@ -339,15 +344,15 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
         private String getDisplayGoogleTitle() {
             CharSequence charSequence = null;
-            /*try {
-                //Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
-                /*int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
+            try {
+                Resources resourcesForApplication = mContext.getPackageManager().getResourcesForApplication("com.google.android.googlequicksearchbox");
+                int identifier = resourcesForApplication.getIdentifier("title_google_home_screen", "string", "com.google.android.googlequicksearchbox");
                 if (identifier != 0) {
                     charSequence = resourcesForApplication.getString(identifier);
                 }
             } catch (PackageManager.NameNotFoundException ex) {
             }
-            */
+
             if (TextUtils.isEmpty(charSequence)) {
                 charSequence = mContext.getString(R.string.title_google_app);
             }
@@ -363,8 +368,8 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
 
-            //if (mIconPackPref != null)
-            //    mIconPackPref.reloadIconPacks();
+            if (mIconPackPref != null)
+                mIconPackPref.reloadIconPacks();
         }
 
         @Override
@@ -433,7 +438,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
         @Override
         public boolean onPreferenceClick(Preference preference) {
             if (SMARTSPACE_PREF.equals(preference.getKey())) {
-                //SmartspaceController.get(mContext).cZ();
+                SmartspaceController.get(mContext).cZ();
                 return true;
             } else if ("kill".equals(preference.getKey())) {
                 Utilities.killLauncher();

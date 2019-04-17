@@ -103,6 +103,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     private void updateUpButton(boolean enabled) {
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(enabled);
     }
+
     @Override
     protected void onPause() {
         ArrayList<String> minibarArrangement = new ArrayList<>();

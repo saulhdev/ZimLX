@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+
     <androidx.cardview.widget.CardView
         android:id="@+id/backup_item"
         android:layout_width="match_parent"
@@ -16,25 +17,66 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="16dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-            <ImageView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:paddingEnd="16dp"
-                android:src="@drawable/ic_file_restore"
-                tools:ignore="RtlSymmetry" />
+            <org.zimmob.zimlx.views.ScreenshotPreview
+                android:id="@+id/preview_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
 
-            <TextView
-                android:id="@android:id/title"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:textAppearance="@style/TextAppearance.AppCompat.Body1"
-                tools:text="Backup item" />
+                <ImageView
+                    android:id="@+id/wallpaper"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop" />
+
+                <ImageView
+                    android:id="@+id/preview"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:adjustViewBounds="true" />
+            </org.zimmob.zimlx.views.ScreenshotPreview>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:padding="16dp">
+
+                <ImageView
+                    android:src="@drawable/ic_file_restore"
+                    android:paddingEnd="16dp"
+                    android:layout_gravity="center"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:ignore="RtlSymmetry" />
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@android:id/title"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+                        android:maxLines="1"
+                        android:ellipsize="end"
+                        tools:text="Backup item" />
+
+                    <TextView
+                        android:id="@android:id/summary"
+                        android:layout_height="0dp"
+                        android:layout_width="wrap_content"
+                        android:layout_gravity="start"
+                        android:layout_weight="1"
+                        android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+                        tools:text="Oct 11, 2019 17:18:43" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 </FrameLayout>

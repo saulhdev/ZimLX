@@ -20,6 +20,7 @@ public class SettingsBaseActivity extends ThemeActivity {
     public Toolbar toolbar;
     private DecorLayout decorLayout;
     private Window window;
+
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setupPirateLocale(this);
         super.onCreate(savedInstanceState);
@@ -38,11 +39,11 @@ public class SettingsBaseActivity extends ThemeActivity {
     }
 
     public void setContentView(int resId) {
-        setAccentColor(this);
         ViewGroup contentParent = decorLayout.findViewById(android.R.id.content);
         contentParent.removeAllViews();
         LayoutInflater.from(this).inflate(resId, contentParent);
     }
+
     public void setActionBarElevation(int value) {
         decorLayout.setActionBarElevation(value);
     }

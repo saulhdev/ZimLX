@@ -24,6 +24,7 @@ public class ZimFlags {
     public static final String HOTSEAT_TRANSPARENT = "pref_isHotseatTransparent";
     public static final String HOTSEAT_HIDE = "pref_hideHotseat";
     public static final String HOTSEAT_SHOW_PAGE_INDICATOR = "pref_hotseatShowPageIndicator";
+    public static final String HOTSEAT_NUM_ICONS = "pref_key__num_hotseat_icons";
 
     public static final String APPDRAWER_ICON_SCALE = "pref_allAppsIconScale";
     public static final String APPDRAWER_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale";

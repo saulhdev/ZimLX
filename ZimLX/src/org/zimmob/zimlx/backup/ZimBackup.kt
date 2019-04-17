@@ -57,6 +57,45 @@ class ZimBackup(val context: Context, val uri: Uri) {
         }
     }
 
+    private fun readPreview(): Pair<Bitmap?, Bitmap?>? {
+        var entry: ZipEntry?
+        var screenshot: Bitmap? = null
+        var wallpaper: Bitmap? = null
+        readZip { zipIs ->
+            while (true) {
+                entry = zipIs.nextEntry
+                if (entry == null) break
+                if (entry!!.name == "screenshot.png") {
+                    screenshot = BitmapFactory.decodeStream(zipIs)
+                } else if (entry!!.name == WALLPAPER_FILE_NAME) {
+                    wallpaper = BitmapFactory.decodeStream(zipIs)
+                }
+            }
+        }
+        if (screenshot == wallpaper) return null // both are null
+        return Pair(Utilities.getScaledDownBitmap(screenshot, 1000, false),
+                Utilities.getScaledDownBitmap(wallpaper, 1000, false))
+    }
+
+    private inline fun readZip(body: (ZipInputStream) -> Unit) {
+        try {
+            val pfd = context.contentResolver.openFileDescriptor(uri, "r")
+            val inStream = FileInputStream(pfd.fileDescriptor)
+            val zipIs = ZipInputStream(inStream)
+            try {
+                body(zipIs)
+            } catch (t: Throwable) {
+                Log.e(TAG, "Unable to read zip for $uri", t)
+            } finally {
+                zipIs.close()
+                inStream.close()
+                pfd.close()
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "Unable to read zip for $uri", t)
+        }
+    }
+
     fun restore(contents: Int): Boolean {
         try {
             val contextWrapper = ContextWrapper(context)
@@ -114,22 +153,42 @@ class ZimBackup(val context: Context, val uri: Uri) {
         }
     }
 
-    class MetaLoader(val backup: ZimBackup) {
+    fun delete(): Boolean {
+        return context.contentResolver.delete(uri, null, null) != 0
+    }
 
+    class MetaLoader(val backup: ZimBackup) {
         var callback: Callback? = null
         var meta: Meta? = null
+        var withPreview = false
+        var loaded = false
+        private var loading = false
 
-        fun loadMeta() {
-            LoadMetaTask().execute()
+        fun loadMeta(withPreview: Boolean = false) {
+            if (loading) return
+            if (!loaded) {
+                loading = true
+                this.withPreview = withPreview
+                LoadMetaTask().execute()
+            } else {
+                callback?.onMetaLoaded()
+            }
         }
 
         @SuppressLint("StaticFieldLeak")
         inner class LoadMetaTask : AsyncTask<Void, Void, Meta?>() {
 
-            override fun doInBackground(vararg params: Void?) = backup.meta
+            override fun doInBackground(vararg params: Void?): Meta? {
+                backup.meta
+                if (withPreview) {
+                    backup.meta?.preview = backup.readPreview()
+                }
+                return backup.meta
+            }
 
             override fun onPostExecute(result: Meta?) {
                 meta = result
+                loaded = true
                 callback?.onMetaLoaded()
             }
         }
@@ -142,6 +201,8 @@ class ZimBackup(val context: Context, val uri: Uri) {
 
     data class Meta(val name: String, val contents: Int, val timestamp: String) {
 
+        val localizedTimestamp = SimpleDateFormat.getDateTimeInstance().format(timestampFormat.parse(timestamp))
+        var preview: Pair<Bitmap?, Bitmap?>? = null
         override fun toString(): String {
             val arr = JSONArray()
             arr.put(VERSION)
@@ -149,6 +210,11 @@ class ZimBackup(val context: Context, val uri: Uri) {
             arr.put(contents)
             arr.put(timestamp)
             return arr.toString()
+        }
+
+        fun recycle() {
+            preview?.first?.recycle()
+            preview?.second?.recycle()
         }
 
         companion object {
@@ -180,14 +246,16 @@ class ZimBackup(val context: Context, val uri: Uri) {
         const val INCLUDE_HOMESCREEN = 1 shl 0
         const val INCLUDE_SETTINGS = 1 shl 1
         const val INCLUDE_WALLPAPER = 1 shl 2
+        const val INCLUDE_SCREENSHOT = 1 shl 3
 
         const val BUFFER = 2018
 
-        const val EXTENSION = "shed"
+        const val EXTENSION = "zbk"
         const val MIME_TYPE = "application/vnd.zim.backup"
         val EXTRA_MIME_TYPES = arrayOf(MIME_TYPE, "application/x-zip", "application/octet-stream")
 
         const val WALLPAPER_FILE_NAME = "wallpaper.png"
+        val timestampFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.US)
 
         fun getFolder(): File {
             val folder = File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOCUMENTS), "ZimLX/backup")

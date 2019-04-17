@@ -37,18 +37,6 @@ class HiddenAppsFragment : Fragment(), HiddenAppsAdapter.Callback {
         recyclerView.adapter = adapter
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-
-        /*val hiddenApps = CustomAppFilter.getHiddenApps(context)
-        if (!hiddenApps.isEmpty()) {
-            hiddenApps.forEach { Log.d("HiddenAppsFragment", it) }
-            activity!!.title = hiddenApps.size.toString() + getString(R.string.hide_app_selected)
-        } else {
-            activity!!.title = getString(R.string.hidden_app)
-        }*/
-    }
-
     override fun setTitle(newTitle: String) {
         activity!!.title = newTitle
     }

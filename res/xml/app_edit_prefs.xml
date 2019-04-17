@@ -20,7 +20,7 @@
         android:key="pref_app_icon_pack"
         android:persistent="false"
         android:summary="@string/icon_shape_system_default"
-        android:title="@string/pref_icon_pack" />
+        android:title="@string/title__theme_icon_pack" />
 
     <SwitchPreference
         android:defaultValue="false"

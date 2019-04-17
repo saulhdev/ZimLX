@@ -2,13 +2,13 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_icons">
-        <!--<com.google.android.apps.nexuslauncher.CustomIconPreference
+        <com.google.android.apps.nexuslauncher.CustomIconPreference
             android:defaultValue=""
             app:iconSpaceReserved="false"
             android:key="pref_icon_pack"
             android:persistent="true"
             android:summary="%s"
-            android:title="@string/pref_icon_pack" />-->
+            android:title="@string/title__theme_icon_pack" />
 
         <ListPreference
             android:defaultValue=" "
@@ -18,22 +18,21 @@
             android:key="pref_override_icon_shape"
             android:persistent="false"
             android:summary="%s"
-            android:title="@string/icon_shape_override_label" />
-        <ListPreference
-            android:defaultValue="2"
-            app:iconSpaceReserved="false"
-            android:entries="@array/entries__folder_shape"
-            android:entryValues="@array/values__zero_to_three"
-            android:key="pref_key__folder_shape"
-            android:summary="%s"
-            android:title="@string/title__behav_folder_shape" />
+            android:title="@string/title__theme_icon_shape" />
 
         <SwitchPreference
             android:defaultValue="true"
             android:persistent="true"
             app:iconSpaceReserved="false"
             android:key="pref_key__adaptive_icons"
-            android:title="@string/pref_title__theme_adaptative_icons" />
+            android:title="@string/title__theme_adaptive_icons" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:persistent="true"
+            app:iconSpaceReserved="false"
+            android:key="pref_key__force_adaptive_icons"
+            android:title="@string/title__theme_force_adaptive_icons" />
 
         <SwitchPreference
             android:defaultValue="true"
@@ -42,7 +41,17 @@
             android:dependency="pref_key__adaptive_icons"
             android:key="pref_key__colored_icons"
             android:summary="@string/pref_summary__theme_colored_icons"
-            android:title="@string/pref_title__theme_colored_icons" />
+            android:title="@string/title__theme_colored_icons" />
+
+        <ListPreference
+            android:defaultValue="2"
+            app:iconSpaceReserved="false"
+            android:entries="@array/entries__folder_shape"
+            android:entryValues="@array/values__zero_to_three"
+            android:key="pref_key__folder_shape"
+            android:summary="%s"
+            android:title="@string/title__theme_folder_shape" />
+
 
     </androidx.preference.PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_style">
@@ -62,22 +71,30 @@
             app:iconSpaceReserved="false"
             android:key="pref_override_launcher_theme"
             android:persistent="true"
-            android:title="@string/launcher_theme_override_label" />
+            android:title="@string/title__theme_dark_theme" />
 
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"
-            android:key="pref_key__primary_color"
-            android:title="@string/pref_title__primary_color"
+            android:key="pref_key__theme_primary_color"
+            android:title="@string/title__theme_primary_color"
             app:iconSpaceReserved="false"
-            app:cpv_dialogTitle="@string/pref_title__primary_color"
+            app:cpv_dialogTitle="@string/title__theme_primary_color"
+            app:cpv_showAlphaSlider="true" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorAccent"
+            android:key="pref_key__theme_accent_color"
+            android:title="@string/title__theme_accent_color"
+            app:iconSpaceReserved="false"
+            app:cpv_dialogTitle="@string/title__theme_accent_color"
             app:cpv_showAlphaSlider="true" />
 
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimaryDark"
             android:key="pref_key__minibar_color"
-            android:title="@string/pref_title__minibar_background_color"
+            android:title="@string/title__minibar_background_color"
             app:iconSpaceReserved="false"
-            app:cpv_dialogTitle="@string/pref_title__minibar_background_color"
+            app:cpv_dialogTitle="@string/title__minibar_background_color"
             app:cpv_showAlphaSlider="true" />
 
     </androidx.preference.PreferenceCategory>

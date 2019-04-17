@@ -93,7 +93,7 @@ android {
         }
     }
 
-    flavorDimensions "default"
+    flavorDimensions "default", "custom"
     productFlavors {
         aosp {
             dimension "default"
@@ -111,6 +111,10 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
+        zim{
+            dimension "custom"
+            applicationId 'org.zimmob.zimlx'
+        }
     }
     lintOptions {
         disable 'MissingTranslation'
@@ -121,7 +125,7 @@ android {
     // Disable release builds for now
     android.variantFilter { variant ->
         if (variant.buildType.name.endsWith('release')) {
-            variant.setIgnore(true);
+            variant.setIgnore(true)
         }
     }
 
@@ -163,6 +167,11 @@ android {
             res.srcDirs = ['quickstep/res']
             java.srcDirs = ['src_flags', 'quickstep/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+        zim {
+            res.srcDirs = ['ZimLX/res']
+            java.srcDirs = ['ZimLX/src']
+            manifest.srcFile "ZimLX/AndroidManifest.xml"
         }
 
     }

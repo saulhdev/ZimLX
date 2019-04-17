@@ -22,6 +22,7 @@ import kotlin.reflect.KProperty
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
 
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
+    private val onChangeListeners: MutableMap<String, MutableSet<OnPreferenceChangeListener>> = HashMap()
     private var onChangeCallback: ZimPreferencesChangeCallback? = null
     val sharedPrefs = migratePrefs()
 
@@ -76,7 +77,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hotseatShowPageIndicator by BooleanPref(ZimFlags.HOTSEAT_SHOW_PAGE_INDICATOR, true)
 
     fun numHotseatIcons(default: String): String {
-        return sharedPrefs.getString("pref_title__num_hotseat_icons", default)
+        return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
     }
 
     //Folder
@@ -149,6 +150,26 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun refreshGrid() {
         onChangeCallback?.refreshGrid()
+    }
+
+    fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
+        keys.forEach { addOnPreferenceChangeListener(it, listener) }
+    }
+
+    fun addOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
+        if (onChangeListeners[key] == null) {
+            onChangeListeners[key] = HashSet()
+        }
+        onChangeListeners[key]?.add(listener)
+        listener.onValueChanged(key, this, true)
+    }
+
+    fun removeOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
+        keys.forEach { removeOnPreferenceChangeListener(it, listener) }
+    }
+
+    fun removeOnPreferenceChangeListener(key: String, listener: OnPreferenceChangeListener) {
+        onChangeListeners[key]?.remove(listener)
     }
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
@@ -406,6 +427,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
+        onChangeListeners[key]?.forEach { it.onValueChanged(key, this, false) }
     }
 
     fun registerCallback(callback: ZimPreferencesChangeCallback) {
@@ -433,6 +455,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
                 }
             }
         }
+    }
+
+    interface OnPreferenceChangeListener {
+
+        fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean)
     }
 
     companion object {

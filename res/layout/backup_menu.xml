@@ -12,6 +12,7 @@
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:foreground="?selectableItemBackground"
+        app:cardCornerRadius="8dp"
         app:layout_constraintEnd_toStartOf="@+id/action_restore_backup"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
@@ -55,12 +56,13 @@
     </androidx.cardview.widget.CardView>
 
     <TextView
+        android:id="@+id/local_backup_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingBottom="8dp"
         android:paddingEnd="?android:attr/listPreferredItemPaddingEnd"
         android:paddingStart="?android:attr/listPreferredItemPaddingStart"
         android:paddingTop="16dip"
+        android:paddingBottom="8dp"
         android:text="@string/local_backups"
         android:textAppearance="@android:style/TextAppearance.Material.Body2"
         android:textColor="?android:attr/colorAccent"

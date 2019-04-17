@@ -190,8 +190,6 @@
     <!-- Text description of the setting that allows the automatic placement of launcher shortcuts for applications and games installed on the device [CHAR LIMIT=NONE] -->
     <string name="auto_add_shortcuts_description">For new apps</string>
 
-    <!-- Developer setting to change the shape of icons on home screen. [CHAR LIMIT=50] -->
-    <string name="icon_shape_override_label">Change icon shape</string>
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
     <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
@@ -326,7 +324,6 @@
     <string name="label_search">Search</string>
     <string name="label_voice_search">Voice search</string>
     <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
-    <string name="pref_icon_pack">Icon pack</string>
     <string name="state_loading">Applying…</string>
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
@@ -348,13 +345,12 @@
 
     <string name="default_text">Default</string>
 
-    <string name="hidden_app">Hide apps</string>
-    <string name="hide_app_selected">&#160; hidden</string>
-    <string name="hide_app_reset">Reset</string>
-
-    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
-    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+    //BACKUP STRINGS
     <string name="backups">Backups</string>
+    <string name="backup_delete">Hide</string>
+    <string name="backup_delete_failed">Something went wrong</string>
+    <string name="backup_share">Share</string>
+    <string name="backup_pref_summary">Save home screen, restore backups</string>
     <string name="new_backup">Create</string>
     <string name="restore_backup">Restore</string>
     <string name="backup_name">Name</string>
@@ -370,8 +366,6 @@
     <string name="backup_loading">Loading...</string>
     <string name="backup_invalid">Unavailable</string>
     <string name="backup_remove_from_recents">Remove from list</string>
-    <string name="backup_share">Share</string>
-    <string name="backup_pref_summary">Backup/restore your settings and homescreen</string>
     <string name="backup_timestamp">Created at</string>
     <string name="backup_restoring">Restoring backup</string>
     <string name="backup_restarting">Restarting</string>
@@ -382,6 +376,14 @@
     <string name="restore_read_meta_fail">Invalid backup file</string>
     <string name="backup_share_title">Share backup</string>
     <string name="backup_share_text">Zim backup file</string>
+
+    <string name="hidden_app">Hide apps</string>
+    <string name="hide_app_selected">&#160; hidden</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+
+
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="hide_apps">Hide apps</string>
@@ -400,7 +402,6 @@
     <string name="backup_location_documents_storage">Documents storage</string>
     <string name="grid_size_height">Height</string>
     <string name="grid_size_width">Width</string>
-    <string name="launcher_theme_override_label">Force dark theme</string>
     <string name="smartspace_hours_mins">%1$s %2$s</string>
 
     <!-- Label of tab to indicate personal apps -->
@@ -432,7 +433,7 @@
     <string name="minibar_10">Mobile network settings.</string>
     <string name="minibar_11">Applications Manager</string>
     <string name="pref_title__minibar">@string/minibar</string>
-    <string name="pref_title__minibar_background_color">Minibar Color</string>
+    <string name="title__minibar_background_color">Minibar Color</string>
 
     <!-- FOLDER TITLES -->
     <string name="google_title" translatable="false">Google</string>
@@ -483,6 +484,8 @@
     <string name="desktop_indicator_mode_arrow">Arrow</string>
     <string name="desktop_indicator_mode_lines">Line</string>
     <string name="title__desktop_icon_scale">Icon scale</string>
+    <string name="title__desktop_overlap">Overlap Placement</string>
+    <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
 
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
@@ -504,18 +507,22 @@
     <string name="summary__sort_mode">Choose the sort mode</string>
 
     <!-- PREFERENCES BEHAVIOR -->
-    <string name="title__behav_folder_shape">Folder Shape</string>
 
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
     <string name="pref_cat__theme_style">Style</string>
-    <string name="pref_title__theme_adaptative_icons">Adaptative Icons</string>
-    <string name="pref_title__theme_colored_icons">Background Icons</string>
-    <string name="pref_title__primary_color">Primary Color</string>
-    <string name="pref_title__accent_color">Accent Color</string>
-    <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+    <string name="title__theme_adaptive_icons">Adaptive Icons</string>
+    <string name="title__theme_force_adaptive_icons">Force adaptive Icons</string>
+    <string name="title__theme_colored_icons">Background Icons</string>
+    <string name="title__theme_primary_color">Primary Color</string>
+    <string name="title__theme_accent_color">Accent Color</string>
     <string name="title__theme_color">Theme Color</string>
+    <string name="title__theme_icon_pack">Icon pack</string>
+    <string name="title__theme_icon_shape">Change icon shape</string>
+    <string name="title__theme_dark_theme">Force dark theme</string>
+    <string name="title__theme_folder_shape">Folder Shape</string>
+    <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
     <string name="theme_black">Black</string>

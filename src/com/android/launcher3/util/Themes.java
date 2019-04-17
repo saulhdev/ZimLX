@@ -22,18 +22,14 @@ import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
 
-import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.color.ColorEngine;
 
 /**
  * Various utility methods associated with theming.
  */
 public class Themes {
-
     public static int getColorAccent(Context context) {
-        ZimPreferences pref = new ZimPreferences(context);
-
-        //return getAttrColor(context, pref.getAccentColor());
-        return getAttrColor(context, android.R.attr.colorAccent);
+        return ColorEngine.getInstance(context).getAccent();
     }
 
     public static int getAttrColor(Context context, int attr) {
