@@ -179,6 +179,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 Log.i("apps", "sorting by Most Used");
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
                 Collections.sort(mApps, mostUsedComparator);
+                Utilities.getZimPrefs(mLauncher).reloadApps();
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);
