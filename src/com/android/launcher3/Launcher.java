@@ -129,6 +129,7 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
 import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
+import com.android.launcher3.widget.custom.CustomWidgetParser;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.minibar.Minibar;
@@ -258,11 +259,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // UI and state for the overview panel
     private View mOverviewPanel;
 
-    private View mAllAppsButton;
     private DropTargetBar mDropTargetBar;
-    // We need to store the orientation Launcher was created with, due to a bug (b/64916689)
-    // that results in widgets being inflated in the wrong orientation.
-    private State mOnResumeState = State.NONE;
     private SpannableStringBuilder mDefaultKeySsb = null;
     private boolean mPaused = true;
     private ViewOnDrawExecutor mPendingExecutor;
@@ -270,8 +267,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private ModelWriter mModelWriter;
     private IconCache mIconCache;
     private LauncherAccessibilityDelegate mAccessibilityDelegate;
-    private ObjectAnimator mScrimAnimator;
-    private boolean mShouldFadeInScrim;
     private PopupDataProvider mPopupDataProvider;
     // We only want to get the SharedPreferences once since it does an FS stat each time we get
     // it from the context.
@@ -1679,7 +1674,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         } else {
             // In this case, we either need to start an activity to get permission to bind
             // the widget, or we need to start an activity to configure the widget, or both.
-            appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS &&
+                    info.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET) {
+                appWidgetId = CustomWidgetParser.getWidgetIdForCustomProvider(
+                        this, info.componentName);
+            } else {
+                appWidgetId = getAppWidgetHost().allocateAppWidgetId();
+            }
             Bundle options = info.bindOptions;
 
             boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
@@ -2053,15 +2054,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     @Override
     public void bindItems(final List<ItemInfo> items, final boolean forceAnimateIcons) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindItems(items, forceAnimateIcons);
-            }
-        };
-        if (waitUntilResume(r)) {
-            return;
-        }
-
         // Get the list of added items and intersect them with the set of items here
         final AnimatorSet anim = LauncherAnimUtils.createAnimatorSet();
         final Collection<Animator> bounceAnims = new ArrayList<>();
@@ -2069,6 +2061,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         Workspace workspace = mWorkspace;
         long newItemsScreenId = -1;
         int end = items.size();
+
         for (int i = 0; i < end; i++) {
             final ItemInfo item = items.get(i);
 
@@ -2093,7 +2086,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                             (FolderInfo) item);
                     break;
                 }
-                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET: {
+                case LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET:
+                case LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET: {
                     view = inflateAppWidget((LauncherAppWidgetInfo) item);
                     if (view == null) {
                         continue;
@@ -2148,13 +2142,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 if (newItemsScreenId != currentScreenId) {
                     // We post the animation slightly delayed to prevent slowdowns
                     // when we are loading right after we return to launcher.
-                    mWorkspace.postDelayed(new Runnable() {
-                        public void run() {
-                            if (mWorkspace != null) {
-                                mWorkspace.snapToPage(newScreenIndex);
-                                mWorkspace.postDelayed(startBounceAnimRunnable,
-                                        NEW_APPS_ANIMATION_DELAY);
-                            }
+                    mWorkspace.postDelayed(() -> {
+                        if (mWorkspace != null) {
+                            AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+                            mWorkspace.snapToPage(newScreenIndex);
+                            mWorkspace.postDelayed(startBounceAnimRunnable, NEW_APPS_ANIMATION_DELAY);
                         }
                     }, NEW_APPS_PAGE_MOVE_DELAY);
                 } else {

@@ -54,4 +54,7 @@ public abstract class BaseFlags {
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
     public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
+
+    // When true, custom widgets are loaded using CustomWidgetParser.
+    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
 }

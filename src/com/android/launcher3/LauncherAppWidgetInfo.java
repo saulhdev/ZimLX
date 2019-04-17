@@ -71,7 +71,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     /**
      * Indicates that this is a locally defined widget and hence has no system allocated id.
      */
-    static final int CUSTOM_WIDGET_ID = -100;
+    public static final int CUSTOM_WIDGET_ID = -100;
 
     /**
      * Identifier for this widget when talking with

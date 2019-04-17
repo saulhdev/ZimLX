@@ -117,7 +117,6 @@ public class LauncherProvider extends ContentProvider {
         // is the first component to get created.
         FileLog.setDir(getContext().getApplicationContext().getFilesDir());
         IconShapeOverride.apply(getContext());
-
         MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }

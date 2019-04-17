@@ -526,6 +526,7 @@ public class LoaderTask implements Runnable {
                                 if (info != null) {
                                     c.applyCommonProperties(info);
 
+
                                     info.intent = intent;
                                     info.rank = c.getInt(rankIndex);
                                     info.spanX = 1;
@@ -772,8 +773,7 @@ public class LoaderTask implements Runnable {
             ArrayList<Long> unusedScreens = new ArrayList<>(mBgDataModel.workspaceScreens);
             for (ItemInfo item : mBgDataModel.itemsIdMap) {
                 long screenId = item.screenId;
-                if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP &&
-                        unusedScreens.contains(screenId)) {
+                if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                     unusedScreens.remove(screenId);
                 }
             }

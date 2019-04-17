@@ -129,25 +129,20 @@ public class LoaderResults {
         sortWorkspaceItemsSpatially(otherWorkspaceItems);
 
         // Tell the workspace that we're about to start binding items
-        r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.clearPendingBinds();
-                    callbacks.startBinding();
-                }
+        r = () -> {
+            Callbacks callbacks1 = mCallbacks.get();
+            if (callbacks1 != null) {
+                callbacks1.clearPendingBinds();
+                callbacks1.startBinding();
             }
         };
         mUiExecutor.execute(r);
 
         // Bind workspace screens
-        mUiExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindScreens(orderedScreenIds);
-                }
+        mUiExecutor.execute(() -> {
+            Callbacks callbacks12 = mCallbacks.get();
+            if (callbacks12 != null) {
+                callbacks12.bindScreens(orderedScreenIds);
             }
         });
 
@@ -163,43 +158,36 @@ public class LoaderResults {
         final Executor deferredExecutor =
                 validFirstPage ? new ViewOnDrawExecutor() : mainExecutor;
 
-        mainExecutor.execute(new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.finishFirstPageBind(
-                            validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
-                }
+        mainExecutor.execute(() -> {
+            Callbacks callbacks13 = mCallbacks.get();
+            if (callbacks13 != null) {
+                callbacks13.finishFirstPageBind(
+                        validFirstPage ? (ViewOnDrawExecutor) deferredExecutor : null);
             }
         });
 
         bindWorkspaceItems(otherWorkspaceItems, otherAppWidgets, deferredExecutor);
 
         // Tell the workspace that we're done binding items
-        r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.finishBindingItems();
-                }
+        r = () -> {
+            Callbacks callbacks14 = mCallbacks.get();
+            if (callbacks14 != null) {
+                callbacks14.finishBindingItems();
             }
         };
         deferredExecutor.execute(r);
 
         if (validFirstPage) {
-            r = new Runnable() {
-                public void run() {
-                    Callbacks callbacks = mCallbacks.get();
-                    if (callbacks != null) {
-                        // We are loading synchronously, which means, some of the pages will be
-                        // bound after first draw. Inform the callbacks that page binding is
-                        // not complete, and schedule the remaining pages.
-                        if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
-                            callbacks.onPageBoundSynchronously(currentScreen);
-                        }
-                        callbacks.executeOnNextDraw((ViewOnDrawExecutor) deferredExecutor);
+            r = () -> {
+                Callbacks callbacks15 = mCallbacks.get();
+                if (callbacks15 != null) {
+                    // We are loading synchronously, which means, some of the pages will be
+                    // bound after first draw. Inform the callbacks that page binding is
+                    // not complete, and schedule the remaining pages.
+                    if (currentScreen != PagedView.INVALID_RESTORE_PAGE) {
+                        callbacks15.onPageBoundSynchronously(currentScreen);
                     }
+                    callbacks15.executeOnNextDraw((ViewOnDrawExecutor) deferredExecutor);
                 }
             };
             mUiExecutor.execute(r);
@@ -228,12 +216,7 @@ public class LoaderResults {
         // list sequentially, build up a list of containers that are in the specified screen,
         // as well as all items in those containers.
         Set<Long> itemsOnScreen = new HashSet<>();
-        Collections.sort(allWorkspaceItems, new Comparator<ItemInfo>() {
-            @Override
-            public int compare(ItemInfo lhs, ItemInfo rhs) {
-                return Utilities.longCompare(lhs.container, rhs.container);
-            }
-        });
+        Collections.sort(allWorkspaceItems, (Comparator<ItemInfo>) (lhs, rhs) -> Utilities.longCompare(lhs.container, rhs.container));
         for (T info : allWorkspaceItems) {
             if (info.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
                 if (info.screenId == currentScreenId) {
@@ -245,6 +228,7 @@ public class LoaderResults {
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 currentScreenItems.add(info);
                 itemsOnScreen.add(info.id);
+                Log.e(TAG, "Loading Hotseat Icons");
             } else {
                 if (itemsOnScreen.contains(info.container)) {
                     currentScreenItems.add(info);
@@ -303,13 +287,10 @@ public class LoaderResults {
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
             final int start = i;
             final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
-            final Runnable r = new Runnable() {
-                @Override
-                public void run() {
-                    Callbacks callbacks = mCallbacks.get();
-                    if (callbacks != null) {
-                        callbacks.bindItems(workspaceItems.subList(start, start + chunkSize), false);
-                    }
+            final Runnable r = () -> {
+                Callbacks callbacks = mCallbacks.get();
+                if (callbacks != null) {
+                    callbacks.bindItems(workspaceItems.subList(start, start + chunkSize), false);
                 }
             };
             executor.execute(r);
@@ -336,13 +317,10 @@ public class LoaderResults {
         synchronized (mBgDataModel) {
             shortcutMapCopy = mBgDataModel.deepShortcutMap.clone();
         }
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindDeepShortcutMap(shortcutMapCopy);
-                }
+        Runnable r = () -> {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                callbacks.bindDeepShortcutMap(shortcutMapCopy);
             }
         };
         mUiExecutor.execute(r);
@@ -352,12 +330,10 @@ public class LoaderResults {
         // shallow copy
         @SuppressWarnings("unchecked") final ArrayList<AppInfo> list = (ArrayList<AppInfo>) mBgAllAppsList.data.clone();
 
-        Runnable r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindAllApplications(list);
-                }
+        Runnable r = () -> {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                callbacks.bindAllApplications(list);
             }
         };
         mUiExecutor.execute(r);
