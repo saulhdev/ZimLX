@@ -70,7 +70,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
     val dockSearchBar = true
     val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f, recreate)
-    val hotseatShowArrow by BooleanPref("pref_hotseatShowArrow", true)
+    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", true, recreate)
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
     val hideHotseat by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
@@ -136,7 +136,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeCallback?.recreate()
     }
 
-    private fun reloadApps() {
+    fun reloadApps() {
         onChangeCallback?.reloadApps()
     }
 
