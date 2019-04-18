@@ -23,17 +23,23 @@ import android.content.res.ColorStateList
 import android.os.Handler
 import android.os.Looper
 import android.view.View
+import android.view.ViewGroup
 import android.widget.Switch
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.MainThreadExecutor
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.Themes
-import org.zimmob.zimlx.colors.ColorEngine
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+
+
+val Context.launcherAppState get() = LauncherAppState.getInstance(this)
+val Context.zimPrefs get() = Utilities.getZimPrefs(this)
 
 @ColorInt
 fun Context.getColorAccent(): Int {
@@ -82,7 +88,7 @@ fun Switch.applyColor(color: Int) {
 
 fun AlertDialog.applyAccent() {
     //val fontManager = CustomFontManager.getInstance(context)
-    val color = ColorEngine.getInstance(context).accent
+    val color = Utilities.getZimPrefs(context).accentColor
 
     getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
         //fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
@@ -117,6 +123,29 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
     }
 }
 
+
+inline fun ViewGroup.forEachChildIndexed(action: (View, Int) -> Unit) {
+    val count = childCount
+    for (i in (0 until count)) {
+        action(getChildAt(i), i)
+    }
+}
+
+inline fun ViewGroup.forEachChild(action: (View) -> Unit) {
+    forEachChildIndexed { view, _ -> action(view) }
+}
+
+inline fun ViewGroup.forEachChildReversedIndexed(action: (View, Int) -> Unit) {
+    val count = childCount
+    for (i in (0 until count).reversed()) {
+        action(getChildAt(i), i)
+    }
+}
+
+inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
+    forEachChildReversedIndexed { view, _ -> action(view) }
+}
+
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
     return { it ->
         if (Looper.myLooper() == Looper.getMainLooper()) {
@@ -139,7 +168,7 @@ fun <T> useApplicationContext(creator: (Context) -> T): (Context) -> T {
 }
 
 fun android.app.AlertDialog.applyAccent() {
-    val color = ColorEngine.getInstance(context).accent
+    val color = Utilities.getZimPrefs(context).accentColor
     val buttons = listOf(
             getButton(AlertDialog.BUTTON_NEGATIVE),
             getButton(AlertDialog.BUTTON_NEUTRAL),

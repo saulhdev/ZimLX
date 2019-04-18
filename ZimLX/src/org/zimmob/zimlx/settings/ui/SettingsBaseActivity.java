@@ -1,10 +1,13 @@
 package org.zimmob.zimlx.settings.ui;
 
+import android.app.Activity;
+import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import android.view.Window;
 
+import com.android.launcher3.InsettableFrameLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -19,7 +22,11 @@ public class SettingsBaseActivity extends ThemeActivity {
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
     private DecorLayout decorLayout;
+    public SettingsDragLayer dragLayer;
     private Window window;
+
+    // We do not need any synchronization for this variable as its only written on UI thread.
+    private static SettingsBaseActivity INSTANCE;
 
     protected void onCreate(Bundle savedInstanceState) {
         Utilities.setupPirateLocale(this);
@@ -28,6 +35,10 @@ public class SettingsBaseActivity extends ThemeActivity {
 
         window = getWindow();
         decorLayout = new DecorLayout(this, window);
+        dragLayer = new SettingsDragLayer(this, null);
+        dragLayer.addView(decorLayout,
+                new InsettableFrameLayout
+                        .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
         super.setContentView(decorLayout);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
@@ -46,5 +57,18 @@ public class SettingsBaseActivity extends ThemeActivity {
 
     public void setActionBarElevation(int value) {
         decorLayout.setActionBarElevation(value);
+    }
+
+    public Activity getActivity() {
+
+        return this;
+    }
+
+    public static SettingsBaseActivity getInstance(final Context context) {
+        if (INSTANCE == null) {
+            INSTANCE = new SettingsBaseActivity();
+
+        }
+        return INSTANCE;
     }
 }

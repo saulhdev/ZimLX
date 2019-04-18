@@ -516,5 +516,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             }
             return INSTANCE!!
         }
+
+        fun destroyInstance() {
+            INSTANCE?.apply {
+                onChangeListeners.clear()
+                onChangeCallback = null
+                //gridSizeDelegate.resetValue()
+                //dockGridSizeDelegate.resetValue()
+                //drawerGridSizeDelegate.resetValue()
+                //predictionGridSizeDelegate.resetValue()
+            }
+        }
     }
 }

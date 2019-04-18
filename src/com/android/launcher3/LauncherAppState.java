@@ -174,4 +174,12 @@ public class LauncherAppState {
             return (LauncherProvider) cl.getLocalContentProvider();
         }
     }
+
+    public static void destroyInstance() {
+        LauncherAppState app = LauncherAppState.getInstanceNoCreate();
+        if (app != null) {
+            app.onTerminate();
+            INSTANCE = null;
+        }
+    }
 }

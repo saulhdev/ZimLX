@@ -1,12 +1,11 @@
 package org.zimmob.zimlx
 
-import com.android.launcher3.Launcher
 import com.android.launcher3.compat.UserManagerCompat
 
-class ZimPreferencesChangeCallback(private val launcher: Launcher) {
+class ZimPreferencesChangeCallback(private val launcher: ZimLauncher) {
 
     fun recreate() {
-        launcher.recreate()
+        if (launcher.shouldRecreate()) launcher.recreate()
     }
 
     fun reloadApps() {
@@ -18,10 +17,14 @@ class ZimPreferencesChangeCallback(private val launcher: Launcher) {
     }
 
     fun restart() {
-        //launcher.scheduleRestart()
+        launcher.scheduleRestart()
     }
 
     fun refreshGrid() {
-        //launcher.refreshGrid()
+        launcher.refreshGrid()
+    }
+
+    fun resetAllApps() {
+        launcher.mAllAppsController.reset()
     }
 }

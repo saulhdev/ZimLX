@@ -15,6 +15,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.google.android.material.snackbar.Snackbar
 import org.zimmob.zimlx.settings.ui.SettingsBaseActivity
+import org.zimmob.zimlx.settings.ui.SettingsBottomSheet
 
 class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
@@ -110,7 +111,7 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
         shareBackup.visibility = visibility
         divider.visibility = visibility
 
-        /*val bottomSheet = SettingsBottomSheet.inflate(this)
+        val bottomSheet = SettingsBottomSheet.inflate(this)
         restoreBackup.setOnClickListener {
             bottomSheet.close(true)
             openRestore(currentPosition)
@@ -123,7 +124,7 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
             bottomSheet.close(true)
             removeItem(currentPosition)
         }
-        bottomSheet.show(bottomSheetView, true)*/
+        bottomSheet.show(bottomSheetView, true)
     }
 
     private fun removeItem(position: Int) {

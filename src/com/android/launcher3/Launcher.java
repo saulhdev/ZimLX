@@ -235,7 +235,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private Configuration mOldConfig;
 
     @Thunk
-    Workspace mWorkspace;
+    public Workspace mWorkspace;
     @Thunk
     DragLayer mDragLayer;
     @Thunk
@@ -245,7 +245,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // Main container view for the all apps screen.
     @Thunk
     AllAppsContainerView mAppsView;
-    AllAppsTransitionController mAllAppsController;
+    public AllAppsTransitionController mAllAppsController;
     // Main container view and the model for the widget tray screen.
 
     @Thunk

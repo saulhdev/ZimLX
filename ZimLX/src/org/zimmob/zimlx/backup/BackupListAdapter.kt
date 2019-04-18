@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
-import org.zimmob.zimlx.colors.ColorEngine
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.isVisible
 
 class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListAdapter.Holder>() {
@@ -94,7 +94,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
         init {
             itemView.findViewById<View>(R.id.action_new_backup).setOnClickListener(this)
             itemView.findViewById<View>(R.id.action_restore_backup).setOnClickListener(this)
-            itemView.findViewById<TextView>(R.id.local_backup_title).setTextColor(ColorEngine.getInstance(context).accent)
+            itemView.findViewById<TextView>(R.id.local_backup_title).setTextColor(Utilities.getZimPrefs(context).accentColor)
         }
 
         override fun onClick(v: View) {

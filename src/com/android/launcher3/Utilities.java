@@ -61,6 +61,7 @@ import android.view.accessibility.AccessibilityManager;
 
 import com.android.launcher3.config.FeatureFlags;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
 
@@ -78,6 +79,9 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -665,6 +669,23 @@ public final class Utilities {
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
         flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
         window.getDecorView().setSystemUiVisibility(flags);
+    }
+
+    public static boolean hasStoragePermission(Context context) {
+        return hasPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    public static boolean hasPermission(Context context, String permission) {
+        return ContextCompat.checkSelfPermission(context, permission)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static void requestStoragePermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
+    }
+
+    public static void requestLocationPermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, ZimLauncher.REQUEST_PERMISSION_LOCATION_ACCESS);
     }
 
     public static void setupPirateLocale(Activity activity) {

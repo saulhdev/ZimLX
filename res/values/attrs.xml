@@ -125,6 +125,9 @@
     <attr name="gIcon" format="reference" />
     <attr name="micIcon" format="reference" />
 
+
+    <attr name="bottomSheetScrimColor" format="color" />
+
     <!-- Lawnchair -->
     <declare-styleable name="SubPreference">
         <attr name="content" format="reference" />

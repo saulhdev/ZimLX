@@ -1747,9 +1747,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         if (dropOverView instanceof FolderIcon) {
             FolderIcon fi = (FolderIcon) dropOverView;
-            if (fi.acceptDrop(dragInfo)) {
-                return true;
-            }
+            return fi.acceptDrop(dragInfo);
         }
         return false;
     }
@@ -3402,6 +3400,23 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         } else if (info.container >= 0) {
             targetParent.containerType = ContainerType.FOLDER;
         }
+    }
+
+    public void refreshChildren() {
+        final int screenCount = getChildCount();
+        int x = mLauncher.getDeviceProfile().inv.numColumns;
+        int y = mLauncher.getDeviceProfile().inv.numRows;
+        for (int i = 0; i < screenCount; i++) {
+            final CellLayout layout = (CellLayout) getChildAt(i);
+            layout.setGridSize(x, y);
+        }
+
+        View qsb = findViewById(R.id.search_container_workspace);
+        if (qsb != null && qsb.getLayoutParams() instanceof CellLayout.LayoutParams) {
+            ((CellLayout.LayoutParams) qsb.getLayoutParams()).cellHSpan = x;
+        }
+
+        requestLayout();
     }
 
     /**
