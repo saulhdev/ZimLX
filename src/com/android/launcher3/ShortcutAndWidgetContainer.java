@@ -26,9 +26,13 @@ import android.view.ViewGroup;
 import com.android.launcher3.CellLayout.ContainerType;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
+import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.ZimFlags;
+
 import static android.view.MotionEvent.ACTION_DOWN;
 
-public class ShortcutAndWidgetContainer extends ViewGroup {
+public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferences.OnPreferenceChangeListener {
     static final String TAG = "ShortcutAndWidgetContainer";
 
     // These are temporary variables to prevent having to allocate a new object just to
@@ -47,13 +51,34 @@ public class ShortcutAndWidgetContainer extends ViewGroup {
     private Launcher mLauncher;
     private boolean mInvertIfRtl = false;
 
+    private ZimPreferences mPrefs;
+
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
         mLauncher = Launcher.getLauncher(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
+        mPrefs = Utilities.getZimPrefs(context);
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        mPrefs.addOnPreferenceChangeListener(ZimFlags.DESKTOP_OVERLAP_WIDGET, this);
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+        setClipChildren(!prefs.getAllowOverlap());
+        setClipToPadding(!prefs.getAllowOverlap());
+        setClipToOutline(!prefs.getAllowOverlap());
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        mPrefs.removeOnPreferenceChangeListener(ZimFlags.DESKTOP_OVERLAP_WIDGET, this);
+    }
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;

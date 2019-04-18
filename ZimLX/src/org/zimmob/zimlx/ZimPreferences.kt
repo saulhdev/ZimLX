@@ -37,7 +37,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
     }
 
-    private val doNothing = { }
+    val doNothing = { }
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
@@ -63,7 +63,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, refreshGrid)
-    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+    val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
+    val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, recreate)
 
     // Dock
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
@@ -288,6 +289,23 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    open inner class StringBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
+                                              private val fromString: (String) -> T,
+                                              private val toString: (T) -> String,
+                                              private val dispose: (T) -> Unit) :
+            PrefDelegate<T>(key, defaultValue, onChange) {
+        override fun onGetValue(): T = sharedPrefs.getString(getKey(), null)?.run(fromString)
+                ?: defaultValue
+
+        override fun onSetValue(value: T) {
+            edit { putString(getKey(), toString(value)) }
+        }
+
+        override fun disposeOldValue(oldValue: T) {
+            dispose(oldValue)
+        }
+    }
+
     open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
             PrefDelegate<String>(key, defaultValue, onChange) {
         override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)
@@ -420,8 +438,20 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         internal fun getKey() = key
 
         private fun onValueChanged() {
+            discardCachedValue()
             cached = false
             onChange.invoke()
+        }
+
+        private fun discardCachedValue() {
+            if (cached) {
+                cached = false
+                value.let(::disposeOldValue)
+            }
+        }
+
+        open fun disposeOldValue(oldValue: T) {
+
         }
     }
 

@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.settings.ui
+package org.zimmob.zimlx.preferences
 
 import android.os.Bundle
 import android.view.View
@@ -38,6 +38,8 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
+
+
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {
@@ -48,7 +50,6 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
     override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
         super.onPrepareDialogBuilder(builder)
-
         builder.setNeutralButton(R.string.grid_size_default, { _, _ ->
             gridSizePreference.setSize(0, 0)
         })

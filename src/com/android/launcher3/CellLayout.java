@@ -60,6 +60,8 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
@@ -191,6 +193,8 @@ public class CellLayout extends ViewGroup {
     private DragAndDropAccessibilityDelegate mTouchHelper;
     private boolean mUseTouchHelper = false;
 
+    private final ZimPreferences mPrefs;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -210,6 +214,8 @@ public class CellLayout extends ViewGroup {
         setWillNotDraw(false);
         setClipToPadding(false);
         mLauncher = Launcher.getLauncher(context);
+
+        mPrefs = Utilities.getZimPrefs(context);
 
         DeviceProfile grid = mLauncher.getDeviceProfile();
 
@@ -338,11 +344,8 @@ public class CellLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mUseTouchHelper ||
-                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
-            return true;
-        }
-        return false;
+        return mUseTouchHelper ||
+                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
     @Override
@@ -913,9 +916,7 @@ public class CellLayout extends ViewGroup {
                         lp.isLockedToGrid = true;
                         child.requestLayout();
                     }
-                    if (mReorderAnimators.containsKey(lp)) {
-                        mReorderAnimators.remove(lp);
-                    }
+                    mReorderAnimators.remove(lp);
                 }
                 public void onAnimationCancel(Animator animation) {
                     cancelled = true;
@@ -1713,6 +1714,11 @@ public class CellLayout extends ViewGroup {
         if (cellX < 0 || cellY < 0) return false;
 
         mIntersectingViews.clear();
+        if (mPrefs.getAllowOverlap()) {
+            // let's pretend no intersections exist
+            solution.intersectingViews = new ArrayList<>(mIntersectingViews);
+            return true;
+        }
         mOccupiedRect.set(cellX, cellY, cellX + spanX, cellY + spanY);
 
         // Mark the desired location of the view currently being dragged.
@@ -2534,7 +2540,7 @@ public class CellLayout extends ViewGroup {
 
     public boolean isOccupied(int x, int y) {
         if (x < mCountX && y < mCountY) {
-            return mOccupied.cells[x][y];
+            return mOccupied.cells[x][y] && !mPrefs.getAllowOverlap();
         } else {
             throw new RuntimeException("Position exceeds the bound of this CellLayout");
         }
@@ -2760,6 +2766,6 @@ public class CellLayout extends ViewGroup {
     }
 
     public boolean isRegionVacant(int x, int y, int spanX, int spanY) {
-        return mOccupied.isRegionVacant(x, y, spanX, spanY);
+        return mOccupied.isRegionVacant(x, y, spanX, spanY) || mPrefs.getAllowOverlap();
     }
 }

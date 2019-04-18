@@ -18,7 +18,9 @@ public class ZimFlags {
     public static final String THEME_ADAPTIVE_BACKGROUND = "pref_key__colored_icons";
     public static final String THEME_COLOR = "pref_key__theme_color";
 
+    public static final String DESKTOP_HIDE_LABELS = "pref_hideAppLabels";
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";
+    public static final String DESKTOP_OVERLAP_WIDGET = "pref_key__overlap_widget";
 
     public static final String HOTSEAT_HEIGHT_SCALE = "pref_hotseatHeightScale";
     public static final String HOTSEAT_TRANSPARENT = "pref_isHotseatTransparent";

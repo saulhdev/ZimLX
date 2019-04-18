@@ -50,6 +50,8 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.LongArrayMap;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 import java.util.ArrayList;
@@ -95,6 +97,8 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
+    private final ZimPreferences prefs;
+
     public LoaderCursor(Cursor c, LauncherAppState app) {
         super(c);
         mContext = app.getContext();
@@ -117,6 +121,9 @@ public class LoaderCursor extends CursorWrapper {
         profileIdIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
         restoredIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED);
         intentIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+
+
+        prefs = Utilities.getZimPrefs(mContext);
     }
 
     @Override
@@ -464,7 +471,7 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return false;
+            return prefs.getAllowOverlap();
         }
     }
 }

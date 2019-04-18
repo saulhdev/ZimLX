@@ -45,8 +45,6 @@
 
     <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
     <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
@@ -57,12 +55,6 @@
         android:protectionLevel="signatureOrSystem" />
 
     <uses-permission android:name="${applicationId}.permission.QSB" />
-
-    <!-- Custom -->
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
-    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"

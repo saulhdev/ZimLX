@@ -6,7 +6,7 @@
         android:summary="@string/pref_summary__minibar"
         android:title="@string/pref_title__minibar" />
 
-    <org.zimmob.zimlx.settings.ui.GridSizePreference
+    <org.zimmob.zimlx.preferences.GridSizePreference
         android:key="pref_desktop_grid_size"
         android:title="@string/grid_size" />
 

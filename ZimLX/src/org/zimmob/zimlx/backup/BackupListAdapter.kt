@@ -10,7 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
-import org.zimmob.zimlx.color.ColorEngine
+import org.zimmob.zimlx.colors.ColorEngine
 import org.zimmob.zimlx.isVisible
 
 class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListAdapter.Holder>() {

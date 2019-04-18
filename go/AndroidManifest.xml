@@ -30,7 +30,6 @@
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
         android:label="@string/derived_app_name"
-        android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
         android:supportsRtl="true">

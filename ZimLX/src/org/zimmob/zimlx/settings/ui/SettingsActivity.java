@@ -58,6 +58,8 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
+import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
+import org.zimmob.zimlx.preferences.GridSizePreference;
 
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
@@ -284,12 +286,12 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
                         }
                     }
 
-                    mIconPackPref = findPreference(ICON_PACK_PREF);
+                    mIconPackPref = (CustomIconPreference) findPreference(ICON_PACK_PREF);
                     mIconPackPref.setOnPreferenceChangeListener(this);
                     break;
 
                 case R.xml.zim_preferences_app_drawer:
-                    SwitchPreference showPrediction = findPreference(APPDRAWER_SHOW_PREDICTIONS);
+                    SwitchPreference showPrediction = (SwitchPreference) findPreference(APPDRAWER_SHOW_PREDICTIONS);
                     showPrediction.setOnPreferenceChangeListener(this);
                     if (showPrediction.isChecked()) {
                         findPreference(APPDRAWER_SORT_MODE).setEnabled(false);
@@ -323,7 +325,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
 
                     break;
                 case R.xml.zim_preferences_notification:
-                    ButtonPreference iconBadgingPref =
+                    ButtonPreference iconBadgingPref = (ButtonPreference)
                             findPreference(ICON_BADGING_PREFERENCE_KEY);
                     if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
                         getPreferenceScreen().removePreference(iconBadgingPref);

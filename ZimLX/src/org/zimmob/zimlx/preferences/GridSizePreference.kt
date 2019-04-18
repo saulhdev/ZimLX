@@ -1,4 +1,4 @@
-package org.zimmob.zimlx.settings.ui
+package org.zimmob.zimlx.preferences
 
 import android.content.Context
 import android.util.AttributeSet
@@ -6,7 +6,8 @@ import androidx.preference.DialogPreference
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class GridSizePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs) {
+class GridSizePreference(context: Context, attrs: AttributeSet?) :
+        DialogPreference(context, attrs) {
 
     val gridSize = Utilities.getZimPrefs(context).gridSize
     val defaultSize by lazy { Pair(gridSize.numRowsOriginal, gridSize.numColumnsOriginal) }

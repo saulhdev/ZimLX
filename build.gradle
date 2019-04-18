@@ -198,13 +198,15 @@ tasks.matching { task -> task.name.matches('.*generate.*Resources') }.all {
 
 final String SUPPORT_LIBS_VERSION = '1.0.0'
 dependencies {
+    implementation "com.android.support:appcompat-v7:28.0.0"
+    implementation "com.android.support:preference-v7:28.0.0"
     implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.preference:preference:1.1.0-alpha04"
+    implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.constraintlayout:constraintlayout:2.0.0-alpha3"
     implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"

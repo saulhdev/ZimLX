@@ -98,12 +98,17 @@ public class LauncherModel extends BroadcastReceiver
 
     @Thunk
     static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
+    @Thunk
+    static final HandlerThread sUiWorkerThread = new HandlerThread("launcher-ui-loader");
     static {
         sWorkerThread.start();
+        sUiWorkerThread.start();
     }
 
     @Thunk
     static final Handler sWorker = new Handler(sWorkerThread.getLooper());
+    @Thunk
+    static final Handler sUiWorker = new Handler(sUiWorkerThread.getLooper());
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -144,49 +149,49 @@ public class LauncherModel extends BroadcastReceiver
     };
 
     public interface Callbacks {
-        public void rebindModel();
+        void rebindModel();
 
-        public int getCurrentWorkspaceScreen();
+        int getCurrentWorkspaceScreen();
 
-        public void clearPendingBinds();
+        void clearPendingBinds();
 
-        public void startBinding();
+        void startBinding();
 
-        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
+        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
 
-        public void bindScreens(ArrayList<Long> orderedScreenIds);
+        void bindScreens(ArrayList<Long> orderedScreenIds);
 
-        public void finishFirstPageBind(ViewOnDrawExecutor executor);
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
 
-        public void finishBindingItems();
+        void finishBindingItems();
 
-        public void bindAllApplications(ArrayList<AppInfo> apps);
+        void bindAllApplications(ArrayList<AppInfo> apps);
 
-        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
+        void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
 
-        public void bindAppsAdded(ArrayList<Long> newScreens,
-                                  ArrayList<ItemInfo> addNotAnimated,
-                                  ArrayList<ItemInfo> addAnimated);
+        void bindAppsAdded(ArrayList<Long> newScreens,
+                           ArrayList<ItemInfo> addNotAnimated,
+                           ArrayList<ItemInfo> addAnimated);
 
-        public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
 
-        public void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
+        void bindShortcutsChanged(ArrayList<ShortcutInfo> updated, UserHandle user);
 
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
 
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
 
-        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
+        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
 
-        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
+        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
 
-        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
+        void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
 
-        public void onPageBoundSynchronously(int page);
+        void onPageBoundSynchronously(int page);
 
-        public void executeOnNextDraw(ViewOnDrawExecutor executor);
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
 
-        public void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
+        void bindDeepShortcutMap(MultiHashMap<ComponentKey, String> deepShortcutMap);
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
@@ -713,6 +718,14 @@ public class LauncherModel extends BroadcastReceiver
     public static Looper getWorkerLooper() {
         return sWorkerThread.getLooper();
     }
+
+    /**
+     * @return the looper for the ui worker thread which can be used to start background tasksfor ui.
+     */
+    public static Looper getUiWorkerLooper() {
+        return sWorkerThread.getLooper();
+    }
+
 
     public static void setWorkerPriority(final int priority) {
         Process.setThreadPriority(sWorkerThread.getThreadId(), priority);

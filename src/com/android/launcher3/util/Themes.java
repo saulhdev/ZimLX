@@ -30,9 +30,7 @@ import com.android.launcher3.Utilities;
 public class Themes {
     public static int getColorAccent(Context context) {
         return Utilities.getZimPrefs(context).getAccentColor();
-        //return ColorEngine.getInstance(context).getAccent();
     }
-
     public static int getAttrColor(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
 

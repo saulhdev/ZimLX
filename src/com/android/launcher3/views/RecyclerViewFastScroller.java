@@ -127,7 +127,7 @@ public class RecyclerViewFastScroller extends View {
 
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(Themes.getColorAccent(context));
+        mThumbPaint.setColor(Utilities.getZimPrefs(context).getAccentColor());
         mThumbPaint.setStyle(Paint.Style.FILL);
 
         Resources res = getResources();

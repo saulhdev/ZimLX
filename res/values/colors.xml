@@ -20,7 +20,7 @@
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
-    <color name="uninstall_target_hover_tint">#FFF0592B</color>
+    <color name="uninstall_target_hover_tint">#EB3F0B</color>
 
     <color name="focused_background">#80c6c5c5</color>
 
@@ -55,7 +55,7 @@
     <color name="white">#ffffff</color>
 
     <!-- NOTIFICATION -->
-    <color name="notification_background">#FFAF174A</color>
+    <color name="notification_background">#EB0854</color>
     <color name="transparentish">#B0101010</color>
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->

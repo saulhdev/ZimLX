@@ -623,5 +623,9 @@
 
     <!-- Subtext explaining that the icons will only be affected on the home screen. This text follows the actual icon action: Change icon shape, on Home screen [CHAR LIMIT=100] -->
     <string name="icon_shape_override_label_location">on Home screen</string>
+    <string name="config_default_color_resolver" translatable="false">org.zimmob.zimlx.colors.ARGBColorResolver</string>
 
+    <string name="zim_accent">Accent Color</string>
+    <string name="color_system_accent">System accent</string>
+    <string name="reset_to_default">Reset to default</string>
 </resources>
