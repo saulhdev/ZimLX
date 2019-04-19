@@ -184,4 +184,9 @@
         <attr name="numMinRows" format="integer" />
         <attr name="numMinColumns" format="integer" />
     </declare-styleable>
+
+    <declare-styleable name="PreviewPreference">
+        <attr name="previewLayout" format="float" />
+    </declare-styleable>
+
 </resources>

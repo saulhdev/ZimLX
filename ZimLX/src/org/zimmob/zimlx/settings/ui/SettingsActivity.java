@@ -94,6 +94,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public final static String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     public final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
+    private boolean isSubSettings;
+    protected boolean forceSubSettings = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -180,6 +183,7 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
             }
             return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
         }
+
     }
 
     /**
@@ -241,8 +245,9 @@ public class SettingsActivity extends SettingsBaseActivity implements Preference
     public static class SubSettingsFragment extends BaseFragment implements
             Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
 
-        static final String TITLE = "title";
-        static final String CONTENT_RES_ID = "content_res_id";
+        public static final String TITLE = "title";
+        public static final String CONTENT_RES_ID = "content_res_id";
+        public static final String HAS_PREVIEW = "has_preview";
 
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;

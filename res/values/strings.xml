@@ -345,7 +345,6 @@
 
     <string name="default_text">Default</string>
 
-    //BACKUP STRINGS
     <string name="backups">Backups</string>
     <string name="backup_delete">Hide</string>
     <string name="backup_delete_failed">Something went wrong</string>
@@ -485,7 +484,10 @@
     <string name="desktop_indicator_mode_lines">Line</string>
     <string name="title__desktop_icon_scale">Icon scale</string>
     <string name="title__desktop_overlap">Overlap Placement</string>
+    <string name="title__desktop_smartspace">Show Smart space widget</string>
     <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
+
+    <string name="title_use_pill_qsb">Use pill style search bar</string>
 
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
@@ -600,6 +602,13 @@
     <string name="title_folder_circle_bg">Circle Shadow</string>
     <string name="title_folder_square">Square</string>
     <string name="title_folder_square_bg">Square Shadow</string>
+
+
+    <string name="week_day_format">%1$s, %2$s</string>
+    <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="home_widget">Home widget</string>
+    <string name="smartspace_provider_error">Something went wrong</string>
+    <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
 
     <!-- Title of an overlay in All Apps. This overlay is letting a user know about their work profile, which is managed by their employer. "Work apps" are apps in a user's work profile.-->
     <string name="bottom_work_tab_user_education_title">Find work apps here</string>

@@ -24,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -34,6 +35,8 @@ import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
+
+import org.zimmob.zimlx.ZimPreferences;
 
 import java.util.ArrayList;
 
@@ -62,35 +65,35 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private ViewGroup mSubtitleWeatherContent;
     private ImageView mSubtitleWeatherIcon;
 
+
+    private ZimPreferences mPrefs;
+
     public SmartspaceView(Context context, AttributeSet set) {
         super(context, set);
 
-        mCalendarClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                cp(10000);
-                final Uri content_URI = CalendarContract.CONTENT_URI;
-                final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
-                ContentUris.appendId(appendPath, System.currentTimeMillis());
-                final Intent addFlags = new Intent(Intent.ACTION_VIEW)
-                        .setData(appendPath.build())
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-                try {
-                    final Context context = getContext();
-                    Launcher.getLauncher(context).startActivitySafely(v, addFlags, null);
-                } catch (ActivityNotFoundException ex) {
-                    LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
-                }
+
+        mPrefs = Utilities.getZimPrefs(context);
+
+        mCalendarClickListener = v -> {
+            cp(10000);
+            final Uri content_URI = CalendarContract.CONTENT_URI;
+            final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
+            ContentUris.appendId(appendPath, System.currentTimeMillis());
+            final Intent addFlags = new Intent(Intent.ACTION_VIEW)
+                    .setData(appendPath.build())
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+            try {
+                final Context context1 = getContext();
+                Launcher.getLauncher(context1).startActivitySafely(v, addFlags, null);
+            } catch (ActivityNotFoundException ex) {
+                LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
         };
 
-        mWeatherClickListener = new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (dq != null && dq.isWeatherAvailable()) {
-                    cp(10001);
-                    dq.dO.click(v);
-                }
+        mWeatherClickListener = v -> {
+            if (dq != null && dq.isWeatherAvailable()) {
+                cp(10001);
+                dq.dO.click(v);
             }
         };
 
@@ -177,6 +180,30 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             mClockView.onVisibilityAggregated(true);
         }
     }
+
+    public void reloadCustomizations() {
+        if (!mDoubleLine) {
+            bindClockAndSeparator(true);
+        }
+    }
+
+    private void bindClockAndSeparator(boolean forced) {
+        if (mPrefs.getSmartspaceDate() || mPrefs.getSmartspaceTime()) {
+            mClockView.setVisibility(View.VISIBLE);
+            mClockView.setOnClickListener(mCalendarClickListener);
+            mClockView.setOnLongClickListener(co());
+            if (forced)
+                mClockView.reloadDateFormat(true);
+            //ZimUtilsKt.setVisible(mTitleSeparator, mWeatherAvailable);
+            if (!Utilities.ATLEAST_NOUGAT) {
+                mClockView.onVisibilityAggregated(true);
+            }
+        } else {
+            mClockView.setVisibility(View.GONE);
+            mTitleSeparator.setVisibility(View.GONE);
+        }
+    }
+
 
     private void loadViews() {
         mTitleText = findViewById(R.id.title_text);
@@ -274,7 +301,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     protected void onFinishInflate() {
         super.onFinishInflate();
         loadViews();
-        /*
+
         dr = findViewById(R.id.dummyBubbleTextView);
         dr.setTag(new ItemInfo() {
             @Override
@@ -283,7 +310,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
             }
         });
         dr.setContentDescription("");
-        */
+
     }
 
     protected void onLayout(final boolean b, final int n, final int n2, final int n3, final int n4) {
@@ -304,7 +331,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         launcher.getDragLayer().addView(popupContainerWithArrow);
         ArrayList<SystemShortcut> list = new ArrayList<>(1);
         list.add(new SmartspacePreferencesShortcut());
-        //popupContainerWithArrow.populateAndShow(dr, Collections.EMPTY_LIST, Collections.EMPTY_LIST, list);
         return b;
     }
 

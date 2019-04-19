@@ -261,6 +261,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     // Handles workspace state transitions
     private final WorkspaceStateTransitionAnimation mStateTransitionAnimation;
 
+    public boolean mPillQsb;
+    private OnStateChangeListener mOnStateChangeListener;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -286,6 +289,9 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
+
+
+        mPillQsb = FeatureFlags.QSB_ON_FIRST_SCREEN && Utilities.getZimPrefs(context).getUsePillQsb();
 
         setHapticFeedbackEnabled(false);
         initWorkspace();
@@ -324,6 +330,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mWorkspaceScreens.valueAt(i)
                     .setPadding(paddingLeftRight, 0, paddingLeftRight, paddingBottom);
         }
+    }
+
+    public void setOnStateChangeListener(OnStateChangeListener listener) {
+        mOnStateChangeListener = listener;
     }
 
     /**
@@ -1490,6 +1500,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mForceDrawAdjacentPages = true;
         }
         invalidate(); // This will call dispatchDraw(), which calls getVisiblePages().
+
+        if (mOnStateChangeListener != null) {
+            mOnStateChangeListener.prepareStateChange(builder);
+        }
 
         ValueAnimator stepAnimator = ValueAnimator.ofFloat(0, 1);
         stepAnimator.addUpdateListener(listener);
@@ -3417,6 +3431,18 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         requestLayout();
+    }
+
+    public interface OnStateChangeListener {
+
+        /**
+         * Called when the workspace state is changing.
+         */
+        void prepareStateChange(AnimatorSetBuilder builder);
+    }
+
+    public static boolean isQsbContainerPage(int pageNo) {
+        return pageNo == 0;
     }
 
     /**

@@ -39,7 +39,7 @@ public class SettingsBaseActivity extends ThemeActivity {
         dragLayer.addView(decorLayout,
                 new InsettableFrameLayout
                         .LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
-        super.setContentView(decorLayout);
+        super.setContentView(dragLayer);
         setContentView(R.layout.activity_settings);
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);

@@ -228,7 +228,6 @@ public class LoaderResults {
             } else if (info.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
                 currentScreenItems.add(info);
                 itemsOnScreen.add(info.id);
-                Log.e(TAG, "Loading Hotseat Icons");
             } else {
                 if (itemsOnScreen.contains(info.container)) {
                     currentScreenItems.add(info);

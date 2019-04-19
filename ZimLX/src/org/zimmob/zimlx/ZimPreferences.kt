@@ -58,6 +58,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
     // Desktop
+    val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -65,6 +66,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, refreshGrid)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, recreate)
+    var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     // Dock
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)

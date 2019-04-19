@@ -20,6 +20,7 @@ package org.zimmob.zimlx
 import android.R
 import android.content.Context
 import android.content.res.ColorStateList
+import android.graphics.RectF
 import android.os.Handler
 import android.os.Looper
 import android.view.View
@@ -29,11 +30,9 @@ import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.MainThreadExecutor
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.OptionsPopupView
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 
@@ -123,6 +122,31 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
     }
 }
 
+fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
+
+fun ViewGroup.getAllChilds(list: MutableList<View>) {
+    for (i in (0 until childCount)) {
+        val child = getChildAt(i)
+        if (child is ViewGroup) {
+            child.getAllChilds(list)
+        } else {
+            list.add(child)
+        }
+    }
+}
+
+fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.OptionItem) {
+    val launcher = Launcher.getLauncher(view.context)
+    OptionsPopupView.show(launcher, rect ?: RectF(launcher.getViewBounds(view)), items.toList())
+}
+
+fun Context.getLauncherOrNull(): Launcher? {
+    return try {
+        Launcher.getLauncher(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
 
 inline fun ViewGroup.forEachChildIndexed(action: (View, Int) -> Unit) {
     val count = childCount

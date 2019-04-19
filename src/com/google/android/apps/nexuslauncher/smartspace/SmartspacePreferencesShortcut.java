@@ -9,7 +9,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.popup.SystemShortcut;
 
-class SmartspacePreferencesShortcut extends SystemShortcut {
+public class SmartspacePreferencesShortcut extends SystemShortcut {
     SmartspacePreferencesShortcut() {
         super(R.drawable.ic_smartspace_preferences, R.string.smartspace_preferences);
     }

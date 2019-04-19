@@ -59,4 +59,9 @@
     <color name="transparentish">#B0101010</color>
 
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
+
+    <!-- Pixel 1 -->
+    <color name="qsb_connector">#fff2f2f2</color>
+    <color name="qsb_background">#ffffffff</color>
+    <color name="qsb_connector_gradient_end_color">#66ffffff</color>
 </resources>

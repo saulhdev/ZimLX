@@ -10,11 +10,11 @@
         android:title="@string/title__gesture_swipe_down" />
 
     <ListPreference
-            android:defaultValue="1"
+        android:defaultValue="1"
         android:entries="@array/entries__gestures"
         android:entryValues="@array/values__zero_to_four"
         android:key="pref_key__gesture_swipe_up"
-            android:persistent="true"
-            android:summary="%s"
+        android:persistent="true"
+        android:summary="%s"
         android:title="@string/title__gesture_swipe_up" />
 </PreferenceScreen>
