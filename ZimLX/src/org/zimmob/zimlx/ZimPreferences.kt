@@ -10,6 +10,7 @@ import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
 import org.zimmob.zimlx.smartspace.SmartspaceDataWidget
 import org.zimmob.zimlx.theme.ThemeManager
@@ -21,6 +22,7 @@ import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
@@ -49,6 +51,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
 
+    private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
+
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
@@ -69,10 +73,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, refreshGrid)
+    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, recreate)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
+    private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
+    val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
+
 
     val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
@@ -85,6 +92,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
 
     // Dock
+    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
     val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
     val dockSearchBar = true
@@ -92,9 +100,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockShowArrow by BooleanPref("pref_hotseatShowArrow", true, recreate)
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
-    val hideHotseat by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
+    val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+    val dockRowsCount get() = if (twoRowDock) 2 else 1
     val hotseatShowPageIndicator by BooleanPref(ZimFlags.HOTSEAT_SHOW_PAGE_INDICATOR, true)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
+    val dockScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
 
     fun numHotseatIcons(default: String): String {
         return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
@@ -111,10 +122,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // App Drawer
     val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
-    val iconLabelsInTwoLines by BooleanPref("pref_key__labels_two_lines", true)
     val showPredictionApps by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, recreate)
     val allAppsIconPaddingScale by FloatPref(ZimFlags.APPDRAWER_ALL_APPS_ICON_PADDING_SCALE, 1f)
     val useGlobalSearch by BooleanPref(ZimFlags.APPDRAWER_GLOBAL_SEARCH, false, recreate)
+    val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
+    val drawerMultilineLabel by BooleanPref("pref_key__labels_two_lines", true)
+    val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
+
     //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
 
     //smartspace
@@ -381,6 +395,15 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun onSetValue(value: Int) {
             edit { putInt(getKey(), value) }
+        }
+    }
+
+    open inner class AlphaPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun onGetValue(): Int = (sharedPrefs.getFloat(getKey(), defaultValue.toFloat() / 255) * 255).roundToInt()
+
+        override fun onSetValue(value: Int) {
+            edit { putFloat(getKey(), value.toFloat() / 255) }
         }
     }
 

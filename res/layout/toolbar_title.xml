@@ -14,11 +14,9 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:ellipsize="end"
-        android:gravity="center"
+        android:gravity="start"
         android:singleLine="true"
-        android:textAppearance="?titleTextAppearance"
-        app:customFontType="title"
-        tools:text="Title" />
+        android:textAppearance="?titleTextAppearance" />
 
     <TextView
         android:id="@+id/toolbar_subtitle"

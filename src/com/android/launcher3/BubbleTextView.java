@@ -49,6 +49,8 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.text.NumberFormat;
 
 import androidx.core.graphics.ColorUtils;
@@ -128,7 +130,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
-
+    private boolean mHideText;
     public BubbleTextView(Context context) {
         this(context, null, 0);
     }
@@ -149,28 +151,43 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
         int defaultIconSize = grid.iconSizePx;
+        ZimPreferences prefs = Utilities.getZimPrefs(context);
         if (display == DISPLAY_WORKSPACE) {
+            mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+            int lines = prefs.getHomeLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         } else if (display == DISPLAY_ALL_APPS) {
+            mHideText = prefs.getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
+            int lines = prefs.getDrawerLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         } else if (display == DISPLAY_FOLDER) {
+            mHideText = prefs.getHideAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
+            int lines = prefs.getHomeLabelRows();
+            setMaxLines(lines);
+            setSingleLine(lines == 1);
         }
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();
-        if (Utilities.getZimPrefs(context).getIconLabelsInTwoLines()) {
+        /*if (Utilities.getZimPrefs(context).getIconLabelsInTwoLines()) {
             setMaxLines(2);
             setEllipsize(TruncateAt.END);
             setHorizontallyScrolling(false);
-        }
+        }*/
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -240,7 +257,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mBadgeColor = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
-        setText(info.title);
+        if (!isTextHidden())
+            setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
@@ -625,5 +643,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    protected boolean isTextHidden() {
+        return mHideText;
     }
 }

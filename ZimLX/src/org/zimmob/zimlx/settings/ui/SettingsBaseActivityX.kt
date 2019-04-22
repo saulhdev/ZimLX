@@ -15,13 +15,15 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zimmob.zimlx.settings
+package org.zimmob.zimlx.settings.ui
 
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
 import android.content.ContextWrapper
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,8 +36,6 @@ import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimLayoutInflater
 import org.zimmob.zimlx.getBooleanAttr
 import org.zimmob.zimlx.launcherAppState
-import org.zimmob.zimlx.settings.ui.DecorLayout
-import org.zimmob.zimlx.settings.ui.SettingsDragLayer
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.theme.ThemeOverride
 
@@ -48,7 +48,6 @@ open class SettingsBaseActivityX : AppCompatActivity(), ThemeManager.ThemeableAc
     private lateinit var themeOverride: ThemeOverride
     private var currentTheme = 0
     private var paused = false
-
     private val customLayoutInflater by lazy {
         ZimLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
@@ -64,7 +63,11 @@ open class SettingsBaseActivityX : AppCompatActivity(), ThemeManager.ThemeableAc
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
         super.setContentView(dragLayer)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar)
+        val prefs = Utilities.getZimPrefs(this)
+        var toolbar = findViewById<Toolbar>(R.id.toolbar)
+        toolbar.setBackgroundColor(prefs.primaryColor)
+        toolbar.setTitleTextColor(resources.getColor(R.color.white))
+        toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24px)
         setSupportActionBar(toolbar)
 
         var flags = window.decorView.systemUiVisibility
@@ -79,6 +82,17 @@ open class SettingsBaseActivityX : AppCompatActivity(), ThemeManager.ThemeableAc
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.decorView.systemUiVisibility = flags
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            window.statusBarColor = dark(Utilities.getZimPrefs(applicationContext).primaryColor)
+        }
+    }
+
+    fun dark(color: Int): Int {
+        val a = Color.alpha(color)
+        val r = Color.red(color)
+        val g = Color.green(color)
+        val b = Color.blue(color)
+        return Color.argb(a, Math.max((r * 0.8).toInt(), 0), Math.max((g * 0.8).toInt(), 0), Math.max((b * 0.8).toInt(), 0))
     }
 
     override fun onBackPressed() {

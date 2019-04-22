@@ -193,7 +193,10 @@ public class InvariantDeviceProfile {
         Display display = wm.getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
-
+        if (prefs.getDesktopIconScale() != 1f) {
+            float iconScale = prefs.getDesktopIconScale();
+            iconSize *= iconScale;
+        }
         if (prefs.getAllAppsIconScale() != 1f) {
             float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;

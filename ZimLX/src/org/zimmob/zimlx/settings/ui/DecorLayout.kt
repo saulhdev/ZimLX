@@ -93,7 +93,7 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
 
         contentFrame = findViewById(android.R.id.content)
         actionBarContainer = findViewById(R.id.action_bar_container)
-        toolbar = findViewById(R.id.toolbarx)
+        toolbar = findViewById(R.id.toolbar)
         largeTitle = findViewById(R.id.large_title)
         largeTitle.setOnClickListener(this)
         toolbarShadow = findViewById(R.id.toolbar_shadow)

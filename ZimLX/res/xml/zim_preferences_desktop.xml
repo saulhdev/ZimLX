@@ -1,22 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <Preference
+        app:iconSpaceReserved="false"
         android:key="pref_key__minibar"
         android:summary="@string/pref_summary__minibar"
         android:title="@string/pref_title__minibar" />
 
     <org.zimmob.zimlx.preferences.GridSizePreference
+        app:iconSpaceReserved="false"
         android:key="pref_desktop_grid_size"
         android:title="@string/grid_size" />
 
     <SwitchPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="pref_key__overlap_widget"
         android:summary="@string/summary__desktop_overlap"
         android:title="@string/title__desktop_overlap" />
 
     <SwitchPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="pref_add_icon_to_home"
         android:persistent="true"
@@ -24,6 +28,7 @@
         android:title="@string/auto_add_shortcuts_label" />
 
     <org.zimmob.zimlx.preferences.SeekbarPreference
+        app:iconSpaceReserved="false"
         android:key="pref_iconScaleSB"
         android:persistent="true"
         android:title="@string/title__desktop_icon_scale"
@@ -35,18 +40,34 @@
         app:summaryMultiplier="100" />
 
     <SwitchPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:disableDependentsState="true"
         android:key="pref_hideAppLabels"
         android:persistent="true"
         android:title="@string/hide_icon_labels_pref_title" />
 
+    <SwitchPreference
+        app:iconSpaceReserved="false"
+        android:key="pref_homeIconLabelsInTwoLines"
+        android:title="@string/pref_multiline_labels"
+        android:defaultValue="false"
+        android:dependency="pref_hideAppLabels"
+        android:persistent="true" />
 
     <SwitchPreference
+        app:iconSpaceReserved="false"
+        android:defaultValue="@bool/allow_rotation"
+        android:key="pref_allowRotation"
+        android:persistent="true"
+        android:title="@string/allow_rotation_title" />
+
+    <SwitchPreference
+        app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="pref_fullWidthWidgets"
         android:persistent="true"
         android:summary="@string/full_width_widgets_pref_summary"
         android:title="@string/full_width_width_widgets_pref_title" />
 
-</androidx.preference.PreferenceScreen>
+</PreferenceScreen>

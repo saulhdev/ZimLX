@@ -685,4 +685,7 @@
 
     <string name="theme_auto">Follow wallpaper</string>
     <string name="theme_auto_night_mode">Follow system theme</string>
+
+
+    <string name="pref_multiline_labels">Multiline app names</string>
 </resources>

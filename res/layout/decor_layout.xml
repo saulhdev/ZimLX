@@ -33,13 +33,12 @@
         android:layout_height="wrap_content">
 
         <org.zimmob.zimlx.views.CenteredToolbar
-            android:id="@+id/toolbarx"
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:minHeight="?actionBarSize"
-            android:background="@android:color/transparent"
-            app:titleTextColor="?colorAccent"
-            android:theme="?actionBarTheme" />
+            app:titleTextColor="@color/white"
+            android:theme="@style/Toolbar" />
 
         <View
             android:id="@+id/toolbar_shadow"

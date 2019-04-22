@@ -38,11 +38,11 @@
 
     </PreferenceCategory>
 
-    <PreferenceCategory
+    <Preference
         android:key="@string/pref_key__more_info__project_team"
         android:title="@string/project_team">
 
-    </PreferenceCategory>
+    </Preference>
 
     <PreferenceCategory android:title="@string/licenses">
         <Preference

@@ -48,11 +48,9 @@ import com.android.launcher3.views.ButtonPreference;
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
 import org.zimmob.zimlx.ZimLauncher;
-import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.ResumablePreference;
-import org.zimmob.zimlx.settings.SettingsBaseActivityX;
 import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
@@ -121,8 +119,8 @@ public class SettingsActivity extends SettingsBaseActivityX implements
         boolean showSearch = shouldShowSearch();
 
         super.onCreate(savedInstanceState);
-        getDecorLayout().setHideToolbar(showSearch);
-        getDecorLayout().setUseLargeTitle(shouldUseLargeTitle());
+        //getDecorLayout().setHideToolbar(showSearch);
+        //getDecorLayout().setUseLargeTitle(shouldUseLargeTitle());
         setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
 
         if (savedInstanceState == null) {
@@ -136,7 +134,6 @@ public class SettingsActivity extends SettingsBaseActivityX implements
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         updateUpButton();
-
         if (showSearch) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setOnClickListener(this);
@@ -173,7 +170,7 @@ public class SettingsActivity extends SettingsBaseActivityX implements
         if (shouldShowSearch()) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
-            ZimPreferences prefs = Utilities.getZimPrefs(this);
+            //ZimPreferences prefs = Utilities.getZimPrefs(this);
             /*if (prefs.getEnableFools()) {
                 toolbar.inflateMenu(R.menu.menu_toggle_fools);
                 MenuItem foolsItem = toolbar.getMenu().findItem(R.id.action_toggle_fools);
@@ -506,7 +503,9 @@ public class SettingsActivity extends SettingsBaseActivityX implements
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(R.string.derived_app_name);
+            getActivity().setTitle(R.string.settings_button_text);
+            getActivity().setTitleColor(R.color.white);
+
         }
 
         @Override
@@ -593,7 +592,6 @@ public class SettingsActivity extends SettingsBaseActivityX implements
         public void onResume() {
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
-
             if (getContent() == R.xml.zim_preferences_smartspace) {
                 SwitchPreference minusOne = (SwitchPreference) findPreference(
                         ENABLE_MINUS_ONE_PREF);

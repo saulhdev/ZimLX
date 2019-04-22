@@ -24,6 +24,8 @@ import android.view.LayoutInflater
 import androidx.appcompat.widget.AppCompatTextView
 import androidx.appcompat.widget.Toolbar
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import org.zimmob.zimlx.ZimPreferences
 import org.zimmob.zimlx.isVisible
 
 /*
@@ -50,10 +52,12 @@ class CenteredToolbar @JvmOverloads constructor(
     private var mSubtitleTextView: AppCompatTextView? = null
     private var mTitleText: CharSequence? = null
     private var mSubtitleText: CharSequence? = null
+    private var prefs: ZimPreferences = Utilities.getZimPrefs(context)
 
     private fun inflateTitle() {
         LayoutInflater.from(context).inflate(R.layout.toolbar_title, this)
         mTitleTextView = findViewById(R.id.toolbar_title)
+        mTitleTextView!!.setTextColor(resources.getColor(R.color.white))
         mSubtitleTextView = findViewById(R.id.toolbar_subtitle)
     }
 
