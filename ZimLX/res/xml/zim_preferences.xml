@@ -42,10 +42,9 @@
 
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_behavior"
-            android:summary="@string/pref_summary__behavior"
-            android:title="@string/pref_title__behavior"
-            app:content="@xml/zim_preferences_behavior" />
-
+            android:summary="@string/pref_summary__smartspace"
+            android:title="@string/pref_title__smartspace"
+            app:content="@xml/zim_preferences_smartspace" />
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category__inputs">
@@ -56,10 +55,11 @@
             app:content="@xml/zim_preferences_notification" />
 
         <org.zimmob.zimlx.settings.ui.SubPreference
-            android:icon="@drawable/ic_gesture"
-            android:summary="@string/pref_summary__inputs"
-            android:title="@string/pref_title__gestures"
-            app:content="@xml/zim_preferences_gestures" />
+            android:icon="@drawable/ic_behavior"
+            android:summary="@string/pref_summary__behavior"
+            android:title="@string/pref_title__behavior"
+            app:content="@xml/zim_preferences_behavior" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/pref_category__others">

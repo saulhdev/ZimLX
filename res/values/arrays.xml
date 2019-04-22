@@ -71,4 +71,47 @@
         <item>@string/title_folder_square</item>
         <item>@string/title_folder_square_bg</item>
     </string-array>
+    <string-array name="unitsTexts">
+        <item>@string/units_metric</item>
+        <item>@string/units_imperial</item>
+        <item>@string/units_kelvin</item>
+        <item>@string/units_rakine</item>
+        <item>@string/units_delisle</item>
+        <item>@string/units_newton</item>
+        <item>@string/units_reaumur</item>
+        <item>@string/units_romer</item>
+    </string-array>
+    <string-array name="unitsValues">
+        <item>metric</item>
+        <item>imperial</item>
+        <item>kelvin</item>
+        <item>rakine</item>
+        <item>delisle</item>
+        <item>newton</item>
+        <item>reaumur</item>
+        <item>romer</item>
+    </string-array>
+
+    <string-array name="themes">
+        <item>@string/theme_auto</item>
+        <item>@string/theme_auto_night_mode</item>
+        <item>@string/theme_light</item>
+        <item>@string/theme_dark_text</item>
+        <item>@string/theme_dark</item>
+        <item>@string/theme_dark_dark_text</item>
+        <item>@string/theme_black</item>
+        <item>@string/theme_black_dark_text</item>
+    </string-array>
+
+    <string-array name="themeValues">
+        <item>1</item>  <!-- 00001 -->
+        <item>17</item> <!-- 10001 -->
+        <item>0</item>  <!-- 00000 -->
+        <item>2</item>  <!-- 00010 -->
+        <item>4</item>  <!-- 00100 -->
+        <item>6</item>  <!-- 00110 -->
+        <item>12</item> <!-- 01100 -->
+        <item>14</item> <!-- 01110 -->
+    </string-array>
+
 </resources>

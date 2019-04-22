@@ -1,20 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/entries__gestures"
-        android:entryValues="@array/values__zero_to_four"
-        android:key="pref_key__gesture_swipe_down"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/title__gesture_swipe_down" />
+<PreferenceScreen>
 
-    <ListPreference
-        android:defaultValue="1"
-        android:entries="@array/entries__gestures"
-        android:entryValues="@array/values__zero_to_four"
-        android:key="pref_key__gesture_swipe_up"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/title__gesture_swipe_up" />
 </PreferenceScreen>

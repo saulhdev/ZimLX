@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_enable_minus_one"
+        android:summary="@string/pref_show_google_now_summary"
+        android:title="@string/title_show_google_app" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="false"
+        android:key="pref_smartspace"
+        android:title="@string/title__desktop_smartspace" />
+
+    <org.zimmob.zimlx.preferences.PreviewPreference
+        android:key="pref_smartspace_preview"
+        android:dependency="pref_smartspace"
+        app:previewLayout="@layout/smartspace_preview" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_use_pill_qsb"
+        android:key="pref_smartspace_time"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_time" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_use_pill_qsb"
+        android:key="pref_smartspace_date"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_date" />
+
+    <SwitchPreference
+        android:key="pref_use_pill_qsb"
+        android:dependency="pref_smartspace"
+        android:title="@string/title_use_pill_qsb"
+        android:disableDependentsState="true"
+        android:defaultValue="false" />
+
+    <PreferenceCategory
+        android:key="prefCat_homewidgetWeather"
+        android:title="@string/category__behavior_weather">
+
+        <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
+            android:key="pref_smartspace_widget_provider"
+            android:dependency="pref_smartspace"
+            android:title="@string/title__behavior_widget_provider"
+            android:summary="%s" />
+
+        <org.zimmob.zimlx.preferences.OWMEditTextPreference
+            android:defaultValue="@string/default_owm_key"
+            android:dependency="pref_smartspace_widget_provider"
+            android:key="pref_weatherApiKey"
+            android:title="@string/title__behavior_weather_api_key" />
+
+        <org.zimmob.zimlx.preferences.OWMEditTextPreference
+            android:defaultValue="@string/default_city"
+            android:dependency="pref_smartspace_widget_provider"
+            android:key="pref_weather_city"
+            android:title="@string/title__behavior_weather_city" />
+
+        <ListPreference
+            android:defaultValue="metric"
+            android:dependency="pref_smartspace_widget_provider"
+            android:entries="@array/unitsTexts"
+            android:entryValues="@array/unitsValues"
+            android:key="pref_weather_units"
+            android:summary="%s"
+            android:title="@string/title__behavior_weather_units" />
+
+        <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
+            android:key="pref_smartspace_event_provider"
+            android:dependency="pref_use_pill_qsb"
+            android:title="@string/title__behavior_event_provider"
+            android:summary="%s" />
+    </PreferenceCategory>
+</PreferenceScreen>

@@ -6,6 +6,7 @@ public class ZimFlags {
     public static final String MINIBAR_COLOR = "pref_key__minibar_color";
     public static final String MINIBAR_ENABLE = "pref_key__minibar_enable";
     public static final String MINIBAR_ITEMS = "pref_key__minibar_items";
+    public static final String MINIBAR_ITEM_VALUES = "pref_key__minibar_items";
 
     public static final String GESTURES_SWIPE_UP = "pref_key__gesture_swipe_up";
     public static final String GESTURES_SWIPE_DOWN = "pref_key__gesture_swipe_down";
@@ -33,4 +34,5 @@ public class ZimFlags {
     public static final String APPDRAWER_SHOW_PREDICTIONS = "pref_show_predictions";
     public static final String APPDRAWER_SORT_MODE = "pref_key__sort_mode";
     public static final String APPDRAWER_GLOBAL_SEARCH = "pref_key__global_search";
+    public static final String APPDRAWER_STYLE = "pref_key__drawer_style";
 }

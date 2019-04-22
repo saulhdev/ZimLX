@@ -46,6 +46,11 @@
                 android:theme="@style/HomeScreenElementTheme"
                 launcher:pageIndicator="@+id/page_indicator" />
 
+            <View
+                android:layout_width="0dp"
+                android:layout_height="10dp"
+                android:id="@+id/workspace_blocked_row" />
+
             <include
                 android:id="@+id/overview_panel"
                 layout="@layout/overview_panel"

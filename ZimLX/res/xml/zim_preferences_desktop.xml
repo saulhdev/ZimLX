@@ -17,33 +17,6 @@
         android:title="@string/title__desktop_overlap" />
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:disableDependentsState="false"
-        android:key="pref_smartspace"
-        android:title="@string/title__desktop_smartspace" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:dependency="pref_use_pill_qsb"
-        android:key="pref_smartspace_time"
-        android:summary="@string/in_smartspace"
-        android:title="@string/smartspace_time" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:dependency="pref_use_pill_qsb"
-        android:key="pref_smartspace_date"
-        android:summary="@string/in_smartspace"
-        android:title="@string/smartspace_date" />
-
-    <SwitchPreference
-        android:key="pref_use_pill_qsb"
-        android:dependency="pref_smartspace"
-        android:title="@string/title_use_pill_qsb"
-        android:disableDependentsState="true"
-        android:defaultValue="false" />
-
-    <SwitchPreference
         android:defaultValue="true"
         android:key="pref_add_icon_to_home"
         android:persistent="true"

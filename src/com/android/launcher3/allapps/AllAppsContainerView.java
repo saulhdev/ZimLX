@@ -93,6 +93,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final Point mFastScrollerOffset = new Point();
     private SpringAnimationHandler mSpringAnimationHandler;
 
+    //public ZimPreferences pref;
+    //public int drawerStyle;
+
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -119,6 +122,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         //mSpringAnimationHandler = mAH[0].getSpringAnimationHandler();
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
+        //pref = Utilities.getZimPrefs(context);
+        //drawerStyle = pref.getDrawerStyle();
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);
         addSpringView(R.id.all_apps_tabs_view_pager);
@@ -230,6 +235,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
+    public AllAppsPaged getPagedView() {
+        return mAH[AdapterHolder.MAIN].pagedView;
+    }
+
     /**
      * Resets the state of AllApps.
      */
@@ -314,7 +323,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        //if(drawerStyle!=0){
         super.dispatchDraw(canvas);
+        //}
 
         if (mNavBarScrimHeight > 0) {
             canvas.drawRect(0, getHeight() - mNavBarScrimHeight, getWidth(), getHeight(),
@@ -365,7 +376,22 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         View oldView = getRecyclerViewContainer();
         int index = indexOfChild(oldView);
         removeView(oldView);
+        /*int layout;
+        switch (drawerStyle) {
+            case Config.DRAWER_LAYOUT_HORIZONTAL:
+                layout = R.layout.all_apps_paged;
+                break;
+            case Config.DRAWER_LAYOUT_VERTICAL:
+                layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+                break;
+
+            default:
+                layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+                break;
+        }*/
+
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
+
         View newView = LayoutInflater.from(getContext()).inflate(layout, this, false);
         addView(newView, index);
         if (showTabs) {
@@ -521,6 +547,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         final AlphabeticalAppsList appsList;
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
+        AllAppsPaged pagedView;
         boolean verticalFadingEdge;
 
         AdapterHolder(boolean isWork) {
@@ -532,6 +559,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
             appsList.updateItemFilter(matcher);
+            //if(drawerStyle!=0){
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
             recyclerView.setApps(appsList, mUsingTabs);
@@ -544,12 +572,21 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             recyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
+            //}
+            /*else{
+                pagedView = (AllAppsPaged)rv;
+                pagedView.setApps(appsList,false);
+            }*/
             applyPadding();
         }
 
         void applyPadding() {
             if (recyclerView != null) {
                 recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+            }
+
+            if (pagedView != null) {
+                pagedView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
             }
         }
 

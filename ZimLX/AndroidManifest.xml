@@ -26,6 +26,9 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
 
+    <!-- For weather / sunset/-rise -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+
     <application
         android:name="org.zimmob.zimlx.ZimApp"
         tools:replace="android:appComponentFactory"
@@ -58,6 +61,24 @@
             </intent-filter>
         </activity>
 
+
+        <activity
+            android:name="org.zimmob.zimlx.FakeLauncher"
+            android:enabled="false">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:autoRemoveFromRecents="true"
+            android:label="@string/derived_app_name"
+            android:name="org.zimmob.zimlx.settings.ui.SettingsSearchActivity"
+            android:theme="@style/SettingsTheme.V2"
+            android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity" />
         <receiver
             android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
             android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">

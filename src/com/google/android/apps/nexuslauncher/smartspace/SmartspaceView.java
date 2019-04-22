@@ -7,6 +7,9 @@ import android.content.ContentUris;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Paint;
+import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Handler;
@@ -30,15 +33,12 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
-import com.android.launcher3.popup.PopupContainerWithArrow;
-import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.DynamicIconProvider;
 import com.google.android.apps.nexuslauncher.graphics.IcuDateTextView;
 
 import org.zimmob.zimlx.ZimPreferences;
-
-import java.util.ArrayList;
+import org.zimmob.zimlx.ZimUtilsKt;
 
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener, View.OnClickListener, View.OnLongClickListener, Runnable {
     private final TextPaint dB;
@@ -233,16 +233,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
         }
     }
 
+
+    private OnLongClickListener co() {
+        return ds ? this : null;
+    }
     private String cn() {
         final boolean b = true;
         final SmartspaceCard dp = dq.dP;
         return dp.cC(TextUtils.ellipsize(dp.cB(b), dB, getWidth() - getPaddingLeft() - getPaddingRight() - getResources().getDimensionPixelSize(R.dimen.smartspace_horizontal_padding) - dB.measureText(dp.cA(b)), TextUtils.TruncateAt.END).toString());
     }
-
-    private OnLongClickListener co() {
-        return ds ? this : null;
-    }
-
     private void cs() {
         final int indexOfChild = indexOfChild(mSmartspaceContent);
         removeView(mSmartspaceContent);
@@ -258,6 +257,15 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     public void cq() {
+        ds = dp.cY();
+        if (dq != null) {
+            cr(dq);
+        } else {
+            Log.d("SmartspaceView", "onGsaChanged but no data present");
+        }
+    }
+
+    public void onGsaChanged() {
         ds = dp.cY();
         if (dq != null) {
             cr(dq);
@@ -324,14 +332,28 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     }
 
     public boolean onLongClick(final View view) {
-        final boolean b = true;
-        final Launcher launcher = Launcher.getLauncher(getContext());
-        final PopupContainerWithArrow popupContainerWithArrow = (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(R.layout.popup_container, launcher.getDragLayer(), false);
-        popupContainerWithArrow.setVisibility(View.INVISIBLE);
-        launcher.getDragLayer().addView(popupContainerWithArrow);
-        ArrayList<SystemShortcut> list = new ArrayList<>(1);
-        list.add(new SmartspacePreferencesShortcut());
-        return b;
+        TextView textView;
+        if (mClockView == null || mClockView.getVisibility() != View.VISIBLE) {
+            textView = mTitleText;
+        } else {
+            textView = mClockView;
+        }
+        if (view == null) {
+            return false;
+        }
+        Rect rect = new Rect();
+        Launcher launcher = Launcher.getLauncher(getContext());
+        launcher.getDragLayer().getDescendantRectRelativeToSelf(view, rect);
+        Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
+        float tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        RectF rectF = new RectF();
+        float exactCenterX = rect.exactCenterX();
+        rectF.right = exactCenterX;
+        rectF.left = exactCenterX;
+        rectF.top = 0.0f;
+        rectF.bottom = ((float) rect.bottom) - tmp;
+        ZimUtilsKt.openPopupMenu(this, rectF, new SmartspacePreferencesShortcut());
+        return true;
     }
 
     public void onPause() {

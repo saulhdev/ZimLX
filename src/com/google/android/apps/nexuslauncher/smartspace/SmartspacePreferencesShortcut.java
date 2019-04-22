@@ -1,30 +1,28 @@
 package com.google.android.apps.nexuslauncher.smartspace;
 
+import android.content.Intent;
 import android.view.View;
 
-import com.android.launcher3.AbstractFloatingView;
-import com.android.launcher3.BaseDraggingActivity;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.popup.SystemShortcut;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+import com.android.launcher3.views.OptionsPopupView;
 
-public class SmartspacePreferencesShortcut extends SystemShortcut {
-    SmartspacePreferencesShortcut() {
-        super(R.drawable.ic_smartspace_preferences, R.string.smartspace_preferences);
+import org.zimmob.zimlx.settings.ui.SettingsActivity;
+
+public class SmartspacePreferencesShortcut extends OptionsPopupView.OptionItem {
+
+    public SmartspacePreferencesShortcut() {
+        super(R.string.smartspace_preferences, R.drawable.ic_smartspace_preferences, LauncherLogProto.ControlType.SETTINGS_BUTTON,
+                SmartspacePreferencesShortcut::startSmartspacePreferences);
     }
 
-    public View.OnClickListener getOnClickListener(final Launcher launcher, ItemInfo itemInfo) {
-        return new View.OnClickListener() {
-            public void onClick(final View view) {
-                SmartspaceController.get(view.getContext()).cZ();
-                AbstractFloatingView.closeAllOpenViews(launcher);
-            }
-        };
-    }
-
-    @Override
-    public View.OnClickListener getOnClickListener(BaseDraggingActivity activity, ItemInfo itemInfo) {
-        return null;
+    private static boolean startSmartspacePreferences(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.startActivitySafely(view, new Intent(launcher, SettingsActivity.class)
+                .putExtra(SettingsActivity.SubSettingsFragment.TITLE, launcher.getString(R.string.home_widget))
+                .putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, R.xml.zim_preferences_smartspace)
+                .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, true), null);
+        return true;
     }
 }

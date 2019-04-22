@@ -441,18 +441,19 @@
     <string name="about">About</string>
     <!-- PREFERENCES GENERAL  -->
     <string name="pref_category__interfaces">Interfaces</string>
-    <string name="pref_category__inputs">Gestures</string>
+    <string name="pref_category__inputs">Gestures </string>
     <string name="pref_category__others">Others</string>
 
     <string name="pref_title__desktop">Desktop</string>
     <string name="pref_title__dock">Dock</string>
     <string name="pref_title__app_drawer">App drawer</string>
     <string name="pref_title__theme">Theme</string>
-    <string name="pref_title__notifications">Notifications</string>
+    <string name="pref_title__notifications">Gestures and Notifications</string>
     <string name="pref_title__developer">Developer options</string>
     <string name="pref_title__gestures">Gestures</string>
     <string name="pref_title__advanced">Advanced</string>
     <string name="pref_title__behavior">Behavior</string>
+    <string name="pref_title__smartspace">Home Widget</string>
 
     <string name="pref_summary__app_drawer">Customize your app drawer</string>
     <string name="pref_summary__dock">Customize your dock</string>
@@ -464,6 +465,7 @@
     <string name="pref_summary__about">More information about Zim Launcher</string>
     <string name="pref_summary__inputs">Configure gestures</string>
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
+    <string name="pref_summary__smartspace">Date,time and searchbar</string>
 
     <string name="pref_title__language">Language</string>
     <string name="pref_title__folder_badge_count">Show folder badge Count</string>
@@ -509,7 +511,14 @@
     <string name="summary__sort_mode">Choose the sort mode</string>
 
     <!-- PREFERENCES BEHAVIOR -->
-
+    <string name="title__behavior_weather_api_key">API key</string>
+    <string name="title__behavior_widget_provider">Weather source</string>
+    <string name="title__behavior_weather_units">Temperature unit</string>
+    <string name="title__behavior_weather_city">City</string>
+    <string name="title__behavior_event_provider">Calendar source</string>
+    <string name="category__behavior_weather">Weather</string>
+    <string name="default_city">San Salvador, SV</string>
+    <string name="default_owm_key" translatable="false">394f793739ca24305d2dae773ea16f7b</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
@@ -525,11 +534,13 @@
     <string name="title__theme_dark_theme">Force dark theme</string>
     <string name="title__theme_folder_shape">Folder Shape</string>
     <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
-    <string name="theme_light">Light</string>
-    <string name="theme_dark">Dark</string>
-    <string name="theme_black">Black</string>
     <string name="theme_material">Material</string>
-
+    <string name="theme_light">Light</string>
+    <string name="theme_dark_text">Light with dark text</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_dark_text">Dark with dark text</string>
+    <string name="theme_black">Black</string>
+    <string name="theme_black_dark_text">Black with dark text</string>
     <!-- PREFERENCES GESTURES -->
     <string name="gestures_none">None</string>
     <string name="gestures_open_drawer">Open App drawer</string>
@@ -542,6 +553,8 @@
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
     <string name="icon_badging_title">Enable Notifications</string>
+    <string name="pref_category__notifications">Notifications</string>
+    <string name="pref_category__gestures">Gestures</string>
 
     <string name="pref_title__notification_background_color">Notification Background Color</string>
     <string name="pref_title__notification_count">Show Notification Count</string>
@@ -603,6 +616,25 @@
     <string name="title_folder_square">Square</string>
     <string name="title_folder_square_bg">Square Shadow</string>
 
+    <string name="smartspace_time_24_h">24-hour format</string>
+    <string name="weather_provider_disabled">Disabled</string>
+    <string name="weather_provider_widget">Google app</string>
+    <string name="weather_provider_owm">OpenWeatherMap</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
+    <string name="weather_provider_pe">PixelExperience</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+    <string name="weather_provider_testing">Debug</string>
+
+    <string name="units_metric">Celsius</string>
+    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_kelvin">Kelvin</string>
+    <string name="units_rakine">Rankine</string>
+    <string name="units_newton">Newton</string>
+    <string name="units_delisle">Delisle</string>
+    <string name="units_reaumur">Réaumur</string>
+    <string name="units_romer">Rømer</string>
+
+    <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
 
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="error_no_browser">No activity found to handle URLs</string>
@@ -637,4 +669,20 @@
     <string name="zim_accent">Accent Color</string>
     <string name="color_system_accent">System accent</string>
     <string name="reset_to_default">Reset to default</string>
+
+    <string name="search_no_results">Nothing found</string>
+    <string name="search_menu">Find settings</string>
+    <string name="change_default_home">Set as home screen</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+
+    <string name="blur_wallpaper_failed">Something went wrong</string>
+    <string name="blur_oom">Something went wrong</string>
+    <string name="advanced_settings">More %s settings</string>
+    <string name="search_pref_title">Search</string>
+
+    <string name="theme_auto">Follow wallpaper</string>
+    <string name="theme_auto_night_mode">Follow system theme</string>
 </resources>

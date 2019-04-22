@@ -23,20 +23,17 @@ import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityOptions;
-import android.app.SearchManager;
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetManager;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentCallbacks2;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.SharedPreferences;
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener;
 import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
@@ -254,6 +251,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private View mLauncherView;
     private DragController mDragController;
+    private View mQsbContainer;
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
     // UI and state for the overview panel
@@ -439,17 +437,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-
-    @Thunk
-    void setOrientation() {
-        if (mRotationEnabled) {
-            unlockScreenOrientation(true);
-        } else {
-            setRequestedOrientation(
-                    ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
-        }
-    }
-
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();
@@ -523,13 +510,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-
     @NonNull
     public final DrawerLayout getDrawerLayout() {
         return findViewById(R.id.drawer_layout);
     }
-
-
 
     /**
      * Call this after onCreate to set or clear overlay.
@@ -692,12 +676,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         "returned from the widget configuration activity.");
                 result = RESULT_CANCELED;
                 completeTwoStageWidgetDrop(result, appWidgetId, requestArgs);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        getStateManager().goToState(NORMAL);
-                    }
-                };
+                final Runnable onComplete = () -> getStateManager().goToState(NORMAL);
 
                 mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
@@ -712,12 +691,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                         mWorkspace.getScreenWithId(requestArgs.screenId);
 
                 dropLayout.setDropPending(true);
-                final Runnable onComplete = new Runnable() {
-                    @Override
-                    public void run() {
-                        completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
-                        dropLayout.setDropPending(false);
-                    }
+                final Runnable onComplete = () -> {
+                    completeTwoStageWidgetDrop(resultCode, appWidgetId, requestArgs);
+                    dropLayout.setDropPending(false);
                 };
                 mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
@@ -1001,10 +977,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return handled;
     }
 
-    private String getTypedText() {
-        return mDefaultKeySsb.toString();
-    }
-
     @Override
     public void clearTypedText() {
         mDefaultKeySsb.clear();
@@ -1050,6 +1022,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragLayer = findViewById(R.id.drag_layer);
         mFocusHandler = mDragLayer.getFocusIndicatorHelper();
         mWorkspace = mDragLayer.findViewById(R.id.workspace);
+        if (Utilities.getZimPrefs(this).getUsePillQsb()) {
+            mQsbContainer = mDragLayer.findViewById(R.id.workspace_blocked_row);
+        }
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);
@@ -1286,16 +1261,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * onto one of the overview panel buttons.
      */
     void showOverviewMode(boolean animated, boolean requestButtonFocus) {
-        Runnable postAnimRunnable = null;
         if (requestButtonFocus) {
-            postAnimRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Hitting the menu button when in touch mode does not trigger touch mode to
-                    // be disabled, so if requested, force focus on one of the overview panel
-                    // buttons.
-                    mOverviewPanel.requestFocusFromTouch();
-                }
+            Runnable postAnimRunnable = () -> {
+                // Hitting the menu button when in touch mode does not trigger touch mode to
+                // be disabled, so if requested, force focus on one of the overview panel
+                // buttons.
+                mOverviewPanel.requestFocusFromTouch();
             };
         }
         mWorkspace.setVisibility(View.VISIBLE);
@@ -1332,6 +1303,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public Hotseat getHotseat() {
         return mHotseat;
+    }
+
+    public View getQsbContainer() {
+        return mQsbContainer;
     }
 
     public View getHotseatSearchBox() {
@@ -1522,49 +1497,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mStateManager.goToState(NORMAL);
     }
 
-    /**
-     * Starts the global search activity. This code is a copied from SearchManager
-     */
-    public void startGlobalSearch(String initialQuery,
-                                  boolean selectInitialQuery, Bundle appSearchData, Rect sourceBounds) {
-        final SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        ComponentName globalSearchActivity = searchManager.getGlobalSearchActivity();
-        if (globalSearchActivity == null) {
-            Log.w(TAG, "No global search activity found.");
-            return;
-        }
-        Intent intent = new Intent(SearchManager.INTENT_ACTION_GLOBAL_SEARCH);
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        intent.setComponent(globalSearchActivity);
-        // Make sure that we have a Bundle to put source in
-        if (appSearchData == null) {
-            appSearchData = new Bundle();
-        } else {
-            appSearchData = new Bundle(appSearchData);
-        }
-        // Set source to package name of app that starts global search if not set already.
-        if (!appSearchData.containsKey("source")) {
-            appSearchData.putString("source", getPackageName());
-        }
-        intent.putExtra(SearchManager.APP_DATA, appSearchData);
-        if (!TextUtils.isEmpty(initialQuery)) {
-            intent.putExtra(SearchManager.QUERY, initialQuery);
-        }
-        if (selectInitialQuery) {
-            intent.putExtra(SearchManager.EXTRA_SELECT_QUERY, selectInitialQuery);
-        }
-        intent.setSourceBounds(sourceBounds);
-        try {
-            startActivity(intent);
-        } catch (ActivityNotFoundException ex) {
-            Log.e(TAG, "Global search activity not found: " + globalSearchActivity);
-        }
-    }
-
-
-
-
     @Override
     public boolean onSearchRequested() {
         startSearch(null, false, null, true);
@@ -1603,12 +1535,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!addFlowHandler.startConfigActivity(this, appWidgetId, info, REQUEST_CREATE_APPWIDGET)) {
             // If the configuration flow was not started, add the widget
 
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    // Exit spring loaded mode if necessary after adding the widget
-                    mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-                }
+            Runnable onComplete = () -> {
+                // Exit spring loaded mode if necessary after adding the widget
+                mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
@@ -1867,7 +1796,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-
     @Override
     public void onTrimMemory(int level) {
         super.onTrimMemory(level);
@@ -1936,8 +1864,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return false;
         }
     }
-
-
 
     /**
      * Implementation of the method from LauncherModel.Callbacks.
@@ -2133,11 +2059,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (newItemsScreenId > -1) {
                 long currentScreenId = mWorkspace.getScreenIdForPageIndex(mWorkspace.getNextPage());
                 final int newScreenIndex = mWorkspace.getPageIndexForScreenId(newItemsScreenId);
-                final Runnable startBounceAnimRunnable = new Runnable() {
-                    public void run() {
-                        anim.playTogether(bounceAnims);
-                        anim.start();
-                    }
+                final Runnable startBounceAnimRunnable = () -> {
+                    anim.playTogether(bounceAnims);
+                    anim.start();
                 };
                 if (newItemsScreenId != currentScreenId) {
                     // We post the animation slightly delayed to prevent slowdowns
@@ -2486,11 +2410,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     @Override
     public void bindWorkspaceComponentsRemoved(final ItemInfoMatcher matcher) {
-        Runnable r = new Runnable() {
-            public void run() {
-                bindWorkspaceComponentsRemoved(matcher);
-            }
-        };
+        Runnable r = () -> bindWorkspaceComponentsRemoved(matcher);
         if (waitUntilResume(r)) {
             return;
         }
@@ -2526,11 +2446,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
             } else {
-                mHandler.postDelayed(new Runnable() {
-                    public void run() {
-                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
-                    }
-                }, RESTORE_SCREEN_ORIENTATION_DELAY);
+                mHandler.postDelayed(() -> setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED), RESTORE_SCREEN_ORIENTATION_DELAY);
             }
         }
     }
@@ -2680,7 +2596,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         recreate();
     }
 
-
     /**
      * The different states that Launcher can be in.
      */
@@ -2695,21 +2610,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public interface OnResumeCallback {
 
         void onLauncherResume();
-    }
-
-    public interface CustomContentCallbacks {
-        // Custom content is completely shown. {@code fromResume} indicates whether this was caused
-        // by a onResume or by scrolling otherwise.
-        void onShow(boolean fromResume);
-
-        // Custom content is completely hidden
-        void onHide();
-
-        // Custom content scroll progress changed. From 0 (not showing) to 1 (fully showing).
-        void onScrollProgressChanged(float progress);
-
-        // Indicates whether the user is allowed to scroll away from the custom content.
-        boolean isScrollingAllowed();
     }
 
     public interface LauncherOverlay {
@@ -2751,15 +2651,4 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    private class RotationPrefChangeHandler implements OnSharedPreferenceChangeListener {
-
-        @Override
-        public void onSharedPreferenceChanged(
-                SharedPreferences sharedPreferences, String key) {
-            if (Utilities.ALLOW_ROTATION_PREFERENCE_KEY.equals(key)) {
-                // Recreate the activity so that it initializes the rotation preference again.
-                recreate();
-            }
-        }
-    }
 }

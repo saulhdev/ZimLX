@@ -45,7 +45,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     private FastItemAdapter<Item> _adapter;
     private AppSettings appSettings;
     private Launcher mLauncher;
-
+    ZimPreferences prefs;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,7 +55,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         ButterKnife.bind(this);
 
         setSupportActionBar(toolbar);
-        ZimPreferences prefs = Utilities.getZimPrefs(this);
+        prefs = Utilities.getZimPrefs(this);
         toolbar.setBackgroundColor(prefs.getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
@@ -78,12 +78,12 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
 
-        boolean minBarEnable = appSettings.getMinibarEnable();
+        boolean minBarEnable = prefs.getMinibarEnable();
         _enableSwitch.setChecked(minBarEnable);
         _enableSwitch.setText(minBarEnable ? R.string.on : R.string.off);
         _enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.setText(isChecked ? R.string.on : R.string.off);
-            appSettings.setMinibarEnable(isChecked);
+            //prefs.setMinibarEnable(isChecked);
             mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);

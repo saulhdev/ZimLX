@@ -19,26 +19,38 @@ package org.zimmob.zimlx
 
 import android.R
 import android.content.Context
+import android.content.pm.PackageManager
 import android.content.res.ColorStateList
+import android.content.res.Configuration
 import android.graphics.RectF
 import android.os.Handler
 import android.os.Looper
+import android.util.Property
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
+import androidx.dynamicanimation.animation.FloatPropertyCompat
 import com.android.launcher3.*
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.math.ceil
+import kotlin.math.roundToInt
+import kotlin.reflect.KMutableProperty0
 
 
 val Context.launcherAppState get() = LauncherAppState.getInstance(this)
 val Context.zimPrefs get() = Utilities.getZimPrefs(this)
+
+val Context.hasStoragePermission
+    get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
+            this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
 
 @ColorInt
 fun Context.getColorAccent(): Int {
@@ -58,6 +70,21 @@ var View.isVisible: Boolean
     set(value) {
         visibility = if (value) View.VISIBLE else View.GONE
     }
+
+
+fun Float.round() = roundToInt().toFloat()
+
+fun Float.ceilToInt() = ceil(this).toInt()
+
+fun Double.ceilToInt() = ceil(this).toInt()
+
+val Configuration.usingNightMode get() = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {
+    val tmp = ArrayList<T>()
+    tmp.addAll(this)
+    for (element in tmp) action(element)
+}
 
 fun Switch.applyColor(color: Int) {
     val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
@@ -122,6 +149,20 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
     }
 }
 
+fun Context.getBooleanAttr(attr: Int): Boolean {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getBoolean(0, false)
+    ta.recycle()
+    return value
+}
+
+fun Context.getDimenAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val size = ta.getDimensionPixelSize(0, 0)
+    ta.recycle()
+    return size
+}
+
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
 
 fun ViewGroup.getAllChilds(list: MutableList<View>) {
@@ -163,6 +204,24 @@ inline fun ViewGroup.forEachChildReversedIndexed(action: (View, Int) -> Unit) {
     val count = childCount
     for (i in (0 until count).reversed()) {
         action(getChildAt(i), i)
+    }
+}
+
+class KFloatPropertyCompat(private val property: KMutableProperty0<Float>, name: String) : FloatPropertyCompat<Any>(name) {
+
+    override fun getValue(`object`: Any) = property.get()
+
+    override fun setValue(`object`: Any, value: Float) {
+        property.set(value)
+    }
+}
+
+class KFloatProperty(private val property: KMutableProperty0<Float>, name: String) : Property<Any, Float>(Float::class.java, name) {
+
+    override fun get(`object`: Any) = property.get()
+
+    override fun set(`object`: Any, value: Float) {
+        property.set(value)
     }
 }
 

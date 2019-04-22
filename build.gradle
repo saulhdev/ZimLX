@@ -190,6 +190,7 @@ afterEvaluate {
 repositories {
     google()
     jcenter()
+    maven { url 'https://jitpack.io' }
     mavenCentral()
 }
 tasks.matching { task -> task.name.matches('.*generate.*Resources') }.all {
@@ -213,6 +214,7 @@ dependencies {
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation 'com.github.KwabenBerko:OpenWeatherMap-Android-Library:2.0.1'
     implementation 'com.afollestad.material-dialogs:core:2.0.3'
     implementation 'com.mikepenz:fastadapter:3.2.6@aar'
     implementation 'com.mikepenz:fastadapter-commons:3.2.6@aar'
@@ -221,6 +223,9 @@ dependencies {
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
     implementation 'com.jaredrummler:colorpicker:1.0.1'
 
+
+    implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
+    implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
 
     // Tools

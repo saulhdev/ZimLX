@@ -1,6 +1,8 @@
 package org.zimmob.zimlx
 
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.pageindicators.WorkspacePageIndicator
+import org.zimmob.zimlx.blur.BlurWallpaperProvider
 
 class ZimPreferencesChangeCallback(private val launcher: ZimLauncher) {
 
@@ -24,7 +26,27 @@ class ZimPreferencesChangeCallback(private val launcher: ZimLauncher) {
         launcher.refreshGrid()
     }
 
+    fun updateBlur() {
+        BlurWallpaperProvider.getInstance(launcher).updateAsync()
+    }
+
     fun resetAllApps() {
         launcher.mAllAppsController.reset()
+    }
+
+    fun updatePageIndicator() {
+        val indicator = launcher.workspace.pageIndicator
+        if (indicator is WorkspacePageIndicator) {
+            indicator.updateLineHeight()
+        }
+    }
+
+
+    fun updateSmartspaceProvider() {
+        launcher.zimApp.smartspace.onProviderChanged()
+    }
+
+    fun updateSmartspace() {
+        launcher.refreshGrid()
     }
 }

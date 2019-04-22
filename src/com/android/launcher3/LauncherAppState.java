@@ -50,6 +50,7 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SettingsObserver mNotificationBadgingObserver;
+    private Launcher mLauncher;
 
     public static LauncherAppState getInstance(final Context context) {
         if (INSTANCE == null) {
@@ -140,9 +141,14 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
+        mLauncher = launcher;
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         return mModel;
+    }
+
+    public Launcher getLauncher() {
+        return mLauncher;
     }
 
     public IconCache getIconCache() {

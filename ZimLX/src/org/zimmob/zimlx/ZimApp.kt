@@ -21,9 +21,11 @@ import android.app.Activity
 import android.app.Application
 import android.content.Context
 import android.os.Bundle
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController
 
 class ZimApp : Application() {
     val activityHandler = ActivityHandler()
+    val smartspace by lazy { ZimSmartspaceController(this) }
 
     class ActivityHandler : ActivityLifecycleCallbacks {
 

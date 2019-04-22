@@ -1,34 +1,60 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <com.android.launcher3.views.ButtonPreference
-        android:key="pref_icon_badging"
-        android:persistent="false"
-        android:title="@string/icon_badging_title"
-        android:widgetLayout="@layout/notification_pref_warning">
-        <intent android:action="android.settings.NOTIFICATION_SETTINGS">
-            <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
-            <extra
-                android:name=":settings:fragment_args_key"
-                android:value="notification_badging" />
-        </intent>
-    </com.android.launcher3.views.ButtonPreference>
+    <PreferenceCategory
+        android:icon="@drawable/ic_notifications_paused"
+        android:title="@string/pref_category__notifications">
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_notification_count"
-        android:persistent="true"
-        android:dependency="pref_icon_badging"
-        android:title="@string/pref_title__notification_count" />
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_key__folder_badge_count"
-        android:persistent="true"
-        android:title="@string/pref_title__folder_badge_count" />
-    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-        android:defaultValue="@color/notification_background"
-        android:key="pref_notification_background"
-        android:title="@string/pref_title__notification_background_color"
-        app:cpv_dialogTitle="@string/pref_title__notification_background_color"
-        app:cpv_showAlphaSlider="true" />
+        <com.android.launcher3.views.ButtonPreference
+            android:key="pref_icon_badging"
+            android:persistent="false"
+            android:title="@string/icon_badging_title"
+            android:widgetLayout="@layout/notification_pref_warning">
+            <intent android:action="android.settings.NOTIFICATION_SETTINGS">
+                <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
+                <extra
+                    android:name=":settings:fragment_args_key"
+                    android:value="notification_badging" />
+            </intent>
+        </com.android.launcher3.views.ButtonPreference>
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_notification_count"
+            android:persistent="true"
+            android:dependency="pref_icon_badging"
+            android:title="@string/pref_title__notification_count" />
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="pref_key__folder_badge_count"
+            android:persistent="true"
+            android:title="@string/pref_title__folder_badge_count" />
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/notification_background"
+            android:key="pref_notification_background"
+            android:title="@string/pref_title__notification_background_color"
+            app:cpv_dialogTitle="@string/pref_title__notification_background_color"
+            app:cpv_showAlphaSlider="true" />
+
+    </PreferenceCategory>
+    <PreferenceCategory
+        android:title="@string/pref_category__gestures"
+        android:icon="@drawable/ic_gesture">
+        <ListPreference
+            android:defaultValue="0"
+            android:entries="@array/entries__gestures"
+            android:entryValues="@array/values__zero_to_four"
+            android:key="pref_key__gesture_swipe_down"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/title__gesture_swipe_down" />
+
+        <ListPreference
+            android:defaultValue="1"
+            android:entries="@array/entries__gestures"
+            android:entryValues="@array/values__zero_to_four"
+            android:key="pref_key__gesture_swipe_up"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/title__gesture_swipe_up" />
+    </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

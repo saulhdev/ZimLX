@@ -5,11 +5,15 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.util.TypedValue
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.settings.GridSize
+import org.zimmob.zimlx.smartspace.SmartspaceDataWidget
+import org.zimmob.zimlx.theme.ThemeManager
+import org.zimmob.zimlx.util.Temperature
 import org.zimmob.zimlx.util.ZimFlags
 import java.io.File
 import java.util.*
@@ -43,6 +47,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
+    private val updateBlur = { updateBlur() }
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
@@ -56,6 +61,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val Theme by StringPref(ZimFlags.THEME_COLOR, "0", recreate)
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
+    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
 
     // Desktop
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
@@ -68,6 +74,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, recreate)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
+    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
+    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
+    val enablePhysics get() = !lowPerformanceMode
+
+    val defaultBlurStrength = TypedValue().apply {
+        context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
+    }
+    val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
+    var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
+
     // Dock
     val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
     val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
@@ -78,6 +94,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
     val hideHotseat by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
     val hotseatShowPageIndicator by BooleanPref(ZimFlags.HOTSEAT_SHOW_PAGE_INDICATOR, true)
+    val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
 
     fun numHotseatIcons(default: String): String {
         return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
@@ -98,6 +115,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val showPredictionApps by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, recreate)
     val allAppsIconPaddingScale by FloatPref(ZimFlags.APPDRAWER_ALL_APPS_ICON_PADDING_SCALE, 1f)
     val useGlobalSearch by BooleanPref(ZimFlags.APPDRAWER_GLOBAL_SEARCH, false, recreate)
+    //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
+
+    //smartspace
+    var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
+    var weatherProvider by StringPref("pref_smartspace_widget_provider",
+            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var eventProvider by StringPref("pref_smartspace_event_provider",
+            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
+    var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
+    val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
+            Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
 
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
@@ -153,6 +182,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun refreshGrid() {
         onChangeCallback?.refreshGrid()
+    }
+
+    private fun updateBlur() {
+        onChangeCallback?.updateBlur()
+    }
+
+    private fun updateSmartspaceProvider() {
+        onChangeCallback?.updateSmartspaceProvider()
+    }
+
+    private fun updateSmartspace() {
+        onChangeCallback?.updateSmartspace()
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
@@ -326,6 +367,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Int>(key, defaultValue, onChange) {
+        override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+
+        override fun onSetValue(value: Int) {
+            edit { putString(getKey(), "$value") }
+        }
+    }
     open inner class IntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
             PrefDelegate<Int>(key, defaultValue, onChange) {
         override fun onGetValue(): Int = sharedPrefs.getInt(getKey(), defaultValue)

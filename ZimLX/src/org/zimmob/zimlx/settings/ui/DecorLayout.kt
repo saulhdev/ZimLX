@@ -2,154 +2,319 @@ package org.zimmob.zimlx.settings.ui
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.graphics.Rect
-import android.view.*
-import android.widget.FrameLayout
+import android.graphics.*
+import android.graphics.drawable.ColorDrawable
+import android.os.Environment
+import android.util.AttributeSet
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewTreeObserver
+import android.view.Window
+import com.android.launcher3.Insettable
+import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
+import com.google.android.material.snackbar.Snackbar
+import org.zimmob.zimlx.blur.BlurDrawable
+import org.zimmob.zimlx.blur.BlurWallpaperProvider
+import org.zimmob.zimlx.getBooleanAttr
+import org.zimmob.zimlx.getColorAttr
+import org.zimmob.zimlx.getDimenAttr
+import org.zimmob.zimlx.util.parents
+import java.io.File
 
 @SuppressLint("ViewConstructor")
-class DecorLayout(context: Context, private val window: Window) : FrameLayout(context) {
+class DecorLayout(context: Context, private val window: Window) : InsettableFrameLayout(context, null),
+        View.OnClickListener, BlurWallpaperProvider.Listener {
 
-    private val floatingInsets = Rect()
-    private val frameOffsets = Rect()
+    private var tapCount = 0
 
-    private val contentContainer: View
+    private val contentFrame: View
     private val actionBarContainer: View
-    private val statusBarBackground: View
-    private val navigationBarBackground: View
-    private val navigationBarDivider: View
-    private val navigationBarDividerSize =
-            context.resources.getDimensionPixelSize(R.dimen.nav_bar_divider_size)
+    private val toolbar: View
+    private val largeTitle: View
+    private val toolbarShadow: View
+    internal var toolbarElevated = false
+        set(value) {
+            if (field != value) {
+                field = value
+                if (value) {
+                    toolbarShadow.animate().alpha(1f).setDuration(200).start()
+                } else {
+                    toolbarShadow.animate().alpha(0f).setDuration(200).start()
+                }
+            }
+        }
+
+    private val shouldDrawBackground by lazy { context.getBooleanAttr(android.R.attr.windowShowWallpaper) }
+    private val settingsBackground by lazy { context.getColorAttr(R.attr.settingsBackground) }
 
     var actionBarElevation: Float
         get() = actionBarContainer.elevation
         set(value) {
             actionBarContainer.elevation = value
+            if (value.compareTo(0f) == 0) {
+                actionBarContainer.background = null
+                window.statusBarColor = 0
+            } else {
+                val backgroundColor = settingsBackground
+                actionBarContainer.background = ColorDrawable(backgroundColor)
+                window.statusBarColor = backgroundColor
+            }
         }
+
+    var useLargeTitle: Boolean = false
+        set(value) {
+            field = value
+            updateToolbar()
+        }
+
+    var hideToolbar: Boolean = false
+        set(value) {
+            field = value
+            updateToolbar()
+        }
+
+    private val contentTop
+        get() = when {
+            hideToolbar -> 0
+            useLargeTitle -> context.resources.getDimensionPixelSize(R.dimen.large_title_height)
+            else -> context.getDimenAttr(R.attr.actionBarSize)
+        }
+
+    private fun updateToolbar() {
+        largeTitle.visibility = if (useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
+        toolbar.visibility = if (!useLargeTitle && !hideToolbar) View.VISIBLE else View.GONE
+        toolbarShadow.visibility = toolbar.visibility
+    }
 
     init {
-        fitsSystemWindows = false
         LayoutInflater.from(context).inflate(R.layout.decor_layout, this)
 
-        contentContainer = findViewById(R.id.content_container)
+        contentFrame = findViewById(android.R.id.content)
         actionBarContainer = findViewById(R.id.action_bar_container)
-        statusBarBackground = findViewById(R.id.status_bar_bg)
-        navigationBarBackground = findViewById(R.id.nav_bar_bg)
-        navigationBarDivider = findViewById(R.id.nav_bar_divider)
+        toolbar = findViewById(R.id.toolbarx)
+        largeTitle = findViewById(R.id.large_title)
+        largeTitle.setOnClickListener(this)
+        toolbarShadow = findViewById(R.id.toolbar_shadow)
+
+        onEnabledChanged()
+
+        if (shouldDrawBackground) {
+            setWillNotDraw(false)
+        }
     }
 
-    override fun onApplyWindowInsets(i: WindowInsets): WindowInsets {
-        var insets = i
-        val attrs = window.attributes
-        floatingInsets.setEmpty()
-        if (attrs.flags and WindowManager.LayoutParams.FLAG_LAYOUT_IN_SCREEN == 0) {
-            // For dialog windows we want to make sure they don't go over the status bar or nav bar.
-            // We consume the system insets and we will reuse them later during the measure phase.
-            // We allow the app to ignore this and handle insets itself by using
-            // FLAG_LAYOUT_IN_SCREEN.
-            if (attrs.height == WindowManager.LayoutParams.WRAP_CONTENT) {
-                floatingInsets.top = insets.systemWindowInsetTop
-                floatingInsets.bottom = insets.systemWindowInsetBottom
-                insets = insets.replaceSystemWindowInsets(insets.systemWindowInsetLeft, 0,
-                        insets.systemWindowInsetRight, 0)
+    override fun onEnabledChanged() {
+        val enabled = BlurWallpaperProvider.isEnabled
+        (background as? BlurDrawable)?.let {
+            if (!enabled) {
+                it.stopListening()
+                background = null
             }
-            if (window.attributes.width == WindowManager.LayoutParams.WRAP_CONTENT) {
-                floatingInsets.left = insets.systemWindowInsetTop
-                floatingInsets.right = insets.systemWindowInsetBottom
-                insets = insets.replaceSystemWindowInsets(0, insets.systemWindowInsetTop,
-                        0, insets.systemWindowInsetBottom)
+        } ?: if (enabled) {
+            background = BlurWallpaperProvider.getInstance(context).createDrawable().apply {
+                startListening()
             }
         }
-        frameOffsets.set(insets.systemWindowInsetLeft, insets.systemWindowInsetTop,
-                insets.stableInsetRight, insets.stableInsetBottom)
-        updateStatusGuard(insets)
-        updateNavigationGuard(insets)
-        return insets.consumeSystemWindowInsets()
     }
 
-    private fun updateStatusGuard(insets: WindowInsets) {
-        with(statusBarBackground.layoutParams as LayoutParams) {
-            width = LayoutParams.MATCH_PARENT
-            height = insets.systemWindowInsetTop
-            leftMargin = insets.systemWindowInsetLeft
-            rightMargin = insets.systemWindowInsetRight
-            statusBarBackground.layoutParams = this
-        }
+    override fun draw(canvas: Canvas) {
+        if (shouldDrawBackground) canvas.drawColor(settingsBackground)
+        super.draw(canvas)
+    }
 
-        with(contentContainer.layoutParams as LayoutParams) {
-            topMargin = insets.systemWindowInsetTop
-            contentContainer.layoutParams = this
+    override fun onClick(v: View?) {
+        if (tapCount == 6 && allowDevOptions()) {
+            Utilities.getZimPrefs(context).developerOptionsEnabled = true
+            Snackbar.make(
+                    findViewById(R.id.content),
+                    R.string.developer_options_enabled,
+                    Snackbar.LENGTH_LONG).show()
+            tapCount++
+        } else if (tapCount < 6) {
+            tapCount++
         }
     }
 
-    @SuppressLint("RtlHardcoded")
-    private fun updateNavigationGuard(insets: WindowInsets) {
-        val toLeft = isNavBarToLeftEdge(insets.systemWindowInsetBottom, insets.systemWindowInsetLeft)
-        val toRight = isNavBarToRightEdge(insets.systemWindowInsetBottom, insets.systemWindowInsetRight)
-        val toBottom = !toLeft && !toRight
-        val size = getNavBarSize(insets.systemWindowInsetBottom,
-                insets.systemWindowInsetRight, insets.systemWindowInsetLeft)
-        val dividerSize = navigationBarDividerSize
-        val dividerMargin = size - dividerSize
-        with(navigationBarBackground.layoutParams as LayoutParams) {
-            if (toBottom) {
-                width = LayoutParams.MATCH_PARENT
-                height = size
-                gravity = Gravity.BOTTOM
-            } else {
-                width = size
-                height = LayoutParams.MATCH_PARENT
-                gravity = if (toLeft) Gravity.LEFT else Gravity.RIGHT
+    private fun allowDevOptions(): Boolean {
+        return try {
+            File(Environment.getExternalStoragePublicDirectory(
+                    Environment.DIRECTORY_DOCUMENTS), "ZimLX/dev").exists()
+        } catch (e: SecurityException) {
+            false
+        }
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        BlurWallpaperProvider.getInstance(context).addListener(this)
+        (background as BlurDrawable?)?.startListening()
+    }
+
+    override fun onDetachedFromWindow() {
+        super.onDetachedFromWindow()
+
+        BlurWallpaperProvider.getInstance(context).removeListener(this)
+        (background as BlurDrawable?)?.stopListening()
+    }
+
+    class ContentFrameLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
+
+        private var decorLayout: DecorLayout? = null
+
+        private val contentPath = Path()
+        internal val dividerPath = Path()
+        internal val backScrimPath = Path()
+        internal val frontScrimPath = Path()
+
+        private val selfRect = RectF()
+        private val insetsRect = RectF()
+        private val contentRect = RectF()
+
+        private val dividerSize = Utilities.pxFromDp(1f, resources.displayMetrics).toFloat()
+
+        override fun onAttachedToWindow() {
+            super.onAttachedToWindow()
+            decorLayout = parents.first { it is DecorLayout } as DecorLayout
+        }
+
+        override fun setInsets(insets: Rect) {
+            decorLayout?.also {
+                setInsetsInternal(Rect(
+                        insets.left,
+                        insets.top + it.contentTop,
+                        insets.right,
+                        insets.bottom))
+            } ?: setInsetsInternal(insets)
+        }
+
+        override fun onLayout(changed: Boolean, left: Int, top: Int, right: Int, bottom: Int) {
+            super.onLayout(changed, left, top, right, bottom)
+            if (changed) {
+                selfRect.set(left.toFloat(), top.toFloat(), right.toFloat(), bottom.toFloat())
+                computeClip()
             }
-            navigationBarBackground.layoutParams = this
         }
 
-        with(navigationBarDivider.layoutParams as LayoutParams) {
-            if (toBottom) {
-                width = LayoutParams.MATCH_PARENT
-                height = dividerSize
-                leftMargin = 0
-                rightMargin = 0
-                bottomMargin = dividerMargin
-                gravity = Gravity.BOTTOM
-            } else {
-                width = dividerSize
-                height = LayoutParams.MATCH_PARENT
-                bottomMargin = 0
-                if (toLeft) {
-                    leftMargin = dividerMargin
-                    rightMargin = 0
-                    gravity = Gravity.LEFT
-                } else {
-                    leftMargin = 0
-                    rightMargin = dividerMargin
-                    gravity = Gravity.RIGHT
-                }
+        private fun setInsetsInternal(insets: Rect) {
+            super.setInsets(insets)
+            insetsRect.set(insets)
+            computeClip()
+        }
+
+        private fun computeClip() {
+            contentRect.set(
+                    selfRect.left + insetsRect.left,
+                    selfRect.top + insetsRect.top,
+                    selfRect.right - insetsRect.right,
+                    selfRect.bottom - insetsRect.bottom
+            )
+
+            dividerPath.reset()
+            when {
+                isNavBarToRightEdge() -> dividerPath.addRect(
+                        contentRect.right,
+                        selfRect.top,
+                        contentRect.right + dividerSize,
+                        selfRect.bottom,
+                        Path.Direction.CW)
+                isNavBarToLeftEdge() -> dividerPath.addRect(
+                        contentRect.left - dividerSize,
+                        selfRect.top,
+                        contentRect.left,
+                        selfRect.bottom,
+                        Path.Direction.CW)
+                else -> dividerPath.addRect(
+                        selfRect.left,
+                        contentRect.bottom,
+                        selfRect.right,
+                        contentRect.bottom + dividerSize,
+                        Path.Direction.CW)
             }
-            navigationBarDivider.layoutParams = this
+
+            contentPath.reset()
+            contentPath.addRect(contentRect, Path.Direction.CW)
+
+            frontScrimPath.reset()
+            frontScrimPath.addRect(selfRect, Path.Direction.CW)
+            frontScrimPath.op(contentPath, Path.Op.DIFFERENCE)
+            frontScrimPath.op(dividerPath, Path.Op.DIFFERENCE)
+
+            backScrimPath.reset()
+            backScrimPath.addRect(selfRect, Path.Direction.CW)
+            backScrimPath.op(frontScrimPath, Path.Op.DIFFERENCE)
+
+            invalidate()
         }
 
-        with(contentContainer.layoutParams as LayoutParams) {
-            leftMargin = insets.systemWindowInsetLeft
-            rightMargin = insets.systemWindowInsetRight
-            bottomMargin = insets.systemWindowInsetBottom
-            contentContainer.layoutParams = this
+        private fun isNavBarToRightEdge(): Boolean {
+            return insetsRect.bottom == 0f && insetsRect.right > 0
+        }
+
+        private fun isNavBarToLeftEdge(): Boolean {
+            return insetsRect.bottom == 0f && insetsRect.left > 0
         }
     }
 
-    private fun isNavBarToRightEdge(bottomInset: Int, rightInset: Int): Boolean {
-        return bottomInset == 0 && rightInset > 0
+    class BackScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs), Insettable {
+
+        private val parent by lazy { parents.first { it is ContentFrameLayout } as ContentFrameLayout }
+
+        override fun onFinishInflate() {
+            super.onFinishInflate()
+            background = background.mutate().apply { alpha = 230 }
+        }
+
+        override fun draw(canvas: Canvas) {
+            val count = canvas.save()
+            canvas.clipPath(parent.backScrimPath)
+            super.draw(canvas)
+            canvas.restoreToCount(count)
+        }
+
+        override fun setInsets(insets: Rect?) {
+            // ignore this
+        }
     }
 
-    private fun isNavBarToLeftEdge(bottomInset: Int, leftInset: Int): Boolean {
-        return bottomInset == 0 && leftInset > 0
+    class FrontScrimView(context: Context, attrs: AttributeSet?) : View(context, attrs), Insettable {
+
+        private val parent by lazy { parents.first { it is ContentFrameLayout } as ContentFrameLayout }
+
+        override fun onFinishInflate() {
+            super.onFinishInflate()
+            background = background.mutate().apply { alpha = 230 }
+        }
+
+        override fun draw(canvas: Canvas) {
+            val count = canvas.save()
+            canvas.clipPath(parent.frontScrimPath)
+            super.draw(canvas)
+            canvas.restoreToCount(count)
+            canvas.drawPath(parent.dividerPath, Paint().apply { color = 0x1f000000 })
+        }
+
+        override fun setInsets(insets: Rect?) {
+            // ignore this
+        }
     }
 
-    private fun getNavBarSize(bottomInset: Int, rightInset: Int, leftInset: Int): Int {
-        return when {
-            isNavBarToRightEdge(bottomInset, rightInset) -> rightInset
-            isNavBarToLeftEdge(bottomInset, leftInset) -> leftInset
-            else -> bottomInset
+    class ToolbarElevationHelper constructor(private val scrollingView: View) : ViewTreeObserver.OnScrollChangedListener {
+
+        private val decorLayout by lazy { scrollingView.parents.first { it is DecorLayout } as DecorLayout }
+
+        init {
+            scrollingView.viewTreeObserver.addOnScrollChangedListener(this)
+        }
+
+        override fun onScrollChanged() {
+            decorLayout.toolbarElevated = scrollingView.canScrollVertically(-1)
+        }
+
+        fun destroy() {
+            scrollingView.viewTreeObserver.removeOnScrollChangedListener(this)
         }
     }
 }

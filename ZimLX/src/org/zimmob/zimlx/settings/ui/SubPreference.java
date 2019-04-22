@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.settings.ui;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.TypedArray;
 import android.os.Bundle;
 import android.util.AttributeSet;
@@ -15,6 +16,8 @@ public class SubPreference extends Preference implements View.OnLongClickListene
     private int mContent;
     private int mLongClickContent;
     private boolean mLongClick;
+
+    private boolean mHasPreview = false;
 
     public SubPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -59,5 +62,17 @@ public class SubPreference extends Preference implements View.OnLongClickListene
         } else {
             return false;
         }
+    }
+
+    public Boolean hasPreview() {
+        return mHasPreview;
+    }
+
+    public void start(Context context) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE, getTitle());
+        intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, getContent());
+        intent.putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, hasPreview());
+        context.startActivity(intent);
     }
 }

@@ -23,7 +23,8 @@ public final class FeatureFlags extends BaseFlags {
 
     public static boolean LAUNCHER3_P_ALL_APPS = false;
     public static boolean LEGACY_ALL_APPS_BACKGROUND = !LAUNCHER3_GRADIENT_ALL_APPS && !LAUNCHER3_P_ALL_APPS;
-
+    public static boolean FORCE_FEED_BRIDGE = false;
+    public static boolean FEATURE_SETTINGS_SEARCH = true;
     private FeatureFlags() {
     }
 }

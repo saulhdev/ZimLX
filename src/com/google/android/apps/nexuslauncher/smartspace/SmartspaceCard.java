@@ -309,7 +309,7 @@ public class SmartspaceCard {
         return ch != null && (this.cL(ch.cL) || this.cL(ch.cM));
     }
 
-    long cw() {
+    public long cw() {
         final c ch = this.cH();
         if (ch != null && this.cL(ch.cL)) {
             final e[] co = ch.cL.cO;

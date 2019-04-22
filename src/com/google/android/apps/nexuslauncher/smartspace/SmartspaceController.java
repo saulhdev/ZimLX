@@ -82,11 +82,10 @@ public class SmartspaceController implements Handler.Callback {
 
     private void dd() {
         if (this.dS != null) {
-            this.dS.cq();
+            this.dS.onGsaChanged();
         }
         this.de();
     }
-
     private void de() {
         this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.ENABLE_UPDATE")
                 .setPackage("com.google.android.googlequicksearchbox")

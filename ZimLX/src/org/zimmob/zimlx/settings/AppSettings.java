@@ -41,14 +41,6 @@ public class AppSettings extends SharedPreferencesPropertyBackend {
         setStringList(ZimFlags.MINIBAR_ITEMS, value);
     }
 
-    // internal preferences below here
-    public boolean getMinibarEnable() {
-        return getBool(ZimFlags.MINIBAR_ENABLE, true);
-    }
-
-    public void setMinibarEnable(boolean value) {
-        setBool(ZimFlags.MINIBAR_ENABLE, value);
-    }
 
     @Override
     public Context getContext() {

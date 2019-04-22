@@ -13,6 +13,10 @@ public class Config {
     public static final int SORT_LAST_INSTALLED = 2;
     public static final int SORT_MOST_USED = 3;
 
+    //APP DRAWER STYLE
+    public static final int DRAWER_LAYOUT_HORIZONTAL = 0;
+    public static final int DRAWER_LAYOUT_VERTICAL = 1;
+
     //APP THEME
     public static final int THEME_LIGHT = 0;
     public static final int THEME_DARK = 1;

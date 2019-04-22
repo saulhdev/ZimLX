@@ -662,6 +662,26 @@ public final class Utilities {
         return bitmap;
     }
 
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean forceCreate) {
+        if (!forceCreate && drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
     public static void setLightUi(Window window) {
         int flags = window.getDecorView().getSystemUiVisibility();
         if (ATLEAST_MARSHMALLOW)
@@ -700,6 +720,13 @@ public final class Utilities {
         baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
     }
 
+    public static int setFlag(int flags, int flag, boolean value) {
+        if (value) {
+            return flags | flag;
+        } else {
+            return flags & ~flag;
+        }
+    }
 
     public static UserHandle myUserHandle() {
         return android.os.Process.myUserHandle();
