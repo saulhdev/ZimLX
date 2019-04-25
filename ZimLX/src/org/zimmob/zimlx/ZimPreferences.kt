@@ -56,6 +56,35 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
+    // Desktop
+    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
+    val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
+    val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
+    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
+    val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
+    private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
+    val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
+    val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
+
+    //dock
+    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
+    val dockRadius get() = dockStyles.currentStyle.radius
+    val dockShadow get() = dockStyles.currentStyle.enableShadow
+    val dockShowArrow get() = dockStyles.currentStyle.enableArrow
+    val dockOpacity get() = dockStyles.currentStyle.opacity
+    val dockScale by FloatPref(ZimFlags.HOTSEAT_ICON_SCALE, 1f, recreate)
+    val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
+    val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
+    val dockRowsCount get() = if (twoRowDock) 2 else 1
+    val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
+    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
+    val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+
+
+    /*fun numHotseatIcons(default: String): String {
+        return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
+    }*/
+
     // Theme
     var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
@@ -67,21 +96,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
 
-    // Desktop
+
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
-    val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-    val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
-    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
-    val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
-    val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, recreate)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
-    private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
-    val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
 
 
-    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
@@ -91,25 +112,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
     var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
 
-    // Dock
-    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
-    val hideDockGradient by BooleanPref("pref_key__hide_dock_gradient", false, recreate)
-    val hideDockButton by BooleanPref("pref_key__hide_dock_button", false, recreate)
-    val dockSearchBar = true
-    val hotseatHeightScale by FloatPref(ZimFlags.HOTSEAT_HEIGHT_SCALE, 1f, recreate)
-    val dockShowArrow by BooleanPref("pref_hotseatShowArrow", true, recreate)
-    val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
-    val transparentHotseat by BooleanPref(ZimFlags.HOTSEAT_TRANSPARENT, false, recreate)
-    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
-    val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
-    val dockRowsCount get() = if (twoRowDock) 2 else 1
-    val hotseatShowPageIndicator by BooleanPref(ZimFlags.HOTSEAT_SHOW_PAGE_INDICATOR, true)
-    val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
-    val dockScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
 
-    fun numHotseatIcons(default: String): String {
-        return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
-    }
 
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)

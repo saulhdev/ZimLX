@@ -29,6 +29,7 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,16 +45,25 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
+import com.jaredrummler.android.colorpicker.ColorPickerDialog;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimUtilsKt;
+import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
+import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.minibar.Minibar;
+import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
+import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
+import org.zimmob.zimlx.util.ZimFlags;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
@@ -64,6 +74,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
@@ -71,6 +83,7 @@ import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
+import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
 
 /**
@@ -510,11 +523,19 @@ public class SettingsActivity extends SettingsBaseActivityX implements
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
+            return super.onPreferenceTreeClick(preference);/*
+
             /*if (preference.getKey() != null && "about".equals(preference.getKey())) {
                 startActivity(new Intent(getActivity(), SettingsAboutActivity.class));
                 return true;
-            }*/
-            return super.onPreferenceTreeClick(preference);
+            }
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+
+                        return super.onPreferenceTreeClick(preference);
+                }
+            }
+            return false;*/
         }
 
         @Override
@@ -569,12 +590,12 @@ public class SettingsActivity extends SettingsBaseActivityX implements
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.zim_preferences_dev_options) {
                 findPreference("kill").setOnPreferenceClickListener(this);
-                findPreference("crashLauncher").setOnPreferenceClickListener(this);
+                /*findPreference("crashLauncher").setOnPreferenceClickListener(this);
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
                 findPreference("currentWeatherProvider").setSummary(
                         Utilities.getZimPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
-                findPreference("screenshot").setOnPreferenceClickListener(this);
+                findPreference("screenshot").setOnPreferenceClickListener(this);*/
             }
         }
 
@@ -613,18 +634,18 @@ public class SettingsActivity extends SettingsBaseActivityX implements
 
         @Override
         public void onDisplayPreferenceDialog(Preference preference) {
-            final DialogFragment f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
-            /*if (preference instanceof GridSizePreference) {
-            //    f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
-            } else if (preference instanceof SingleDimensionGridSizePreference) {
-                f = SingleDimensionGridSizeDialogFragmentCompat.Companion
-                        .newInstance(preference.getKey());
-            } else if (preference instanceof GesturePreference) {
-                f = SelectGestureHandlerFragment.Companion
-                        .newInstance((GesturePreference) preference);
-            } else if (preference instanceof SearchProviderPreference) {
-                f = SelectSearchProviderFragment.Companion
-                        .newInstance((SearchProviderPreference) preference);
+            final DialogFragment f;
+            if (preference instanceof GridSizePreference) {
+                f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
+                //} else if (preference instanceof SingleDimensionGridSizePreference) {
+                //    f = SingleDimensionGridSizeDialogFragmentCompat.Companion
+                //            .newInstance(preference.getKey());
+                //} else if (preference instanceof GesturePreference) {
+                //    f = SelectGestureHandlerFragment.Companion
+                //            .newInstance((GesturePreference) preference);
+                //} else if (preference instanceof SearchProviderPreference) {
+                //    f = SelectSearchProviderFragment.Companion
+                //            .newInstance((SearchProviderPreference) preference);
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
@@ -637,7 +658,7 @@ public class SettingsActivity extends SettingsBaseActivityX implements
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
-            }*/
+            }
             f.setTargetFragment(this, 0);
             f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
         }
@@ -697,15 +718,16 @@ public class SettingsActivity extends SettingsBaseActivityX implements
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
+            Log.e("Preference Click: ", preference.getKey());
             switch (preference.getKey()) {
+
                 case "kill":
                     Utilities.killLauncher();
                     break;
-                // case "addSettingsShortcut":
-                //     Utilities.pinSettingsShortcut(getActivity());
-                //     break;
+
                 case "crashLauncher":
                     throw new RuntimeException("Triggered from developer options");
+
                 case "appInfo":
                     ComponentName componentName = new ComponentName(getActivity(),
                             ZimLauncher.class);
@@ -713,28 +735,32 @@ public class SettingsActivity extends SettingsBaseActivityX implements
                             .showAppDetailsForProfile(componentName,
                                     android.os.Process.myUserHandle());
                     break;
-                /*case "screenshot":
-                    final Context context = getActivity();
-                    ZimLauncher.Companion.takeScreenshot(getActivity(), new Handler(),
-                            new Function1<Uri, Temperature.Unit>() {
-                                @Override
-                                public Temperature.Unit invoke(Uri uri) {
-                                    try {
-                                        Bitmap bitmap = MediaStore.Images.Media
-                                                .getBitmap(context.getContentResolver(), uri);
-                                        ImageView imageView = new ImageView(context);
-                                        imageView.setImageBitmap(bitmap);
-                                        new AlertDialog.Builder(context)
-                                                .setTitle("Screenshot")
-                                                .setView(imageView)
-                                                .show();
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
-                                    return null;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+                    case ZimFlags.MINIBAR:
+                        Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
+                        break;
+
+                    default:
+                        if (preference instanceof ColorPreferenceCompat) {
+                            ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
+                            dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
+                                public void onColorSelected(int dialogId, int color) {
+                                    ((ColorPreferenceCompat) preference).saveValue(color);
+                                }
+
+                                public void onDialogDismissed(int dialogId) {
                                 }
                             });
-                    break;*/
+                            dialog.show((getActivity()).getFragmentManager(), "color-picker-dialog");
+                        }
+                }
             }
             return false;
         }

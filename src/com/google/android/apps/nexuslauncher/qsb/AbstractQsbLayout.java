@@ -42,6 +42,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements LauncherL
     protected View mMicIconView;
     protected Bitmap mShadowBitmap;
 
+    protected boolean mUseTwoBubbles;
+
     public AbstractQsbLayout(Context context) {
         this(context, null);
     }

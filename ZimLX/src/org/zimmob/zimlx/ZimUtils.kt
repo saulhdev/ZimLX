@@ -22,10 +22,12 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
+import android.content.res.Resources
 import android.graphics.RectF
 import android.os.Handler
 import android.os.Looper
 import android.util.Property
+import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Switch
@@ -72,7 +74,9 @@ var View.isVisible: Boolean
         visibility = if (value) View.VISIBLE else View.GONE
     }
 
-
+fun dpToPx(size: Float): Float {
+    return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
+}
 fun Float.round() = roundToInt().toFloat()
 
 fun Float.ceilToInt() = ceil(this).toInt()

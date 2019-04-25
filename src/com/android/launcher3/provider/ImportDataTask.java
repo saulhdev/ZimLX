@@ -30,6 +30,7 @@ import android.net.Uri;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.Log;
 import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
 
@@ -366,7 +367,10 @@ public class ImportDataTask {
         }
 
         LongArrayMap<Object> hotseatItems = GridSizeMigrationTask.removeBrokenHotseatItems(mContext);
+        Log.e(TAG, "ITEMs " + hotseatItems);
+
         int myHotseatCount = LauncherAppState.getIDP(mContext).numHotseatIcons;
+        Log.e(TAG, "ITEM C " + myHotseatCount);
         if (!FeatureFlags.NO_ALL_APPS_ICON) {
             myHotseatCount--;
         }

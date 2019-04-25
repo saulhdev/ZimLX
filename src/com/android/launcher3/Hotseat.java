@@ -41,9 +41,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
-import com.android.launcher3.util.Themes;
 
-import androidx.core.graphics.ColorUtils;
+import org.zimmob.zimlx.ZimPreferences;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
@@ -71,12 +70,12 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        mBackgroundColor = ColorUtils.setAlphaComponent(
+        /*mBackgroundColor = ColorUtils.setAlphaComponent(
                 Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
         mBackground = new ColorDrawable(mBackgroundColor);
         if (FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
             setBackground(mBackground);
-        }
+        }*/
     }
 
     public CellLayout getLayout() {
@@ -85,21 +84,31 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
     /* Get the orientation invariant order of the item in the hotseat for persistence. */
     int getOrderInHotseat(int x, int y) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        int xOrder = mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        int yOrder = mHasVerticalHotseat ? x * mContent.getCountY() : y * mContent.getCountX();
+        return xOrder + yOrder;
     }
 
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
-        return mHasVerticalHotseat ? 0 : rank;
+        int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
+        return mHasVerticalHotseat ? rank / size : rank % size;
     }
 
     int getCellYFromOrder(int rank) {
-        return mHasVerticalHotseat ? (mContent.getCountY() - (rank + 1)) : 0;
+        int size = mHasVerticalHotseat ? mContent.getCountY() : mContent.getCountX();
+        return mHasVerticalHotseat ? (mContent.getCountY() - ((rank % size) + 1)) : rank / size;
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
+
+        ZimPreferences prefs = Utilities.getZimPrefs(getContext());
+        if (prefs.getDockHide()) {
+            setVisibility(GONE);
+        }
+
         mContent = findViewById(R.id.layout);
     }
 
@@ -107,13 +116,14 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         mContent.removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
+        int rows = Utilities.getZimPrefs(mLauncher).getDockRowsCount();
         if (hasVerticalHotseat) {
-            mContent.setGridSize(1, idp.numHotseatIcons);
+            mContent.setGridSize(rows, idp.numHotseatIcons);
         } else {
-            mContent.setGridSize(idp.numHotseatIcons, 1);
+            mContent.setGridSize(idp.numHotseatIcons, rows);
         }
 
-        if (!FeatureFlags.NO_ALL_APPS_ICON) {
+        if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mLauncher.getApplicationContext()).getHideDockButton()) {
             // Add the Apps button
             Context context = getContext();
             DeviceProfile grid = mLauncher.getDeviceProfile();

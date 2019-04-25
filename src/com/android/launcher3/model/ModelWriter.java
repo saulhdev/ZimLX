@@ -41,6 +41,7 @@ import com.android.launcher3.util.LooperExecutor;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.Executor;
 
 /**
@@ -58,6 +59,9 @@ public class ModelWriter {
     private final Executor mWorkerExecutor;
     private final boolean mHasVerticalHotseat;
     private final boolean mVerifyChanges;
+
+    private boolean mPreparingToUndo;
+    private List<Runnable> mDeleteRunnables = new ArrayList<>();
 
     public ModelWriter(Context context, LauncherModel model, BgDataModel dataModel,
                        boolean hasVerticalHotseat, boolean verifyChanges) {
@@ -78,11 +82,16 @@ public class ModelWriter {
         // We store hotseat items in canonical form which is this orientation invariant position
         // in the hotseat
         if (container == Favorites.CONTAINER_HOTSEAT) {
-            item.screenId = mHasVerticalHotseat
-                    ? LauncherAppState.getIDP(mContext).numHotseatIcons - cellY - 1 : cellX;
+            item.screenId = getOrderInHotseat(cellX, cellY, LauncherAppState.getIDP(mContext).numHotseatIcons);
         } else {
             item.screenId = screenId;
         }
+    }
+
+    private int getOrderInHotseat(int x, int y, int size) {
+        int xOrder = mHasVerticalHotseat ? (size - y - 1) : x;
+        int yOrder = mHasVerticalHotseat ? x : y;
+        return xOrder + yOrder * size;
     }
 
     /**

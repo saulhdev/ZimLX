@@ -15,6 +15,7 @@
  */
 package com.android.quickstep.views;
 
+import static androidx.core.graphics.ColorUtils.setAlphaComponent;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.anim.Interpolators.ACCEL;
 import static com.android.launcher3.anim.Interpolators.LINEAR;
@@ -35,6 +36,10 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
+import org.zimmob.zimlx.ZimPreferences;
+
+import androidx.core.graphics.ColorUtils;
+
 /**
  * Scrim used for all-apps and shelf in Overview
  * In transposed layout, it behaves as a simple color scrim.
@@ -46,14 +51,14 @@ public class ShelfScrimView extends ScrimView {
 
     // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
     // cover the whole screen
-    private static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
+    public static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
 
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
 
     // For shelf mode
-    private final int mEndAlpha;
-    private final float mRadius;
+    public int mEndAlpha;
+    public float mRadius;
     private final int mMaxScrimAlpha;
     private final Paint mPaint;
 
@@ -75,17 +80,22 @@ public class ShelfScrimView extends ScrimView {
     private final Path mRemainingScreenPath = new Path();
     private boolean mRemainingScreenPathValid = false;
 
+    protected final int DEFAULT_END_ALPHA;
+    protected final ZimPreferences prefs;
+
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getWorkspaceScrimAlpha(mLauncher) * 255);
 
         mEndAlpha = Color.alpha(mEndScrim);
+        mEndAlpha = DEFAULT_END_ALPHA = Color.alpha(mEndScrim);
         mRadius = mLauncher.getResources().getDimension(R.dimen.shelf_surface_radius);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 
         mShelfOffset = context.getResources().getDimension(R.dimen.shelf_surface_offset);
         // Just assume the easiest UI for now, until we have the proper layout information.
         mDrawingFlatColor = true;
+        prefs = Utilities.getZimPrefs(context);
     }
 
     @Override
@@ -201,5 +211,14 @@ public class ShelfScrimView extends ScrimView {
 
         mPaint.setColor(mShelfColor);
         canvas.drawRoundRect(0, mShelfTop, width, height + mRadius, mRadius, mRadius, mPaint);
+    }
+
+    @Override
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
+                                   float rx, float ry, Paint paint) {
+        canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
+    }
+    protected float getMidProgress() {
+        return OVERVIEW.getVerticalProgress(mLauncher);
     }
 }

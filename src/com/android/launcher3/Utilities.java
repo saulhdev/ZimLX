@@ -60,6 +60,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
+import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import com.android.launcher3.config.FeatureFlags;
@@ -272,9 +273,6 @@ public final class Utilities {
         return scale;
     }
 
-    public static float mapRange(float value, float min, float max) {
-        return min + (value * (max - min));
-    }
 
     public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
@@ -829,5 +827,29 @@ public final class Utilities {
             // Believe me, this actually happens.
             Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    /**
+     * Maps t from one range to another range.
+     *
+     * @param t       The value to map.
+     * @param fromMin The lower bound of the range that t is being mapped from.
+     * @param fromMax The upper bound of the range that t is being mapped from.
+     * @param toMin   The lower bound of the range that t is being mapped to.
+     * @param toMax   The upper bound of the range that t is being mapped to.
+     * @return The mapped value of t.
+     */
+    public static float mapToRange(float t, float fromMin, float fromMax,
+                                   float toMin, float toMax, Interpolator interpolator) {
+        if (fromMin == fromMax || toMin == toMax) {
+            Log.e(TAG, "mapToRange: range has 0 length");
+            return toMin;
+        }
+        float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
+        return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
+    }
+
+    public static float mapRange(float value, float min, float max) {
+        return min + (value * (max - min));
     }
 }

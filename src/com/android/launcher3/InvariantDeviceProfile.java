@@ -84,6 +84,7 @@ public class InvariantDeviceProfile {
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
+    public int numHotseatIconsOriginal;
 
     int defaultLayoutId;
     int demoModeLayoutId;
@@ -147,6 +148,7 @@ public class InvariantDeviceProfile {
         numColumns = closestProfile.numColumns;
         numColumnsOriginal = numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
+        numHotseatIconsOriginal = numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;

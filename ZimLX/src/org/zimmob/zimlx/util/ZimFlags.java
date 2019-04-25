@@ -5,6 +5,7 @@ public class ZimFlags {
     //PREFERENCES FLAGS
     public static final String MINIBAR_COLOR = "pref_key__minibar_color";
     public static final String MINIBAR_ENABLE = "pref_key__minibar_enable";
+    public static final String MINIBAR = "pref_key__minibar";
     public static final String MINIBAR_ITEMS = "pref_key__minibar_items";
     public static final String MINIBAR_ITEM_VALUES = "pref_key__minibar_items";
 
@@ -22,12 +23,11 @@ public class ZimFlags {
     public static final String DESKTOP_HIDE_LABELS = "pref_hideAppLabels";
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";
     public static final String DESKTOP_OVERLAP_WIDGET = "pref_key__overlap_widget";
+    public static final String DESKTOP_ADD_ICON_TO_HOME = "pref_add_icon_to_home";
 
-    public static final String HOTSEAT_HEIGHT_SCALE = "pref_hotseatHeightScale";
-    public static final String HOTSEAT_TRANSPARENT = "pref_isHotseatTransparent";
     public static final String HOTSEAT_HIDE = "pref_hideHotseat";
     public static final String HOTSEAT_SHOW_PAGE_INDICATOR = "pref_hotseatShowPageIndicator";
-    public static final String HOTSEAT_NUM_ICONS = "pref_key__num_hotseat_icons";
+    public static final String HOTSEAT_NUM_ICONS = "pref_dock_grid_size";
     public static final String HOTSEAT_ICON_SCALE = "pref_dockScale";
 
     public static final String APPDRAWER_ICON_SCALE = "pref_allAppsIconScale";

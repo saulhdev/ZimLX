@@ -2,6 +2,8 @@ package org.zimmob.zimlx.preferences
 
 import android.content.Context
 import android.content.res.ColorStateList
+import android.os.Handler
+import android.os.HandlerThread
 import android.util.AttributeSet
 import android.view.ContextMenu
 import android.view.MenuItem
@@ -13,19 +15,24 @@ import androidx.preference.PreferenceViewHolder
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-class SeekbarPreference
+open class SeekbarPreference
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
     : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
 
     private var mSeekbar: SeekBar? = null
-    private var mValueText: TextView? = null
-    private var min: Float = 0.toFloat()
-    private var max: Float = 0.toFloat()
-    private var current: Float = 0.toFloat()
-    private var defaultValue: Float = 0.toFloat()
+    var mValueText: TextView? = null
+    var min: Float = 0.toFloat()
+    var max: Float = 0.toFloat()
+    var current: Float = 0.toFloat()
+    var defaultValue: Float = 0.toFloat()
     private var multiplier: Int = 0
     private var format: String? = null
-    private var steps: Int = 100
+    var steps: Int = 100
+    open val allowResetToDefault = true
+
+    private val handlerThread = HandlerThread("debounce").apply { start() }
+    private val persistHandler = Handler(handlerThread.looper)
+
     init {
         layoutResource = R.layout.preference_seekbar
         init(context, attrs!!)
@@ -59,6 +66,7 @@ class SeekbarPreference
         current = getPersistedFloat(defaultValue)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
+        if (allowResetToDefault) view.setOnCreateContextMenuListener(this)
         updateSummary()
     }
 
@@ -84,7 +92,7 @@ class SeekbarPreference
         persistFloat(current)
     }
 
-    private fun updateSummary() {
+    protected open fun updateSummary() {
         mValueText!!.text = String.format(format!!, current * multiplier)
     }
 

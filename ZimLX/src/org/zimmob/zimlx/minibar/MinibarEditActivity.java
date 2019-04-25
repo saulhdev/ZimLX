@@ -58,6 +58,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         prefs = Utilities.getZimPrefs(this);
         toolbar.setBackgroundColor(prefs.getPrimaryColor());
         toolbar.setTitleTextColor(getResources().getColor(R.color.white));
+        toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
         Objects.requireNonNull(getSupportActionBar()).setDisplayHomeAsUpEnabled(true);
         setTitle(R.string.minibar);
 

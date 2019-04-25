@@ -496,6 +496,7 @@ public class LauncherProvider extends ContentProvider {
                 mOpenHelper.loadFavorites(mOpenHelper.getWritableDatabase(),
                         getDefaultLayoutParser(widgetHost));
             }
+
             clearFlagEmptyDbCreated();
         }
     }

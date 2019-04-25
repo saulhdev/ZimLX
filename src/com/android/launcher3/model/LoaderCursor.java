@@ -392,9 +392,11 @@ public class LoaderCursor extends CursorWrapper {
      */
     protected boolean checkItemPlacement(ItemInfo item, ArrayList<Long> workspaceScreens) {
         long containerIndex = item.screenId;
+        ZimPreferences prefs = Utilities.getZimPrefs(mContext);
+
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             // Return early if we detect that an item is under the hotseat button
-            if (!FeatureFlags.NO_ALL_APPS_ICON &&
+            if (!FeatureFlags.NO_ALL_APPS_ICON && !prefs.getDockHide() &&
                     mIDP.isAllAppsButtonRank((int) item.screenId)) {
                 Log.e(TAG, "Error loading shortcut into hotseat " + item
                         + " into position (" + item.screenId + ":" + item.cellX + ","
@@ -404,8 +406,14 @@ public class LoaderCursor extends CursorWrapper {
 
             final GridOccupancy hotseatOccupancy =
                     occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+            int hotseatRows = prefs.getDockRowsCount();
+            int hotseatSize = mIDP.numHotseatIcons;
+            int hotseatX = (int) (item.screenId % hotseatSize);
+            int hotseatY = (int) (item.screenId / hotseatSize);
 
-            if (item.screenId >= mIDP.numHotseatIcons) {
+            Log.e(TAG, "Rows X" + item.screenId);
+
+            if (item.screenId >= mIDP.numHotseatIcons * hotseatRows) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId
                         + ", position out of bounds: (0 to " + (mIDP.numHotseatIcons - 1)
@@ -414,18 +422,18 @@ public class LoaderCursor extends CursorWrapper {
             }
 
             if (hotseatOccupancy != null) {
-                if (hotseatOccupancy.cells[(int) item.screenId][0]) {
+                if (hotseatOccupancy.cells[hotseatX][hotseatY]) {
                     Log.e(TAG, "Error loading shortcut into hotseat " + item
                             + " into position (" + item.screenId + ":" + item.cellX + ","
                             + item.cellY + ") already occupied");
                     return false;
                 } else {
-                    hotseatOccupancy.cells[(int) item.screenId][0] = true;
+                    hotseatOccupancy.cells[hotseatX][hotseatY] = true;
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, 1);
-                occupancy.cells[(int) item.screenId][0] = true;
+                final GridOccupancy occupancy = new GridOccupancy(hotseatSize, hotseatRows);
+                occupancy.cells[hotseatX][hotseatY] = true;
                 occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }

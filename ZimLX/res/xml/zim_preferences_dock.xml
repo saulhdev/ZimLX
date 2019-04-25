@@ -2,78 +2,103 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:key="pref_hotseatHeightScale"
+    <org.zimmob.zimlx.preferences.DockPresetPreference
+        android:defaultValue="1"
+        android:disableDependentsState="true"
+        android:entries="@array/dockStyles"
+        android:entryValues="@array/dockStyleValues"
+        android:key="pref_dockPreset"
         android:persistent="true"
-        android:title="@string/title__hotseat_height_scale"
+        android:summary="%s"
+        android:title="@string/title__dock_style"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.DockSwitchPreference
+        android:dependency="pref_dockPreset"
+        android:defaultValue="false"
+        android:key="enableGradient"
+        android:persistent="true"
+        android:title="@string/title__dock_fill"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.DockSwitchPreference
+        android:dependency="pref_dockPreset"
+        android:key="enableShadow"
+        android:defaultValue="false"
+        android:persistent="true"
+        android:title="@string/title__dock_shadow"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.DockSeekbarPreference
+        android:dependency="pref_dockPreset"
+        android:key="radius"
+        android:persistent="true"
+        android:title="@string/title__dock_radius"
+        app:defaultSeekbarValue="8"
+        app:maxValue="24"
+        app:minValue="0"
+        app:steps="24"
+        app:summaryFormat="%.0fdp"
+        app:summaryMultiplier="1"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.DockAutoModeSeekbarPreference
+        android:dependency="pref_dockPreset"
+        android:key="opacityPref"
+        android:persistent="true"
+        android:title="@string/title__dock_custom_opacity"
+        app:maxValue="1"
+        app:minValue="0"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.SeekbarPreference
+        android:key="pref_dockScale"
+        android:persistent="true"
+        android:title="@string/title__dock_scale"
         app:defaultSeekbarValue="1.0"
         app:maxValue="1.25"
         app:minValue="0.75"
         app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100" />
+        app:summaryMultiplier="100"
+        app:iconSpaceReserved="false" />
 
-    <SwitchPreference
-        android:defaultValue="false"
-        android:iconSpaceReserved="false"
-        android:key="pref_twoRowDock"
-        android:title="@string/title__hotseat_two_row" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_hotseatShouldUseCustomOpacity"
-        android:persistent="true"
-        android:title="@string/title__hotseat_uses_custom_opacity" />
-
-    <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:dependency="pref_hotseatShouldUseCustomOpacity"
-        android:key="pref_hotseatCustomOpacity"
-        android:persistent="true"
-        android:title="@string/title__hotseat_custom_opacity"
-        app:defaultSeekbarValue="0.5"
-        app:maxValue="1"
-        app:minValue="0"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100" />
-
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.DockSwitchPreference
         android:defaultValue="true"
-        android:key="pref_hotseatShowArrow"
+        android:key="enableArrow"
         android:persistent="true"
-        android:title="@string/title__hotseat_show_arrow" />
+        android:title="@string/title__hotseat_show_arrow"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:defaultValue="true"
         android:key="pref_hotseatShowPageIndicator"
         android:persistent="true"
-        android:title="@string/hotseat_show_page_indicator" />
+        android:title="@string/hotseat_show_page_indicator"
+        app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:defaultValue="2"
-        android:dependency="pref_hotseatShowPageIndicator"
-        android:entries="@array/entries__desktop_indicator_mode"
-        android:entryValues="@array/values__zero_to_two"
-        android:key="pref_key__desktop_indicator_style"
-        android:title="@string/title__desktop_indicator_style" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_key__hide_dock_gradient"
-        android:persistent="true"
-        android:title="@string/title__hotseat_hide_gradient" />
-
-    <ListPreference
-        android:defaultValue="@string/default_text"
+        android:defaultValue="5"
         android:entries="@array/numHotseatIconsTexts"
         android:entryValues="@array/numHotseatIconsValues"
-        android:key="pref_key__num_hotseat_icons"
+        android:key="pref__num_hotseat_icons"
         android:persistent="true"
         android:summary="%s"
-        android:title="@string/title__hotseat_num_icons" />
+        android:title="@string/title__hotseat_num_icons"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:defaultValue="false"
-        android:key="pref_key__hide_dock_button"
+        android:key="pref_twoRowDock"
+        android:title="@string/title__hotseat_two_row"
+        app:iconSpaceReserved="false" />
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref__hide_dock_button"
         android:persistent="true"
-        android:title="@string/title__hotseat_hide_button" />
+        android:title="@string/title__hotseat_hide_button"
+        app:iconSpaceReserved="false" />
 
 </PreferenceScreen>

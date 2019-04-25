@@ -74,8 +74,9 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         Launcher launcher = Launcher.getLauncher(context);
-        boolean hideDockGradient = Utilities.getZimPrefs(context).getHideDockGradient();
-        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
+        //boolean hideDockGradient = Utilities.getZimPrefs(context).getHideDockGradient();
+        //this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
+        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);

@@ -516,13 +516,29 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             // In transposed layout, we add the QSB in the Grid. As workspace does not touch the
             // edges, we do not need a full width QSB.
             qsb = LayoutInflater.from(getContext())
-                    .inflate(R.layout.search_container_workspace, firstPage, false);
+                    .inflate(getEmbeddedQsbLayout(), firstPage, false);
         }
 
         CellLayout.LayoutParams lp = new CellLayout.LayoutParams(0, 0, firstPage.getCountX(), 1);
         lp.canReorder = false;
-        if (!firstPage.addViewToCellLayout(qsb, 0, R.id.search_container_workspace, lp, true)) {
+        if (!firstPage.addViewToCellLayout(qsb, 0, getEmbeddedQsbId(), lp, true)) {
             Log.e(TAG, "Failed to add to item at (0, 0) to CellLayout");
+        }
+    }
+
+    private int getEmbeddedQsbLayout() {
+        if (mPillQsb) {
+            return R.layout.qsb_container;
+        } else {
+            return R.layout.search_container_workspace;
+        }
+    }
+
+    private int getEmbeddedQsbId() {
+        if (mPillQsb) {
+            return R.id.qsb_container;
+        } else {
+            return R.id.search_container_workspace;
         }
     }
 

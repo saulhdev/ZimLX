@@ -7,6 +7,11 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 
 public class NinePatchDrawHelper {
+
+    // The extra width used for the bitmap. This portion of the bitmap is stretched to match the
+    // width of the draw region. Randomly chosen, any value > 4 will be sufficient.
+    public static final int EXTENSION_PX = 20;
+
     public final RectF mDst = new RectF();
     public final Rect mSrc = new Rect();
     public final Paint paint = new Paint(1);
@@ -36,5 +41,18 @@ public class NinePatchDrawHelper {
         mDst.left = dstL;
         mDst.right = dstR;
         canvas.drawBitmap(bitmap, mSrc, mDst, paint);
+    }
+
+    public void drawVerticallyStretched(Bitmap bitmap, Canvas canvas, float left, float top,
+                                        float right, float bottom) {
+        draw(bitmap, canvas, left, top, right);
+
+        // Draw bottom stretched region.
+        int height = bitmap.getHeight();
+        mSrc.top = height - EXTENSION_PX / 4;
+        mSrc.bottom = height;
+        mDst.top = top + height;
+        mDst.bottom = bottom;
+        draw3Patch(bitmap, canvas, left, right);
     }
 }
