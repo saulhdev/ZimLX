@@ -4,7 +4,7 @@ import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.WorkspacePageIndicator
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
 
-class ZimPreferencesChangeCallback(private val launcher: ZimLauncher) {
+class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
 
     fun recreate() {
         if (launcher.shouldRecreate()) launcher.recreate()
@@ -40,7 +40,6 @@ class ZimPreferencesChangeCallback(private val launcher: ZimLauncher) {
             indicator.updateLineHeight()
         }
     }
-
 
     fun updateSmartspaceProvider() {
         launcher.zimApp.smartspace.onProviderChanged()

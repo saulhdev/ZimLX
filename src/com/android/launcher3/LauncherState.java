@@ -213,10 +213,17 @@ public class LauncherState {
         return 1f;
     }
 
+    public float getScrimProgress(Launcher launcher) {
+        return getVerticalProgress(launcher);
+    }
+
     public float getWorkspaceScrimAlpha(Launcher launcher) {
         return 0;
     }
 
+    public float getWorkspaceBlurAlpha(Launcher launcher) {
+        return 0;
+    }
     public String getDescription(Launcher launcher) {
         return launcher.getWorkspace().getCurrentPageDescription();
     }

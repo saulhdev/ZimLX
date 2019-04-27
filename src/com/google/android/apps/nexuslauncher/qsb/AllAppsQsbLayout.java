@@ -1,195 +1,258 @@
 package com.google.android.apps.nexuslauncher.qsb;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Rect;
+import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.widget.TextView;
 
 import com.android.launcher3.BaseRecyclerView;
-import com.android.launcher3.CellLayout;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
-import com.android.launcher3.util.Themes;
+import com.google.android.apps.nexuslauncher.search.SearchThread;
+
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.globalsearch.SearchProvider;
+import org.zimmob.zimlx.globalsearch.SearchProviderController;
+import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
+import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
 
 import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, WallpaperColorInfo.OnChangeListener {
-    private AllAppsRecyclerView mRecyclerView;
-    private FallbackAppsSearchView mFallback;
-    private int mAlpha;
-    private Bitmap mBitmap;
-    private AlphabeticalAppsList mApps;
-    private SpringAnimation mSpring;
-    private float mStartY;
+public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
-    public AllAppsQsbLayout(final Context context) {
+    private final k Ds;
+    private final int Dt;
+    private int mShadowAlpha;
+    private Bitmap Dv;
+    private boolean mUseFallbackSearch;
+    private FallbackAppsSearchView mFallback;
+    public float Dy;
+    private TextView mHint;
+    private AllAppsContainerView mAppsView;
+    boolean mDoNotRemoveFallback;
+    private ZimPreferences prefs;
+    private int mForegroundColor;
+
+    public AllAppsQsbLayout(Context context) {
         this(context, null);
     }
 
-    public AllAppsQsbLayout(final Context context, final AttributeSet set) {
-        this(context, set, 0);
+    public AllAppsQsbLayout(Context context, AttributeSet attributeSet) {
+        this(context, attributeSet, 0);
     }
 
-    public AllAppsQsbLayout(final Context context, final AttributeSet set, final int n) {
-        super(context, set, n);
-        mAlpha = 0;
+    public AllAppsQsbLayout(Context context, AttributeSet attributeSet, int i) {
+        super(context, attributeSet, i);
+        this.mShadowAlpha = 0;
         setOnClickListener(this);
-
-        mStartY = getTranslationY();
-        setTranslationY(Math.round(mStartY));
-        mSpring = new SpringAnimation(this, new FloatPropertyCompat<AllAppsQsbLayout>("allAppsQsbLayoutSpringAnimation") {
-            @Override
-            public float getValue(AllAppsQsbLayout allAppsQsbLayout) {
-                return allAppsQsbLayout.getTranslationY() + mStartY;
-            }
-
-            @Override
-            public void setValue(AllAppsQsbLayout allAppsQsbLayout, float v) {
-                allAppsQsbLayout.setTranslationY(Math.round(mStartY + v));
-            }
-        }, 0f);
+        this.Ds = k.getInstance(context);
+        this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
+        this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
+        setClipToPadding(false);
+        prefs = ZimPreferences.Companion.getInstanceNoCreate();
     }
 
-    private void searchFallback() {
-        if (mFallback != null) {
-            mFallback.showKeyboard();
-            return;
-        }
-        setOnClickListener(null);
-        mFallback = (FallbackAppsSearchView) mActivity.getLayoutInflater().inflate(R.layout.all_apps_google_search_fallback, this, false);
-        mFallback.bu(this, mApps, mRecyclerView);
-        addView(mFallback);
-        mFallback.showKeyboard();
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mHint = findViewById(R.id.qsb_hint);
     }
 
-    public void addOnScrollRangeChangeListener(final SearchUiManager.OnScrollRangeChangeListener onScrollRangeChangeListener) {
-        mActivity.getHotseat().addOnLayoutChangeListener((v, left, top, right, bottom, oldLeft, oldTop, oldRight, oldBottom) -> {
-            if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-                onScrollRangeChangeListener.onScrollRangeChanged(bottom);
-            } else {
-                onScrollRangeChangeListener.onScrollRangeChanged(bottom
-                        - HotseatQsbWidget.getBottomMargin(mActivity)
-                        - (((MarginLayoutParams) getLayoutParams()).topMargin
-                        + (int) getTranslationY() + getResources().getDimensionPixelSize(R.dimen.qsb_widget_height)));
-            }
-        });
-    }
-
-    void useAlpha(int newAlpha) {
-        int normalizedAlpha = Utilities.boundToRange(newAlpha, 0, 255);
-        if (mAlpha != normalizedAlpha) {
-            mAlpha = normalizedAlpha;
-            invalidate();
-        }
-    }
-
-    @Override
-    protected int getWidth(final int n) {
+    public void setInsets(Rect rect) {
+        c(Utilities.getDevicePrefs(getContext()));
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.topMargin = getTopMargin(rect);
+        requestLayout();
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            return n - mRecyclerView.getPaddingLeft() - mRecyclerView.getPaddingRight();
-        }
-        CellLayout layout = mActivity.getHotseat().getLayout();
-        return n - layout.getPaddingLeft() - layout.getPaddingRight();
-    }
-
-    protected void loadBottomMargin() {
-    }
-
-    public void draw(final Canvas canvas) {
-        if (mAlpha > 0) {
-            if (mBitmap == null) {
-                mBitmap = createBitmap(getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius), getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset), 0);
+            mActivity.getAllAppsController().setScrollRangeDelta(0);
+        } else {
+            float range = HotseatQsbWidget.getBottomMargin(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
+            ZimPreferences prefs = ZimPreferences.Companion.getInstance(getContext());
+            if (!prefs.getDockSearchBar()) {
+                range -= mlp.height;
+                range -= mlp.topMargin;
+                range -= mlp.bottomMargin;
+                range += Dy;
             }
-            mShadowPaint.setAlpha(mAlpha);
-            loadDimensions(mBitmap, canvas);
-            mShadowPaint.setAlpha(255);
+            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(range));
         }
-        super.draw(canvas);
     }
 
-    public void initialize(AlphabeticalAppsList appsList, AllAppsRecyclerView recyclerView) {
-        mApps = appsList;
-
-        recyclerView.setPadding(recyclerView.getPaddingLeft(),
-                getLayoutParams().height / 2 + getResources().getDimensionPixelSize(R.dimen.all_apps_extra_search_padding),
-                recyclerView.getPaddingRight(),
-                recyclerView.getPaddingBottom());
-
-        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                useAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
-            }
-        });
-
-        recyclerView.setVerticalFadingEdgeEnabled(true);
-
-        mRecyclerView = recyclerView;
+    public int getTopMargin(Rect rect) {
+        return Math.max((int) (-this.Dy), rect.top - this.Dt);
     }
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
-        instance.addOnChangeListener(this);
-        onExtractedColorsChanged(instance);
+        dN();
+        Ds.a(this);
     }
 
-    public void onClick(final View view) {
-        super.onClick(view);
-        if (view == this) {
-            if (!Utilities.ATLEAST_NOUGAT) {
-                searchFallback();
-                return;
-            }
-            final ConfigBuilder f = new ConfigBuilder(this, true);
-            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
-                searchFallback();
-            }
+    @Override
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
+        super.onSharedPreferenceChanged(sharedPreferences, str);
+        if (str.equals("pref_allAppsGoogleSearch")) {
+            loadPreferences(sharedPreferences);
+        }
+    }
+
+    @Override
+    protected Drawable getIcon(boolean colored) {
+        if (prefs.getAllAppsGlobalSearch()) {
+            return super.getIcon(colored);
+        } else {
+            return new AppSearchSearchProvider(getContext()).getIcon(colored);
+        }
+    }
+
+    @Override
+    protected boolean logoCanOpenFeed() {
+        return super.logoCanOpenFeed() && prefs.getAllAppsGlobalSearch();
+    }
+
+    @Override
+    protected Drawable getMicIcon(boolean colored) {
+        if (prefs.getAllAppsGlobalSearch()) {
+            mMicIconView.setVisibility(View.VISIBLE);
+            return super.getMicIcon(colored);
+        } else {
+            mMicIconView.setVisibility(View.GONE);
+            return null;
         }
     }
 
     protected void onDetachedFromWindow() {
-        WallpaperColorInfo.getInstance(getContext()).removeOnChangeListener(this);
         super.onDetachedFromWindow();
+        Ds.b(this);
     }
 
-    public void onExtractedColorsChanged(final WallpaperColorInfo wallpaperColorInfo) {
-        int color = Themes.getAttrBoolean(mActivity, R.attr.isMainColorDark) ? 0xEBFFFFFE : 0xCCFFFFFE;
-        bz(ColorUtils.compositeColors(ColorUtils.compositeColors(color, Themes.getAttrColor(mActivity, R.attr.allAppsScrimColor)), wallpaperColorInfo.getMainColor()));
+    protected final int aA(int i) {
+        if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
+            return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
+                    .getActiveRecyclerView().getPaddingRight();
+        }
+        View view = this.mActivity.getHotseat().getLayout();
+        return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
 
-    @Override
-    public void initialize(AllAppsContainerView containerView) {
-
+    public final void initialize(AllAppsContainerView allAppsContainerView) {
+        this.mAppsView = allAppsContainerView;
+        int i = 0;
+        mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+                setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
+            }
+        });
+        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(true);
     }
 
-    @Override
-    public void resetSearch() {
-
+    public final void dM() {
+        dN();
+        invalidate();
     }
 
-    public void preDispatchKeyEvent(final KeyEvent keyEvent) {
+    private void dN() {
+        az(this.Dc);
+        h(this.Ds.micStrokeWidth());
+        this.Dh = this.Ds.hintIsForAssistant();
+        mUseTwoBubbles = useTwoBubbles();
+        setHintText(this.Ds.hintTextValue(), this.mHint);
+        dH();
     }
 
-    public void refreshSearchResult() {
-        if (mFallback != null) {
-            mFallback.refreshSearchResult();
+    public void onClick(View view) {
+        super.onClick(view);
+        if (view == this) {
+            startSearch("", this.Di);
         }
     }
 
-    public void reset() {
-        useAlpha(0);
+    public final void l(String str) {
+        startSearch(str, 0);
+    }
+
+    @Override
+    public void startSearch() {
+        post(() -> startSearch("", Di));
+    }
+
+    @Override
+    public final void startSearch(String str, int i) {
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        if (shouldUseFallbackSearch(provider)) {
+            searchFallback(str);
+        } else if (controller.isGoogle()) {
+            final ConfigBuilder f = new ConfigBuilder(this, true);
+            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+                searchFallback(str);
+                if (mFallback != null) {
+                    mFallback.setHint(null);
+                }
+            }
+        } else {
+            provider.startSearch(intent -> {
+                mActivity.startActivity(intent);
+                return null;
+            });
+        }
+    }
+
+    private boolean shouldUseFallbackSearch() {
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        return shouldUseFallbackSearch(provider);
+    }
+
+    private boolean shouldUseFallbackSearch(SearchProvider provider) {
+        return !Utilities.getZimPrefs(getContext()).getAllAppsGlobalSearch()
+                || provider instanceof AppSearchSearchProvider
+                || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
+    }
+
+    public void searchFallback(String query) {
+        ensureFallbackView();
+        mFallback.setText(query);
+        mFallback.showKeyboard();
+    }
+
+    public final void resetSearch() {
+        setShadowAlpha(0);
+        if (mUseFallbackSearch) {
+            resetFallbackView();
+        } else if (!mDoNotRemoveFallback) {
+            removeFallbackView();
+        }
+    }
+
+    private void ensureFallbackView() {
+        setOnClickListener(null);
+        mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
+                .inflate(R.layout.all_apps_google_search_fallback, this, false);
+        AllAppsContainerView allAppsContainerView = this.mAppsView;
+        mFallback.DJ = this;
+        mFallback.mApps = allAppsContainerView.getApps();
+        mFallback.mAppsView = allAppsContainerView;
+        mFallback.DI.initialize(new SearchThread(mFallback.getContext()), mFallback,
+                Launcher.getLauncher(mFallback.getContext()), mFallback);
+        addView(this.mFallback);
+        mFallback.setTextColor(mForegroundColor);
+    }
+
+    private void removeFallbackView() {
         if (mFallback != null) {
             mFallback.clearSearchResult();
             setOnClickListener(this);
@@ -198,8 +261,73 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         }
     }
 
-    @NonNull
-    public SpringAnimation getSpringForFling() {
-        return mSpring;
+    private void resetFallbackView() {
+        if (mFallback != null) {
+            mFallback.reset();
+            mFallback.clearSearchResult();
+        }
+    }
+
+    protected void onLayout(boolean z, int i, int i2, int i3, int i4) {
+        super.onLayout(z, i, i2, i3, i4);
+        View view = (View) getParent();
+        setTranslationX((float) ((view.getPaddingLeft() + (
+                (((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (i3 - i))
+                        / 2)) - i));
+    }
+
+    public void draw(Canvas canvas) {
+        if (this.mShadowAlpha > 0) {
+            if (this.Dv == null) {
+                this.Dv = c(
+                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
+                        getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
+                        0);
+            }
+            this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
+            a(this.Dv, canvas);
+            this.mShadowHelper.paint.setAlpha(255);
+        }
+        super.draw(canvas);
+    }
+
+    final void setShadowAlpha(int i) {
+        i = Utilities.boundToRange(i, 0, 255);
+        if (this.mShadowAlpha != i) {
+            this.mShadowAlpha = i;
+            invalidate();
+        }
+    }
+
+    protected final boolean dK() {
+        if (this.mFallback != null) {
+            return false;
+        }
+        return super.dK();
+    }
+
+    protected final void c(SharedPreferences sharedPreferences) {
+        if (mUseFallbackSearch) {
+            removeFallbackView();
+            this.mUseFallbackSearch = false;
+            if (this.mUseFallbackSearch) {
+                ensureFallbackView();
+            }
+        }
+    }
+
+    public boolean hasOverlappingRendering() {
+        return false;
+    }
+
+    @Override
+    public void preDispatchKeyEvent(KeyEvent keyEvent) {
+
+    }
+
+    @Nullable
+    @Override
+    protected String getClipboardText() {
+        return shouldUseFallbackSearch() ? super.getClipboardText() : null;
     }
 }

@@ -59,18 +59,18 @@ public class ShelfScrimView extends ScrimView {
     // For shelf mode
     public int mEndAlpha;
     public float mRadius;
-    private final int mMaxScrimAlpha;
+    public final int mMaxScrimAlpha;
     private final Paint mPaint;
 
     // Mid point where the alpha changes
-    private int mMidAlpha;
-    private float mMidProgress;
+    public int mMidAlpha;
+    public float mMidProgress;
 
     private float mShiftRange;
 
     private final float mShelfOffset;
     private float mTopOffset;
-    private float mShelfTop;
+    public float mShelfTop;
     private float mShelfTopAtThreshold;
 
     private int mShelfColor;
@@ -123,6 +123,10 @@ public class ShelfScrimView extends ScrimView {
         }
         updateDragHandleAlpha();
         invalidate();
+    }
+
+    protected int getMidAlpha() {
+        return Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
     }
 
     @Override

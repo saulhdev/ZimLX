@@ -177,4 +177,6 @@
 
     <!-- Wether or not blur is enabled per default -->
     <bool name="config_default_enable_blur">false</bool>
+    <string name="config_default_search_provider" translatable="false">org.zimmob.ximlx.globalsearch.providers.GoogleSearchProvider</string>
+
 </resources>

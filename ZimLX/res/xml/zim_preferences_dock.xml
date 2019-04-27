@@ -78,11 +78,8 @@
         android:title="@string/hotseat_show_page_indicator"
         app:iconSpaceReserved="false" />
 
-    <ListPreference
-        android:defaultValue="5"
-        android:entries="@array/numHotseatIconsTexts"
-        android:entryValues="@array/numHotseatIconsValues"
-        android:key="pref__num_hotseat_icons"
+    <org.zimmob.zimlx.preferences.DockGridSizePreference
+        android:key="pref_dock_grid_size"
         android:persistent="true"
         android:summary="%s"
         android:title="@string/title__hotseat_num_icons"

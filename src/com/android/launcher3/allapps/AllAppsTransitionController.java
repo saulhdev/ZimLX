@@ -17,8 +17,10 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.GradientView;
@@ -26,6 +28,9 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
+import org.zimmob.zimlx.ZimPreferences;
+
+import static android.view.ViewGroup.MarginLayoutParams;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
@@ -213,6 +218,35 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mProgress;
     }
 
+    private float getShiftApps(float progress, boolean inverted) {
+        float normalShift = progress * mShiftRange;
+        ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        if (prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+            float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            float overviewShift = getQsbHeight();
+            if (prefs.getAllAppsSearch()) {
+                overviewShift = -overviewShift;
+            }
+            if (progress < overviewProgress) {
+                overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
+                        inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
+                        inverted ? 0 : overviewShift,
+                        Interpolators.LINEAR);
+            } else if (inverted) {
+                overviewShift = 0;
+            }
+            return normalShift + overviewShift;
+        } else {
+            return normalShift;
+        }
+    }
+
+    private int getQsbHeight() {
+        MarginLayoutParams mlp = (MarginLayoutParams) mAppsView.getSearchView().getLayoutParams();
+        return mlp.topMargin + mlp.height;
+    }
+
+
     /**
      * Sets the vertical transition progress to {@param state} and updates all the dependent UI
      * accordingly.
@@ -263,7 +297,8 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
         int visibleElements = toState.getVisibleElements(mLauncher);
-        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0;
+        ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 

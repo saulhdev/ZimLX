@@ -221,4 +221,9 @@ public class AppsSearchContainerLayout extends ExtendedEditText
                     insets.bottom + mlp.topMargin + mFixedTranslationY);
         }
     }
+
+    @Override
+    public void startSearch() {
+
+    }
 }

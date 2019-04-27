@@ -4,11 +4,14 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 
-import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.settings.ui.SettingsActivity;
+import org.zimmob.zimlx.views.ZimBackgroundView;
 
 public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences.OnPreferenceChangeListener {
 
@@ -17,10 +20,11 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public static final int CODE_EDIT_ICON = 100;
 
-    private Boolean paused = false;
-    private Boolean sRestart = false;
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
     private ZimPreferences zimPrefs;
+    private boolean paused = false;
+    private boolean sRestart = false;
+    public ZimBackgroundView background;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -31,27 +35,29 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         mContext = this;
         zimPrefs = Utilities.getZimPrefs(mContext);
         zimPrefs.registerCallback(prefCallback);
+        background = findViewById(R.id.zim_background);
     }
 
     @Override
-    public void onDestroy() {
-        super.onDestroy();
-
-        Utilities.getZimPrefs(this).unregisterCallback();
-
-        if (sRestart) {
-            sRestart = false;
-            LauncherAppState.destroyInstance();
-            ZimPreferences.Companion.destroyInstance();
+    public void onStart() {
+        super.onStart();
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace()) {
+            if (Utilities.ATLEAST_NOUGAT) {
+                recreate();
+            } else {
+                finish();
+                startActivity(getIntent());
+            }
         }
     }
 
-    public boolean shouldRecreate() {
-        return !sRestart;
+    private boolean showSmartspace() {
+        return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
     }
 
-    public void refreshGrid() {
-        mWorkspace.refreshChildren();
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+
     }
 
     public void scheduleRestart() {
@@ -62,8 +68,12 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         }
     }
 
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
 
+    public boolean shouldRecreate() {
+        return !sRestart;
+    }
+
+    public void refreshGrid() {
+        //workspace.refreshChildren();
     }
 }

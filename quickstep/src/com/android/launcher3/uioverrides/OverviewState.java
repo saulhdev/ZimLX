@@ -26,6 +26,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -112,6 +113,12 @@ public class OverviewState extends LauncherState {
     }
 
     @Override
+    public float getWorkspaceBlurAlpha(Launcher launcher) {
+        boolean blurEnabled = Utilities.getZimPrefs(launcher).getRecentsBlurredBackground();
+        return blurEnabled ? 1f : 0f;
+    }
+
+    @Override
     public float getVerticalProgress(Launcher launcher) {
         if ((getVisibleElements(launcher) & ALL_APPS_HEADER_EXTRA) == 0) {
             // We have no all apps content, so we're still at the fully down progress.
@@ -129,5 +136,10 @@ public class OverviewState extends LauncherState {
     public static float getDefaultSwipeHeight(Launcher launcher) {
         DeviceProfile dp = launcher.getDeviceProfile();
         return dp.allAppsCellHeightPx - dp.allAppsIconTextSizePx;
+    }
+
+    public static float getWorkspaceBlur(Launcher launcher) {
+        boolean blurEnabled = Utilities.getZimPrefs(launcher).getRecentsBlurredBackground();
+        return blurEnabled ? 1f : 0f;
     }
 }

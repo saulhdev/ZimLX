@@ -76,7 +76,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         mPrefs = Utilities.getPrefs(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mPackageManager = context.getPackageManager();
-        MAX_PREDICTIONS = Integer.valueOf(Utilities.getZimPrefs(context).getNumPredictedApps());
+        MAX_PREDICTIONS = Utilities.getZimPrefs(context).getNumPredictedApps();
     }
 
     List<ComponentKeyMapper<AppInfo>> getPredictions() {

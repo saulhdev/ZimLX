@@ -10,8 +10,10 @@ import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
+import org.zimmob.zimlx.settings.GridSize2D
 import org.zimmob.zimlx.smartspace.SmartspaceDataWidget
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.util.Temperature
@@ -58,7 +60,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     // Desktop
     val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
-    val gridSize by lazy { GridSize(this, "numRows", "numColumns", LauncherAppState.getIDP(context)) }
+    private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
+    val gridSize by gridSizeDelegate
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
@@ -79,11 +82,42 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
     val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
     val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+    val dockSearchBar by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
+    val dockGridSize by dockGridSizeDelegate
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
+
+    // App Drawer
+    val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)
+    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
+    val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
+    val allAppsEndAlpha get() = allAppsOpacity
+    val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
+    val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
+    val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
+    private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
+    val predictionGridSize by predictionGridSizeDelegate
+    val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
+    private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
+    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
+
+    private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
+    val drawerGridSize by drawerGridSizeDelegate
+    val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
+    fun getNumPredictedApps(): Int {
+        return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
+    }
+
+    //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
+
+    // Search
+    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
+        SearchProviderController.getInstance(context).onSearchProviderChanged()
+    }
+    val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
 
 
-    /*fun numHotseatIcons(default: String): String {
-        return sharedPrefs.getString(ZimFlags.HOTSEAT_NUM_ICONS, default)
-    }*/
 
     // Theme
     var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
@@ -112,6 +146,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
     var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
 
+    //quickstep
+    val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
+        onChangeCallback?.launcher?.background?.onEnabledChanged()
+    }
 
 
     //Folder
@@ -122,17 +160,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return folderShape.toInt()
     }
 
-    // App Drawer
-    val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
-    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
-    val showPredictionApps by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, recreate)
-    val allAppsIconPaddingScale by FloatPref(ZimFlags.APPDRAWER_ALL_APPS_ICON_PADDING_SCALE, 1f)
-    val useGlobalSearch by BooleanPref(ZimFlags.APPDRAWER_GLOBAL_SEARCH, false, recreate)
-    val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
-    val drawerMultilineLabel by BooleanPref("pref_key__labels_two_lines", true)
-    val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
 
-    //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
 
     //smartspace
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
@@ -150,9 +178,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sort.toInt()
     }
 
-    fun getNumPredictedApps(): Int {
-        return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
-    }
+
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true)
@@ -532,6 +558,25 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    inner class ResettableLazy<out T : Any>(private val create: () -> T) {
+
+        private var initialized = false
+        private var currentValue: T? = null
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            if (!initialized) {
+                currentValue = create()
+                initialized = true
+            }
+            return currentValue!!
+        }
+
+        fun resetValue() {
+            initialized = false
+            currentValue = null
+        }
+    }
+
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String) {
         onChangeMap[key]?.invoke()
         onChangeListeners[key]?.forEach { it.onValueChanged(key, this, false) }
@@ -594,14 +639,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             return INSTANCE!!
         }
 
+        fun getInstanceNoCreate(): ZimPreferences {
+            return INSTANCE!!
+        }
+
         fun destroyInstance() {
             INSTANCE?.apply {
                 onChangeListeners.clear()
                 onChangeCallback = null
-                //gridSizeDelegate.resetValue()
-                //dockGridSizeDelegate.resetValue()
-                //drawerGridSizeDelegate.resetValue()
-                //predictionGridSizeDelegate.resetValue()
+                gridSizeDelegate.resetValue()
+                dockGridSizeDelegate.resetValue()
+                drawerGridSizeDelegate.resetValue()
+                predictionGridSizeDelegate.resetValue()
             }
         }
     }

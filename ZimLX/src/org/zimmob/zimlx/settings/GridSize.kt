@@ -1,51 +1,36 @@
 package org.zimmob.zimlx.settings
 
+import org.zimmob.zimlx.JavaField
 import org.zimmob.zimlx.ZimPreferences
-import java.lang.reflect.Field
-import kotlin.reflect.KProperty
 
-class GridSize(
-        private val prefs: ZimPreferences,
+open class GridSize(
+        prefs: ZimPreferences,
         rowsKey: String,
-        columnsKey: String,
-        targetObject: Any) {
+        targetObject: Any,
+        private val onChangeListener: () -> Unit) {
 
     var numRows by JavaField<Int>(targetObject, rowsKey)
-    var numColumns by JavaField<Int>(targetObject, columnsKey)
     val numRowsOriginal by JavaField<Int>(targetObject, "${rowsKey}Original")
-    val numColumnsOriginal by JavaField<Int>(targetObject, "${columnsKey}Original")
 
-    private val onChange = {
+    protected val onChange = {
         applyCustomization()
-        prefs.refreshGrid()
+        onChangeListener.invoke()
     }
 
     var numRowsPref by prefs.IntPref("pref_$rowsKey", 0, onChange)
-    var numColumnsPref by prefs.IntPref("pref_$columnsKey", 0, onChange)
 
     init {
-        applyCustomization()
+        applyNumRows()
     }
 
-    private fun applyCustomization() {
+    protected open fun applyCustomization() {
+        applyNumRows()
+    }
+
+    private fun applyNumRows() {
         numRows = fromPref(numRowsPref, numRowsOriginal)
-        numColumns = fromPref(numColumnsPref, numColumnsOriginal)
     }
 
     fun fromPref(value: Int, default: Int) = if (value != 0) value else default
     fun toPref(value: Int, default: Int) = if (value != default) value else 0
-
-    @Suppress("UNCHECKED_CAST")
-    class JavaField<T>(private val targetObject: Any, fieldName: String) {
-
-        private val field: Field = targetObject.javaClass.getField(fieldName)
-
-        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
-            return field.get(targetObject) as T
-        }
-
-        operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
-            field.set(targetObject, value)
-        }
-    }
 }

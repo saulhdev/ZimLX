@@ -17,6 +17,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
+import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceController;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView;
@@ -42,7 +43,7 @@ public class NexusLauncher {
     private boolean mRunning;
     private boolean mStarted;
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
-
+    QsbAnimationController mQsbAnimationController;
     public NexusLauncher(NexusLauncherActivity activity) {
         fB = activity;
         fD = activity;
@@ -123,6 +124,8 @@ public class NexusLauncher {
 
             SmartspaceController.get(fB).cW();
             mSmartspace = fB.findViewById(R.id.search_container_workspace);
+
+            mQsbAnimationController = new QsbAnimationController(fB);
 
             mUiInformation.putInt("system_ui_visibility", fB.getWindow().getDecorView().getSystemUiVisibility());
             WallpaperColorInfo instance = WallpaperColorInfo.getInstance(fB);

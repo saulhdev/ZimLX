@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher;
 
+import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -19,7 +20,7 @@ import java.util.List;
 
 public class NexusLauncherActivity extends Launcher {
     private final static String PREF_IS_RELOAD = "pref_reload_workspace";
-    private NexusLauncher mLauncher;
+    public NexusLauncher mLauncher;
     private boolean mIsReload;
 
     public NexusLauncherActivity() {
@@ -92,5 +93,13 @@ public class NexusLauncherActivity extends Launcher {
 
     public GoogleNow getGoogleNow() {
         return mLauncher.fy;
+    }
+
+    public void playQsbAnimation() {
+        mLauncher.mQsbAnimationController.dZ();
+    }
+
+    public AnimatorSet openQsb() {
+        return mLauncher.mQsbAnimationController.openQsb();
     }
 }

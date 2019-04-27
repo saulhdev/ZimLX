@@ -40,7 +40,7 @@ import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.theme.ThemeOverride
 
 @SuppressLint("Registered")
-open class SettingsBaseActivityX : AppCompatActivity(), ThemeManager.ThemeableActivity {
+open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableActivity {
     val dragLayer by lazy { SettingsDragLayer(this, null) }
     val decorLayout by lazy { DecorLayout(this, window) }
 
@@ -180,9 +180,9 @@ open class SettingsBaseActivityX : AppCompatActivity(), ThemeManager.ThemeableAc
 
     companion object {
 
-        fun getActivity(context: Context): SettingsBaseActivityX {
-            return context as? SettingsBaseActivityX
-                    ?: (context as ContextWrapper).baseContext as SettingsBaseActivityX
+        fun getActivity(context: Context): SettingsBaseActivity {
+            return context as? SettingsBaseActivity
+                    ?: (context as ContextWrapper).baseContext as SettingsBaseActivity
         }
     }
 }

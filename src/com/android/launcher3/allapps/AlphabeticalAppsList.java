@@ -285,7 +285,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         //Collections.sort(mApps, mAppNameComparator);
         Context context = mLauncher.getApplicationContext();
         ZimPreferences pref = new ZimPreferences(context);
-        if (!pref.getShowPredictionApps()) {
+        if (!pref.getShowPredictions()) {
             sortApps(pref.getSortMode());
         } else {
             Collections.sort(mApps, mAppNameComparator);

@@ -38,11 +38,5 @@ public interface SearchUiManager {
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
 
-    /**
-     * Callback for listening to changes in the vertical scroll range when opening all-apps.
-     */
-    interface OnScrollRangeChangeListener {
-
-        void onScrollRangeChanged(int scrollRange);
-    }
+    void startSearch();
 }

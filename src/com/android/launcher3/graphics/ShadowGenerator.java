@@ -171,7 +171,23 @@ public class ShadowGenerator {
         }
 
         public Bitmap createPill(int width, int height) {
-            radius = height / 2f;
+            /*radius = height / 2f;
+
+            int centerX = Math.round(width / 2f + shadowBlur);
+            int centerY = Math.round(radius + shadowBlur + keyShadowDistance);
+            int center = Math.max(centerX, centerY);
+            bounds.set(0, 0, width, height);
+            bounds.offsetTo(center - width / 2f, center - height / 2f);
+
+            int size = center * 2;
+            Bitmap result = Bitmap.createBitmap(size, size, Config.ARGB_8888);
+            drawShadow(new Canvas(result));
+            return result;*/
+            return createPill(width, height, height / 2f);
+        }
+
+        public Bitmap createPill(int width, int height, float radius) {
+            this.radius = radius;
 
             int centerX = Math.round(width / 2f + shadowBlur);
             int centerY = Math.round(radius + shadowBlur + keyShadowDistance);

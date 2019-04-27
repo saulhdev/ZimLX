@@ -25,6 +25,7 @@ public class LauncherRootView extends InsettableFrameLayout {
 
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
+    private boolean mHideContent;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);

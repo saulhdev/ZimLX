@@ -48,7 +48,7 @@ import org.zimmob.zimlx.getColorAttr
 class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(context, attrs),
         Insettable, TouchController, SwipeDetector.Listener {
 
-    private val activity = SettingsBaseActivity.getInstance(context)
+    private val activity = SettingsBaseActivity.getActivity(context)
 
     private val mInsets: Rect
 
@@ -235,7 +235,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         private const val DEFAULT_CLOSE_DURATION = 200
 
         fun inflate(context: Context): SettingsBottomSheet {
-            val activity = SettingsBaseActivity.getInstance(context)
+            val activity = SettingsBaseActivity.getActivity(context)
             return LayoutInflater.from(context)
                     .inflate(R.layout.settings_bottom_sheet, activity.dragLayer, false) as SettingsBottomSheet
         }

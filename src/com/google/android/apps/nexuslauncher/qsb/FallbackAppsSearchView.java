@@ -5,6 +5,7 @@ import android.util.AttributeSet;
 
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsGridAdapter;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
@@ -18,8 +19,11 @@ public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsS
     private final AllAppsSearchBarController mSearchBarController;
     private AllAppsQsbLayout mQsbLayout;
     private AllAppsGridAdapter mAdapter;
-    private AlphabeticalAppsList mApps;
+    public AlphabeticalAppsList mApps;
     private AllAppsRecyclerView mAppsRecyclerView;
+    final AllAppsSearchBarController DI;
+    AllAppsQsbLayout DJ;
+    AllAppsContainerView mAppsView;
 
     public FallbackAppsSearchView(Context context) {
         this(context, null);
@@ -32,12 +36,10 @@ public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsS
     public FallbackAppsSearchView(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         mSearchBarController = new AllAppsSearchBarController();
+
+        this.DI = new AllAppsSearchBarController();
     }
 
-    private void notifyResultChanged() {
-        mQsbLayout.useAlpha(0);
-        mAppsRecyclerView.onSearchResultsChanged();
-    }
 
     public void bu(AllAppsQsbLayout qsbLayout, AlphabeticalAppsList apps, AllAppsRecyclerView appsRecyclerView) {
         mQsbLayout = qsbLayout;
@@ -49,19 +51,35 @@ public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsS
 
     public void clearSearchResult() {
         if (getParent() != null && mApps.setOrderedFilter(null)) {
-            notifyResultChanged();
+            if (mApps.setOrderedFilter(null)) {
+                dV();
+            }
+            x(false);
+            DJ.mDoNotRemoveFallback = true;
+            mAppsView.onClearSearchResult();
+            DJ.mDoNotRemoveFallback = false;
         }
     }
 
     public void onSearchResult(final String lastSearchQuery, final ArrayList orderedFilter) {
         if (orderedFilter != null && getParent() != null) {
             mApps.setOrderedFilter(orderedFilter);
-            notifyResultChanged();
-            mAdapter.setLastSearchQuery(lastSearchQuery);
+            mAppsView.setLastSearchQuery(lastSearchQuery);
         }
     }
 
     public void refreshSearchResult() {
         mSearchBarController.refreshSearchResult();
     }
+
+    private void x(boolean z) {
+        //PredictionsFloatingHeader predictionsFloatingHeader = (PredictionsFloatingHeader) mAppsView.getFloatingHeaderView();
+        //predictionsFloatingHeader.setCollapsed(z);
+    }
+
+    private void dV() {
+        this.DJ.setShadowAlpha(0);
+        mAppsView.onSearchResultsChanged();
+    }
+
 }

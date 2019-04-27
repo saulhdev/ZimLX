@@ -26,16 +26,19 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <org.zimmob.zimlx.views.ZimBackgroundView
+            android:id="@+id/zim_background"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
         <com.android.launcher3.dragndrop.DragLayer
             android:id="@+id/drag_layer"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="?attr/workspaceStatusBarScrim"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:fitsSystemWindows="true"
-            android:importantForAccessibility="no"
-            launcher:layout_ignoreInsets="true">
+            android:importantForAccessibility="no">
+
             <!-- The workspace contains 5 screens of cells -->
             <!-- DO NOT CHANGE THE ID -->
             <com.android.launcher3.Workspace
@@ -87,8 +90,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
 
-        </com.android.launcher3.dragndrop.DragLayer>
 
+        </com.android.launcher3.dragndrop.DragLayer>
     </com.android.launcher3.LauncherRootView>
 
     <FrameLayout

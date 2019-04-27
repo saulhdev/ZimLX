@@ -108,12 +108,11 @@ android {
         }
         quickstep {
             dimension "default"
-            applicationId 'com.android.launcher3'
+            applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
         zim{
             dimension "custom"
-            applicationId 'org.zimmob.zimlx'
         }
     }
     lintOptions {

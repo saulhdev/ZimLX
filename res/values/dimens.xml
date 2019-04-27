@@ -25,7 +25,7 @@
     <!-- Minimum space between workspace and hotseat in spring loaded mode -->
     <dimen name="dynamic_grid_min_spring_loaded_space">8dp</dimen>
 
-    <dimen name="dynamic_grid_drawer_additional_padding">30dp</dimen>
+    <dimen name="dynamic_grid_drawer_additional_padding">31dp</dimen>
     <dimen name="dynamic_grid_cell_layout_padding">5.5dp</dimen>
     <dimen name="dynamic_grid_cell_layout_bottom_padding">0dp</dimen>
     <dimen name="dynamic_grid_cell_padding_x">8dp</dimen>
@@ -291,6 +291,7 @@
     <dimen name="smartspace_preview_height">100dp</dimen>
     <dimen name="smartspace_preview_widget_margin">24dp</dimen>
 
+    <dimen name="hotseat_qsb_bottom_margin">2dp</dimen>
     <dimen name="qsb_doodle_tap_target_logo_width">106dp</dimen>
     <dimen name="qsb_mic_width">56dp</dimen>
     <dimen name="qsb_text_spacing">20dp</dimen>
@@ -298,6 +299,8 @@
     <dimen name="qsb_hint_text_size">13sp</dimen>
     <dimen name="qsb_max_hint_length">130dp</dimen>
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="all_apps_search_vertical_offset">30dp</dimen>
+
     <!-- Overview -->
     <dimen name="options_menu_icon_size">24dp</dimen>
     <dimen name="options_menu_thumb_size">32dp</dimen>
@@ -305,6 +308,10 @@
     <!-- Drop target bar -->
     <dimen name="vert_drop_target_vertical_gap">20dp</dimen>
     <dimen name="vert_drop_target_horizontal_gap">14dp</dimen>
+
+    <dimen name="select_dialog_padding_start_material">20dp</dimen>
+    <dimen name="select_dialog_padding_material">24dp</dimen>
+    <dimen name="select_dialog_drawable_padding_start_material">20dp</dimen>
 
     <dimen name="dialog_corner_radius">8dp</dimen>
     <dimen name="large_title_height">84dp</dimen>

@@ -127,6 +127,7 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.minibar.Minibar;
@@ -315,6 +316,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
 
         LauncherAppState app = LauncherAppState.getInstance(this);
+        ZimPreferences prefs = Utilities.getZimPrefs(this);
+        prefs.getGridSize();
+        prefs.getDockGridSize();
+        prefs.getDrawerGridSize();
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
         initDeviceProfile(app.getInvariantDeviceProfile());
@@ -2647,6 +2652,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         public void onScrollChanged(float progress) {
             if (mWorkspace != null) {
                 mWorkspace.onOverlayScrollChanged(progress);
+            }
+        }
+
+        private void hideOverlay(LauncherState launcherState, boolean animate) {
+            if (launcherState == LauncherState.OVERVIEW || launcherState == LauncherState.FAST_OVERVIEW) {
+                hideOverlay(animate);
+            }
+        }
+
+        private void hideOverlay(boolean animate) {
+            Launcher launcher = Launcher.this;
+            if (launcher instanceof NexusLauncherActivity) {
+                ((NexusLauncherActivity) launcher).getGoogleNow().closeOverlay(animate);
             }
         }
     }

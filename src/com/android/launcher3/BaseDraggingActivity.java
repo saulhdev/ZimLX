@@ -39,6 +39,10 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.views.BaseDragLayer;
 
+import org.zimmob.zimlx.theme.ThemeOverride;
+
+import androidx.annotation.NonNull;
+
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
  */
@@ -70,14 +74,14 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
-        // Update theme
-        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
-        wallpaperColorInfo.addOnChangeListener(this);
-        int themeRes = getThemeRes(wallpaperColorInfo);
-        if (themeRes != mThemeRes) {
-            mThemeRes = themeRes;
-            setTheme(themeRes);
-        }
+        // Register theme override
+        ThemeOverride themeOverride = new ThemeOverride(getLauncherThemeSet(), this);
+        themeOverride.applyTheme(this);
+    }
+
+    @NonNull
+    protected ThemeOverride.ThemeSet getLauncherThemeSet() {
+        return new ThemeOverride.Launcher();
     }
 
     @Override

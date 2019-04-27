@@ -55,11 +55,15 @@ import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
 import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
+import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.ResumablePreference;
+import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
+import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
@@ -89,7 +93,7 @@ import androidx.recyclerview.widget.RecyclerView;
 /**
  * Settings activity for Launcher.
  */
-public class SettingsActivity extends SettingsBaseActivityX implements
+public class SettingsActivity extends SettingsBaseActivity implements
         PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
         FragmentManager.OnBackStackChangedListener, View.OnClickListener {
 
@@ -592,6 +596,7 @@ public class SettingsActivity extends SettingsBaseActivityX implements
                 findPreference("kill").setOnPreferenceClickListener(this);
                 /*findPreference("crashLauncher").setOnPreferenceClickListener(this);
                 findPreference("addSettingsShortcut").setOnPreferenceClickListener(this);
+
                 findPreference("currentWeatherProvider").setSummary(
                         Utilities.getZimPrefs(mContext).getWeatherProvider());
                 findPreference("appInfo").setOnPreferenceClickListener(this);
@@ -637,15 +642,15 @@ public class SettingsActivity extends SettingsBaseActivityX implements
             final DialogFragment f;
             if (preference instanceof GridSizePreference) {
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
-                //} else if (preference instanceof SingleDimensionGridSizePreference) {
-                //    f = SingleDimensionGridSizeDialogFragmentCompat.Companion
-                //            .newInstance(preference.getKey());
+            } else if (preference instanceof SingleDimensionGridSizePreference) {
+                f = SingleDimensionGridSizeDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
                 //} else if (preference instanceof GesturePreference) {
                 //    f = SelectGestureHandlerFragment.Companion
                 //            .newInstance((GesturePreference) preference);
-                //} else if (preference instanceof SearchProviderPreference) {
-                //    f = SelectSearchProviderFragment.Companion
-                //            .newInstance((SearchProviderPreference) preference);
+            } else if (preference instanceof SearchProviderPreference) {
+                f = SelectSearchProviderFragment.Companion
+                        .newInstance((SearchProviderPreference) preference);
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());

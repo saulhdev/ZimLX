@@ -40,6 +40,7 @@ import androidx.dynamicanimation.animation.FloatPropertyCompat
 import com.android.launcher3.*
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
+import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
 import kotlin.math.ceil
@@ -100,6 +101,20 @@ inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {
     val tmp = ArrayList<T>()
     tmp.addAll(this)
     for (element in tmp) action(element)
+}
+
+@Suppress("UNCHECKED_CAST")
+class JavaField<T>(private val targetObject: Any, fieldName: String, targetClass: Class<*> = targetObject::class.java) {
+
+    private val field: Field = targetClass.getDeclaredField(fieldName).apply { isAccessible = true }
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return field.get(targetObject) as T
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        field.set(targetObject, value)
+    }
 }
 
 fun Switch.applyColor(color: Int) {
