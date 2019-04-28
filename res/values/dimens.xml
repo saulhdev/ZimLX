@@ -317,4 +317,15 @@
     <dimen name="large_title_height">84dp</dimen>
     <dimen name="large_title_horizontal_padding">70dp</dimen>
     <dimen name="large_title_vertical_padding">24dp</dimen>
+
+    <dimen name="icon_preview_size">48dp</dimen>
+    <dimen name="icon_preview_padding">16dp</dimen>
+
+    <dimen name="swipe_up_negative_max">400dp</dimen>
+    <dimen name="swipe_up_positive_max">100dp</dimen>
+
+    <dimen name="all_apps_action_spacing">8dp</dimen>
+    <dimen name="action_view_compound_drawable_padding">5dp</dimen>
+    <dimen name="all_apps_label_top_padding">16dp</dimen>
+    <dimen name="all_apps_label_text_size">14sp</dimen>
 </resources>

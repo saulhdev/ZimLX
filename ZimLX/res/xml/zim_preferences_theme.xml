@@ -1,17 +1,27 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_icons">
-        <com.google.android.apps.nexuslauncher.CustomIconPreference
-            android:defaultValue=""
-            app:iconSpaceReserved="false"
-            android:key="pref_icon_pack"
+    <PreferenceCategory android:title="@string/pref_cat__theme_icons">
+
+        <org.zimmob.zimlx.settings.ui.IconPackPreference
+            android:defaultValue="@string/config_default_icon_pack"
+            android:key="pref_icon_packs"
             android:persistent="true"
+            app:iconSpaceReserved="false"
             android:summary="%s"
             android:title="@string/title__theme_icon_pack" />
 
+        <org.zimmob.zimlx.preferences.ZlSwitchPreference
+            android:defaultValue="true"
+            android:key="pref_iconPackMasking"
+            android:summary="@string/pref_icon_pack_masking_summary"
+            android:title="@string/pref_icon_pack_masking"
+            app:iconSpaceReserved="false"
+            app:controllerClass="org.zimmob.zimlx.settings.controllers.IconPackMaskingController" />
+
+
         <ListPreference
-            android:defaultValue=" "
+            android:defaultValue=""
             app:iconSpaceReserved="false"
             android:entries="@array/icon_shape_override_paths_names"
             android:entryValues="@array/icon_shape_override_paths_values"
@@ -53,7 +63,7 @@
             android:title="@string/title__theme_folder_shape" />
 
 
-    </androidx.preference.PreferenceCategory>
+    </PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_style">
 
         <ListPreference

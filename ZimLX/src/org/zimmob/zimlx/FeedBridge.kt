@@ -36,7 +36,6 @@ class FeedBridge(private val context: Context) {
         listOf(
                 PixelBridgeInfo("com.google.android.apps.nexuslauncher", R.integer.bridge_signature_hash))
     }
-    //BridgeInfo("ch.deletescape.lawnchair.lawnfeed", R.integer.lawnfeed_signature_hash)) }
 
     fun resolveBridge(): BridgeInfo? {
         if (!useBridge) return null

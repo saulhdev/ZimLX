@@ -156,6 +156,26 @@
             android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity"
             android:theme="@style/SettingsTheme.V2" />
 
+        <!-- Apply directly from iconpack -->
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.ApplyIconPackActivity"
+            android:theme="@style/SettingsTheme.V2.Transparent">
+            <intent-filter>
+                <action android:name="org.zimmob.zimlx.APPLY_ICONS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Icon picker -->
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.EditIconActivity"
+            android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.IconPickerActivity"
+            android:theme="@style/SettingsTheme.V2" />
+
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"

@@ -2,18 +2,10 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
-import com.android.launcher3.util.ComponentKeyMapper;
-
-import java.util.Iterator;
 
 public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver, SharedPreferences.OnSharedPreferenceChangeListener {
     private final LauncherCallbacks mCallbacks;
@@ -27,13 +19,13 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
     }
 
     public void di() {
-        final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
-        /*if(Utilities.getZimPrefs(mLauncher.getApplicationContext()).getDrawerStyle()!=0){
+        /*final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
+        if(Utilities.getZimPrefs(mLauncher.getApplicationContext()).getDrawerStyle()!=0){
             apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
         }
         else{
             apps = ((AllAppsPaged) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
-        }*/
+        }
 
         final IconCache iconCache = LauncherAppState.getInstance(this.mLauncher).getIconCache();
         final Iterator<ComponentKeyMapper<AppInfo>> iterator = this.mCallbacks.getPredictedApps().iterator();
@@ -54,6 +46,7 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
             }
             n = n2;
         }
+        */
     }
 
     public void onCreate() {

@@ -18,7 +18,6 @@ public class SubPreference extends Preference implements View.OnLongClickListene
     private boolean mLongClick;
 
     private boolean mHasPreview = false;
-
     public SubPreference(Context context, AttributeSet attrs) {
         super(context, attrs);
 

@@ -87,12 +87,12 @@ public class NexusLauncherActivity extends Launcher {
         }
     }
 
-    public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-        return mLauncher.fA.getPredictedApps();
-    }
-
     public GoogleNow getGoogleNow() {
         return mLauncher.fy;
+    }
+
+    public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
+        return mLauncher.fA.getPredictedApps();
     }
 
     public void playQsbAnimation() {

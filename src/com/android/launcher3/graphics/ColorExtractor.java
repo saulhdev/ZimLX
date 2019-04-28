@@ -17,8 +17,21 @@ package com.android.launcher3.graphics;
 
 import android.graphics.Bitmap;
 import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.util.SparseArray;
+import android.util.SparseIntArray;
 
+import com.android.launcher3.Utilities;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import androidx.core.graphics.ColorUtils;
+import kotlin.collections.ArraysKt;
+
+import static java.lang.Math.max;
+import static java.lang.Math.min;
 /**
  * Utility class for extracting colors from a bitmap.
  */
@@ -110,5 +123,131 @@ public class ColorExtractor {
             }
         }
         return bestColor;
+    }
+
+    // Average number of derived colors (based on averages with ~100 icons and performance testing)
+    private static final int NUMBER_OF_COLORS_GUESSTIMATION = 45;
+
+    /**
+     * This picks a dominant color judging by how often it appears and modifies it to provide
+     * sufficient contrast to the pbitmap.
+     *
+     * @param bitmap The bitmap to scan
+     */
+    public static int generateBackgroundColor(Bitmap bitmap) {
+        if (bitmap == null) {
+            return Color.WHITE;
+        }
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+        final int size = height * width;
+
+        SparseIntArray rgbScoreHistogram = new SparseIntArray(NUMBER_OF_COLORS_GUESSTIMATION);
+        final int[] pixels = new int[size];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+
+        int highScore = 0;
+        int bestRGB = 0;
+        int transparentScore = 0;
+        for (int pixel : pixels) {
+            int alpha = 0xFF & (pixel >> 24);
+            if (alpha < 0xDD) {
+                // Drop mostly-transparent pixels.
+                transparentScore++;
+                continue;
+            }
+            // Reduce color complexity.
+            int rgb = posterize(pixel);
+            if (rgb < 0) {
+                // Defensively avoid array bounds violations.
+                continue;
+            }
+            int currentScore = rgbScoreHistogram.get(rgb) + 1;
+            rgbScoreHistogram.append(rgb, currentScore);
+            if (currentScore > highScore) {
+                highScore = currentScore;
+                bestRGB = rgb;
+            }
+        }
+
+        // Convert to HSL to get the lightness
+        final float[] hsl = new float[3];
+        ColorUtils.colorToHSL(bestRGB, hsl);
+        float lightness = hsl[2];
+
+        // "single color"
+        boolean singleColor = rgbScoreHistogram.size() <= 2;
+        boolean light = lightness > .5;
+        // Apply dark background to mostly white icons
+        boolean veryLight = lightness > .75 && singleColor;
+        // Apply light background to mostly dark icons
+        boolean veryDark = lightness < .30 && singleColor;
+
+        // Adjust color to reach suitable contrast depending on the relationship between the colors
+        float ratio = min(max(1f - (highScore / (float) (size - transparentScore)), .2f), .8f);
+
+        if (singleColor) {
+            // Invert ratio for "single color" foreground
+            ratio = 1f - ratio;
+        }
+
+        // Vary color mix-in based on lightness and amount of colors
+        int fill = (light && !veryLight) || veryDark ? 0xFFFFFFFF : 0xFF333333;
+        int background = ColorUtils.blendARGB(bestRGB | 0xff << 24, fill, ratio);
+        return background | 0xff << 24;
+    }
+
+    public static boolean isSingleColor(Drawable drawable, int color) {
+        if (drawable == null) return true;
+        final int testColor = posterize(color);
+        if (drawable instanceof ColorDrawable) {
+            return posterize(((ColorDrawable) drawable).getColor()) == testColor;
+        }
+        final Bitmap bitmap = Utilities.drawableToBitmap(drawable);
+        if (bitmap == null) {
+            return false;
+        }
+        final int height = bitmap.getHeight();
+        final int width = bitmap.getWidth();
+
+        int[] pixels = new int[height * width];
+        bitmap.getPixels(pixels, 0, width, 0, 0, width, height);
+        Set<Integer> set = new HashSet<>(ArraysKt.asList(pixels));
+        Integer[] distinctPixels = new Integer[set.size()];
+        set.toArray(distinctPixels);
+
+        for (int pixel : distinctPixels) {
+            if (testColor != posterize(pixel)) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+    private static final int MAGIC_NUMBER = 25;
+
+    /*
+     * References:
+     * https://www.cs.umb.edu/~jreyes/csit114-fall-2007/project4/filters.html#posterize
+     * https://github.com/gitgraghu/image-processing/blob/master/src/Effects/Posterize.java
+     */
+    private static int posterize(int rgb) {
+        int red = (0xff & (rgb >> 16));
+        int green = (0xff & (rgb >> 8));
+        int blue = (0xff & rgb);
+        red -= red % MAGIC_NUMBER;
+        green -= green % MAGIC_NUMBER;
+        blue -= blue % MAGIC_NUMBER;
+        if (red < 0) {
+            red = 0;
+        }
+        if (green < 0) {
+            green = 0;
+        }
+        if (blue < 0) {
+            blue = 0;
+        }
+        return red << 16 | green << 8 | blue;
     }
 }

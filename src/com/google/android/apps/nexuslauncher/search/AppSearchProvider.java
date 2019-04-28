@@ -63,6 +63,15 @@ public class AppSearchProvider extends ContentProvider {
         };
     }
 
+    public static Uri buildUri(final AppInfo appInfo, final UserManagerCompat userManagerCompat) {
+        return new Uri.Builder()
+                .scheme("content")
+                .authority(BuildConfig.APPLICATION_ID + ".appssearch")
+                .appendQueryParameter("component", appInfo.componentName.flattenToShortString())
+                .appendQueryParameter("user", Long.toString(userManagerCompat.getSerialNumberForUser(appInfo.user)))
+                .build();
+    }
+
     public static ComponentKey dl(final Uri uri, final Context context) {
         return new ComponentKey(ComponentName.unflattenFromString(uri.getQueryParameter("component")), UserManagerCompat.getInstance(context).getUserForSerialNumber(Long.parseLong(uri.getQueryParameter("user"))));
     }

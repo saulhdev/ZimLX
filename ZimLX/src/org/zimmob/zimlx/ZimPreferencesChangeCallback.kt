@@ -48,4 +48,8 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     fun updateSmartspace() {
         launcher.refreshGrid()
     }
+
+    fun reloadIcons() {
+        org.zimmob.zimlx.reloadIcons(launcher)
+    }
 }

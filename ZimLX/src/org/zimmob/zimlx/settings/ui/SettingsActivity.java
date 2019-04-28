@@ -55,8 +55,11 @@ import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
 import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.gestures.ui.GesturePreference;
+import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
+import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
@@ -579,7 +582,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                             .register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
                 }
             } else if (getContent() == R.xml.zim_preferences_theme) {
-                /*IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
+                IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
                 Preference packMaskingPreference = findPreference("pref_iconPackMasking");
                 PreferenceGroup parent = packMaskingPreference.getParent();
                 ipm.addListener(() -> {
@@ -589,7 +592,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         parent.addPreference(packMaskingPreference);
                     }
                     return null;
-                });*/
+                });
             } else if (getContent() == R.xml.zim_preferences_app_drawer) {
                 findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
             } else if (getContent() == R.xml.zim_preferences_dev_options) {
@@ -645,9 +648,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof SingleDimensionGridSizePreference) {
                 f = SingleDimensionGridSizeDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-                //} else if (preference instanceof GesturePreference) {
-                //    f = SelectGestureHandlerFragment.Companion
-                //            .newInstance((GesturePreference) preference);
+            } else if (preference instanceof GesturePreference) {
+                f = SelectGestureHandlerFragment.Companion
+                        .newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion
                         .newInstance((SearchProviderPreference) preference);

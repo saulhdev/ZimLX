@@ -17,7 +17,7 @@
                 android:summary="@string/pref_show_assistant_summary"
                 android:title="@string/pref_show_assistant_title" />
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:defaultValue="true"
                 android:key="opa_assistant"
                 android:persistent="true"
@@ -25,47 +25,47 @@
                 android:summary="@string/pref_show_as_assistant_summary"
                 android:title="@string/pref_show_as_assistant_title" />
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_bubbleSearchStyle"
                 android:title="@string/bubble_searchbar"
                 android:defaultValue="false"/>
         </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-        <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        <org.zimmob.zimlx.preferences.StyledPreferenceCategory
             android:key="prefCat_searchbarDock"
             android:title="@string/dock_pref_title">
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_dockSearchBar"
                 android:title="@string/dock_search_bar"
                 android:defaultValue="true"
                 android:persistent="true" />
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_dockColoredGoogle"
                 android:title="@string/dock_colored_google"
                 android:dependency="pref_dockSearchBar"
                 android:defaultValue="false"
                 android:persistent="true" />
 
-            <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            <org.zimmob.zimlx.colors.preferences.ColorPickerPreference
                 android:key="pref_hotseatQsbColorResolver"
                 android:title="@string/pref_qsb_color"
                 android:dependency="pref_dockSearchBar"
                 app:colorMode="ARGB"
                 app:resolvers="@array/resolvers_hotseat_qsb"/>
-        </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+        </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-        <ch.deletescape.lawnchair.preferences.StyledPreferenceCategory
+        <org.zimmob.zimlx.preferences.StyledPreferenceCategory
             android:key="prefCat_searchbarDrawer"
             android:title="@string/app_drawer_pref_title">
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_allAppsSearch"
                 android:title="@string/title_all_apps_search"
                 android:defaultValue="true" />
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_allAppsGoogleSearch"
                 android:title="@string/title_all_apps_google_search"
                 android:summary="@string/summary_all_apps_google_search"
@@ -73,20 +73,20 @@
                 android:disableDependentsState="true"
                 android:defaultValue="true" />
 
-            <ch.deletescape.lawnchair.preferences.StyledSwitchPreferenceCompat
+            <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
                 android:key="pref_search_hidden_apps"
                 android:title="@string/title_search_hidden_apps"
                 android:summary="@string/summary_search_hidden_apps"
                 android:dependency="pref_allAppsGoogleSearch"
                 android:defaultValue="false" />
 
-            <ch.deletescape.lawnchair.colors.preferences.ColorPickerPreference
+            <org.zimmob.zimlx.colors.preferences.ColorPickerPreference
                 android:key="pref_allappsQsbColorResolver"
                 android:title="@string/pref_qsb_color"
                 android:dependency="pref_allAppsSearch"
                 app:colorMode="RGB"
                 app:resolvers="@array/resolvers_allapps_qsb"/>
-        </ch.deletescape.lawnchair.preferences.StyledPreferenceCategory>
+        </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
         -->
 </PreferenceScreen>

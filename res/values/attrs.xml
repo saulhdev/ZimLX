@@ -223,5 +223,7 @@
             <enum name="drawerTab" value="17" />
         </attr>
     </declare-styleable>
-
+    <declare-styleable name="GesturePreference">
+        <attr name="gestureClass" format="string" />
+    </declare-styleable>
 </resources>

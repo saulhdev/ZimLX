@@ -54,6 +54,8 @@ import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.SQLiteCacheHelper;
 import com.android.launcher3.util.Thunk;
 
+import org.zimmob.zimlx.iconpack.ZimIconProvider;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -190,6 +192,12 @@ public class IconCache {
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
+    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
+        if (mIconProvider instanceof ZimIconProvider)
+            return ((ZimIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
+        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
+
     protected BitmapInfo makeDefaultIcon(UserHandle user) {
         try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
             return li.createBadgedIconBitmap(
@@ -265,7 +273,7 @@ public class IconCache {
             // Update icon cache. This happens in segments and {@link #onPackageIconsUpdated}
             // is called by the icon cache when the job is complete.
             updateDBIcons(user, apps, Process.myUserHandle().equals(user)
-                    ? ignorePackagesForMainUser : Collections.<String>emptySet());
+                    ? ignorePackagesForMainUser : Collections.emptySet());
         }
     }
 
@@ -449,7 +457,7 @@ public class IconCache {
      */
     public synchronized void updateTitleAndIcon(AppInfo application) {
         CacheEntry entry = cacheLocked(application.componentName,
-                Provider.<LauncherActivityInfo>of(null),
+                Provider.of(null),
                 application.user, false, application.usingLowResIcon);
         if (entry.icon != null && !isDefaultIcon(entry.icon, application.user)) {
             applyCacheEntry(entry, application);

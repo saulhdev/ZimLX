@@ -19,4 +19,10 @@
     <bool name="notification_badging_enabled">false</bool>
 
     <bool name="enable_install_shortcut_api">true</bool>
+    <!-- Wether or not adaptive icons should be generated for legacy icons -->
+    <bool name="config_enable_legacy_treatment">true</bool>
+    <!-- If set to true lawnchair will generate colorized background for legacy masked icons -->
+    <bool name="config_enable_colorized_legacy_treatment">true</bool>
+    <!-- Wether or not new adaptive icons should be generated for adaptive icons with purely white background -->
+    <bool name="config_enable_white_only_treatment">false</bool>
 </resources>

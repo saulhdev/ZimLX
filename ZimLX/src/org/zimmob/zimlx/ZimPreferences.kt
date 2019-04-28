@@ -5,12 +5,14 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
+import android.text.TextUtils
 import android.util.TypedValue
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.globalsearch.SearchProviderController
+import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
 import org.zimmob.zimlx.settings.GridSize2D
@@ -52,6 +54,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
+    private val reloadIcons = { reloadIcons() }
+    private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
 
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
 
@@ -120,7 +124,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
 
     // Theme
-    var iconPack by StringPref(ZimFlags.ICON_PACK, "", doNothing)
+    private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
+    val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
+            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
+
+        override fun unflattenValue(value: String) = value
+    }
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
+
     var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
     val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, false, recreate)
     val adaptiveBackgroud by BooleanPref(ZimFlags.THEME_ADAPTIVE_BACKGROUND, true, recreate)
@@ -129,6 +142,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
+    var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
 
 
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
@@ -190,12 +206,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
-    var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey(context, key)
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
+    }
+
+    val customAppIcon = object : MutableMapPref<ComponentKey, IconPackManager.CustomIconEntry>("pref_appIconMap", reloadAll) {
+        override fun flattenKey(key: ComponentKey) = key.toString()
+        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun flattenValue(value: IconPackManager.CustomIconEntry) = value.toString()
+        override fun unflattenValue(value: String) = IconPackManager.CustomIconEntry.fromString(value)
     }
 
     val recentBackups = object : MutableListPref<Uri>(
@@ -239,6 +261,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeCallback?.updateSmartspace()
     }
 
+    private fun reloadIcons() {
+        onChangeCallback?.reloadIcons()
+    }
+
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
         keys.forEach { addOnPreferenceChangeListener(it, listener) }
     }
@@ -261,14 +287,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
                                             private val prefKey: String,
-                                            onChange: () -> Unit = doNothing) {
+                                            onChange: () -> Unit = doNothing,
+                                            default: List<T> = emptyList()) {
 
-        constructor(prefKey: String, onChange: () -> Unit = doNothing) : this(sharedPrefs, prefKey, onChange)
+        constructor(prefKey: String, onChange: () -> Unit = doNothing, default: List<T> = emptyList())
+                : this(sharedPrefs, prefKey, onChange, default)
 
         private val valueList = ArrayList<T>()
 
         init {
-            val arr = JSONArray(prefs.getString(prefKey, "[]"))
+            val arr = JSONArray(prefs.getString(prefKey, getJsonString(default)))
             (0 until arr.length()).mapTo(valueList) { unflattenValue(arr.getString(it)) }
             if (onChange != doNothing) {
                 onChangeMap[prefKey] = onChange
@@ -286,6 +314,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         operator fun set(position: Int, value: T) {
             valueList[position] = value
+            saveChanges()
+        }
+
+        fun setAll(value: List<T>) {
+            if (value == valueList) return
+            valueList.clear()
+            valueList.addAll(value)
             saveChanges()
         }
 
@@ -319,14 +354,20 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             saveChanges()
         }
 
+        fun getList() = valueList
+
         private fun saveChanges() {
-            val arr = JSONArray()
-            valueList.forEach { arr.put(flattenValue(it)) }
             @SuppressLint("CommitPrefEdits")
             val editor = prefs.edit()
-            editor.putString(prefKey, arr.toString())
+            editor.putString(prefKey, getJsonString(valueList))
             if (!bulkEditing)
                 commitOrApply(editor, blockingEditing)
+        }
+
+        private fun getJsonString(list: List<T>): String {
+            val arr = JSONArray()
+            list.forEach { arr.put(flattenValue(it)) }
+            return arr.toString()
         }
     }
 

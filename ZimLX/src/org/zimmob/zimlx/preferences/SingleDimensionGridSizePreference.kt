@@ -23,7 +23,9 @@ import androidx.preference.DialogPreference
 import com.android.launcher3.R
 import org.zimmob.zimlx.settings.GridSize
 
-abstract class SingleDimensionGridSizePreference(context: Context, attrs: AttributeSet?, private val gridSize: GridSize) : DialogPreference(context, attrs) {
+abstract class SingleDimensionGridSizePreference(context: Context, attrs: AttributeSet?,
+                                                 private val gridSize: GridSize) :
+        DialogPreference(context, attrs) {
     val defaultSize by lazy { gridSize.numRowsOriginal }
 
     init {

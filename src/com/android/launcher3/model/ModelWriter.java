@@ -20,6 +20,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -35,9 +36,12 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
+
+import org.zimmob.zimlx.iconpack.IconPackManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -206,6 +210,29 @@ public class ModelWriter {
                 .put(Favorites.SCREEN, item.screenId);
 
         mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+    }
+
+    private void executeUpdateItem(ItemInfo item, ContentWriter writer) {
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, writer));
+    }
+
+
+    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
+                                            String swipeUpAction,
+                                            IconPackManager.CustomIconEntry iconEntry, Bitmap icon,
+                                            boolean updateIcon, boolean reload) {
+        final ContentWriter writer = new ContentWriter(context);
+        writer.put(Favorites.TITLE_ALIAS, alias);
+        writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
+        if (updateIcon) {
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
+            writer.put(Favorites.CUSTOM_ICON_ENTRY, iconEntry != null ? iconEntry.toString() : null);
+        }
+
+        if (reload) {
+            LauncherAppState.getInstance(context).getLauncher().getModelWriter().executeUpdateItem(item, writer);
+            LauncherAppState.getInstance(context).getModel().forceReload();
+        }
     }
 
     /**

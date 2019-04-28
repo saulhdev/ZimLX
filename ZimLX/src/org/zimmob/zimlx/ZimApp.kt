@@ -20,13 +20,15 @@ package org.zimmob.zimlx
 import android.app.Activity
 import android.app.Application
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController
 
 class ZimApp : Application() {
     val activityHandler = ActivityHandler()
     val smartspace by lazy { ZimSmartspaceController(this) }
-
+    var accessibilityService: ZimAccessibilityService? = null
     class ActivityHandler : ActivityLifecycleCallbacks {
 
         val activities = HashSet<Activity>()
@@ -64,6 +66,16 @@ class ZimApp : Application() {
 
         override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
             activities.add(activity)
+        }
+    }
+
+    fun performGlobalAction(action: Int): Boolean {
+        return if (accessibilityService != null) {
+            accessibilityService!!.performGlobalAction(action)
+        } else {
+            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+            false
         }
     }
 }

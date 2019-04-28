@@ -74,8 +74,10 @@ import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.Executor;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -599,6 +601,45 @@ public final class Utilities {
         boolean twoLines = getZimPrefs(context).getTwoRowDock();
         return twoLines ? 2 : 1;
     }
+
+    private static List<Runnable> onStart = new ArrayList<>();
+
+    /**
+     * ATTENTION: Only ever call this from within LawnchairLauncher.kt
+     */
+    public /* private */ static void onLauncherStart() {
+        Log.d(TAG, "onLauncherStart: " + onStart.size());
+        for (Runnable r : onStart)
+            r.run();
+        onStart.clear();
+    }
+
+
+    /**
+     * Cues a runnable to be executed after binding all launcher elements the next time
+     */
+    public static void cueAfterNextStart(Runnable runnable) {
+        Log.d(TAG, "cueAfterNextStart: " + runnable);
+        onStart.add(runnable);
+    }
+
+    public static void goToHome(Context context, Runnable onStart) {
+        cueAfterNextStart(onStart);
+        goToHome(context);
+    }
+
+    public static void goToHome(Context context) {
+        PackageManager pm = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ComponentName componentName = intent.resolveActivity(pm);
+        if (!context.getPackageName().equals(componentName.getPackageName())) {
+            intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        }
+        context.startActivity(intent);
+    }
+
     public static void restartLauncher(Context context) {
         PackageManager pm = context.getPackageManager();
 
@@ -851,5 +892,13 @@ public final class Utilities {
 
     public static float mapRange(float value, float min, float max) {
         return min + (value * (max - min));
+    }
+
+    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
+        try {
+            return Integer.parseInt(identifier.substring(1));
+        } catch (NumberFormatException e) {
+            return res.getIdentifier(identifier.substring(1), null, packageName);
+        }
     }
 }

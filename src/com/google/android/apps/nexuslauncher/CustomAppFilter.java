@@ -24,18 +24,18 @@ public class CustomAppFilter extends org.zimmob.zimlx.ZimAppFilter {
 
     static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
         String comp = key.toString();
-        Set<String> hiddenApps = getHiddenApps(context);
+        Set<String> hiddenApps = new HashSet<>(getHiddenApps(context));
         while (hiddenApps.contains(comp)) {
             hiddenApps.remove(comp);
         }
-        if (hidden != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName())) {
+        if (hidden) {
             hiddenApps.add(comp);
         }
         setHiddenApps(context, hiddenApps);
     }
 
     static boolean isHiddenApp(Context context, ComponentKey key) {
-        return getHiddenApps(context).contains(key.toString()) != CustomIconUtils.isPackProvider(context, key.componentName.getPackageName());
+        return getHiddenApps(context).contains(key.toString());
     }
 
     @SuppressWarnings("ConstantConditions") // This can't be null anyway

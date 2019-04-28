@@ -16,12 +16,29 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.widget.FrameLayout;
 
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.iconpack.IconPack;
+import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.override.CustomInfoProvider;
+
 import java.util.ArrayList;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -53,7 +70,7 @@ public class FolderInfo extends ItemInfo {
     public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
-
+    public String swipeUpAction;
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         user = Process.myUserHandle();
@@ -116,6 +133,37 @@ public class FolderInfo extends ItemInfo {
         listeners.remove(listener);
     }
 
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+    }
+
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
+    }
+
+    public Drawable getIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        Drawable icn = getIconInternal(launcher);
+        if (icn != null) {
+            return icn;
+        }
+        return getFolderIcon(launcher);
+    }
+
+    public Drawable getFolderIcon(Launcher launcher) {
+        int iconSize = launcher.mDeviceProfile.iconSizePx;
+        FrameLayout dummy = new FrameLayout(launcher, null);
+        FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
+            out.translate(iconSize / 2f, 0);
+            // TODO: make folder icons more visible in front of the bottom sheet
+            // out.drawColor(Color.RED);
+            icon.draw(out);
+        });
+        return new BitmapDrawable(launcher.getResources(), b);
+    }
+
     public void itemsChanged(boolean animate) {
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onItemsChanged(animate);
@@ -159,5 +207,25 @@ public class FolderInfo extends ItemInfo {
         void onItemsChanged(boolean animate);
 
         void prepareAutoUpdate();
+    }
+
+    private Drawable cached;
+    private String cachedIcon;
+
+    private Drawable getIconInternal(Launcher launcher) {
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        IconPackManager.CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
+        if (entry != null && entry.getIcon() != null) {
+            if (!entry.getIcon().equals(cachedIcon)) {
+                IconPack pack = IconPackManager.Companion.getInstance(launcher)
+                        .getIconPack(entry.getPackPackageName(), false, true);
+                cached = pack.getIcon(entry.getIcon(), launcher.mDeviceProfile.inv.fillResIconDpi);
+                cachedIcon = entry.getIcon();
+            }
+            if (cached != null) {
+                return cached.mutate();
+            }
+        }
+        return null;
     }
 }

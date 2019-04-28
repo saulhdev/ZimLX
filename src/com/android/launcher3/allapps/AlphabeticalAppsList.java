@@ -155,12 +155,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             //SORT BY NAME AZ
             case SORT_AZ:
                 Collections.sort(mApps, mAppNameComparator);
-                Log.i("apps", "sorting by AZ");
                 break;
 
             //SORT BY NAME ZA
             case SORT_ZA:
-                Log.i("apps", "sorting by ZA");
                 Collections.sort(mApps, (p2, p1) -> Collator
                         .getInstance()
                         .compare(p1.title, p2.title));
@@ -168,7 +166,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
             //SORT BY LAST INSTALLED
             case SORT_LAST_INSTALLED:
-                Log.i("apps", "sorting by Last Installed");
                 PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
                 InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
                 Collections.sort(mApps, installTimeComparator);
@@ -176,7 +173,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
             //SORT BY MOST USED DESC
             case SORT_MOST_USED:
-                Log.i("apps", "sorting by Most Used");
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
                 Collections.sort(mApps, mostUsedComparator);
                 Utilities.getZimPrefs(mLauncher).reloadApps();

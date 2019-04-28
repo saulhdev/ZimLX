@@ -19,6 +19,7 @@ package com.android.launcher3.shortcuts;
 import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
 import android.content.pm.ShortcutInfo;
@@ -31,6 +32,7 @@ import android.util.Log;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -47,6 +49,7 @@ public class DeepShortcutManager {
 
     private static DeepShortcutManager sInstance;
     private static final Object sInstanceLock = new Object();
+    private final Context mContext;
 
     public static DeepShortcutManager getInstance(Context context) {
         synchronized (sInstanceLock) {
@@ -62,6 +65,10 @@ public class DeepShortcutManager {
 
     private DeepShortcutManager(Context context) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        if (Utilities.ATLEAST_MARSHMALLOW && !Utilities.ATLEAST_NOUGAT_MR1) {
+            mWasLastCallSuccess = true;
+        }
+        mContext = context;
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {
@@ -160,6 +167,23 @@ public class DeepShortcutManager {
     }
 
     @TargetApi(25)
+    public void startShortcut(String packageName, String id, Intent intent,
+                              Bundle startActivityOptions, UserHandle user) {
+        if (Utilities.ATLEAST_NOUGAT_MR1) {
+            try {
+                mLauncherApps.startShortcut(packageName, id, intent.getSourceBounds(),
+                        startActivityOptions, user);
+                mWasLastCallSuccess = true;
+            } catch (SecurityException | IllegalStateException e) {
+                Log.e(TAG, "Failed to start shortcut", e);
+                mWasLastCallSuccess = false;
+            }
+        } else {
+            mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
+        }
+    }
+
+    @TargetApi(25)
     public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
         if (Utilities.ATLEAST_NOUGAT_MR1) {
             try {
@@ -182,6 +206,10 @@ public class DeepShortcutManager {
      */
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName, UserHandle user) {
         return queryForPinnedShortcuts(packageName, null, user);
+    }
+
+    public List<ShortcutInfoCompat> queryForComponent(ComponentKey key) {
+        return query(FLAG_GET_ALL, key.componentName.getPackageName(), key.componentName, null, key.user);
     }
 
     public List<ShortcutInfoCompat> queryForPinnedShortcuts(String packageName,

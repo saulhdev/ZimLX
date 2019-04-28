@@ -106,13 +106,16 @@
     <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
 
     <!-- Name of an icon provider class. -->
-    <string name="icon_provider_class" translatable="false">com.google.android.apps.nexuslauncher.CustomIconProvider</string>
+    <string name="icon_provider_class" translatable="false">org.zimmob.zimlx.iconpack.ZimIconProvider</string>
 
     <!-- Name of a drawable factory class. -->
-    <string name="drawable_factory_class" translatable="false">com.google.android.apps.nexuslauncher.CustomDrawableFactory</string>
+    <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
 
     <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
+
+    <!-- Name of a custom shortcut class. -->
+    <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
 
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
@@ -179,4 +182,6 @@
     <bool name="config_default_enable_blur">false</bool>
     <string name="config_default_search_provider" translatable="false">org.zimmob.ximlx.globalsearch.providers.GoogleSearchProvider</string>
 
+    <!-- The default icon pack to use; empty = system icons -->
+    <string name="config_default_icon_pack" translatable="false" />
 </resources>

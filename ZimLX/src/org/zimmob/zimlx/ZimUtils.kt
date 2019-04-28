@@ -19,11 +19,14 @@ package org.zimmob.zimlx
 
 import android.R
 import android.content.Context
+import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.RectF
+import android.graphics.drawable.Drawable
 import android.os.Handler
 import android.os.Looper
 import android.util.Property
@@ -38,8 +41,16 @@ import androidx.core.graphics.ColorUtils
 import androidx.core.graphics.drawable.DrawableCompat
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import com.android.launcher3.*
+import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
+import com.google.android.apps.nexuslauncher.CustomAppPredictor
+import com.google.android.apps.nexuslauncher.CustomIconUtils
+import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -69,6 +80,17 @@ fun Context.getColorAttr(attr: Int): Int {
     return colorAccent
 }
 
+
+fun Context.getIcon(): Drawable = packageManager.getApplicationIcon(applicationInfo)
+
+fun Context.getBaseDraggingActivityOrNull(): BaseDraggingActivity? {
+    return try {
+        BaseDraggingActivity.fromContext(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
+
 var View.isVisible: Boolean
     get() = visibility == View.VISIBLE
     set(value) {
@@ -78,6 +100,11 @@ var View.isVisible: Boolean
 fun dpToPx(size: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
 }
+
+fun Drawable.toBitmap(): Bitmap? {
+    return Utilities.drawableToBitmap(this)
+}
+
 fun Float.round() = roundToInt().toFloat()
 
 fun Float.ceilToInt() = ceil(this).toInt()
@@ -95,12 +122,21 @@ class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
     }
 }
 
+operator fun XmlPullParser.get(index: Int): String? = getAttributeValue(index)
+operator fun XmlPullParser.get(namespace: String?, key: String): String? = getAttributeValue(namespace, key)
+operator fun XmlPullParser.get(key: String): String? = this[null, key]
+
 val Configuration.usingNightMode get() = uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
 
 inline fun <T> Iterable<T>.safeForEach(action: (T) -> Unit) {
     val tmp = ArrayList<T>()
     tmp.addAll(this)
     for (element in tmp) action(element)
+}
+
+fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
+    return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
+            .firstOrNull { it.componentName == componentName }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -163,6 +199,7 @@ fun AlertDialog.applyAccent() {
 
 val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
+val iconPackUiHandler by lazy { Handler(LauncherModel.getIconPackUiLooper()) }
 
 fun runOnUiWorkerThread(r: () -> Unit) {
     runOnThread(uiWorkerHandler, r)
@@ -177,6 +214,33 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
         r()
     } else {
         handler.post(r)
+    }
+}
+
+fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
+
+
+fun reloadIcons(context: Context) {
+    LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+        val userManagerCompat = UserManagerCompat.getInstance(context)
+        val las = LauncherAppState.getInstance(context)
+        val model = las.model
+        val launcher = las.launcher
+
+        for (user in userManagerCompat.userProfiles) {
+            model.onPackagesReload(user)
+        }
+
+        val shortcutManager = DeepShortcutManager.getInstance(context)
+        val launcherApps = LauncherAppsCompat.getInstance(context)
+        userManagerCompat.userProfiles.forEach { user ->
+            launcherApps.getActivityList(null, user).forEach { CustomIconUtils.reloadIcon(shortcutManager, model, user, it.componentName.packageName) }
+        }
+        if (launcher != null) {
+            runOnMainThread {
+                (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
+            }
+        }
     }
 }
 
