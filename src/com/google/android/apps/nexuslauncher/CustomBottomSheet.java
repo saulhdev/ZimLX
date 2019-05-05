@@ -300,4 +300,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             return true;
         }
     }
+
+    public static void show(Launcher launcher, ItemInfo itemInfo) {
+        CustomBottomSheet cbs = (CustomBottomSheet) launcher.getLayoutInflater()
+                .inflate(R.layout.app_edit_bottom_sheet, launcher.getDragLayer(), false);
+        cbs.populateAndShow(itemInfo);
+    }
 }

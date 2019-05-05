@@ -257,7 +257,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     }
 
     private fun extractColor(drawable: Drawable): Int = if (prefs.colorizedLegacyTreatment) {
-        ColorExtractor.generateBackgroundColor(drawable.toBitmap())
+        ColorExtractor.findDominantColorByHue(drawable.toBitmap())
+        //ColorExtractor.generateBackgroundColor(drawable.toBitmap())
     } else {
         Color.WHITE
     }

@@ -32,7 +32,6 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
 
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
-
         adapter.callbacks = this
         loadLocalBackups()
         recyclerView.layoutManager = GridLayoutManager(this, 2).apply {

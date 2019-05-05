@@ -28,6 +28,7 @@ import org.zimmob.zimlx.smartspace.ZimSmartspaceController
 class ZimApp : Application() {
     val activityHandler = ActivityHandler()
     val smartspace by lazy { ZimSmartspaceController(this) }
+    //val recentsEnabled by lazy { checkRecentsComponent() }
     var accessibilityService: ZimAccessibilityService? = null
     class ActivityHandler : ActivityLifecycleCallbacks {
 
@@ -78,6 +79,20 @@ class ZimApp : Application() {
             false
         }
     }
+
+    /*@Keep
+    fun checkRecentsComponent(): Boolean {
+        if (!Utilities.ATLEAST_P) return false
+        if (!Utilities.HIDDEN_APIS_ALLOWED) return false
+
+        val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
+        if (resId == 0) return false
+        val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
+                ?: return false
+        return recentsComponent.packageName == packageName
+                && recentsComponent.className == RecentsActivity::class.java.name
+    }
+    */
 }
 
 

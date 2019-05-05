@@ -16,13 +16,8 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
-import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -35,7 +30,6 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -53,11 +47,6 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private int mBackgroundColor;
-    @ViewDebug.ExportedProperty(category = "launcher")
-    private ColorDrawable mBackground;
-    private ValueAnimator mBackgroundColorAnimator;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -70,12 +59,6 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        /*mBackgroundColor = ColorUtils.setAlphaComponent(
-                Themes.getAttrColor(context, android.R.attr.colorPrimary), 0);
-        mBackground = new ColorDrawable(mBackgroundColor);
-        if (FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
-            setBackground(mBackground);
-        }*/
     }
 
     public CellLayout getLayout() {
@@ -202,50 +185,5 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
-    }
-
-    public void updateColor(ExtractedColors extractedColors, boolean animate) {
-        if (!FeatureFlags.LEGACY_ALL_APPS_BACKGROUND) {
-            // not hotseat visible
-            return;
-        }
-        if (!mHasVerticalHotseat) {
-            int color = extractedColors.getColor(ExtractedColors.HOTSEAT_INDEX);
-            if (mBackgroundColorAnimator != null) {
-                mBackgroundColorAnimator.cancel();
-            }
-            if (!animate) {
-                setBackgroundColor(color);
-            } else {
-                mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
-                mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
-                mBackgroundColorAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-                    @Override
-                    public void onAnimationUpdate(ValueAnimator animation) {
-                        mBackground.setColor((Integer) animation.getAnimatedValue());
-                    }
-                });
-                mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
-                    @Override
-                    public void onAnimationEnd(Animator animation) {
-                        mBackgroundColorAnimator = null;
-                    }
-                });
-                mBackgroundColorAnimator.start();
-            }
-            mBackgroundColor = color;
-        }
-    }
-
-    public void setBackgroundTransparent(boolean enable) {
-        if (enable) {
-            mBackground.setAlpha(0);
-        } else {
-            mBackground.setAlpha(255);
-        }
-    }
-
-    public int getBackgroundDrawableColor() {
-        return mBackgroundColor;
     }
 }

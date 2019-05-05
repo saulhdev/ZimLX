@@ -37,6 +37,7 @@ import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
@@ -108,6 +109,10 @@ public final class Utilities {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     public static final boolean ATLEAST_LOLLIPOP_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
+
+
+    //public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.tryAccess();
+
     public static final int SINGLE_FRAME_MS = 16;
 
     /**
@@ -244,6 +249,19 @@ public final class Utilities {
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
         return new int[]{sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+    }
+
+    public static void scaleRectFAboutCenter(RectF r, float scale) {
+        if (scale != 1.0f) {
+            float cx = r.centerX();
+            float cy = r.centerY();
+            r.offset(-cx, -cy);
+            r.left = r.left * scale;
+            r.top = r.top * scale;
+            r.right = r.right * scale;
+            r.bottom = r.bottom * scale;
+            r.offset(cx, cy);
+        }
     }
 
     public static void scaleRectAboutCenter(Rect r, float scale) {
@@ -454,6 +472,12 @@ public final class Utilities {
     }
 
     /**
+     * @see #boundToRange(int, int, int).
+     */
+    public static long boundToRange(long value, long lowerBound, long upperBound) {
+        return Math.max(lowerBound, Math.min(value, upperBound));
+    }
+    /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
      *
@@ -481,6 +505,11 @@ public final class Utilities {
     public static SharedPreferences getDevicePrefs(Context context) {
         return context.getSharedPreferences(
                 LauncherFiles.DEVICE_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
+
+    public static SharedPreferences getReflectionPrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static boolean isPowerSaverOn(Context context) {
@@ -850,6 +879,44 @@ public final class Utilities {
         }
         return resizedBitmap;
     }
+
+    /*public static boolean isRecentsEnabled() {
+        LauncherAppState las = LauncherAppState.getInstanceNoCreate();
+        if (las != null) {
+            Context context = las.getContext();
+            return ZimAppKt.getZimApp(context).getRecentsEnabled();
+        }
+        return false;
+    }*/
+
+    /*public static Drawable getIconForTask(Context context, int userId, String packageName) {
+        IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
+        LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
+        UserHandle user = UserHandle.of(userId);
+        List<LauncherActivityInfo> al = lac.getActivityList(packageName, user);
+        if (!al.isEmpty()) {
+            Drawable fullResIcon = ic.getFullResIcon(al.get(0));
+            if (user == Process.myUserHandle()) {
+                return fullResIcon;
+            } else {
+                LauncherIcons li = LauncherIcons.obtain(context);
+                BitmapInfo bitmapInfo = li.createBadgedIconBitmap(fullResIcon, user, 24);
+                li.recycle();
+
+                return new BitmapDrawable(context.getResources(), bitmapInfo.icon);
+            }
+        } else {
+            return null;
+        }
+    }*/
+
+    /*public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
+        if (Utilities.getZimPrefs(launcher).getDockGradientStyle()) return targetProgress;
+        if (toState == LauncherState.OVERVIEW) {
+            return OverviewState.getNormalVerticalProgress(launcher);
+        }
+        return targetProgress;
+    }*/
 
     public static void openURLinBrowser(Context context, String url) {
         openURLinBrowser(context, url, null, null);

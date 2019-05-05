@@ -54,4 +54,17 @@
     <dimen name="shelf_surface_radius">16dp</dimen>
     <!-- same as vertical_drag_handle_size -->
     <dimen name="shelf_surface_offset">24dp</dimen>
+
+    <!-- Overview -->
+    <dimen name="options_menu_icon_size">24dp</dimen>
+    <dimen name="options_menu_thumb_size">32dp</dimen>
+    <dimen name="qsb_doodle_tap_target_logo_width">106dp</dimen>
+    <dimen name="qsb_mic_width">56dp</dimen>
+    <dimen name="qsb_text_spacing">20dp</dimen>
+    <dimen name="qsb_two_bubble_gap">8dp</dimen>
+    <dimen name="qsb_hint_text_size">13sp</dimen>
+    <dimen name="qsb_max_hint_length">130dp</dimen>
+    <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="all_apps_search_vertical_offset">30dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
 </resources>

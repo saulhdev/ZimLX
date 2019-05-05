@@ -49,14 +49,6 @@
     <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
-    <!-- Pixel -->
-    <permission
-        android:name="${applicationId}.permission.QSB"
-        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="signatureOrSystem" />
-
-    <uses-permission android:name="${applicationId}.permission.QSB" />
-
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
@@ -74,7 +66,7 @@
         attributes and intent filters the same
         -->
         <activity
-            android:name="com.google.android.apps.nexuslauncher.NexusLauncherActivity"
+            android:name="org.zimmob.zimlx.ZimLauncher"
             android:clearTaskOnLaunch="true"
             android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:enabled="true"
@@ -88,12 +80,24 @@
             android:windowSoftInputMode="adjustPan">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.MONKEY" />
                 <category android:name="android.intent.category.LAUNCHER" />
                 <category android:name="android.intent.category.LAUNCHER_APP" />
+            </intent-filter>
+        </activity>
+        <!--
+                The settings activity. When extending keep the intent filter present
+                -->
+        <activity
+            android:name="com.android.launcher3.SettingsActivity"
+            android:label="@string/settings_button_text"
+            android:theme="@android:style/Theme.DeviceDefault.Settings"
+            android:autoRemoveFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 

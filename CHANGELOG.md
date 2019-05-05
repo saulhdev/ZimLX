@@ -1,5 +1,5 @@
 ### v0.6.0
--   Support for android 9 Pie
+*   Support for android 9 Pie
 
 ### v0.5.2
 *   Added support to sort apps. (AZ, ZA, Last Installed, most used).

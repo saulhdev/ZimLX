@@ -30,10 +30,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.PaintDrawable;
-import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
 
@@ -221,25 +219,6 @@ public class LauncherIcons implements AutoCloseable {
     }
 
     /**
-     * Badges the provided icon with the user badge if required.
-     */
-    public Bitmap badgeIconForUser(Bitmap icon, UserHandle user, Context context) {
-        if (user != null && !Process.myUserHandle().equals(user)) {
-            BitmapDrawable drawable = new FixedSizeBitmapDrawable(icon);
-            Drawable badged = context.getPackageManager().getUserBadgedIcon(
-                    drawable, user);
-            if (badged instanceof BitmapDrawable) {
-                return ((BitmapDrawable) badged).getBitmap();
-            } else {
-                return createIconBitmap(badged, 1f);
-            }
-        } else {
-            return icon;
-        }
-    }
-
-
-    /**
      * Creates a normalized bitmap suitable for the all apps view. The bitmap is also visually
      * normalized with other icons and has enough spacing to add shadow.
      */
@@ -262,58 +241,32 @@ public class LauncherIcons implements AutoCloseable {
                                                     RectF outIconBounds, float[] outScale, UserHandle user) {
         float scale = 1f;
         Drawable icon = mIcon;
-        if (Utilities.getZimPrefs(mContext).getAdaptiveIcons()) {
-            BitmapInfo mBitmapInfo = null;
-            int colorBackground = Color.WHITE;
-
-            if (user != null) {
-                BitmapDrawable drawable = new FixedSizeBitmapDrawable(Utilities.drawableToBitmap(icon));
-                Drawable badged = mPm.getUserBadgedIcon(drawable, user);
-                Bitmap result = ((BitmapDrawable) badged).getBitmap();
-                mBitmapInfo = BitmapInfo.fromBitmap(result);
+        if (Utilities.ATLEAST_OREO) {
+            boolean[] outShape = new boolean[1];
+            if (mWrapperIcon == null) {
+                mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
+                        .mutate();
             }
+            AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
+            dr.setBounds(0, 0, 1, 1);
+            scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
+            /*if (!outShape[0] && (icon instanceof NonAdaptiveIconDrawable)) {
+                FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
+                fsd.setDrawable(icon);
+                fsd.setScale(scale);
+                icon = dr;
+                scale = getNormalizer().getScale(icon, outIconBounds, null, null);
 
-            if (Utilities.ATLEAST_OREO && iconAppTargetSdk >= Build.VERSION_CODES.O) {
-                boolean[] outShape = new boolean[1];
-                if (mWrapperIcon == null) {
-                    mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
-                            .mutate();
-                }
-                AdaptiveIconDrawable dr = (AdaptiveIconDrawable) mWrapperIcon;
-                dr.setBounds(0, 0, 1, 1);
-                scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-                if (Utilities.ATLEAST_OREO && !outShape[0] && !(icon instanceof AdaptiveIconDrawable)) {
-                    FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
-                    fsd.setDrawable(icon);
-                    fsd.setScale(scale);
-                    icon = dr;
-                    scale = getNormalizer().getScale(icon, outIconBounds, null, null);
+                ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
 
-                    if (Utilities.getZimPrefs(mContext).getAdaptiveBackgroud() && mBitmapInfo != null) {
-                        colorBackground = getAdaptiveBgColor(mBitmapInfo);
-                    }
-                    ((ColorDrawable) dr.getBackground()).setColor(mBitmapInfo == null
-                            ? mWrapperBackgroundColor
-                            : colorBackground);
-                }
+
+
             } else {
                 scale = getNormalizer().getScale(icon, outIconBounds, null, null);
-            }
+            }*/
         }
         outScale[0] = scale;
         return icon;
-    }
-
-    private int getAdaptiveBgColor(BitmapInfo mBitmapInfo) {
-        int colorBackground;
-        /*if (ColorUtil.isDark(mContext))
-            colorBackground = IconPalette.getMutedColor(mBitmapInfo.color, 0.5f);
-        else {
-            colorBackground = IconPalette.getMutedColor(mBitmapInfo.color, 0.1f);
-            colorBackground = ColorUtil.manipulateColor(colorBackground, 0.5f);
-        }*/
-        colorBackground = ColorExtractor.findDominantColorByHue(mBitmapInfo.icon);
-        return colorBackground;
     }
 
     /**

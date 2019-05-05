@@ -95,13 +95,11 @@
     </style>
 
     <style name="LauncherTheme.Black.DarkText" parent="@style/LauncherTheme.Black">
-        <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
-        <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
     <!-- A derivative project can extend these themes to customize the application theme without
@@ -181,12 +179,11 @@
     <style name="SettingsTheme.PreferenceTheme.Fragment" parent="@style/PreferenceFragment.Material">
         <item name="android:layout">@layout/settings_fragment</item>
     </style>
-    <!--
         <style name="SettingsTheme.PreferenceTheme.Category" parent="@style/Preference.Category.Material">
             <item name="android:layout">@layout/settings_category_material</item>
             <item name="android:colorAccent">@color/colorAccent</item>
         </style>
-    -->
+
     <style name="SettingsTheme.PreferenceTheme.Preference.Title" parent="@style/TextAppearance.AppCompat.Subhead">
         <item name="customFontType">preferenceTitle</item>
     </style>
@@ -503,6 +500,15 @@
 
     <style name="SettingsTheme.Search.Toolbar.Button.Navigation" parent="Widget.AppCompat.Toolbar.Button.Navigation">
         <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="Theme.Transparent" parent="android:Theme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:backgroundDimEnabled">false</item>
     </style>
 
 </resources>

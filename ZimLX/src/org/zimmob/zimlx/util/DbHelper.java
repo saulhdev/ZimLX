@@ -25,12 +25,10 @@ public class DbHelper extends SQLiteOpenHelper {
     private static final String SQL_DELETE = "DROP TABLE IF EXISTS ";
 
     private SQLiteDatabase db;
-    private Context context;
 
     public DbHelper(Context c) {
         super(c, DATABASE_HOME, null, 1);
         db = getWritableDatabase();
-        context = c;
     }
 
     public void onCreate(SQLiteDatabase db) {
@@ -48,7 +46,6 @@ public class DbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-
     public int getAppCount(String packageName) {
         String SQL_QUERY = "SELECT package_count FROM app_count WHERE package_name='" + packageName + "';";
         Cursor cursor = db.rawQuery(SQL_QUERY, null);
@@ -58,7 +55,6 @@ public class DbHelper extends SQLiteOpenHelper {
         }
         cursor.close();
         Log.i("APP COUNT " + packageName, String.valueOf(appCount));
-
         return appCount;
     }
 
@@ -77,7 +73,6 @@ public class DbHelper extends SQLiteOpenHelper {
         appCount++;
         ContentValues cv = new ContentValues();
         cv.put(COLUMN_PACKAGE_COUNT, appCount);
-        Log.i("APP COUNT", String.format("Update App: %s, Count: %d", packageName, appCount));
         db.update(TABLE_APP_COUNT, cv, "package_name='" + packageName + "'", null);
 
     }

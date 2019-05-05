@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <PreferenceCategory android:title="@string/pref_cat__theme_icons">
 
-        <org.zimmob.zimlx.settings.ui.IconPackPreference
+        <org.zimmob.zimlx.preferences.IconPackPreference
             android:defaultValue="@string/config_default_icon_pack"
             android:key="pref_icon_packs"
             android:persistent="true"
@@ -11,77 +11,88 @@
             android:summary="%s"
             android:title="@string/title__theme_icon_pack" />
 
-        <org.zimmob.zimlx.preferences.ZlSwitchPreference
+        <SwitchPreference
             android:defaultValue="true"
             android:key="pref_iconPackMasking"
             android:summary="@string/pref_icon_pack_masking_summary"
             android:title="@string/pref_icon_pack_masking"
+            android:persistent="true"
             app:iconSpaceReserved="false"
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconPackMaskingController" />
 
 
-        <ListPreference
+        <org.zimmob.zimlx.settings.ui.ControlledListPreference
             android:defaultValue=""
-            app:iconSpaceReserved="false"
             android:entries="@array/icon_shape_override_paths_names"
             android:entryValues="@array/icon_shape_override_paths_values"
             android:key="pref_override_icon_shape"
-            android:persistent="false"
+            android:persistent="true"
             android:summary="%s"
-            android:title="@string/title__theme_icon_shape" />
+            android:title="@string/title__theme_icon_shape"
+            app:iconSpaceReserved="false"
+            app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/config_enable_legacy_treatment"
+            android:key="pref_enableLegacyTreatment"
             android:persistent="true"
+            android:summary="@string/pref_legacy_treatment_summary"
+            android:title="@string/pref_legacy_treatment_title"
             app:iconSpaceReserved="false"
-            android:key="pref_key__adaptive_icons"
-            android:title="@string/title__theme_adaptive_icons" />
+            app:controllerClass=".IconShapeOverrideController" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/config_enable_colorized_legacy_treatment"
+            android:key="pref_colorizeGeneratedBackgrounds"
             android:persistent="true"
+            android:dependency="pref_enableLegacyTreatment"
+            android:summary="@string/pref_legacy_colored_backgrounds_summary"
+            android:title="@string/pref_legacy_colored_backgrounds"
             app:iconSpaceReserved="false"
-            android:key="pref_key__force_adaptive_icons"
-            android:title="@string/title__theme_force_adaptive_icons" />
+            app:controllerClass=".IconShapeOverrideController" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="@bool/config_enable_white_only_treatment"
+            android:key="pref_enableWhiteOnlyTreatment"
             android:persistent="true"
+            android:dependency="pref_colorizeGeneratedBackgrounds"
+            android:summary="@string/pref_white_only_treatment_summary"
+            android:title="@string/pref_white_only_treatment"
             app:iconSpaceReserved="false"
-            android:dependency="pref_key__adaptive_icons"
-            android:key="pref_key__colored_icons"
-            android:summary="@string/pref_summary__theme_colored_icons"
-            android:title="@string/title__theme_colored_icons" />
-
-        <ListPreference
-            android:defaultValue="2"
-            app:iconSpaceReserved="false"
-            android:entries="@array/entries__folder_shape"
-            android:entryValues="@array/values__zero_to_three"
-            android:key="pref_key__folder_shape"
-            android:summary="%s"
-            android:title="@string/title__theme_folder_shape" />
-
+            app:controllerClass=".IconShapeOverrideController" />
 
     </PreferenceCategory>
     <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_style">
 
         <ListPreference
-            android:defaultValue="0"
-            app:iconSpaceReserved="false"
-            android:entries="@array/theme_colors"
-            android:entryValues="@array/values__zero_to_three"
-            android:key="pref_key__theme_color"
-            android:persistent="false"
+            android:defaultValue="1"
+            android:entries="@array/themes"
+            android:entryValues="@array/themeValues"
+            android:key="pref_launcherTheme"
+            android:persistent="true"
             android:summary="%s"
-            android:title="@string/title__theme_color" />
+            android:title="@string/theme_title"
+            app:iconSpaceReserved="false" />
 
         <SwitchPreference
-            android:defaultValue="false"
-            app:iconSpaceReserved="false"
-            android:key="pref_override_launcher_theme"
+            android:defaultValue="@bool/config_default_enable_blur"
+            android:key="pref_enableBlur"
             android:persistent="true"
-            android:title="@string/title__theme_dark_theme" />
+            android:summary="@string/blur_pref_summary"
+            android:title="@string/blur_pref_title"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:dependency="pref_enableBlur"
+            android:key="pref_blurRadius"
+            android:persistent="true"
+            android:title="@string/blur_radius_pref_title"
+            app:defaultSeekbarValue="@dimen/config_default_blur_strength"
+            app:maxValue="150"
+            app:minValue="10"
+            app:steps="140"
+            app:iconSpaceReserved="false"
+            app:summaryFormat="%.0f" />
 
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/colorPrimary"

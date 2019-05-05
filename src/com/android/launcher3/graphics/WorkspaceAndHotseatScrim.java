@@ -43,6 +43,8 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.theme.ThemeManager;
+
 import androidx.core.graphics.ColorUtils;
 
 import static android.content.Intent.ACTION_SCREEN_OFF;
@@ -150,7 +152,8 @@ public class WorkspaceAndHotseatScrim implements
         mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
 
-        mHasSysUiScrim = !mWallpaperColorInfo.supportsDarkText();
+        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
+                && Utilities.getZimPrefs(mLauncher).getShowTopShadow();
         if (mHasSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();

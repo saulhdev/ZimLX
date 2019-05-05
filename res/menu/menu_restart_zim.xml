@@ -18,7 +18,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_restart_lawnchair"
+        android:id="@+id/action_restart_zim"
         android:title="@string/restart_lawnchair_pref_title"
         app:showAsAction="never" />
 </menu>

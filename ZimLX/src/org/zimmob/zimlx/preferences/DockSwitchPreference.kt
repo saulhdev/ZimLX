@@ -18,11 +18,14 @@ package org.zimmob.zimlx.preferences
 
 import android.content.Context
 import android.util.AttributeSet
-import androidx.preference.SwitchPreference
+import android.view.View
+import android.widget.Switch
 import com.android.launcher3.Utilities
 import kotlin.reflect.KMutableProperty1
 
-class DockSwitchPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : SwitchPreference(context, attrs) {
+class DockSwitchPreference
+@JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
+        StyledSwitchPreferenceCompat(context, attrs) {
 
     private val prefs = Utilities.getZimPrefs(context)
     private val currentStyle get() = prefs.dockStyles.currentStyle
@@ -62,4 +65,16 @@ class DockSwitchPreference @JvmOverloads constructor(context: Context, attrs: At
         return property != null
     }
 
+    override fun getSlice(context: Context, key: String): View {
+        this.key = key
+        return (super.getSlice(context, key) as Switch).apply {
+            prefs.dockStyles.addListener {
+                isChecked = getPersistedBoolean(false)
+            }
+            isChecked = getPersistedBoolean(false)
+            setOnCheckedChangeListener { _, isChecked ->
+                persistBoolean(isChecked)
+            }
+        }
+    }
 }

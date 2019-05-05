@@ -210,8 +210,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             new HashMap<>();
     static final boolean DEBUG_WIDGETS = false;
 
-    private static final int REQUEST_PICK_WALLPAPER = 10;
-
     // Determines how long to wait after a rotation before restoring the screen orientation to
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
@@ -912,23 +910,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public boolean isInState(LauncherState state) {
         return mStateManager.getState() == state;
-    }
-
-    public boolean hasSettings() {
-        if (mLauncherCallbacks != null) {
-            return mLauncherCallbacks.hasSettings();
-        } else {
-            // On O and above we there is always some setting present settings (add icon to
-            // home screen or icon badging). On earlier APIs we will have the allow rotation
-            // setting, on devices with a locked orientation,
-            return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
-        }
-    }
-
-
-    // The custom content needs to offset its content to account for the QSB
-    public int getTopOffsetForCustomContent() {
-        return mWorkspace.getPaddingTop();
     }
 
     @Override
@@ -2599,14 +2580,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public void onThemeChanged() {
         recreate();
-    }
-
-    /**
-     * The different states that Launcher can be in.
-     */
-    enum State {
-        NONE, WORKSPACE, WORKSPACE_SPRING_LOADED, APPS, APPS_SPRING_LOADED,
-        WIDGETS, WIDGETS_SPRING_LOADED
     }
 
     /**

@@ -69,6 +69,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
+    val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -130,19 +131,21 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun unflattenValue(value: String) = value
     }
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
-
-    var overrideLauncherTheme by BooleanPref("pref_override_launcher_theme", false, recreate)
-    val adaptiveIcons by BooleanPref(ZimFlags.THEME_ADAPTIVE_ICONS, false, recreate)
-    val adaptiveBackgroud by BooleanPref(ZimFlags.THEME_ADAPTIVE_BACKGROUND, true, recreate)
+    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
+    val defaultBlurStrength = TypedValue().apply {
+        context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
+    }
+    val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
+    var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
-    val Theme by StringPref(ZimFlags.THEME_COLOR, "0", recreate)
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
-    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
-    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+
+
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
 
@@ -156,17 +159,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
-    val defaultBlurStrength = TypedValue().apply {
-        context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
-    }
-    val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
-    var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
 
-    //quickstep
+    // Quickstep
+    /*val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
+    val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
+    val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
+        OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
+    }*/
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
     }
-
 
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
@@ -474,6 +476,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun onSetValue(value: Int) {
             edit { putFloat(getKey(), value.toFloat() / 255) }
+        }
+    }
+
+    open inner class DimensionPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Float>(key, defaultValue, onChange) {
+
+        override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
+
+        override fun onSetValue(value: Float) {
+            TODO("not implemented")
         }
     }
 

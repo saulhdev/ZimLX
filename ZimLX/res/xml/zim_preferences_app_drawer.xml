@@ -93,7 +93,7 @@
         android:entryValues="@array/values__zero_to_three"
         android:key="pref_key__sort_mode"
         android:persistent="true"
-        android:summary="@string/summary__sort_mode"
+        android:summary="%s"
         android:title="@string/title__sort_mode"
         app:iconSpaceReserved="false" />/>
 

@@ -138,8 +138,8 @@ abstract class DockStyle(protected val manager: StyleManager) {
         var dockOpacity by prefs.AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, onChangeListener)
         var dockRadius by prefs.FloatPref("pref_dockRadius", 16f, onChangeListener)
         var dockShadow by prefs.BooleanPref("pref_dockShadow", true, onChangeListener)
-        var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", false, onChangeListener)
-        var dockGradient by prefs.BooleanPref("pref_dockGradient", false, ::onGradientChanged)
+        var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", true, onChangeListener)
+        var dockGradient by prefs.BooleanPref("pref_dockGradient", true, ::onGradientChanged)
         var dockHidden by prefs.BooleanPref("pref_hideHotseat", false, onChangeListener)
 
         val styles = arrayListOf(CustomStyle(this), RoundedStyle(this), GradientStyle(this), FlatStyle(this),

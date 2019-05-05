@@ -39,6 +39,18 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
 
     public abstract View.OnClickListener getOnClickListener(T activity, ItemInfo itemInfo);
 
+    public static class Custom extends SystemShortcut<Launcher> {
+
+        public Custom() {
+            super(R.drawable.ic_edit_no_shadow, R.string.action_preferences);
+        }
+
+        @Override
+        public View.OnClickListener getOnClickListener(Launcher launcher, ItemInfo itemInfo) {
+            return null;
+        }
+    }
+
     public static class Widgets extends SystemShortcut<Launcher> {
 
         public Widgets() {

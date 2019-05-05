@@ -27,8 +27,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.google.android.apps.nexuslauncher.CustomAppFilter.getHiddenApps;
-
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
     private static int MAX_PREDICTIONS = 10;
     private static final int BOOST_ON_OPEN = 9;
@@ -253,6 +251,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     protected static boolean isHiddenApp(Context context, ComponentKey key) {
         return getHiddenApps(context).contains(key.toString());
+    }
+
+    @SuppressWarnings("ConstantConditions") // This can't be null anyway
+    private static Set<String> getHiddenApps(Context context) {
+        return new HashSet<>(Utilities.getZimPrefs(context).getHiddenPredictionAppSet());
     }
 
     private static void setHiddenApps(Context context, Set<String> hiddenApps) {

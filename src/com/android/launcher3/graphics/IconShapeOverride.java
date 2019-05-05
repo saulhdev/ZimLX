@@ -17,32 +17,28 @@ package com.android.launcher3.graphics;
 
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
-import android.app.ProgressDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
-import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.LooperExecutor;
 
+import org.zimmob.zimlx.ZimLauncher;
+
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import androidx.annotation.NonNull;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.Utilities.restartLauncher;
-
+import static com.android.launcher3.Utilities.getPrefs;
 /**
  * Utility class to override shape of {@link android.graphics.drawable.AdaptiveIconDrawable}.
  */
@@ -51,11 +47,6 @@ public class IconShapeOverride {
 
     public static final String KEY_PREFERENCE = "pref_override_icon_shape";
     private static final String TAG = "IconShapeOverride";
-    // Time to wait before killing the process this ensures that the progress bar is visible for
-    // sufficient time so that there is no flicker.
-    private static final long PROCESS_KILL_DELAY_MS = 1000;
-
-    private static final int RESTART_REQUEST_CODE = 42; // the answer to everything
 
     public static boolean isSupported(Context context) {
         if (!Utilities.ATLEAST_OREO) {
@@ -92,6 +83,10 @@ public class IconShapeOverride {
             Resources override =
                     new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
             getSystemResField().set(null, override);
+            int masks = getOverrideMasksResId();
+            if (masks != 0) {
+                ((ResourcesOverride) override).setArrayOverrideId(masks);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
@@ -109,8 +104,19 @@ public class IconShapeOverride {
         return Resources.getSystem().getIdentifier("config_icon_mask", "string", "android");
     }
 
+    private static int getOverrideMasksResId() {
+        return Resources.getSystem().getIdentifier("system_icon_masks", "array", "android");
+    }
+
     public static String getAppliedValue(Context context) {
-        return getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+        String devValue = getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+        if (!TextUtils.isEmpty(devValue)) {
+            // Migrate to general preferences to back up shape overrides
+            getPrefs(context).edit().putString(KEY_PREFERENCE, devValue).apply();
+            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
+        }
+
+        return getPrefs(context).getString(KEY_PREFERENCE, "");
     }
 
     public static void handlePreferenceUi(ListPreference preference) {
@@ -122,6 +128,7 @@ public class IconShapeOverride {
     private static class ResourcesOverride extends Resources {
 
         private final int mOverrideId;
+        private int mArrayOverrideId = 0;
         private final String mOverrideValue;
 
         @SuppressWarnings("deprecation")
@@ -139,6 +146,23 @@ public class IconShapeOverride {
             }
             return super.getString(id);
         }
+
+        void setArrayOverrideId(int id) {
+            mArrayOverrideId = id;
+        }
+
+        // I do admit that this is one hell of a hack
+        @NonNull
+        @Override
+        public String[] getStringArray(int id) throws NotFoundException {
+            if (id != 0 && id == mArrayOverrideId) {
+                int size = super.getStringArray(id).length;
+                String[] arr = new String[size];
+                Arrays.fill(arr, mOverrideValue);
+                return arr;
+            }
+            return super.getStringArray(id);
+        }
     }
 
     private static class PreferenceChangeHandler implements Preference.OnPreferenceChangeListener {
@@ -153,12 +177,10 @@ public class IconShapeOverride {
         public boolean onPreferenceChange(Preference preference, Object o) {
             String newValue = (String) o;
             if (!getAppliedValue(mContext).equals(newValue)) {
-                // Value has changed
-                ProgressDialog.show(mContext,
-                        null /* title */,
-                        mContext.getString(R.string.icon_shape_override_progress),
-                        true /* indeterminate */,
-                        false /* cancelable */);
+                if (preference instanceof ListPreference) {
+                    ((ListPreference) preference).setValue(newValue);
+                }
+
                 new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
                         new OverrideApplyHandler(mContext, newValue));
             }
@@ -184,45 +206,9 @@ public class IconShapeOverride {
             // Clear the icon cache.
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 
-            // Wait for it
-            try {
-                Thread.sleep(PROCESS_KILL_DELAY_MS);
-            } catch (Exception e) {
-                Log.e(TAG, "Error waiting", e);
-            }
-            // Schedule an alarm before we kill ourself.
-            Intent homeIntent = new Intent(Intent.ACTION_MAIN)
-                    .addCategory(Intent.CATEGORY_HOME)
-                    .setPackage(mContext.getPackageName())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            PendingIntent pi = PendingIntent.getActivity(mContext, RESTART_REQUEST_CODE,
-                    homeIntent, PendingIntent.FLAG_CANCEL_CURRENT | PendingIntent.FLAG_ONE_SHOT);
-            mContext.getSystemService(AlarmManager.class).setExact(
-                    AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pi);
-            restartLauncher(mContext);
+            // Schedule restart
+            ((ZimLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
+                    .scheduleRestart();
         }
     }
-
-    public static class ShapeInfo {
-        private String maskPath;
-        private String savedMask;
-        private int maskSize = 0;
-        private boolean useRoundIcon;
-
-        public ShapeInfo(String mask, String saveMask, int size, boolean usePixelIcons) {
-            this.maskPath = mask;
-            this.savedMask = saveMask;
-            this.maskSize = size;
-            this.useRoundIcon = usePixelIcons;
-        }
-
-        public String getMaskPath() {
-            return maskPath;
-        }
-
-        public int getSize() {
-            return maskSize;
-        }
-    }
-
 }
