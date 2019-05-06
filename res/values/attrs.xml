@@ -226,4 +226,7 @@
     <declare-styleable name="GesturePreference">
         <attr name="gestureClass" format="string" />
     </declare-styleable>
+
+    <attr name="allAppsContainerColor" format="color" />
+    <attr name="allAppsContainerColorBlur" format="color" />
 </resources>

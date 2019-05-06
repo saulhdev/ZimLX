@@ -192,6 +192,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         defaultWidgetPadding = AppWidgetHostView.getDefaultPaddingForWidget(context, cn, null);
         edgeMarginPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
         desiredWorkspaceLeftRightMarginPx = isVerticalBarLayout() ? 0 : edgeMarginPx;
+
         int cellLayoutPaddingLeftRightMultiplier = !isVerticalBarLayout() && isTablet
                 ? PORTRAIT_TABLET_LEFT_RIGHT_PADDING_MULTIPLIER : 1;
         cellLayoutPaddingLeftRightPx = cellLayoutPaddingLeftRightMultiplier *
@@ -310,7 +311,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         updateAvailableDimensions(dm, res);
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
-        if (!isVerticalBarLayout() && isPhone && isTallDevice) {
+        /*if (!isVerticalBarLayout() && isPhone && isTallDevice) {
             // We increase the hotseat size when there is extra space.
             // ie. For a display with a large aspect ratio, we can keep the icons on the workspace
             // in portrait mode closer together by adding more height to the hotseat.
@@ -318,16 +319,13 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
             int extraSpace = (int) ((getCellSizeOriginal().y - iconSizeOriginalPx
                     - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx) * dockScale);
             hotseatBarSizePx += extraSpace;
-            if (prefs.getDockGradientStyle()) {
-                hotseatBarBottomPaddingPx += extraSpace;
-            } else {
-                hotseatBarBottomPaddingPx += extraSpace / 2;
-                hotseatBarTopPaddingPx += extraSpace / 2;
-            }
+            hotseatBarBottomPaddingPx += extraSpace / 2;
+            hotseatBarTopPaddingPx += extraSpace / 2;
+
 
             // Recalculate the available dimensions using the new hotseat size.
             updateAvailableDimensions(dm, res);
-        }
+        }*/
 
         if (dockHidden) {
             hotseatBarSizePx = 0;
@@ -335,11 +333,9 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
             updateAvailableDimensions(dm, res);
         } else if (!isVerticalBarLayout()) {
-            int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
             verticalDragHandleSizePx *= dockScale;
             int bottomPaddingNew = Math.max((int) (hotseatBarBottomPaddingPx * dockScale), 0);
-
-            if (prefs.getDockGradientStyle()) {
+            if (prefs.getDockShouldUseCustomOpacity() || prefs.getDockShouldUseExtractedColors()) {
                 hotseatBarTopPaddingPx *= dockScale;
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             } else {

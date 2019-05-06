@@ -127,8 +127,7 @@ public class AllAppsList {
      */
     public void addPackage(Context context, String packageName, UserHandle user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
-                user);
+        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName, user);
 
         for (LauncherActivityInfo info : matches) {
             add(new AppInfo(context, info, user), info);

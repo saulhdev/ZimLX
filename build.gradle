@@ -143,14 +143,6 @@ android {
             }
         }
 
-        debug {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
-        release {
-            manifest.srcFile "AndroidManifest.xml"
-        }
-
         androidTest {
             res.srcDirs = ['tests/res']
             java.srcDirs = ['tests/src', "src_ui_overrides"]
@@ -159,6 +151,7 @@ android {
 
         aosp {
             java.srcDirs = ['src_flags', "src_ui_overrides"]
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {

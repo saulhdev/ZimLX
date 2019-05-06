@@ -968,4 +968,10 @@ public final class Utilities {
             return res.getIdentifier(identifier.substring(1), null, packageName);
         }
     }
+
+    public static int resolveAttributeData(Context context, int attr) {
+        TypedValue typedValue = new TypedValue();
+        context.getTheme().resolveAttribute(attr, typedValue, true);
+        return typedValue.data;
+    }
 }

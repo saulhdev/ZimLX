@@ -2,7 +2,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
+    <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="pref_allAppsOpacitySB"
         android:persistent="true"
         android:title="@string/title__app_all_apps_opacity"
@@ -111,4 +111,10 @@
         android:title="@string/keep_scroll_state_pref_title"
         app:iconSpaceReserved="false" />
 
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_homeOpensDrawer"
+        android:persistent="true"
+        android:summary="@string/pref_summary__home_opens_drawer"
+        android:title="@string/pref_title__home_opens_drawer" />
 </androidx.preference.PreferenceScreen>

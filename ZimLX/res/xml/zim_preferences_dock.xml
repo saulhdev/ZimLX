@@ -2,35 +2,43 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.zimmob.zimlx.preferences.DockPresetPreference
-        android:defaultValue="1"
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="pref_isHotseatTransparent"
         android:disableDependentsState="true"
-        android:entries="@array/dockStyles"
-        android:entryValues="@array/dockStyleValues"
-        android:key="pref_dockPreset"
         android:persistent="true"
-        android:summary="%s"
-        android:title="@string/title__dock_style"
+        android:title="@string/transparent_hotseat_pref_title"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.DockSwitchPreference
-        android:dependency="pref_dockPreset"
+    <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_hotseatShouldUseExtractedColors"
+        android:persistent="true"
+        android:dependency="pref_isHotseatTransparent"
+        android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
+        android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
+        android:title="@string/hotseat_uses_extracted_colors_pref_title"
+        app:iconSpaceReserved="false" />
+
+    <SwitchPreference
         android:defaultValue="false"
-        android:key="enableGradient"
+        android:key="pref_hotseatShouldUseCustomOpacity"
         android:persistent="true"
-        android:title="@string/title__dock_fill"
+        android:title="@string/hotseat_uses_custom_opacity"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.DockSwitchPreference
-        android:dependency="pref_dockPreset"
-        android:key="enableShadow"
-        android:defaultValue="false"
+    <org.zimmob.zimlx.preferences.SeekbarPreference
+        android:key="opacityPref"
         android:persistent="true"
-        android:title="@string/title__dock_shadow"
+        android:title="@string/title__dock_custom_opacity"
+        android:dependency="pref_hotseatShouldUseCustomOpacity"
+        app:maxValue="1"
+        app:minValue="0"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.DockSeekbarPreference
-        android:dependency="pref_dockPreset"
+    <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="radius"
         android:persistent="true"
         android:title="@string/title__dock_radius"
@@ -40,17 +48,6 @@
         app:steps="24"
         app:summaryFormat="%.0fdp"
         app:summaryMultiplier="1"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.DockAutoModeSeekbarPreference
-        android:dependency="pref_dockPreset"
-        android:key="opacityPref"
-        android:persistent="true"
-        android:title="@string/title__dock_custom_opacity"
-        app:maxValue="1"
-        app:minValue="0"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100"
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.SeekbarPreference
@@ -64,9 +61,9 @@
         app:summaryMultiplier="100"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.DockSwitchPreference
+    <SwitchPreference
         android:defaultValue="true"
-        android:key="enableArrow"
+        android:key="pref_enableArrow"
         android:persistent="true"
         android:title="@string/title__hotseat_show_arrow"
         app:iconSpaceReserved="false" />

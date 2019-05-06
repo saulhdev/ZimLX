@@ -3,12 +3,14 @@ package com.android.launcher3.allapps;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.graphics.drawable.Drawable;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.Hotseat;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
@@ -97,10 +99,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
     private float mScrollRangeDelta = 0;
 
+    private Hotseat mHotseat;
+    public Drawable hotseatBackground;
+
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mShiftRange = mLauncher.getDeviceProfile().heightPx;
         mProgress = mScrimProgress = 1f;
+
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
         mLauncher.addOnDeviceProfileChangeListener(this);
@@ -132,7 +138,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * in xml-based animations which also handle updating the appropriate UI.
      *
      * @param progress value between 0 and 1, 0 shows all apps and 1 shows workspace
-     *
      * @see #setState(LauncherState)
      * @see #setStateWithAnimation(LauncherState, AnimatorSetBuilder, AnimationConfig)
      */
@@ -157,17 +162,16 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         } else {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
+
     }
 
     private float getShiftApps(float progress, boolean inverted) {
         float normalShift = progress * mShiftRange;
         ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
-        if (prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+        if (prefs.getAllAppsSearch()) {
             float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
             float overviewShift = getQsbHeight();
-            if (prefs.getAllAppsSearch()) {
-                overviewShift = -overviewShift;
-            }
+            overviewShift = -overviewShift;
             if (progress < overviewProgress) {
                 overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
                         inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
@@ -291,9 +295,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         };
     }
 
-    public void setupViews(AllAppsContainerView appsView) {
+    public void setupViews(AllAppsContainerView appsView, Hotseat hotseat) {
         mAppsView = appsView;
         mScrimView = mLauncher.findViewById(R.id.scrim_view);
+        mHotseat = hotseat;
+        hotseatBackground = mHotseat.getBackground();
     }
 
     /**
@@ -315,12 +321,15 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.setVisibility(View.INVISIBLE);
+            mHotseat.setBackground(hotseatBackground);
             mAppsView.reset(false /* animate */);
         } else if (Float.compare(mProgress, 0f) == 0) {
             mAppsView.setVisibility(View.VISIBLE);
             mAppsView.onScrollUpEnd();
+            mHotseat.setBackground(mAppsView.getBackground());
         } else {
             mAppsView.setVisibility(View.VISIBLE);
+            mHotseat.setBackground(mAppsView.getBackground());
         }
     }
 

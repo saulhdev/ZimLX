@@ -95,9 +95,8 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     public void refreshGrid() {
-        //workspace.refreshChildren();
+        mWorkspace.refreshChildren();
     }
-
 
     public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
 

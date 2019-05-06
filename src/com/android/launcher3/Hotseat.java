@@ -16,8 +16,14 @@
 
 package com.android.launcher3;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ArgbEvaluator;
+import android.animation.ValueAnimator;
 import android.content.Context;
+import android.graphics.Color;
 import android.graphics.Rect;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -30,6 +36,7 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -37,6 +44,10 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.blur.BlurDrawable;
+import org.zimmob.zimlx.blur.BlurWallpaperProvider;
+
+import androidx.core.graphics.ColorUtils;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
@@ -47,6 +58,13 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private int mBackgroundColor;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private Drawable mBackground;
+    private ValueAnimator mBackgroundColorAnimator;
+
+    public float dockRadius;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -59,6 +77,16 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
+        dockRadius = Utilities.getZimPrefs(context).getDockRadius();
+        if (Utilities.getZimPrefs(context).getTransparentDock() || mHasVerticalHotseat) {
+            setBackgroundColor(Color.TRANSPARENT);
+        } else {
+            mBackgroundColor = ColorUtils.setAlphaComponent(
+                    Utilities.resolveAttributeData(context, R.attr.allAppsContainerColor), 0);
+            mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
+                    mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
+            setBackground(mBackground);
+        }
     }
 
     public CellLayout getLayout() {
@@ -182,8 +210,65 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         }
         Rect padding = grid.getHotseatLayoutPadding();
         getLayout().setPadding(padding.left, padding.top, padding.right, padding.bottom);
-
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
+    }
+
+    public void updateColor(ExtractedColors extractedColors, boolean animate) {
+        if (!(mBackground instanceof ColorDrawable)) return;
+        if (!mHasVerticalHotseat) {
+            int color = extractedColors.getDockColor(getContext());
+            if (mBackgroundColorAnimator != null) {
+                mBackgroundColorAnimator.cancel();
+            }
+            if (!animate) {
+                setBackgroundColor(color);
+            } else {
+                mBackgroundColorAnimator = ValueAnimator.ofInt(mBackgroundColor, color);
+                mBackgroundColorAnimator.setEvaluator(new ArgbEvaluator());
+                mBackgroundColorAnimator.addUpdateListener(animation -> ((ColorDrawable) mBackground).setColor((Integer) animation.getAnimatedValue()));
+                mBackgroundColorAnimator.addListener(new AnimatorListenerAdapter() {
+                    @Override
+                    public void onAnimationEnd(Animator animation) {
+                        mBackgroundColorAnimator = null;
+                    }
+                });
+                mBackgroundColorAnimator.start();
+            }
+            mBackgroundColor = color;
+        }
+    }
+
+    public void setBackgroundTransparent(boolean enable) {
+        if (mBackground == null) return;
+        if (enable) {
+            mBackground.setAlpha(0);
+        } else {
+            mBackground.setAlpha(255);
+        }
+    }
+
+    public int getBackgroundDrawableColor() {
+        return mBackgroundColor;
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).stopListening();
+        }
+    }
+
+    public void setOverscroll(float progress) {
+        if (mBackground instanceof BlurDrawable) {
+            ((BlurDrawable) mBackground).setOverscroll(progress);
+        }
+    }
+
+    @Override
+    public void setTranslationX(float translationX) {
+        super.setTranslationX(translationX);
+        LauncherAppState.getInstance(getContext()).getLauncher().mHotseat.setOverscroll(translationX);
     }
 }

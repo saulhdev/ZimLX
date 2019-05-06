@@ -92,6 +92,9 @@ class BlurDrawable internal constructor(
 
     private var mAlpha = 255
 
+
+    private var mOverscroll: Float = 0.toFloat()
+
     fun setBlurredView(blurredView: View) {
         mBlurredView = blurredView
     }
@@ -388,5 +391,12 @@ class BlurDrawable internal constructor(
             mBlurPaint.xfermode = PorterDuffXfermode(PorterDuff.Mode.SRC_IN)
         }
         mOpacity = opacity
+    }
+
+    fun setOverscroll(progress: Float) {
+        mOverscroll = progress
+        invalidateBlur()
+        if (!mUseTransparency)
+            invalidateSelf()
     }
 }

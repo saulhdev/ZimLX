@@ -78,8 +78,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
-    val dockShowArrow get() = dockStyles.currentStyle.enableArrow
-    val dockOpacity get() = dockStyles.currentStyle.opacity
+    val dockShowArrow by BooleanPref("pref_enableArrow", true, recreate)
+    val dockCustomOpacity by FloatPref("opacityPref", .5f, recreate)
+
     val dockScale by FloatPref(ZimFlags.HOTSEAT_ICON_SCALE, 1f, recreate)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
@@ -87,10 +88,15 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
     val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
     val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
-    val dockSearchBar by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, restart)
+    val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
     val dockGridSize by dockGridSizeDelegate
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
+    val transparentDock by BooleanPref("pref_isHotseatTransparent", false, recreate)
+    val dockShouldUseExtractedColors by BooleanPref("pref_hotseatShouldUseExtractedColors", true, recreate)
+    val dockShouldUseCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, recreate)
+
+
 
     // App Drawer
     val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)
@@ -159,13 +165,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
-
-    // Quickstep
-    /*val swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
-    val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
-    val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
-        OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
-    }*/
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
     }

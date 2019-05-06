@@ -168,14 +168,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             case SORT_LAST_INSTALLED:
                 PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
                 InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
-                Collections.sort(mApps, installTimeComparator);
+                //Collections.sort(mApps, installTimeComparator);
                 break;
 
             //SORT BY MOST USED DESC
             case SORT_MOST_USED:
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
                 Collections.sort(mApps, mostUsedComparator);
-                Utilities.getZimPrefs(mLauncher).reloadApps();
+                //Utilities.getZimPrefs(mLauncher).reloadApps();
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);

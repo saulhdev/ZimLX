@@ -49,6 +49,12 @@ public class ExtractedColors {
     private static final int[] DEFAULT_VALUES;
     private static final String COLOR_SEPARATOR = ",";
 
+    private static final int HOTSEAT_LIGHT_MUTED_INDEX = 1;
+    private static final int HOTSEAT_DARK_MUTED_INDEX = 12;
+    private static final int HOTSEAT_LIGHT_VIBRANT_INDEX = 13;
+    private static final int HOTSEAT_DARK_VIBRANT_INDEX = 14;
+    private static final int IS_SUPER_LIGHT = 15;
+    private static final int IS_SUPER_DARK = 16;
     static {
         if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
             VERSION = 3;
@@ -134,6 +140,16 @@ public class ExtractedColors {
     }
 
     /**
+     * @param index must be one of the index values defined at the top of this class.
+     */
+    public int getColor(int index, int defaultColor) {
+        if (index > VERSION_INDEX && index < mColors.length) {
+            int color = mColors[index];
+            return color == -1 ? defaultColor : color;
+        }
+        return defaultColor;
+    }
+    /**
      * The hotseat's color is defined as follows:
      * - 12% black for super light wallpaper
      * - 18% white for super dark
@@ -170,6 +186,48 @@ public class ExtractedColors {
         for (OnChangeListener listener : mListeners) {
             listener.onExtractedColorsChanged();
         }
+    }
+
+    /**
+     * The hotseat's color is defined as follows:
+     * - 20% darkMuted or 12% black for super light wallpaper
+     * - 25% lightMuted or 18% white for super dark
+     * - 40% lightVibrant or 25% white otherwise
+     */
+    public int getDockColor(Context context) {
+        if (Utilities.getZimPrefs(context).getTransparentDock()) {
+            return Color.TRANSPARENT;
+        }
+        int hotseatColor;
+        boolean shouldUseExtractedColors = Utilities.getZimPrefs(context).getDockShouldUseExtractedColors();
+        if (getColor(IS_SUPER_LIGHT, 0) == 1) {
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_DARK_MUTED_INDEX, getColor(HOTSEAT_DARK_VIBRANT_INDEX, Color.BLACK));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.20f * 255));
+            } else {
+                hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+            }
+        } else if (getColor(IS_SUPER_DARK, 0) == 1) {
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_LIGHT_MUTED_INDEX, getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, Color.WHITE));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.25f * 255));
+            } else {
+                hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+            }
+        } else {
+            if (shouldUseExtractedColors) {
+                int baseColor = getColor(HOTSEAT_LIGHT_VIBRANT_INDEX, getColor(HOTSEAT_LIGHT_MUTED_INDEX, Color.WHITE));
+                hotseatColor = ColorUtils.setAlphaComponent(baseColor, (int) (0.40f * 255));
+            } else {
+                hotseatColor = ColorUtils.setAlphaComponent(Color.BLACK, (int) (0.12f * 255));
+            }
+        }
+        boolean useCustomOpacity = Utilities.getZimPrefs(context).getDockShouldUseCustomOpacity();
+        if (useCustomOpacity) {
+            float customOpacity = Utilities.getZimPrefs(context).getDockCustomOpacity();
+            hotseatColor = ColorUtils.setAlphaComponent(hotseatColor, (int) (customOpacity * 255));
+        }
+        return hotseatColor;
     }
 
     /**

@@ -27,15 +27,15 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.ActionMenuView;
+import android.widget.AdapterView;
+import android.widget.ListAdapter;
+import android.widget.ListView;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
@@ -69,16 +69,12 @@ import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
-import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
 import org.zimmob.zimlx.util.ZimFlags;
-import org.zimmob.zimlx.views.SpringRecyclerView;
-
-import java.util.Objects;
 
 import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
@@ -91,12 +87,9 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
-import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
-import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Settings activity for Launcher.
@@ -311,8 +304,26 @@ public class SettingsActivity extends SettingsBaseActivity implements
         updateUpButton();
     }
 
-    public abstract static class BaseFragment extends PreferenceFragmentCompat {
+    public abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            ListView listView = (ListView) parent;
+            ListAdapter listAdapter = listView.getAdapter();
+            Object item = listAdapter.getItem(position);
 
+            if (item instanceof SubPreference) {
+                SubPreference subPreference = (SubPreference) item;
+                if (subPreference.onLongClick(null)) {
+                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
+        }
+
+        /*
         private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
         private HighlightablePreferenceGroupAdapter mAdapter;
@@ -348,8 +359,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             return recyclerView;
         }
-
-        abstract protected int getRecyclerViewLayoutRes();
 
         @Override
         public void setDivider(Drawable divider) {
@@ -432,6 +441,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             }
         }
+
+        */
     }
 
     /**
@@ -448,7 +459,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.zim_preferences);
-            onPreferencesAdded(getPreferenceScreen());
+            //onPreferencesAdded(getPreferenceScreen());
         }
 
         @Override
@@ -464,11 +475,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
             return super.onPreferenceTreeClick(preference);
         }
 
-        @Override
+        /*@Override
         protected int getRecyclerViewLayoutRes() {
             return FeatureFlags.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
                     : R.layout.preference_spring_recyclerview;
-        }
+        }*/
     }
 
     public static class SubSettingsFragment extends BaseFragment implements
@@ -561,7 +572,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(getContent());
-            onPreferencesAdded(getPreferenceScreen());
+            //onPreferencesAdded(getPreferenceScreen());
         }
 
         private int getContent() {
@@ -711,10 +722,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     break;
             }
             return false;
-        }
-
-        protected int getRecyclerViewLayoutRes() {
-            return R.layout.preference_insettable_recyclerview;
         }
 
         @Override

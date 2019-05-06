@@ -82,6 +82,7 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
@@ -130,6 +131,7 @@ import com.android.launcher3.widget.custom.CustomWidgetParser;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.minibar.MinibarAdapter;
 import org.zimmob.zimlx.minibar.SwipeListView;
@@ -214,6 +216,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     // match the sensor state.
     private static final int RESTORE_SCREEN_ORIENTATION_DELAY = 500;
     public static Context mContext;
+
     static {
         if (TestingUtils.ENABLE_CUSTOM_WIDGET_TEST) {
             TestingUtils.addDummyWidget(sCustomAppWidgets);
@@ -285,6 +288,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private final Handler mHandler = new Handler();
     private final Runnable mLogOnDelayedResume = this::logOnDelayedResume;
 
+    private ExtractedColors mExtractedColors;
+    private BlurWallpaperProvider mBlurWallpaperProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -328,6 +333,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
 
         mDragController = new DragController(this);
+        mBlurWallpaperProvider = new BlurWallpaperProvider(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
         UiFactory.onCreate(this);
@@ -340,6 +346,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
+
+        mExtractedColors = new ExtractedColors();
+        loadExtractedColorsAndColorItems();
+
         mPopupDataProvider = new PopupDataProvider(this);
 
         mRotationHelper = new RotationHelper(this);
@@ -1041,7 +1051,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragController.setMoveTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView);
+        mAllAppsController.setupViews(mAppsView, mHotseat);
     }
 
 
@@ -2426,8 +2436,17 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
+    private void loadExtractedColorsAndColorItems() {
+        mExtractedColors.load(this);
+        mHotseat.updateColor(mExtractedColors, !mPaused);
+    }
 
-    public void unlockScreenOrientation(boolean immediate) {
+
+    public BlurWallpaperProvider getBlurWallpaperProvider() {
+        return mBlurWallpaperProvider;
+    }
+
+    public void getAllAppsController(boolean immediate) {
         if (mRotationEnabled) {
             if (immediate) {
                 setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED);
