@@ -10,6 +10,7 @@ public class MostUsedComparator implements Comparator<AppInfo> {
     private DbHelper db;
 
     public MostUsedComparator(Context context) {
+
         db = new DbHelper(context);
     }
 
@@ -25,4 +26,5 @@ public class MostUsedComparator implements Comparator<AppInfo> {
             return 0;
         }
     }
+
 }

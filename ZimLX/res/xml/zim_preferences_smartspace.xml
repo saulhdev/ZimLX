@@ -1,6 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <SwitchPreference
+        android:defaultValue="true"
+        android:disableDependentsState="false"
+        android:key="pref_smartspace"
+        android:title="@string/title__desktop_smartspace" />
+
+    <!--
+    <org.zimmob.zimlx.preferences.PreviewPreference
+        android:key="pref_smartspace_preview"
+        android:dependency="pref_smartspace"
+        app:previewLayout="@layout/smartspace_preview" />
+    -->
 
     <SwitchPreference
         android:defaultValue="true"
@@ -9,18 +21,7 @@
         android:title="@string/title_show_google_app" />
 
     <SwitchPreference
-        android:defaultValue="false"
-        android:disableDependentsState="false"
-        android:key="pref_smartspace"
-        android:title="@string/title__desktop_smartspace" />
-
-    <org.zimmob.zimlx.preferences.PreviewPreference
-        android:key="pref_smartspace_preview"
-        android:dependency="pref_smartspace"
-        app:previewLayout="@layout/smartspace_preview" />
-
-    <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_time"
         android:summary="@string/in_smartspace"
@@ -49,18 +50,6 @@
             android:dependency="pref_smartspace"
             android:title="@string/title__behavior_widget_provider"
             android:summary="%s" />
-
-        <org.zimmob.zimlx.preferences.OWMEditTextPreference
-            android:defaultValue="@string/default_owm_key"
-            android:dependency="pref_smartspace_widget_provider"
-            android:key="pref_weatherApiKey"
-            android:title="@string/title__behavior_weather_api_key" />
-
-        <org.zimmob.zimlx.preferences.OWMEditTextPreference
-            android:defaultValue="@string/default_city"
-            android:dependency="pref_smartspace_widget_provider"
-            android:key="pref_weather_city"
-            android:title="@string/title__behavior_weather_city" />
 
         <ListPreference
             android:defaultValue="metric"

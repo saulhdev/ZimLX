@@ -520,7 +520,7 @@
     <string name="title__behavior_event_provider">Calendar source</string>
     <string name="category__behavior_weather">Weather</string>
     <string name="default_city">San Salvador, SV</string>
-    <string name="default_owm_key" translatable="false">394f793739ca24305d2dae773ea16f7b</string>
+    <string name="default_owm_key" translatable="false">17a6438b1d63d5b05f7039e7cb52cde7</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
@@ -654,7 +654,6 @@
     <string name="smartspace_time_24_h">24-hour format</string>
     <string name="weather_provider_disabled">Disabled</string>
     <string name="weather_provider_widget">Google app</string>
-    <string name="weather_provider_owm">OpenWeatherMap</string>
     <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
     <string name="weather_provider_pe">PixelExperience</string>
     <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
@@ -668,8 +667,6 @@
     <string name="units_delisle">Delisle</string>
     <string name="units_reaumur">Réaumur</string>
     <string name="units_romer">Rømer</string>
-
-    <string name="owm_get_your_own_key">Please get your own API key from api.openweathermap.org</string>
 
     <string name="week_day_format">%1$s, %2$s</string>
     <string name="error_no_browser">No activity found to handle URLs</string>

@@ -96,8 +96,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockShouldUseExtractedColors by BooleanPref("pref_hotseatShouldUseExtractedColors", true, recreate)
     val dockShouldUseCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, recreate)
 
-
-
     // App Drawer
     val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
@@ -120,6 +118,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
     }
 
+    fun getSortMode(): Int {
+        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
+        return sort.toInt()
+    }
+
+
     //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
 
     // Search
@@ -137,10 +141,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun unflattenValue(value: String) = value
     }
-    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
-    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, recreate)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), recreate)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), recreate)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), recreate)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val defaultBlurStrength = TypedValue().apply {
         context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
@@ -158,7 +162,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
-    val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
 
@@ -177,12 +180,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return folderShape.toInt()
     }
 
-
-
     //smartspace
-    var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var weatherProvider by StringPref("pref_smartspace_widget_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
+    val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
+
+
+    var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
@@ -190,10 +195,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
 
-    fun getSortMode(): Int {
-        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
-        return sort.toInt()
-    }
 
 
 

@@ -75,6 +75,7 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
+import com.android.launcher3.allapps.PredictiveAppsProvider;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
@@ -104,6 +105,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -291,6 +293,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private ExtractedColors mExtractedColors;
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
+    private PredictiveAppsProvider mPredictiveAppsProvider;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
@@ -401,8 +405,25 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
         mRotationHelper.initialize();
+        mPredictiveAppsProvider = new PredictiveAppsProvider(this);
+        tryAndUpdatePredictedApps();
         initMinibar();
         TraceHelper.endSection("Launcher-onCreate");
+    }
+
+    /**
+     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
+     * resumed.
+     */
+    public void tryAndUpdatePredictedApps() {
+        List<ComponentKeyMapper<AppInfo>> apps = null;
+        if (Utilities.getZimPrefs(this).getShowPredictions()) {
+            apps = mPredictiveAppsProvider.getPredictions();
+        }
+
+        if (apps != null) {
+            mAppsView.setPredictedApps(apps);
+        }
     }
 
     public void initMinibar() {

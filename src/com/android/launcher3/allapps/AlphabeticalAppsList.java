@@ -150,7 +150,8 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-    public void sortApps(int sortType) {
+
+    private void sortApps(int sortType) {
         switch (sortType) {
             //SORT BY NAME AZ
             case SORT_AZ:
@@ -168,14 +169,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             case SORT_LAST_INSTALLED:
                 PackageManager pm = mLauncher.getApplicationContext().getPackageManager();
                 InstallTimeComparator installTimeComparator = new InstallTimeComparator(pm);
-                //Collections.sort(mApps, installTimeComparator);
+                Collections.sort(mApps, installTimeComparator);
                 break;
 
             //SORT BY MOST USED DESC
             case SORT_MOST_USED:
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
                 Collections.sort(mApps, mostUsedComparator);
-                //Utilities.getZimPrefs(mLauncher).reloadApps();
+
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);
@@ -278,7 +279,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
-        //Collections.sort(mApps, mAppNameComparator);
         Context context = mLauncher.getApplicationContext();
         ZimPreferences pref = new ZimPreferences(context);
         if (!pref.getShowPredictions()) {
@@ -627,5 +627,22 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
+    /**
+     * Common interface for different merging strategies.
+     */
+    public interface MergeAlgorithm {
+        boolean continueMerging(SectionInfo section);
+    }
 
+    /**
+     * Info about a section in the alphabetic list
+     */
+    public static class SectionInfo {
+        // The number of applications in this section
+        public int numApps;
+        // The section break AdapterItem for this section
+        public AdapterItem sectionBreakItem;
+        // The first app AdapterItem for this section
+        public AdapterItem firstAppItem;
+    }
 }

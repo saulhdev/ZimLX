@@ -1,11 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen>
 
-    <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_homeOpensDrawer"
-        android:persistent="true"
-        android:summary="@string/pref_summary__home_opens_drawer"
-        android:title="@string/pref_title__home_opens_drawer" />
 
 </PreferenceScreen>

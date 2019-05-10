@@ -40,6 +40,8 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.media.AudioDeviceInfo;
+import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -76,6 +78,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -974,4 +977,37 @@ public final class Utilities {
         context.getTheme().resolveAttribute(attr, typedValue, true);
         return typedValue.data;
     }
+
+    public static boolean hasHeadset(Context context) {
+        if (ATLEAST_NOUGAT) {
+            AudioManager manager = context.getSystemService(AudioManager.class);
+            if (manager == null) {
+                return false;
+            }
+
+            AudioDeviceInfo[] devices = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
+            for (AudioDeviceInfo device : devices) {
+                switch (device.getType()) {
+                    case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
+                    case AudioDeviceInfo.TYPE_USB_HEADSET:
+                    case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
+                    case AudioDeviceInfo.TYPE_WIRED_HEADSET:
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private static final int SUGGESTIONS_DAY_START = 5;
+    private static final int SUGGESTIONS_DAY_END = 21;
+
+
+    public static boolean isDayTime() {
+        Calendar calendar = Calendar.getInstance();
+        int hours = calendar.get(Calendar.HOUR_OF_DAY);
+        return hours > SUGGESTIONS_DAY_START && hours < SUGGESTIONS_DAY_END;
+    }
+
 }

@@ -39,7 +39,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.Interpolator
-import android.widget.*
+import android.widget.Button
+import android.widget.CheckedTextView
+import android.widget.ImageView
+import android.widget.Switch
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -252,10 +255,6 @@ fun runOnThread(handler: Handler, r: () -> Unit) {
     } else {
         handler.post(r)
     }
-}
-
-fun TextView.setCustomFont(type: Int) {
-    //CustomFontManager.getInstance(context).setCustomFont(this, type)
 }
 
 fun ViewGroup.getAllChilds() = ArrayList<View>().also { getAllChilds(it) }
@@ -598,19 +597,6 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
         packageManager.getResourcesForApplication(packageName)
     } catch (e: PackageManager.NameNotFoundException) {
         null
-    }
-}
-
-fun ViewGroup.setCustomFont(type: Int, allCaps: Boolean? = null) {
-    forEachChild {
-        if (it is ViewGroup) {
-            it.setCustomFont(type, allCaps)
-        } else if (it is TextView) {
-            it.setCustomFont(type)
-            if (allCaps != null) {
-                it.isAllCaps = allCaps
-            }
-        }
     }
 }
 

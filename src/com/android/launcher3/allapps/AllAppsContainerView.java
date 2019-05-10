@@ -46,11 +46,14 @@ import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+
+import java.util.List;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -93,9 +96,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private final Point mFastScrollerOffset = new Point();
     private SpringAnimationHandler mSpringAnimationHandler;
 
-    //public ZimPreferences pref;
-    //public int drawerStyle;
-
     public AllAppsContainerView(Context context) {
         this(context, null);
     }
@@ -119,11 +119,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         mNavBarScrimPaint = new Paint();
         mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
-        //mSpringAnimationHandler = mAH[0].getSpringAnimationHandler();
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
-        //pref = Utilities.getZimPrefs(context);
-        //drawerStyle = pref.getDrawerStyle();
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);
         addSpringView(R.id.all_apps_tabs_view_pager);
@@ -132,6 +129,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public SpringAnimationHandler getSpringAnimationHandler() {
         return mSpringAnimationHandler;
+    }
+
+    /**
+     * Sets the current set of predicted apps.
+     */
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        mAH[AdapterHolder.MAIN].appsList.setPredictedApps(apps);
     }
 
     public AllAppsStore getAppsStore() {
@@ -235,11 +239,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 
-    public AllAppsPaged getPagedView() {
-        return mAH[AdapterHolder.MAIN].pagedView;
-    }
-
-
     /**
      * Resets the state of AllApps.
      */
@@ -319,11 +318,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mlp.rightMargin = insets.right;
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
-            /*if (!ZimPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
-                AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
-                mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
-            }
-            */
+
             mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
         }
@@ -388,19 +383,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         View oldView = getRecyclerViewContainer();
         int index = indexOfChild(oldView);
         removeView(oldView);
-        /*int layout;
-        switch (drawerStyle) {
-            case Config.DRAWER_LAYOUT_HORIZONTAL:
-                layout = R.layout.all_apps_paged;
-                break;
-            case Config.DRAWER_LAYOUT_VERTICAL:
-                layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
-                break;
-
-            default:
-                layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
-                break;
-        }*/
 
         int layout = showTabs ? R.layout.all_apps_tabs : R.layout.all_apps_rv_layout;
 
@@ -584,11 +566,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             recyclerView.addItemDecoration(focusedItemDecorator);
             adapter.setIconFocusListener(focusedItemDecorator.getFocusListener());
             applyVerticalFadingEdgeEnabled(verticalFadingEdge);
-            //}
-            /*else{
-                pagedView = (AllAppsPaged)rv;
-                pagedView.setApps(appsList,false);
-            }*/
             applyPadding();
         }
 
@@ -609,3 +586,16 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         }
     }
 }
+
+/**
+ * A merge algorithm that merges every section indiscriminately.
+ */
+final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
+
+    @Override
+    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section) {
+        // Only merge apps
+        return section.firstAppItem.viewType == AllAppsGridAdapter.VIEW_TYPE_ICON;
+    }
+}
+
