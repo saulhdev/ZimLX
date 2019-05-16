@@ -1,6 +1,5 @@
 package com.google.android.apps.nexuslauncher.superg;
 
-import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -26,13 +25,10 @@ import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 
 import androidx.core.app.ActivityOptionsCompat;
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
 
-    private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator(); //mArgbEvaluator
     private ObjectAnimator mObjectAnimator;
     protected View mQsbView;
     private float mQsbButtonElevation;
@@ -80,7 +76,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         applyVisibility();
     }
 
-    private void applyMinusOnePreference() { //bh
+    private void applyMinusOnePreference() {
         if (mConnectorView != null) {
             removeView(mConnectorView);
             mConnectorView = null;
@@ -108,12 +104,9 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
                     null);
         } else {
             SearchProvider provider = controller.getSearchProvider();
-            provider.startSearch(new Function1<Intent, Unit>() {
-                @Override
-                public Unit invoke(Intent intent) {
-                    getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
-                    return null;
-                }
+            provider.startSearch(intent -> {
+                getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
+                return null;
             });
         }
     }

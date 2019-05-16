@@ -1000,6 +1000,11 @@ public final class Utilities {
         return false;
     }
 
+    public static Boolean isMiui() {
+        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
+                !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
+    }
+
     private static final int SUGGESTIONS_DAY_START = 5;
     private static final int SUGGESTIONS_DAY_END = 21;
 

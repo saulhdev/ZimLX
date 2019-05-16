@@ -19,6 +19,8 @@ import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
 
+import com.google.android.libraries.gsa.launcherclient.ISerializableScrollCallback;
+
 public class GoogleNow {
     private static int API_VERSION = -1;
     private final Activity mActivity;
@@ -94,7 +96,7 @@ public class GoogleNow {
     private void reloadScrollCallback(int flags) {
         if (mScrollCallbackFlags != flags) {
             mScrollCallbackFlags = flags;
-            mOnScroll.onServiceStateChanged((flags & 1) != 0, (flags & 2) != 0);
+            //mOnScroll.onServiceStateChanged((flags & 1) != 0, (flags & 2) != 0);
         }
     }
 

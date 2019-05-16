@@ -28,5 +28,5 @@ class SettingsSearchActivity : SettingsActivity() {
 
     override fun createLaunchFragment(intent: Intent?) = SubSettingsFragment.newInstance(
             getString(R.string.search),
-            R.xml.zim_preferences_search)
+            R.xml.zim_preferences_notification)
 }

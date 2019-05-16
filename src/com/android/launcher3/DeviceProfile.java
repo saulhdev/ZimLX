@@ -261,7 +261,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
 
         Utilities.getZimPrefs(context)
-                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
+                .addOnPreferenceChangeListener(this,
                         "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
     }
 

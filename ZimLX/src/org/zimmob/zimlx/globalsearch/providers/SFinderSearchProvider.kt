@@ -22,6 +22,7 @@ import android.content.Intent
 import android.graphics.drawable.Drawable
 import androidx.annotation.Keep
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.PackageManagerHelper
 import org.zimmob.zimlx.globalsearch.SearchProvider
 
@@ -52,10 +53,11 @@ class SFinderSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate().apply {
         //setTint(ColorEngine.getInstance(context).accent)
+        setTint(Utilities.getZimPrefs(context).accentColor)
     }
 
     override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
-        //setTint(ColorEngine.getInstance(context).accent)
+        setTint(Utilities.getZimPrefs(context).accentColor)
     }
 
     companion object {

@@ -19,7 +19,10 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 
+import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.colors.ColorEngine;
+import org.zimmob.zimlx.colors.ColorEngine.Resolvers;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
@@ -29,7 +32,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
-public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
+public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o,
+        ColorEngine.OnColorChangeListener {
 
     private final k Ds;
     private final int Dt;
@@ -94,8 +98,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
+        //ColorEngine.getInstance(getContext())
+        //        .addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         dN();
         Ds.a(this);
+    }
+
+    @Override
+    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
+        if (resolver.equals(Resolvers.ALLAPPS_QSB_BG)) {
+            mForegroundColor = foregroundColor;
+            ay(color);
+            az(this.Dc);
+        }
     }
 
     @Override
@@ -132,6 +147,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected void onDetachedFromWindow() {
+        //ColorEngine.getInstance(getContext())
+        //        .removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         super.onDetachedFromWindow();
         Ds.b(this);
     }
@@ -147,7 +164,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public final void initialize(AllAppsContainerView allAppsContainerView) {
         this.mAppsView = allAppsContainerView;
-        int i = 0;
+        //int i = 0;
         mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -218,7 +235,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     private boolean shouldUseFallbackSearch(SearchProvider provider) {
-        return !Utilities.getZimPrefs(getContext()).getAllAppsGlobalSearch()
+        return !Utilities
+                .getZimPrefs(getContext()).getAllAppsGlobalSearch()
                 || provider instanceof AppSearchSearchProvider
                 || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }

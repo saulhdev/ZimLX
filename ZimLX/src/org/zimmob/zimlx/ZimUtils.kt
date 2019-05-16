@@ -361,9 +361,6 @@ fun reloadIcons(context: Context) {
 
 fun Context.getIcon(): Drawable = packageManager.getApplicationIcon(applicationInfo)
 
-//val TaskStack.mostRecentTask
-//    get() = this.tasks.getOrNull(this.taskCount - 1)
-
 fun <T, A> ensureOnMainThread(creator: (A) -> T): (A) -> T {
     return { it ->
         if (Looper.myLooper() == Looper.getMainLooper()) {

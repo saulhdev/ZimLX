@@ -5,6 +5,7 @@
         android:title="@string/pref_category__notifications">
 
         <com.android.launcher3.views.ButtonPreference
+            app:iconSpaceReserved="false"
             android:key="pref_icon_badging"
             android:persistent="false"
             android:title="@string/icon_badging_title"
@@ -21,20 +22,68 @@
             android:key="pref_notification_count"
             android:persistent="true"
             android:dependency="pref_icon_badging"
-            android:title="@string/pref_title__notification_count" />
+            android:title="@string/pref_title__notification_count"
+            app:iconSpaceReserved="false" />
         <SwitchPreference
             android:defaultValue="true"
             android:key="pref_key__folder_badge_count"
             android:persistent="true"
-            android:title="@string/pref_title__folder_badge_count" />
+            android:title="@string/pref_title__folder_badge_count"
+            app:iconSpaceReserved="false" />
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/notification_background"
             android:key="pref_notification_background"
             android:title="@string/pref_title__notification_background_color"
+            app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__notification_background_color"
             app:cpv_showAlphaSlider="true" />
 
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:key="prefCat_searchbarAppearance"
+        android:title="@string/searchbar_appearance_title"
+        app:iconSpaceReserved="false">
+
+        <org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
+            android:defaultValue="@string/config_default_search_provider"
+            android:key="pref_globalSearchProvider"
+            android:title="@string/pref_global_search_provider"
+            app:iconSpaceReserved="false" />
+        <!--
+                <SwitchPreference
+                    android:defaultValue="false"
+                    android:key="opa_enabled"
+                    android:persistent="true"
+                    android:summary="@string/pref_show_assistant_summary"
+                    android:title="@string/pref_show_assistant_title"
+                    app:iconSpaceReserved="false" />
+
+                <SwitchPreference
+                    android:defaultValue="true"
+                    android:key="opa_assistant"
+                    android:persistent="true"
+                    android:dependency="opa_enabled"
+                    android:summary="@string/pref_show_as_assistant_summary"
+                    android:title="@string/action_assistant"
+                    app:iconSpaceReserved="false" />
+
+                <SwitchPreference
+                    android:key="pref_bubbleSearchStyle"
+                    android:title="@string/bubble_searchbar"
+                    android:defaultValue="false"
+                    app:iconSpaceReserved="false"/>
+        -->
+        <SwitchPreference
+            android:defaultValue="true"
+            app:iconSpaceReserved="false"
+            android:key="pref_search_hidden_apps"
+            android:summary="@string/summary__app_search_hidden"
+            android:title="@string/title__app_search_hidden" />
+
+    </PreferenceCategory>
+
+
     <PreferenceCategory android:title="@string/pref_category__gestures">
         <ListPreference
             android:defaultValue="0"
@@ -43,7 +92,8 @@
             android:key="pref_key__gesture_swipe_down"
             android:persistent="true"
             android:summary="%s"
-            android:title="@string/title__gesture_swipe_down" />
+            android:title="@string/title__gesture_swipe_down"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="1"
@@ -52,6 +102,7 @@
             android:key="pref_key__gesture_swipe_up"
             android:persistent="true"
             android:summary="%s"
-            android:title="@string/title__gesture_swipe_up" />
+            android:title="@string/title__gesture_swipe_up"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

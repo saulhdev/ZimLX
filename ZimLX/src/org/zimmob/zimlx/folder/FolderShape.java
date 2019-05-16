@@ -27,6 +27,7 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.Rect;
@@ -36,6 +37,7 @@ import android.graphics.RegionIterator;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
@@ -47,6 +49,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.folder.Folder;
+import com.android.launcher3.graphics.IconShapeOverride;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
@@ -55,6 +58,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import androidx.annotation.RequiresApi;
+import androidx.core.graphics.PathParser;
 
 import static android.graphics.Path.Direction.CW;
 
@@ -69,7 +73,7 @@ public abstract class FolderShape {
 
         public final Animator createRevealAnimator(final Folder folder, Rect rect, Rect rect2, float f, boolean z) {
             Path path = new Path();
-            ValueAnimator.AnimatorUpdateListener newUpdateListener = newUpdateListener(rect, rect2, f, path);
+            AnimatorUpdateListener newUpdateListener = newUpdateListener(rect, rect2, f, path);
             float[] fArr = new float[2];
             ValueAnimator ofFloat = ValueAnimator.ofFloat(z ? new float[]{1, 0} : new float[]{0, 1});
             ofFloat.addListener(new AnimatorListenerAdapter() {
@@ -77,6 +81,7 @@ public abstract class FolderShape {
 
                 public void onAnimationEnd(Animator animator) {
                     folder.setTranslationZ(0);
+                    folder.setClipPath(null);
                     folder.setOutlineProvider(this.mOldOutlineProvider);
                 }
 
@@ -89,8 +94,7 @@ public abstract class FolderShape {
             ofFloat.addUpdateListener(animation -> {
                 path.reset();
                 newUpdateListener.onAnimationUpdate(animation);
-                //folder.getFolderIcon(path);
-                folder.getFolderIcon();
+                folder.setClipPath(path);
             });
             return ofFloat;
         }
@@ -101,7 +105,7 @@ public abstract class FolderShape {
             canvas.drawPath(this.mTmpPath, paint);
         }
 
-        public abstract ValueAnimator.AnimatorUpdateListener newUpdateListener(Rect rect, Rect rect2, float f, Path path);
+        public abstract AnimatorUpdateListener newUpdateListener(Rect rect, Rect rect2, float f, Path path);
     }
 
     public static abstract class SimpleRectShape extends FolderShape {
@@ -360,7 +364,7 @@ public abstract class FolderShape {
     @SuppressLint("RestrictedApi")
     @RequiresApi(api = Build.VERSION_CODES.O)
     private static Path getIconMask(Context context) {
-        /*if (Utilities.isMiui()) {
+        if (Utilities.isMiui()) {
             String devValue = Utilities.getDevicePrefs(context).getString(IconShapeOverride.KEY_PREFERENCE, "");
             if (!TextUtils.isEmpty(devValue)) {
                 // Migrate
@@ -373,12 +377,12 @@ public abstract class FolderShape {
                     Path mask = PathParser.createPathFromPathData(pathData);
                     Rect bounds = new Rect(0, 0, 200, 200);
                     Matrix matrix = new Matrix();
-                    matrix.setScale(bounds.width() / AdaptiveIconDrawable.MASK_SIZE, bounds.height() / AdaptiveIconDrawable.MASK_SIZE);
+                    matrix.setScale(bounds.width() / 100f, bounds.height() / 100f);
                     mask.transform(matrix);
                     return mask;
                 } catch (Exception ignored) {}
             }
-        }*/
+        }
         AdaptiveIconDrawable tmp = new AdaptiveIconDrawable(new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
         tmp.setBounds(0, 0, 200, 200);
         return tmp.getIconMask();

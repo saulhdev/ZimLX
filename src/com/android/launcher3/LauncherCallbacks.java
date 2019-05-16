@@ -19,12 +19,9 @@ package com.android.launcher3;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.android.launcher3.util.ComponentKeyMapper;
-
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -73,6 +70,4 @@ public interface LauncherCallbacks {
      * Extensions points for adding / replacing some other aspects of the Launcher experience.
      */
     boolean hasSettings();
-
-    List<ComponentKeyMapper<AppInfo>> getPredictedApps();
 }

@@ -7,6 +7,7 @@ import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.SearchAlgorithm;
 
@@ -30,7 +31,7 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
     private void dj(SearchResult componentList) {
         Uri uri = new Uri.Builder()
                 .scheme("content")
-                .authority("com.google.android.apps.nexuslauncher.appssearch")
+                .authority(BuildConfig.APPLICATION_ID + ".appssearch")
                 .appendPath(componentList.mQuery)
                 .build();
 
@@ -39,8 +40,10 @@ public class SearchThread implements SearchAlgorithm, Handler.Callback {
             cursor = mContext.getContentResolver().query(uri, null, null, null, null);
             int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
             while (cursor.moveToNext()) {
-                componentList.mApps.add(AppSearchProvider.dl(Uri.parse(cursor.getString(suggestIntentData)), mContext));
+                componentList.mApps.add(AppSearchProvider.uriToComponent(Uri.parse(cursor.getString(suggestIntentData)), mContext));
             }
+        } catch (NullPointerException ignored) {
+
         } finally {
             if (cursor != null) {
                 cursor.close();

@@ -22,6 +22,8 @@ import android.animation.AnimatorSet;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
+import android.graphics.Canvas;
+import android.graphics.Path;
 import android.graphics.Rect;
 import android.text.InputType;
 import android.text.Selection;
@@ -191,6 +193,8 @@ public class Folder extends AbstractFloatingView implements DragSource,
     @Thunk
     int mCurrentScrollDir = SCROLL_NONE;
 
+    public Path mClipPath;
+
     /**
      * Used to inflate the Workspace from XML.
      *
@@ -261,6 +265,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+    }
+
+    public void setClipPath(Path path) {
+        mClipPath = path;
+        invalidate();
     }
 
     public boolean onLongClick(View v) {
@@ -1352,6 +1361,19 @@ public class Folder extends AbstractFloatingView implements DragSource,
         target.pageIndex = mContent.getCurrentPage();
         targetParent.containerType = ContainerType.FOLDER;
     }
+
+    @Override
+    public void draw(Canvas canvas) {
+        if (mClipPath != null) {
+            int save = canvas.save();
+            canvas.clipPath(mClipPath);
+            super.draw(canvas);
+            canvas.restoreToCount(save);
+        } else {
+            super.draw(canvas);
+        }
+    }
+
 
     private class OnScrollHintListener implements OnAlarmListener {
 

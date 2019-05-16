@@ -411,6 +411,41 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         TraceHelper.endSection("Launcher-onCreate");
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        unregisterReceiver(mScreenOffReceiver);
+        mWorkspace.removeFolderListeners();
+
+        UiFactory.setOnTouchControllersChangedListener(this, null);
+
+        // Stop callbacks from LauncherModel
+        // It's possible to receive onDestroy after a new Launcher activity has
+        // been created. In this case, don't interfere with the new Launcher.
+        if (mModel.isCurrentCallbacks(this)) {
+            mModel.stopLoader();
+            LauncherAppState.getInstance(this).setLauncher(null);
+        }
+        mRotationHelper.destroy();
+
+        try {
+            mAppWidgetHost.stopListening();
+        } catch (NullPointerException ex) {
+            Log.w(TAG, "problem while stopping AppWidgetHost during Launcher destruction", ex);
+        }
+
+        TextKeyListener.getInstance().release();
+
+        LauncherAnimUtils.onDestroyActivity();
+
+        clearPendingBinds();
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.onDestroy();
+        }
+    }
+
     /**
      * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
      * resumed.
@@ -2677,7 +2712,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         private void hideOverlay(boolean animate) {
             Launcher launcher = Launcher.this;
             if (launcher instanceof NexusLauncherActivity) {
-                ((NexusLauncherActivity) launcher).getGoogleNow().closeOverlay(animate);
+                ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
             }
         }
     }

@@ -39,6 +39,8 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.folder.FolderShape;
+
 import androidx.core.graphics.ColorUtils;
 
 /**
@@ -198,15 +200,11 @@ public class PreviewBackground {
         return ColorUtils.setAlphaComponent(mBgColor, alpha);
     }
 
-    public int getBadgeColor() {
-        return mBgColor;
-    }
-
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
-        drawCircle(canvas, 0 /* deltaRadius */);
+        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         drawShadow(canvas);
     }
@@ -242,7 +240,7 @@ public class PreviewBackground {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            canvas.drawCircle(radius + offsetX, radius + offsetY, radius, mPaint);
+            FolderShape.sInstance.drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
             mPaint.setXfermode(null);
         }
 
@@ -285,7 +283,8 @@ public class PreviewBackground {
         mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
-        drawCircle(canvas, 1 /* deltaRadius */);
+        FolderShape.sInstance.drawShape(canvas, getOffsetX() + 1, getOffsetY() + 1, getScaledRadius() - 1, mPaint);
+
     }
 
     public void drawLeaveBehind(Canvas canvas) {
@@ -294,21 +293,14 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        drawCircle(canvas, 0 /* deltaRadius */);
+        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;
     }
 
-    private void drawCircle(Canvas canvas, float deltaRadius) {
-        float radius = getScaledRadius();
-        canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
-                radius - deltaRadius, mPaint);
-    }
-
     public Path getClipPath() {
         mPath.reset();
-        float r = getScaledRadius();
-        mPath.addCircle(r + getOffsetX(), r + getOffsetY(), r, Path.Direction.CW);
+        FolderShape.sInstance.addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 
@@ -368,14 +360,11 @@ public class PreviewBackground {
 
         mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
 
-        mScaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                float prog = animation.getAnimatedFraction();
-                mScale = prog * scale1 + (1 - prog) * scale0;
-                mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
-                invalidate();
-            }
+        mScaleAnimator.addUpdateListener(animation -> {
+            float prog = animation.getAnimatedFraction();
+            mScale = prog * scale1 + (1 - prog) * scale0;
+            mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
+            invalidate();
         });
         mScaleAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -399,12 +388,7 @@ public class PreviewBackground {
     }
 
     public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
+        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
         animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
     }
 
@@ -416,26 +400,12 @@ public class PreviewBackground {
         final int cellX = delegateCellX;
         final int cellY = delegateCellY;
 
-        Runnable onStart = new Runnable() {
-            @Override
-            public void run() {
-                delegateDrawing(cl, cellX, cellY);
-            }
-        };
-        Runnable onEnd = new Runnable() {
-            @Override
-            public void run() {
-                clearDrawingDelegate();
-            }
-        };
+        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
+        Runnable onEnd = () -> clearDrawingDelegate();
         animateScale(1f, 1f, onStart, onEnd);
     }
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-    }
-
-    public float getStrokeWidth() {
-        return mStrokeWidth;
     }
 }

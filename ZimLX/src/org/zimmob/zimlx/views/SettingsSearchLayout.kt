@@ -33,7 +33,7 @@ class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableF
     override fun onFinishInflate() {
         super.onFinishInflate()
         Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener(this)
-        //updateRadius()
+        updateRadius()
     }
 
     fun updateRadius() {

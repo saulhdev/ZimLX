@@ -16,6 +16,7 @@
 package com.android.launcher3.allapps.search;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.text.Selection;
 import android.text.Spannable;
@@ -112,16 +113,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         // Update the width to match the grid padding
         DeviceProfile dp = mLauncher.getDeviceProfile();
         int myRequestedWidth = getSize(widthMeasureSpec);
-        //int rowWidth=0;
-        //if(Utilities.getZimPrefs(getContext()).getDrawerStyle()!=0){
         int rowWidth = myRequestedWidth - mAppsView.getActiveRecyclerView().getPaddingLeft()
                 - mAppsView.getActiveRecyclerView().getPaddingRight();
-        //}
-        /*
-        else{
-            rowWidth = myRequestedWidth - mAppsView.getPagedView().getPaddingLeft()
-                    - mAppsView.getPagedView().getPaddingRight();
-        }*/
 
         int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
         int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
@@ -149,7 +142,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
+                new DefaultAppSearchAlgorithm(mLauncher.getApplicationContext(), mApps.getApps()), this, mLauncher, this);
     }
 
     @Override
@@ -189,6 +182,17 @@ public class AppsSearchContainerLayout extends ExtendedEditText
             mAppsView.setLastSearchQuery(query);
         }
     }
+
+    @Override
+    public boolean onSubmitSearch() {
+        if (mApps.hasNoFilteredResults()) {
+            return false;
+        }
+        Intent i = mApps.getFilteredApps().get(0).getIntent();
+        getContext().startActivity(i);
+        return true;
+    }
+
 
     @Override
     public void clearSearchResult() {

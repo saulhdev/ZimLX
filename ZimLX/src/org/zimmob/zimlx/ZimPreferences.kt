@@ -123,16 +123,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sort.toInt()
     }
 
-
-    //val drawerStyle by IntPref(ZimFlags.APPDRAWER_STYLE, 1, recreate)
-
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
-
-
 
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -155,15 +150,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
 
-
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
-
 
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
     val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
-
 
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
@@ -175,28 +167,17 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
 
-    fun getFolderShape(): Int {
-        val folderShape: String = sharedPrefs.getString(ZimFlags.THEME_FOLDER_SHAPE, "0")
-        return folderShape.toInt()
-    }
-
     //smartspace
     var weatherProvider by StringPref("pref_smartspace_widget_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
 
-
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
-    var weatherApiKey by StringPref("pref_weatherApiKey", context.getString(R.string.default_owm_key))
-    var weatherCity by StringPref("pref_weather_city", context.getString(R.string.default_city))
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
-
-
-
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true)
@@ -257,10 +238,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     private fun updateSmartspaceProvider() {
         onChangeCallback?.updateSmartspaceProvider()
-    }
-
-    private fun updateSmartspace() {
-        onChangeCallback?.updateSmartspace()
     }
 
     private fun reloadIcons() {
@@ -479,16 +456,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
-    open inner class DimensionPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
-            PrefDelegate<Float>(key, defaultValue, onChange) {
-
-        override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
-
-        override fun onSetValue(value: Float) {
-            TODO("not implemented")
-        }
-    }
-
     open inner class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
             PrefDelegate<Float>(key, defaultValue, onChange) {
         override fun onGetValue(): Float = sharedPrefs.getFloat(getKey(), defaultValue)
@@ -510,8 +477,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // ----------------
     // Helper functions and class
     // ----------------
-
-    fun getPrefKey(key: String) = "pref_$key"
 
     fun commitOrApply(editor: SharedPreferences.Editor, commit: Boolean) {
         if (commit) {
@@ -654,8 +619,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             blockingEdit {
                 bulkEdit {
                     // Migration codes here
-
-
                     configVersion = CURRENT_VERSION
                 }
             }

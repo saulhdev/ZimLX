@@ -41,6 +41,8 @@ import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.folder.FolderShape;
+
 import java.util.List;
 
 import androidx.core.graphics.ColorUtils;
@@ -189,6 +191,8 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
+        play(a, FolderShape.sInstance.createRevealAnimator(mFolder, startRect, endRect, finalRadius, !mIsOpening));
+
         RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
                 initialRadius, finalRadius, startRect, endRect) {
             @Override

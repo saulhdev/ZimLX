@@ -55,18 +55,12 @@
             android:title="@string/title__app_search" />
 
         <SwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_allAppsGoogleSearch"
             android:summary="@string/summary__app_search_global"
             android:title="@string/title__app_search_global" />
 
-        <SwitchPreference
-            android:defaultValue="true"
-            app:iconSpaceReserved="false"
-            android:key="pref_search_hidden_apps"
-            android:summary="@string/summary__app_search_hidden"
-            android:title="@string/title__app_search_hidden" />
     </PreferenceCategory>
 
     <SwitchPreference

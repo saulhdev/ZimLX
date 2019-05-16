@@ -16,7 +16,8 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
     override val supportsAssistant = true
     override val supportsFeed = true
     override val settingsIntent: Intent
-        get() = Intent("com.google.android.apps.gsa.nowoverlayservice.PIXEL_DOODLE_QSB_SETTINGS")
+        //get() = Intent("com.google.android.apps.gsa.nowoverlayservice.PIXEL_DOODLE_QSB_SETTINGS")
+        get() = Intent("com.google.android.googlequicksearchbox.TEXT_ASSIST")
                 .setPackage(PACKAGE).addFlags(268435456)
     override val isBroadcast: Boolean
         get() = true
@@ -30,11 +31,11 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startFeed(callback: (intent: Intent) -> Unit) {
         val launcher = ZimLauncher.getLauncher(context)
-        //if (launcher.googleNow != null) {
-        //    launcher.googleNow?.showOverlay(true)
-        //} else {
+        if (launcher.googleNow != null) {
+            launcher.googleNow?.showOverlay(true)
+        } else {
         callback(Intent(Intent.ACTION_MAIN).setClassName(PACKAGE, "$PACKAGE.SearchActivity"))
-        //}
+        }
     }
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_super_g_color)!!

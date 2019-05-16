@@ -21,6 +21,8 @@ import android.content.Context;
 import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 
+import org.zimmob.zimlx.folder.FolderShape;
+
 /**
  * Utility class to handle one time initializations of the main process
  */
@@ -36,5 +38,6 @@ public class MainProcessInitializer {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
         IconShapeOverride.apply(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
+        FolderShape.init(context);
     }
 }

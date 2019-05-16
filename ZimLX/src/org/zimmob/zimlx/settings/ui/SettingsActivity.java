@@ -19,7 +19,6 @@ package org.zimmob.zimlx.settings.ui;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.ProgressDialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
 import android.content.Context;
@@ -38,16 +37,13 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 
 import com.android.launcher3.BuildConfig;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherFiles;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
-import com.android.launcher3.util.LooperExecutor;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
@@ -112,7 +108,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
-    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
 
@@ -123,6 +118,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     private boolean isSubSettings;
     protected boolean forceSubSettings = false;
+    public final static String FEED_THEME_PREF = "pref_feedTheme";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -136,9 +133,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         boolean showSearch = shouldShowSearch();
 
         super.onCreate(savedInstanceState);
-        //getDecorLayout().setHideToolbar(showSearch);
-        //getDecorLayout().setUseLargeTitle(shouldUseLargeTitle());
-        setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
+        //setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
+        setContentView(R.layout.activity_settings);
 
         if (savedInstanceState == null) {
             Fragment fragment = createLaunchFragment(getIntent());
@@ -151,10 +147,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         updateUpButton();
-        if (showSearch) {
+        /*if (showSearch) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.setOnClickListener(this);
-        }
+        }*/
     }
 
     protected Fragment createLaunchFragment(Intent intent) {
@@ -183,14 +179,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (shouldShowSearch()) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
-            //ZimPreferences prefs = Utilities.getZimPrefs(this);
-            /*if (prefs.getEnableFools()) {
-                toolbar.inflateMenu(R.menu.menu_toggle_fools);
-                MenuItem foolsItem = toolbar.getMenu().findItem(R.id.action_toggle_fools);
-                foolsItem.setTitle(prefs.getNoFools() ? "AFD / OFF" : "AFD / ON");
-            }*/
             toolbar.inflateMenu(R.menu.menu_restart_zim);
-            ActionMenuView menuView = null;
+            ActionMenuView menuView;
             int count = toolbar.getChildCount();
             for (int i = 0; i < count; i++) {
                 View child = toolbar.getChildAt(i);
@@ -199,21 +189,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     break;
                 }
             }
-            /*if (menuView != null) {
-                //menuView.getOverflowIcon()
-                //        .setTint(ColorEngine.getInstance(this).getAccent());
-            }
-            */
+
             if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
                 toolbar.inflateMenu(R.menu.menu_change_default_home);
             }
             toolbar.setOnMenuItemClickListener(menuItem -> {
                 switch (menuItem.getItemId()) {
-                    /*case R.id.action_toggle_fools:
-                        prefs.beginBlockingEdit();
-                        prefs.setNoFools(!prefs.getNoFools());
-                        prefs.endBlockingEdit();
-                        */
                     case R.id.action_change_default_home:
                         FakeLauncherKt.changeDefaultHome(this);
                         break;
@@ -242,9 +223,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     @Override
     public void onClick(View v) {
-        if (v.getId() == R.id.search_action_bar) {
-            startActivity(new Intent(this, SettingsSearchActivity.class));
-        }
+        /*if (v.getId() == R.id.search_action_bar) {
+            //startActivity(new Intent(this, SettingsSearchActivity.class));
+        }*/
     }
 
     @NotNull
@@ -261,13 +242,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
         if (preference instanceof SubPreference) {
+            Log.e("SETTING P", preference.getFragment());
             ((SubPreference) preference).start(this);
             return true;
-            //}
-        /*else if (preference instanceof ColorPickerPreference) {
-            ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
-            return true;
-            */
+
         } else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
@@ -402,8 +380,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
                     break;
 
-                case R.xml.zim_preferences_dock:
-                    break;
                 case R.xml.zim_preferences_app_drawer:
                     findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                     break;
@@ -445,7 +421,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(getContent());
-            //onPreferencesAdded(getPreferenceScreen());
         }
 
         private int getContent() {
@@ -540,27 +515,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
-                case ICON_PACK_PREF:
-                    ProgressDialog.show(mContext,
-                            null,
-                            mContext.getString(R.string.state_loading),
-                            true,
-                            false);
-
-                    new LooperExecutor(LauncherModel.getWorkerLooper()).execute(() -> {
-                        // Clear the icon cache.
-                        LauncherAppState.getInstance(mContext).getIconCache().clear();
-
-                        // Wait for it
-                        try {
-                            Thread.sleep(1000);
-                        } catch (Exception e) {
-                            Log.e("SettingsActivity", "Error waiting", e);
-                        }
-
-                        Utilities.restartLauncher(mContext);
-                    });
-                    return true;
                 case SHOW_PREDICTIONS_PREF:
                     if ((boolean) newValue) {
                         return true;
@@ -568,9 +522,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
-                    break;
-                case ENABLE_MINUS_ONE_PREF:
-
                     break;
             }
             return false;
@@ -766,32 +717,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
         }
-    }
-
-    /*public static class InstallFragment extends DialogFragment {
-
-        @Override
-        public Dialog onCreateDialog(final Bundle bundle) {
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.bridge_missing_title)
-                    .setMessage(R.string.bridge_missing_message)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .create();
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
-        }
-    }*/
-
-    public static void startFragment(Context context, String fragment) {
-        startFragment(context, fragment, null);
-    }
-
-    public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
-        startFragment(context, fragment, args, null);
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args,

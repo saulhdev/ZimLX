@@ -22,19 +22,24 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
-    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
-    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
-    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
-
+    <permission
+        android:name="${applicationId}.permission.READ_SETTINGS"
+        android:description="@string/permdesc_read_settings"
+        android:label="@string/permlab_read_settings"
+        android:protectionLevel="normal" />
     <!-- Pixel -->
     <permission
         android:name="${applicationId}.permission.QSB"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem" />
 
+
+    <uses-permission android:name="com.android.launcher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.android.launcher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
     <uses-permission android:name="${applicationId}.permission.QSB" />
 
     <!-- Custom -->

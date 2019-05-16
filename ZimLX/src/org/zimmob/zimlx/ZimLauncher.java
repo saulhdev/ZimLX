@@ -8,6 +8,7 @@ import android.os.Bundle;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -48,10 +49,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         gestureController = new GestureController(this);
     }
 
-    public GestureController getGestureController() {
-        return gestureController;
-    }
-
     @Override
     public void onStart() {
         super.onStart();
@@ -63,6 +60,43 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
                 startActivity(getIntent());
             }
         }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        restartIfPending();
+        paused = false;
+    }
+
+    public void onPause() {
+        super.onPause();
+
+        paused = true;
+    }
+
+    public void restartIfPending() {
+        if (sRestart) {
+            //zimApp.restart(false);
+        }
+    }
+
+    @Override
+    public void finishBindingItems() {
+        super.finishBindingItems();
+        Utilities.onLauncherStart();
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Utilities.onLauncherStart();
+    }
+
+
+    public GestureController getGestureController() {
+        return gestureController;
     }
 
     private boolean showSmartspace() {
@@ -86,6 +120,18 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             sRestart = true;
         } else {
             Utilities.restartLauncher(this);
+        }
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+
+        Utilities.getZimPrefs(this).unregisterCallback();
+
+        if (sRestart) {
+            sRestart = false;
+            LauncherAppState.destroyInstance();
+            ZimPreferences.Companion.destroyInstance();
         }
     }
 

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <Preference
         android:key="kill"
         android:summary="@string/restart_lawnchair_pref_summary"
-        android:title="@string/restart_lawnchair_pref_title" />
+        android:title="@string/restart_lawnchair_pref_title"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_showDebugInfo"
         android:persistent="true"
-        android:title="@string/show_debug_info_pref_title" />
+        android:title="@string/show_debug_info_pref_title"
+        app:iconSpaceReserved="false" />
 </PreferenceScreen>

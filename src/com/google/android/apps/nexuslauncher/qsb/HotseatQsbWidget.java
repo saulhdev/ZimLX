@@ -113,8 +113,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         removeAllViews();
         setColors();
         dW();
-        dy();
-        dH();
+        //dy();
+        //dH();
     }
 
     private void dW() {
@@ -257,7 +257,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     public void setInsets(Rect rect) {
-        super.setInsets(rect);
+        //super.setInsets(rect);
         setVisibility(
                 mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
     }

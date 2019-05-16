@@ -49,16 +49,10 @@
 
     <PreferenceCategory android:title="@string/pref_category__inputs">
         <org.zimmob.zimlx.settings.ui.SubPreference
-            android:icon="@drawable/ic_notifications_paused"
+            android:icon="@drawable/ic_behavior"
             android:summary="@string/pref_summary__notifications"
             android:title="@string/pref_title__notifications"
             app:content="@xml/zim_preferences_notification" />
-
-        <org.zimmob.zimlx.settings.ui.SubPreference
-            android:icon="@drawable/ic_behavior"
-            android:summary="@string/pref_summary__behavior"
-            android:title="@string/pref_title__behavior"
-            app:content="@xml/zim_preferences_behavior" />
 
     </PreferenceCategory>
 

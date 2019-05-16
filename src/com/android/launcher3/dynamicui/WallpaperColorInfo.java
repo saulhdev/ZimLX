@@ -113,4 +113,5 @@ public class WallpaperColorInfo implements WallpaperManagerCompat.OnColorsChange
     public interface OnThemeChangeListener {
         void onThemeChanged();
     }
+
 }

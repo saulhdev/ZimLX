@@ -440,7 +440,7 @@
     <string name="about">About</string>
     <!-- PREFERENCES GENERAL  -->
     <string name="pref_category__interfaces">Interfaces</string>
-    <string name="pref_category__inputs">Gestures </string>
+    <string name="pref_category__inputs">Gestures and Search</string>
     <string name="pref_category__others">Others</string>
 
     <string name="pref_title__desktop">Desktop</string>
@@ -453,6 +453,7 @@
     <string name="pref_title__advanced">Advanced</string>
     <string name="pref_title__behavior">Behavior</string>
     <string name="pref_title__smartspace">Home Widget</string>
+    <string name="pref_title__search">Search</string>
 
     <string name="pref_summary__app_drawer">Customize your app drawer</string>
     <string name="pref_summary__dock">Customize your dock</string>
@@ -465,6 +466,7 @@
     <string name="pref_summary__inputs">Configure gestures</string>
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
     <string name="pref_summary__smartspace">Date,time and searchbar</string>
+    <string name="pref_summary__search">Search Engine</string>
 
     <string name="pref_title__language">Language</string>
     <string name="pref_title__folder_badge_count">Show folder badge Count</string>
@@ -513,14 +515,12 @@
     <string name="pref_prediction_count">Number of suggestions</string>
 
     <!-- PREFERENCES BEHAVIOR -->
-    <string name="title__behavior_weather_api_key">API key</string>
     <string name="title__behavior_widget_provider">Weather source</string>
     <string name="title__behavior_weather_units">Temperature unit</string>
     <string name="title__behavior_weather_city">City</string>
     <string name="title__behavior_event_provider">Calendar source</string>
     <string name="category__behavior_weather">Weather</string>
     <string name="default_city">San Salvador, SV</string>
-    <string name="default_owm_key" translatable="false">17a6438b1d63d5b05f7039e7cb52cde7</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
@@ -603,8 +603,20 @@
     <string name="dock_style_hidden">Hidden</string>
     <string name="dock_style_custom">Custom</string>
     <string name="dock_search_bar">Dock search bar</string>
-
     <string name="automatic_short">Auto</string>
+
+    <!-- SEARCH -->
+    <string name="pref_show_assistant_summary">Display voice search button if supported</string>
+    <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
+    <string name="pref_show_assistant_title">Voice search button</string>
+    <string name="bubble_searchbar">Dual bubble search bar</string>
+    <string name="app_drawer_pref_title">App drawer</string>
+    <string name="title_all_apps_search">Drawer search bar</string>
+    <string name="title_all_apps_google_search">Global search</string>
+    <string name="summary_all_apps_google_search">Find web results and apps</string>
+    <string name="title_search_hidden_apps">Find hidden apps</string>
+    <string name="summary_search_hidden_apps">Show hidden apps in results</string>
+
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__source_code" translatable="false">pref_key__source_code</string>
     <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
@@ -698,10 +710,6 @@
     <string name="icon_shape_override_label_location">on Home screen</string>
     <string name="config_default_color_resolver" translatable="false">org.zimmob.zimlx.colors.ARGBColorResolver</string>
 
-    <string name="zim_accent">Accent Color</string>
-    <string name="color_system_accent">System accent</string>
-    <string name="reset_to_default">Reset to default</string>
-
     <string name="change_default_home">Set as home screen</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
 
@@ -729,7 +737,7 @@
     <string name="search_provider_s_finder">S Finder</string>
     <string name="color_theme_based">Follow theme</string>
     <string name="pref_global_search_provider">Search engine</string>
-    <string name="searchbar_appearance_title">Appearance</string>
+    <string name="searchbar_appearance_title">Search Options</string>
     <string name="google">Google</string>
     <string name="search_provider_google_go">Google Go</string>
     <string name="search_provider_firefox">Firefox</string>
@@ -789,10 +797,21 @@
     <string name="blur_pref_title">Blur</string>
     <string name="blur_pref_summary">Blur effect for app drawer, dock, settings backgrounds</string>
     <string name="blur_radius_pref_title">Blur strength</string>
-
     <string name="customize">Customise</string>
     <string name="action_preferences">@string/customize</string>
     <string name="theme_title">Theme</string>
     <string name="search">Search</string>
+    <string name="zim_accent">Accent Color</string>
+    <string name="color_system_accent">System accent</string>
+    <string name="reset_to_default">Reset to default</string>
+
+    <string name="theme_based">Follow theme</string>
+    <string name="color_pixel_accent">Pixel blue</string>
+    <string name="color_presets">Presets</string>
+
+    <string name="color_wallpaper_main">Wallpaper — primary</string>
+    <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
+    <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
+
 
 </resources>

@@ -426,26 +426,6 @@
         <item name="android:colorForeground">@color/all_apps_bg_hand_fill_dark</item>
     </style>
 
-    <style name="NormalSearch" parent="LauncherTheme">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
-    </style>
-
-    <style name="NormalSearchDark" parent="LauncherTheme.Dark">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
-    </style>
-
-    <style name="GoogleSearchLauncherTheme" parent="@style/LauncherTheme">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
-
-    <style name="GoogleSearchLauncherThemeDark" parent="@style/LauncherTheme.Dark">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
-
-    <style name="GoogleSearchLauncherThemeDarkText" parent="@style/LauncherTheme.DarkText">
-        <item name="android:keyboardLayout">@layout/search_container_all_apps_google</item>
-    </style>
-
     <!-- Weather widget -->
     <style name="WeatherWidget" />
 

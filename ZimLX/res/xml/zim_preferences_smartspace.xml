@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
         android:defaultValue="true"
         android:disableDependentsState="false"
         android:key="pref_smartspace"
-        android:title="@string/title__desktop_smartspace" />
+        android:title="@string/title__desktop_smartspace"
+        app:iconSpaceReserved="false" />
 
     <!--
     <org.zimmob.zimlx.preferences.PreviewPreference
@@ -18,28 +20,32 @@
         android:defaultValue="true"
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
-        android:title="@string/title_show_google_app" />
+        android:title="@string/title_show_google_app"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:defaultValue="true"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_time"
         android:summary="@string/in_smartspace"
-        android:title="@string/smartspace_time" />
+        android:title="@string/smartspace_time"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:defaultValue="false"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_date"
         android:summary="@string/in_smartspace"
-        android:title="@string/smartspace_date" />
+        android:title="@string/smartspace_date"
+        app:iconSpaceReserved="false" />
 
     <SwitchPreference
         android:key="pref_use_pill_qsb"
         android:dependency="pref_smartspace"
         android:title="@string/title_use_pill_qsb"
         android:disableDependentsState="true"
-        android:defaultValue="false" />
+        android:defaultValue="false"
+        app:iconSpaceReserved="false" />
 
     <PreferenceCategory
         android:key="prefCat_homewidgetWeather"
@@ -49,7 +55,8 @@
             android:key="pref_smartspace_widget_provider"
             android:dependency="pref_smartspace"
             android:title="@string/title__behavior_widget_provider"
-            android:summary="%s" />
+            android:summary="%s"
+            app:iconSpaceReserved="false" />
 
         <ListPreference
             android:defaultValue="metric"
@@ -58,12 +65,14 @@
             android:entryValues="@array/unitsValues"
             android:key="pref_weather_units"
             android:summary="%s"
-            android:title="@string/title__behavior_weather_units" />
+            android:title="@string/title__behavior_weather_units"
+            app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
             android:key="pref_smartspace_event_provider"
             android:dependency="pref_use_pill_qsb"
             android:title="@string/title__behavior_event_provider"
-            android:summary="%s" />
+            android:summary="%s"
+            app:iconSpaceReserved="false" />
     </PreferenceCategory>
 </PreferenceScreen>
