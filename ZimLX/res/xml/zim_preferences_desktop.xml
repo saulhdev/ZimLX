@@ -49,7 +49,7 @@
         android:title="@string/hide_icon_labels_pref_title" />
 
     <SwitchPreference
-        app:iconSpaceReserved="false"
+        app:iconSpaceReserved="true"
         android:key="pref_homeIconLabelsInTwoLines"
         android:title="@string/pref_multiline_labels"
         android:defaultValue="false"

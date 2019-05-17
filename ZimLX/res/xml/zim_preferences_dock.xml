@@ -38,6 +38,7 @@
         app:summaryMultiplier="100"
         app:iconSpaceReserved="false" />
 
+    <!--
     <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="radius"
         android:persistent="true"
@@ -50,6 +51,7 @@
         app:summaryMultiplier="1"
         app:iconSpaceReserved="false" />
 
+-->
     <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="pref_dockScale"
         android:persistent="true"
@@ -81,13 +83,13 @@
         android:summary="%s"
         android:title="@string/title__hotseat_num_icons"
         app:iconSpaceReserved="false" />
-
-    <SwitchPreference
-        android:defaultValue="false"
-        android:key="pref_twoRowDock"
-        android:title="@string/title__hotseat_two_row"
-        app:iconSpaceReserved="false" />
-
+    <!--
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="pref_twoRowDock"
+            android:title="@string/title__hotseat_two_row"
+            app:iconSpaceReserved="false" />
+    -->
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref__hide_dock_button"
