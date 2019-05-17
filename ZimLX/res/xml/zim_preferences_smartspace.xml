@@ -32,7 +32,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_date"
         android:summary="@string/in_smartspace"
@@ -40,11 +40,11 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreference
+        android:defaultValue="false"
         android:key="pref_use_pill_qsb"
         android:dependency="pref_smartspace"
         android:title="@string/title_use_pill_qsb"
         android:disableDependentsState="true"
-        android:defaultValue="false"
         app:iconSpaceReserved="false" />
 
     <PreferenceCategory

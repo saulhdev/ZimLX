@@ -79,8 +79,8 @@ class ZimApp : Application() {
             false
         }
     }
-
-    /*@Keep
+/*
+    @Keep
     fun checkRecentsComponent(): Boolean {
         if (!Utilities.ATLEAST_P) return false
         if (!Utilities.HIDDEN_APIS_ALLOWED) return false
@@ -92,7 +92,7 @@ class ZimApp : Application() {
         return recentsComponent.packageName == packageName
                 && recentsComponent.className == RecentsActivity::class.java.name
     }
-    */
+*/
 }
 
 

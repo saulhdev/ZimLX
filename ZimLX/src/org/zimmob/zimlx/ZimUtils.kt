@@ -66,6 +66,7 @@ import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
+import org.zimmob.zimlx.colors.ColorEngine
 import java.lang.reflect.Field
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -81,6 +82,11 @@ val Context.zimPrefs get() = Utilities.getZimPrefs(this)
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
             this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
+
+@ColorInt
+fun Context.getColorEngineAccent(): Int {
+    return ColorEngine.getInstance(this).accent
+}
 
 @ColorInt
 fun Context.getColorAccent(): Int {

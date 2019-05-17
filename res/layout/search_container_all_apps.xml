@@ -30,7 +30,7 @@
     android:saveEnabled="false"
     android:scrollHorizontally="true"
     android:singleLine="true"
-    android:textColor="?android:attr/textColorSecondary"
+    android:textColor="?android:attr/colorPrimary"
     android:textColorHint="@drawable/all_apps_search_hint"
     android:textSize="16sp"
     android:translationY="24dp" />

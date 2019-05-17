@@ -50,8 +50,8 @@
             android:key="pref_globalSearchProvider"
             android:title="@string/pref_global_search_provider"
             app:iconSpaceReserved="false" />
-        <!--
-                <SwitchPreference
+
+        <SwitchPreference
                     android:defaultValue="false"
                     android:key="opa_enabled"
                     android:persistent="true"
@@ -73,7 +73,7 @@
                     android:title="@string/bubble_searchbar"
                     android:defaultValue="false"
                     app:iconSpaceReserved="false"/>
-        -->
+
         <SwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
