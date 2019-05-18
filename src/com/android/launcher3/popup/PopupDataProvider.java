@@ -17,17 +17,22 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.DeepShortcutManagerBackport;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
@@ -53,11 +58,16 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     /**
      * Note that these are in order of priority.
      */
-    private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[]{
+    /*private static final SystemShortcut[] SYSTEM_SHORTCUTS = new SystemShortcut[]{
             new SystemShortcut.AppInfo(),
             new SystemShortcut.Widgets(),
             new SystemShortcut.Install()
-    };
+    };*/
+
+    /**
+     * Note that these are in order of priority.
+     */
+    private final SystemShortcut[] mSystemShortcuts;
 
     private final Launcher mLauncher;
 
@@ -72,6 +82,12 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
 
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
+        mSystemShortcuts = new SystemShortcut[]{
+                Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
+                new SystemShortcut.AppInfo(),
+                new SystemShortcut.Widgets(),
+                new SystemShortcut.Install()
+        };
     }
 
     @Override
@@ -171,8 +187,21 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
 
-        List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        return ids == null ? Collections.EMPTY_LIST : ids;
+        //List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+        //return ids == null ? Collections.EMPTY_LIST : ids;
+        List<String> ids = new ArrayList<>();
+        if (!Utilities.ATLEAST_NOUGAT_MR1) {
+            for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
+                    (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),
+                    info.getTargetComponent(),
+                    info.getTargetComponent().getPackageName())) {
+                ids.add(compat.getId());
+            }
+        } else {
+            List<String> tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+            if (tmp != null) ids.addAll(tmp);
+        }
+        return ids;
     }
 
     public BadgeInfo getBadgeInfoForItem(ItemInfo info) {
@@ -203,7 +232,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public @NonNull
     List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : SYSTEM_SHORTCUTS) {
+        for (SystemShortcut systemShortcut : mSystemShortcuts) {
             if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
                 systemShortcuts.add(systemShortcut);
             }

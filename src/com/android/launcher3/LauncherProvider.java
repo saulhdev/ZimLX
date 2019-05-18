@@ -800,7 +800,12 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 case 27:
-                    // DB Upgraded successfully
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                case 29:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON_ENTRY + " TEXT;");
+                case 30:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.SWIPE_UP_ACTION + " TEXT;");
                     return;
             }
 

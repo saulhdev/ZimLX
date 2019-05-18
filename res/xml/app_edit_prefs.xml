@@ -16,18 +16,15 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
     <SwitchPreference
-        android:defaultValue="true"
-        android:key="pref_app_icon_pack"
-        android:persistent="false"
-        android:summary="@string/icon_shape_system_default"
-        android:title="@string/title__theme_icon_pack" />
-
-    <SwitchPreference
         android:defaultValue="false"
         android:key="pref_app_hide"
         android:persistent="false"
         android:summary="@string/hide_app_sum"
         android:title="@string/hide_app" />
+
+    <org.zimmob.zimlx.gestures.ui.LauncherGesturePreference
+        android:key="pref_swipe_up_gesture"
+        android:title="@string/gesture_swipe_up" />
 
     <PreferenceCategory
         android:key="debug"

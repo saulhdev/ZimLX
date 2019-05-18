@@ -75,6 +75,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
+import com.google.android.apps.nexuslauncher.CustomBottomSheet;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -265,6 +266,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+
+        findViewById(R.id.settings_button).setOnClickListener(v -> {
+            animateClosed();
+            CustomBottomSheet.show(mLauncher, mInfo);
+        });
     }
 
     public void setClipPath(Path path) {

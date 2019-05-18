@@ -16,12 +16,14 @@
 
 package com.google.android.apps.nexuslauncher;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ClipData;
 import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.preference.Preference;
 import android.preference.PreferenceFragment;
@@ -60,7 +62,9 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     private String mPreviousTitle;
     private ItemInfo mItemInfo;
     private CustomInfoProvider<ItemInfo> mInfoProvider;
+
     private boolean mForceOpen;
+
 
     public CustomBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -68,7 +72,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
     public CustomBottomSheet(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        mFragmentManager = Launcher.getLauncher(context).getFragmentManager();
+        mFragmentManager = mLauncher.getFragmentManager();
     }
 
     @Override
@@ -90,7 +94,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             } else if (itemInfo instanceof ItemInfoWithIcon) {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
-                //icon.setImageDrawable(mLauncher.getDrawable(R.drawable.ic_lawnstep));
                 icon.setImageDrawable(((FolderInfo) itemInfo).getIcon(mLauncher));
             }
             if (mInfoProvider != null) {
@@ -127,6 +130,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         super.onDetachedFromWindow();
     }
 
+    @Override
+    protected void handleClose(boolean animate, long defaultDuration) {
+        if (mForceOpen) return;
+        super.handleClose(animate, defaultDuration);
+    }
+
     private void setForceOpen() {
         mForceOpen = true;
     }
@@ -146,13 +155,18 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     }
 
     public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
-        private final static String PREF_PACK = "pref_app_icon_pack";
         private final static String PREF_HIDE = "pref_app_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
-
-        public final static int requestCode = "swipeUp".hashCode() & 65535;
         private final static boolean HIDE_PREDICTION_OPTION = true;
+        public final static int requestCode = "swipeUp".hashCode() & 65535;
+
+        private SwitchPreference mPrefHide;
+        private SwitchPreference mPrefHidePredictions;
+        private LauncherGesturePreference mSwipeUpPref;
+        private ZimPreferences prefs;
+
         private ComponentKey mKey;
+
         private ItemInfo itemInfo;
         private GestureHandler previousHandler;
         private GestureHandler selectedHandler;
@@ -164,22 +178,10 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         CustomInfoProvider mProvider;
 
-        private SwitchPreference mPrefHide;
-        private SwitchPreference mPrefHidePredictions;
-        private LauncherGesturePreference mSwipeUpPref;
-        //private MultiSelectTabPreference mTabsPref;
-        private ZimPreferences prefs;
-
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.app_edit_prefs);
-
-            if (!Utilities.getZimPrefs(getActivity()).getShowDebugInfo()) {
-                getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
-            } else {
-                getPreferenceScreen().findPreference("componentName").setOnPreferenceClickListener(this);
-            }
         }
 
         public void loadForApp(ItemInfo info, Runnable setForceOpen, Runnable unsetForceOpen, Runnable reopen) {
@@ -196,7 +198,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             PreferenceScreen screen = getPreferenceScreen();
             prefs = Utilities.getZimPrefs(getActivity());
             mSwipeUpPref = (LauncherGesturePreference) screen.findPreference("pref_swipe_up_gesture");
-            //mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
             mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
 
@@ -206,13 +207,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             } else {
                 screen.removePreference(mPrefHide);
             }
-
-            /*if (!isApp || prefs.getDrawerTabs().getGroups().isEmpty()) {
-                screen.removePreference(mTabsPref);
-            } else {
-                mTabsPref.setComponentKey(mKey);
-                mTabsPref.loadSummary();
-            }*/
 
             if (mProvider != null && mProvider.supportsSwipeUp()) {
                 previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
@@ -236,6 +230,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 componentPref.setSummary(mKey.toString());
             } else {
                 getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
+
             }
 
             mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
@@ -257,6 +252,21 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             }
         }
 
+        @Override
+        public void onActivityResult(int requestCode, int resultCode, Intent data) {
+            if (requestCode == PrefsFragment.requestCode) {
+                if (resultCode == Activity.RESULT_OK) {
+                    selectedHandler.onConfigResult(data);
+                    updatePref();
+                } else {
+                    selectedHandler = previousHandler;
+                }
+                reopen.run();
+            } else {
+                unsetForceOpen.run();
+            }
+        }
+
         private void updatePref() {
             if (mProvider != null && selectedHandler != null) {
                 setForceOpen.run();
@@ -273,6 +283,19 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 }
                 mSwipeUpPref.setValue(stringValue);
                 unsetForceOpen.run();
+            }
+        }
+
+        @SuppressWarnings({"ConstantConditions", "unchecked"})
+        @Override
+        public void onDetach() {
+            super.onDetach();
+
+            if (mProvider != null && selectedHandler != null) {
+                String stringValue = selectedHandler.toString();
+
+                CustomInfoProvider provider = CustomInfoProvider.Companion.forItem(getActivity(), itemInfo);
+                provider.setSwipeUpAction(itemInfo, stringValue);
             }
         }
 

@@ -1,21 +1,31 @@
 package org.zimmob.zimlx;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
+import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.gestures.GestureController;
+import org.zimmob.zimlx.iconpack.EditIconActivity;
+import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.views.ZimBackgroundView;
@@ -26,8 +36,9 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public static final int CODE_EDIT_ICON = 100;
-    public static Drawable currentEditIcon = null;
 
+    public static Drawable currentEditIcon = null;
+    public static ItemInfo currentEditInfo = null;
     private GestureController gestureController;
 
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
@@ -79,6 +90,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public void restartIfPending() {
         if (sRestart) {
             //zimApp.restart(false);
+            ZimAppKt.getZimApp(mContext).restart(false);
         }
     }
 
@@ -145,25 +157,46 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
+        ComponentKey component;
 
-
-
-        /*val component: ComponentKey? = when (itemInfo) {
-            is AppInfo -> itemInfo.toComponentKey()
-            is ShortcutInfo -> itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
-            is FolderInfo -> itemInfo.toComponentKey()
-            else -> null
+        if (itemInfo instanceof AppInfo) {
+            component = ((AppInfo) itemInfo).toComponentKey();
+            currentEditIcon = IconPackManager.Companion.getInstance(this).getEntryForComponent(component).getDrawable();
+        } else if (itemInfo instanceof ShortcutInfo) {
+            component = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            currentEditIcon = new BitmapDrawable(mContext.getResources(), ((ShortcutInfo) itemInfo).iconBitmap);
+        } else if (itemInfo instanceof FolderInfo) {
+            component = ((FolderInfo) itemInfo).toComponentKey();
+            currentEditIcon = ((FolderInfo) itemInfo).getIcon(mContext);
+        } else {
+            component = null;
+            currentEditIcon = null;
         }
-        currentEditIcon = when (itemInfo) {
-            is AppInfo -> IconPackManager.getInstance(this).getEntryForComponent(component!!)?.drawable
-            is ShortcutInfo -> BitmapDrawable(resources, itemInfo.iconBitmap)
-            is FolderInfo -> itemInfo.getIcon(this)
-            else -> null
+
+        currentEditInfo = itemInfo;
+        Boolean folderInfo = itemInfo instanceof FolderInfo;
+        Intent intent = EditIconActivity
+                .Companion
+                .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
+        int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+        BlankActivity.Companion
+                .startActivityForResult(this, intent, CODE_EDIT_ICON, flags, (resultCode, data) -> {
+                    handleEditIconResult(resultCode, data);
+                    return null;
+                });
+
+    }
+
+    private void handleEditIconResult(int resultCode, Bundle data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (currentEditInfo == null) {
+                return;
+            }
+            ItemInfo itemInfo = currentEditInfo;
+            String entryString = data.getString(EditIconActivity.EXTRA_ENTRY);
+            CustomIconEntry customIconEntry = CustomIconEntry.Companion.fromString(entryString);
+
+            CustomInfoProvider.Companion.forItem(this, itemInfo).setIcon(itemInfo, customIconEntry);
         }
-        currentEditInfo = itemInfo
-        Intent intent = EditIconActivity.newIntent(this, infoProvider.getTitle(itemInfo), FolderInfo itemInfo is FolderInfo, component);
-        val flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS
-        BlankActivity.startActivityForResult(this, intent, CODE_EDIT_ICON,
-                flags) { resultCode, data -> handleEditIconResult(resultCode, data) }*/
     }
 }

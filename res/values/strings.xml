@@ -813,5 +813,6 @@
     <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
     <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
 
+    <string name="gesture_swipe_up">Swipe up</string>
 
 </resources>

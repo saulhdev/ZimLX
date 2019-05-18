@@ -66,6 +66,8 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TraceHelper;
 
+import org.zimmob.zimlx.iconpack.IconPackManager;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -289,12 +291,12 @@ public class LoaderTask implements Runnable {
                         LauncherSettings.Favorites.RANK);
                 final int optionsIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.OPTIONS);
-                /*final int titleAliasIndex = c.getColumnIndexOrThrow(
+                final int titleAliasIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.TITLE_ALIAS);
                 final int customIconEntryIndex = c.getColumnIndexOrThrow(
                         LauncherSettings.Favorites.CUSTOM_ICON_ENTRY);
                 final int swipeUpActionEntryIndex = c.getColumnIndexOrThrow(
-                        LauncherSettings.Favorites.SWIPE_UP_ACTION);*/
+                        LauncherSettings.Favorites.SWIPE_UP_ACTION);
 
                 final LongSparseArray<UserHandle> allUsers = c.allUsers;
                 final LongSparseArray<Boolean> quietMode = new LongSparseArray<>();
@@ -358,9 +360,9 @@ public class LoaderTask implements Runnable {
                                         ShortcutInfo.FLAG_DISABLED_QUIET_USER : 0;
                                 ComponentName cn = intent.getComponent();
                                 targetPkg = cn == null ? intent.getPackage() : cn.getPackageName();
-                                //titleAlias = c.getString(titleAliasIndex);
-                                //customIconEntry = c.getString(customIconEntryIndex);
-                                //swipeUpAction = c.getString(swipeUpActionEntryIndex);
+                                titleAlias = c.getString(titleAliasIndex);
+                                customIconEntry = c.getString(customIconEntryIndex);
+                                swipeUpAction = c.getString(swipeUpActionEntryIndex);
 
                                 if (!Process.myUserHandle().equals(c.user)) {
                                     if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -537,10 +539,9 @@ public class LoaderTask implements Runnable {
                                 if (info != null) {
                                     c.applyCommonProperties(info);
 
-                                    //TODO UNCOMMENT WHEN ICON PACK IS FINISHED
-                                    /*info.onLoadCustomizations(titleAlias, swipeUpAction,
+                                    info.onLoadCustomizations(titleAlias, swipeUpAction,
                                             IconPackManager.CustomIconEntry.Companion.fromNullableString(customIconEntry),
-                                            c.loadCustomIcon(info));*/
+                                            c.loadCustomIcon(info));
                                     info.intent = intent;
                                     info.rank = c.getInt(rankIndex);
                                     info.spanX = 1;
