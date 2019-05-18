@@ -1,5 +1,6 @@
-### v0.6.0
+### v0.6.1
 *   Support for android 9 Pie
+*   Folder shape support
 
 ### v0.5.2
 *   Added support to sort apps. (AZ, ZA, Last Installed, most used).
