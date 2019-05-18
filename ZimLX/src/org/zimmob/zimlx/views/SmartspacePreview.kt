@@ -37,7 +37,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     //        "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
 
     private val prefsToWatch = arrayOf("pref_smartspace", "pref_smartspace_time",
-            "pref_smartspace_date")
+            "pref_smartspace_date", "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_smartspace", "pref_use_pill_qsb")
     private var currentView: SmartspaceView? = null
 

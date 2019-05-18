@@ -9,6 +9,11 @@ import android.util.Log;
 
 import com.android.launcher3.LauncherFiles;
 
+import org.zimmob.zimlx.model.AppCountInfo;
+
+import java.util.ArrayList;
+import java.util.List;
+
 public class DbHelper extends SQLiteOpenHelper {
     private static final String DATABASE_HOME = LauncherFiles.LAUNCHER_DB2;
     private static final String TABLE_APP_COUNT = "app_count";
@@ -56,6 +61,24 @@ public class DbHelper extends SQLiteOpenHelper {
         cursor.close();
         Log.i("APP COUNT " + packageName, String.valueOf(appCount));
         return appCount;
+    }
+
+    public List<AppCountInfo> getAppsCount() {
+        List<AppCountInfo> apps = new ArrayList<>();
+        String SQL_QUERY = "SELECT package_name, package_count FROM app_count;";
+        Cursor cursor = db.rawQuery(SQL_QUERY, null);
+        if (!cursor.moveToFirst()) {
+            return apps;
+        }
+        do {
+
+            String name = cursor.getString(0);
+            int count = cursor.getInt(1);
+            apps.add(new AppCountInfo(name, count));
+        }
+        while (cursor.moveToNext());
+        cursor.close();
+        return apps;
     }
 
     public void updateAppCount(String packageName) {

@@ -15,7 +15,7 @@ import androidx.annotation.NonNull;
 
 public class SuggestionsDatabaseHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
-    private static final String DATABASE_NAME = "trebuchet_suggestions_db";
+    private static final String DATABASE_NAME = "zim_suggestions_db";
 
     private static final String TABLE_NAME = "suggestion_candidates";
     private static final String KEY_UID = "uid";

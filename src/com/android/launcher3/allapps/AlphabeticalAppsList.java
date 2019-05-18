@@ -31,6 +31,8 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.model.AppCountInfo;
+import org.zimmob.zimlx.util.DbHelper;
 import org.zimmob.zimlx.util.InstallTimeComparator;
 import org.zimmob.zimlx.util.MostUsedComparator;
 
@@ -174,7 +176,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
             //SORT BY MOST USED DESC
             case SORT_MOST_USED:
-                MostUsedComparator mostUsedComparator = new MostUsedComparator(mLauncher.getApplicationContext());
+                DbHelper db = new DbHelper(mLauncher.getApplicationContext());
+                List<AppCountInfo> appsCounter = db.getAppsCount();
+                db.close();
+                MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
                 Collections.sort(mApps, mostUsedComparator);
 
                 break;

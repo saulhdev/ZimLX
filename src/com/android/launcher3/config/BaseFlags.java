@@ -56,7 +56,7 @@ public abstract class BaseFlags {
     public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
 
     // When true, custom widgets are loaded using CustomWidgetParser.
-    public static final boolean ENABLE_CUSTOM_WIDGETS = false;
+    public static final boolean ENABLE_CUSTOM_WIDGETS = true;
 
     // When true, overview shows screenshots in the orientation they were taken rather than
     // trying to make them fit the orientation the device is in.

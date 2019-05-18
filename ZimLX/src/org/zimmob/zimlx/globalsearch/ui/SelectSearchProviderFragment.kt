@@ -64,11 +64,11 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
 
             val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
                 setOnClickListener(this@Holder)
-                //val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
-                //if (Utilities.ATLEAST_MARSHMALLOW) {
-                //    compoundDrawableTintList = tintList
-                //}
-                //backgroundTintList = tintList
+                /*val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+                if (Utilities.ATLEAST_MARSHMALLOW) {
+                    compoundDrawableTintList = tintList
+                }
+                backgroundTintList = tintList*/
             }
 
             override fun onClick(v: View) {
