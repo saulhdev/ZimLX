@@ -1,24 +1,30 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_history_menu_bottom"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="?android:windowBackground"
     android:orientation="vertical"
-    android:paddingTop="28dp"
-    app:layout_behavior="android.support.design.widget.BottomSheetBehavior">
+    android:paddingTop="28dp">
 
     <TextView
         android:id="@android:id/title"
         style="@style/TextTitle"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="32dp"
         android:gravity="center_horizontal"
         android:textColor="?android:attr/textColorPrimary"
         android:textSize="24sp"
         tools:text="Backup item" />
+
+    <TextView
+        android:id="@android:id/summary"
+        style="@style/TextTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:gravity="center_horizontal"
+        android:textColor="?android:attr/textColorSecondary"
+        android:textSize="16sp"
+        tools:text="Oct 11, 2018 17:18:43" />
 
     <TextView
         android:id="@+id/action_restore_backup"
