@@ -96,7 +96,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
 
-    public static final String ICON_PACK_PREF = "pref_icon_pack";
     private static final String ICON_BADGING_PREFERENCE_KEY = "pref_icon_badging";
     /**
      * Hidden field Settings.Secure.NOTIFICATION_BADGING
@@ -120,7 +119,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
     protected boolean forceSubSettings = false;
     public final static String FEED_THEME_PREF = "pref_feedTheme";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
@@ -130,7 +128,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
 
 
-        boolean showSearch = shouldShowSearch();
+        //boolean showSearch = shouldShowSearch();
 
         super.onCreate(savedInstanceState);
         //setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
@@ -375,7 +373,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
                         // Initialize the UI once
                         rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
-
                     }
 
                     break;
@@ -414,7 +411,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;
-
             }
         }
 
@@ -595,7 +591,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .setNegativeButton(android.R.string.cancel, null)
                     .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
         }
-
 
         @Override
         public void onStart() {

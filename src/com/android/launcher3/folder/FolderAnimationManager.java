@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
@@ -50,6 +51,7 @@ import androidx.core.graphics.ColorUtils;
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.FolderIcon.ICON_SCALE_PROPERTY;
 
 /**
  * Manages the opening and closing animations for a {@link Folder}.
@@ -186,6 +188,10 @@ public class FolderAnimationManager {
             play(a, anim);
         }
 
+        if (mFolder.mInfo.hasCustomIcon(mContext)) {
+            play(a, getAnimator(mFolder, View.ALPHA, 0f, 1f));
+        }
+
         play(a, getAnimator(mFolder, View.TRANSLATION_X, xDistance, 0f));
         play(a, getAnimator(mFolder, View.TRANSLATION_Y, yDistance, 0f));
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
@@ -293,6 +299,13 @@ public class FolderAnimationManager {
             Animator scaleAnimator = getAnimator(btv, SCALE_PROPERTY, initialScale, finalScale);
             scaleAnimator.setInterpolator(previewItemInterpolator);
             play(animatorSet, scaleAnimator);
+
+            if (mFolderIcon.isCustomIcon) {
+                Animator iconScaleAnimator = getAnimator(mFolderIcon, ICON_SCALE_PROPERTY, 1f, 1.3f);
+                iconScaleAnimator.setInterpolator(Interpolators.DEACCEL_1_5);
+                iconScaleAnimator.setStartDelay(mIsOpening ? mDelay * 2 : mDelay);
+                play(animatorSet, iconScaleAnimator);
+            }
 
             if (mFolder.getItemCount() > MAX_NUM_ITEMS_IN_PREVIEW) {
                 // These delays allows the preview items to move as part of the Folder's motion,

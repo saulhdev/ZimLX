@@ -2,17 +2,16 @@ package org.zimmob.zimlx;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
@@ -29,6 +28,8 @@ import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.views.ZimBackgroundView;
+
+import java.util.Objects;
 
 public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences.OnPreferenceChangeListener {
 
@@ -89,7 +90,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
     public void restartIfPending() {
         if (sRestart) {
-            //zimApp.restart(false);
             ZimAppKt.getZimApp(mContext).restart(false);
         }
     }
@@ -121,10 +121,12 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     public static ZimLauncher getLauncher(Context context) {
-        if (context instanceof Launcher) {
+
+        if (context instanceof ZimLauncher) {
             return (ZimLauncher) context;
+        } else {
+            return (ZimLauncher) LauncherAppState.getInstance(context).getLauncher();
         }
-        return ((ZimLauncher) ((ContextWrapper) context).getBaseContext());
     }
 
     public void scheduleRestart() {
@@ -175,6 +177,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         currentEditInfo = itemInfo;
         Boolean folderInfo = itemInfo instanceof FolderInfo;
+        Log.e(TAG, "FOLDER INFO " + folderInfo);
         Intent intent = EditIconActivity
                 .Companion
                 .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
@@ -187,14 +190,14 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
     }
 
-    private void handleEditIconResult(int resultCode, Bundle data) {
+    private void handleEditIconResult(int resultCode, @NotNull Bundle data) {
         if (resultCode == Activity.RESULT_OK) {
             if (currentEditInfo == null) {
                 return;
             }
             ItemInfo itemInfo = currentEditInfo;
-            String entryString = data.getString(EditIconActivity.EXTRA_ENTRY);
-            CustomIconEntry customIconEntry = CustomIconEntry.Companion.fromString(entryString);
+            String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
+            CustomIconEntry customIconEntry = CustomIconEntry.Companion.fromNullableString(entryString);
 
             CustomInfoProvider.Companion.forItem(this, itemInfo).setIcon(itemInfo, customIconEntry);
         }

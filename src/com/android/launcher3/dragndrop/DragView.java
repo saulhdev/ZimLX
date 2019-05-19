@@ -42,6 +42,7 @@ import android.os.Looper;
 import android.view.View;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
@@ -219,8 +220,9 @@ public class DragView extends View {
                 LauncherAppState appState = LauncherAppState.getInstance(mLauncher);
                 Object[] outObj = new Object[1];
                 final Drawable dr = getFullDrawable(info, appState, outObj);
+                if (dr instanceof AdaptiveIconDrawable && !(info instanceof FolderInfo && ((FolderInfo) info).hasCustomIcon(mLauncher))) {
 
-                if (dr instanceof AdaptiveIconDrawable) {
+                    //if (dr instanceof AdaptiveIconDrawable) {
                     int w = mBitmap.getWidth();
                     int h = mBitmap.getHeight();
                     int blurMargin = (int) mLauncher.getResources()

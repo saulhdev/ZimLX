@@ -189,6 +189,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
+    val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
+
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey(context, key)

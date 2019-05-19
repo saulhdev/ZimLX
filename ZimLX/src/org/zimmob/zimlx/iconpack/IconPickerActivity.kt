@@ -28,9 +28,9 @@ import android.os.Process
 import android.text.TextUtils
 import android.view.*
 import android.widget.ImageView
-import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.LauncherModel
