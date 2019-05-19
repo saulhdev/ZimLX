@@ -308,19 +308,30 @@ public class ModelWriter {
      * Remove the specified folder and all its contents from the database.
      */
     public void deleteFolderAndContentsFromDatabase(final FolderInfo info) {
-        ModelVerifier verifier = new ModelVerifier();
+        enqueueDeleteRunnable(() -> {
+            ModelVerifier verifier = new ModelVerifier();
 
-        mWorkerExecutor.execute(() -> {
-            ContentResolver cr = mContext.getContentResolver();
-            cr.delete(LauncherSettings.Favorites.CONTENT_URI,
-                    LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
-            mBgDataModel.removeItem(mContext, info.contents);
-            info.contents.clear();
+            mWorkerExecutor.execute(() -> {
+                info.clearCustomIcon(mContext);
+                ContentResolver cr = mContext.getContentResolver();
+                cr.delete(LauncherSettings.Favorites.CONTENT_URI,
+                        LauncherSettings.Favorites.CONTAINER + "=" + info.id, null);
+                mBgDataModel.removeItem(mContext, info.contents);
+                info.contents.clear();
 
-            cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
-            mBgDataModel.removeItem(mContext, info);
-            verifier.verifyModel();
+                cr.delete(LauncherSettings.Favorites.getContentUri(info.id), null, null);
+                mBgDataModel.removeItem(mContext, info);
+                verifier.verifyModel();
+            });
         });
+    }
+
+    private void enqueueDeleteRunnable(Runnable runnable) {
+        if (mPreparingToUndo) {
+            mDeleteRunnables.add(runnable);
+        } else {
+            mWorkerExecutor.execute(runnable);
+        }
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {

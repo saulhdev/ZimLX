@@ -33,6 +33,7 @@ import com.android.launcher3.util.ContentWriter;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.iconpack.IconPack;
 import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.util.ArrayList;
@@ -70,7 +71,9 @@ public class FolderInfo extends ItemInfo {
     public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
+
     public String swipeUpAction;
+
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         user = Process.myUserHandle();
@@ -133,6 +136,18 @@ public class FolderInfo extends ItemInfo {
         listeners.remove(listener);
     }
 
+    public void itemsChanged(boolean animate) {
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).onItemsChanged(animate);
+        }
+    }
+
+    public void prepareAutoUpdate() {
+        for (int i = 0; i < listeners.size(); i++) {
+            listeners.get(i).prepareAutoUpdate();
+        }
+    }
+
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
         ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
@@ -155,6 +170,8 @@ public class FolderInfo extends ItemInfo {
         int iconSize = launcher.mDeviceProfile.iconSizePx;
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        icon.isCustomIcon = false;
+        icon.getFolderBackground().setStartOpacity(1f);
         Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
             out.translate(iconSize / 2f, 0);
             // TODO: make folder icons more visible in front of the bottom sheet
@@ -164,15 +181,16 @@ public class FolderInfo extends ItemInfo {
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
-    public void itemsChanged(boolean animate) {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).onItemsChanged(animate);
-        }
+    public boolean hasCustomIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
     }
 
-    public void prepareAutoUpdate() {
-        for (int i = 0; i < listeners.size(); i++) {
-            listeners.get(i).prepareAutoUpdate();
+    public void clearCustomIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        if (infoProvider != null) {
+            infoProvider.setIcon(this, null);
         }
     }
 
@@ -214,7 +232,7 @@ public class FolderInfo extends ItemInfo {
 
     private Drawable getIconInternal(Launcher launcher) {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
-        IconPackManager.CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
+        CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
         if (entry != null && entry.getIcon() != null) {
             if (!entry.getIcon().equals(cachedIcon)) {
                 IconPack pack = IconPackManager.Companion.getInstance(launcher)

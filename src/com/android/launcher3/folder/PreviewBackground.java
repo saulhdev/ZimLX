@@ -39,6 +39,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.util.Themes;
 
+import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.folder.FolderShape;
 
 import androidx.core.graphics.ColorUtils;
@@ -200,6 +201,10 @@ public class PreviewBackground {
         return ColorUtils.setAlphaComponent(mBgColor, alpha);
     }
 
+    public void setStartOpacity(float opacity) {
+        mColorMultiplier = opacity;
+    }
+
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
@@ -296,6 +301,12 @@ public class PreviewBackground {
         FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;
+    }
+
+    private void drawCircle(@NotNull Canvas canvas, float deltaRadius) {
+        float radius = getScaledRadius();
+        canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
+                radius - deltaRadius, mPaint);
     }
 
     public Path getClipPath() {
@@ -407,5 +418,9 @@ public class PreviewBackground {
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+    }
+
+    public float getStrokeWidth() {
+        return mStrokeWidth;
     }
 }

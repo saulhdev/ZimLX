@@ -465,7 +465,7 @@
     <string name="pref_summary__about">More information about Zim Launcher</string>
     <string name="pref_summary__inputs">Configure gestures</string>
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
-    <string name="pref_summary__smartspace">Date,time and searchbar</string>
+    <string name="pref_summary__smartspace">Date, time and searchbar</string>
     <string name="pref_summary__search">Search Engine</string>
 
     <string name="pref_title__language">Language</string>

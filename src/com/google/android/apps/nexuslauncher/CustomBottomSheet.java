@@ -48,7 +48,6 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
-import org.zimmob.zimlx.EditableItemInfo;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
@@ -124,11 +123,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             if (!newTitle.equals(mPreviousTitle)) {
                 if (newTitle.equals(""))
                     newTitle = null;
-                ((EditableItemInfo) mItemInfo).setTitle(getContext(), newTitle);
+                mInfoProvider.setTitle(mItemInfo, newTitle);
             }
         }
         super.onDetachedFromWindow();
     }
+
 
     @Override
     protected void handleClose(boolean animate, long defaultDuration) {
