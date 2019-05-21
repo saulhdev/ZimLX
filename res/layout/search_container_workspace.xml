@@ -23,12 +23,13 @@
     android:clickable="true">
 
     <com.android.launcher3.BubbleTextView
+        android:layout_gravity="center"
         android:id="@+id/dummyBubbleTextView"
+        android:visibility="invisible"
         android:layout_width="0dp"
         android:layout_height="36dp"
-        android:layout_gravity="center"
-        android:contentDescription=""
-        android:visibility="invisible" />
+        android:contentDescription="" />
+
 
     <include layout="@layout/smartspace_singleline" />
 </com.google.android.apps.nexuslauncher.smartspace.SmartspaceView>

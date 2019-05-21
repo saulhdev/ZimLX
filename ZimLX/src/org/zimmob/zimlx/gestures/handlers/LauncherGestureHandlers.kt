@@ -263,7 +263,6 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     }
 }
 
-
 @Keep
 class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 

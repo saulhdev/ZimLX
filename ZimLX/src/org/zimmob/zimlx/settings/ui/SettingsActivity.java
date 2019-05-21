@@ -31,6 +31,7 @@ import android.provider.Settings;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.ActionMenuView;
 import android.widget.AdapterView;
 import android.widget.ListAdapter;
@@ -72,12 +73,14 @@ import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
 import org.zimmob.zimlx.util.ZimFlags;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
 import androidx.preference.EditTextPreference;
 import androidx.preference.ListPreference;
 import androidx.preference.Preference;
@@ -87,12 +90,15 @@ import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
 
+import static androidx.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
+import static androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
+
 /**
  * Settings activity for Launcher.
  */
 public class SettingsActivity extends SettingsBaseActivity implements
-        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback,
-        FragmentManager.OnBackStackChangedListener, View.OnClickListener {
+        OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
+        OnBackStackChangedListener, OnClickListener {
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
 
@@ -118,6 +124,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private boolean isSubSettings;
     protected boolean forceSubSettings = false;
     public final static String FEED_THEME_PREF = "pref_feedTheme";
+    private final static String BRIDGE_TAG = "tag_bridge";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -253,6 +260,17 @@ public class SettingsActivity extends SettingsBaseActivity implements
             startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
         }
         return true;
+    }
+
+    @Override
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller,
+                                             Preference pref) {
+        if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
+            InstallFragment fragment = new InstallFragment();
+            fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
+            return true;
+        }
+        return false;
     }
 
     private void updateUpButton() {
@@ -711,6 +729,24 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
+        }
+    }
+
+    public static class InstallFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.bridge_missing_title)
+                    .setMessage(R.string.bridge_missing_message)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
     }
 

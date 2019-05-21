@@ -21,8 +21,8 @@
             app:iconSpaceReserved="false"
             app:defaultSeekbarValue="1.0"
             app:maxValue="1.5"
-            app:minValue="0.75"
-            app:steps="120"
+            app:minValue="0.5"
+            app:steps="100"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
@@ -99,7 +99,7 @@
         app:iconSpaceReserved="false" />
 
     <SwitchPreference
-        android:defaultValue="true"
+        android:defaultValue="false"
         android:key="pref_keepScrollState"
         android:persistent="true"
         android:title="@string/keep_scroll_state_pref_title"

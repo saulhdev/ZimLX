@@ -19,5 +19,6 @@
         android:key="pref_folderBgColorGen"
         android:title="Generate folder color"
         android:summary="Generates the folder color based on custom icons [this breaks readability depending on the color]"
-        android:defaultValue="false" />
+        android:defaultValue="false"
+        app:iconSpaceReserved="false" />
 </PreferenceScreen>

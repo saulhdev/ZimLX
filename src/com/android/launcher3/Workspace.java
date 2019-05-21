@@ -679,12 +679,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         if (delay > 0) {
-            postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens);
-                }
-            }, delay);
+            postDelayed(() -> removeExtraEmptyScreenDelayed(animate, onComplete, 0, stripEmptyScreens), delay);
             return;
         }
 

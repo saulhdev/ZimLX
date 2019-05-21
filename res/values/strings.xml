@@ -815,4 +815,6 @@
 
     <string name="gesture_swipe_up">Swipe up</string>
 
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
 </resources>

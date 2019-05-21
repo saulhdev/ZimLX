@@ -52,6 +52,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public void onCreate(Bundle savedInstanceState) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
+
         }
         super.onCreate(savedInstanceState);
         mContext = this;
@@ -72,6 +73,14 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
                 startActivity(getIntent());
             }
         }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_LOCATION_ACCESS) {
+            ZimAppKt.getZimApp(this).getSmartspace().updateWeatherData();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override

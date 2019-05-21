@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <SwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:disableDependentsState="false"
         android:key="pref_smartspace"
         android:title="@string/title__desktop_smartspace"
