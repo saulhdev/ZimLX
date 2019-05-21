@@ -27,7 +27,7 @@
             app:summaryMultiplier="100" />
 
         <org.zimmob.zimlx.preferences.DrawerGridSizePreference
-            android:key="pref_drawer_grid_size"
+            android:key="numColsDrawer"
             android:title="@string/pref_drawer_columns"
             app:iconSpaceReserved="false" />
 
