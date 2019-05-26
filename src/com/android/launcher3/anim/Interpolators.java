@@ -27,6 +27,9 @@ import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.Utilities;
 
+import org.zimmob.zimlx.ReverseInputInterpolator;
+import org.zimmob.zimlx.ReverseOutputInterpolator;
+
 import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
 
 
@@ -53,6 +56,8 @@ public class Interpolators {
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
+    public static final Interpolator AGGRESSIVE_EASE_REVERSED = new ReverseOutputInterpolator(AGGRESSIVE_EASE);
+    public static final Interpolator AGGRESSIVE_EASE_REVERSED2 = new ReverseInputInterpolator(AGGRESSIVE_EASE);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f, 0, 0.4f, 1);
 
     public static final Interpolator EXAGGERATED_EASE;

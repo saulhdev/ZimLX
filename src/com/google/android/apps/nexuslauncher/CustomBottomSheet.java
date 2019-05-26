@@ -154,7 +154,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     protected void onWidgetsBound() {
     }
 
-    public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+    public static class PrefsFragment extends PreferenceFragment
+            implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_HIDE = "pref_app_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
         private final static boolean HIDE_PREDICTION_OPTION = true;

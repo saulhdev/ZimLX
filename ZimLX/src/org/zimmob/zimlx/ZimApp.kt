@@ -19,11 +19,13 @@ package org.zimmob.zimlx
 
 import android.app.Activity
 import android.app.Application
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.os.Bundle
 import android.provider.Settings
+import androidx.annotation.Keep
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController
@@ -32,7 +34,7 @@ import org.zimmob.zimlx.theme.ThemeManager
 class ZimApp : Application() {
     val activityHandler = ActivityHandler()
     val smartspace by lazy { ZimSmartspaceController(this) }
-    //val recentsEnabled by lazy { checkRecentsComponent() }
+    val recentsEnabled by lazy { checkRecentsComponent() }
     var accessibilityService: ZimAccessibilityService? = null
 
     init {
@@ -110,20 +112,20 @@ class ZimApp : Application() {
     }
 
 
-/*
+
     @Keep
     fun checkRecentsComponent(): Boolean {
         if (!Utilities.ATLEAST_P) return false
-        if (!Utilities.HIDDEN_APIS_ALLOWED) return false
+        //if (!Utilities.HIDDEN_APIS_ALLOWED) return false
 
         val resId = resources.getIdentifier("config_recentsComponentName", "string", "android")
         if (resId == 0) return false
         val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
                 ?: return false
         return recentsComponent.packageName == packageName
-                && recentsComponent.className == RecentsActivity::class.java.name
+        // && recentsComponent.className == RecentsActivity::class.java.name
     }
-*/
+
 }
 
 

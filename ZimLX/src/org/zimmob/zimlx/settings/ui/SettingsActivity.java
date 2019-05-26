@@ -26,16 +26,16 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewGroup;
 import android.widget.ActionMenuView;
-import android.widget.AdapterView;
-import android.widget.ListAdapter;
-import android.widget.ListView;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
@@ -66,12 +66,16 @@ import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
+import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
 import org.zimmob.zimlx.util.ZimFlags;
+import org.zimmob.zimlx.views.SpringRecyclerView;
+
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -86,18 +90,20 @@ import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import androidx.preference.PreferenceScreen;
 import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
+import androidx.recyclerview.widget.RecyclerView;
 
 import static androidx.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
-import static androidx.preference.PreferenceFragmentCompat.OnPreferenceStartFragmentCallback;
 
 /**
  * Settings activity for Launcher.
  */
 public class SettingsActivity extends SettingsBaseActivity implements
-        OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
         OnBackStackChangedListener, OnClickListener {
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
@@ -113,18 +119,20 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
+    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
+    public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
+    private final static String BRIDGE_TAG = "tag_bridge";
 
     public final static String EXTRA_TITLE = "title";
 
     public final static String EXTRA_FRAGMENT = "fragment";
     public final static String EXTRA_FRAGMENT_ARGS = "fragmentArgs";
-
     private boolean isSubSettings;
     protected boolean forceSubSettings = false;
-    public final static String FEED_THEME_PREF = "pref_feedTheme";
-    private final static String BRIDGE_TAG = "tag_bridge";
+
+    private boolean hasPreview = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,7 +141,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
-
+        hasPreview = getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false);
 
         //boolean showSearch = shouldShowSearch();
 
@@ -152,10 +160,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
         getSupportFragmentManager().addOnBackStackChangedListener(this);
 
         updateUpButton();
-        /*if (showSearch) {
-            Toolbar toolbar = findViewById(R.id.search_action_bar);
-            toolbar.setOnClickListener(this);
-        }*/
+
+        if (hasPreview) {
+            overrideOpenAnim();
+        }
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        if (hasPreview) {
+            overrideCloseAnim();
+        }
     }
 
     protected Fragment createLaunchFragment(Intent intent) {
@@ -247,10 +264,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
         if (preference instanceof SubPreference) {
-            Log.e("SETTING P", preference.getFragment());
             ((SubPreference) preference).start(this);
             return true;
-
         } else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
         }
@@ -263,8 +278,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     }
 
     @Override
-    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller,
-                                             Preference pref) {
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller, Preference pref) {
         if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
             InstallFragment fragment = new InstallFragment();
             fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
@@ -298,23 +312,194 @@ public class SettingsActivity extends SettingsBaseActivity implements
         updateUpButton();
     }
 
-    public abstract static class BaseFragment extends PreferenceFragmentCompat implements AdapterView.OnItemLongClickListener {
-        @Override
-        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            ListView listView = (ListView) parent;
-            ListAdapter listAdapter = listView.getAdapter();
-            Object item = listAdapter.getItem(position);
+    public abstract static class BaseFragment extends PreferenceFragmentCompat {
 
-            if (item instanceof SubPreference) {
-                SubPreference subPreference = (SubPreference) item;
-                if (subPreference.onLongClick(null)) {
-                    ((SettingsActivity) getActivity()).onPreferenceStartFragment(this, subPreference);
-                    return true;
-                } else {
-                    return false;
+        private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
+
+        private HighlightablePreferenceGroupAdapter mAdapter;
+        private boolean mPreferenceHighlighted = false;
+
+        private RecyclerView.Adapter mCurrentRootAdapter;
+        private boolean mIsDataSetObserverRegistered = false;
+        private RecyclerView.AdapterDataObserver mDataSetObserver =
+                new RecyclerView.AdapterDataObserver() {
+                    @Override
+                    public void onChanged() {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeChanged(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeChanged(int positionStart, int itemCount,
+                                                   Object payload) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeInserted(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeRemoved(int positionStart, int itemCount) {
+                        onDataSetChanged();
+                    }
+
+                    @Override
+                    public void onItemRangeMoved(int fromPosition, int toPosition, int itemCount) {
+                        onDataSetChanged();
+                    }
+                };
+
+        @Override
+        public void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+
+            if (savedInstanceState != null) {
+                mPreferenceHighlighted = savedInstanceState.getBoolean(SAVE_HIGHLIGHTED_KEY);
+            }
+        }
+
+        public void highlightPreferenceIfNeeded() {
+            if (!isAdded()) {
+                return;
+            }
+            if (mAdapter != null) {
+                mAdapter.requestHighlight(Objects.requireNonNull(getView()), getListView());
+            }
+        }
+
+        public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
+                                                 Bundle savedInstanceState) {
+            SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
+                    .inflate(getRecyclerViewLayoutRes(), parent, false);
+            recyclerView.setShouldTranslateSelf(false);
+
+            recyclerView.setLayoutManager(onCreateLayoutManager());
+            recyclerView.setAccessibilityDelegateCompat(
+                    new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
+
+            return recyclerView;
+        }
+
+        abstract protected int getRecyclerViewLayoutRes();
+
+        @Override
+        public void setDivider(Drawable divider) {
+            super.setDivider(null);
+        }
+
+        @Override
+        public void setDividerHeight(int height) {
+            super.setDividerHeight(0);
+        }
+
+        @Override
+        protected RecyclerView.Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
+            final Bundle arguments = getActivity().getIntent().getExtras();
+            mAdapter = new HighlightablePreferenceGroupAdapter(preferenceScreen,
+                    arguments == null
+                            ? null : arguments.getString(SettingsActivity.EXTRA_FRAGMENT_ARG_KEY),
+                    mPreferenceHighlighted);
+            return mAdapter;
+        }
+
+        @Override
+        public void onSaveInstanceState(Bundle outState) {
+            super.onSaveInstanceState(outState);
+
+            if (mAdapter != null) {
+                outState.putBoolean(SAVE_HIGHLIGHTED_KEY, mAdapter.isHighlightRequested());
+            }
+        }
+
+        protected void onDataSetChanged() {
+            highlightPreferenceIfNeeded();
+        }
+
+        public int getInitialExpandedChildCount() {
+            return -1;
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+            highlightPreferenceIfNeeded();
+
+            dispatchOnResume(getPreferenceScreen());
+        }
+
+        public void dispatchOnResume(PreferenceGroup group) {
+            int count = group.getPreferenceCount();
+            for (int i = 0; i < count; i++) {
+                Preference preference = group.getPreference(i);
+
+                if (preference instanceof ResumablePreference) {
+                    ((ResumablePreference) preference).onResume();
+                }
+
+                if (preference instanceof PreferenceGroup) {
+                    dispatchOnResume((PreferenceGroup) preference);
                 }
             }
-            return item != null && item instanceof View.OnLongClickListener && ((View.OnLongClickListener) item).onLongClick(view);
+        }
+
+        @Override
+        protected void onBindPreferences() {
+            registerObserverIfNeeded();
+        }
+
+        @Override
+        protected void onUnbindPreferences() {
+            unregisterObserverIfNeeded();
+        }
+
+        public void registerObserverIfNeeded() {
+            if (!mIsDataSetObserverRegistered) {
+                if (mCurrentRootAdapter != null) {
+                    mCurrentRootAdapter.unregisterAdapterDataObserver(mDataSetObserver);
+                }
+                mCurrentRootAdapter = getListView().getAdapter();
+                mCurrentRootAdapter.registerAdapterDataObserver(mDataSetObserver);
+                mIsDataSetObserverRegistered = true;
+                onDataSetChanged();
+            }
+        }
+
+        public void unregisterObserverIfNeeded() {
+            if (mIsDataSetObserverRegistered) {
+                if (mCurrentRootAdapter != null) {
+                    mCurrentRootAdapter.unregisterAdapterDataObserver(mDataSetObserver);
+                    mCurrentRootAdapter = null;
+                }
+                mIsDataSetObserverRegistered = false;
+            }
+        }
+
+        void onPreferencesAdded(PreferenceGroup group) {
+            for (int i = 0; i < group.getPreferenceCount(); i++) {
+                Preference preference = group.getPreference(i);
+
+                if (preference instanceof ControlledPreference) {
+                    PreferenceController controller = ((ControlledPreference) preference)
+                            .getController();
+                    if (controller != null) {
+                        if (!controller.onPreferenceAdded(preference)) {
+                            i--;
+                            continue;
+                        }
+                    }
+                }
+
+                if (preference instanceof PreferenceGroup) {
+                    onPreferencesAdded((PreferenceGroup) preference);
+                }
+
+            }
         }
     }
 
@@ -323,16 +508,19 @@ public class SettingsActivity extends SettingsBaseActivity implements
      */
     public static class LauncherSettingsFragment extends BaseFragment {
 
+        private boolean mShowDevOptions;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+            mShowDevOptions = Utilities.getZimPrefs(getActivity()).getDeveloperOptionsEnabled();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
         }
 
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(R.xml.zim_preferences);
-            //onPreferencesAdded(getPreferenceScreen());
+            onPreferencesAdded(getPreferenceScreen());
         }
 
         @Override
@@ -340,12 +528,15 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onResume();
             getActivity().setTitle(R.string.settings_button_text);
             getActivity().setTitleColor(R.color.white);
-
+            boolean dev = Utilities.getZimPrefs(getActivity()).getDeveloperOptionsEnabled();
+            if (dev != mShowDevOptions) {
+                getActivity().recreate();
+            }
         }
 
         @Override
-        public boolean onPreferenceTreeClick(Preference preference) {
-            return super.onPreferenceTreeClick(preference);
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_spring_recyclerview;
         }
     }
 
@@ -369,8 +560,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             int preference = getContent();
-            ContentResolver resolver = getActivity().getContentResolver();
-
+            ContentResolver resolver = mContext.getContentResolver();
             switch (preference) {
                 case R.xml.zim_preferences_desktop:
                     if (!Utilities.ATLEAST_OREO) {
@@ -435,6 +625,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onCreatePreferences(Bundle savedInstanceState, String rootKey) {
             addPreferencesFromResource(getContent());
+            onPreferencesAdded(getPreferenceScreen());
         }
 
         private int getContent() {
@@ -460,10 +651,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
             if (mRotationLockObserver != null) {
                 mRotationLockObserver.unregister();
                 mRotationLockObserver = null;
-            }
-            if (mIconBadgingObserver != null) {
-                mIconBadgingObserver.unregister();
-                mIconBadgingObserver = null;
             }
             super.onDestroy();
         }
@@ -537,6 +724,17 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     confirmationFragment.setTargetFragment(this, 0);
                     confirmationFragment.show(getFragmentManager(), preference.getKey());
                     break;
+
+                case ENABLE_MINUS_ONE_PREF:
+                    if (FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
+                        return true;
+                    }
+                    FragmentManager fm = getFragmentManager();
+                    if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
+                        InstallFragment fragment = new InstallFragment();
+                        fragment.show(fm, BRIDGE_TAG);
+                    }
+                    break;
             }
             return false;
         }
@@ -570,6 +768,13 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
                         break;
 
+                    case "pref_hiddenApps":
+                        startFragment(mContext, preference.getFragment());
+                        break;
+
+                    case "pref_icon_packs":
+                        startFragment(mContext, preference.getFragment());
+                        break;
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
@@ -586,6 +791,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 }
             }
             return false;
+        }
+
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_insettable_recyclerview;
         }
     }
 
@@ -748,6 +957,14 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onStart();
             ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
+    }
+
+    public static void startFragment(Context context, String fragment) {
+        startFragment(context, fragment, null);
+    }
+
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
+        startFragment(context, fragment, args, null);
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args,

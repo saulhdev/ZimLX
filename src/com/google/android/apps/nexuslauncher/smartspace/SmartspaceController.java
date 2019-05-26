@@ -14,6 +14,8 @@ import com.google.android.apps.nexuslauncher.smartspace.nano.SmartspaceProto.i;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.apps.nexuslauncher.utils.ProtoStore;
 
+import org.zimmob.zimlx.smartspace.FeedBridge;
+
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -61,10 +63,9 @@ public class SmartspaceController implements Handler.Callback {
 
     private Intent db() {
         return new Intent("com.google.android.apps.gsa.smartspace.SETTINGS")
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
     }
-
     private void dc() {
         final boolean cr = this.dQ.isWeatherAvailable();
         final boolean cs = this.dQ.cS();
@@ -75,7 +76,7 @@ public class SmartspaceController implements Handler.Callback {
         if (cs && !this.dQ.cS()) {
             this.df(null, SmartspaceController.Store.CURRENT);
             this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.EXPIRE_EVENT")
-                    .setPackage("com.google.android.googlequicksearchbox")
+                    .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
         }
     }
@@ -86,9 +87,10 @@ public class SmartspaceController implements Handler.Callback {
         }
         this.de();
     }
+
     private void de() {
         this.mAppContext.sendBroadcast(new Intent("com.google.android.apps.gsa.smartspace.ENABLE_UPDATE")
-                .setPackage("com.google.android.googlequicksearchbox")
+                .setPackage(FeedBridge.Companion.getInstance(mAppContext).resolveSmartspace())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
     }
 

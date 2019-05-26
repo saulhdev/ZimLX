@@ -68,6 +68,7 @@ import android.widget.Toast;
 
 import com.android.launcher3.config.FeatureFlags;
 
+import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
@@ -883,14 +884,14 @@ public final class Utilities {
         return resizedBitmap;
     }
 
-    /*public static boolean isRecentsEnabled() {
+    public static boolean isRecentsEnabled() {
         LauncherAppState las = LauncherAppState.getInstanceNoCreate();
         if (las != null) {
             Context context = las.getContext();
             return ZimAppKt.getZimApp(context).getRecentsEnabled();
         }
         return false;
-    }*/
+    }
 
     /*public static Drawable getIconForTask(Context context, int userId, String packageName) {
         IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();

@@ -6,6 +6,7 @@ import android.widget.NumberPicker
 import androidx.appcompat.app.AlertDialog
 import androidx.preference.PreferenceDialogFragmentCompat
 import com.android.launcher3.R
+import org.zimmob.zimlx.applyAccent
 
 class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
 
@@ -23,6 +24,7 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
         val size = gridSizePreference.getSize()
         numRows = savedInstanceState?.getInt(SAVE_STATE_ROWS) ?: size.first
         numColumns = savedInstanceState?.getInt(SAVE_STATE_COLUMNS) ?: size.second
+
     }
 
     override fun onBindDialogView(view: View) {
@@ -39,7 +41,11 @@ class GridSizeDialogFragmentCompat : PreferenceDialogFragmentCompat() {
         numRowsPicker.value = numRows
         numColumnsPicker.value = numColumns
 
+    }
 
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
     }
 
     override fun onDialogClosed(positiveResult: Boolean) {

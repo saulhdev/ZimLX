@@ -147,9 +147,9 @@
   boolean mStartValueIsSet;
 }
 
--keep class org.zimmob.zimlx.iconpack.LawnchairIconProvider { *; }
+-keep class org.zimmob.zimlx.iconpack.ZimIconProvider { *; }
 
--keep class org.zimmob.zimlx.iconpack.LawnchairDrawableFactory { *; }
+-keep class org.zimmob.zimlx.iconpack.ZimDrawableFactory { *; }
 
 -keep,allowshrinking,allowoptimization class me.jfenn.attribouter.** {
  *;

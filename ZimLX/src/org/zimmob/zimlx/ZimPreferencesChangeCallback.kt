@@ -11,7 +11,8 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun reloadApps() {
-        UserManagerCompat.getInstance(launcher).userProfiles.forEach { launcher.model.forceReload() }
+
+        UserManagerCompat.getInstance(launcher).userProfiles.forEach { launcher.model.onPackagesReload(it) }
     }
 
     fun reloadAll() {

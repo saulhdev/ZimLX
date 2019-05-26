@@ -7,19 +7,17 @@ import android.os.UserHandle;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 
+import org.zimmob.zimlx.ZimAppFilter;
+
 import java.util.HashSet;
 import java.util.Set;
 
-public class CustomAppFilter extends org.zimmob.zimlx.ZimAppFilter {
+public class CustomAppFilter extends ZimAppFilter {
     private final Context mContext;
 
     public CustomAppFilter(Context context) {
         super(context);
         mContext = context;
-    }
-
-    static void resetAppFilter(Context context) {
-        Utilities.getZimPrefs(context).setHiddenAppSet(new HashSet<String>());
     }
 
     static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
@@ -50,6 +48,6 @@ public class CustomAppFilter extends org.zimmob.zimlx.ZimAppFilter {
     @Override
     public boolean shouldShowApp(ComponentName componentName, UserHandle user) {
         return super.shouldShowApp(componentName, user)
-                && !isHiddenApp(mContext, new ComponentKey(componentName, user));
+                && (user == null || !isHiddenApp(mContext, new ComponentKey(componentName, user)));
     }
 }

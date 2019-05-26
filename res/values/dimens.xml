@@ -334,4 +334,7 @@
 
     <dimen name="action_view_compound_drawable_padding">5dp</dimen>
 
+    <!-- Dashboard image tile size -->
+    <dimen name="dashboard_tile_image_size">38dp</dimen>
+
 </resources>

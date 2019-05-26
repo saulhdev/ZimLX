@@ -51,6 +51,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
+    private val updateSmartspace = { updateSmartspace() }
     private val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
@@ -70,6 +71,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
+    val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
@@ -136,10 +138,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun unflattenValue(value: String) = value
     }
-    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, recreate)
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), recreate)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), recreate)
-    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), recreate)
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val defaultBlurStrength = TypedValue().apply {
         context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
@@ -240,6 +242,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     private fun updateSmartspaceProvider() {
         onChangeCallback?.updateSmartspaceProvider()
+    }
+
+    private fun updateSmartspace() {
+        onChangeCallback?.updateSmartspace()
     }
 
     private fun reloadIcons() {

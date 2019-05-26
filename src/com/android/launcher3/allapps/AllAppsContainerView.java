@@ -52,7 +52,6 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import org.zimmob.zimlx.ZimPreferences;
 
@@ -165,6 +164,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     private void onAppsUpdated() {
+        boolean force = false;
         if (FeatureFlags.ALL_APPS_TABS_ENABLED) {
             boolean hasWorkApps = false;
             for (AppInfo app : mAllAppsStore.getApps()) {
@@ -175,6 +175,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             }
             rebindAdapters(hasWorkApps);
         }
+        rebindAdapters(force);
     }
 
     /**
@@ -322,8 +323,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             if (!ZimPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
-                AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
-                mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
+                //AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
+                //mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
             }
             mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
@@ -557,7 +558,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         void setup(@NonNull View rv, @Nullable ItemInfoMatcher matcher) {
             appsList.updateItemFilter(matcher);
-            //if(drawerStyle!=0){
             recyclerView = (AllAppsRecyclerView) rv;
             recyclerView.setEdgeEffectFactory(createEdgeEffectFactory());
             recyclerView.setApps(appsList, mUsingTabs);
@@ -588,18 +588,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
                     && verticalFadingEdge);
         }
-    }
-}
-
-/**
- * A merge algorithm that merges every section indiscriminately.
- */
-final class FullMergeAlgorithm implements AlphabeticalAppsList.MergeAlgorithm {
-
-    @Override
-    public boolean continueMerging(AlphabeticalAppsList.SectionInfo section) {
-        // Only merge apps
-        return section.firstAppItem.viewType == AllAppsGridAdapter.VIEW_TYPE_ICON;
     }
 }
 

@@ -50,6 +50,9 @@ import com.android.launcher3.util.LongArrayMap;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimUtilsKt;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -97,6 +100,8 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
         ItemInfoMatcher matcher = ItemInfoMatcher.ofPackages(packageSet, mUser);
         switch (mOp) {
             case OP_ADD: {
+                ZimPreferences prefs = Utilities.getZimPrefs(context);
+
                 for (int i = 0; i < N; i++) {
                     if (DEBUG) Log.d(TAG, "mAllAppsList.addPackage " + packages[i]);
                     iconCache.updateIconsForPkg(packages[i], mUser);
@@ -106,7 +111,14 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     appsList.addPackage(context, packages[i], mUser);
 
                     // Automatically add homescreen icon for work profile apps for below O device.
-                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                    //if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                    //    SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                    //}
+                    if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled() &&
+                            !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
+                        SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
+                    } else if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                        // Automatically add homescreen icon for work profile apps for below O device.
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }

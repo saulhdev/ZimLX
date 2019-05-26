@@ -55,8 +55,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(PEWeatherDataProvider::class.java.name)
         if (OnePlusWeatherDataProvider.isAvailable(context))
             list.add(OnePlusWeatherDataProvider::class.java.name)
-        if (prefs.showDebugInfo)
-            list.add(FakeDataProvider::class.java.name)
+        /*if (prefs.showDebugInfo)
+            list.add(FakeDataProvider::class.java.name)*/
         return list
     }
 
@@ -67,8 +67,8 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
             list.add(SmartspaceDataWidget::class.java.name)
         if (FeedBridge.getInstance(context).resolveBridge()?.supportsSmartspace == true)
             list.add(SmartspacePixelBridge::class.java.name)
-        if (prefs.showDebugInfo)
-            list.add(FakeDataProvider::class.java.name)
+        /*if (prefs.showDebugInfo)
+            list.add(FakeDataProvider::class.java.name)*/
         return list
     }
 
@@ -113,7 +113,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
                 Pair(SmartspaceDataWidget::class.java.name, R.string.weather_provider_widget),
                 Pair(SmartspacePixelBridge::class.java.name, R.string.smartspace_provider_bridge),
                 Pair(PEWeatherDataProvider::class.java.name, R.string.weather_provider_pe),
-                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather),
-                Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
+                Pair(OnePlusWeatherDataProvider::class.java.name, R.string.weather_provider_oneplus_weather))
+        //Pair(FakeDataProvider::class.java.name, R.string.weather_provider_testing))
     }
 }

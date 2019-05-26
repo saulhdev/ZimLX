@@ -498,7 +498,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return result;
     }
 
-    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
+    public AppInfo AllAppsList(ComponentKeyMapper<AppInfo> mapper) {
         return mapper.getItem(mComponentToAppMap);
     }
 

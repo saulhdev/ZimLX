@@ -30,7 +30,6 @@ import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.settings.ui.SearchIndex
 import org.zimmob.zimlx.settings.ui.SettingsActivity
 
-
 class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList

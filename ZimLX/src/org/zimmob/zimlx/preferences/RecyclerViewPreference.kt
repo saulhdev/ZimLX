@@ -40,7 +40,7 @@ abstract class RecyclerViewPreference(context: Context, attrs: AttributeSet?) : 
         onBindRecyclerView(view.findViewById(R.id.list))
 
         view.post {
-            val window = dialog.window ?: return@post
+            //val window = dialog.window ?: return@post
             //window.findViewById<TextView>(android.R.id.button1)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
             //window.findViewById<TextView>(android.R.id.button2)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
             //window.findViewById<TextView>(android.R.id.button3)?.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)

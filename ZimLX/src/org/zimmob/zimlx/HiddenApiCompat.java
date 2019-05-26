@@ -24,10 +24,10 @@ import androidx.annotation.RequiresApi;
 @RequiresApi(Build.VERSION_CODES.P)
 public class HiddenApiCompat {
 
-    /*public static boolean tryAccess() {
+/*    public static boolean tryAccess() {
         // TODO: is there a better way?
         try {
-            ThreadedRenderer.class.getMethod("setContextPriority", int.class);
+            //ThreadedRenderer.class.getMethod("setContextPriority", int.class);
             return true;
         } catch (NoSuchMethodException e) {
             return false;

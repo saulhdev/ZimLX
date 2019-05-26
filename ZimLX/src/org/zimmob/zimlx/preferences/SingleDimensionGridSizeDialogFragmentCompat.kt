@@ -41,6 +41,7 @@ class SingleDimensionGridSizeDialogFragmentCompat : PreferenceDialogFragmentComp
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+
         val size = gridSizePreference.getSize()
         numRows = savedInstanceState?.getInt(SAVE_STATE_ROWS) ?: size
     }

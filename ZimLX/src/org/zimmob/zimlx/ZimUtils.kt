@@ -416,19 +416,15 @@ fun Drawable.toBitmap(): Bitmap? {
 }
 
 fun AlertDialog.applyAccent() {
-    //val fontManager = CustomFontManager.getInstance(context)
     val color = Utilities.getZimPrefs(context).accentColor
 
     getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
-        //fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
         setTextColor(color)
     }
     getButton(AlertDialog.BUTTON_NEUTRAL)?.apply {
-        //fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
         setTextColor(color)
     }
     getButton(AlertDialog.BUTTON_POSITIVE)?.apply {
-        //fontManager.setCustomFont(this, CustomFontManager.FONT_BUTTON)
         setTextColor(color)
     }
 }
@@ -442,7 +438,6 @@ fun android.app.AlertDialog.applyAccent() {
             getButton(AlertDialog.BUTTON_POSITIVE))
     buttons.forEach {
         it.setTextColor(color)
-        //it.setCustomFont(CustomFontManager.FONT_DIALOG_TITLE)
     }
 }
 

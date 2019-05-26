@@ -1,7 +1,7 @@
 ### v0.6.1
-*   Support for android 9 Pie
+*   Support for android Pie
 *   Folder shape support
-
+*   Acent color change
 ### v0.5.2
 *   Added support to sort apps. (AZ, ZA, Last Installed, most used).
 *   Fix Icon Scale on app drawer

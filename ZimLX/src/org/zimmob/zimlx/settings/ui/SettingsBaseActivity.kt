@@ -48,9 +48,12 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
     private lateinit var themeOverride: ThemeOverride
     private var currentTheme = 0
     private var paused = false
+
     private val customLayoutInflater by lazy {
         ZimLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
     }
+
+    private val fromSettings by lazy { intent.getBooleanExtra(EXTRA_FROM_SETTINGS, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         (layoutInflater as ZimLayoutInflater).installFactory(delegate)
@@ -95,6 +98,30 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
         return Color.argb(a, Math.max((r * 0.8).toInt(), 0), Math.max((g * 0.8).toInt(), 0), Math.max((b * 0.8).toInt(), 0))
     }
 
+    protected fun overrideOpenAnim() {
+        if (fromSettings) {
+            overridePendingTransition("activity_open_enter", "activity_open_exit")
+        }
+    }
+
+    protected fun overrideCloseAnim() {
+        if (fromSettings) {
+            overridePendingTransition("activity_close_enter", "activity_close_exit")
+        }
+    }
+
+    private fun getAndroidAnimRes(name: String): Int {
+        return resources.getIdentifier(name, "anim", "android")
+    }
+
+    private fun overridePendingTransition(enter: String, exit: String) {
+        val enterRes = getAndroidAnimRes(enter)
+        val exitRes = getAndroidAnimRes(exit)
+        if (enterRes != 0 && exitRes != 0) {
+            overridePendingTransition(enterRes, exitRes)
+        }
+    }
+
     override fun onBackPressed() {
         dragLayer.getTopOpenView()?.let {
             it.close(true)
@@ -124,16 +151,6 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
     fun getContentFrame(): ViewGroup {
         return decorLayout.findViewById(android.R.id.content)
     }
-
-    /*override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
-        when (resolver) {
-            ColorEngine.Resolvers.ACCENT -> {
-                val arrowBack = resources.getDrawable(R.drawable.ic_arrow_back, null)
-                arrowBack?.setTint(color)
-                supportActionBar?.setHomeAsUpIndicator(arrowBack)
-            }
-        }
-    }*/
 
     override fun onResume() {
         super.onResume()
@@ -179,6 +196,8 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
     }
 
     companion object {
+
+        const val EXTRA_FROM_SETTINGS = "fromSettings"
 
         fun getActivity(context: Context): SettingsBaseActivity {
             return context as? SettingsBaseActivity
