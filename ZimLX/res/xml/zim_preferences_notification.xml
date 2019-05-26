@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
-        android:title="@string/pref_category__notifications">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__notifications">
 
         <com.android.launcher3.views.ButtonPreference
-            app:iconSpaceReserved="false"
             android:key="pref_icon_badging"
             android:persistent="false"
             android:title="@string/icon_badging_title"
-            android:widgetLayout="@layout/notification_pref_warning">
+            android:widgetLayout="@layout/notification_pref_warning"
+            app:iconSpaceReserved="false">
             <intent android:action="android.settings.NOTIFICATION_SETTINGS">
                 <!-- This extra highlights the "Allow icon badges" field in Notification settings -->
                 <extra
@@ -17,14 +16,14 @@
                     android:value="notification_badging" />
             </intent>
         </com.android.launcher3.views.ButtonPreference>
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
+            android:dependency="pref_icon_badging"
             android:key="pref_notification_count"
             android:persistent="true"
-            android:dependency="pref_icon_badging"
             android:title="@string/pref_title__notification_count"
             app:iconSpaceReserved="false" />
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_key__folder_badge_count"
             android:persistent="true"
@@ -34,9 +33,9 @@
             android:defaultValue="@color/notification_background"
             android:key="pref_notification_background"
             android:title="@string/pref_title__notification_background_color"
-            app:iconSpaceReserved="false"
             app:cpv_dialogTitle="@string/pref_title__notification_background_color"
-            app:cpv_showAlphaSlider="true" />
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
@@ -51,35 +50,35 @@
             android:title="@string/pref_global_search_provider"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
-                    android:defaultValue="false"
-                    android:key="opa_enabled"
-                    android:persistent="true"
-                    android:summary="@string/pref_show_assistant_summary"
-                    android:title="@string/pref_show_assistant_title"
-                    app:iconSpaceReserved="false" />
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="opa_enabled"
+            android:persistent="true"
+            android:summary="@string/pref_show_assistant_summary"
+            android:title="@string/pref_show_assistant_title"
+            app:iconSpaceReserved="false" />
 
-                <SwitchPreference
-                    android:defaultValue="true"
-                    android:key="opa_assistant"
-                    android:persistent="true"
-                    android:dependency="opa_enabled"
-                    android:summary="@string/pref_show_as_assistant_summary"
-                    android:title="@string/action_assistant"
-                    app:iconSpaceReserved="false" />
-
-                <SwitchPreference
-                    android:key="pref_bubbleSearchStyle"
-                    android:title="@string/bubble_searchbar"
-                    android:defaultValue="false"
-                    app:iconSpaceReserved="false"/>
-
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
-            app:iconSpaceReserved="false"
+            android:dependency="opa_enabled"
+            android:key="opa_assistant"
+            android:persistent="true"
+            android:summary="@string/pref_show_as_assistant_summary"
+            android:title="@string/action_assistant"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="pref_bubbleSearchStyle"
+            android:title="@string/bubble_searchbar"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
             android:key="pref_search_hidden_apps"
             android:summary="@string/summary__app_search_hidden"
-            android:title="@string/title__app_search_hidden" />
+            android:title="@string/title__app_search_hidden"
+            app:iconSpaceReserved="false" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 

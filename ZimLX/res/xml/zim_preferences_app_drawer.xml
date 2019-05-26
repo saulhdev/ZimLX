@@ -31,14 +31,14 @@
             android:title="@string/pref_drawer_columns"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_hideAllAppsAppLabels"
             android:persistent="true"
             app:iconSpaceReserved="false"
             android:title="@string/hide_all_apps_icon_labels_pref_title" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_iconLabelsInTwoLines"
             android:persistent="true"
@@ -47,14 +47,14 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_search">
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
             android:key="pref_allAppsSearch"
             android:summary="@string/summary__app_search_show"
             android:title="@string/title__app_search" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_allAppsGoogleSearch"
@@ -63,7 +63,7 @@
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_show_predictions"
         android:summary="@string/summary_app_suggestions"
@@ -99,7 +99,7 @@
         android:title="@string/hide_apps"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_keepScrollState"
         android:persistent="true"

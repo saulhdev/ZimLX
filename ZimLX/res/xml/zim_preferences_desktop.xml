@@ -13,14 +13,14 @@
         android:key="pref_desktop_grid_size"
         android:title="@string/grid_size" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="pref_key__overlap_widget"
         android:summary="@string/summary__desktop_overlap"
         android:title="@string/title__desktop_overlap" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="true"
         android:key="pref_add_icon_to_home"
@@ -40,7 +40,7 @@
         app:summaryFormat="%.0f%%"
         app:summaryMultiplier="100" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:disableDependentsState="true"
@@ -48,7 +48,7 @@
         android:persistent="true"
         android:title="@string/hide_icon_labels_pref_title" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:key="pref_homeIconLabelsInTwoLines"
         android:title="@string/pref_multiline_labels"
@@ -56,14 +56,14 @@
         android:dependency="pref_hideAppLabels"
         android:persistent="true" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="@bool/allow_rotation"
         android:key="pref_allowRotation"
         android:persistent="true"
         android:title="@string/allow_rotation_title" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="false"
         android:key="pref_fullWidthWidgets"

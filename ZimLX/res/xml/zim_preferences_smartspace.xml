@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:disableDependentsState="false"
         android:key="pref_smartspace"
@@ -16,7 +16,7 @@
         app:previewLayout="@layout/smartspace_preview" />
     -->
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
@@ -24,7 +24,7 @@
         app:controllerClass=".MinusOneController"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_time"
@@ -32,7 +32,7 @@
         android:title="@string/smartspace_time"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_date"
@@ -40,7 +40,7 @@
         android:title="@string/smartspace_date"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_use_pill_qsb"
         android:dependency="pref_smartspace"

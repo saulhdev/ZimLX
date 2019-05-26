@@ -17,7 +17,6 @@
 
 package org.zimmob.zimlx.preferences
 
-
 import android.content.Context
 import android.util.AttributeSet
 import android.view.View
@@ -25,39 +24,16 @@ import android.widget.Switch
 import androidx.preference.AndroidResources
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
-import org.zimmob.zimlx.ZimPreferences
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.applyColor
-import org.zimmob.zimlx.settings.ui.ControlledPreference
-import org.zimmob.zimlx.settings.ui.SearchIndex
-import org.zimmob.zimlx.zimPrefs
 
-open class StyledSwitchPreferenceCompat @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) :
-        SwitchPreference(context, attrs),
-        ControlledPreference by ControlledPreference.Delegate(context, attrs), SearchIndex.Slice {
+open class StyledSwitchPreference(context: Context, attrs: AttributeSet?) : SwitchPreference(context, attrs) {
 
-    protected var checkableView: View? = null
-        private set
+    private var checkableView: View? = null
 
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
         checkableView = holder?.findViewById(AndroidResources.ANDROID_R_SWITCH_WIDGET)
-        //ColorEngine.getInstance(context).addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
-    }
-
-    override fun getSlice(context: Context, key: String): View {
-        val prefs = context.zimPrefs
-        val color = prefs.accentColor
-        var pref by prefs.BooleanPref(key)
-        return Switch(context).apply {
-            applyColor(color)
-            prefs.addOnPreferenceChangeListener(key, object : ZimPreferences.OnPreferenceChangeListener {
-                override fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean) {
-                    isChecked = pref
-                }
-            })
-            setOnCheckedChangeListener { _, isChecked ->
-                pref = isChecked
-            }
-        }
+        (checkableView as Switch).applyColor(Utilities.getZimPrefs(context).accentColor)
     }
 }

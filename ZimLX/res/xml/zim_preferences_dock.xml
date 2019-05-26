@@ -2,7 +2,7 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_isHotseatTransparent"
         android:disableDependentsState="true"
@@ -10,7 +10,7 @@
         android:title="@string/transparent_hotseat_pref_title"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_hotseatShouldUseExtractedColors"
         android:persistent="true"
@@ -20,7 +20,7 @@
         android:title="@string/hotseat_uses_extracted_colors_pref_title"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_hotseatShouldUseCustomOpacity"
         android:persistent="true"
@@ -63,14 +63,14 @@
         app:summaryMultiplier="100"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_enableArrow"
         android:persistent="true"
         android:title="@string/title__hotseat_show_arrow"
         app:iconSpaceReserved="false" />
 
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_hotseatShowPageIndicator"
         android:persistent="true"
@@ -90,7 +90,7 @@
             android:title="@string/title__hotseat_two_row"
             app:iconSpaceReserved="false" />
     -->
-    <SwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref__hide_dock_button"
         android:persistent="true"

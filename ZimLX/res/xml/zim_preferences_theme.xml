@@ -11,7 +11,7 @@
             android:summary="%s"
             android:title="@string/title__theme_icon_pack" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_iconPackMasking"
             android:summary="@string/pref_icon_pack_masking_summary"
@@ -32,7 +32,7 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconShapeOverrideController" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="@bool/config_enable_legacy_treatment"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
@@ -41,7 +41,7 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconShapeOverrideController" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="@bool/config_enable_colorized_legacy_treatment"
             android:key="pref_colorizeGeneratedBackgrounds"
             android:persistent="true"
@@ -51,7 +51,7 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconShapeOverrideController" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="@bool/config_enable_white_only_treatment"
             android:key="pref_enableWhiteOnlyTreatment"
             android:persistent="true"
@@ -74,7 +74,7 @@
             android:title="@string/theme_title"
             app:iconSpaceReserved="false" />
 
-        <SwitchPreference
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="@bool/config_default_enable_blur"
             android:key="pref_enableBlur"
             android:persistent="true"
