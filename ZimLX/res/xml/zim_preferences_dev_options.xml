@@ -4,8 +4,8 @@
 
     <Preference
         android:key="kill"
-        android:summary="@string/restart_lawnchair_pref_summary"
-        android:title="@string/restart_lawnchair_pref_title"
+        android:summary="@string/restart_zim_pref_summary"
+        android:title="@string/restart_zim_pref_title"
         app:iconSpaceReserved="false" />
 
     <SwitchPreference

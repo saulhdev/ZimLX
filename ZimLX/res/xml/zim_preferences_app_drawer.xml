@@ -13,7 +13,7 @@
         app:summaryFormat="%.0f%%"
         app:summaryMultiplier="100" />
 
-    <PreferenceCategory android:title="@string/cat__app_icons">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_icons">
         <org.zimmob.zimlx.preferences.SeekbarPreference
             android:key="pref_allAppsIconScale"
             android:persistent="true"
@@ -44,9 +44,9 @@
             android:persistent="true"
             app:iconSpaceReserved="false"
             android:title="@string/pref_title__label_two_lines" />
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/cat__app_search">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_search">
         <SwitchPreference
             android:defaultValue="true"
             app:iconSpaceReserved="false"
@@ -61,13 +61,14 @@
             android:summary="@string/summary__app_search_global"
             android:title="@string/title__app_search_global" />
 
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <SwitchPreference
         android:defaultValue="false"
         android:key="pref_show_predictions"
         android:summary="@string/summary_app_suggestions"
         android:title="@string/title_app_suggestions"
+        app:controllerClass=".AppSuggestionsController"
         app:iconSpaceReserved="false" />
 
     <ListPreference

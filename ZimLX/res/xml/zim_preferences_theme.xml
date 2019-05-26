@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <PreferenceCategory android:title="@string/pref_cat__theme_icons">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_cat__theme_icons">
 
         <org.zimmob.zimlx.preferences.IconPackPreference
             android:defaultValue="@string/config_default_icon_pack"
@@ -18,7 +18,7 @@
             android:title="@string/pref_icon_pack_masking"
             android:persistent="true"
             app:iconSpaceReserved="false"
-            app:controllerClass="org.zimmob.zimlx.settings.controllers.IconPackMaskingController" />
+            app:controllerClass=".IconPackMaskingController" />
 
 
         <org.zimmob.zimlx.settings.ui.ControlledListPreference
@@ -30,7 +30,7 @@
             android:summary="%s"
             android:title="@string/title__theme_icon_shape"
             app:iconSpaceReserved="false"
-            app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController" />
+            app:controllerClass=".IconShapeOverrideController" />
 
         <SwitchPreference
             android:defaultValue="@bool/config_enable_legacy_treatment"
@@ -61,8 +61,8 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconShapeOverrideController" />
 
-    </PreferenceCategory>
-    <androidx.preference.PreferenceCategory android:title="@string/pref_cat__theme_style">
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_cat__theme_style">
 
         <ListPreference
             android:defaultValue="1"
@@ -118,6 +118,5 @@
             app:cpv_dialogTitle="@string/title__minibar_background_color"
             app:cpv_showAlphaSlider="true" />
 
-    </androidx.preference.PreferenceCategory>
-
-</androidx.preference.PreferenceScreen>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
+</PreferenceScreen>

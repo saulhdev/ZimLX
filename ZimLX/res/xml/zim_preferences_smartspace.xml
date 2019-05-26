@@ -21,6 +21,7 @@
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
         android:title="@string/title_show_google_app"
+        app:controllerClass=".MinusOneController"
         app:iconSpaceReserved="false" />
 
     <SwitchPreference
@@ -47,7 +48,7 @@
         android:disableDependentsState="true"
         app:iconSpaceReserved="false" />
 
-    <PreferenceCategory
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
         android:key="prefCat_homewidgetWeather"
         android:title="@string/category__behavior_weather">
 
@@ -74,5 +75,5 @@
             android:title="@string/title__behavior_event_provider"
             android:summary="%s"
             app:iconSpaceReserved="false" />
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 </PreferenceScreen>
