@@ -19,8 +19,6 @@ public class MostUsedComparator implements Comparator<AppInfo> {
 
     @Override
     public int compare(AppInfo app1, AppInfo app2) {
-        //int item1 = db.getAppCount(app1.componentName.getPackageName());
-        //int item2 = db.getAppCount(app2.componentName.getPackageName());
         int item1 = 0;
         int item2 = 0;
 

@@ -15,6 +15,7 @@
  */
 package com.android.launcher3.allapps;
 
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -23,18 +24,19 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PromiseAppInfo;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.PackageUserKey;
 
 import org.zimmob.zimlx.util.DbHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
-
-import androidx.annotation.Nullable;
 
 /**
  * A utility class to maintain the collection of all apps.
@@ -49,6 +51,19 @@ public class AllAppsStore {
     private boolean mDeferUpdates = false;
     private boolean mUpdatePending = false;
 
+    // The set of predicted app component names
+    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
+    private final List<AppInfo> mPredictedApps = new ArrayList<>();
+    // The current set of adapter items
+    private List<AlphabeticalAppsList.AdapterItem> mAdapterItems = new ArrayList<>();
+    private AllAppsGridAdapter mAdapter;
+    private int mNumPredictedAppsPerRow;
+
+    // The set of filtered apps with the current filter
+    private List<AppInfo> mFilteredApps = new ArrayList<>();
+
+
+
     public Collection<AppInfo> getApps() {
         return mComponentToAppMap.values();
     }
@@ -61,18 +76,15 @@ public class AllAppsStore {
         addOrUpdateApps(apps);
     }
 
-    public AppInfo getApp(ComponentKey key) {
-        return mComponentToAppMap.get(key);
+    /**
+     * Sets the current set of predicted apps.
+     */
+    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        addOrUpdatePredictedApps(apps);
     }
 
-    @Nullable
-    public AppInfo getApp(String packageName) {
-        for (AppInfo app : mComponentToAppMap.values()) {
-            if (app.componentName.getPackageName().equals(packageName)) {
-                return app;
-            }
-        }
-        return null;
+    public AppInfo getApp(ComponentKey key) {
+        return mComponentToAppMap.get(key);
     }
 
     public void setDeferUpdates(boolean deferUpdates) {
@@ -95,6 +107,85 @@ public class AllAppsStore {
         }
         notifyUpdate();
     }
+
+    /*
+     * Sets the current set of predicted apps.
+     * <p>
+     * This can be called before we get the full set of applications, we should merge the results
+     * only in onAppsUpdated() which is idempotent.
+     * <p>
+     * If the number of predicted apps is the same as the previous list of predicted apps,
+     * we can optimize by swapping them in place.
+     */
+    public void addOrUpdatePredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
+        mPredictedAppComponents.clear();
+        mPredictedAppComponents.addAll(apps);
+
+        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
+        // We only need to do work if any of the visible predicted apps have changed.
+        if (!newPredictedApps.equals(mPredictedApps)) {
+            if (newPredictedApps.size() == mPredictedApps.size()) {
+                swapInNewPredictedApps(newPredictedApps);
+            } else {
+                // We need to update the appIndex of all the items.
+                notifyUpdate();
+            }
+        }
+    }
+
+    /*
+     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
+     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
+     * <p>
+     * Note: This should only be called if the # of predicted apps is the same.
+     * This method assumes that predicted apps are the first items in the adapter.
+     */
+    private void swapInNewPredictedApps(List<AppInfo> apps) {
+        mPredictedApps.clear();
+        mPredictedApps.addAll(apps);
+
+        int size = apps.size();
+        for (int i = 0; i < size; ++i) {
+            AppInfo info = apps.get(i);
+            AlphabeticalAppsList.AdapterItem appItem = AlphabeticalAppsList.AdapterItem.asPredictedApp(i, "", info, i);
+            appItem.rowAppIndex = i;
+            mAdapterItems.set(i, appItem);
+            mFilteredApps.set(i, info);
+            mAdapter.notifyItemChanged(i);
+        }
+    }
+
+    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
+        if (mComponentToAppMap.isEmpty()) {
+            // Apps have not been bound yet.
+            return Collections.emptyList();
+        }
+
+        List<AppInfo> predictedApps = new ArrayList<>();
+        for (ComponentKeyMapper<AppInfo> mapper : components) {
+            AppInfo info = mapper.getItem(mComponentToAppMap);
+            if (info != null) {
+                predictedApps.add(info);
+            } else {
+                if (FeatureFlags.IS_DOGFOOD_BUILD) {
+                    Log.e("AllAppsStore", "Predicted app not found: " + mapper);
+                }
+            }
+            // Stop at the number of predicted apps
+            if (predictedApps.size() == mNumPredictedAppsPerRow) {
+                break;
+            }
+        }
+        return predictedApps;
+    }
+
+    /**
+     * Sets the adapter to notify when this dataset changes.
+     */
+    public void setAdapter(AllAppsGridAdapter adapter) {
+        mAdapter = adapter;
+    }
+
 
     /**
      * Removes some apps from the list.

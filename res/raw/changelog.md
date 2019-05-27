@@ -1,6 +1,7 @@
 ### v0.6.1
 *   Support for android Pie
 *   Folder shape support
+*   Set folder custom icon
 *   Acent color change
 ### v0.5.2
 *   Added support to sort apps. (AZ, ZA, Last Installed, most used).

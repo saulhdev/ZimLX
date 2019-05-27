@@ -165,6 +165,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                 matcher = ItemInfoMatcher.ofUser(mUser);
                 appsList.updateDisabledFlags(matcher, flagOp);
                 break;
+            case OP_RELOAD:
+                if (DEBUG) Log.d(TAG, "mAllAppsList.reloadPackages");
+                appsList.reloadPackages(context, mUser);
+                break;
         }
 
         final ArrayList<AppInfo> addedOrModified = new ArrayList<>();

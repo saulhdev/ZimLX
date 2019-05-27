@@ -181,7 +181,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 db.close();
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
                 Collections.sort(mApps, mostUsedComparator);
-
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);
@@ -496,6 +495,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
         return result;
+    }
+
+    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
+        return mapper.getItem(mComponentToAppMap);
     }
 
     public AppInfo AllAppsList(ComponentKeyMapper<AppInfo> mapper) {

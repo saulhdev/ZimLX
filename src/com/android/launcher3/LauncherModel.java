@@ -371,8 +371,7 @@ public class LauncherModel extends BroadcastReceiver
     }
 
     public void onPackagesReload(UserHandle user) {
-        enqueueModelUpdateTask(new PackageUpdatedTask(
-                PackageUpdatedTask.OP_RELOAD, user));
+        enqueueModelUpdateTask(new PackageUpdatedTask(PackageUpdatedTask.OP_RELOAD, user));
     }
     @Override
     public void onPackageAdded(String packageName, UserHandle user) {

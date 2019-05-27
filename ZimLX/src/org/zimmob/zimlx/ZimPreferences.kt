@@ -213,7 +213,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     fun updateSortApps() {
-        onChangeCallback?.reloadApps()
+        onChangeCallback?.forceReloadApps()
     }
 
     private fun recreate() {
