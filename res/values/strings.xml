@@ -459,7 +459,7 @@
     <string name="pref_summary__dock">Customize your dock</string>
     <string name="pref_summary__desktop">Customize your desktop</string>
     <string name="pref_summary__theme">Theme different elements</string>
-    <string name="pref_summary__notifications">Configure notifications</string>
+    <string name="pref_summary__notifications">Notifications, Search Engine and Gestures</string>
     <string name="pref_summary__developer">Restart the app if it is needed</string>
     <string name="pref_summary__advanced">Language and backup</string>
     <string name="pref_summary__about">More information about Zim Launcher</string>
@@ -564,6 +564,17 @@
     <string name="gestures_global_search">Open global search</string>
     <string name="title__gesture_swipe_down">Swipe down</string>
     <string name="title__gesture_swipe_up">Swipe Upwards</string>
+    <string name="action_open_notifications_class" translatable="false">org.zimmob.zimlx.gestures.handlers.NotificationsOpenGestureHandler</string>
+    <string name="action_open_drawer_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenDrawerGestureHandler</string>
+    <string name="action_open_overview_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenOverviewGestureHandler</string>
+    <string name="action_do_nothing_class" translatable="false">org.zimmob.zimlx.gestures.BlankGestureHandler</string>
+    <string name="gesture_press_home">Home button</string>
+    <string name="gesture_press_back">Back button</string>
+    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_long_press">Tap &amp; hold</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_dock_swipe_up">Swipe up on dock</string>
 
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
@@ -813,8 +824,6 @@
     <string name="color_wallpaper_main">Wallpaper — primary</string>
     <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
     <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
-
-    <string name="gesture_swipe_up">Swipe up</string>
 
     <string name="bridge_missing_title">Lawnfeed</string>
     <string name="bridge_missing_message">Install or update Lawnfeed</string>

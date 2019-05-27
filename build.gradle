@@ -51,7 +51,7 @@ android {
     }
 
         def name = "0.6.1"
-        def code = 3008
+        def code = 3009
 
         defaultConfig {
             minSdkVersion 21

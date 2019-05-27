@@ -83,24 +83,62 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__gestures">
-        <ListPreference
-            android:defaultValue="0"
-            android:entries="@array/entries__gestures"
-            android:entryValues="@array/values__zero_to_four"
-            android:key="pref_key__gesture_swipe_down"
-            android:persistent="true"
-            android:summary="%s"
-            android:title="@string/title__gesture_swipe_down"
-            app:iconSpaceReserved="false" />
 
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/entries__gestures"
-            android:entryValues="@array/values__zero_to_four"
-            android:key="pref_key__gesture_swipe_up"
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_do_nothing_class"
+            android:key="pref_gesture_double_tap"
             android:persistent="true"
-            android:summary="%s"
-            android:title="@string/title__gesture_swipe_up"
-            app:iconSpaceReserved="false" />
+            android:title="@string/gesture_double_tap"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.DoubleTapGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_open_overview_class"
+            android:key="pref_gesture_long_press"
+            android:persistent="true"
+            android:title="@string/gesture_long_press"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.LongPressGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_do_nothing_class"
+            android:key="pref_gesture_press_home"
+            android:persistent="true"
+            android:title="@string/gesture_press_home"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.PressHomeGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_do_nothing_class"
+            android:key="pref_gesture_press_back"
+            android:persistent="true"
+            android:title="@string/gesture_press_back"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.PressBackGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_open_notifications_class"
+            android:key="pref_gesture_swipe_down"
+            android:persistent="true"
+            android:title="@string/gesture_swipe_down"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.VerticalSwipeGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_open_drawer_class"
+            android:key="pref_gesture_swipe_up"
+            android:persistent="true"
+            android:title="@string/gesture_swipe_up"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.VerticalSwipeGesture" />
+
+        <org.zimmob.zimlx.gestures.ui.GesturePreference
+            android:defaultValue="@string/action_open_drawer_class"
+            android:key="pref_gesture_dock_swipe_up"
+            android:persistent="true"
+            android:title="@string/gesture_dock_swipe_up"
+            app:iconSpaceReserved="false"
+            app:gestureClass="org.zimmob.zimlx.gestures.gestures.VerticalSwipeGesture" />
+
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

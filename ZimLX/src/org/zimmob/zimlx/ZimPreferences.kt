@@ -117,11 +117,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerGridSize by drawerGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
     fun getNumPredictedApps(): Int {
+        recreate
         return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
     }
 
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
+        recreate
         return sort.toInt()
     }
 
@@ -174,7 +176,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
-
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
@@ -182,8 +183,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
 
     //Notification
-    val notificationCount: Boolean by BooleanPref("pref_notification_count", true)
-    val notificationBackground by IntPref("pref_notification_background", R.color.notification_background)
+    val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
+    val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
 
     //Gestures
     val gestureSwipeUp by StringPref(ZimFlags.GESTURES_SWIPE_UP, "1", recreate)
