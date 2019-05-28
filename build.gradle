@@ -54,7 +54,7 @@ android {
     if (localPropsFile.exists()) {
         localProps.load(localPropsFile.newDataInputStream())
     }
-    def name = "0.6.1"
+    def name = "0.6.2b"
     def code = 3010
     defaultConfig {
         minSdkVersion 21
