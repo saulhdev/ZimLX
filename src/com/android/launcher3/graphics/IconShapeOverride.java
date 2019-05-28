@@ -48,6 +48,12 @@ public class IconShapeOverride {
     public static final String KEY_PREFERENCE = "pref_override_icon_shape";
     private static final String TAG = "IconShapeOverride";
 
+    // Time to wait before killing the process this ensures that the progress bar is visible for
+    // sufficient time so that there is no flicker.
+    private static final long PROCESS_KILL_DELAY_MS = 1000;
+
+    private static final int RESTART_REQUEST_CODE = 42; // the answer to everything
+
     public static boolean isSupported(Context context) {
         if (!Utilities.ATLEAST_OREO) {
             return false;

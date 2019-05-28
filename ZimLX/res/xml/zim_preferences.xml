@@ -14,7 +14,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
-    <PreferenceCategory android:title="@string/pref_category__interfaces">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__interfaces">
 
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_desktop"
@@ -45,18 +45,18 @@
             android:summary="@string/pref_summary__smartspace"
             android:title="@string/pref_title__smartspace"
             app:content="@xml/zim_preferences_smartspace" />
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_category__inputs">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__inputs">
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_behavior"
             android:summary="@string/pref_summary__notifications"
             android:title="@string/pref_title__notifications"
             app:content="@xml/zim_preferences_notification" />
 
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <PreferenceCategory android:title="@string/pref_category__others">
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__others">
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_debug"
             android:key="pref_key__developer_options"
@@ -81,5 +81,5 @@
                 android:targetClass="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
                 android:targetPackage="@string/application_id" />
         </Preference>
-    </PreferenceCategory>
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 </PreferenceScreen>

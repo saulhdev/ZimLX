@@ -97,6 +97,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         paused = true;
     }
 
+
     public void restartIfPending() {
         if (sRestart) {
             ZimAppKt.getZimApp(mContext).restart(false);
@@ -114,7 +115,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         super.onRestart();
         Utilities.onLauncherStart();
     }
-
 
     public GestureController getGestureController() {
         return gestureController;

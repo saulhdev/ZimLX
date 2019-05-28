@@ -42,6 +42,11 @@ if (enable_plugin_kotlin) {
 }
 
 android {
+    signingConfigs {
+        config {
+            storeFile file('/media/saul/DATA/App Dev/Zim Launcher/zimlx.jks')
+        }
+    }
     compileSdkVersion 'android-Q'
     buildToolsVersion '28.0.3'
     Properties localProps = new Properties()
@@ -49,26 +54,23 @@ android {
     if (localPropsFile.exists()) {
         localProps.load(localPropsFile.newDataInputStream())
     }
+    def name = "0.6.1"
+    def code = 3010
+    defaultConfig {
+        minSdkVersion 21
+        targetSdkVersion 28
 
-        def name = "0.6.1"
-        def code = 3009
+        buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
+        buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
+        buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
 
-        defaultConfig {
-            minSdkVersion 21
-            targetSdkVersion 28
+        applicationId "org.zimmob.zimlx"
+        versionName name
+        versionCode code
 
-            buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
-            buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
-            buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
-
-            applicationId "org.zimmob.zimlx"
-            versionName name
-            versionCode code
-
-            testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-            vectorDrawables.useSupportLibrary = true
-        }
-
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        vectorDrawables.useSupportLibrary = true
+    }
     buildTypes {
         debug {
             minifyEnabled false
@@ -82,7 +84,6 @@ android {
             pseudoLocalesEnabled true
         }
     }
-
     flavorDimensions "default", "custom"
     productFlavors {
         aosp {
@@ -101,7 +102,7 @@ android {
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
-        zim{
+        zim {
             dimension "custom"
         }
 
@@ -111,14 +112,12 @@ android {
         disable 'ExtraTranslation'
         abortOnError false
     }
-
     // Disable release builds for now
-    android.variantFilter { variant ->
+    /*android.variantFilter { variant ->
         if (variant.buildType.name.endsWith('release')) {
             variant.setIgnore(true)
         }
-    }
-
+    }*/
     sourceSets {
         main {
             res.srcDirs = ['res']
@@ -161,13 +160,11 @@ android {
         }
 
     }
-
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs.add('-Xbootclasspath/p:ZimLX/libs/framework.jar')
         }
     }
-
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8

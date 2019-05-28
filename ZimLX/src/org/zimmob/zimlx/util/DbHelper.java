@@ -5,7 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-import android.util.Log;
 
 import com.android.launcher3.LauncherFiles;
 
@@ -51,18 +50,6 @@ public class DbHelper extends SQLiteOpenHelper {
         onUpgrade(db, oldVersion, newVersion);
     }
 
-    public int getAppCount(String packageName) {
-        String SQL_QUERY = "SELECT package_count FROM app_count WHERE package_name='" + packageName + "';";
-        Cursor cursor = db.rawQuery(SQL_QUERY, null);
-        int appCount = 0;
-        if (cursor.moveToFirst()) {
-            appCount = cursor.getInt(0);
-        }
-        cursor.close();
-        Log.i("APP COUNT " + packageName, String.valueOf(appCount));
-        return appCount;
-    }
-
     public List<AppCountInfo> getAppsCount() {
         List<AppCountInfo> apps = new ArrayList<>();
         String SQL_QUERY = "SELECT package_name, package_count FROM app_count;";
@@ -86,7 +73,6 @@ public class DbHelper extends SQLiteOpenHelper {
         Cursor cursor = db.rawQuery(SQL_QUERY, null);
         int appCount = 0;
         if (cursor.moveToFirst()) {
-            //Log.i("APP COUNT", String.format("Cursor qty: %d", cursor.getInt(0)));
             appCount = cursor.getInt(0);
         } else {
             saveAppCount(packageName);
