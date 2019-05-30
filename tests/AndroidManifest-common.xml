@@ -15,7 +15,6 @@
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3.tests">
-    <uses-sdk android:minSdkVersion="21" android:targetSdkVersion="23" />
     <application android:debuggable="true">
         <uses-library android:name="android.test.runner" />
 

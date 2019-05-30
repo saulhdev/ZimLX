@@ -32,6 +32,7 @@
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
+        tools:replace="android:label"
         android:supportsRtl="true">
 
         <!-- Activity for handling PinItemRequest. Only supports shortcuts -->

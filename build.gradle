@@ -3,7 +3,7 @@ import java.text.SimpleDateFormat
 buildscript {
     ext.kotlin_version = '1.3.21'
     ext.version_library_butterknife = "10.1.0"
-    ext.version_plugin_kotlin = "1.3.21"
+    ext.version_plugin_kotlin = "1.3.31"
     ext.enable_plugin_kotlin = true
 
     ext.getGitHash = { ->
@@ -25,7 +25,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.2'
+        classpath 'com.android.tools.build:gradle:3.4.1'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -42,11 +42,6 @@ if (enable_plugin_kotlin) {
 }
 
 android {
-    signingConfigs {
-        config {
-            storeFile file('/media/saul/DATA/App Dev/Zim Launcher/zimlx.jks')
-        }
-    }
     compileSdkVersion 'android-Q'
     buildToolsVersion '28.0.3'
     Properties localProps = new Properties()
@@ -64,6 +59,8 @@ android {
         buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
 
+        multiDexEnabled false
+
         applicationId "org.zimmob.zimlx"
         versionName name
         versionCode code
@@ -71,6 +68,16 @@ android {
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
     }
+
+    signingConfigs {
+        aosp {
+            storeFile file("ZimLauncher.jks")
+            storePassword System.getenv("STORE_PASSWORD")
+            keyAlias "ZimLauncher"
+            keyPassword System.getenv("KEY_PASSWORD")
+        }
+    }
+
     buildTypes {
         debug {
             minifyEnabled false
@@ -79,9 +86,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
-            jniDebuggable true
-            renderscriptDebuggable true
-            pseudoLocalesEnabled true
+            signingConfig signingConfigs.aosp
         }
     }
     flavorDimensions "default", "custom"
@@ -91,7 +96,6 @@ android {
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
-
         l3go {
             dimension "default"
             applicationId 'com.android.launcher3'
@@ -104,13 +108,15 @@ android {
         }
         zim {
             dimension "custom"
+            applicationId 'org.zimmob.zimlx'
+            proguardFile 'proguard-android-optimize.txt'
         }
-
     }
     lintOptions {
         disable 'MissingTranslation'
         disable 'ExtraTranslation'
         abortOnError false
+        checkReleaseBuilds false
     }
     // Disable release builds for now
     /*android.variantFilter { variant ->
@@ -160,11 +166,10 @@ android {
         }
 
     }
-    gradle.projectsEvaluated {
-        tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:ZimLX/libs/framework.jar')
-        }
+    kotlinOptions {
+        jvmTarget = '1.8'
     }
+
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
@@ -186,8 +191,8 @@ repositories {
 
 final String SUPPORT_LIBS_VERSION = '1.0.0'
 dependencies {
-    implementation 'com.android.support:appcompat-v7:28.0.0'
-    implementation 'com.android.support:preference-v7:28.0.0'
+    implementation 'com.android.support:appcompat-v7:29.0.0'
+    implementation 'com.android.support:preference-v7:29.0.0'
     implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
