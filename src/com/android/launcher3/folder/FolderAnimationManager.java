@@ -29,6 +29,8 @@ import android.util.Property;
 import android.view.View;
 import android.view.animation.AnimationUtils;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
@@ -45,8 +47,6 @@ import com.android.launcher3.util.Themes;
 import org.zimmob.zimlx.folder.FolderShape;
 
 import java.util.List;
-
-import androidx.core.graphics.ColorUtils;
 
 import static com.android.launcher3.BubbleTextView.TEXT_ALPHA_PROPERTY;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
@@ -102,11 +102,11 @@ public class FolderAnimationManager {
         mDelay = res.getInteger(R.integer.config_folderDelay);
 
         mFolderInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.folder_interpolator);
+                R.anim.folder_interpolator);
         mLargeFolderPreviewItemOpenInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_open_interpolator);
+                R.anim.large_folder_preview_item_open_interpolator);
         mLargeFolderPreviewItemCloseInterpolator = AnimationUtils.loadInterpolator(mContext,
-                R.interpolator.large_folder_preview_item_close_interpolator);
+                R.anim.large_folder_preview_item_close_interpolator);
     }
 
 

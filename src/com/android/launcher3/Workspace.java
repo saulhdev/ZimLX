@@ -192,6 +192,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     private SpringLoadedDragController mSpringLoadedDragController;
 
     private boolean mIsSwitchingState = false;
+    private boolean mIsOverViewState = false;
 
     boolean mChildrenLayersEnabled = true;
 
@@ -1464,6 +1465,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public void prepareDragWithProvider(DragPreviewProvider outlineProvider) {
         mOutlineProvider = outlineProvider;
+    }
+
+    public boolean isInOverviewMode() {
+        return mIsOverViewState;
     }
 
     public void snapToPageFromOverView(int whichPage) {
@@ -2809,7 +2814,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mLauncher.getDragLayer().getViewRectRelativeToSelf(dragView, from);
 
         int[] finalPos = new int[2];
-        float scaleXY[] = new float[2];
+        float[] scaleXY = new float[2];
         boolean scalePreview = !(info instanceof PendingAddShortcutInfo);
         getFinalPositionForDropAnimation(finalPos, scaleXY, dragView, cellLayout, info, mTargetCell,
                 scalePreview);

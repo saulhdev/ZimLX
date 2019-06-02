@@ -19,13 +19,11 @@ public class LauncherRootView extends InsettableFrameLayout {
     private final Launcher mLauncher;
 
     private final Paint mOpaquePaint;
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private final Rect mConsumedInsets = new Rect();
 
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
-    private boolean mHideContent;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -50,6 +48,7 @@ public class LauncherRootView extends InsettableFrameLayout {
     @TargetApi(23)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
+        boolean rawInsetsChanged = !mInsets.equals(insets);
         mConsumedInsets.setEmpty();
         boolean drawInsetBar = false;
         if (mLauncher.isInMultiWindowModeCompat()
@@ -57,7 +56,7 @@ public class LauncherRootView extends InsettableFrameLayout {
             mConsumedInsets.left = insets.left;
             mConsumedInsets.right = insets.right;
             mConsumedInsets.bottom = insets.bottom;
-            insets = new Rect(0, insets.top, 0, 0);
+            insets = new Rect(0, insets.top, 0, insets.bottom);
             drawInsetBar = true;
         } else if ((insets.right > 0 || insets.left > 0) &&
                 (!Utilities.ATLEAST_MARSHMALLOW ||
@@ -89,7 +88,7 @@ public class LauncherRootView extends InsettableFrameLayout {
             }
         }
         if (resetState) {
-            mLauncher.getStateManager().reapplyState(true /* cancelCurrentAnimation */);
+            mLauncher.getStateManager().reapplyState(true);
         }
 
         return true; // I'll take it from here

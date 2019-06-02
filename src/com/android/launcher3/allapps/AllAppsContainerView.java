@@ -31,6 +31,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.StringRes;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.recyclerview.widget.LinearLayoutManager;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
@@ -42,7 +48,6 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.anim.SpringAnimationHandler;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusedItemDecorator;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -56,12 +61,6 @@ import com.android.launcher3.views.SpringRelativeLayout;
 import org.zimmob.zimlx.ZimPreferences;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.StringRes;
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.recyclerview.widget.LinearLayoutManager;
 
 import static androidx.recyclerview.widget.RecyclerView.OnScrollListener;
 
@@ -96,7 +95,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private RecyclerViewFastScroller mTouchHandler;
     private final Point mFastScrollerOffset = new Point();
-    private SpringAnimationHandler mSpringAnimationHandler;
 
     public AllAppsContainerView(Context context) {
         this(context, null);
@@ -126,11 +124,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_header);
         addSpringView(R.id.apps_list_view);
         addSpringView(R.id.all_apps_tabs_view_pager);
-    }
-
-
-    public SpringAnimationHandler getSpringAnimationHandler() {
-        return mSpringAnimationHandler;
     }
 
     /**
