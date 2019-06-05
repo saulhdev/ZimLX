@@ -533,7 +533,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void reapplyUi() {
-        getRootView().dispatchInsets();
+        //getRootView().dispatchInsets();
         getStateManager().reapplyState(true /* cancelCurrentAnimation */);
     }
 
