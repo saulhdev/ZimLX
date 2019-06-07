@@ -137,7 +137,7 @@ class NewBackupActivity : SettingsBaseActivity() {
                 val takeFlags = intent.flags and
                         (Intent.FLAG_GRANT_READ_URI_PERMISSION or
                                 Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
-                contentResolver.takePersistableUriPermission(resultData.data, takeFlags)
+                contentResolver.takePersistableUriPermission(resultData.data!!, takeFlags)
                 backupUri = resultData.data
                 startBackup()
             }

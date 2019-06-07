@@ -31,7 +31,7 @@ class RestoreBackupActivity : SettingsBaseActivity(), ZimBackup.MetaLoader.Callb
         if (intent.hasExtra(EXTRA_URI))
             ZimBackup(this, Uri.parse(intent.getStringExtra(EXTRA_URI)))
         else
-            ZimBackup(this, intent.data)
+            ZimBackup(this, intent.data!!)
     }
     private val backupMetaLoader by lazy { ZimBackup.MetaLoader(backup) }
 

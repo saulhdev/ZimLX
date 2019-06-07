@@ -31,7 +31,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
     private fun readMeta(): Meta? {
         try {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
-            val inStream = FileInputStream(pfd.fileDescriptor)
+            val inStream = FileInputStream(pfd?.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
             var entry: ZipEntry?
             var meta: Meta? = null
@@ -48,7 +48,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             } finally {
                 zipIs.close()
                 inStream.close()
-                pfd.close()
+                pfd?.close()
                 return meta
             }
         } catch (t: Throwable) {
@@ -80,7 +80,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
     private inline fun readZip(body: (ZipInputStream) -> Unit) {
         try {
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
-            val inStream = FileInputStream(pfd.fileDescriptor)
+            val inStream = FileInputStream(pfd?.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
             try {
                 body(zipIs)
@@ -89,7 +89,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             } finally {
                 zipIs.close()
                 inStream.close()
-                pfd.close()
+                pfd?.close()
             }
         } catch (t: Throwable) {
             Log.e(TAG, "Unable to read zip for $uri", t)
@@ -104,7 +104,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             val settingsFile = File(dir, "shared_prefs/" + LauncherFiles.SHARED_PREFERENCES_KEY + ".xml")
 
             val pfd = context.contentResolver.openFileDescriptor(uri, "r")
-            val inStream = FileInputStream(pfd.fileDescriptor)
+            val inStream = FileInputStream(pfd?.fileDescriptor)
             val zipIs = ZipInputStream(inStream)
             val data = ByteArray(BUFFER)
             var entry: ZipEntry?
@@ -144,7 +144,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             } finally {
                 zipIs.close()
                 inStream.close()
-                pfd.close()
+                pfd?.close()
                 return success
             }
         } catch (t: Throwable) {
@@ -303,7 +303,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
                     .developerOptionsEnabled
             prepareConfig(context)
             val pfd = context.contentResolver.openFileDescriptor(location, "w")
-            val outStream = FileOutputStream(pfd.fileDescriptor)
+            val outStream = FileOutputStream(pfd?.fileDescriptor)
             val out = ZipOutputStream(BufferedOutputStream(outStream))
             val data = ByteArray(BUFFER)
             var success = false
@@ -339,7 +339,7 @@ class ZimBackup(val context: Context, val uri: Uri) {
             } finally {
                 out.close()
                 outStream.close()
-                pfd.close()
+                pfd?.close()
                 cleanupConfig(context, devOptionsEnabled)
                 return success
             }

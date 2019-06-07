@@ -44,8 +44,6 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
                     return (Class.forName(name).getConstructor(Context::class.java,
                             AttributeSet::class.java)
                             .newInstance(context, attrs) as TextView)
-                    /*.newInstance(context, attrs) as TextView).apply
-            { setCustomFont(CustomFontManager.FONT_DIALOG_TITLE) }*/
                 }
                 return delegate.createView(parent, name, context, attrs)
             }

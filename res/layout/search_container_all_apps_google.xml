@@ -49,4 +49,5 @@
         android:contentDescription="@string/label_voice_search" />
 
     <include layout="@layout/qsb_hint" />
+
 </com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout>
