@@ -12,7 +12,8 @@ Where:
 There are so many more contributors missing on the list, some can be 
 found on the GitHub project contributors list, check them out too.
 Also, to all those people who have helped this project, thank you.
- 
+
+<h6>Developer: <a href="https://github.com/otakuhqz"> Saul Henriquez</a> <br/><br/>
 -->
 ## LIST OF CONTRIBUTORS
-<h6>Developer: <a href="https://github.com/otakuhqz"> Saul Henriquez</a> <br/><br/>
+**[Saul Henriquez](https://github.com/otakuhqz)**<br/>~° Developer
