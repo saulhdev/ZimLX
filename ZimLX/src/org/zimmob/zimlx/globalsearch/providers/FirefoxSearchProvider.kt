@@ -44,7 +44,10 @@ open class FirefoxSearchProvider(context: Context) : SearchProvider(context) {
 
     open fun getPackage(context: Context) = listOf(
             "org.mozilla.firefox",
+            "org.mozilla.fennec_fdroid",
             "org.mozilla.firefox_beta",
-            "org.mozilla.fennec_aurora"
+            "org.mozilla.fennec_aurora",
+            "org.mozilla.focus",
+            "org.mozilla.fenix"
     ).firstOrNull { PackageManagerHelper.isAppEnabled(context.packageManager, it, 0) }
 }
