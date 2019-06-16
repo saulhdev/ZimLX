@@ -1,10 +1,20 @@
 package org.zimmob.zimlx.minibar;
 
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.SwitchCompat;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.widget.CompoundButtonCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.recyclerview.widget.ItemTouchHelper;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -23,13 +33,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.SwitchCompat;
-import androidx.appcompat.widget.Toolbar;
-import androidx.drawerlayout.widget.DrawerLayout;
-import androidx.recyclerview.widget.ItemTouchHelper;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -79,12 +82,24 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
 
+        int[][] states = new int[][]{
+                new int[]{-android.R.attr.state_enabled},
+                new int[]{android.R.attr.state_checked},
+                new int[]{},
+        };
+        int[] colors = new int[]{
+                androidx.preference.R.color.switch_thumb_normal_material_light,//Normal
+                prefs.getAccentColor(), //checked
+                androidx.preference.R.color.switch_thumb_disabled_material_light//Disabled
+        };
+        ColorStateList thstateList = new ColorStateList(states, colors);
         boolean minBarEnable = prefs.getMinibarEnable();
         _enableSwitch.setChecked(minBarEnable);
+        _enableSwitch.setThumbTintList(thstateList);
         _enableSwitch.setText(minBarEnable ? R.string.on : R.string.off);
         _enableSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             buttonView.setText(isChecked ? R.string.on : R.string.off);
-            //prefs.setMinibarEnable(isChecked);
+            prefs.setMinibarEnable(isChecked);
             mLauncher.getDrawerLayout().setDrawerLockMode(isChecked ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
         });
         setResult(RESULT_OK);
@@ -164,12 +179,25 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             return new ViewHolder(v);
         }
 
-
         public void bindView(@NonNull ViewHolder holder, List payloads) {
+            int[][] states = new int[][]{
+                    new int[]{-android.R.attr.state_enabled},
+                    new int[]{android.R.attr.state_checked},
+                    new int[]{},
+            };
+            int[] colors = new int[]{
+                    androidx.preference.R.color.switch_thumb_normal_material_light,//Normal
+                    ZimPreferences.Companion.getInstance(Launcher.mContext).getAccentColor(), //checked
+                    androidx.preference.R.color.switch_thumb_disabled_material_light//Disabled
+            };
+            ColorStateList thstateList = new ColorStateList(states, colors);
+
             holder._tv.setText(item.label);
             holder._tv2.setText(item.description);
             holder._iv.setImageResource(item.icon);
+
             holder._cb.setChecked(enable);
+            CompoundButtonCompat.setButtonTintList(holder._cb, thstateList);
             holder._cb.setOnCheckedChangeListener((compoundButton, b) -> {
                 edited = true;
                 enable = b;
