@@ -38,6 +38,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.IconCache.IconLoadRequest;
 import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.Launcher.OnResumeCallback;
@@ -49,11 +51,16 @@ import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.PreloadIconDrawable;
 import com.android.launcher3.model.PackageItemInfo;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimUtilsKt;
+import org.zimmob.zimlx.gestures.BlankGestureHandler;
+import org.zimmob.zimlx.gestures.GestureController;
+import org.zimmob.zimlx.gestures.GestureHandler;
+import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
+import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.text.NumberFormat;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * TextView that draws a bubble behind the text. We cannot use a LineBackgroundSpan
@@ -130,6 +137,9 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private boolean mDisableRelayout = false;
 
     private IconLoadRequest mIconLoadRequest;
+
+    private GestureHandler mSwipeUpHandler;
+
     private boolean mHideText;
     public BubbleTextView(Context context) {
         this(context, null, 0);
@@ -141,7 +151,18 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mActivity = BaseDraggingActivity.fromContext(context);
+        //mActivity = BaseDraggingActivity.fromContext(context);
+        mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
+
+        if (mActivity == null) {
+            mLayoutHorizontal = false;
+            mIconSize = 0;
+            mCenterVertically = true;
+            mLongPressHelper = null;
+            mStylusEventHelper = null;
+            mSlop = 0;
+            return;
+        }
         DeviceProfile grid = mActivity.getDeviceProfile();
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
@@ -183,11 +204,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
                 defaultIconSize);
         a.recycle();
-        /*if (Utilities.getZimPrefs(context).getIconLabelsInTwoLines()) {
-            setMaxLines(2);
-            setEllipsize(TruncateAt.END);
-            setHorizontallyScrolling(false);
-        }*/
+
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
@@ -219,6 +236,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public void applyFromShortcutInfo(ShortcutInfo info, boolean promiseStateChanged) {
         applyIconAndLabel(info);
+        applySwipeUpAction(info);
         setTag(info);
         if (promiseStateChanged || (info.hasPromiseIconUi())) {
             applyPromiseState(promiseStateChanged);
@@ -263,6 +281,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
+        }
+    }
+
+    private void applySwipeUpAction(ShortcutInfo info) {
+        GestureHandler handler = GestureController.Companion.createGestureHandler(
+                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        if (handler instanceof BlankGestureHandler) {
+            mSwipeUpHandler = null;
+        } else {
+            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
+        }
+    }
+
+    private CharSequence getTitle(ItemInfo info) {
+        CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
+        if (customInfoProvider != null) {
+            return customInfoProvider.getTitle(info);
+        } else {
+            return info.title;
         }
     }
 
@@ -333,6 +370,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 }
                 break;
         }
+
+        Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+        if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
+            ((ZimLauncher) launcher).getGestureController()
+                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
+        }
+
         return result;
     }
 

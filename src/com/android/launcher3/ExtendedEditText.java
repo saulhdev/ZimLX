@@ -39,7 +39,7 @@ public class ExtendedEditText extends EditText {
      * Implemented by listeners of the back key.
      */
     public interface OnBackKeyListener {
-        public boolean onBackKey();
+        boolean onBackKey();
     }
 
     private OnBackKeyListener mBackKeyListener;
@@ -85,12 +85,9 @@ public class ExtendedEditText extends EditText {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
-            post(new Runnable() {
-                @Override
-                public void run() {
-                    showSoftInput();
-                    mShowImeAfterFirstLayout = false;
-                }
+            post(() -> {
+                showSoftInput();
+                mShowImeAfterFirstLayout = false;
             });
         }
     }

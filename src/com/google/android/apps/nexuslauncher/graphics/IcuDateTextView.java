@@ -1,6 +1,5 @@
 package com.google.android.apps.nexuslauncher.graphics;
 
-import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +9,8 @@ import android.icu.text.DisplayContext;
 import android.text.format.DateUtils;
 import android.util.AttributeSet;
 
+import androidx.annotation.RequiresApi;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
@@ -18,8 +19,8 @@ import org.zimmob.zimlx.ZimPreferences;
 import java.util.Locale;
 
 public class IcuDateTextView extends DoubleShadowTextView {
-    private final BroadcastReceiver mTimeChangeReceiver;
     private DateFormat mDateFormat;
+    private final BroadcastReceiver mTimeChangeReceiver;
     private boolean mIsVisible = false;
 
     public IcuDateTextView(final Context context) {
@@ -36,29 +37,10 @@ public class IcuDateTextView extends DoubleShadowTextView {
         };
     }
 
-    @TargetApi(24)
     public void reloadDateFormat(boolean forcedChange) {
         String format;
         if (Utilities.ATLEAST_NOUGAT) {
-            if (mDateFormat == null || forcedChange) {
-                (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                        .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
-                        .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-            }
-            ZimPreferences prefs = Utilities.getZimPrefs(getContext());
-            boolean showTime = prefs.getSmartspaceTime();
-            boolean showDate = prefs.getSmartspaceDate();
-            if (showTime) {
-                if (showDate) {
-                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                            .getString(R.string.icu_abbrev_time_date), Locale.getDefault()))
-                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-                } else {
-                    (mDateFormat = DateFormat.getInstanceForSkeleton(getContext()
-                            .getString(R.string.icu_abbrev_time), Locale.getDefault()))
-                            .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
-                }
-            }
+            mDateFormat = getDateFormat(getContext(), forcedChange, mDateFormat, getId() == R.id.time_above);
             format = mDateFormat.format(System.currentTimeMillis());
         } else {
             format = DateUtils.formatDateTime(getContext(), System.currentTimeMillis(),
@@ -66,6 +48,28 @@ public class IcuDateTextView extends DoubleShadowTextView {
         }
         setText(format);
         setContentDescription(format);
+    }
+
+    @RequiresApi(24)
+    public static DateFormat getDateFormat(Context context, boolean forcedChange, DateFormat oldFormat, boolean isTimeAbove) {
+        if (oldFormat == null || forcedChange) {
+            (oldFormat = DateFormat.getInstanceForSkeleton(context
+                    .getString(R.string.icu_abbrev_wday_month_day_no_year), Locale.getDefault()))
+                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+        }
+        ZimPreferences prefs = Utilities.getZimPrefs(context);
+        boolean showTime = prefs.getSmartspaceTime();
+        boolean timeAbove = prefs.getSmartspaceTimeAbove();
+        boolean show24h = prefs.getSmartspaceTime24H();
+        boolean showDate = prefs.getSmartspaceDate();
+        if ((showTime && !timeAbove) || isTimeAbove) {
+            String format = context.getString(show24h ? R.string.icu_abbrev_time : R.string.icu_abbrev_time_12h);
+            if (showDate && !isTimeAbove)
+                format += context.getString(R.string.icu_abbrev_date);
+            (oldFormat = DateFormat.getInstanceForSkeleton(format, Locale.getDefault()))
+                    .setContext(DisplayContext.CAPITALIZATION_FOR_STANDALONE);
+        }
+        return oldFormat;
     }
 
     private void registerReceiver() {

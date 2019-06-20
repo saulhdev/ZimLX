@@ -32,9 +32,27 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
 ## Screenshots
 <table>
     <tr>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/zlxdesktop.jpg" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/app_drawer.jpg" width="256" />
         </td>
-        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/zlxfolder.jpg" width="256" />
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/desktop.jpg" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/folder.jpg" width="256" />
+        </td>
+    </tr>
+        <tr>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/minibar.jpg" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/settings.jpg" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/settings_theme.jpg" width="256" />
+        </td>
+    </tr>
+     <tr>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/global_finder.jpg" width="256" />
+        </td>
+        <td><img src="https://github.com/otakuhqz/ZimLX/blob/master/snapshots/backups.jpg" width="256" />
+        </td>
+        <td>
         </td>
     </tr>
 <table>

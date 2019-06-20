@@ -11,26 +11,26 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
--->
+--><!-- Full screen view projects under the status bar and contains the background -->
+
 
 <androidx.drawerlayout.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    launcher:layout_ignoreInsets="false">
+    android:layout_height="match_parent">
 
-    <!-- Full screen view projects under the status bar and contains the background -->
+
+    <org.zimmob.zimlx.views.ZimBackgroundView
+        android:id="@+id/zim_background"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
     <com.android.launcher3.LauncherRootView
         android:id="@+id/launcher"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fitsSystemWindows="true">
-
-        <org.zimmob.zimlx.views.ZimBackgroundView
-            android:id="@+id/zim_background"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
 
         <com.android.launcher3.dragndrop.DragLayer
             android:id="@+id/drag_layer"
@@ -38,7 +38,8 @@
             android:layout_height="match_parent"
             android:clipChildren="false"
             android:clipToPadding="false"
-            android:importantForAccessibility="no">
+            android:importantForAccessibility="no"
+            launcher:layout_ignoreInsets="true">
 
             <!-- The workspace contains 5 screens of cells -->
             <!-- DO NOT CHANGE THE ID -->
@@ -92,6 +93,7 @@
                 android:layout_height="match_parent" />
 
         </com.android.launcher3.dragndrop.DragLayer>
+
     </com.android.launcher3.LauncherRootView>
 
     <FrameLayout

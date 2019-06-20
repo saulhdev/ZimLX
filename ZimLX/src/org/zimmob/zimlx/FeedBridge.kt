@@ -99,7 +99,6 @@ class FeedBridge(private val context: Context) {
     companion object : SingletonHolder<FeedBridge, Context>(ensureOnMainThread(
             useApplicationContext(::FeedBridge))) {
 
-        private const val TAG = "FeedBridge"
         private const val overlayAction = "com.android.launcher3.WINDOW_OVERLAY"
 
         @JvmStatic

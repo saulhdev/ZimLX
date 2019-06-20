@@ -144,6 +144,12 @@ public class LoggerUtils {
         return t;
     }
 
+    public static Target newItemTarget(View v) {
+        return (v.getTag() instanceof ItemInfo)
+                ? newItemTarget((ItemInfo) v.getTag(), null)
+                : newTarget(Target.Type.ITEM);
+    }
+
     public static Target newItemTarget(View v, InstantAppResolver instantAppResolver) {
         return (v.getTag() instanceof ItemInfo)
                 ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)

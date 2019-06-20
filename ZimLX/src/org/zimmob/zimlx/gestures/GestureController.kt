@@ -115,7 +115,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                 val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
                 // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
-                    val handler = Class.forName(className).getConstructor(Context::class.java, JSONObject::class.java)
+                    val handler = Class.forName(className!!).getConstructor(Context::class.java, JSONObject::class.java)
                             .newInstance(context, configValue) as GestureHandler
                     if (handler.isAvailable) return handler
                 } catch (t: Throwable) {

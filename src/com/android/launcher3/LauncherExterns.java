@@ -30,5 +30,4 @@ public interface LauncherExterns {
 
     void setLauncherOverlay(Launcher.LauncherOverlay overlay);
 
-    void clearTypedText();
 }

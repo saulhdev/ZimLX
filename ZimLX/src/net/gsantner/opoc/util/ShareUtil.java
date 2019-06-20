@@ -20,7 +20,6 @@ import android.graphics.Paint;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Environment;
-import android.os.Handler;
 import android.print.PrintAttributes;
 import android.print.PrintDocumentAdapter;
 import android.print.PrintJob;
@@ -30,14 +29,6 @@ import android.util.Log;
 import android.view.View;
 import android.webkit.WebView;
 
-import java.io.File;
-import java.io.IOException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.Random;
-
 import androidx.annotation.DrawableRes;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
@@ -45,6 +36,14 @@ import androidx.core.content.FileProvider;
 import androidx.core.content.pm.ShortcutInfoCompat;
 import androidx.core.content.pm.ShortcutManagerCompat;
 import androidx.core.graphics.drawable.IconCompat;
+
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.Random;
 
 /**
  * A utility class to ease information sharing on Android
@@ -343,7 +342,7 @@ public class ShareUtil {
      * @param callback        Callback after paste try
      * @param serverOrNothing Supply one or no hastebin server. If empty, the default gets taken
      */
-    public void pasteOnHastebin(final String text, final Callback.a2<Boolean, String> callback, String... serverOrNothing) {
+   /* public void pasteOnHastebin(final String text, final Callback.a2<Boolean, String> callback, String... serverOrNothing) {
         final Handler handler = new Handler();
         final String server = (serverOrNothing != null && serverOrNothing.length > 0 && serverOrNothing[0] != null)
                 ? serverOrNothing[0] : "https://hastebin.com";
@@ -355,7 +354,7 @@ public class ShareUtil {
                 handler.post(() -> callback.callback(!key.isEmpty(), server + "/" + key));
             }
         }.start();
-    }
+    }*/
 
     /**
      * Draft an email with given data. Unknown data can be supplied as null.

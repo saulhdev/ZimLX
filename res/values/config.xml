@@ -1,8 +1,4 @@
 <resources>
-    <!-- Dynamic Grid -->
-    <!-- Out of 100, the percent of space the overview bar should try and take vertically. -->
-    <integer name="config_dynamic_grid_overview_icon_zone_percentage">22</integer>
-
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
     <bool name="is_tablet">false</bool>
@@ -31,6 +27,7 @@
         <item>M50,0 C10,0 0,10 0,50 0,90 10,100 50,100 90,100 100,90 100,50 100,10 90,0 50,0 Z</item>
         <item>M50 0A50 50,0,1,1,50 100A50 50,0,1,1,50 0</item>
         <item>M50,0A50,50,0,0 1 100,50 L100,85 A15,15,0,0 1 85,100 L50,100 A50,50,0,0 1 50,0z</item>
+        <item>M50,0A50,30 0,0,1 100,30V70A50,30 0,0,1 0,70V30A50,30 0,0,1 50,0z</item>
     </string-array>
 
     <string-array name="icon_shape_override_paths_names" translatable="false">
@@ -41,6 +38,7 @@
         <item>@string/icon_shape_squircle</item>
         <item>@string/icon_shape_circle</item>
         <item>@string/icon_shape_teardrop</item>
+        <item>@string/icon_shape_cylinder</item>
     </string-array>
 
     <!-- DragController -->

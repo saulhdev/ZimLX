@@ -63,7 +63,7 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
         }
         for (key in keys) {
             if (colorListeners[key] == null) {
-                colorListeners[key] = HashSet()
+                this.colorListeners[key] = HashSet()
                 prefs.addOnPreferenceChangeListener(this, key)
             }
             colorListeners[key]?.add(listener)
@@ -132,7 +132,7 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
 
     internal class Resolvers {
         companion object {
-            const val ACCENT = "pref_accentColorResolver"
+            const val ACCENT = "pref_key__accent_color"
             const val HOTSEAT_QSB_BG = "pref_hotseatQsbColorResolver"
             const val ALLAPPS_QSB_BG = "pref_allappsQsbColorResolver"
             fun getDefaultResolver(key: String, context: Context, engine: ColorEngine): ColorResolver {

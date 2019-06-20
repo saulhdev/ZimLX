@@ -7,6 +7,7 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
@@ -15,7 +16,6 @@ import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
 public class LauncherRootView extends InsettableFrameLayout {
-
     private final Launcher mLauncher;
 
     private final Paint mOpaquePaint;
@@ -45,7 +45,7 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.onFinishInflate();
     }
 
-    @TargetApi(23)
+    @TargetApi(Build.VERSION_CODES.M)
     @Override
     protected boolean fitSystemWindows(Rect insets) {
         boolean rawInsetsChanged = !mInsets.equals(insets);
@@ -87,8 +87,10 @@ public class LauncherRootView extends InsettableFrameLayout {
                 mAlignedView.setLayoutParams(lp);
             }
         }
-        if (resetState) {
-            mLauncher.getStateManager().reapplyState(true);
+        if (rawInsetsChanged) {
+            // Update the grid again
+            Launcher launcher = Launcher.getLauncher(getContext());
+            launcher.onInsetsChanged(insets);
         }
 
         return true; // I'll take it from here
@@ -98,15 +100,23 @@ public class LauncherRootView extends InsettableFrameLayout {
     public void setInsets(Rect insets) {
         // If the insets haven't changed, this is a no-op. Avoid unnecessary layout caused by
         // modifying child layout params.
+
         if (!insets.equals(mInsets)) {
             super.setInsets(insets);
         }
+
     }
 
     public void dispatchInsets() {
         mLauncher.getDeviceProfile().updateInsets(mInsets);
         super.setInsets(mInsets);
     }
+
+    public boolean isInMultiWindowModeCompat() {
+        return false;
+        //return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
+    }
+
 
     @Override
     protected void dispatchDraw(Canvas canvas) {

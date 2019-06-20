@@ -20,6 +20,9 @@ import android.util.AttributeSet;
 import android.view.ContextThemeWrapper;
 import android.view.View;
 
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityOptionsCompat;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -33,9 +36,6 @@ import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.core.app.ActivityOptionsCompat;
 
 public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         ZimPreferences.OnPreferenceChangeListener {
@@ -113,8 +113,8 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         removeAllViews();
         setColors();
         dW();
-        //dy();
-        //dH();
+        dy();
+        dH();
     }
 
     private void dW() {
@@ -257,7 +257,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     public void setInsets(Rect rect) {
-        //super.setInsets(rect);
+        super.setInsets(rect);
         setVisibility(
                 mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
     }

@@ -257,6 +257,10 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
         }
+        else if (mStartState == NORMAL && targetState == ALL_APPS) {
+            ZimLauncher.Companion.getLauncher(mLauncher).getGestureController()
+                    .getVerticalSwipeGesture().onSwipeUpAllAppsComplete(mStartedFromHotseat);
+        }
     }
 
     private static class InterpolatorWrapper implements Interpolator {

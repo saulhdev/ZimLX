@@ -72,7 +72,7 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
     }
 
     override fun onGetDefaultValue(a: TypedArray, index: Int): String? {
-        defaultValue = a.getString(index)
+        defaultValue = a.getString(index)!!
         return defaultValue
     }
 

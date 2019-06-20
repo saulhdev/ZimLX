@@ -21,7 +21,7 @@ public class QsbAnimationController implements LauncherRootView.WindowStateListe
     public QsbAnimationController(Launcher launcher) {
         mLauncher = launcher;
         mLauncher.getStateManager().addStateListener(this);
-        //mLauncher.getRootView().setWindowStateListener(this);
+        mLauncher.getRootView().setWindowStateListener(this);
     }
 
     public final void dZ() {

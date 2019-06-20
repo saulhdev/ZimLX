@@ -65,7 +65,6 @@ class SearchProviderController(private val context: Context) {
             return cache!!
         }
 
-
     inner class ThemeListener : ThemeOverride.ThemeOverrideListener {
 
         override val isAlive = true

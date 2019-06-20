@@ -64,7 +64,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
     // Desktop
-    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
@@ -75,6 +74,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
+    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
+    fun setMinibarEnable(enable: Boolean) {
+        sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
+    }
 
     //dock
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
@@ -104,7 +107,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
-    val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, recreate)
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
     val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
@@ -116,13 +119,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
     val drawerGridSize by drawerGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
+
     fun getNumPredictedApps(): Int {
         recreate
-        return sharedPrefs.getString("pref_predictive_apps_values", "5").toInt()
+        return sharedPrefs.getString("pref_predictive_apps_values", "5")!!.toInt()
     }
 
     fun getSortMode(): Int {
-        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")
+        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")!!
         recreate
         return sort.toInt()
     }
@@ -157,10 +161,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
 
-    val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
-    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
-    var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
-
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
@@ -174,20 +174,21 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     //smartspace
     var weatherProvider by StringPref("pref_smartspace_widget_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
     val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
+    val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
+    val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
+    var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
     val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
-
-    //Gestures
-    val gestureSwipeUp by StringPref(ZimFlags.GESTURES_SWIPE_UP, "1", recreate)
 
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
@@ -423,7 +424,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     open inner class StringPref(key: String, defaultValue: String = "", onChange: () -> Unit = doNothing) :
             PrefDelegate<String>(key, defaultValue, onChange) {
-        override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)
+        override fun onGetValue(): String = sharedPrefs.getString(getKey(), defaultValue)!!
 
         override fun onSetValue(value: String) {
             edit { putString(getKey(), value) }
@@ -432,7 +433,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
             PrefDelegate<Set<String>>(key, defaultValue, onChange) {
-        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)
+        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)!!
 
         override fun onSetValue(value: Set<String>) {
             edit { putStringSet(getKey(), value) }
@@ -441,7 +442,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     open inner class StringIntPref(key: String, defaultValue: Int = 0, onChange: () -> Unit = doNothing) :
             PrefDelegate<Int>(key, defaultValue, onChange) {
-        override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue").toInt()
+        override fun onGetValue(): Int = sharedPrefs.getString(getKey(), "$defaultValue")!!.toInt()
 
         override fun onSetValue(value: Int) {
             edit { putString(getKey(), "$value") }

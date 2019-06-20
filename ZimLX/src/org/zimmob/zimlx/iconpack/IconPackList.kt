@@ -142,7 +142,6 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
         override val displayIcon by lazy { context.getDrawable(R.mipmap.ic_launcher_round)!! }
         override val displayName by lazy { context.resources.getString(R.string.icon_pack_default) }
-
         override fun load() = IconPackManager.getInstance(context).defaultPack
     }
 

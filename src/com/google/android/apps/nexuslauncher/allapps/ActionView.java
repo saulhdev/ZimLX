@@ -12,6 +12,9 @@ import android.view.View;
 import android.view.View.OnLongClickListener;
 import android.view.ViewConfiguration;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
@@ -32,9 +35,6 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 
 import org.zimmob.zimlx.ZimUtilsKt;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class ActionView extends BubbleTextView implements OnLongClickListener {
     private Action mAction;
@@ -104,7 +104,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
     }
 
     private void logClickEvent() {
-        //ActionsController.get(getContext()).getLogger().logClick(this.mAction.id, this.mPos);
+        //actionsController.get(getContext()).getLogger().logClick(this.mAction.id, this.mPos);
     }
 
     protected void onMeasure(int i, int i2) {

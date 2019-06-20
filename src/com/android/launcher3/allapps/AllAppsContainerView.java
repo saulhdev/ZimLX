@@ -57,6 +57,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import org.zimmob.zimlx.ZimPreferences;
 
@@ -316,8 +317,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             if (!ZimPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
-                //AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
-                //mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
+                AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
+                mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
             }
             mlp.leftMargin = mlp.rightMargin = 0;
             setPadding(0, 0, 0, 0);
@@ -539,7 +540,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         final AlphabeticalAppsList appsList;
         final Rect padding = new Rect();
         AllAppsRecyclerView recyclerView;
-        AllAppsPaged pagedView;
         boolean verticalFadingEdge;
 
         AdapterHolder(boolean isWork) {
@@ -569,10 +569,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         void applyPadding() {
             if (recyclerView != null) {
                 recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
-            }
-
-            if (pagedView != null) {
-                pagedView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
             }
         }
 

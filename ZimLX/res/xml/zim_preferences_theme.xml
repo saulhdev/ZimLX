@@ -20,7 +20,6 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconPackMaskingController" />
 
-
         <org.zimmob.zimlx.settings.ui.ControlledListPreference
             android:defaultValue=""
             android:entries="@array/icon_shape_override_paths_names"

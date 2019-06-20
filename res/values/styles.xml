@@ -24,11 +24,16 @@
         <item name="android:windowShowWallpaper">true</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:colorEdgeEffect">#FF757575</item>
-        <item name="android:keyboardLayout">@layout/search_container_all_apps</item>
+        <item name="android:windowLayoutInDisplayCutoutMode" tools:ignore="NewApi">shortEdges</item>
+        <item name="android:textAppearanceListItem">
+            @style/SettingsTheme.PreferenceTheme.Preference.Title
+        </item>
+
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
         <item name="allAppsScrimColor">#CCFFFFFF</item>
+        <item name="allAppsInterimScrimAlpha">46</item>
         <item name="allAppsNavBarScrimColor">@color/all_apps_navbar_color</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
@@ -41,7 +46,16 @@
         <item name="workspaceKeyShadowColor">#44000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+
+        <!-- Backports -->
+        <item name="android:textColorPrimaryInverse">?android:attr/textColorPrimary</item>
+        <item name="android:textColorSecondaryInverse">?android:attr/textColorSecondary</item>
+
+        <item name="android:colorPrimary">@color/colorPrimary</item>
+        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
+
     </style>
 
     <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
@@ -71,6 +85,8 @@
         <item name="popupColorTertiary">#757575</item> <!-- Gray 600 -->
         <item name="widgetsTheme">@style/WidgetContainerTheme.Dark</item>
         <item name="isMainColorDark">true</item>
+        <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
+        <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
@@ -82,6 +98,20 @@
         <item name="isWorkspaceDarkText">true</item>
         <item name="workspaceStatusBarScrim">@null</item>
     </style>
+
+    <!-- A derivative project can extend these themes to customize the application theme without
+        affecting the base theme -->
+    <style name="AppTheme" parent="@style/LauncherTheme" />
+
+    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
+
+    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
+
+    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
+
+    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />
+
+    <style name="AppTheme.Black.DarkText" parent="@style/LauncherTheme.Black.DarkText" />
 
     <style name="LauncherTheme.Black" parent="@style/LauncherTheme.Dark">
         <item name="android:colorPrimary">#000000</item>
@@ -102,69 +132,20 @@
         <item name="isWorkspaceDarkText">true</item>
     </style>
 
-    <!-- A derivative project can extend these themes to customize the application theme without
-        affecting the base theme -->
-    <style name="AppTheme" parent="@style/LauncherTheme" />
+    <!-- Theme for the widget container. Overridden on API 26. -->
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
+        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
+        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
+        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
+    </style>
 
-    <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
-
-    <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
-
-    <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
-
-    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />
-
-    <style name="AppTheme.Black.DarkText" parent="@style/LauncherTheme.Black.DarkText" />
-
-    <style name="WidgetContainerTheme.Black" parent="AppTheme.Black">
+    <style name="WidgetContainerTheme.Black" parent="@android:style/Theme.Material.Settings">
         <item name="android:colorPrimaryDark">#000000</item>
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
-    <!-- Custom -->
-    <style name="ScreenshotTheme" parent="@style/AppTheme">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="ScreenshotTheme.DarkText" parent="@style/AppTheme.DarkText">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="ScreenshotTheme.Dark" parent="@style/AppTheme.Dark">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="ScreenshotTheme.Dark.DarkText" parent="@style/AppTheme.Dark.DarkText">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="ScreenshotTheme.Black" parent="@style/AppTheme.Black">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-    <style name="ScreenshotTheme.Black.DarkText" parent="@style/AppTheme.Black.DarkText">
-        <item name="android:windowIsTranslucent">true</item>
-    </style>
-
-
     <style name="SettingsTheme.BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <item name="android:background">@drawable/top_round_rect_primary</item>
-    </style>
-
-    <style name="SettingsTheme.BottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
-        <item name="android:colorPrimary">@android:color/white</item>
-        <item name="android:colorPrimaryDark">@android:color/white</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
-    </style>
-
-    <style name="SettingsTheme.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
-        <item name="android:colorPrimary">@color/settings_background_dark</item>
-        <item name="android:colorPrimaryDark">@color/settings_background_dark</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
-        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
-        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
     </style>
 
     <style name="SettingsTheme.PreferenceTheme" parent="@style/PreferenceThemeOverlay.v14.Material">
@@ -250,6 +231,22 @@
         <item name="bottomSheetScrimColor">@android:color/black</item>
     </style>
 
+    <style name="SettingsTheme.BottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:colorPrimary">@android:color/white</item>
+        <item name="android:colorPrimaryDark">@android:color/white</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
+    </style>
+
+    <style name="SettingsTheme.BottomSheetDialog" parent="Theme.Design.BottomSheetDialog">
+        <item name="android:colorPrimary">@color/settings_background_dark</item>
+        <item name="android:colorPrimaryDark">@color/settings_background_dark</item>
+        <item name="android:colorAccent">@color/colorAccent</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">false</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">false</item>
+        <item name="bottomSheetStyle">@style/SettingsTheme.BottomSheet</item>
+    </style>
+
     <style name="SettingsTheme.V2.Dark.ActionBar" parent="SettingsTheme.V2.Dark">
         <item name="titleTextAppearance">@style/SettingsTheme.V2.ActionBar.Title</item>
     </style>
@@ -319,20 +316,6 @@
         <item name="android:textColorSecondary">?attr/workspaceTextColor</item>
     </style>
 
-    <!-- Theme for the widget container. Overridden on API 26. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondaryInverse</item>
-        <item name="android:textColorPrimary">?android:attr/textColorPrimaryInverse</item>
-        <item name="android:textColorSecondary">?android:attr/textColorSecondaryInverse</item>
-        <item name="bottomSheetNavBarColor">@color/all_apps_navbar_color</item>
-
-        <!-- Backports -->
-        <item name="android:textColorPrimaryInverse">@color/textColorPrimaryInverse</item>
-        <item name="android:textColorSecondaryInverse">@color/textColorSecondaryInverse</item>
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-    </style>
 
     <style name="WidgetContainerTheme.Dark" parent="LauncherTheme.Dark">
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
@@ -351,6 +334,7 @@
         <item name="android:saveEnabled">false</item>
         <item name="android:textColor">@android:color/white</item>
         <item name="android:includeFontPadding">false</item>
+        <item name="android:importantForAccessibility">no</item>
     </style>
 
     <!-- Base theme for BubbleTextView and sub classes -->

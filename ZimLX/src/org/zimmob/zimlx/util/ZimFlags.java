@@ -12,11 +12,6 @@ public class ZimFlags {
 
     public static final String ACCENT_COLOR = "pref_key__accent_color";
     public static final String PRIMARY_COLOR = "pref_key__primary_color";
-    public static final String ICON_PACK = "pref_icon_pack";
-    public static final String THEME_FOLDER_SHAPE = "pref_key__folder_shape";
-    public static final String THEME_ADAPTIVE_ICONS = "pref_key__adaptive_icons";
-    public static final String THEME_ADAPTIVE_BACKGROUND = "pref_key__colored_icons";
-    public static final String THEME_COLOR = "pref_key__theme_color";
 
     public static final String DESKTOP_HIDE_LABELS = "pref_hideAppLabels";
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";

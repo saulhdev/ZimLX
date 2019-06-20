@@ -11,11 +11,8 @@
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
      See the License for the specific language governing permissions and
      limitations under the License.
---><!-- Note: we are reusing/repurposing a system attribute for search layout, because of a
- platform bug, which prevents using custom attributes in <include> tag -->
-<merge>
-
-    <include layout="@layout/search_container_all_apps_google"
-        android:id="@id/search_container_all_apps"
-        xmlns:android="http://schemas.android.com/apk/res/android" />
-</merge>
+-->
+<org.zimmob.zimlx.views.BlankSearchLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/search_container_all_apps"
+    android:layout_width="0dp"
+    android:layout_height="48dp" />

@@ -32,7 +32,7 @@ import org.zimmob.zimlx.smartspace.ZimSmartspaceController;
  * A simple view used to show the region blocked by QSB during drag and drop.
  */
 public class QsbBlockerView extends FrameLayout implements OnStateChangeListener, ZimSmartspaceController.Listener, View.OnLongClickListener, View.OnClickListener {
-    public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
+    //public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private ZimSmartspaceController mController;
     private int mState = 0;
     private View mView;

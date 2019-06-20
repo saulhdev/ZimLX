@@ -22,9 +22,12 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewParent;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.DropTarget;
@@ -43,8 +46,6 @@ import com.android.launcher3.util.LogConfig;
 
 import java.util.Locale;
 import java.util.UUID;
-
-import androidx.annotation.Nullable;
 
 import static com.android.launcher3.logging.LoggerUtils.newAction;
 import static com.android.launcher3.logging.LoggerUtils.newCommandAction;
@@ -169,6 +170,14 @@ public class UserEventDispatcher {
         return true;
     }
 
+    public void updatePredictions() {
+        // do nothing
+    }
+
+    public void updateActions() {
+        // do nothing
+    }
+
     public void logAppLaunch(View v, Intent intent) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
@@ -181,6 +190,16 @@ public class UserEventDispatcher {
         }
         dispatchUserEvent(event, intent);
         mAppOrTaskLaunch = true;
+    }
+
+    public void logAppLaunch(View v, Intent intent, UserHandle user) {
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v), newTarget(Target.Type.CONTAINER));
+
+        if (fillInLogContainerData(event, v)) {
+            fillIntentInfo(event.srcTarget[0], intent);
+        }
+        dispatchUserEvent(event, intent);
     }
 
     public void logActionTip(int actionType, int viewType) {

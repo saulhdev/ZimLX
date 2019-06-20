@@ -96,7 +96,7 @@ class SmartspaceProviderPreference(context: Context, attrs: AttributeSet?)
     }
 
     override fun getPersistedString(defaultReturnValue: String?): String {
-        return getPersistedValue()
+        return getPersistedValue().toString()
     }
 
     private fun getPersistedValue() = prefs.sharedPrefs.getString(key, SmartspaceDataWidget::class.java.name)

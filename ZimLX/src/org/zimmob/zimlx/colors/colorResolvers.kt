@@ -45,7 +45,7 @@ class ZimAccentResolver(config: Config) : ColorEngine.ColorResolver(config), Col
 
     override fun resolveColor() = engine.accent
 
-    override fun getDisplayName() = engine.context.getString(R.string.zim_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.zim_accent)
 }
 
 @Keep
@@ -66,7 +66,7 @@ class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
         return color
     }
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_system_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.color_system_accent)
 }
 
 @Keep
@@ -76,7 +76,7 @@ class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
     override fun resolveColor() = accentColor
 
-    override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent) as String
+    override fun getDisplayName() = engine.context.getString(R.string.color_pixel_accent)
 }
 
 @Keep
@@ -136,15 +136,14 @@ abstract class WallpaperColorResolver(config: Config)
         notifyChanged()
     }
 }
-
-/*@Keep
+/*
+@Keep
 class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config) {
 
     override fun resolveColor() = colorInfo.actualMainColor
 
     override fun getDisplayName() = engine.context.getString(R.string.color_wallpaper_main) as String
 }
-
 
 @Keep
 class WallpaperSecondaryColorResolver(config: Config) : WallpaperColorResolver(config) {

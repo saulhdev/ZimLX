@@ -244,6 +244,9 @@ public class ItemClickHandler {
             db.updateAppCount(((AppInfo) item).componentName.getPackageName());
             db.close();
         }
+
         launcher.startActivitySafely(v, intent, item);
+        launcher.getUserEventDispatcher().logAppLaunch(v, intent, item.user); // TODO for discovered apps b/35802115
+
     }
 }

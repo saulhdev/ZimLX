@@ -200,6 +200,8 @@
     <string name="icon_shape_circle">Circle</string>
     <!-- Option to change the shape of the home screen icons to a teardrop. This represents the name of the shape similar to a circle with with the bottom right corner pushed out like a square [CHAR LIMIT=50] -->
     <string name="icon_shape_teardrop">Teardrop</string>
+    <!-- Option to change the shape of the home screen icons to a cylinder. [CHAR LIMIT=50] -->
+    <string name="icon_shape_cylinder">Cylinder</string>
 
     <!-- Message shown in the progress dialog when the icon shape override is being applied [CHAR LIMIT=100]-->
     <string name="icon_shape_override_progress">Applying icon shape changes</string>
@@ -314,9 +316,15 @@
     <!-- Accessibility confirmation for notification being dismissed. -->
     <string name="notification_dismissed">Notification dismissed</string>
 
+    <!--Marker A-->
+
     <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
     <string name="icu_abbrev_time">HH:mm</string>
+    <string name="icu_abbrev_time_12h">hh:mm aa</string>
+    <string name="icu_abbrev_date"> dd MMMM</string>
+
     <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
+
     <string name="in_smartspace">In \"At a Glance\" widget</string>
     <string name="smartspace_time">Show time</string>
     <string name="smartspace_date">Show time and date</string>
@@ -325,6 +333,7 @@
     <string name="label_voice_search">Voice search</string>
     <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
     <string name="state_loading">Applying…</string>
+    <string name="icon_pack">Icon pack</string>
     <string name="title_show_google_app">Display %1$s</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
     <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
@@ -536,6 +545,7 @@
     <string name="title__theme_dark_theme">Force dark theme</string>
     <string name="title__theme_folder_shape">Folder Shape</string>
     <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+
     <string name="theme_material">Material</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark_text">Light with dark text</string>
@@ -543,6 +553,10 @@
     <string name="theme_dark_dark_text">Dark with dark text</string>
     <string name="theme_black">Black</string>
     <string name="theme_black_dark_text">Black with dark text</string>
+    <string name="theme_automatic">Automatic</string>
+    <string name="theme_default">Default</string>
+    <string name="transparent">Transparent</string>
+
     <string name="enabled_icon_packs">Enabled</string>
     <string name="icon_pack_default">System icons</string>
     <string name="drag_to_disable_packs">Drag down to disable</string>
@@ -829,4 +843,17 @@
     <string name="bridge_missing_message">Install or update Lawnfeed</string>
 
     <string name="google_app">Google app</string>
+    <string name="pref_open_source_licenses_title">Licenses</string>
+
+    <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
+    <string name="icon_badging_service_title">Show notification dots</string>
+    <string name="title_storage_permission_required">Storage permission needed</string>
+    <string name="content_storage_permission_required">Grant storage permission to set wallpaper</string>
+    <string name="pref_smartspace_time_above">Show large clock</string>
+    <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
+
+    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
+    <string name="about_app_version">Version</string>
+
 </resources>

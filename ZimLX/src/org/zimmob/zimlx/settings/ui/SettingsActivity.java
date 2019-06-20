@@ -37,6 +37,26 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ActionMenuView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.XmlRes;
+import androidx.appcompat.widget.Toolbar;
+import androidx.fragment.app.DialogFragment;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+import androidx.preference.PreferenceFragmentCompat;
+import androidx.preference.PreferenceGroup;
+import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
+import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
+import androidx.preference.TwoStatePreference;
+import androidx.preference.internal.AbstractMultiSelectListPreference;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
@@ -77,26 +97,6 @@ import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.XmlRes;
-import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.DialogFragment;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
-import androidx.preference.EditTextPreference;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-import androidx.preference.PreferenceFragmentCompat;
-import androidx.preference.PreferenceGroup;
-import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
-import androidx.preference.PreferenceScreen;
-import androidx.preference.SwitchPreference;
-import androidx.preference.TwoStatePreference;
-import androidx.preference.internal.AbstractMultiSelectListPreference;
-import androidx.recyclerview.widget.RecyclerView;
-
 import static androidx.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
 
 /**
@@ -119,7 +119,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
-    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
@@ -137,16 +136,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
-
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
         hasPreview = getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false);
 
-        //boolean showSearch = shouldShowSearch();
-
         super.onCreate(savedInstanceState);
-        //setContentView(showSearch ? R.layout.activity_settings_home : R.layout.activity_settings);
         setContentView(R.layout.activity_settings);
 
         if (savedInstanceState == null) {
@@ -772,9 +767,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         startFragment(mContext, preference.getFragment());
                         break;
 
-                    case "pref_icon_packs":
-                        startFragment(mContext, preference.getFragment());
-                        break;
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();

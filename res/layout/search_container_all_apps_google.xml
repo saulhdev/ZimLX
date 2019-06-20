@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout android:layout_gravity="center|top"
     android:id="@+id/search_container_all_apps"
     android:background="@drawable/bg_qsb_click_feedback"
@@ -47,7 +46,5 @@
         android:src="@drawable/ic_mic_color"
         android:scaleType="center"
         android:contentDescription="@string/label_voice_search" />
-
     <include layout="@layout/qsb_hint" />
-
 </com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout>

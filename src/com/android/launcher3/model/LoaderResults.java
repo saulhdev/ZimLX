@@ -341,12 +341,10 @@ public class LoaderResults {
     public void bindWidgets() {
         final ArrayList<WidgetListRowEntry> widgets =
                 mBgDataModel.widgetsModel.getWidgetsList(mApp.getContext());
-        Runnable r = new Runnable() {
-            public void run() {
-                Callbacks callbacks = mCallbacks.get();
-                if (callbacks != null) {
-                    callbacks.bindAllWidgets(widgets);
-                }
+        Runnable r = () -> {
+            Callbacks callbacks = mCallbacks.get();
+            if (callbacks != null) {
+                callbacks.bindAllWidgets(widgets);
             }
         };
         mUiExecutor.execute(r);

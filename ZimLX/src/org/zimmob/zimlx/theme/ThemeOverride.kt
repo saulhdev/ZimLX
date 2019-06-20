@@ -69,16 +69,6 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         override val blackDarkTextTheme = R.style.AppTheme_Black_DarkText
     }
 
-    class LauncherScreenshot : ThemeSet {
-
-        override val lightTheme = R.style.ScreenshotTheme
-        override val darkTextTheme = R.style.ScreenshotTheme_DarkText
-        override val darkTheme = R.style.ScreenshotTheme_Dark
-        override val darkDarkTextTheme = R.style.ScreenshotTheme_Dark_DarkText
-        override val blackTheme = R.style.ScreenshotTheme_Black
-        override val blackDarkTextTheme = R.style.ScreenshotTheme_Black_DarkText
-    }
-
     class Settings : ThemeSet {
 
         override val lightTheme = R.style.SettingsTheme_V2

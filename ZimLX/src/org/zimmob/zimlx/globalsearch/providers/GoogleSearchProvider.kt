@@ -16,7 +16,6 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
     override val supportsAssistant = true
     override val supportsFeed = true
     override val settingsIntent: Intent
-        //get() = Intent("com.google.android.apps.gsa.nowoverlayservice.PIXEL_DOODLE_QSB_SETTINGS")
         get() = Intent("com.google.android.googlequicksearchbox.TEXT_ASSIST")
                 .setPackage(PACKAGE).addFlags(268435456)
     override val isBroadcast: Boolean

@@ -183,7 +183,14 @@
     <declare-styleable name="PreviewPreference">
         <attr name="previewLayout" format="float" />
     </declare-styleable>
+    <declare-styleable name="GesturePreference">
+        <attr name="gestureClass" format="string" />
+    </declare-styleable>
 
+    <declare-styleable name="ControlledPreference">
+        <attr name="searchTitle" format="string" />
+        <attr name="controllerClass" format="string" />
+    </declare-styleable>
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />
@@ -196,10 +203,6 @@
         <attr name="topic" format="string" />
     </declare-styleable>
 
-    <declare-styleable name="ControlledPreference">
-        <attr name="searchTitle" format="string" />
-        <attr name="controllerClass" format="string" />
-    </declare-styleable>
 
     <declare-styleable name="CustomFont">
         <attr name="android:textAppearance" />
@@ -223,9 +226,6 @@
             <enum name="taskOption" value="16" />
             <enum name="drawerTab" value="17" />
         </attr>
-    </declare-styleable>
-    <declare-styleable name="GesturePreference">
-        <attr name="gestureClass" format="string" />
     </declare-styleable>
 
     <attr name="allAppsContainerColor" format="color" />

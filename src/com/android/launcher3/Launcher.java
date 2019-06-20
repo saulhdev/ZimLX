@@ -49,7 +49,6 @@ import android.os.Process;
 import android.os.StrictMode;
 import android.os.SystemClock;
 import android.os.UserHandle;
-import android.text.Selection;
 import android.text.SpannableStringBuilder;
 import android.text.TextUtils;
 import android.text.method.TextKeyListener;
@@ -393,7 +392,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         setDefaultKeyMode(DEFAULT_KEYS_SEARCH_LOCAL);
 
         setContentView(mLauncherView);
-        //getRootView().dispatchInsets();
+        getRootView().dispatchInsets();
 
         // Listen for broadcasts
         registerReceiver(mScreenOffReceiver, new IntentFilter(Intent.ACTION_SCREEN_OFF));
@@ -533,7 +532,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     protected void reapplyUi() {
-        //getRootView().dispatchInsets();
+        getRootView().dispatchInsets();
         getStateManager().reapplyState(true /* cancelCurrentAnimation */);
     }
 
@@ -622,6 +621,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public PopupDataProvider getPopupDataProvider() {
         return mPopupDataProvider;
+    }
+
+    public void onInsetsChanged(Rect insets) {
+        mDeviceProfile.updateInsets(insets);
+        mDeviceProfile.layout(this, true);
     }
 
     @Override
@@ -1028,12 +1032,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return handled;
     }
 
+    /*
     @Override
     public void clearTypedText() {
         mDefaultKeySsb.clear();
         mDefaultKeySsb.clearSpans();
         Selection.setSelection(mDefaultKeySsb, 0);
-    }
+    }*/
 
     /**
      * Restores the previous state, if it exists.
@@ -1336,7 +1341,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public LauncherRootView getRootView() {
-        return (LauncherRootView) mLauncherView;
+        return (LauncherRootView) mLauncherView.findViewById(R.id.launcher);
     }
 
     @Override

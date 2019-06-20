@@ -44,7 +44,15 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
+            ZimPreferences prefs = Utilities.getZimPrefs(context);
+            if (prefs.getShowPredictions()) {
+                Resources res = context.getResources();
+                int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
+                extraSpace = OverviewState.getDefaultSwipeHeight(dp)
+                        + qsbHeight + dp.verticalDragHandleSizePx;
+            } else {
+                extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
+            }
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }

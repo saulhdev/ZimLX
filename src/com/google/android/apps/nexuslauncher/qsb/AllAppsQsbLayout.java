@@ -11,6 +11,10 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -19,21 +23,14 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 
-import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.colors.ColorEngine;
-import org.zimmob.zimlx.colors.ColorEngine.Resolvers;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
+import org.zimmob.zimlx.theme.ThemeManager;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.recyclerview.widget.RecyclerView;
-
-public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o,
-        ColorEngine.OnColorChangeListener {
+public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
     private final k Ds;
     private final int Dt;
@@ -47,6 +44,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     boolean mDoNotRemoveFallback;
     private ZimPreferences prefs;
     private int mForegroundColor;
+    private int mBackgroundColor;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -64,7 +62,42 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
+        applyTheme(context);
+    }
+
+    public void applyTheme(Context context) {
         prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        mForegroundColor = prefs.getAccentColor();
+        Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(context).getCurrentFlags());
+        Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(context).getCurrentFlags()) ||
+                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(context).getCurrentFlags());
+
+        int theme = prefs.getLauncherTheme();
+        if (themeBlack)
+            theme = 12;
+        else if (themeDark)
+            theme = 4;
+
+        switch (theme) {
+            case 0: //light theme
+                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_default);
+                break;
+
+            case 4://dark theme
+                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_dark);
+                break;
+
+            case 12://black theme
+                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
+                break;
+
+            default:
+                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_default);
+
+        }
+
+        ay(mBackgroundColor);
+        az(this.Dc);
     }
 
     protected void onFinishInflate() {
@@ -98,19 +131,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        //ColorEngine.getInstance(getContext())
-        //        .addColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         dN();
         Ds.a(this);
-    }
-
-    @Override
-    public void onColorChange(@NotNull String resolver, int color, int foregroundColor) {
-        if (resolver.equals(Resolvers.ALLAPPS_QSB_BG)) {
-            mForegroundColor = foregroundColor;
-            ay(color);
-            az(this.Dc);
-        }
     }
 
     @Override
@@ -147,8 +169,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     protected void onDetachedFromWindow() {
-        //ColorEngine.getInstance(getContext())
-        //        .removeColorChangeListeners(this, Resolvers.ALLAPPS_QSB_BG);
         super.onDetachedFromWindow();
         Ds.b(this);
     }
@@ -164,7 +184,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     public final void initialize(AllAppsContainerView allAppsContainerView) {
         this.mAppsView = allAppsContainerView;
-        //int i = 0;
         mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {

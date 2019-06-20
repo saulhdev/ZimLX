@@ -21,6 +21,11 @@ import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 
+import androidx.recyclerview.widget.RecyclerView;
+import androidx.test.InstrumentationRegistry;
+import androidx.test.filters.SmallTest;
+import androidx.test.runner.AndroidJUnit4;
+
 import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -37,10 +42,11 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
-import androidx.test.InstrumentationRegistry;
-import androidx.test.filters.SmallTest;
-import androidx.test.runner.AndroidJUnit4;
+import java.util.ArrayList;
+import java.util.Map;
 
+import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.isNull;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -55,7 +61,7 @@ public class WidgetsListAdapterTest {
     @Mock
     private WidgetPreviewLoader mMockWidgetCache;
     @Mock
-    private WidgetsDiffReporter.NotifyListener mListener;
+    private RecyclerView.AdapterDataObserver mListener;
     @Mock
     private IconCache mIconCache;
 
@@ -71,41 +77,39 @@ public class WidgetsListAdapterTest {
         mTestProfile = new InvariantDeviceProfile();
         mTestProfile.numRows = 5;
         mTestProfile.numColumns = 5;
-        mIndexCompat = new AlphabeticIndexCompat(mContext);
-        WidgetsDiffReporter reporter = new WidgetsDiffReporter(mIconCache);
-        reporter.setListener(mListener);
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
-                mIndexCompat, null, null, reporter);
+                mIconCache, null, null);
+        mAdapter.registerAdapterDataObserver(mListener);
     }
 
     @Test
-    public void test_notifyDataSetChanged() {
+    public void test_notifyDataSetChanged() throws Exception {
         mAdapter.setWidgets(generateSampleMap(1));
-        verify(mListener, times(1)).notifyDataSetChanged();
+        verify(mListener, times(1)).onChanged();
     }
 
     @Test
-    public void test_notifyItemInserted() {
+    public void test_notifyItemInserted() throws Exception {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(2));
-        verify(mListener, times(1)).notifyDataSetChanged();
-        verify(mListener, times(1)).notifyItemInserted(1);
+        verify(mListener, times(1)).onChanged();
+        verify(mListener, times(1)).onItemRangeInserted(eq(1), eq(1));
     }
 
     @Test
-    public void test_notifyItemRemoved() {
+    public void test_notifyItemRemoved() throws Exception {
         mAdapter.setWidgets(generateSampleMap(2));
         mAdapter.setWidgets(generateSampleMap(1));
-        verify(mListener, times(1)).notifyDataSetChanged();
-        verify(mListener, times(1)).notifyItemRemoved(1);
+        verify(mListener, times(1)).onChanged();
+        verify(mListener, times(1)).onItemRangeRemoved(eq(1), eq(1));
     }
 
     @Test
-    public void testNotifyItemChanged_PackageIconDiff() {
+    public void testNotifyItemChanged_PackageIconDiff() throws Exception {
         mAdapter.setWidgets(generateSampleMap(1));
         mAdapter.setWidgets(generateSampleMap(1));
-        verify(mListener, times(1)).notifyDataSetChanged();
-        verify(mListener, times(1)).notifyItemChanged(0);
+        verify(mListener, times(1)).onChanged();
+        verify(mListener, times(1)).onItemRangeChanged(eq(0), eq(1), isNull());
     }
 
     @Test
@@ -125,14 +129,14 @@ public class WidgetsListAdapterTest {
 
     /**
      * Helper method to generate the sample widget model map that can be used for the tests
-     *
      * @param num the number of WidgetItem the map should contain
      * @return
      */
-    private MultiHashMap<PackageItemInfo, WidgetItem> generateSampleMap(int num) {
-        MultiHashMap<PackageItemInfo, WidgetItem> newMap = new MultiHashMap();
-        if (num <= 0) return newMap;
+    private ArrayList<WidgetListRowEntry> generateSampleMap(int num) {
+        ArrayList<WidgetListRowEntry> result = new ArrayList<>();
+        if (num <= 0) return result;
 
+        MultiHashMap<PackageItemInfo, WidgetItem> newMap = new MultiHashMap();
         PackageManager pm = mContext.getPackageManager();
         AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(mContext);
         for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(null)) {
@@ -148,6 +152,10 @@ public class WidgetsListAdapterTest {
                 break;
             }
         }
-        return newMap;
+        for (Map.Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : newMap.entrySet()) {
+            result.add(new WidgetListRowEntry(entry.getKey(), entry.getValue()));
+        }
+
+        return result;
     }
 }

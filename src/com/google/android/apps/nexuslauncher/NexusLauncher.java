@@ -7,14 +7,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.LauncherExterns;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
@@ -24,15 +26,13 @@ import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
 import com.google.android.libraries.gsa.launcherclient.StaticInteger;
-import com.google.android.libraries.launcherclient.GoogleNow;
 
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
-import androidx.core.graphics.ColorUtils;
+import java.util.List;
 
 public class NexusLauncher {
     private final Launcher mLauncher;
@@ -46,7 +46,6 @@ public class NexusLauncher {
     private final Bundle mUiInformation = new Bundle();
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
     QsbAnimationController mQsbAnimationController;
-    private Handler handler = new Handler(LauncherModel.getUiWorkerLooper());
 
     public NexusLauncher(NexusLauncherActivity activity) {
         mLauncher = activity;
@@ -70,8 +69,6 @@ public class NexusLauncher {
 
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
-            //PredictionUiStateManager.getInstance(mLauncher).dispatchOnChange();
-            //mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
@@ -80,6 +77,12 @@ public class NexusLauncher {
 
         public void finishBindingItems(final boolean b) {
         }
+
+        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
+            return ((CustomAppPredictor) mLauncher.getUserEventDispatcher()).getPredictions();
+        }
+
+
         public boolean handleBackPressed() {
             return false;
         }
@@ -123,11 +126,6 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            /*PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
-            predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
-            if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
-                predictionUiStateManager.switchClient(Client.OVERVIEW);
-            }*/
         }
 
         public void onDestroy() {
@@ -162,8 +160,6 @@ public class NexusLauncher {
             WallpaperColorInfo.getInstance(mLauncher).removeOnChangeListener(this);
 
             getUpdateReceiver().onDestroy();
-
-            //PredictionUiStateManager.getInstance(mLauncher).setTargetAppsView(null);
         }
 
         public void onDetachedFromWindow() {
@@ -338,11 +334,6 @@ public class NexusLauncher {
                 }
             }
         }
-    }
-
-    private static GoogleNow.IntegerReference dZ(SharedPreferences sharedPreferences) {
-        return new GoogleNow.IntegerReference(
-                (sharedPreferences.getBoolean(SettingsActivity.ENABLE_MINUS_ONE_PREF, true) ? 1 : 0) | 0x2 | 0x4 | 0x8);
     }
 
     public static int primaryColor(WallpaperColorInfo wallpaperColorInfo, Context context, int alpha) {

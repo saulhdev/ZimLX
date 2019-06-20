@@ -13,15 +13,14 @@
     <org.zimmob.zimlx.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
         android:dependency="pref_smartspace"
-        app:previewLayout="@layout/smartspace_preview" />
-    -->
+        app:previewLayout="@layout/smartspace_preview" /> -->
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
         android:title="@string/title_show_google_app"
-        app:controllerClass=".MinusOneController"
+        app:controllerClass="org.zimmob.zimlx.settings.controllers.MinusOneController"
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
@@ -30,6 +29,21 @@
         android:key="pref_smartspace_time"
         android:summary="@string/in_smartspace"
         android:title="@string/smartspace_time"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:key="pref_smartspace_time_above"
+        android:title="@string/pref_smartspace_time_above"
+        android:summary="@string/pref_smartspace_time_above_summary"
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:key="pref_smartspace_time_24_h"
+        android:title="@string/smartspace_time_24_h"
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
