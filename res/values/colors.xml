@@ -49,9 +49,8 @@
     <color name="all_apps_navbar_color">#28000000</color>
     <color name="qsb_icon_shadow_color" tools:ignore="MissingDefaultResource">#20000000</color>
     <color name="qsb_dark_icon_tint">#ff757575</color>
-
-    <color name="colorPrimary">#FF009688</color>
-    <color name="colorPrimaryDark">#FF009688</color>
+    <color name="colorPrimary">#fff5f5f5</color>
+    <color name="colorPrimaryDark">#ffe0e0e0</color>
     <color name="colorAccent">#FF2196F3</color>
     <color name="white">#ffffff</color>
 
