@@ -26,6 +26,7 @@ import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.settings.AppSettings;
+import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.ThemeActivity;
 
 import java.util.ArrayList;
@@ -49,8 +50,15 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     private AppSettings appSettings;
     private Launcher mLauncher;
     ZimPreferences prefs;
+    private ThemeOverride themeOverride;
+    private int currentTheme = 0;
+    private ThemeOverride.ThemeSet themeSet;
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        themeSet = new ThemeOverride.Settings();
+        themeOverride = new ThemeOverride(themeSet, this);
+        themeOverride.applyTheme(this);
+        currentTheme = themeOverride.getTheme(this);
         super.onCreate(savedInstanceState);
         Utilities.setupPirateLocale(this);
 
