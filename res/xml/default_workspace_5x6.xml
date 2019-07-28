@@ -79,5 +79,8 @@
         <favorite
             launcher:className="com.google.apps.dots.android.app.activity.CurrentsStartActivity"
             launcher:packageName="com.google.android.apps.magazines" />
+        <favorite
+            launcher:className="com.android.vending.AssetBrowserActivity"
+            launcher:packageName="com.android.vending" />
     </folder>
 </favorites>

@@ -15,10 +15,4 @@
         android:title="@string/show_debug_info_pref_title"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:key="pref_folderBgColorGen"
-        android:title="Generate folder color"
-        android:summary="Generates the folder color based on custom icons [this breaks readability depending on the color]"
-        android:defaultValue="false"
-        app:iconSpaceReserved="false" />
 </PreferenceScreen>

@@ -18,19 +18,13 @@
 package org.zimmob.zimlx.preferences
 
 import android.content.Context
-import android.content.Intent
-import android.os.Bundle
 import android.util.AttributeSet
-import android.view.View
-import android.widget.ImageView
 import androidx.preference.Preference
 import com.android.launcher3.R
 import org.zimmob.zimlx.iconpack.DefaultPack
 import org.zimmob.zimlx.iconpack.IconPackManager
-import org.zimmob.zimlx.settings.ui.SearchIndex
-import org.zimmob.zimlx.settings.ui.SettingsActivity
 
-class IconPackPreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs), SearchIndex.Slice {
+class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
 
@@ -63,23 +57,6 @@ class IconPackPreference @JvmOverloads constructor(context: Context, attrs: Attr
             icon = packList.currentPack().displayIcon
         } catch (ignored: IllegalStateException) {
             //TODO: Fix updating pref when scrolled down
-        }
-    }
-
-    override fun getSlice(context: Context, key: String): View {
-        return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
-            IconPackManager.getInstance(context).addListener {
-                setImageDrawable(packList.currentPack().displayIcon)
-            }
-            setOnClickListener {
-                context.startActivity(Intent()
-                        .setClass(context, SettingsActivity::class.java)
-                        .putExtra(SettingsActivity.EXTRA_FRAGMENT, fragment)
-                        .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
-                            putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.pref_icon_pack))
-                        })
-                )
-            }
         }
     }
 }

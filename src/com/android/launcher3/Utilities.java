@@ -61,10 +61,11 @@ import android.util.Pair;
 import android.util.TypedValue;
 import android.view.View;
 import android.view.Window;
-import android.view.accessibility.AccessibilityEvent;
-import android.view.accessibility.AccessibilityManager;
 import android.view.animation.Interpolator;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.config.FeatureFlags;
 
@@ -90,9 +91,6 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -516,11 +514,6 @@ public final class Utilities {
                 LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
-    public static boolean isPowerSaverOn(Context context) {
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
-    }
-
     public static boolean isPowerSaverPreventingAnimation(Context context) {
         if (ATLEAST_P) {
             // Battery saver mode no longer prevents animations.
@@ -555,41 +548,10 @@ public final class Utilities {
     }
 
     /**
-     * Returns true if {@param original} contains all entries defined in {@param updates} and
-     * have the same value.
-     * The comparison uses {@link Object#equals(Object)} to compare the values.
-     */
-    public static boolean containsAll(Bundle original, Bundle updates) {
-        for (String key : updates.keySet()) {
-            Object value1 = updates.get(key);
-            Object value2 = original.get(key);
-            if (value1 == null) {
-                if (value2 != null) {
-                    return false;
-                }
-            } else if (!value1.equals(value2)) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    /**
      * Returns whether the collection is null or empty.
      */
     public static boolean isEmpty(Collection c) {
         return c == null || c.isEmpty();
-    }
-
-    public static void sendCustomAccessibilityEvent(View target, int type, String text) {
-        AccessibilityManager accessibilityManager = (AccessibilityManager)
-                target.getContext().getSystemService(Context.ACCESSIBILITY_SERVICE);
-        if (accessibilityManager.isEnabled()) {
-            AccessibilityEvent event = AccessibilityEvent.obtain(type);
-            target.onInitializeAccessibilityEvent(event);
-            event.getText().add(text);
-            accessibilityManager.sendAccessibilityEvent(event);
-        }
     }
 
     public static boolean isBinderSizeError(Exception e) {
@@ -628,11 +590,6 @@ public final class Utilities {
 
     public static ZimPreferences getZimPrefs(Context context) {
         return ZimPreferences.Companion.getInstance(context);
-    }
-
-    public static int getNumberOfHotseatRows(Context context) {
-        boolean twoLines = getZimPrefs(context).getTwoRowDock();
-        return twoLines ? 2 : 1;
     }
 
     private static List<Runnable> onStart = new ArrayList<>();

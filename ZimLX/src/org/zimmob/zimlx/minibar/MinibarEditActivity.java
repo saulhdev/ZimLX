@@ -49,7 +49,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     private FastItemAdapter<Item> _adapter;
     private AppSettings appSettings;
     private Launcher mLauncher;
-    ZimPreferences prefs;
+    private ZimPreferences prefs;
     private ThemeOverride themeOverride;
     private int currentTheme = 0;
     private ThemeOverride.ThemeSet themeSet;

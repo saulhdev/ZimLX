@@ -60,7 +60,7 @@ class DockQsbAutoResolver(config: Config) : ColorEngine.ColorResolver(config), Z
 class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), ZimPreferences.OnPreferenceChangeListener {
 
     val launcher = ZimLauncher.getLauncher(engine.context)
-    val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
+    //val qsb = launcher.hotseatSearchBox as? HotseatQsbWidget
 
     override fun startListening() {
         super.startListening()
@@ -77,10 +77,10 @@ class DockQsbLightResolver(config: Config) : WallpaperColorResolver(config), Zim
     }
 
     override fun resolveColor() = engine.context.resources.getColor(
-            if (qsb?.isGoogleColored == true)
+            //if (qsb?.isGoogleColored == true)
                 R.color.qsb_background_hotseat_white
-            else
-                R.color.qsb_background_hotseat_default
+            //else
+            //    R.color.qsb_background_hotseat_default
     )
 
     override fun getDisplayName() = engine.context.resources.getString(R.string.theme_light)

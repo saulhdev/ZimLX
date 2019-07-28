@@ -45,6 +45,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private ZimPreferences prefs;
     private int mForegroundColor;
     private int mBackgroundColor;
+    private Context mContext;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -62,15 +63,15 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
-        applyTheme(context);
+        mContext = context;
     }
 
-    public void applyTheme(Context context) {
+    public void applyTheme() {
         prefs = ZimPreferences.Companion.getInstanceNoCreate();
         mForegroundColor = prefs.getAccentColor();
-        Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(context).getCurrentFlags());
-        Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(context).getCurrentFlags()) ||
-                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(context).getCurrentFlags());
+        Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+        Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
+                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
 
         int theme = prefs.getLauncherTheme();
         if (themeBlack)
@@ -80,19 +81,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
         switch (theme) {
             case 0: //light theme
-                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_default);
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
                 break;
 
             case 4://dark theme
-                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_dark);
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
                 break;
 
             case 12://black theme
-                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
                 break;
 
             default:
-                mBackgroundColor = context.getResources().getColor(R.color.qsb_background_drawer_default);
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
 
         }
 
@@ -103,6 +104,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHint = findViewById(R.id.qsb_hint);
+        applyTheme();
     }
 
     public void setInsets(Rect rect) {

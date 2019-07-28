@@ -65,6 +65,8 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             Utilities.requestStoragePermission(this);
 
         }
+        IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
+
         super.onCreate(savedInstanceState);
         mContext = this;
         zimPrefs = Utilities.getZimPrefs(mContext);

@@ -16,6 +16,10 @@
  */
 package org.zimmob.zimlx.util
 
+import android.content.Context
+import org.zimmob.zimlx.ensureOnMainThread
+import org.zimmob.zimlx.useApplicationContext
+
 // Source: https://medium.com/@BladeCoder/kotlin-singletons-with-argument-194ef06edd9e
 open class SingletonHolder<out T, in A>(creator: (A) -> T) {
     private var creator: ((A) -> T)? = creator
@@ -40,4 +44,9 @@ open class SingletonHolder<out T, in A>(creator: (A) -> T) {
             }
         }
     }
+
+    protected fun dangerousGetInstance() = instance
 }
+
+open class ZimSingletonHolder<out T>(creator: (Context) -> T)
+    : SingletonHolder<T, Context>(ensureOnMainThread(useApplicationContext(creator)))

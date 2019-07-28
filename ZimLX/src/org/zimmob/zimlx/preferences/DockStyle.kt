@@ -181,7 +181,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
                 Pair("enableShadow", DockStyle::enableShadow),
                 Pair("radius", DockStyle::radius),
                 Pair("opacityPref", DockStyle::opacityPref),
-                Pair("enableArrow", DockStyle::enableArrow),
+                Pair("pref_enableArrow", DockStyle::enableArrow),
                 Pair("hide", DockStyle::hide))
     }
 }

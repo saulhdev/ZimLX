@@ -474,7 +474,7 @@
     <string name="pref_summary__about">More information about Zim Launcher</string>
     <string name="pref_summary__inputs">Configure gestures</string>
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
-    <string name="pref_summary__smartspace">Date, time and searchbar</string>
+    <string name="pref_summary__smartspace">Date, time and search bar</string>
     <string name="pref_summary__search">Search Engine</string>
 
     <string name="pref_title__language">Language</string>
@@ -607,7 +607,6 @@
     <string name="title__hotseat_custom_opacity">Dock opacity</string>
     <string name="title__hotseat_uses_custom_opacity">Custom dock opacity</string>
     <string name="title__hotseat_show_arrow">Show arrow</string>
-    <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="title__dock_style">Dock style</string>
     <string name="title__dock_fill">Background</string>
     <string name="title__dock_shadow">Shadow</string>
@@ -615,11 +614,17 @@
     <string name="title__dock_custom_opacity">Opacity</string>
     <string name="title__dock_scale">Dock scale</string>
     <string name="transparent_hotseat_pref_title">Transparent dock</string>
+    <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
     <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
     <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
-
     <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
+
+    <string name="dock_colored_google">Coloured icons</string>
+    <string name="hotseat_show_arrow">Arrow</string>
+    <string name="dock_style_pref_title">Dock style</string>
+
+    <string name="opacity">Opacity</string>
 
     <string name="dock_style_default">Default</string>
     <string name="dock_style_p">Rounded</string>
@@ -630,6 +635,12 @@
     <string name="dock_style_custom">Custom</string>
     <string name="dock_search_bar">Dock search bar</string>
     <string name="automatic_short">Auto</string>
+    <string name="dock_shadow">Shadow</string>
+    <string name="dock_fill">Background</string>
+
+    <string name="radius">Corner rounding</string>
+    <string name="gradient">Gradient</string>
+
 
     <!-- SEARCH -->
     <string name="pref_show_assistant_summary">Display voice search button if supported</string>

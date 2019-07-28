@@ -62,7 +62,6 @@ import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.util.SettingsObserver;
@@ -72,7 +71,6 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
-import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
@@ -632,8 +630,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onResume();
             getActivity().setTitle(getArguments().getString(TITLE));
             if (getContent() == R.xml.zim_preferences_smartspace) {
-                SwitchPreference minusOne = (SwitchPreference) findPreference(
-                        ENABLE_MINUS_ONE_PREF);
+                SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
                 if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
                         .isInstalled()) {
                     minusOne.setChecked(false);
@@ -744,13 +741,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case "crashLauncher":
                     throw new RuntimeException("Triggered from developer options");
 
-                case "appInfo":
-                    ComponentName componentName = new ComponentName(getActivity(),
-                            ZimLauncher.class);
-                    LauncherAppsCompat.getInstance(getContext())
-                            .showAppDetailsForProfile(componentName,
-                                    android.os.Process.myUserHandle());
-                    break;
             }
             return false;
         }

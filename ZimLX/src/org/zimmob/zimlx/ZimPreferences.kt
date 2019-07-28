@@ -145,6 +145,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun unflattenValue(value: String) = value
     }
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
@@ -218,7 +219,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeCallback?.forceReloadApps()
     }
 
-    private fun recreate() {
+    fun recreate() {
         onChangeCallback?.recreate()
     }
 
@@ -250,7 +251,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeCallback?.updateSmartspace()
     }
 
-    private fun reloadIcons() {
+    fun reloadIcons() {
         onChangeCallback?.reloadIcons()
     }
 

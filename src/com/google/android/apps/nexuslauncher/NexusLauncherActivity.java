@@ -4,6 +4,8 @@ import android.animation.AnimatorSet;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -11,8 +13,6 @@ import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.smartspace.FeedBridge;
-
-import androidx.annotation.Nullable;
 
 public class NexusLauncherActivity extends Launcher {
     private NexusLauncher mLauncher;
@@ -24,6 +24,7 @@ public class NexusLauncherActivity extends Launcher {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         FeatureFlags.QSB_ON_FIRST_SCREEN = showSmartspace();
+
         super.onCreate(savedInstanceState);
 
         SharedPreferences prefs = Utilities.getPrefs(this);

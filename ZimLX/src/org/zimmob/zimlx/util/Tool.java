@@ -31,12 +31,6 @@ public class Tool {
         Toast.makeText(context, context.getResources().getString(str), Toast.LENGTH_SHORT).show();
     }
 
-    public static int toPx(int dp) {
-        float f = (float) dp;
-        Resources system = Resources.getSystem();
-        return (int) (f * system.getDisplayMetrics().density);
-    }
-
     public static int dp2px(int dp, Context context) {
         Resources resources = context.getResources();
         return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.getDisplayMetrics()));

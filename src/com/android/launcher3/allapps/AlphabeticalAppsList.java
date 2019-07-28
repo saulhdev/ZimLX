@@ -152,7 +152,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-
     private void sortApps(int sortType) {
         switch (sortType) {
             //SORT BY NAME AZ

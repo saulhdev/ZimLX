@@ -48,7 +48,7 @@ public abstract class BaseFlags {
     // Features to control Launcher3Go behavior
     public static final boolean GO_DISABLE_WIDGETS = false;
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
-    public static boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
+    public static final boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
     public static boolean QSB_ON_FIRST_SCREEN = true;
     // When enabled shows a work profile tab in all apps

@@ -55,7 +55,7 @@
             android:title="@string/title__app_search" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             app:iconSpaceReserved="false"
             android:key="pref_allAppsGoogleSearch"
             android:summary="@string/summary__app_search_global"

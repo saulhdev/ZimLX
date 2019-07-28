@@ -408,6 +408,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         tryAndUpdatePredictedApps();
         initMinibar();
         TraceHelper.endSection("Launcher-onCreate");
+        Utilities.checkRestoreSuccess(this);
     }
 
     @Override
@@ -1111,7 +1112,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDragController.setMoveTarget(mWorkspace);
         mDropTargetBar.setup(mDragController);
 
-        mAllAppsController.setupViews(mAppsView, mHotseat);
+        mAllAppsController.setupViews(mAppsView, getHotseat());
     }
 
 

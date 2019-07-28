@@ -230,4 +230,16 @@
 
     <attr name="allAppsContainerColor" format="color" />
     <attr name="allAppsContainerColorBlur" format="color" />
+
+    <declare-styleable name="IndexablePreference">
+        <attr name="android:key" />
+        <attr name="android:defaultValue" />
+        <attr name="android:icon" />
+        <attr name="android:title" />
+        <attr name="android:summary" />
+        <attr name="searchTitle" />
+        <attr name="controllerClass" />
+        <attr name="content" />
+        <attr name="hasPreview" />
+    </declare-styleable>
 </resources>

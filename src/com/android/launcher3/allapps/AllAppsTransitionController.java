@@ -162,16 +162,18 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         } else {
             mLauncher.getSystemUiController().updateUiState(UI_STATE_ALL_APPS, 0);
         }
-
     }
 
     private float getShiftApps(float progress, boolean inverted) {
         float normalShift = progress * mShiftRange;
         ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
-        if (prefs.getAllAppsSearch()) {
+        if (prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
             float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
             float overviewShift = getQsbHeight();
             overviewShift = -overviewShift;
+            if (prefs.getAllAppsSearch()) {
+                overviewShift = -overviewShift;
+            }
             if (progress < overviewProgress) {
                 overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
                         inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
@@ -322,7 +324,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         if (Float.compare(mProgress, 1f) == 0) {
             mAppsView.setVisibility(View.INVISIBLE);
             mHotseat.setBackground(hotseatBackground);
-            mAppsView.reset(false /* animate */);
+            mAppsView.reset(true);
         } else if (Float.compare(mProgress, 0f) == 0) {
             mAppsView.setVisibility(View.VISIBLE);
             mAppsView.onScrollUpEnd();
