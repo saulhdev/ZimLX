@@ -68,7 +68,6 @@
 
         <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
             android:key="pref_smartspace_widget_provider"
-            android:dependency="pref_smartspace"
             android:title="@string/title__behavior_widget_provider"
             android:summary="%s"
             app:iconSpaceReserved="false" />
@@ -83,10 +82,10 @@
             android:title="@string/title__behavior_weather_units"
             app:iconSpaceReserved="false" />
 
-        <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
-            android:key="pref_smartspace_event_provider"
+        <org.zimmob.zimlx.preferences.SmartspaceEventProvidersPreference
+            android:key="pref_smartspace_event_providers"
             android:dependency="pref_use_pill_qsb"
-            android:title="@string/title__behavior_event_provider"
+            android:title="@string/pref_smartspace_event_providers"
             android:summary="%s"
             app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>

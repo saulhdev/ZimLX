@@ -30,7 +30,6 @@ import org.zimmob.zimlx.util.Temperature
 class PEWeatherDataProvider(controller: ZimSmartspaceController) :
         ZimSmartspaceController.PeriodicDataProvider(controller) {
 
-    private val context = controller.context
     private val contentResolver = context.contentResolver
 
     init {

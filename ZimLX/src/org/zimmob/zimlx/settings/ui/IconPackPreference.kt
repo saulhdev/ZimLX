@@ -15,18 +15,26 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zimmob.zimlx.preferences
+package org.zimmob.zimlx.settings.ui
 
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.util.AttributeSet
+import android.view.View
+import android.widget.ImageView
+import androidx.annotation.Keep
 import androidx.preference.Preference
 import com.android.launcher3.R
 import org.zimmob.zimlx.iconpack.DefaultPack
 import org.zimmob.zimlx.iconpack.IconPackManager
+import org.zimmob.zimlx.preferences.IconPackFragment
 
 class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
+
+    private val onChangeListener = ::updatePreview
 
     init {
         layoutResource = R.layout.pref_with_preview_icon
@@ -35,14 +43,12 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
 
     override fun onAttached() {
         super.onAttached()
-
-        ipm.addListener(this::updatePreview)
+        ipm.addListener(onChangeListener)
     }
 
     override fun onDetached() {
         super.onDetached()
-
-        ipm.removeListener(this::updatePreview)
+        ipm.removeListener(onChangeListener)
     }
 
     private fun updatePreview() {
@@ -58,5 +64,31 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
         } catch (ignored: IllegalStateException) {
             //TODO: Fix updating pref when scrolled down
         }
+    }
+
+    class IconPackSlice(context: Context, attrs: AttributeSet) : SearchIndex.Slice(context, attrs) {
+
+        override fun createSliceView(): View {
+            return (View.inflate(context, R.layout.preview_icon, null) as ImageView).apply {
+                IconPackManager.getInstance(context).addListener {
+                    setImageDrawable(IconPackManager.getInstance(context).packList.currentPack().displayIcon)
+                }
+                setOnClickListener {
+                    context.startActivity(Intent()
+                            .setClass(context, SettingsActivity::class.java)
+                            .putExtra(SettingsActivity.EXTRA_FRAGMENT, IconPackFragment::class.java.name)
+                            .putExtra(SettingsActivity.EXTRA_FRAGMENT_ARGS, Bundle().apply {
+                                putString(SettingsActivity.SubSettingsFragment.TITLE, context.getString(R.string.icon_pack))
+                            })
+                    )
+                }
+            }
+        }
+    }
+
+    companion object {
+        @Keep
+        @JvmStatic
+        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::IconPackSlice)
     }
 }

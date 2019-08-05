@@ -20,6 +20,7 @@ package org.zimmob.zimlx
 import android.app.Activity
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.PackageInfo.REQUESTED_PERMISSION_GRANTED
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.content.res.Configuration
@@ -31,6 +32,7 @@ import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Handler
 import android.os.Looper
+import android.service.notification.StatusBarNotification
 import android.text.TextUtils
 import android.util.AttributeSet
 import android.util.Property
@@ -68,8 +70,11 @@ import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import org.zimmob.zimlx.colors.ColorEngine
 import java.lang.reflect.Field
+import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
+import kotlin.Comparator
+import kotlin.collections.ArrayList
 import kotlin.math.ceil
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
@@ -615,4 +620,37 @@ fun JSONObject.getNullable(key: String): Any? {
 fun String.asNonEmpty(): String? {
     if (TextUtils.isEmpty(this)) return null
     return this
+}
+
+inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0
+
+fun StatusBarNotification.loadSmallIcon(context: Context): Drawable? {
+    return if (Utilities.ATLEAST_MARSHMALLOW) {
+        notification.smallIcon?.loadDrawable(context)
+    } else {
+        context.resourcesForApplication(packageName)?.getDrawable(notification.icon)
+    }
+}
+
+inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
+    while (true) {
+        add(generator() ?: break)
+    }
+}
+
+inline val Calendar.hourOfDay get() = get(Calendar.HOUR_OF_DAY)
+inline val Calendar.dayOfYear get() = get(Calendar.DAY_OF_YEAR)
+
+
+fun Context.checkPackagePermission(packageName: String, permissionName: String): Boolean {
+    try {
+        val info = packageManager.getPackageInfo(packageName, PackageManager.GET_PERMISSIONS)
+        info.requestedPermissions.forEachIndexed { index, s ->
+            if (s == permissionName) {
+                return info.requestedPermissionsFlags[index].hasFlag(REQUESTED_PERMISSION_GRANTED)
+            }
+        }
+    } catch (e: PackageManager.NameNotFoundException) {
+    }
+    return false
 }

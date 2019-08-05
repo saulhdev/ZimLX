@@ -122,7 +122,7 @@ public class NexusLauncher {
             applyFeedTheme(false);
             WallpaperColorInfo instance = WallpaperColorInfo.getInstance(mLauncher);
             instance.addOnChangeListener(this);
-            onExtractedColorsChanged(instance);
+            //onExtractedColorsChanged(instance);
 
             getUpdateReceiver().onCreate();
 

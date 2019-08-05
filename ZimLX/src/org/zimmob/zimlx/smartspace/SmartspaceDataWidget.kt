@@ -42,7 +42,6 @@ import org.zimmob.zimlx.util.Temperature
 @Keep
 class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceController.DataProvider(controller) {
 
-    private val context = controller.context
     private val prefs = Utilities.getZimPrefs(context)
     private val smartspaceWidgetHost = SmartspaceWidgetHost()
     private var smartspaceView: SmartspaceWidgetHostView? = null

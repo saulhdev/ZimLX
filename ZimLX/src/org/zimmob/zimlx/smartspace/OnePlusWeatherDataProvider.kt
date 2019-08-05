@@ -38,7 +38,6 @@ import java.util.concurrent.TimeUnit
 class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         ZimSmartspaceController.DataProvider(controller), OPWeatherProvider.IWeatherCallback {
 
-    private val context = controller.context
     private val provider by lazy { OPWeatherProvider(context) }
     private val locationAccess by lazy {
         Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||

@@ -242,4 +242,9 @@
         <attr name="content" />
         <attr name="hasPreview" />
     </declare-styleable>
+
+    <declare-styleable name="PreferenceDialogPreference">
+        <attr name="content" />
+    </declare-styleable>
+
 </resources>

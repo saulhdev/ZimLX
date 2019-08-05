@@ -295,4 +295,6 @@
     <!-- Dashboard image tile size -->
     <dimen name="dashboard_tile_image_size">38dp</dimen>
 
+    <dimen name="dialog_horizontal_padding">24dp</dimen>
+
 </resources>

@@ -16,7 +16,7 @@ import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
 import org.zimmob.zimlx.settings.GridSize2D
-import org.zimmob.zimlx.smartspace.SmartspaceDataWidget
+import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.util.Temperature
 import org.zimmob.zimlx.util.ZimFlags
@@ -180,8 +180,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
     val smartspaceDate by BooleanPref("pref_smartspace_date", false, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
+
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+
+    var eventProviders = StringListPref("pref_smartspace_event_providers",
+            ::updateSmartspaceProvider, listOf(eventProvider,
+            NotificationUnreadProvider::class.java.name,
+            NowPlayingProvider::class.java.name,
+            BatteryStatusProvider::class.java.name,
+            PersonalityProvider::class.java.name))
+
+
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
     val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
@@ -275,6 +285,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeListeners[key]?.remove(listener)
     }
 
+    inner class StringListPref(prefKey: String,
+                               onChange: () -> Unit = doNothing,
+                               default: List<String> = emptyList())
+        : MutableListPref<String>(prefKey, onChange, default) {
+
+        override fun unflattenValue(value: String) = value
+        override fun flattenValue(value: String) = value
+    }
+
+
     abstract inner class MutableListPref<T>(private val prefs: SharedPreferences,
                                             private val prefKey: String,
                                             onChange: () -> Unit = doNothing,
@@ -284,6 +304,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
                 : this(sharedPrefs, prefKey, onChange, default)
 
         private val valueList = ArrayList<T>()
+        private val listeners: MutableSet<MutableListPrefChangeListener> = Collections.newSetFromMap(WeakHashMap())
 
         init {
             val arr = JSONArray(prefs.getString(prefKey, getJsonString(default)))
@@ -306,6 +327,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             valueList[position] = value
             saveChanges()
         }
+
+        fun getAll(): List<T> = valueList
 
         fun setAll(value: List<T>) {
             if (value == valueList) return
@@ -346,6 +369,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         fun getList() = valueList
 
+        fun addListener(listener: MutableListPrefChangeListener) {
+            listeners.add(listener)
+        }
+
+        fun removeListener(listener: MutableListPrefChangeListener) {
+            listeners.remove(listener)
+        }
+
         private fun saveChanges() {
             @SuppressLint("CommitPrefEdits")
             val editor = prefs.edit()
@@ -359,6 +390,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             list.forEach { arr.put(flattenValue(it)) }
             return arr.toString()
         }
+    }
+
+    interface MutableListPrefChangeListener {
+
+        fun onListPrefChanged(key: String)
     }
 
     abstract inner class MutableMapPref<K, V>(private val prefKey: String, onChange: () -> Unit = doNothing) {

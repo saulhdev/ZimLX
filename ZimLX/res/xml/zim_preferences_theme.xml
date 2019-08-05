@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_cat__theme_icons">
 
-        <org.zimmob.zimlx.preferences.IconPackPreference
+        <org.zimmob.zimlx.settings.ui.IconPackPreference
             android:defaultValue="@string/config_default_icon_pack"
             android:key="pref_icon_packs"
             android:persistent="true"
             app:iconSpaceReserved="false"
-            android:summary="%s"
             android:title="@string/title__theme_icon_pack" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
@@ -118,4 +117,4 @@
             app:cpv_showAlphaSlider="true" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

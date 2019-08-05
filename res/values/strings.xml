@@ -341,6 +341,7 @@
     <string name="title_google_app">Google app</string>
     <string name="title_app_suggestions">Display app suggestions</string>
     <string name="summary_app_suggestions">At the top of your All Apps list</string>
+    <string name="summary_app_suggestions_lawnstep">In recent apps screen and app drawer</string>
     <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
     <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
     <string name="label_turn_off_suggestions">TURN OFF</string>
@@ -866,5 +867,39 @@
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
     <string name="about_app_version">Version</string>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+
+    <string name="pref_smartspace_event_providers">Events sources</string>
+    <string name="event_provider_now_playing">Now playing</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_charging">Battery charging</string>
+    <string name="battery_full">Battery full</string>
+    <string name="battery_low">Battery low</string>
+    <string name="event_provider_unread_notifications">Unread notifications</string>
+    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="crash_report_notif_title">%1$s crashed!</string>
+    <string name="general_pref_title">Desktop</string>
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="greetings_morning">
+        <item>Good morning!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
 
 </resources>

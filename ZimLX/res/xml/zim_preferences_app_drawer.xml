@@ -68,7 +68,7 @@
         android:key="pref_show_predictions"
         android:summary="@string/summary_app_suggestions"
         android:title="@string/title_app_suggestions"
-        app:controllerClass=".AppSuggestionsController"
+        app:controllerClass="org.zimmob.zimlx.settings.controllers.AppSuggestionsController"
         app:iconSpaceReserved="false" />
 
     <ListPreference

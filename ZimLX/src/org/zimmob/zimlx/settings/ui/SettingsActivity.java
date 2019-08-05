@@ -17,6 +17,7 @@
 
 package org.zimmob.zimlx.settings.ui;
 
+import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.ComponentName;
@@ -87,7 +88,10 @@ import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
+import org.zimmob.zimlx.preferences.SmartspaceEventProvidersFragment;
+import org.zimmob.zimlx.preferences.SmartspaceEventProvidersPreference;
 import org.zimmob.zimlx.smartspace.FeedBridge;
+import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
 import org.zimmob.zimlx.util.ZimFlags;
@@ -157,6 +161,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (hasPreview) {
             overrideOpenAnim();
         }
+
+        Utilities.getDevicePrefs(this).edit().putBoolean(OnboardingProvider.PREF_HAS_OPENED_SETTINGS, true).apply();
     }
 
     @Override
@@ -246,7 +252,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @NotNull
     @Override
     protected ThemeSet getThemeSet() {
-        if (getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false)) {
+        if (hasPreview) {
             return new ThemeOverride.SettingsTransparent();
         } else {
             return super.getThemeSet();
@@ -366,6 +372,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             }
         }
 
+        @SuppressLint("RestrictedApi")
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
             SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
@@ -628,7 +635,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public void onResume() {
             super.onResume();
-            getActivity().setTitle(getArguments().getString(TITLE));
+            setActivityTitle();
             if (getContent() == R.xml.zim_preferences_smartspace) {
                 SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
                 if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
@@ -636,6 +643,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     minusOne.setChecked(false);
                 }
             }
+        }
+
+        protected void setActivityTitle() {
+            getActivity().setTitle(getArguments().getString(TITLE));
         }
 
         @Override
@@ -661,6 +672,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion
                         .newInstance((SearchProviderPreference) preference);
+            } else if (preference instanceof PreferenceDialogPreference) {
+                f = PreferenceScreenDialogFragment.Companion
+                        .newInstance((PreferenceDialogPreference) preference);
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
@@ -670,6 +684,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof AbstractMultiSelectListPreference) {
                 f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
+            } else if (preference instanceof SmartspaceEventProvidersPreference) {
+                f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
             } else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
@@ -777,6 +793,28 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         protected int getRecyclerViewLayoutRes() {
             return R.layout.preference_insettable_recyclerview;
+        }
+    }
+
+    public static class DialogSettingsFragment extends SubSettingsFragment {
+
+        @Override
+        protected void setActivityTitle() {
+
+        }
+
+        @Override
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_dialog_recyclerview;
+        }
+
+        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
+            DialogSettingsFragment fragment = new DialogSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, title);
+            b.putInt(CONTENT_RES_ID, content);
+            fragment.setArguments(b);
+            return fragment;
         }
     }
 

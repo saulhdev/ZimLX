@@ -20,6 +20,8 @@ package com.android.launcher3.config;
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
+    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
+    public static final boolean LEGACY_ICON_TREATMENT = true;
 
     public static boolean LAUNCHER3_P_ALL_APPS = true;
     public static boolean LEGACY_ALL_APPS_BACKGROUND = !LAUNCHER3_GRADIENT_ALL_APPS && !LAUNCHER3_P_ALL_APPS;

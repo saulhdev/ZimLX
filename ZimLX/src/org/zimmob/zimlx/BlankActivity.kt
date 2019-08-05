@@ -69,8 +69,35 @@ class BlankActivity : Activity() {
                         callback(resultCode, resultData)
                     }
                 })
+                addFlags(flags)
             }
+            start(context, intent)
+        }
+
+        fun startActivityWithDialog(context: Context, targetIntent: Intent, requestCode: Int,
+                                    dialogTitle: CharSequence, dialogMessage: CharSequence,
+                                    positiveButton: String, callback: (Int) -> Unit) {
+            val intent = Intent(context, BlankActivity::class.java).apply {
+                putExtra("intent", targetIntent)
+                putExtra("requestCode", requestCode)
+                putExtra("dialogTitle", dialogTitle)
+                putExtra("dialogMessage", dialogMessage)
+                putExtra("positiveButton", positiveButton)
+                putExtra("callback", object : ResultReceiver(Handler()) {
+
+                    override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
+                        callback(resultCode)
+                    }
+                })
+            }
+            start(context, intent)
+        }
+
+        private fun start(context: Context, intent: Intent) {
             val foreground = context.zimApp.activityHandler.foregroundActivity ?: context
+            if (foreground === context) {
+                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            }
             foreground.startActivity(intent)
         }
     }

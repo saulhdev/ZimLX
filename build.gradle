@@ -73,14 +73,6 @@ android {
         vectorDrawables.useSupportLibrary = true
     }
 
-    signingConfigs {
-        aosp {
-            storeFile file("ZimLauncher.jks")
-            storePassword System.getenv("STORE_PASSWORD")
-            keyAlias "ZimLauncher"
-            keyPassword System.getenv("KEY_PASSWORD")
-        }
-    }
 
     buildTypes {
         debug {
@@ -90,7 +82,7 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             debuggable true
-            signingConfig signingConfigs.aosp
+            //signingConfig signingConfigs
         }
     }
     flavorDimensions "default", "custom"
