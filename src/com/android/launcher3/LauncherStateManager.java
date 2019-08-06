@@ -22,6 +22,8 @@ import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 
+import androidx.annotation.IntDef;
+
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.AnimatorSetBuilder;
@@ -32,8 +34,6 @@ import com.android.launcher3.uioverrides.UiFactory;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
-
-import androidx.annotation.IntDef;
 
 import static android.view.View.VISIBLE;
 import static com.android.launcher3.LauncherState.NORMAL;
@@ -117,6 +117,7 @@ public class LauncherStateManager {
 
     private StateHandler[] mStateHandlers;
     private LauncherState mState = NORMAL;
+    private LauncherState mToState = mState;
 
     private LauncherState mLastStableState = NORMAL;
     private LauncherState mCurrentStableState = NORMAL;
@@ -130,6 +131,10 @@ public class LauncherStateManager {
 
     public LauncherState getState() {
         return mState;
+    }
+
+    public LauncherState getToState() {
+        return mToState;
     }
 
     public StateHandler[] getStateHandlers() {
@@ -226,6 +231,7 @@ public class LauncherStateManager {
 
         // Cancel the current animation. This will reset mState to mCurrentStableState, so store it.
         LauncherState fromState = mState;
+        mToState = state;
         mConfig.reset();
 
         if (!animated) {

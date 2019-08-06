@@ -638,6 +638,15 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
     }
 }
 
+val Context.locale: Locale
+    get() {
+        return if (Utilities.ATLEAST_NOUGAT) {
+            this.resources.configuration.locales[0] ?: this.resources.configuration.locale
+        } else {
+            this.resources.configuration.locale
+        }
+    }
+
 inline val Calendar.hourOfDay get() = get(Calendar.HOUR_OF_DAY)
 inline val Calendar.dayOfYear get() = get(Calendar.DAY_OF_YEAR)
 

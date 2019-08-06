@@ -24,6 +24,8 @@ import android.util.SparseIntArray;
 import android.view.MotionEvent;
 import android.view.View;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -37,8 +39,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 import static android.view.View.MeasureSpec.UNSPECIFIED;
 
@@ -71,8 +71,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-                               int defStyleRes) {
+    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(

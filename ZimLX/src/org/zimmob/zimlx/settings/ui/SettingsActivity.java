@@ -80,7 +80,6 @@ import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
-import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.minibar.Minibar;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
@@ -138,6 +137,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
+
         String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
         int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
         isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
@@ -535,6 +535,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            return super.onPreferenceTreeClick(preference);
+        }
+
+        @Override
         protected int getRecyclerViewLayoutRes() {
             return R.layout.preference_spring_recyclerview;
         }
@@ -589,7 +594,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                     break;
                 case R.xml.zim_preferences_theme:
-                    IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
+                    /*IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
                     Preference packMaskingPreference = findPreference("pref_iconPackMasking");
                     PreferenceGroup parent = packMaskingPreference.getParent();
                     ipm.addListener(() -> {
@@ -600,7 +605,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         }
                         return null;
                     });
-                    break;
+                    break;*/
 
                 case R.xml.zim_preferences_notification:
                     ButtonPreference iconBadgingPref =

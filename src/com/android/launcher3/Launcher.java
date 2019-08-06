@@ -2696,11 +2696,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         void onScrollChanged(float progress);
     }
 
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks, LauncherStateManager.StateListener {
 
         public void onScrollChanged(float progress) {
+            addOrRemoveStateListener(progress);
             if (mWorkspace != null) {
                 mWorkspace.onOverlayScrollChanged(progress);
+            }
+        }
+
+        private void addOrRemoveStateListener(float progress) {
+            if (Float.compare(progress, 1.0f) == 0) {
+                getStateManager().addStateListener(this);
+            } else if (Float.compare(progress, 0.0f) == 0) {
+                getStateManager().removeStateListener(this);
             }
         }
 
@@ -2716,6 +2725,27 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
             }
         }
+
+        @Override
+        public void onStateSetImmediately(LauncherState state) {
+            hideOverlay(state, false);
+        }
+
+        @Override
+        public void onStateTransitionStart(LauncherState toState) {
+            hideOverlay(toState, true);
+        }
+
+        @Override
+        public void onStateTransitionComplete(LauncherState finalState) {
+
+        }
     }
 
+    public boolean isInOverview() {
+        LauncherState state = mStateManager.getState();
+        LauncherState toState = mStateManager.getToState();
+        return (state == LauncherState.OVERVIEW && toState != LauncherState.NORMAL)
+                || state == LauncherState.FAST_OVERVIEW;
+    }
 }

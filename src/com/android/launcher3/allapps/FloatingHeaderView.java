@@ -26,12 +26,12 @@ import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
-import com.android.launcher3.R;
-import com.android.launcher3.anim.PropertySetter;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.R;
+import com.android.launcher3.anim.PropertySetter;
 
 public class FloatingHeaderView extends LinearLayout implements
         ValueAnimator.AnimatorUpdateListener {
@@ -91,8 +91,6 @@ public class FloatingHeaderView extends LinearLayout implements
     }
 
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
-        //if(Utilities.getZimPrefs(Launcher.mContext).getDrawerStyle()!=0){
-
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         mMainRV = setupRV(mMainRV, mAH[AllAppsContainerView.AdapterHolder.MAIN].recyclerView);
@@ -100,7 +98,6 @@ public class FloatingHeaderView extends LinearLayout implements
         mParent = (ViewGroup) mMainRV.getParent();
         setMainActive(mMainRVActive || mWorkRV == null);
         reset(false);
-        //}
     }
 
     private AllAppsRecyclerView setupRV(AllAppsRecyclerView old, AllAppsRecyclerView updated) {

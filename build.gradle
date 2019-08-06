@@ -215,6 +215,10 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
+
+    implementation 'com.squareup.okhttp3:okhttp:4.0.0-RC1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
+
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"

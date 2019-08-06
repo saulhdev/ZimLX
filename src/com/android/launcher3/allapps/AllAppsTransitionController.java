@@ -342,4 +342,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public AllAppsContainerView getAppsView() {
         return mAppsView;
     }
+
+    /*public void setOverlayScroll(float scroll) {
+        if (mScrimView instanceof BlurScrimView) {
+            ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
+        }
+    }*/
 }

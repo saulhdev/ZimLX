@@ -783,9 +783,19 @@
     <string name="search_provider_search_lite">Search Lite</string>
     <string name="search_provider_cool_search">Cool Search</string>
     <string name="icon_shape_override_label">Icon Shape Override</string>
-
+    <string name="search_provider_edge">Edge</string>
     <string name="search_provider_qwant">Qwant</string>
     <string name="special_greeting" translatable="false">Hi Jane! Lots of love from the team.</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="web_search_yahoo">Yahoo (web)</string>
 
     <string name="action_open_drawer">Open app drawer</string>
 

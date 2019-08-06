@@ -5,6 +5,7 @@ import android.view.ContextThemeWrapper
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ensureOnMainThread
 import org.zimmob.zimlx.globalsearch.providers.*
+import org.zimmob.zimlx.globalsearch.providers.web.*
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.theme.ThemeOverride
 import org.zimmob.zimlx.useApplicationContext
@@ -89,17 +90,24 @@ class SearchProviderController(private val context: Context) {
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
+                GoogleWebSearchProvider(context),
                 SFinderSearchProvider(context),
                 DisabledDummySearchProvider(context),
                 GoogleGoSearchProvider(context),
                 FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
                 BingSearchProvider(context),
+                BingWebSearchProvider(context),
                 BaiduSearchProvider(context),
+                BaiduWebSearchProvider(context),
                 YandexSearchProvider(context),
+                YandexWebSearchProvider(context),
                 QwantSearchProvider(context),
+                QwantWebSearchProvider(context),
                 SearchLiteSearchProvider(context),
-                CoolSearchSearchProvider(context)
+                CoolSearchSearchProvider(context),
+                EdgeSearchProvider(context),
+                YahooWebSearchProvider(context)
         ).filter { it.isAvailable }
     }
 }
