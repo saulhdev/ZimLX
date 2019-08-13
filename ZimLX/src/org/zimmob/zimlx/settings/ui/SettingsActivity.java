@@ -60,11 +60,14 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SettingsObserver;
 import com.android.launcher3.views.ButtonPreference;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
@@ -72,6 +75,8 @@ import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimPreferencesChangeCallback;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
@@ -97,6 +102,7 @@ import org.zimmob.zimlx.util.ZimFlags;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
+import java.util.Set;
 
 import static androidx.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
 
@@ -593,30 +599,26 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case R.xml.zim_preferences_app_drawer:
                     findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                     break;
+
                 case R.xml.zim_preferences_theme:
-                    /*IconPackManager ipm = IconPackManager.Companion.getInstance(mContext);
-                    Preference packMaskingPreference = findPreference("pref_iconPackMasking");
-                    PreferenceGroup parent = packMaskingPreference.getParent();
-                    ipm.addListener(() -> {
-                        if (!ipm.maskSupported()) {
-                            parent.removePreference(packMaskingPreference);
-                        } else if (parent.findPreference("pref_iconPackMasking") == null) {
-                            parent.addPreference(packMaskingPreference);
-                        }
-                        return null;
+                    Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
+                    resetIconsPreference.setOnPreferenceClickListener(pref -> {
+                        new SettingsActivity.ResetIconsConfirmation()
+                                .show(getFragmentManager(), "reset_icons");
+                        return true;
                     });
-                    break;*/
+
+                    break;
 
                 case R.xml.zim_preferences_notification:
-                    ButtonPreference iconBadgingPref =
-                            (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
-                    if (!getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                        getPreferenceScreen().removePreference(iconBadgingPref);
-                    } else {
+
+                    if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                        ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
                         // Listen to system notification badge settings while this UI is active.
                         mIconBadgingObserver = new IconBadgingObserver(
-                                iconBadgingPref, resolver, getFragmentManager());
+                                iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
                         mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+
                     }
 
                     break;
@@ -963,6 +965,52 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                     .putExtra(":settings:fragment_args_key", cn.flattenToString());
             getActivity().startActivity(intent);
+        }
+    }
+
+    public static class ResetIconsConfirmation
+            extends DialogFragment implements DialogInterface.OnClickListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Context context = getActivity();
+            return new AlertDialog.Builder(context)
+                    .setTitle(R.string.reset_custom_icons)
+                    .setMessage(R.string.reset_custom_icons_confirmation)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, this)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            Context context = getContext();
+
+            // Clear custom app icons
+            ZimPreferences prefs = Utilities.getZimPrefs(context);
+            Set<ComponentKey> toUpdateSet = prefs.getCustomAppIcon().toMap().keySet();
+            prefs.beginBlockingEdit();
+            prefs.getCustomAppIcon().clear();
+            prefs.endBlockingEdit();
+
+            // Clear custom shortcut icons
+            ContentWriter writer = new ContentWriter(context, new ContentWriter.CommitParams(null, null));
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, (byte[]) null);
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON_ENTRY, (String) null);
+            writer.commit();
+
+            // Reload changes
+            ZimUtilsKt.reloadIconsFromComponents(context, toUpdateSet);
+            ZimPreferencesChangeCallback prefsCallback = prefs.getOnChangeCallback();
+            if (prefsCallback != null) {
+                prefsCallback.reloadAll();
+            }
         }
     }
 

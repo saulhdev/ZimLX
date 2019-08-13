@@ -30,7 +30,7 @@ import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
 
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
-
+    private val TAG = "ZimPreferences"
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
     private val onChangeListeners: MutableMap<String, MutableSet<OnPreferenceChangeListener>> = HashMap()
     private var onChangeCallback: ZimPreferencesChangeCallback? = null
@@ -60,6 +60,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
 
+    private val zimConfig = ZimConfig.getInstance(context)
+
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
     var configVersion by IntPref("config_version", if (restoreSuccess) 0 else CURRENT_VERSION)
 
@@ -78,6 +80,22 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     fun setMinibarEnable(enable: Boolean) {
         sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
     }
+
+    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
+
+    /*fun getMinibarItems(): ArrayList<String> {
+        val values = Utilities.setToList(sharedPrefs.getStringSet(ZimFlags.MINIBAR_ITEMS, defaultItems))
+        Log.i(TAG, "Minibar Items from preferences "+ values.size)
+        if (values.isNullOrEmpty()) {
+            for (item in Minibar.actionDisplayItems) {
+                if (defaultItems.contains(Integer.toString(item.id))) {
+                    values.add(Integer.toString(item.id))
+                }
+            }
+            setMinibarItems(values)
+        }
+        return values
+    }*/
 
     //dock
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
@@ -109,7 +127,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, recreate)
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
-    val showPredictions by BooleanPref("pref_show_predictions", true, doNothing)
+    val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, doNothing)
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
     val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
@@ -132,7 +150,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     // Search
-    var searchProvider by StringPref("pref_globalSearchProvider", context.resources.getString(R.string.config_default_search_provider)) {
+    var searchProvider by StringPref("pref_globalSearchProvider",
+            zimConfig.defaultSearchProvider) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
@@ -140,21 +159,22 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
-            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else emptyList()) {
+            if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()) {
 
         override fun unflattenValue(value: String) = value
     }
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
-    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
-    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", context.resources.getBoolean(R.bool.config_enable_legacy_treatment), reloadIcons)
-    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds", context.resources.getBoolean(R.bool.config_enable_colorized_legacy_treatment), reloadIcons)
-    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", context.resources.getBoolean(R.bool.config_enable_white_only_treatment), reloadIcons)
+    val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", zimConfig.enableLegacyTreatment, reloadIcons)
+    val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds",
+            zimConfig.enableColorizedLegacyTreatment, reloadIcons)
+    val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment, reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
     val defaultBlurStrength = TypedValue().apply {
         context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
     }
-    val blurRadius by FloatPref("pref_blurRadius", defaultBlurStrength.float, updateBlur)
-    var enableBlur by BooleanPref("pref_enableBlur", context.resources.getBoolean(R.bool.config_default_enable_blur), updateBlur)
+
+    val blurRadius by FloatPref("pref_blurRadius", zimConfig.defaultBlurStrength, updateBlur)
+    var enableBlur by BooleanPref("pref_enableBlur", zimConfig.defaultEnableBlur, updateBlur)
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
@@ -194,7 +214,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
-    val enableSmartspace by BooleanPref("pref_smartspace", context.resources.getBoolean(R.bool.config_enable_smartspace))
+    val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace)
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
 
     //Notification
@@ -231,6 +251,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeCallback?.forceReloadApps()
     }
 
+    fun getOnChangeCallback() = onChangeCallback
+
     fun recreate() {
         onChangeCallback?.recreate()
     }
@@ -264,7 +286,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     fun reloadIcons() {
-        onChangeCallback?.reloadIcons()
+        LauncherAppState.getInstance(context).reloadIconCache()
+        runOnMainThread {
+            onChangeCallback?.recreate()
+        }
     }
 
     fun addOnPreferenceChangeListener(listener: OnPreferenceChangeListener, vararg keys: String) {
@@ -441,6 +466,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         operator fun get(key: K): V? {
             return valueMap[key]
+        }
+
+        fun clear() {
+            valueMap.clear()
+            saveChanges()
         }
     }
 

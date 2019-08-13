@@ -29,10 +29,11 @@ import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.ThemeActivity;
 
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -82,10 +83,10 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         _recyclerView.setLayoutManager(new LinearLayoutManager(this));
         _recyclerView.setAdapter(_adapter);
 
-        appSettings = new AppSettings(this);
         mLauncher = Launcher.getLauncher(Launcher.mContext);
+        ZimPreferences prefs = Utilities.getZimPrefs(mLauncher);
 
-        final ArrayList<String> minibarArrangement = appSettings.getMinibarArrangement();
+        final Set<String> minibarArrangement = prefs.getMinibarItems();
         for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
             _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
         }
@@ -130,12 +131,13 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
     @Override
     protected void onPause() {
-        ArrayList<String> minibarArrangement = new ArrayList<>();
+        Set<String> minibarArrangement = new HashSet<>();
         for (Item item : _adapter.getAdapterItems()) {
             if (item.enable)
                 minibarArrangement.add(Long.toString(item.id));
+
         }
-        appSettings.setMinibarArrangement(minibarArrangement);
+        Utilities.getZimPrefs(mLauncher).setMinibarItems(minibarArrangement);
         super.onPause();
     }
 

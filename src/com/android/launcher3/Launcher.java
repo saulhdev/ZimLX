@@ -78,7 +78,6 @@ import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
-import com.android.launcher3.allapps.PredictiveAppsProvider;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
@@ -108,7 +107,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -244,7 +242,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private View mHotseatSearchBox;
     // Main container view for the all apps screen.
     @Thunk
-    AllAppsContainerView mAppsView;
+    public AllAppsContainerView mAppsView;
     public AllAppsTransitionController mAllAppsController;
     // Main container view and the model for the widget tray screen.
 
@@ -292,22 +290,21 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private ExtractedColors mExtractedColors;
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
-    private PredictiveAppsProvider mPredictiveAppsProvider;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
             StrictMode.setThreadPolicy(new StrictMode.ThreadPolicy.Builder()
-                    .detectDiskReads()
-                    .detectDiskWrites()
+                    //.detectDiskReads()
+                    //.detectDiskWrites()
                     .detectNetwork()   // or .detectAll() for all detectable problems
-                    .penaltyLog()
+                    //.penaltyLog()
                     .build());
             StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder()
                     .detectLeakedSqlLiteObjects()
                     .detectLeakedClosableObjects()
-                    .penaltyLog()
-                    .penaltyDeath()
+                    .detectActivityLeaks()
+                    //.penaltyLog()
+                    //.penaltyDeath()
                     .build());
         }
         TraceHelper.beginSection("Launcher-onCreate");
@@ -315,7 +312,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
         mContext = this;
-        appSettings = new AppSettings(mContext);
+        //appSettings = new AppSettings(mContext);
 
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);
@@ -330,7 +327,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel = app.setLauncher(this);
         initDeviceProfile(app.getInvariantDeviceProfile());
 
-        showNotificationCount = Utilities.getZimPrefs(this).getFolderBadgeCount();
+        showNotificationCount = prefs.getFolderBadgeCount();
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
@@ -404,8 +401,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
         mRotationHelper.initialize();
-        mPredictiveAppsProvider = new PredictiveAppsProvider(this);
-        tryAndUpdatePredictedApps();
         initMinibar();
         TraceHelper.endSection("Launcher-onCreate");
         Utilities.checkRestoreSuccess(this);
@@ -446,27 +441,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    /**
-     * Updates the set of predicted apps if it hasn't been updated since the last time Launcher was
-     * resumed.
-     */
-    public void tryAndUpdatePredictedApps() {
-        List<ComponentKeyMapper<AppInfo>> apps = null;
-        if (Utilities.getZimPrefs(this).getShowPredictions()) {
-            apps = mPredictiveAppsProvider.getPredictions();
-        }
-
-        if (apps != null) {
-            mAppsView.setPredictedApps(apps);
-        }
-    }
-
     public void initMinibar() {
         final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
         final ArrayList<String> labels = new ArrayList<>();
         final ArrayList<Integer> icons = new ArrayList<>();
         Minibar.setContext(mContext);
-        for (String act : appSettings.getMinibarArrangement()) {
+        ZimPreferences prefs = Utilities.getZimPrefs(this);
+
+        for (String act : prefs.getMinibarItems()) {
             if (act.length() > 1) {
                 Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
                 if (item != null) {
@@ -485,7 +467,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
             }
         });
-        ZimPreferences prefs = Utilities.getZimPrefs(this);
         // frame layout spans the entire side while the minibar container has gaps at the top and bottom
         ((FrameLayout) minibar.getParent()).setBackgroundColor(prefs.getMinibarColor());
 
@@ -953,6 +934,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+
         UiFactory.onLauncherStateOrResumeChanged(this);
 
         TraceHelper.endSection("ON_RESUME");

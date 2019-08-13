@@ -6,27 +6,27 @@ import android.content.Intent;
 import android.media.AudioManager;
 import android.provider.Settings;
 
+import androidx.drawerlayout.widget.DrawerLayout;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
-import androidx.drawerlayout.widget.DrawerLayout;
-
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 public class Minibar {
     public static Context mContext = Launcher.mContext;
     public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", Launcher.getLauncher(mContext).getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
-            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", Launcher.getLauncher(mContext).getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
+            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", mContext.getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
+            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", mContext.getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
             new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
             new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
             new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 25),
             new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
             new ActionDisplayItem(Action.AppSettings, "AppSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_11), R.drawable.ic_font_download, 54),
-            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", Launcher.getLauncher(mContext).getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73)
+            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", mContext.getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73)
     };
 
     public static void RunAction(Action action, final Context context) {
