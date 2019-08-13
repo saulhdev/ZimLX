@@ -24,7 +24,10 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
+import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimUtilsKt;
+import org.zimmob.zimlx.colors.ColorEngine;
 
 import static android.view.ViewGroup.MarginLayoutParams;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
@@ -50,7 +53,8 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
+        ColorEngine.OnColorChangeListener {
 
     public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
             new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
@@ -84,7 +88,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     private ScrimView mScrimView;
 
     private final Launcher mLauncher;
-    private final boolean mIsDarkTheme;
+    private boolean mIsDarkTheme;
     private boolean mIsVerticalLayout;
 
     // Animation in this class is controlled by a single variable {@link mProgress}.
@@ -276,8 +280,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter,
-                allAppsFade);
+        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter, allAppsFade);
 
         setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
                 (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
@@ -343,9 +346,16 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mAppsView;
     }
 
-    /*public void setOverlayScroll(float scroll) {
+    @Override
+    public void onColorChange(@NotNull ColorEngine.ResolveInfo resolveInfo) {
+        mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
+    }
+
+    /*
+    public void setOverlayScroll(float scroll) {
         if (mScrimView instanceof BlurScrimView) {
             ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
         }
-    }*/
+    }
+    */
 }
