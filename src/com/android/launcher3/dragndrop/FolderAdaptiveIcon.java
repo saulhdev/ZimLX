@@ -25,7 +25,6 @@ import android.graphics.Paint;
 import android.graphics.Path;
 import android.graphics.PixelFormat;
 import android.graphics.Point;
-import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -39,11 +38,13 @@ import com.android.launcher3.folder.PreviewBackground;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
+
 /**
- * {@link AdaptiveIconDrawable} representation of a {@link FolderIcon}
+ * {@link AdaptiveIconCompat} representation of a {@link FolderIcon}
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
+public class FolderAdaptiveIcon extends AdaptiveIconCompat {
     private static final String TAG = "FolderAdaptiveIcon";
 
     private final Drawable mBadge;
@@ -53,6 +54,15 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         super(bg, fg);
         mBadge = badge;
         mMask = mask;
+    }
+
+    @Override
+    public Path getIconMask() {
+        return mMask;
+    }
+
+    public Drawable getBadge() {
+        return mBadge;
     }
 
     public static FolderAdaptiveIcon createFolderAdaptiveIcon(
@@ -78,7 +88,6 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         }
     }
 
-
     /**
      * Initializes various bitmaps on the UI thread and returns the final drawable.
      */
@@ -97,11 +106,11 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
         icon.drawBadge(c);
 
         // Initialize preview
-        final float sizeScaleFactor = 1 + 2 * AdaptiveIconDrawable.getExtraInsetFraction();
+        final float sizeScaleFactor = 1 + 2 * AdaptiveIconCompat.getExtraInsetFraction();
         final int previewWidth = (int) (dragViewSize.x * sizeScaleFactor);
         final int previewHeight = (int) (dragViewSize.y * sizeScaleFactor);
 
-        final float shiftFactor = AdaptiveIconDrawable.getExtraInsetFraction() / sizeScaleFactor;
+        final float shiftFactor = AdaptiveIconCompat.getExtraInsetFraction() / sizeScaleFactor;
         final float previewShiftX = shiftFactor * previewWidth;
         final float previewShiftY = shiftFactor * previewHeight;
 
@@ -124,15 +133,6 @@ public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
                 margin - previewShiftX, margin - previewShiftY);
 
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
-    }
-
-    @Override
-    public Path getIconMask() {
-        return mMask;
-    }
-
-    public Drawable getBadge() {
-        return mBadge;
     }
 
     /**

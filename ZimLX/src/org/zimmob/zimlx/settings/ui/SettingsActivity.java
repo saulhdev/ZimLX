@@ -85,7 +85,8 @@ import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
-import org.zimmob.zimlx.minibar.Minibar;
+import org.zimmob.zimlx.minibar.DashAction;
+import org.zimmob.zimlx.minibar.DashUtils;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
@@ -773,7 +774,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
                     case ZimFlags.MINIBAR:
-                        Minibar.RunAction(Minibar.Action.EditMinibar, getActivity());
+                        DashUtils.RunAction(DashAction.Action.EditMinibar, getActivity());
                         break;
 
                     case "pref_hiddenApps":

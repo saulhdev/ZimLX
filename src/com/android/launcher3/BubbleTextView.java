@@ -692,4 +692,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     protected boolean isTextHidden() {
         return mHideText;
     }
+
+    public int getBadgeColor() {
+        return mBadgeColor;
+    }
 }

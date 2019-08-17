@@ -1,6 +1,6 @@
 package org.zimmob.zimlx.backup
 
-import android.Manifest
+import android.Manifest.permission.READ_EXTERNAL_STORAGE
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Bundle
@@ -8,7 +8,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
+import androidx.core.content.ContextCompat.checkSelfPermission
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
@@ -45,15 +45,15 @@ class BackupListActivity : SettingsBaseActivity(), BackupListAdapter.Callbacks {
     }
 
     private fun loadLocalBackups() {
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+        if (checkSelfPermission(this, READ_EXTERNAL_STORAGE)
                 != PackageManager.PERMISSION_GRANTED) {
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                            Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                            READ_EXTERNAL_STORAGE)) {
                 Snackbar.make(findViewById(android.R.id.content), R.string.read_external_storage_required,
                         Snackbar.LENGTH_SHORT).show()
             }
             ActivityCompat.requestPermissions(this,
-                    arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),
+                    arrayOf(READ_EXTERNAL_STORAGE),
                     permissionRequestReadExternalStorage)
         } else {
             adapter.setData(ZimBackup.listLocalBackups(this))

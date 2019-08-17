@@ -1,0 +1,141 @@
+/*
+ *     Copyright (C) 2019 paphonb@xda
+ *
+ *     This file is part of Lawnchair Launcher.
+ *
+ *     Lawnchair Launcher is free software: you can redistribute it and/or modify
+ *     it under the terms of the GNU General Public License as published by
+ *     the Free Software Foundation, either version 3 of the License, or
+ *     (at your option) any later version.
+ *
+ *     Lawnchair Launcher is distributed in the hope that it will be useful,
+ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *     GNU General Public License for more details.
+ *
+ *     You should have received a copy of the GNU General Public License
+ *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
+package org.zimmob.zimlx.adaptive
+
+import android.annotation.SuppressLint
+import android.content.Context
+import android.graphics.Path
+import android.graphics.Rect
+import android.graphics.Region
+import android.graphics.RegionIterator
+import android.graphics.drawable.AdaptiveIconDrawable
+import android.os.Handler
+import android.text.TextUtils
+import androidx.core.graphics.PathParser
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherModel
+import com.android.launcher3.Utilities
+import com.android.launcher3.graphics.IconShapeOverride
+import org.zimmob.zimlx.folder.FolderShape
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat
+import org.zimmob.zimlx.runOnMainThread
+import org.zimmob.zimlx.util.ZimSingletonHolder
+import org.zimmob.zimlx.zimPrefs
+
+class IconShapeManager(private val context: Context) {
+
+    private val systemIconShape = getSystemShape()
+    var iconShape by context.zimPrefs.StringBasedPref(
+            "pref_iconShape", systemIconShape, ::onShapeChanged,
+            {
+                IconShape.fromString(it) ?: systemIconShape
+            }, IconShape::toString) { /* no dispose */ }
+
+    init {
+        migratePref()
+    }
+
+    @SuppressLint("RestrictedApi")
+    private fun migratePref() {
+        // Migrate from old path-based override
+        val override = IconShapeOverride.getAppliedValue(context)
+        if (!TextUtils.isEmpty(override)) {
+            try {
+                iconShape = findNearestShape(PathParser.createPathFromPathData(override))
+                Utilities.getPrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply()
+            } catch (e: RuntimeException) {
+                // Just ignore the error
+            }
+        }
+    }
+
+    private fun getSystemShape(): IconShape {
+        if (!Utilities.ATLEAST_OREO) return IconShape.Circle
+
+        val iconMask = AdaptiveIconDrawable(null, null).iconMask
+        val systemShape = findNearestShape(iconMask)
+        return object : IconShape(systemShape) {
+
+            private val isCircle = systemShape is Circle
+
+            override fun getMaskPath(): Path {
+                return Path(iconMask)
+            }
+
+            override fun addShape(path: Path, x: Float, y: Float, radius: Float) {
+                if (isCircle) {
+                    path.addCircle(x + radius, y + radius, radius, Path.Direction.CW)
+                } else {
+                    super.addShape(path, x, y, radius)
+                }
+            }
+
+            override fun toString() = ""
+        }
+    }
+
+    private fun findNearestShape(comparePath: Path): IconShape {
+        val clip = Region(0, 0, 100, 100)
+        val systemRegion = Region().apply {
+            setPath(comparePath, clip)
+        }
+        val pathRegion = Region()
+        val path = Path()
+        val rect = Rect()
+        return listOf(
+                IconShape.Circle,
+                IconShape.Square,
+                IconShape.RoundedSquare,
+                IconShape.Squircle,
+                IconShape.Teardrop,
+                IconShape.Cylinder).minBy {
+            path.reset()
+            it.addShape(path, 0f, 0f, 50f)
+            pathRegion.setPath(path, clip)
+            pathRegion.op(systemRegion, Region.Op.XOR)
+
+            var difference = 0
+            val iter = RegionIterator(pathRegion)
+            while (iter.next(rect)) {
+                difference += rect.width() * rect.height()
+            }
+
+            difference
+        }!!
+    }
+
+    private fun onShapeChanged() {
+        Handler(LauncherModel.getWorkerLooper()).post {
+            LauncherAppState.getInstance(context).reloadIconCache()
+
+            runOnMainThread {
+                AdaptiveIconCompat.resetMask()
+                FolderShape.init(context)
+                context.zimPrefs.recreate()
+            }
+        }
+    }
+
+    companion object : ZimSingletonHolder<IconShapeManager>(::IconShapeManager) {
+
+        @JvmStatic
+        fun getInstanceNoCreate() = dangerousGetInstance()
+    }
+}

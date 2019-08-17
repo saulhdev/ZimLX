@@ -25,6 +25,8 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.dynamicui.WallpaperColorInfo
 import org.zimmob.zimlx.getColorAccent
+import org.zimmob.zimlx.getColorAttr
+import org.zimmob.zimlx.theme.ThemeOverride
 
 @Keep
 class ZimAccentResolver(config: Config) : ColorEngine.ColorResolver(config), ColorEngine.OnColorChangeListener {
@@ -34,7 +36,7 @@ class ZimAccentResolver(config: Config) : ColorEngine.ColorResolver(config), Col
         engine.addColorChangeListeners(this, ColorEngine.Resolvers.ACCENT)
     }
 
-    override fun onColorChange(resolver: String, color: Int, foregroundColor: Int) {
+    override fun onColorChange(resolveInfo: ColorEngine.ResolveInfo) {
         notifyChanged()
     }
 
@@ -50,6 +52,9 @@ class ZimAccentResolver(config: Config) : ColorEngine.ColorResolver(config), Col
 
 @Keep
 class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
+
+    override val themeAware = true
+    override val themeSet = ThemeOverride.DeviceDefault()
 
     override fun resolveColor(): Int {
         var color = ContextThemeWrapper(engine.context, android.R.style.Theme_DeviceDefault).getColorAccent()
@@ -71,6 +76,8 @@ class SystemAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
 
 @Keep
 class PixelAccentResolver(config: Config) : ColorEngine.ColorResolver(config) {
+
+    override val themeAware = true
 
     private val accentColor = ContextThemeWrapper(engine.context, R.style.BaseLauncherThemeWithCustomAttrs).getColorAccent()
 
@@ -136,6 +143,21 @@ abstract class WallpaperColorResolver(config: Config)
         notifyChanged()
     }
 }
+
+
+abstract class ThemeAttributeColorResolver(config: Config) :
+        ColorEngine.ColorResolver(config) {
+
+    protected abstract val colorAttr: Int
+    override val themeAware = true
+
+    override fun resolveColor(): Int {
+        return themedContext.getColorAttr(colorAttr)
+    }
+
+    override fun getDisplayName() = context.getString(R.string.theme_based)
+}
+
 /*
 @Keep
 class WallpaperMainColorResolver(config: Config) : WallpaperColorResolver(config) {

@@ -242,4 +242,5 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             CustomInfoProvider.Companion.forItem(this, itemInfo).setIcon(itemInfo, customIconEntry);
         }
     }
+
 }

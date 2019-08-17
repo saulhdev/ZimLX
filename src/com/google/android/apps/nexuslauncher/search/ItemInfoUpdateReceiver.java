@@ -2,18 +2,12 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.R;
-import com.android.launcher3.allapps.AllAppsRecyclerView;
-import com.android.launcher3.allapps.AlphabeticalAppsList;
-import com.android.launcher3.util.ComponentKeyMapper;
 
-import java.util.Iterator;
+import org.zimmob.zimlx.util.ZimFlags;
 
 public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver, SharedPreferences.OnSharedPreferenceChangeListener {
     private final LauncherCallbacks mCallbacks;
@@ -27,7 +21,7 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
     }
 
     public void di() {
-        final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
+        /*final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
         final IconCache iconCache = LauncherAppState.getInstance(this.mLauncher).getIconCache();
         final Iterator<ComponentKeyMapper<AppInfo>> iterator = this.mCallbacks.getPredictedApps().iterator();
         int n = 0;
@@ -46,7 +40,7 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
                 n2 = n;
             }
             n = n2;
-        }
+        }*/
     }
 
     public void onCreate() {
@@ -58,7 +52,7 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
     }
 
     public void onSharedPreferenceChanged(final SharedPreferences sharedPreferences, final String s) {
-        if ("reflection_last_predictions".equals(s) || "pref_show_predictions".equals(s)) {
+        if ("reflection_last_predictions".equals(s) || ZimFlags.APPDRAWER_SHOW_PREDICTIONS.equals(s)) {
             this.di();
         }
     }

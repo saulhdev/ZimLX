@@ -70,7 +70,6 @@ import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
-import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -409,8 +408,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
         requestFocus();
         super.onAttachedToWindow();
         if (mFolderIcon != null && mFolderIcon.isCustomIcon && Utilities.getZimPrefs(getContext()).getFolderBgColored()) {
-            int color = ColorExtractor.findDominantColorByHue(Utilities.drawableToBitmap(mFolderIcon.customIcon));
-            setBackgroundTintList(ColorStateList.valueOf(color));
+            //int color = ColorExtractor.findDominantColorByHue(Utilities.drawableToBitmap(mFolderIcon.customIcon));
+            setBackgroundTintList(ColorStateList.valueOf(mFolderIcon.getFolderName().getBadgeColor()));
+            //setBackgroundTintList(ColorStateList.valueOf(color));
         }
     }
 

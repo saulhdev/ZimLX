@@ -867,6 +867,10 @@
     <string name="google_app">Google app</string>
     <string name="pref_open_source_licenses_title">Licenses</string>
 
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+
+
     <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
     <string name="icon_badging_service_title">Show notification dots</string>
     <string name="title_storage_permission_required">Storage permission needed</string>
@@ -895,6 +899,7 @@
     <string name="zen_mode_enabled">Do not disturb is enabled</string>
     <string name="crash_report_notif_title">%1$s crashed!</string>
     <string name="general_pref_title">Desktop</string>
+
     <string name="personality_provider">Contextual messages</string>
     <string-array name="greetings_morning">
         <item>Good morning!</item>
@@ -911,5 +916,14 @@
         <item>How was your day?</item>
         <item>What did you do today?</item>
     </string-array>
+
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+
+    <string name="pref_sesame_enabled">Sesame shortcut data shared</string>
+    <string name="pref_sesame_disabled">No data shared</string>
+    <string name="pref_sesame_show_shortcuts">App shortcuts</string>
+    <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
 
 </resources>

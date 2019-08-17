@@ -26,9 +26,7 @@ import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
-import android.os.Looper
 import android.text.TextUtils
-import android.util.Log
 import android.util.Xml
 import android.widget.Toast
 import com.android.launcher3.*
@@ -42,6 +40,7 @@ import com.google.android.apps.nexuslauncher.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
+import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import org.zimmob.zimlx.get
 import org.zimmob.zimlx.iconpack.*
 import org.zimmob.zimlx.toTitleCase
@@ -50,8 +49,6 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class IconPackImpl(context: Context, packPackageName: String) : IconPack(context, packPackageName) {
-
-    private val TAG = "IconPackImpl"
 
     private val packComponents: MutableMap<ComponentName, Entry> = HashMap()
     private val packCalendars: MutableMap<ComponentName, String> = HashMap()
@@ -65,7 +62,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     init {
         if (prefs.showDebugInfo) {
-            Log.d(TAG, "init pack $packPackageName on ${Looper.myLooper()!!.thread.name}", Throwable())
+
         }
         executeLoadPack()
     }
@@ -134,44 +131,22 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             }
                         }
                         name == "scale" -> {
-                            packMask.scale = parseXml["factor"]!!.toFloat()
-                            if (packMask.scale > 0x7f070000) {
-                                packMask.scale = packResources.getDimension(packMask.scale.toInt())
+                            val scale = parseXml["factor"]!!.toFloat()
+                            if (scale > 0x7f070000) {
+                                packMask.iconScale = packResources.getDimension(scale.toInt())
+                            } else {
+                                packMask.iconScale = scale
                             }
                         }
                         name == "iconback" -> {
                             // TODO: handle packs with multiple masks
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconBack = Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconBackEntries)
                         }
                         name == "iconmask" -> {
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconMask = Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconMaskEntries)
                         }
                         name == "iconupon" -> {
-                            val drawableName = parseXml["img1"]
-                            if (drawableName != null && !TextUtils.isEmpty(drawableName)) {
-                                // Try if we can actually load the drawable. (Some icon packs define
-                                // a resource for this which doesn't actually exist
-                                // TODO: actually handle this in mask code
-                                // entry.drawable
-                                packMask.hasMask = true
-                                packMask.iconUpon = Entry(drawableName)
-                            }
+                            addImgsTo(parseXml, packMask.iconUponEntries)
                         }
                         name == "config" -> {
                             val onlyMaskLegacy = parseXml["onlyMaskLegacy"]
@@ -204,7 +179,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
             }
             val endTime = System.currentTimeMillis()
-            Log.d("IconPackImpl", "completed parsing pack $packPackageName in ${endTime - startTime}ms")
             return
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
@@ -218,7 +192,22 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         Toast.makeText(context, "Failed to parse AppFilter", Toast.LENGTH_SHORT).show()
     }
 
-    override fun getEntryForComponent(key: ComponentKey) = packComponents[key.componentName]
+    private fun addImgsTo(parseXml: XmlPullParser, collection: MutableCollection<Entry>) {
+        for (i in (0 until parseXml.attributeCount)) {
+            if (parseXml.getAttributeName(i).startsWith("img")) {
+                val drawableName = parseXml.getAttributeValue(i)
+                if (!TextUtils.isEmpty(drawableName)) {
+                    collection.add(Entry(drawableName))
+                }
+            }
+        }
+    }
+
+    override fun getEntryForComponent(key: ComponentKey): Entry? {
+        val entry = packComponents[key.componentName]
+        if (entry?.isAvailable != true) return null
+        return entry
+    }
 
     override fun getIcon(name: String, iconDpi: Int): Drawable? {
         val drawableId = getDrawableId(name)
@@ -230,9 +219,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
+                    return gen.result
+                }
                 return drawable.mutate()
-            } catch (e: Resources.NotFoundException) {
-                Log.e(TAG, "Can't get drawable for name $name ($drawableId)", e)
+            } catch (ex: Resources.NotFoundException) {
             }
         }
         return null
@@ -254,22 +246,33 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         if (drawableId != 0) {
             try {
-                var drawable = packResources.getDrawable(drawableId)
+                var drawable = AdaptiveIconCompat.wrap(
+                        packResources.getDrawableForDensity(drawableId, iconDpi)
+                                ?: packResources.getDrawable(drawableId))
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
                 } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, drawable.mutate())
+                    return gen.result
+                }
                 return drawable.mutate()
-            } catch (e: Resources.NotFoundException) {
-                Log.e(TAG, "Can't get drawable for $component ($drawableId)", e)
+            } catch (ex: Resources.NotFoundException) {
+
             }
         }
 
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, iconProvider)
-            return packMask.getIcon(context, baseIcon)
+            val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
+            if (prefs.adaptifyIconPacks) {
+                val gen = AdaptiveIconGenerator(context, icon)
+                return gen.result
+            }
+            return icon
         }
 
         return null
@@ -281,7 +284,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
             if (baseIcon != null) {
-                return packMask.getIcon(context, baseIcon)
+                val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, icon)
+                    return gen.result
+                }
+                return icon
             }
         }
 
@@ -301,7 +309,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 else -> 0
             }
             if (packClocks.containsKey(drawableId)) {
-                val drawable = packResources.getDrawable(drawableId)
+                val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
             } else if (packDynamicDrawables.containsKey(drawableId)) {
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
@@ -332,7 +340,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         var entry: Entry
         try {
             val parser = getXml("drawable")
-            Log.d("IconPackImpl", "initialized parser for pack $packPackageName in ${System.currentTimeMillis() - startTime}ms")
             while (parser != null && parser.next() != XmlPullParser.END_DOCUMENT) {
                 if (cancel()) return
                 if (parser.eventType != XmlPullParser.START_TAG) continue
@@ -388,8 +395,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         val id = getDrawableId(name)
         return try {
             if (id != 0) packResources.getDrawableForDensity(id, density) else null
-        } catch (e: Resources.NotFoundException) {
-            Log.e(TAG, "Can't get drawable $id($name) from $packPackageName", e)
+        } catch (ex: Resources.NotFoundException) {
             null
         }
     }
@@ -407,17 +413,32 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         override val displayName by lazy { drawableName.replace(Regex("""_+"""), " ").trim().toTitleCase() }
         override val identifierName = drawableName
-        override val drawable: Drawable
-            get() {
-                try {
-                    return packResources.getDrawable(drawableId)
-                } catch (e: Resources.NotFoundException) {
-                    throw Exception("Failed to get drawable $drawableId ($drawableName) from $packPackageName", e)
-                }
-            }
+        override val isAvailable by lazy { drawableId != 0 && checkResourceExists() }
+
+        val debugName get() = "$drawableName in $packPackageName"
         val drawableId: Int by lazy { id ?: getDrawableId(drawableName) }
 
+        override fun drawableForDensity(density: Int): Drawable {
+            if (!isAvailable) {
+                throw IllegalStateException("Trying to access an unavailable entry $debugName")
+            }
+            try {
+                return AdaptiveIconCompat.wrap(packResources.getDrawableForDensity(drawableId, density)!!)
+            } catch (e: Resources.NotFoundException) {
+                throw Exception("Failed to get drawable $drawableId ($debugName)", e)
+            }
+        }
+
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, drawableName)
+
+        private fun checkResourceExists(): Boolean {
+            return try {
+                packResources.getResourceName(drawableId)
+                true
+            } catch (e: Resources.NotFoundException) {
+                false
+            }
+        }
     }
 
 }

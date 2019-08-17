@@ -48,6 +48,8 @@
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
 
         <!-- Backports -->
+        <item name="android:textColorPrimary">@color/primary_text_material_light</item>
+        <item name="android:textColorSecondary">@color/secondary_text_material_light</item>
         <item name="android:textColorPrimaryInverse">?android:attr/textColorPrimary</item>
         <item name="android:textColorSecondaryInverse">?android:attr/textColorSecondary</item>
 
@@ -102,15 +104,11 @@
     <!-- A derivative project can extend these themes to customize the application theme without
         affecting the base theme -->
     <style name="AppTheme" parent="@style/LauncherTheme" />
-
     <style name="AppTheme.DarkText" parent="@style/LauncherTheme.DarkText" />
-
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
-
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />
-
+    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />BaseIcon
     <style name="AppTheme.Black.DarkText" parent="@style/LauncherTheme.Black.DarkText" />
 
     <style name="LauncherTheme.Black" parent="@style/LauncherTheme.Dark">
@@ -125,11 +123,13 @@
     </style>
 
     <style name="LauncherTheme.Black.DarkText" parent="@style/LauncherTheme.Black">
+        <item name="allAppsInterimScrimAlpha">25</item>
         <item name="workspaceTextColor">#FF212121</item>
         <item name="workspaceShadowColor">@android:color/transparent</item>
         <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
         <item name="workspaceKeyShadowColor">@android:color/transparent</item>
         <item name="isWorkspaceDarkText">true</item>
+        <item name="workspaceStatusBarScrim">@null</item>
     </style>
 
     <!-- Theme for the widget container. Overridden on API 26. -->
@@ -468,11 +468,14 @@
 
     <style name="Theme.Transparent" parent="android:Theme">
         <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowAnimationStyle">@null</item>
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:windowNoTitle">true</item>
         <item name="android:windowIsFloating">true</item>
         <item name="android:backgroundDimEnabled">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
     </style>
 
 </resources>

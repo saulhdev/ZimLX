@@ -25,4 +25,6 @@
     <bool name="config_enable_colorized_legacy_treatment">true</bool>
     <!-- Wether or not new adaptive icons should be generated for adaptive icons with purely white background -->
     <bool name="config_enable_white_only_treatment">false</bool>
+    <!-- Wether the status bar should be hidden on the home screen -->
+    <bool name="config_hide_statusbar">false</bool>
 </resources>

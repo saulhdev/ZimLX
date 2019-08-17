@@ -11,29 +11,22 @@ import com.android.launcher3.R;
 
 import java.util.List;
 
-/**
- * Created by saul on 04-26-18.
- * Project ZimLX
- * henriquez.saul@gmail.com
- */
-public class MinibarAdapter extends BaseAdapter {
+public class DashAdapter extends BaseAdapter {
 
-    private Context _context;
-    private List<String> _labels;
-    private List<Integer> _icons;
+    private Context context;
+    private List<DashModel> dashItems;
 
-    public MinibarAdapter(Context context, List labels, List icons) {
-        _context = context;
-        _labels = labels;
-        _icons = icons;
+    public DashAdapter(Context context, List<DashModel> items) {
+        this.context = context;
+        this.dashItems = items;
     }
 
     public int getCount() {
-        return _labels.size();
+        return dashItems.size();
     }
 
-    public Object getItem(int arg0) {
-        return null;
+    public Object getItem(int item) {
+        return dashItems.get(item);
     }
 
     public long getItemId(int position) {
@@ -44,14 +37,14 @@ public class MinibarAdapter extends BaseAdapter {
         View view;
         ImageView iv;
         if (convertView == null) {
-            LayoutInflater inflater = LayoutInflater.from(_context);
+            LayoutInflater inflater = LayoutInflater.from(context);
             view = inflater.inflate(R.layout.item_minibar, parent, false);
         } else {
             view = convertView;
         }
 
         iv = view.findViewById(R.id.iv);
-        iv.setImageResource(_icons.get(position));
+        iv.setImageResource(dashItems.get(position).icon);
         return view;
     }
 }

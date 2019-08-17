@@ -25,7 +25,6 @@ import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback;
 import com.mikepenz.fastadapter_extensions.drag.SimpleDragCallback;
 
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.settings.AppSettings;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.ThemeActivity;
 
@@ -48,7 +47,6 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     @BindView(R.id.recyclerView)
     public RecyclerView _recyclerView;
     private FastItemAdapter<Item> _adapter;
-    private AppSettings appSettings;
     private Launcher mLauncher;
     private ZimPreferences prefs;
     private ThemeOverride themeOverride;
@@ -84,11 +82,10 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         _recyclerView.setAdapter(_adapter);
 
         mLauncher = Launcher.getLauncher(Launcher.mContext);
-        ZimPreferences prefs = Utilities.getZimPrefs(mLauncher);
 
-        final Set<String> minibarArrangement = prefs.getMinibarItems();
-        for (Minibar.ActionDisplayItem item : Minibar.actionDisplayItems) {
-            _adapter.add(new Item(item.id, item, minibarArrangement.contains(Integer.toString(item.id))));
+        final Set<String> minibarItems = prefs.getMinibarItems();
+        for (DashModel item : DashUtils.actionDisplayItems) {
+            _adapter.add(new Item(item.id, item, minibarItems.contains(Integer.toString(item.id))));
         }
 
         int[][] states = new int[][]{
@@ -137,7 +134,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
                 minibarArrangement.add(Long.toString(item.id));
 
         }
-        Utilities.getZimPrefs(mLauncher).setMinibarItems(minibarArrangement);
+        prefs.setMinibarItems(minibarArrangement);
         super.onPause();
     }
 
@@ -154,6 +151,15 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     public boolean itemTouchOnMove(int oldPosition, int newPosition) {
         Collections.swap(_adapter.getAdapterItems(), oldPosition, newPosition);
         _adapter.notifyAdapterDataSetChanged();
+
+        Set<String> minibarArrangement = new HashSet<>();
+        for (Item item : _adapter.getAdapterItems()) {
+            if (item.enable)
+                minibarArrangement.add(Long.toString(item.id));
+
+        }
+        prefs.setMinibarItems(minibarArrangement);
+
         return false;
     }
 
@@ -163,11 +169,11 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
     public static class Item extends AbstractItem<Item, Item.ViewHolder> {
         final long id;
-        final Minibar.ActionDisplayItem item;
+        final DashModel item;
         boolean enable;
         boolean edited;
 
-        Item(long id, Minibar.ActionDisplayItem item, boolean enable) {
+        Item(long id, DashModel item, boolean enable) {
             this.id = id;
             this.item = item;
             this.enable = enable;

@@ -59,6 +59,11 @@
             app:iconSpaceReserved="false"
             app:controllerClass=".IconShapeOverrideController" />
 
+        <Preference
+            app:iconSpaceReserved="false"
+            android:key="pref_resetCustomIcons"
+            android:title="@string/reset_custom_icons" />
+
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_cat__theme_style">
 

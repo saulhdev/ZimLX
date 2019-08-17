@@ -83,7 +83,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         mUiManager = new UiManager(this);
     }
 
-    List<ComponentKeyMapper<AppInfo>> getPredictions() {
+    public List<ComponentKeyMapper<AppInfo>> getPredictions() {
         List<ComponentKeyMapper<AppInfo>> list = new ArrayList<>();
         if (isPredictorEnabled()) {
             clearNonExistentPackages();

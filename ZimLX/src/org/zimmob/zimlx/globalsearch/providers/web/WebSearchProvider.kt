@@ -27,6 +27,7 @@ import com.android.launcher3.Utilities
 import okhttp3.Request
 import org.json.JSONArray
 import org.zimmob.zimlx.globalsearch.SearchProvider
+import org.zimmob.zimlx.toArrayList
 import org.zimmob.zimlx.util.OkHttpClientBuilder
 
 abstract class WebSearchProvider(context: Context) : SearchProvider(context) {

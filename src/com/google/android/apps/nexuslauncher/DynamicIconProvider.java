@@ -24,6 +24,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
+
 import java.util.Calendar;
 import java.util.List;
 
@@ -101,7 +103,7 @@ public class DynamicIconProvider extends IconProvider {
                 Resources resourcesForApplication = mPackageManager.getResourcesForApplication(packageName);
                 int dayResId = getDayResId(metaData, resourcesForApplication);
                 if (dayResId != 0) {
-                    drawable = resourcesForApplication.getDrawableForDensity(dayResId, iconDpi);
+                    drawable = AdaptiveIconCompat.wrapNullable(resourcesForApplication.getDrawableForDensity(dayResId, iconDpi));
                 }
             } catch (NameNotFoundException ignored) {
             }

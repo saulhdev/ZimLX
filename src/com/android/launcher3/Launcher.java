@@ -135,8 +135,10 @@ import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
-import org.zimmob.zimlx.minibar.Minibar;
-import org.zimmob.zimlx.minibar.MinibarAdapter;
+import org.zimmob.zimlx.minibar.DashAction;
+import org.zimmob.zimlx.minibar.DashAdapter;
+import org.zimmob.zimlx.minibar.DashModel;
+import org.zimmob.zimlx.minibar.DashUtils;
 import org.zimmob.zimlx.minibar.SwipeListView;
 import org.zimmob.zimlx.settings.AppSettings;
 
@@ -442,28 +444,23 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public void initMinibar() {
-        final ArrayList<Minibar.ActionDisplayItem> items = new ArrayList<>();
-        final ArrayList<String> labels = new ArrayList<>();
-        final ArrayList<Integer> icons = new ArrayList<>();
-        Minibar.setContext(mContext);
         ZimPreferences prefs = Utilities.getZimPrefs(this);
-
+        ArrayList<DashModel> dashItems = new ArrayList<>();
         for (String act : prefs.getMinibarItems()) {
             if (act.length() > 1) {
-                Minibar.ActionDisplayItem item = Minibar.getActionItemFromString(act);
+                DashModel item = DashUtils.getDashItemFromString(act);
                 if (item != null) {
-                    items.add(item);
-                    labels.add(item.label);
-                    icons.add(item.icon);
+                    dashItems.add(item);
                 }
             }
         }
+
         SwipeListView minibar = findViewById(R.id.minibar);
-        minibar.setAdapter(new MinibarAdapter(this, labels, icons));
+        minibar.setAdapter(new DashAdapter(this, dashItems));
         minibar.setOnItemClickListener((parent, view, i, id) -> {
-            Minibar.Action action = Minibar.Action.valueOf(labels.get(i));
-            Minibar.RunAction(action, this);
-            if (action != Minibar.Action.DeviceSettings && action != Minibar.Action.LauncherSettings && action != Minibar.Action.EditMinibar) {
+            DashAction.Action action = DashAction.Action.valueOf(dashItems.get(i).label);
+            DashUtils.RunAction(action, this);
+            if (action != DashAction.Action.DeviceSettings && action != DashAction.Action.LauncherSettings && action != DashAction.Action.EditMinibar) {
                 ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
             }
         });

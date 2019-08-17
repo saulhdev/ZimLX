@@ -736,10 +736,6 @@ public final class Utilities {
         ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
     }
 
-    public static void requestLocationPermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.ACCESS_COARSE_LOCATION}, ZimLauncher.REQUEST_PERMISSION_LOCATION_ACCESS);
-    }
-
     public static void setupPirateLocale(Activity activity) {
         Locale locale = new Locale("pir");
         Locale.setDefault(locale);
@@ -972,5 +968,4 @@ public final class Utilities {
         int hours = calendar.get(Calendar.HOUR_OF_DAY);
         return hours > SUGGESTIONS_DAY_START && hours < SUGGESTIONS_DAY_END;
     }
-
 }

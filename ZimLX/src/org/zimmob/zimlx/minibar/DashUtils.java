@@ -15,25 +15,26 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static org.zimmob.zimlx.minibar.DashAction.Action;
 
-public class Minibar {
+public class DashUtils {
     public static Context mContext = Launcher.mContext;
-    public static ActionDisplayItem[] actionDisplayItems = new ActionDisplayItem[]{
-            new ActionDisplayItem(Action.EditMinibar, "EditMinibar", mContext.getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 98),
-            new ActionDisplayItem(Action.SetWallpaper, "SetWallpaper", mContext.getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 36),
-            new ActionDisplayItem(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 50),
-            new ActionDisplayItem(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 71),
-            new ActionDisplayItem(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 25),
-            new ActionDisplayItem(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 46),
-            new ActionDisplayItem(Action.AppSettings, "AppSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_11), R.drawable.ic_font_download, 54),
-            new ActionDisplayItem(Action.AppDrawer, "AppDrawer", mContext.getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 73)
+    public static DashModel[] actionDisplayItems = new DashModel[]{
+            new DashModel(Action.EditMinibar, "EditMinibar", mContext.getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 10),
+            new DashModel(Action.SetWallpaper, "SetWallpaper", mContext.getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 11),
+            new DashModel(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 12),
+            new DashModel(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 13),
+            new DashModel(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 14),
+            new DashModel(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 15),
+            new DashModel(Action.AppSettings, "AppSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_11), R.drawable.ic_font_download, 16),
+            new DashModel(Action.AppDrawer, "AppDrawer", mContext.getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 17)
     };
 
-    public static void RunAction(Action action, final Context context) {
-        Minibar.RunAction(new ActionItem(action, null), context);
+    public static void RunAction(DashAction.Action action, final Context context) {
+        RunAction(new DashAction(action, null), context);
     }
 
-    public static void RunAction(ActionItem action, final Context context) {
+    private static void RunAction(DashAction action, Context context) {
         switch (action.action) {
             case EditMinibar:
                 context.startActivity(new Intent(context, MinibarEditActivity.class));
@@ -86,46 +87,12 @@ public class Minibar {
         }
     }
 
-    public static ActionDisplayItem getActionItemFromString(String string) {
-        for (ActionDisplayItem item : actionDisplayItems) {
+    public static DashModel getDashItemFromString(String string) {
+        for (DashModel item : actionDisplayItems) {
             if (Integer.toString(item.id).equals(string)) {
                 return item;
             }
         }
         return null;
-    }
-
-    public static void setContext(Context context) {
-        mContext = context;
-    }
-
-    public enum Action {
-        EditMinibar, SetWallpaper, LockScreen, DeviceSettings, LauncherSettings, VolumeDialog, AppDrawer, MobileNetworkSettings, AppSettings
-    }
-
-    public static class ActionItem {
-        public Intent extraData;
-        public Action action;
-
-        public ActionItem(Action action, Intent extraData) {
-            this.action = action;
-            this.extraData = extraData;
-        }
-    }
-
-    public static class ActionDisplayItem {
-        public String label;
-        public String description;
-        public int icon;
-        public int id;
-        public Action action;
-
-        public ActionDisplayItem(Action action, String label, String description, int icon, int id) {
-            this.action = action;
-            this.label = label;
-            this.description = description;
-            this.icon = icon;
-            this.id = id;
-        }
     }
 }

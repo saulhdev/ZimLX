@@ -5,6 +5,8 @@ import android.content.pm.LauncherActivityInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
+
 import java.util.Locale;
 
 public class IconProvider {
@@ -46,6 +48,6 @@ public class IconProvider {
      *                        original icon as long as the flattened version looks the same.
      */
     public Drawable getIcon(LauncherActivityInfo info, int iconDpi, boolean flattenDrawable) {
-        return info.getIcon(iconDpi);
+        return AdaptiveIconCompat.wrap(info.getIcon(iconDpi));
     }
 }

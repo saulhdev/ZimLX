@@ -23,20 +23,11 @@ import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.Color
-import android.graphics.drawable.AdaptiveIconDrawable
-import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.text.TextUtils
-import androidx.annotation.RequiresApi
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.graphics.ColorExtractor
-import com.android.launcher3.graphics.FixedScaleDrawable
-import com.android.launcher3.graphics.IconNormalizer
-import com.android.launcher3.graphics.LauncherIcons
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
@@ -44,15 +35,12 @@ import com.google.android.apps.nexuslauncher.DynamicIconProvider
 import com.google.android.apps.nexuslauncher.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
+import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import org.zimmob.zimlx.getLauncherActivityInfo
-import org.zimmob.zimlx.toBitmap
 import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
-    private val prefs by lazy { Utilities.getZimPrefs(context) }
-    private val wrapperIcon: Drawable by lazy { context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)!!.mutate() }
-    private val normalizer: IconNormalizer by lazy { LauncherIcons.obtain(context).normalizer }
     val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
@@ -98,10 +86,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         getRoundIcon(component, iconDpi)?.let {
             roundIcon = it.apply { mutate() }
         }
-        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
-            return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
-        }
-        return roundIcon
+        val gen = AdaptiveIconGenerator(context, roundIcon
+                ?: originalIcon)
+        return gen.result
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
@@ -127,38 +114,20 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(originalIcon)) {
-                return wrapToAdaptiveIcon(roundIcon ?: originalIcon)
-            }
-            if (roundIcon != null) return roundIcon as Drawable
+            val gen = AdaptiveIconGenerator(context, roundIcon
+                    ?: originalIcon)
+            return gen.result
         }
-        return iconProvider?.getDynamicIcon(info, iconDpi, flattenDrawable) ?: originalIcon
+        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
-        if (Utilities.ATLEAST_OREO && shouldWrapToAdaptive(drawable)) {
-            return wrapToAdaptiveIcon(drawable)
-        }
-        return drawable
-    }
+        val gen = AdaptiveIconGenerator(context, drawable)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    fun shouldWrapToAdaptive(icon: Drawable?): Boolean {
-        if (icon == null) return false
-        val ipm = IconPackManager.getInstance(context)
-        if (!prefs.enableLegacyTreatment || (prefs.iconPackMasking && ipm.maskSupported())) {
-            return false
-        }
-        return if (icon is AdaptiveIconDrawable) {
-            prefs.colorizedLegacyTreatment &&
-                    prefs.enableWhiteOnlyTreatment &&
-                    ColorExtractor.isSingleColor(icon.background, Color.WHITE) &&
-                    icon.foreground != null
-        } else true
-
+        return gen.result
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
@@ -229,45 +198,15 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return null
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun wrapToAdaptiveIcon(icon: Drawable): Drawable {
-        return if (icon is AdaptiveIconDrawable && icon.foreground != null) {
-            if (icon.background is ColorDrawable)
-                icon.apply {
-                    (background as? ColorDrawable)?.color = extractColor(foreground)
-                }
-            else
-                AdaptiveIconDrawable(ColorDrawable(extractColor(icon.foreground)), icon.foreground)
-        } else {
-            val dr = (wrapperIcon as AdaptiveIconDrawable).apply {
-                mutate()
-                setBounds(0, 0, 1, 1)
-            }
-            val outShape = BooleanArray(1)
-            val scale = normalizer.getScale(icon, null, dr.iconMask, outShape)
-            if (!outShape[0]) {
-                dr.apply {
-                    (dr.foreground as FixedScaleDrawable).drawable = icon
-                    (dr.background as ColorDrawable).color = extractColor(icon)
-                }
-            } else {
-                icon
-            }
-        }
-    }
-
-    private fun extractColor(drawable: Drawable): Int = if (prefs.colorizedLegacyTreatment) {
-        ColorExtractor.findDominantColorByHue(drawable.toBitmap())
-        //ColorExtractor.generateBackgroundColor(drawable.toBitmap())
-    } else {
-        Color.WHITE
-    }
-
     class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {
 
         override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()
-        override val drawable get() = app.getIcon(0)!!
+        override val isAvailable = true
+
+        override fun drawableForDensity(density: Int): Drawable {
+            return AdaptiveIconCompat.wrap(app.getIcon(density)!!)
+        }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(app.componentName, app.user).toString())
     }

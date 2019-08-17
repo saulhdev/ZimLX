@@ -33,6 +33,8 @@ import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.Alarm;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
@@ -68,8 +70,6 @@ import org.zimmob.zimlx.gestures.GestureHandler;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
@@ -738,4 +738,8 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     icon.setIconScale(scale);
                 }
             };
+
+    public BubbleTextView getFolderName() {
+        return mFolderName;
+    }
 }

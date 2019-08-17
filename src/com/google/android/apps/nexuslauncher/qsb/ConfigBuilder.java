@@ -14,6 +14,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RemoteViews;
 
+import androidx.core.graphics.ColorUtils;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
@@ -23,6 +27,7 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
@@ -33,10 +38,6 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.core.graphics.ColorUtils;
-import androidx.recyclerview.widget.GridLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 public class ConfigBuilder {
     private final c_search mNano;
@@ -281,15 +282,15 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        //List<ComponentKeyMapper> predictedApps = ((PredictionsFloatingHeader) mActivity.getAppsView().getFloatingHeaderView()).getPredictionRowView().getPredictedAppComponents();
+        List<ComponentKeyMapper> predictedApps = mActivity.getAppsView().getFloatingHeaderView().getPredictionRowView().getPredictedAppComponents();
         List<b_search> bSearches = new ArrayList<>();
-        //final int count = Math.min(predictedApps.size(), allAppsCols);
-        /*for (int i = 0; i < count; i++) {
-            b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getComponentKey()), i);
+        final int count = Math.min(predictedApps.size(), allAppsCols);
+        for (int i = 0; i < count; i++) {
+            /*b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getComponentKey()), i);
             if (bSearch != null) {
                 bSearches.add(bSearch);
-            }
-        }*/
+            }*/
+        }
         mNano.eo = new b_search[bSearches.size()];
         bSearches.toArray(mNano.eo);
     }

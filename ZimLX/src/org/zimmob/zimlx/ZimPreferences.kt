@@ -83,20 +83,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
 
-    /*fun getMinibarItems(): ArrayList<String> {
-        val values = Utilities.setToList(sharedPrefs.getStringSet(ZimFlags.MINIBAR_ITEMS, defaultItems))
-        Log.i(TAG, "Minibar Items from preferences "+ values.size)
-        if (values.isNullOrEmpty()) {
-            for (item in Minibar.actionDisplayItems) {
-                if (defaultItems.contains(Integer.toString(item.id))) {
-                    values.add(Integer.toString(item.id))
-                }
-            }
-            setMinibarItems(values)
-        }
-        return values
-    }*/
-
     //dock
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockRadius get() = dockStyles.currentStyle.radius
@@ -164,6 +150,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         override fun unflattenValue(value: String) = value
     }
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", zimConfig.enableLegacyTreatment, reloadIcons)
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds",
             zimConfig.enableColorizedLegacyTreatment, reloadIcons)

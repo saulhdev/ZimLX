@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
     <!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
@@ -157,6 +158,11 @@
     <bool name="config_default_enable_blur">false</bool>
     <string name="config_default_search_provider" translatable="false">org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider</string>
 
-    <!-- The default icon pack to use; empty = system icons -->
+    <!-- The default icon packs to use -->
+    <!-- (Deprecated) The default icon pack to use; empty = system icons -->
     <string name="config_default_icon_pack" translatable="false" />
+
+    <string-array name="config_default_icon_packs">
+        <item>@string/config_default_icon_pack</item>
+    </string-array>
 </resources>

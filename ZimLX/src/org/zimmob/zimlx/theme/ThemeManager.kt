@@ -62,6 +62,12 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
         themeOverride.applyTheme(themeFlags)
     }
 
+    fun removeOverride(themeOverride: ThemeOverride) {
+        synchronized(listeners) {
+            listeners.remove(themeOverride)
+        }
+    }
+
     fun getCurrentFlags() = themeFlags
 
     private fun removeDeadListeners() {

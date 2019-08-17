@@ -41,6 +41,9 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.graphics.BitmapInfo;
@@ -62,9 +65,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-
-import androidx.annotation.NonNull;
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Cache of application icons.  Icons can be made from any thread.
@@ -254,6 +254,12 @@ public class IconCache {
         mIconDb.delete(
                 IconDB.COLUMN_COMPONENT + " LIKE ? AND " + IconDB.COLUMN_USER + " = ?",
                 new String[]{packageName + "/%", Long.toString(userSerial)});
+    }
+
+    public synchronized void removeAllIcons() {
+        Preconditions.assertWorkerThread();
+        mCache.clear();
+        mIconDb.delete(null, null);
     }
 
     public void updateDbIcons(Set<String> ignorePackagesForMainUser) {

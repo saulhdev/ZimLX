@@ -57,6 +57,7 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import org.zimmob.zimlx.ZimPreferences;
@@ -87,7 +88,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
-    private FloatingHeaderView mHeader;
+    private PredictionsFloatingHeader mHeader;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -421,7 +422,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mAH[AdapterHolder.MAIN].appsList;
     }
 
-    public FloatingHeaderView getFloatingHeaderView() {
+    public PredictionsFloatingHeader getFloatingHeaderView() {
         return mHeader;
     }
 
