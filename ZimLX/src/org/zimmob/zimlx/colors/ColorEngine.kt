@@ -27,6 +27,7 @@ import org.zimmob.zimlx.*
 import org.zimmob.zimlx.colors.resolvers.DockQsbAutoResolver
 import org.zimmob.zimlx.colors.resolvers.DrawerQsbAutoResolver
 import org.zimmob.zimlx.theme.ThemeOverride
+import org.zimmob.zimlx.util.Config
 import org.zimmob.zimlx.util.SingletonHolder
 import java.lang.reflect.Constructor
 
@@ -173,7 +174,7 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
                     }*/
                     else -> {
                         engine.createColorResolverNullable(key,
-                                ZimConfig.getInstance(context).defaultColorResolver)
+                                Config.getInstance(context).defaultColorResolver)
                                 ?: PixelAccentResolver(createConfig(key, engine))
                     }
                 }
