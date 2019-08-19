@@ -84,6 +84,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
 
+    val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
+    val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
+
     //dock
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockRadius get() = dockStyles.currentStyle.radius

@@ -40,6 +40,7 @@ import org.zimmob.zimlx.gestures.GestureHandler
 import org.zimmob.zimlx.gestures.ui.SelectAppActivity
 import org.zimmob.zimlx.getIcon
 import org.zimmob.zimlx.globalsearch.SearchProviderController
+import org.zimmob.zimlx.zimPrefs
 
 @Keep
 open class OpenDrawerGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config),
@@ -85,15 +86,21 @@ class OpenSettingsGestureHandler(context: Context, config: JSONObject?) : Gestur
     }
 }
 
+
 @Keep
 class OpenOverviewGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_open_overview)
+    override val displayName: String = context.getString(R.string.action_open_overview)
     override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_setting) }
     override val requiresForeground = true
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        OptionsPopupView.showDefaultOptions(controller.launcher, controller.touchDownPoint.x, controller.touchDownPoint.y)
+        if (context.zimPrefs.usePopupMenuView) {
+            OptionsPopupView.showDefaultOptions(controller.launcher,
+                    controller.touchDownPoint.x, controller.touchDownPoint.y)
+        } else {
+            controller.launcher.stateManager.goToState(LauncherState.OPTIONS)
+        }
     }
 }
 

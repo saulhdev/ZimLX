@@ -29,7 +29,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.4.1'
+        classpath 'com.android.tools.build:gradle:3.4.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -46,7 +46,7 @@ if (enable_plugin_kotlin) {
 }
 
 android {
-    compileSdkVersion 'android-Q'
+    compileSdkVersion 29
     buildToolsVersion '28.0.3'
     Properties localProps = new Properties()
     File localPropsFile = project.rootProject.file('local.properties')
@@ -104,8 +104,8 @@ android {
         }
         zim {
             dimension "custom"
-            applicationId 'org.zimmob.zimlx'
-            proguardFile 'proguard-android-optimize.txt'
+            //applicationId 'org.zimmob.zimlx'
+            //proguardFile 'proguard-android-optimize.txt'
         }
     }
     lintOptions {
@@ -215,11 +215,11 @@ dependencies {
     implementation 'com.jaredrummler:colorpicker:1.0.1'
     implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
-
     implementation 'com.squareup.okhttp3:okhttp:4.0.0-RC1'
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
 
     quickstepImplementation fileTree(dir: "quickstep/libs", include: 'sysui_shared.jar')
+
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
     if (enable_plugin_kotlin) {

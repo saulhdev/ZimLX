@@ -106,6 +106,6 @@ class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutI
     companion object {
 
         @JvmStatic
-        private val sClassPrefixList = arrayOf("android.widget.", "android.webkit.", "android.app.")
+        private val sClassPrefixList = arrayOf("android.widget.", "android.webkit.", "android.app.", "androidx.cardview.widget.")
     }
 }

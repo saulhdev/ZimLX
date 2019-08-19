@@ -315,4 +315,7 @@
     <dimen name="dashboard_tile_image_margin_start">16dp</dimen>
     <dimen name="dashboard_tile_image_margin_end">20dp</dimen>
 
+    <!-- same as vertical_drag_handle_size -->
+    <dimen name="shelf_surface_offset">18dp</dimen>
+
 </resources>

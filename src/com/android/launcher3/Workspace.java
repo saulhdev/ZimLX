@@ -668,9 +668,48 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public void removeScreen(int index, final boolean animate) {
+        if (mLauncher.isWorkspaceLoading()) {
+            return;
+        }
+
+        int currentPage = getNextPage();
+        snapToPage(index, SNAP_OFF_EMPTY_SCREEN_DURATION);
+        long id = getScreenIdForPageIndex(index);
+        fadeAndRemoveScreen(id, SNAP_OFF_EMPTY_SCREEN_DURATION,
+                FADE_EMPTY_SCREEN_DURATION, null, false);
+
+        CellLayout cl = mWorkspaceScreens.get(id);
+        mWorkspaceScreens.remove(id);
+        mScreenOrder.remove(id);
+
+        boolean isInAccessibleDrag = mLauncher.getAccessibilityDelegate().isInAccessibleDrag();
+
+        boolean pageShift = indexOfChild(cl) < currentPage;
+
+        if (isInAccessibleDrag) {
+            cl.enableAccessibleDrag(false, CellLayout.WORKSPACE_ACCESSIBILITY_DRAG);
+        }
+
+        removeView(cl);
+
+        LauncherModel.updateWorkspaceScreenOrder(mLauncher, mScreenOrder);
+
+        if (getChildCount() == 0) {
+            addExtraEmptyScreen();
+        }
+
+        if (pageShift) {
+            setCurrentPage(currentPage - 1);
+        }
+    }
+
+
+
     public void removeExtraEmptyScreen(final boolean animate, boolean stripEmptyScreens) {
         removeExtraEmptyScreenDelayed(animate, null, 0, stripEmptyScreens);
     }
+
 
     public void removeExtraEmptyScreenDelayed(final boolean animate, final Runnable onComplete,
                                               final int delay, final boolean stripEmptyScreens) {
@@ -710,22 +749,30 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     private void fadeAndRemoveEmptyScreen(int delay, int duration, final Runnable onComplete,
                                           final boolean stripEmptyScreens) {
+        fadeAndRemoveScreen(EXTRA_EMPTY_SCREEN_ID, delay, duration, onComplete, stripEmptyScreens);
+    }
+
+    private void fadeAndRemoveScreen(long id, int delay, int duration, final Runnable onComplete,
+                                     final boolean stripEmptyScreens) {
         // XXX: Do we need to update LM workspace screens below?
         PropertyValuesHolder alpha = PropertyValuesHolder.ofFloat("alpha", 0f);
         PropertyValuesHolder bgAlpha = PropertyValuesHolder.ofFloat("backgroundAlpha", 0f);
 
-        final CellLayout cl = mWorkspaceScreens.get(EXTRA_EMPTY_SCREEN_ID);
+        final CellLayout cl = mWorkspaceScreens.get(id);
 
-        mRemoveEmptyScreenRunnable = () -> {
-            if (hasExtraEmptyScreen()) {
-                mWorkspaceScreens.remove(EXTRA_EMPTY_SCREEN_ID);
-                mScreenOrder.remove(EXTRA_EMPTY_SCREEN_ID);
-                removeView(cl);
-                if (stripEmptyScreens) {
-                    stripEmptyScreens();
+        mRemoveEmptyScreenRunnable = new Runnable() {
+            @Override
+            public void run() {
+                if (hasExtraEmptyScreen()) {
+                    mWorkspaceScreens.remove(id);
+                    mScreenOrder.remove(id);
+                    removeView(cl);
+                    if (stripEmptyScreens) {
+                        stripEmptyScreens();
+                    }
+                    // Update the page indicator to reflect the removed page.
+                    showPageIndicatorAtCurrentScroll();
                 }
-                // Update the page indicator to reflect the removed page.
-                showPageIndicatorAtCurrentScroll();
             }
         };
 
@@ -1082,6 +1129,10 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
     }
 
+    public boolean duringScrollInteraction() {
+        return mScrollInteractionBegan;
+    }
+
     public void setLauncherOverlay(LauncherOverlay overlay) {
         mLauncherOverlay = overlay;
         // A new overlay has been set. Reset event tracking
@@ -1134,11 +1185,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     protected void overScroll(float amount) {
+        boolean inOptionsState = mLauncher.isInState(LauncherState.OPTIONS);
+
         boolean shouldScrollOverlay = mLauncherOverlay != null &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl)) && !inOptionsState;
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
-                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
+                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl) || inOptionsState);
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
@@ -1148,7 +1201,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             mLastOverlayScroll = Math.abs(amount / getMeasuredWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
-        } else {
+        } else if (!inOptionsState) {
             dampedOverScroll(amount);
         }
 
@@ -1156,7 +1209,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             mLauncherOverlay.onScrollChange(0, mIsRtl);
         }
     }
-
     @Override
     protected boolean shouldFlingForVelocity(int velocityX) {
         // When the overlay is moving, the fling or settle transition is controlled by the overlay.

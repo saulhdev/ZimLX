@@ -926,4 +926,6 @@
     <string name="pref_sesame_show_shortcuts">App shortcuts</string>
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
 
+    <string name="button_organize_screens">Organize screens</string>
+
 </resources>

@@ -80,7 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/search_bar_margin"
             app:cardCornerRadius="8dp"
-            app:cardBackgroundColor="?attr/settingsSearchBackground"
+            app:cardBackgroundColor="#424242"
             app:cardElevation="2dp">
 
             <androidx.appcompat.widget.Toolbar

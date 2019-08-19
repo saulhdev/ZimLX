@@ -27,10 +27,10 @@ import android.os.Message
 import android.os.Process
 import android.text.TextUtils
 import android.view.*
+import android.widget.SearchView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.widget.ActionMenuView
-import androidx.appcompat.widget.SearchView
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.LauncherModel
@@ -92,7 +92,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
         }
 
         search_view.queryHint = iconPack.displayName
-        //search_view.setOnQueryTextListener(this)
+        search_view.setOnQueryTextListener(this)
 
         items.add(LoadingItem())
 

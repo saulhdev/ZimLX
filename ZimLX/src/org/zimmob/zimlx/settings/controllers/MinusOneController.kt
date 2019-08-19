@@ -52,8 +52,8 @@ class MinusOneController(context: Context) : PreferenceController(context) {
         }
 
         if (TextUtils.isEmpty(charSequence)) {
-            charSequence = context.getString(R.string.google_app)
+            charSequence = context.resources.getString(R.string.google_app)
         }
-        return context.getString(R.string.title_show_google_app, charSequence)
+        return context.resources.getString(R.string.title_show_google_app, charSequence)
     }
 }

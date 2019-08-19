@@ -31,6 +31,7 @@ import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
+import org.zimmob.zimlx.views.OptionsPanel;
 import org.zimmob.zimlx.views.ZimBackgroundView;
 
 import java.util.Objects;
@@ -49,6 +50,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
     private boolean paused = false;
     private boolean sRestart = false;
+    private OptionsPanel optionView;
 
     public static ZimLauncher getLauncher(Context context) {
 
@@ -73,6 +75,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         zimPrefs.registerCallback(prefCallback);
         background = findViewById(R.id.zim_background);
         gestureController = new GestureController(this);
+
     }
 
     @Override
@@ -86,6 +89,10 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
                 startActivity(getIntent());
             }
         }
+    }
+
+    public OptionsPanel getOptionsView() {
+        return optionView = findViewById(R.id.options_view);
     }
 
     @Override

@@ -256,7 +256,7 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         forceFinishScroller(true);
     }
 
-    private void abortScrollerAnimation(boolean resetNextPage) {
+    public void abortScrollerAnimation(boolean resetNextPage) {
         mScroller.abortAnimation();
         // We need to clean up the next page here to avoid computeScrollHelper from
         // updating current page on the pass.
@@ -1626,5 +1626,9 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mTmpIntPair[0] = leftChild;
         mTmpIntPair[1] = rightChild;
         return mTmpIntPair;
+    }
+
+    public boolean isScrollerFinished() {
+        return mScroller.isFinished();
     }
 }
