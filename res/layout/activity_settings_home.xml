@@ -37,7 +37,7 @@
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/search_bar_margin"
             app:cardCornerRadius="24dp"
-            app:cardBackgroundColor="?android:attr/colorBackground"
+            app:cardBackgroundColor="?settingsSearchBackground"
             app:cardElevation="2dp">
 
             <androidx.appcompat.widget.Toolbar
