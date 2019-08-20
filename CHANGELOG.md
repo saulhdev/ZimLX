@@ -1,3 +1,8 @@
+### v0.6.3
+*   Add Overview Mode for desktop
+*   Add web search providers
+
+
 ### v0.6.2
 *   Add Preferences for landscape and tables
 *   Enable global search in all aps

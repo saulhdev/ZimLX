@@ -140,6 +140,8 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
         }
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
+                //SwitchAppsGestureHandler(context, null),
+                BlankGestureHandler(context, null), //-> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 OpenDrawerGestureHandler(context, null),
@@ -153,6 +155,8 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                 StartAssistantGestureHandler(context, null),
                 StartVoiceSearchGestureHandler(context, null),
                 StartAppGestureHandler(context, null)
+                //OpenRecentsGestureHandler(context, null),
+                //LaunchMostRecentTaskGestureHandler(context, null)
         ).apply {
             if (hasBlank) {
                 add(1, BlankGestureHandler(context, null))

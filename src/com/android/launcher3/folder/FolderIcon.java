@@ -67,6 +67,8 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
+import org.zimmob.zimlx.gestures.RunnableGestureHandler;
+import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -708,10 +710,16 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     }
 
     private void applySwipeUpAction(FolderInfo info) {
-        mSwipeUpHandler = GestureController.Companion.createGestureHandler(
-                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        if (info.isCoverMode()) {
+            mSwipeUpHandler = new RunnableGestureHandler(getContext(), () -> ItemClickHandler.INSTANCE.onClick(this));
+        } else {
+            mSwipeUpHandler = GestureController.Companion.createGestureHandler(
+                    getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
+        }
         if (mSwipeUpHandler instanceof BlankGestureHandler) {
             mSwipeUpHandler = null;
+        } else {
+            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, mSwipeUpHandler);
         }
     }
 
@@ -738,6 +746,15 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                     icon.setIconScale(scale);
                 }
             };
+
+    public boolean isInAppDrawer() {
+        return false;
+        //return mInfo instanceof DrawerFolderInfo;
+    }
+
+    public boolean isCoverMode() {
+        return mInfo.isCoverMode();
+    }
 
     public BubbleTextView getFolderName() {
         return mFolderName;

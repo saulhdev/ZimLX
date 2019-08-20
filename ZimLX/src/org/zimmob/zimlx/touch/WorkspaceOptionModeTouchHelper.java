@@ -10,7 +10,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 
 public class WorkspaceOptionModeTouchHelper {
-    private static final String TAG = "WorkspaceOptionModeTouchHelper";
+    private static final String TAG = "WorkspaceOptionMode";
     private long mCurrentMillis;
     private boolean mIsInTouchCycle;
     private boolean mIsStillPossibleClick;

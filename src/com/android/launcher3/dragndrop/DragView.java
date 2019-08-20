@@ -41,6 +41,10 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
+
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
@@ -66,10 +70,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import java.util.Arrays;
 import java.util.List;
-
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
 
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
@@ -354,6 +354,10 @@ public class DragView extends View {
                         appState.getInvariantDeviceProfile().fillResIconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderInfo folderInfo = (FolderInfo) info;
+            if (folderInfo.isCoverMode()) {
+                return getFullDrawable(folderInfo.getCoverInfo(), appState, outObj);
+            }
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     mLauncher, info.id, new Point(mBitmap.getWidth(), mBitmap.getHeight()));
             if (icon == null) {

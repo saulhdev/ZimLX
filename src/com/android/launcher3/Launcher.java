@@ -133,6 +133,7 @@ import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.minibar.DashAction;
@@ -1389,6 +1390,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         boolean internalStateHandled = InternalStateHandler
                 .handleNewIntent(this, intent, isStarted());
 
+        boolean handled = false;
         if (isActionMain) {
             if (!internalStateHandled) {
                 // Note: There should be at most one log per method call. This is enforced
@@ -1397,6 +1399,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 AbstractFloatingView topOpenView = AbstractFloatingView.getTopOpenView(this);
                 if (topOpenView != null) {
                     topOpenView.logActionCommand(Action.Command.HOME_INTENT);
+                    handled = true;
                 } else if (alreadyOnHome) {
                     Target target = newContainerTarget(mStateManager.getState().containerType);
                     target.pageIndex = mWorkspace.getCurrentPage();
@@ -1411,15 +1414,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
                     mStateManager.goToState(NORMAL);
+                    handled = true;
                 }
 
                 // Reset the apps view
                 if (!alreadyOnHome) {
                     mAppsView.reset(isStarted() /* animate */);
+                    handled = true;
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isTouchActive()) {
+                    if (mWorkspace.getCurrentPage() != 0) {
+                        handled = true;
+                    }
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
+                }
+
+                if (!handled && this instanceof ZimLauncher) {
+                    ((ZimLauncher) this).getGestureController().onPressHome();
                 }
             }
 
@@ -1767,7 +1779,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mStateManager.goToState(lastState);
         } else {
             // Back button is a no-op here, but give at least some feedback for the button press
-            mWorkspace.showOutlinesTemporarily();
+            //mWorkspace.showOutlinesTemporarily();
+            if (this instanceof ZimLauncher) {
+                ((ZimLauncher) this).getGestureController().onPressBack();
+            }
         }
     }
 

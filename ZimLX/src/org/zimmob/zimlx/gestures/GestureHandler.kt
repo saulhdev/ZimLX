@@ -24,7 +24,6 @@ import android.view.View
 import com.android.launcher3.R
 import org.json.JSONObject
 
-
 abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
     abstract val displayName: String
@@ -65,9 +64,19 @@ abstract class GestureHandler(val context: Context, val config: JSONObject?) {
 
 class BlankGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_none)
+    override val displayName: String = context.getString(R.string.action_none)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
 
+    }
+}
+
+class RunnableGestureHandler(context: Context,
+                             private val onTrigger: Runnable) : GestureHandler(context, null) {
+
+    override val displayName: String = context.getString(R.string.action_none)
+
+    override fun onGestureTrigger(controller: GestureController, view: View?) {
+        onTrigger.run()
     }
 }

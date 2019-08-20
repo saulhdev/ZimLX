@@ -52,6 +52,8 @@ import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.BaseDragLayer;
 
+import org.zimmob.zimlx.touch.WorkspaceOptionModeTouchHelper;
+
 import java.util.ArrayList;
 
 import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
@@ -90,6 +92,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
     private final WorkspaceAndHotseatScrim mScrim;
 
+
+    private final WorkspaceOptionModeTouchHelper mWorkspaceOptionModeTouchHelper;
+
     /**
      * Used to create a new DragLayer from XML.
      *
@@ -105,6 +110,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
 
         mFocusIndicatorHelper = new ViewGroupFocusHelper(this);
         mScrim = new WorkspaceAndHotseatScrim(this);
+        mWorkspaceOptionModeTouchHelper = new WorkspaceOptionModeTouchHelper(Launcher.getLauncher(context));
+
     }
 
     public void setup(DragController dragController, Workspace workspace) {
@@ -242,7 +249,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public boolean dispatchTouchEvent(MotionEvent ev) {
         ev.offsetLocation(getTranslationX(), 0);
         try {
-            return super.dispatchTouchEvent(ev);
+            return mWorkspaceOptionModeTouchHelper.dispatchTouchEvent(ev) || super.dispatchTouchEvent(ev);
         } finally {
             ev.offsetLocation(-getTranslationX(), 0);
         }
@@ -273,7 +280,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
         Rect r = new Rect();
         getViewRectRelativeToSelf(dragView, r);
 
-        int coord[] = new int[2];
+        int[] coord = new int[2];
         float childScale = child.getScaleX();
         coord[0] = lp.x + (int) (child.getMeasuredWidth() * (1 - childScale) / 2);
         coord[1] = lp.y + (int) (child.getMeasuredHeight() * (1 - childScale) / 2);

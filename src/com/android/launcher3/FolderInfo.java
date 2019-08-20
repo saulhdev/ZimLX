@@ -22,8 +22,13 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.text.TextUtils;
 import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.BitmapRenderer;
 import com.android.launcher3.model.ModelWriter;
@@ -31,15 +36,13 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
 import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.folder.FirstItemProvider;
 import org.zimmob.zimlx.iconpack.IconPack;
 import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.util.ArrayList;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 /**
  * Represents a folder containing shortcuts or apps.
@@ -63,6 +66,8 @@ public class FolderInfo extends ItemInfo {
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
 
+    public static final int FLAG_COVER_MODE = 0x00000008;
+
     public int options;
 
     /**
@@ -73,6 +78,9 @@ public class FolderInfo extends ItemInfo {
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
     public String swipeUpAction;
+
+
+    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
 
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
@@ -181,6 +189,17 @@ public class FolderInfo extends ItemInfo {
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
+    public boolean useIconMode(Context context) {
+        return isCoverMode() || hasCustomIcon(context);
+    }
+
+    public boolean usingCustomIcon(Context context) {
+        if (isCoverMode()) return false;
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+
     public boolean hasCustomIcon(Context context) {
         Launcher launcher = ZimLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
@@ -191,6 +210,32 @@ public class FolderInfo extends ItemInfo {
         CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
         if (infoProvider != null) {
             infoProvider.setIcon(this, null);
+        }
+    }
+
+    public boolean isCoverMode() {
+        return hasOption(FLAG_COVER_MODE);
+    }
+
+    public void setCoverMode(boolean enable, ModelWriter modelWriter) {
+        setOption(FLAG_COVER_MODE, enable, modelWriter);
+    }
+
+    public ShortcutInfo getCoverInfo() {
+        return firstItemProvider.getFirstItem();
+    }
+
+    public CharSequence getIconTitle() {
+        if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
+            return title;
+        } else if (isCoverMode()) {
+            ShortcutInfo info = getCoverInfo();
+            if (info.customTitle != null) {
+                return info.customTitle;
+            }
+            return info.title;
+        } else {
+            return Folder.getDefaultFolderName();
         }
     }
 

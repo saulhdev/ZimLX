@@ -1515,4 +1515,12 @@ public class Folder extends AbstractFloatingView implements DragSource,
         }
         return false;
     }
+
+    public boolean isInAppDrawer() {
+        return mInfo.container == ItemInfo.NO_ID;
+    }
+
+    public static String getDefaultFolderName() {
+        return sDefaultFolderName;
+    }
 }

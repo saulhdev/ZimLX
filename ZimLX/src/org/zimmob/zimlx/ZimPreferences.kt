@@ -212,6 +212,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
     val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
 
+    //Gestures
+
     // Dev
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
@@ -713,7 +715,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
                     INSTANCE = ZimPreferences(context.applicationContext)
                 } else {
                     try {
-                        return MainThreadExecutor().submit(Callable { ZimPreferences.getInstance(context) }).get()
+                        return MainThreadExecutor().submit(Callable { getInstance(context) }).get()
                     } catch (e: InterruptedException) {
                         throw RuntimeException(e)
                     } catch (e: ExecutionException) {

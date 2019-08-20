@@ -68,14 +68,13 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         }
         IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
+        gestureController = new GestureController(this);
 
         super.onCreate(savedInstanceState);
         mContext = this;
         zimPrefs = Utilities.getZimPrefs(mContext);
         zimPrefs.registerCallback(prefCallback);
         background = findViewById(R.id.zim_background);
-        gestureController = new GestureController(this);
-
     }
 
     @Override
