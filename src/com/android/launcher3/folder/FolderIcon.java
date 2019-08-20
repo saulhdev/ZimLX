@@ -45,6 +45,7 @@ import com.android.launcher3.DropTarget.DragObject;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.FolderInfo.FolderListener;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.OnAlarmListener;
@@ -60,10 +61,14 @@ import com.android.launcher3.badge.FolderBadgeInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
+import com.android.launcher3.graphics.BitmapInfo;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
@@ -72,6 +77,7 @@ import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
@@ -79,7 +85,7 @@ import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMA
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
-public class FolderIcon extends FrameLayout implements FolderListener {
+public class FolderIcon extends FrameLayout implements FolderListener, Launcher.OnResumeCallback {
     @Thunk
     Launcher mLauncher;
     @Thunk
@@ -179,8 +185,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-
+        //lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        /*if (folderInfo instanceof DrawerFolderInfo) {
+            lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+            icon.mBackground = new PreviewBackground(true);
+            ((DrawerFolderInfo) folderInfo).getAppsStore().registerFolderIcon(icon);
+        } else {
+            lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        }*/
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
@@ -207,6 +219,63 @@ public class FolderIcon extends FrameLayout implements FolderListener {
         }
 
         return icon;
+    }
+
+    public void unbind() {
+        if (mInfo != null) {
+            mInfo.removeListener(this);
+            mInfo.removeListener(mFolder);
+            mInfo = null;
+        }
+    }
+
+    @Override
+    public void onIconChanged() {
+        applySwipeUpAction(mInfo);
+        setOnClickListener(mInfo.isCoverMode() ?
+                ItemClickHandler.FOLDER_COVER_INSTANCE : ItemClickHandler.INSTANCE);
+
+        FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) mFolderName.getLayoutParams();
+        DeviceProfile grid = mLauncher.getDeviceProfile();
+        mFolderName.setTag(null);
+
+        if (mInfo.useIconMode(mLauncher)) {
+            lp.topMargin = 0;
+            if (isInAppDrawer()) {
+                mFolderName.setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
+            } else {
+                mFolderName.setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+            }
+
+            isCustomIcon = true;
+
+            if (mInfo.isCoverMode()) {
+                ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
+                mFolderName.setTag(coverInfo);
+                mFolderName.applyIcon(coverInfo);
+                applyCoverBadgeState(coverInfo, false);
+            } else {
+                BitmapInfo info = BitmapInfo.fromBitmap(
+                        Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
+                mFolderName.applyIcon(info);
+                mFolderName.applyBadgeState(mInfo, false);
+            }
+            mBackground.setStartOpacity(0f);
+        } else {
+            if (isInAppDrawer()) {
+                lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
+            } else {
+                lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+            }
+            mFolderName.setCompoundDrawablePadding(0);
+            mFolderName.applyBadgeState(mInfo, false);
+
+            isCustomIcon = false;
+            mFolderName.clearIcon();
+            mBackground.setStartOpacity(1f);
+        }
+        mFolderName.setText(mInfo.getIconTitle());
+        requestLayout();
     }
 
     @Override
@@ -411,6 +480,14 @@ public class FolderIcon extends FrameLayout implements FolderListener {
     public void setBadgeInfo(FolderBadgeInfo badgeInfo) {
         updateBadgeScale(mBadgeInfo.hasBadge(), badgeInfo.hasBadge());
         mBadgeInfo = badgeInfo;
+    }
+
+    public ShortcutInfo getCoverInfo() {
+        return mInfo.getCoverInfo();
+    }
+
+    public void applyCoverBadgeState(ItemInfo itemInfo, boolean animate) {
+        mFolderName.applyBadgeState(itemInfo, animate);
     }
 
     public ClippedFolderIconLayoutRule getLayoutRule() {
@@ -673,6 +750,12 @@ public class FolderIcon extends FrameLayout implements FolderListener {
                 }
                 break;
         }
+
+        Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+        if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
+            ((ZimLauncher) launcher).getGestureController()
+                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
+        }
         return result;
     }
 
@@ -758,5 +841,36 @@ public class FolderIcon extends FrameLayout implements FolderListener {
 
     public BubbleTextView getFolderName() {
         return mFolderName;
+    }
+
+    public void setStayPressed(boolean stayPressed) {
+        mFolderName.setStayPressed(stayPressed);
+    }
+
+    @Override
+    public void onLauncherResume() {
+        // Reset the pressed state of icon that was locked in the press state while activity
+        // was launching
+        setStayPressed(false);
+    }
+
+    public void clearPressedBackground() {
+        setStayPressed(false);
+    }
+
+    public void updateIconBadges(Set<PackageUserKey> updatedBadges, PackageUserKey tmpKey) {
+        FolderBadgeInfo folderBadgeInfo = new FolderBadgeInfo();
+        for (ShortcutInfo si : mInfo.contents) {
+            folderBadgeInfo.addBadgeInfo(mLauncher.getBadgeInfoForItem(si));
+        }
+        setBadgeInfo(folderBadgeInfo);
+
+        if (isCoverMode()) {
+            ShortcutInfo coverInfo = getCoverInfo();
+            if (tmpKey.updateFromItemInfo(coverInfo) &&
+                    updatedBadges.contains(tmpKey)) {
+                applyCoverBadgeState(coverInfo, true);
+            }
+        }
     }
 }

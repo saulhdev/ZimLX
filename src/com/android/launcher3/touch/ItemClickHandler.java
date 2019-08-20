@@ -63,6 +63,9 @@ public class ItemClickHandler {
      * Instance used for click handling on items
      */
     public static final OnClickListener INSTANCE = ItemClickHandler::onClick;
+
+    public static final OnClickListener FOLDER_COVER_INSTANCE = ItemClickHandler::onClickFolderCover;
+
     public static String TAG = "ItemClickHandler";
     private static void onClick(View v) {
         // Make sure that rogue clicks don't get through while allapps is launching, or after the
@@ -94,6 +97,22 @@ public class ItemClickHandler {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);
             }
+        }
+    }
+
+    private static void onClickFolderCover(View v) {
+        if (v.getWindowToken() == null) {
+            return;
+        }
+
+        Launcher launcher = Launcher.getLauncher(v.getContext());
+        if (!launcher.getWorkspace().isFinishedSwitchingState()) {
+            return;
+        }
+
+        Object tag = v.getTag();
+        if (tag instanceof FolderInfo) {
+            onClickAppShortcut(v, ((FolderInfo) tag).getCoverInfo(), launcher);
         }
     }
 

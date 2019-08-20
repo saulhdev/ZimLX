@@ -67,7 +67,7 @@
         android:summary="%s"
         android:entries="@array/theme_override_names"
         android:entryValues="@array/theme_override_values"
-        android:defaultValue=""
+        android:defaultValue="0"
         android:persistent="true" />
 
     <ListPreference
@@ -76,7 +76,7 @@
         android:summary="%s"
         android:entries="@array/icon_shape_override_paths_names"
         android:entryValues="@array/icon_shape_override_paths_values"
-        android:defaultValue=""
+        android:defaultValue="0"
         android:persistent="false" />
 
     <com.google.android.apps.nexuslauncher.CustomIconPreference

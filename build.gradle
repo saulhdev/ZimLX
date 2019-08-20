@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.3.21'
+    ext.kotlin_version = '1.3.31'
     ext.version_library_butterknife = "10.1.0"
     ext.version_plugin_kotlin = "1.3.31"
     ext.enable_plugin_kotlin = true
@@ -30,7 +30,7 @@ buildscript {
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.4.2'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.8'
+        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
     }
@@ -104,8 +104,8 @@ android {
         }
         zim {
             dimension "custom"
-            //applicationId 'org.zimmob.zimlx'
-            //proguardFile 'proguard-android-optimize.txt'
+            applicationId 'org.zimmob.zimlx'
+            proguardFile 'proguard-android-optimize.txt'
         }
     }
     lintOptions {

@@ -51,6 +51,9 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private var state = GestureState.Free
     private var downTime = 0L
     private var downSent = false
+    private var pointerCount = 0
+
+    private var overrideDragging = false
 
     override fun onControllerInterceptTouchEvent(ev: MotionEvent): Boolean {
         downTime = ev.downTime
@@ -63,13 +66,11 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             } else {
                 controller.getSwipeUpOverride(ev.downTime)
             }
-            noIntercept = !canInterceptTouch(ev) && !hasSwipeUpOverride
+            noIntercept = !canInterceptTouch() && !hasSwipeUpOverride
             if (noIntercept) {
                 return false
             }
             detector.setDetectableScrollConditions(getSwipeDirection(ev), false)
-        } else if (ev.pointerCount > 1) {
-            noIntercept = true
         }
         if (noIntercept) {
             return false
@@ -85,10 +86,11 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     }
 
     override fun onControllerTouchEvent(ev: MotionEvent): Boolean {
+        pointerCount = ev.pointerCount
         return detector.onTouchEvent(ev)
     }
 
-    private fun canInterceptTouch(ev: MotionEvent): Boolean {
+    private fun canInterceptTouch(): Boolean {
         return AbstractFloatingView.getTopOpenView(launcher) == null &&
                 launcher.isInState(LauncherState.NORMAL)
     }
@@ -102,7 +104,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     private fun getSwipeDirection(ev: MotionEvent): Int {
         return when {
             controller.getSwipeUpOverride(ev.downTime) != null -> {
-                if (canInterceptTouch(ev))
+                if (canInterceptTouch())
                     SwipeDetector.DIRECTION_BOTH
                 else
                     SwipeDetector.DIRECTION_POSITIVE
@@ -116,11 +118,15 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     override fun onDragStart(start: Boolean) {
         state = GestureState.Free
         (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragStart(start)
+        overrideDragging = true
     }
 
     override fun onDrag(displacement: Float, velocity: Float): Boolean {
         if (state != GestureState.Locked) {
-            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDrag(displacement, velocity)
+            val wasFree = state == GestureState.Free
+            if (overrideDragging) {
+                (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDrag(displacement, velocity)
+            }
             if (gesture.customSwipeDown) {
                 if (velocity > triggerVelocity && state == GestureState.Free) {
                     state = GestureState.Triggered
@@ -129,13 +135,15 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
             } else {
                 if (velocity > triggerVelocity &&
                         (state == GestureState.Free || state == GestureState.NotificationClosed)) {
-                    state = if (openNotifications()) GestureState.NotificationOpened else GestureState.Locked
+                    state = if (openNotificationsOrQuickSettings()) GestureState.NotificationOpened else GestureState.Locked
                 } else if (velocity < -notificationsCloseVelocity && state == GestureState.NotificationOpened) {
                     state = if (closeNotifications()) GestureState.NotificationClosed else GestureState.Locked
                 }
             }
 
-            if (velocity < -triggerVelocity && state == GestureState.Free) {
+            if (wasFree && state == GestureState.NotificationOpened) {
+                sendOnDragEnd(velocity, false)
+            } else if (velocity < -triggerVelocity && state == GestureState.Free) {
                 controller.getSwipeUpOverride(downTime)?.let {
                     state = GestureState.Triggered
                     it.onGestureTrigger(controller)
@@ -153,7 +161,18 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
 
     override fun onDragEnd(velocity: Float, fling: Boolean) {
         launcher.workspace.postDelayed(detector::finishedScrolling, 200)
-        (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
+        sendOnDragEnd(velocity, fling)
+    }
+
+    private fun sendOnDragEnd(velocity: Float, fling: Boolean) {
+        if (overrideDragging) {
+            (swipeUpOverride as? VerticalSwipeGestureHandler)?.onDragEnd(velocity, fling)
+            overrideDragging = false
+        }
+    }
+
+    private fun openNotificationsOrQuickSettings(): Boolean {
+        return if (pointerCount > 1) openQuickSettings() else openNotifications()
     }
 
     @SuppressLint("WrongConstant", "PrivateApi")
@@ -161,6 +180,24 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         return try {
             Class.forName("android.app.StatusBarManager")
                     .getMethod("expandNotificationsPanel")
+                    .invoke(launcher.getSystemService("statusbar"))
+            true
+        } catch (ex: ClassNotFoundException) {
+            false
+        } catch (ex: NoSuchMethodException) {
+            false
+        } catch (ex: IllegalAccessException) {
+            false
+        } catch (ex: InvocationTargetException) {
+            false
+        }
+    }
+
+    @SuppressLint("WrongConstant", "PrivateApi")
+    private fun openQuickSettings(): Boolean {
+        return try {
+            Class.forName("android.app.StatusBarManager")
+                    .getMethod("expandSettingsPanel")
                     .invoke(launcher.getSystemService("statusbar"))
             true
         } catch (ex: ClassNotFoundException) {

@@ -108,7 +108,6 @@ val Context.hasStoragePermission
 @ColorInt
 fun Context.getColorEngineAccent(): Int {
     return Utilities.getZimPrefs(this).accentColor
-    //return ColorEngine.getInstance(this).accent
 }
 
 @ColorInt
@@ -459,7 +458,6 @@ fun AlertDialog.applyAccent() {
 }
 
 fun android.app.AlertDialog.applyAccent() {
-    //val color = ColorEngine.getInstance(context).accent
     val color = Utilities.getZimPrefs(context).accentColor
     val buttons = listOf(
             getButton(AlertDialog.BUTTON_NEGATIVE),

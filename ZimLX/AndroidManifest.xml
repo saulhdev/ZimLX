@@ -218,7 +218,8 @@
         <!-- Icon picker -->
         <activity
             android:name="org.zimmob.zimlx.iconpack.EditIconActivity"
-            android:theme="@style/SettingsTheme.V2" />
+            android:theme="@style/SettingsTheme.V2"
+            android:taskAffinity="${applicationId}.tasks.EDIT_ICON" />
         <activity
             android:name="org.zimmob.zimlx.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
@@ -265,6 +266,22 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
+        <service
+            android:name="org.zimmob.zimlx.ZimAccessibilityService"
+            android:label="@string/derived_app_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
+            <intent-filter>
+                <action android:name="android.accessibilityservice.AccessibilityService" />
+            </intent-filter>
+        </service>
+
+        <!-- Kustom 5s support -->
+        <provider
+            android:name="org.zimmob.zimlx.FiveSecsProvider"
+            android:authorities="${applicationId}.fivesecsprovider"
+            android:exported="true"
+            android:grantUriPermissions="true" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

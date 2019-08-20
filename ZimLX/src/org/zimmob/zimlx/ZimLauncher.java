@@ -44,7 +44,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public static Context mContext;
     public static Drawable currentEditIcon = null;
     public static ItemInfo currentEditInfo = null;
-    public ZimPreferences zimPrefs;
+    private ZimPreferences mZimPrefs;
     public ZimBackgroundView background;
     private GestureController gestureController;
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
@@ -72,8 +72,8 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         super.onCreate(savedInstanceState);
         mContext = this;
-        zimPrefs = Utilities.getZimPrefs(mContext);
-        zimPrefs.registerCallback(prefCallback);
+        mZimPrefs = Utilities.getZimPrefs(mContext);
+        mZimPrefs.registerCallback(prefCallback);
         background = findViewById(R.id.zim_background);
     }
 
@@ -122,7 +122,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     }
 
     public int getShelfHeight() {
-        if (zimPrefs.getShowPredictions()) {
+        if (mZimPrefs.getShowPredictions()) {
             int qsbHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
             return (int) (OverviewState.getDefaultSwipeHeight(mDeviceProfile) + qsbHeight);
         } else {

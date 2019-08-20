@@ -23,7 +23,7 @@ class DuckDuckGoSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun startSearch(callback: (intent: Intent) -> Unit) = callback(Intent(Intent.ACTION_ASSIST).setPackage(PACKAGE))
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_ddg)
+    override fun getIcon(): Drawable = context.resources.getDrawable(R.drawable.ic_ddg)
 
     companion object {
         private const val PACKAGE = "com.duckduckgo.mobile.android"

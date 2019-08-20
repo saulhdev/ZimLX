@@ -28,6 +28,7 @@ import org.json.JSONObject
 import org.zimmob.zimlx.ZimLauncher
 import org.zimmob.zimlx.gestures.gestures.*
 import org.zimmob.zimlx.gestures.handlers.*
+import org.zimmob.zimlx.zimPrefs
 
 class GestureController(val launcher: ZimLauncher) : TouchController {
 
@@ -141,7 +142,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
                 //SwitchAppsGestureHandler(context, null),
-                BlankGestureHandler(context, null), //-> Added in apply block
+                //BlankGestureHandler(context, null), -> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
                 OpenDrawerGestureHandler(context, null),

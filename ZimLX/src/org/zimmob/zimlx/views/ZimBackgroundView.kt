@@ -41,15 +41,16 @@ class ZimBackgroundView(context: Context, attrs: AttributeSet) : View(context, a
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
-            override fun unscheduleDrawable(who: Drawable?, what: Runnable?) {
+
+            override fun unscheduleDrawable(who: Drawable, what: Runnable) {
 
             }
 
-            override fun invalidateDrawable(who: Drawable?) {
+            override fun invalidateDrawable(who: Drawable) {
                 runOnMainThread { invalidate() }
             }
 
-            override fun scheduleDrawable(who: Drawable?, what: Runnable?, `when`: Long) {
+            override fun scheduleDrawable(who: Drawable, what: Runnable, `when`: Long) {
 
             }
         }
@@ -89,7 +90,7 @@ class ZimBackgroundView(context: Context, attrs: AttributeSet) : View(context, a
     private fun createFullBlurDrawable() {
         fullBlurDrawable?.let { if (isAttachedToWindow) it.stopListening() }
         fullBlurDrawable = if (BlurWallpaperProvider.isEnabled) {
-            blurProvider.createDrawable(0f, false).apply {
+            blurProvider.createDrawable().apply {
                 callback = blurDrawableCallback
                 setBounds(left, top, right, bottom)
                 if (isAttachedToWindow) startListening()

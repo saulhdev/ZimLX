@@ -165,11 +165,46 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         updateUpButton();
 
+        loadMenu();
+
         if (hasPreview) {
             overrideOpenAnim();
         }
 
         Utilities.getDevicePrefs(this).edit().putBoolean(OnboardingProvider.PREF_HAS_OPENED_SETTINGS, true).apply();
+    }
+
+    public void loadMenu() {
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.getMenu().clear();
+        toolbar.inflateMenu(R.menu.menu_settings);
+        ActionMenuView menuView;
+        int count = toolbar.getChildCount();
+        for (int i = 0; i < count; i++) {
+            View child = toolbar.getChildAt(i);
+            if (child instanceof ActionMenuView) {
+                menuView = (ActionMenuView) child;
+                break;
+            }
+        }
+
+        if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
+            toolbar.inflateMenu(R.menu.menu_change_default_home);
+        }
+        toolbar.setOnMenuItemClickListener(menuItem -> {
+            switch (menuItem.getItemId()) {
+                case R.id.action_change_default_home:
+                    FakeLauncherKt.changeDefaultHome(this);
+                    break;
+                case R.id.action_restart_zim:
+                    Utilities.killLauncher();
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        });
+        setSupportActionBar(toolbar);
     }
 
     @Override
@@ -207,7 +242,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (shouldShowSearch()) {
             Toolbar toolbar = findViewById(R.id.search_action_bar);
             toolbar.getMenu().clear();
-            toolbar.inflateMenu(R.menu.menu_restart_zim);
+            toolbar.inflateMenu(R.menu.menu_settings);
             ActionMenuView menuView;
             int count = toolbar.getChildCount();
             for (int i = 0; i < count; i++) {

@@ -186,6 +186,7 @@ public class FolderInfo extends ItemInfo {
             // out.drawColor(Color.RED);
             icon.draw(out);
         });
+        icon.unbind();
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
@@ -239,6 +240,16 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
+    /**
+     * DO NOT USE OUTSIDE CUSTOMINFOPROVIDER
+     */
+    public void onIconChanged() {
+        for (FolderListener listener : listeners) {
+            listener.onIconChanged();
+        }
+    }
+
+
     public boolean hasOption(int optionFlag) {
         return (options & optionFlag) != 0;
     }
@@ -270,6 +281,10 @@ public class FolderInfo extends ItemInfo {
         void onItemsChanged(boolean animate);
 
         void prepareAutoUpdate();
+
+        default void onIconChanged() {
+            // do nothing
+        }
     }
 
     private Drawable cached;

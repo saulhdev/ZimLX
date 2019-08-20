@@ -18,11 +18,11 @@
 package org.zimmob.zimlx.gestures.ui
 
 import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.widget.Toast
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimLauncher
 import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.GestureController
@@ -43,9 +43,14 @@ class RunHandlerActivity : Activity() {
             if (handlerString != null) {
                 val handler = GestureController.createGestureHandler(this.applicationContext, handlerString, fallback)
                 if (handler.requiresForeground) {
-                    Utilities.goToHome(this) {
-                        triggerGesture(handler)
-                    }
+                    val listener = GestureHandlerInitListener(handler)
+                    val homeIntent = listener.addToIntent(
+                            Intent(Intent.ACTION_MAIN)
+                                    .addCategory(Intent.CATEGORY_HOME)
+                                    .setPackage(packageName)
+                                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+
+                    startActivity(homeIntent)
                 } else {
                     triggerGesture(handler)
                 }
@@ -57,6 +62,6 @@ class RunHandlerActivity : Activity() {
     private fun triggerGesture(handler: GestureHandler) = if (controller != null) {
         handler.onGestureTrigger(controller!!)
     } else {
-        Toast.makeText(this.applicationContext, R.string.zim_action_failed, Toast.LENGTH_LONG).show()
+        Toast.makeText(this.applicationContext, R.string.app_gesture_failed_toast, Toast.LENGTH_LONG).show()
     }
 }

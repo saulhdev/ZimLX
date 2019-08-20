@@ -41,7 +41,7 @@ import java.lang.reflect.Method
 
 @Keep
 class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
-    override val displayName = context.getString(R.string.action_sleep)
+    override val displayName: String = context.getString(R.string.action_sleep)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         method!!.sleep(controller)
@@ -51,6 +51,7 @@ class SleepGestureHandler(context: Context, config: JSONObject?) : GestureHandle
     private val method: SleepMethod? by lazy {
         listOf(
                 SleepMethodPowerManager(context),
+                //SleepMethodRoot(context),
                 SleepMethodPieAccessibility(context),
                 SleepMethodDeviceAdmin(context)
         ).firstOrNull { it.supported }
@@ -86,6 +87,14 @@ class SleepMethodPowerManager(context: Context) : SleepGestureHandler.SleepMetho
 
 }
 
+/*class SleepMethodRoot(context: Context) : SleepGestureHandler.SleepMethod(context) {
+    //override val supported = RootHelperManager.isAvailable
+
+    //override fun sleep(controller: GestureController) {
+    //    RootHelperManager.getInstance(context).run(IRootHelper::goToSleep)
+    //}
+
+}*/
 
 class SleepMethodPieAccessibility(context: Context) : SleepGestureHandler.SleepMethod(context) {
     override val supported = Utilities.ATLEAST_P
@@ -122,7 +131,7 @@ class SleepMethodDeviceAdmin(context: Context) : SleepGestureHandler.SleepMethod
 @Keep
 class SleepGestureHandlerTimeout(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
-    override val displayName = context.getString(R.string.action_sleep_timeout)
+    override val displayName: String = context.getString(R.string.action_sleep_timeout)
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         val launcher = controller.launcher

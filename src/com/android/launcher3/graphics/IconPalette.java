@@ -24,12 +24,12 @@ import android.graphics.ColorMatrix;
 import android.graphics.ColorMatrixColorFilter;
 import android.util.Log;
 
-import com.android.launcher3.R;
-import com.android.launcher3.util.Themes;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
+
+import com.android.launcher3.R;
+import com.android.launcher3.util.Themes;
 
 /**
  * Contains colors based on the dominant color of an icon.
@@ -153,7 +153,7 @@ public class IconPalette {
      */
     private static int resolveColor(Context context, int color) {
         if (color == Notification.COLOR_DEFAULT) {
-            return context.getColor(R.color.notification_icon_default_color);
+            return context.getResources().getColor(R.color.notification_icon_default_color);
         }
         return color;
     }
@@ -219,6 +219,11 @@ public class IconPalette {
     public static int getMutedColor(int color, float whiteScrimAlpha) {
         int whiteScrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * whiteScrimAlpha));
         return ColorUtils.compositeColors(whiteScrim, color);
+    }
+
+    public static int getMutedColor(Context context, int color, float scrimAlpha) {
+        int scrim = ColorUtils.setAlphaComponent(Color.WHITE, (int) (255 * scrimAlpha));
+        return ColorUtils.compositeColors(scrim, color);
     }
 
     private static int getTextColorForBackground(int backgroundColor) {

@@ -46,6 +46,7 @@
         <item>@string/title__sort_alphabetical_za</item>
         <item>@string/title__sort_last_installed</item>
         <item>@string/title__sort_most_used</item>
+        <item>@string/title__sort_by_color</item>
     </string-array>
     <string-array name="entries__folder_shape">
         <item>@string/title_folder_circle</item>

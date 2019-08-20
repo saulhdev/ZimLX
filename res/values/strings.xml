@@ -516,6 +516,7 @@
     <string name="title__sort_alphabetical_za">Alphabetical ZA</string>
     <string name="title__sort_last_installed">Last Installed</string>
     <string name="title__sort_most_used">Most Used</string>
+    <string name="title__sort_by_color">By Color</string>
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
     <string name="summary__app_search_hidden">Display hidden apps</string>
