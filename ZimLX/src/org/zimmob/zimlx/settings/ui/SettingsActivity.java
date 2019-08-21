@@ -32,6 +32,8 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -140,6 +142,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
     protected boolean forceSubSettings = false;
 
     private boolean hasPreview = false;
+    public static String defaultHome = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -165,46 +168,12 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         updateUpButton();
 
-        loadMenu();
-
         if (hasPreview) {
             overrideOpenAnim();
         }
 
         Utilities.getDevicePrefs(this).edit().putBoolean(OnboardingProvider.PREF_HAS_OPENED_SETTINGS, true).apply();
-    }
-
-    public void loadMenu() {
-        Toolbar toolbar = findViewById(R.id.toolbar);
-        toolbar.getMenu().clear();
-        toolbar.inflateMenu(R.menu.menu_settings);
-        ActionMenuView menuView;
-        int count = toolbar.getChildCount();
-        for (int i = 0; i < count; i++) {
-            View child = toolbar.getChildAt(i);
-            if (child instanceof ActionMenuView) {
-                menuView = (ActionMenuView) child;
-                break;
-            }
-        }
-
-        if (!BuildConfig.APPLICATION_ID.equals(resolveDefaultHome())) {
-            toolbar.inflateMenu(R.menu.menu_change_default_home);
-        }
-        toolbar.setOnMenuItemClickListener(menuItem -> {
-            switch (menuItem.getItemId()) {
-                case R.id.action_change_default_home:
-                    FakeLauncherKt.changeDefaultHome(this);
-                    break;
-                case R.id.action_restart_zim:
-                    Utilities.killLauncher();
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        });
-        setSupportActionBar(toolbar);
+        defaultHome = resolveDefaultHome();
     }
 
     @Override
@@ -557,6 +526,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
             super.onCreate(savedInstanceState);
             mShowDevOptions = Utilities.getZimPrefs(getActivity()).getDeveloperOptionsEnabled();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
+            setHasOptionsMenu(true);
         }
 
         @Override
@@ -579,6 +549,39 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
             return super.onPreferenceTreeClick(preference);
+        }
+
+        @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.menu_settings, menu);
+            if (!BuildConfig.APPLICATION_ID.equals(defaultHome)) {
+                inflater.inflate(R.menu.menu_change_default_home, menu);
+            }
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_change_default_home:
+                    FakeLauncherKt.changeDefaultHome(getContext());
+                    break;
+                case R.id.action_restart_zim:
+                    Utilities.killLauncher();
+                    break;
+                case R.id.action_dev_options:
+                    Intent intent = new Intent(getContext(), SettingsActivity.class);
+                    intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE,
+                            getString(R.string.developer_options_title));
+                    intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID,
+                            R.xml.zim_preferences_dev_options);
+                    intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true);
+                    startActivity(intent);
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
         }
 
         @Override
@@ -827,7 +830,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                                 public void onDialogDismissed(int dialogId) {
                                 }
                             });
-                            dialog.show((getActivity()).getFragmentManager(), "color-picker-dialog");
+                            dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
                         }
                 }
             }

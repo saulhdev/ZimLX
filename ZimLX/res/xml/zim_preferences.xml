@@ -57,13 +57,13 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__others">
-        <org.zimmob.zimlx.settings.ui.SubPreference
+        <!--<org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_debug"
             android:key="pref_key__developer_options"
             android:summary="@string/pref_summary__developer"
             android:title="@string/pref_title__developer"
             app:content="@xml/zim_preferences_dev_options" />
-
+-->
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_more_horiz"
             android:summary="@string/pref_summary__advanced"

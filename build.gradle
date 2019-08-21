@@ -201,7 +201,7 @@ dependencies {
     implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-alpha3'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
     implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
@@ -212,7 +212,7 @@ dependencies {
     implementation 'com.mikepenz:fastadapter-extensions:3.2.6@aar'
     implementation 'com.balysv:material-ripple:1.0.2'
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
-    implementation 'com.jaredrummler:colorpicker:1.0.1'
+    implementation 'com.jaredrummler:colorpicker:1.1.0'
     implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
     implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
     implementation 'com.squareup.okhttp3:okhttp:4.0.0-RC1'
