@@ -24,22 +24,25 @@ import android.view.View
 import android.widget.FrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.widget.custom.CustomWidgetParser
 import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView
 import org.zimmob.zimlx.ZimPreferences
 
 class SmartspacePreview(context: Context, attrs: AttributeSet?) :
-        FrameLayout(context, attrs), ZimPreferences.OnPreferenceChangeListener {
+        FrameLayout(context, attrs), ZimPreferences.OnPreferenceChangeListener, PreviewFrame.CustomWidgetPreview {
 
     private val prefs = Utilities.getZimPrefs(context)
     private val enable = prefs::enableSmartspace
     private val usePillQsb = prefs::usePillQsb
 
-    private val prefsToWatch = arrayOf("pref_smartspace", "pref_smartspace_time", "pref_smartspace_time_above",
+    private val prefsToWatch = arrayOf("pref_smartspace_time", "pref_smartspace_time_above",
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
 
-    private val needsReinflate = setOf("pref_smartspace", "pref_use_pill_qsb")
+    private val needsReinflate = setOf("pref_use_pill_qsb")
 
     private var currentView: SmartspaceView? = null
+
+    override val provider = CustomWidgetParser.getCustomWidgets(context)[0]!!
 
     override fun onAttachedToWindow() {
         super.onAttachedToWindow()
@@ -64,7 +67,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
 
     private fun inflateCurrentView() {
         if (enable.get()) {
-            val layout = if (usePillQsb.get()) R.layout.qsb_blocker_view else R.layout.search_container_workspace
+            val layout = if (usePillQsb.get()) R.layout.qsb_container_preview else R.layout.search_container_workspace
             addView(inflateView(layout))
         } else {
             currentView = null

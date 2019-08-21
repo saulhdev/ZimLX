@@ -20,9 +20,13 @@ import android.content.SharedPreferences;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.util.AttributeSet;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -30,8 +34,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.pageindicators.PageIndicator;
 import com.android.launcher3.util.Themes;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
+import org.zimmob.zimlx.allapps.AllAppsTabs;
+import org.zimmob.zimlx.preferences.DrawerTabEditBottomSheet;
+import org.zimmob.zimlx.views.ColoredButton;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -174,5 +179,30 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     @Override
     public boolean hasOverlappingRendering() {
         return false;
+    }
+
+    void inflateButtons(AllAppsTabs tabs) {
+        int childCount = getChildCount();
+        int count = tabs.getCount();
+        LayoutInflater inflater = LayoutInflater.from(getContext());
+        for (int i = childCount; i < count; i++) {
+            inflater.inflate(R.layout.all_apps_tab, this);
+        }
+        while (getChildCount() > count) {
+            removeViewAt(0);
+        }
+        for (int i = 0; i < tabs.getCount(); i++) {
+            AllAppsTabs.Tab tab = tabs.get(i);
+            ColoredButton button = (ColoredButton) getChildAt(i);
+            //button.setColorResolver(tab.getDrawerTab().getColorResolver().value());
+            button.setText(tab.getName());
+            button.setOnLongClickListener(v -> {
+                DrawerTabEditBottomSheet.Companion
+                        .editTab(Launcher.getLauncher(getContext()), tab.getDrawerTab());
+                return true;
+            });
+        }
+        updateIndicatorPosition();
+        invalidate();
     }
 }

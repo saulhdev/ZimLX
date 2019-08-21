@@ -929,5 +929,26 @@
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
 
     <string name="button_organize_screens">Organize screens</string>
+    <string name="tab_bottom_sheet_save">Save</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
+    <string name="tab_color">Tab color</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="selected_count">%1$d selected</string>
 
+    <string name="tab_manage_apps">Manage apps</string>
+    <string name="delete">Delete</string>
+    <string name="none">None</string>
+    <string name="undo">Undo</string>
+    <string name="name">Name</string>
+    <string name="apps_label">Apps</string>
+    <string name="custom">Custom</string>
+
+    <string name="default_tab_name">New tab</string>
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d app</item>
+        <item quantity="other">%1$d apps</item>
+    </plurals>
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d hidden</item>
+    </plurals>
 </resources>

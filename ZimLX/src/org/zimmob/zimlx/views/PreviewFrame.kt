@@ -17,26 +17,75 @@
 
 package org.zimmob.zimlx.views
 
+import android.app.ActivityOptions
+import android.content.ClipData
+import android.content.ClipDescription
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Paint
-import android.graphics.PorterDuff
-import android.graphics.PorterDuffXfermode
+import android.content.Intent
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.MotionEvent
+import android.view.View
 import android.widget.FrameLayout
+import com.android.launcher3.LauncherAppWidgetProviderInfo
+import com.android.launcher3.Utilities
+import org.zimmob.zimlx.childs
+import org.zimmob.zimlx.dragndrop.CustomWidgetDragListener
 
-class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
+class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs), View.OnLongClickListener {
 
     private val clearPaint = Paint().apply { xfermode = PorterDuffXfermode(PorterDuff.Mode.CLEAR) }
 
-    override fun dispatchDraw(canvas: Canvas) {
-        canvas.drawPaint(clearPaint)
-
-        super.dispatchDraw(canvas)
+    init {
+        setOnLongClickListener(this)
     }
 
-    override fun dispatchTouchEvent(ev: MotionEvent): Boolean {
-        return false // don't accept any touch here
+    override fun onLongClick(v: View): Boolean {
+        childs.filterIsInstance<CustomWidgetPreview>().firstOrNull()?.also {
+            if (Utilities.ATLEAST_NOUGAT) {
+                val provider = it.provider
+                val bounds = clipBounds
+                val listener = CustomWidgetDragListener(provider, bounds,
+                        width, width)
+
+                val homeIntent = listener.addToIntent(
+                        Intent(Intent.ACTION_MAIN)
+                                .addCategory(Intent.CATEGORY_HOME)
+                                .setPackage(context.packageName)
+                                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
+
+                listener.initWhenReady()
+                context.startActivity(
+                        homeIntent,
+                        ActivityOptions.makeCustomAnimation(
+                                context, 0, android.R.anim.fade_out).toBundle())
+
+                // Start a system drag and drop. We use a transparent bitmap as preview for system drag
+                // as the preview is handled internally by launcher.
+                val description = ClipDescription("", arrayOf(listener.mimeType))
+                val data = ClipData(description, ClipData.Item(""))
+                startDragAndDrop(data, object : DragShadowBuilder(this) {
+
+                    override fun onDrawShadow(canvas: Canvas) {}
+
+                    override fun onProvideShadowMetrics(
+                            outShadowSize: Point, outShadowTouchPoint: Point
+                    ) {
+                        outShadowSize.set(10, 10)
+                        outShadowTouchPoint.set(5, 5)
+                    }
+                }, null, View.DRAG_FLAG_GLOBAL)
+            }
+        }
+        return false
+    }
+
+    override fun onInterceptTouchEvent(ev: MotionEvent?): Boolean {
+        return true
+    }
+
+    interface CustomWidgetPreview {
+
+        val provider: LauncherAppWidgetProviderInfo
     }
 }

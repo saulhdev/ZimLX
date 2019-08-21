@@ -99,6 +99,10 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
 
+    // Drawer folder
+    public int allAppsFolderIconSizePx;
+    public int allAppsFolderIconOffsetYPx;
+
     // Folder cell
     public int folderCellWidthPx;
     public int folderCellHeightPx;
@@ -522,6 +526,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);
         folderIconOffsetYPx = (iconSizePx - folderIconSizePx) / 2;
+        allAppsFolderIconSizePx = IconNormalizer.getNormalizedCircleSize(allAppsIconSizePx);
+        allAppsFolderIconOffsetYPx = (allAppsIconSizePx - allAppsFolderIconSizePx) / 2;
     }
 
     private void updateAvailableFolderCellDimensions(DisplayMetrics dm, Resources res) {

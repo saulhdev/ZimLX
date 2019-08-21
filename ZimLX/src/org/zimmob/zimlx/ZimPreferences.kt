@@ -12,6 +12,8 @@ import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.globalsearch.SearchProviderController
+import org.zimmob.zimlx.groups.AppGroupsManager
+import org.zimmob.zimlx.groups.DrawerTabs
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
@@ -139,6 +141,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sort.toInt()
     }
 
+    val currentTabsModel
+        get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
+    val drawerTabs get() = appGroupsManager.drawerTabs
+    val appGroupsManager by lazy { AppGroupsManager(this) }
+    val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
+
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider",
             zimConfig.defaultSearchProvider) {
@@ -169,6 +177,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
+
+    val allAppsColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
@@ -242,6 +252,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun updateSortApps() {
         onChangeCallback?.forceReloadApps()
+    }
+
+    inline fun withChangeCallback(
+            crossinline callback: (ZimPreferencesChangeCallback) -> Unit): () -> Unit {
+        return { getOnChangeCallback()?.let { callback(it) } }
     }
 
     fun getOnChangeCallback() = onChangeCallback
@@ -464,6 +479,33 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         fun clear() {
             valueMap.clear()
             saveChanges()
+        }
+    }
+
+    inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,
+                                              noinline onChange: () -> Unit = doNothing): PrefDelegate<T> {
+        return IntBasedPref(key, defaultValue, onChange, { value ->
+            enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
+        }, { it.ordinal }, { })
+    }
+
+    open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
+                                           private val fromInt: (Int) -> T,
+                                           private val toInt: (T) -> Int,
+                                           private val dispose: (T) -> Unit) :
+            PrefDelegate<T>(key, defaultValue, onChange) {
+        override fun onGetValue(): T {
+            return if (sharedPrefs.contains(key)) {
+                fromInt(sharedPrefs.getInt(getKey(), toInt(defaultValue)))
+            } else defaultValue
+        }
+
+        override fun onSetValue(value: T) {
+            edit { putInt(getKey(), toInt(value)) }
+        }
+
+        override fun disposeOldValue(oldValue: T) {
+            dispose(oldValue)
         }
     }
 

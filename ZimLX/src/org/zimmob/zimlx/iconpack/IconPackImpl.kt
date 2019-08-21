@@ -209,8 +209,13 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         return entry
     }
 
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
-        val drawableId = getDrawableId(name)
+    override fun getMaskEntryForComponent(key: ComponentKey): IconPack.Entry? {
+        if (!supportsMasking()) return null
+        return MaskEntry(key)
+    }
+
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        val drawableId = getDrawableId(entry.icon ?: return null)
         if (drawableId != 0) {
             try {
                 var drawable = packResources.getDrawable(drawableId)
@@ -225,6 +230,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
+                //e("Can't get drawable for name ${entry.icon} ($drawableId)", ex)
             }
         }
         return null
@@ -260,11 +266,12 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
-
+                //e("Can't get drawable for $component ($drawableId)", ex)
             }
         }
 
-        if (prefs.iconPackMasking && packMask.hasMask) {
+        val isCustomPack = customIconEntry?.packPackageName == packPackageName && customIconEntry.icon == null
+        if ((prefs.iconPackMasking || isCustomPack) && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, iconProvider)
             val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
@@ -295,6 +302,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         return null
     }
+
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
                          customIconEntry: IconPackManager.CustomIconEntry?,
@@ -439,6 +447,25 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 false
             }
         }
+    }
+
+    inner class MaskEntry(private val key: ComponentKey) : IconPack.Entry() {
+
+        override val identifierName = key.toString()
+        override val displayName = identifierName
+        override val isAvailable = true
+
+        override fun drawableForDensity(density: Int): Drawable {
+            val baseIcon = defaultPack.getIcon(key, density)!!
+            val icon = packMask.getIcon(context, baseIcon, key.componentName)
+            if (prefs.adaptifyIconPacks) {
+                val gen = AdaptiveIconGenerator(context, icon)
+                return gen.result
+            }
+            return icon
+        }
+
+        override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, key.toString(), "mask")
     }
 
 }

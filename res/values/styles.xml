@@ -484,4 +484,32 @@
         <item name="alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
     </style>
 
+    <style name="TextAppearance.Settings.Tab" parent="@style/TextAppearance.MaterialComponents.Tab">
+        <item name="customFontType">settingsTab</item><!--
+        <item name="android:textColor">@color/tab_text</item>-->
+        <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.Settings.Tabs" parent="@style/Widget.MaterialComponents.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.Settings.Tab</item>
+        <item name="tabIndicator">@drawable/tab_indicator</item>
+        <item name="android:background">?colorBackgroundFloating</item>
+    </style>
+
+
+    <style name="SettingsTheme.Widget.Button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="customFontType">button</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="SettingsTheme.Widget.OutlinedButton" parent="SettingsTheme.Widget.Button">
+        <item name="android:background">@drawable/btn_outlined_material</item>
+        <item name="android:textColor">?android:textColorSecondary</item>
+    </style>
+
+    <style name="SettingsTheme.Widget.OutlinedButton.Colored" parent="SettingsTheme.Widget.Button">
+        <item name="android:background">@drawable/btn_outlined_colored_material</item>
+        <item name="android:textColor">?android:colorAccent</item>
+    </style>
+
 </resources>

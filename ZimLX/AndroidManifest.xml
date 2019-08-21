@@ -121,6 +121,11 @@
             android:theme="@style/SettingsTheme.V2"
             android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity" />
 
+        <activity
+            android:autoRemoveFromRecents="true"
+            android:name="org.zimmob.zimlx.preferences.SelectableAppsActivity"
+            android:theme="@style/SettingsTheme.V2" />
+
         <service
             android:name="com.android.launcher3.uioverrides.WallpaperManagerCompat$ColorExtractionService"
             android:exported="false"

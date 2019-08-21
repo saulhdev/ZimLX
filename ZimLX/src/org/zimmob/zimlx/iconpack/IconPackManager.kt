@@ -36,6 +36,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
+import org.zimmob.zimlx.asNonEmpty
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
 import org.zimmob.zimlx.runOnMainThread
@@ -187,14 +188,14 @@ class IconPackManager(private val context: Context) {
         runOnMainThread { listeners.forEach { it.invoke() } }
     }
 
-    data class CustomIconEntry(val packPackageName: String, val icon: String? = null) {
+    data class CustomIconEntry(val packPackageName: String, val icon: String? = null, val arg: String? = null) {
 
         fun toPackString(): String {
-            return "$packPackageName/"
+            return "$packPackageName"
         }
 
         override fun toString(): String {
-            return "$packPackageName/${icon ?: ""}"
+            return "$packPackageName|${icon ?: ""}|${arg ?: ""}"
         }
 
         companion object {
@@ -204,9 +205,25 @@ class IconPackManager(private val context: Context) {
 
             fun fromNullableString(string: String?): CustomIconEntry? {
                 if (string == null) return null
+                if (string.contains("|")) {
+                    val parts = string.split("|")
+                    if (parts[0].contains("/")) return parseLegacy(string)
+                    if (parts.size == 1) {
+                        return CustomIconEntry(parts[0])
+                    }
+                    return CustomIconEntry(parts[0], parts[1].asNonEmpty(), parts[2].asNonEmpty())
+                }
+                return parseLegacy(string)
+            }
+
+            private fun parseLegacy(string: String): CustomIconEntry? {
                 val parts = string.split("/")
                 val icon = TextUtils.join("/", parts.subList(1, parts.size))
-                return CustomIconEntry(parts[0], if (TextUtils.isEmpty(icon)) null else icon)
+                if (parts[0] == "zimUriPack" && !icon.isNullOrBlank()) {
+                    val iconParts = icon.split("|")
+                    return CustomIconEntry(parts[0], iconParts[0].asNonEmpty(), iconParts[1].asNonEmpty())
+                }
+                return CustomIconEntry(parts[0], icon.asNonEmpty())
             }
         }
     }

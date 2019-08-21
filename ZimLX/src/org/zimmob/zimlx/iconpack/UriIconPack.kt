@@ -65,8 +65,8 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         return getUriEntry(customIconEntry?.icon)
     }
 
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
-        return getUriEntry(name)?.drawable ?: super.getIcon(name, iconDpi)
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        return getUriEntry(entry)?.drawable ?: super.getIcon(entry, iconDpi)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {

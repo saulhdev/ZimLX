@@ -75,10 +75,13 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
-    override fun getIcon(name: String, iconDpi: Int): Drawable? {
+    override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
+        return getIcon(ComponentKey(context, entry.icon), iconDpi)
+    }
+
+    fun getIcon(key: ComponentKey, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
-        val key = ComponentKey(context, name)
         val info = key.getLauncherActivityInfo(context) ?: return null
         val component = key.componentName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
@@ -86,8 +89,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         getRoundIcon(component, iconDpi)?.let {
             roundIcon = it.apply { mutate() }
         }
-        val gen = AdaptiveIconGenerator(context, roundIcon
-                ?: originalIcon)
+        val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
         return gen.result
     }
 
@@ -114,8 +116,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            val gen = AdaptiveIconGenerator(context, roundIcon
-                    ?: originalIcon)
+            val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
             return gen.result
         }
         return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
@@ -126,7 +127,6 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
         val gen = AdaptiveIconGenerator(context, drawable)
-
         return gen.result
     }
 

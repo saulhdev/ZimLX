@@ -60,7 +60,6 @@ import android.view.KeyboardShortcutGroup;
 import android.view.KeyboardShortcutInfo;
 import android.view.LayoutInflater;
 import android.view.Menu;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
@@ -1814,12 +1813,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             setOnResumeCallback(btv);
         }
         return success;
-    }
-
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        mLastDispatchTouchEventX = ev.getX();
-        return super.dispatchTouchEvent(ev);
     }
 
     boolean isHotseatLayout(View layout) {

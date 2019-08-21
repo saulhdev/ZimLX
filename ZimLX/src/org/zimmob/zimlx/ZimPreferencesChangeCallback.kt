@@ -22,6 +22,10 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
         launcher.model.forceReload()
     }
 
+    fun reloadDrawer() {
+        launcher.appsView.appsLists.forEach { it.reset() }
+    }
+
     fun restart() {
         launcher.scheduleRestart()
     }
@@ -51,5 +55,9 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
 
     fun updateSmartspace() {
         launcher.refreshGrid()
+    }
+
+    fun updateWeatherData() {
+        launcher.zimApp.smartspace.forceUpdateWeather()
     }
 }

@@ -691,6 +691,10 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
      * Verifies that the current icon is high-res otherwise posts a request to load the icon.
      */
     public void verifyHighRes() {
+        verifyHighRes(BubbleTextView.this);
+    }
+
+    public void verifyHighRes(ItemInfoUpdateReceiver callback) {
         if (mIconLoadRequest != null) {
             mIconLoadRequest.cancel();
             mIconLoadRequest = null;
@@ -699,10 +703,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             ItemInfoWithIcon info = (ItemInfoWithIcon) getTag();
             if (info.usingLowResIcon) {
                 mIconLoadRequest = LauncherAppState.getInstance(getContext()).getIconCache()
-                        .updateIconInBackground(BubbleTextView.this, info);
+                        .updateIconInBackground(callback, info);
             }
         }
     }
+
 
     public int getIconSize() {
         return mIconSize;

@@ -140,7 +140,7 @@ class DecorLayout(context: Context, private val window: Window) : InsettableFram
     private fun allowDevOptions(): Boolean {
         return try {
             File(Environment.getExternalStoragePublicDirectory(
-                    Environment.DIRECTORY_DOCUMENTS), "ZimLX/dev").exists()
+                    Environment.DIRECTORY_DOCUMENTS), "Zim/dev").exists()
         } catch (e: SecurityException) {
             false
         }

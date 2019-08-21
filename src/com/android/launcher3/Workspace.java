@@ -41,6 +41,7 @@ import android.os.UserHandle;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.view.HapticFeedbackConstants;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -290,7 +291,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mWallpaperManager = WallpaperManager.getInstance(context);
 
         mWallpaperOffset = new WallpaperOffsetInterpolator(this);
-
 
         mPillQsb = FeatureFlags.QSB_ON_FIRST_SCREEN && Utilities.getZimPrefs(context).getUsePillQsb();
 
@@ -549,7 +549,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         disableLayoutTransitions();
 
         // Recycle the QSB widget
-        View qsb = findViewById(R.id.search_container_workspace);
+        View qsb = findViewById(getEmbeddedQsbId());
         if (qsb != null) {
             ((ViewGroup) qsb.getParent()).removeView(qsb);
         }
@@ -760,19 +760,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
         final CellLayout cl = mWorkspaceScreens.get(id);
 
-        mRemoveEmptyScreenRunnable = new Runnable() {
-            @Override
-            public void run() {
-                if (hasExtraEmptyScreen()) {
-                    mWorkspaceScreens.remove(id);
-                    mScreenOrder.remove(id);
-                    removeView(cl);
-                    if (stripEmptyScreens) {
-                        stripEmptyScreens();
-                    }
-                    // Update the page indicator to reflect the removed page.
-                    showPageIndicatorAtCurrentScroll();
+        mRemoveEmptyScreenRunnable = () -> {
+            if (hasExtraEmptyScreen()) {
+                mWorkspaceScreens.remove(id);
+                mScreenOrder.remove(id);
+                removeView(cl);
+                if (stripEmptyScreens) {
+                    stripEmptyScreens();
                 }
+                // Update the page indicator to reflect the removed page.
+                showPageIndicatorAtCurrentScroll();
             }
         };
 
@@ -1513,10 +1510,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         mOutlineProvider = outlineProvider;
     }
 
-    public boolean isInOverviewMode() {
-        return mIsOverViewState;
-    }
-
     public void snapToPageFromOverView(int whichPage) {
         snapToPage(whichPage, OVERVIEW_TRANSITION_MS, Interpolators.ZOOM_IN);
     }
@@ -1675,6 +1668,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (child instanceof BubbleTextView) {
             BubbleTextView icon = (BubbleTextView) child;
             icon.clearPressedBackground();
+        } else if (child instanceof FolderIcon) {
+            ((FolderIcon) child).clearPressedBackground();
         }
 
         if (child.getParent() instanceof ShortcutAndWidgetContainer) {
@@ -1689,6 +1684,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
                 mLauncher.getUserEventDispatcher().resetElapsedContainerMillis("dragging started");
             }
+        }
+
+        if (Utilities.getZimPrefs(mLauncher).getLockDesktop()) {
+            child.setVisibility(View.VISIBLE);
+
+            if (dragOptions.preDragCondition != null) {
+                mLauncher.getDragLayer().performHapticFeedback(HapticFeedbackConstants.LONG_PRESS);
+            }
+            return null;
         }
 
         DragView dv = mDragController.startDrag(b, dragLayerX, dragLayerY, source,

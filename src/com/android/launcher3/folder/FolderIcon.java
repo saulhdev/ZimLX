@@ -74,6 +74,7 @@ import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.RunnableGestureHandler;
 import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
+import org.zimmob.zimlx.groups.DrawerFolderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -185,14 +186,14 @@ public class FolderIcon extends FrameLayout implements FolderListener, Launcher.
         icon.mFolderName.setText(folderInfo.title);
         icon.mFolderName.setCompoundDrawablePadding(0);
         FrameLayout.LayoutParams lp = (FrameLayout.LayoutParams) icon.mFolderName.getLayoutParams();
-        //lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-        /*if (folderInfo instanceof DrawerFolderInfo) {
+        lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
+        if (folderInfo instanceof DrawerFolderInfo) {
             lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
             icon.mBackground = new PreviewBackground(true);
             ((DrawerFolderInfo) folderInfo).getAppsStore().registerFolderIcon(icon);
         } else {
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
-        }*/
+        }
         icon.setTag(folderInfo);
         icon.setOnClickListener(ItemClickHandler.INSTANCE);
         icon.mInfo = folderInfo;
@@ -673,6 +674,27 @@ public class FolderIcon extends FrameLayout implements FolderListener, Launcher.
             }
         }
         return itemsToDisplay;
+    }
+
+    public void verifyHighRes() {
+        int processedItemCount = 0;
+        List<BubbleTextView> itemsOnPage = mFolder.getItemsOnPage(0);
+        int numItems = itemsOnPage.size();
+        for (int rank = 0; rank < numItems; ++rank) {
+            if (mPreviewVerifier.isItemInPreview(0, rank)) {
+                BubbleTextView item = itemsOnPage.get(rank);
+                item.verifyHighRes(info -> {
+                    item.reapplyItemInfo(info);
+                    updatePreviewItems(false);
+                    invalidate();
+                });
+                processedItemCount++;
+            }
+
+            if (processedItemCount == MAX_NUM_ITEMS_IN_PREVIEW) {
+                break;
+            }
+        }
     }
 
     @Override

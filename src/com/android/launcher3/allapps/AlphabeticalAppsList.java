@@ -17,13 +17,14 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.util.Log;
+import android.graphics.Color;
+
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -31,6 +32,9 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.allapps.AppColorComparator;
+import org.zimmob.zimlx.groups.DrawerFolderInfo;
+import org.zimmob.zimlx.groups.DrawerFolderItem;
 import org.zimmob.zimlx.model.AppCountInfo;
 import org.zimmob.zimlx.util.DbHelper;
 import org.zimmob.zimlx.util.InstallTimeComparator;
@@ -43,9 +47,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static org.zimmob.zimlx.util.Config.SORT_AZ;
+import static org.zimmob.zimlx.util.Config.SORT_BY_COLOR;
 import static org.zimmob.zimlx.util.Config.SORT_LAST_INSTALLED;
 import static org.zimmob.zimlx.util.Config.SORT_MOST_USED;
 import static org.zimmob.zimlx.util.Config.SORT_ZA;
@@ -77,7 +83,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     // The set of predicted app component names
     private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // Is it the work profile app list.
-    private final boolean mIsWork;
+    private boolean mIsWork;
     // The set of predicted apps resolved from the component names and the current set of apps
     private final List<AppInfo> mPredictedApps = new ArrayList<>();
 
@@ -87,18 +93,24 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
+    private AppColorComparator mAppColorComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
+    private ZimPreferences prefs;
+
+    private List<String> mSearchSuggestions;
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+        mAppColorComparator = new AppColorComparator(context);
         mIsWork = isWork;
         mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
         mAllAppsStore.addUpdateListener(this);
+        prefs = Utilities.getZimPrefs(context);
     }
 
     public void updateItemFilter(ItemInfoMatcher itemFilter) {
@@ -125,31 +137,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      */
     public List<AppInfo> getPredictedApps() {
         return mPredictedApps;
-    }
-
-    /**
-     * Sets the current set of predicted apps.
-     * <p>
-     * This can be called before we get the full set of applications, we should merge the results
-     * only in onAppsUpdated() which is idempotent.
-     * <p>
-     * If the number of predicted apps is the same as the previous list of predicted apps,
-     * we can optimize by swapping them in place.
-     */
-    public void setPredictedApps(List<ComponentKeyMapper<AppInfo>> apps) {
-        mPredictedAppComponents.clear();
-        mPredictedAppComponents.addAll(apps);
-
-        List<AppInfo> newPredictedApps = processPredictedAppComponents(apps);
-        // We only need to do work if any of the visible predicted apps have changed.
-        if (!newPredictedApps.equals(mPredictedApps)) {
-            if (newPredictedApps.size() == mPredictedApps.size()) {
-                swapInNewPredictedApps(newPredictedApps);
-            } else {
-                // We need to update the appIndex of all the items.
-                onAppsUpdated();
-            }
-        }
     }
 
     private void sortApps(int sortType) {
@@ -180,6 +167,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 db.close();
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
                 Collections.sort(mApps, mostUsedComparator);
+                break;
+
+            case SORT_BY_COLOR:
+                Collections.sort(mApps, mAppColorComparator);
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);
@@ -224,10 +215,17 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     /**
+     * Returns whether there are suggestions.
+     */
+    public boolean hasSuggestions() {
+        return mSearchSuggestions != null && !mSearchSuggestions.isEmpty();
+    }
+
+    /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
-        return (mSearchResults != null) && mFilteredApps.isEmpty();
+        return (mSearchResults != null) && mFilteredApps.isEmpty() && (mSearchSuggestions != null) && mSearchSuggestions.isEmpty();
     }
 
     public List<AppInfo> getFilteredApps() {
@@ -247,29 +245,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return false;
     }
 
-    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
-        if (mComponentToAppMap.isEmpty()) {
-            // Apps have not been bound yet.
-            return Collections.emptyList();
+    public boolean setSearchSuggestions(List<String> suggestions) {
+        if (mSearchSuggestions != suggestions) {
+            boolean same = mSearchSuggestions != null && mSearchSuggestions.equals(suggestions);
+            mSearchSuggestions = suggestions;
+            onAppsUpdated();
+            return !same;
         }
-
-        int nPredictedApps = Utilities.getZimPrefs(mLauncher.getApplicationContext()).getNumPredictedApps();
-        List<AppInfo> predictedApps = new ArrayList<>();
-        for (ComponentKeyMapper<AppInfo> mapper : components) {
-            AppInfo info = mapper.getItem(mComponentToAppMap);
-            if (info != null) {
-                predictedApps.add(info);
-            } else {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                    Log.e(TAG, "Predicted app not found: " + mapper);
-                }
-            }
-            // Stop at the number of predicted apps
-            if (predictedApps.size() == nPredictedApps) {
-                break;
-            }
-        }
-        return predictedApps;
+        return false;
     }
 
     /**
@@ -305,7 +288,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             TreeMap<String, ArrayList<AppInfo>> sectionMap = new TreeMap<>(new LabelComparator());
             for (AppInfo info : mApps) {
                 // Add the section to the cache
-                String sectionName = getAndUpdateCachedSectionName(info.title);
+                String sectionName = getAndUpdateCachedSectionName(info);
 
                 // Add it to the mapping
                 ArrayList<AppInfo> sectionApps = sectionMap.get(sectionName);
@@ -325,7 +308,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             // Just compute the section headers for use below
             for (AppInfo info : mApps) {
                 // Add the section to the cache
-                getAndUpdateCachedSectionName(info.title);
+                getAndUpdateCachedSectionName(info);
             }
         }
 
@@ -353,46 +336,62 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         FastScrollSectionInfo lastFastScrollerSectionInfo = null;
         int position = 0;
         int appIndex = 0;
+        int folderIndex = 0;
 
         // Prepare to update the list of sections, filtered apps, etc.
         mFilteredApps.clear();
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
-        // Process the predicted app components
-        mPredictedApps.clear();
-        if (mPredictedAppComponents != null && !mPredictedAppComponents.isEmpty() && !hasFilter()) {
-            mPredictedApps.addAll(processPredictedAppComponents(mPredictedAppComponents));
-
-            if (!mPredictedApps.isEmpty()) {
-                // Add a section for the predictions
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo("");
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-
-                // Add the predicted app items
-                for (AppInfo info : mPredictedApps) {
-                    AdapterItem appItem = AdapterItem.asPredictedApp(position++, "", info,
-                            appIndex++);
-                    if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                        lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-                    }
-                    mAdapterItems.add(appItem);
-                    mFilteredApps.add(info);
-                }
-
-                mAdapterItems.add(AdapterItem.asPredictionDivider(position++));
+        // Search suggestions should be all the way to the top
+        if (hasFilter() && hasSuggestions()) {
+            for (String suggestion : mSearchSuggestions) {
+                mAdapterItems.add(AdapterItem.asSearchSuggestion(position++, suggestion));
             }
         }
+
+        // Drawer folders are arranged before all the apps
+        if (!hasFilter()) {
+            for (DrawerFolderInfo info : getFolderInfos()) {
+                String sectionName = "#";
+
+                // Create a new section if the section names do not match
+                if (!sectionName.equals(lastSectionName)) {
+                    lastSectionName = sectionName;
+                    lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName,
+                            Color.WHITE);
+                    mFastScrollerSections.add(lastFastScrollerSectionInfo);
+                }
+
+                info.setAppsStore(mAllAppsStore);
+                // Create an folder item
+                AdapterItem appItem = AdapterItem
+                        .asFolder(position++, sectionName, info, folderIndex++);
+                if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                    lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                }
+                mAdapterItems.add(appItem);
+            }
+        }
+
+        Set<ComponentKey> folderFilters = getFolderFilteredApps();
 
         // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
         // ordered set of sections
         for (AppInfo info : getFiltersAppInfos()) {
-            String sectionName = getAndUpdateCachedSectionName(info.title);
+            if (!hasFilter() && folderFilters.contains(info.toComponentKey())) {
+                continue;
+            }
+            String sectionName = getAndUpdateCachedSectionName(info);
 
             // Create a new section if the section names do not match
             if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                int color = 0;
+                if (prefs.getSortMode() == 4) {
+                    color = info.iconColor;
+                }
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
                 mFastScrollerSections.add(lastFastScrollerSectionInfo);
             }
 
@@ -407,7 +406,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
         if (hasFilter()) {
             // Append the search market item
-            if (hasNoFilteredResults()) {
+            if (hasNoFilteredResults() && !hasSuggestions()) {
                 mAdapterItems.add(AdapterItem.asEmptySearch(position++));
             } else {
                 mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
@@ -496,10 +495,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return result;
     }
 
-    public AppInfo findApp(ComponentKeyMapper<AppInfo> mapper) {
-        return mapper.getItem(mComponentToAppMap);
-    }
-
     public AppInfo AllAppsList(ComponentKeyMapper<AppInfo> mapper) {
         return mapper.getItem(mComponentToAppMap);
     }
@@ -508,35 +503,41 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      * Returns the cached section name for the given title, recomputing and updating the cache if
      * the title has no cached section name.
      */
-    private String getAndUpdateCachedSectionName(CharSequence title) {
-        String sectionName = mCachedSectionNames.get(title);
+    private String getAndUpdateCachedSectionName(AppInfo info) {
+        String sectionName = mCachedSectionNames.get(info);
         if (sectionName == null) {
-            sectionName = mIndexer.computeSectionName(title);
-            mCachedSectionNames.put(title, sectionName);
+            if (prefs.getSortMode() == 4) {
+                float[] hsl = new float[3];
+                ColorUtils.colorToHSL(info.iconColor, hsl);
+                sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
+            } else {
+                sectionName = mIndexer.computeSectionName(info.title);
+            }
+            mCachedSectionNames.put(info.title, sectionName);
         }
         return sectionName;
     }
 
-    /**
-     * Swaps out the old predicted apps with the new predicted apps, in place. This optimization
-     * allows us to skip an entire relayout that would otherwise be called by notifyDataSetChanged.
-     * <p>
-     * Note: This should only be called if the # of predicted apps is the same.
-     * This method assumes that predicted apps are the first items in the adapter.
-     */
-    private void swapInNewPredictedApps(List<AppInfo> apps) {
-        mPredictedApps.clear();
-        mPredictedApps.addAll(apps);
+    public void setIsWork(boolean isWork) {
+        mIsWork = isWork;
+    }
 
-        int size = apps.size();
-        for (int i = 0; i < size; ++i) {
-            AppInfo info = apps.get(i);
-            AdapterItem appItem = AdapterItem.asPredictedApp(i, "", info, i);
-            appItem.rowAppIndex = i;
-            mAdapterItems.set(i, appItem);
-            mFilteredApps.set(i, info);
-            mAdapter.notifyItemChanged(i);
-        }
+    private List<DrawerFolderInfo> getFolderInfos() {
+        return Utilities.getZimPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getFolderInfos(this);
+    }
+
+    private Set<ComponentKey> getFolderFilteredApps() {
+        return Utilities.getZimPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getHiddenComponents();
+    }
+
+    public void reset() {
+        updateAdapterItems();
     }
 
     /**
@@ -550,9 +551,12 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         public AdapterItem fastScrollToItem;
         // The touch fraction that should map to this fast scroll section info
         public float touchFraction;
+        // The color of this fast scroll section
+        public int color;
 
-        public FastScrollSectionInfo(String sectionName) {
+        public FastScrollSectionInfo(String sectionName, int color) {
             this.sectionName = sectionName;
+            this.color = color;
         }
     }
 
@@ -583,12 +587,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // The index of this app not including sections
         public int appIndex = -1;
 
-        public static AdapterItem asPredictedApp(int pos, String sectionName, AppInfo appInfo,
-                                                 int appIndex) {
-            AdapterItem item = asApp(pos, sectionName, appInfo, appIndex);
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_ICON;
-            return item;
-        }
+        /**
+         * Folder-only properties
+         */
+        // The associated folder for the folder
+        public DrawerFolderItem folderItem = null;
+
+        /**
+         * Search suggestion-only properties
+         */
+        public String suggestion;
 
         public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
                                         int appIndex) {
@@ -600,14 +608,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.appIndex = appIndex;
             return item;
         }
-
-        public static AdapterItem asPredictionDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_PREDICTION_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
 
         public static AdapterItem asEmptySearch(int pos) {
             AdapterItem item = new AdapterItem();
@@ -636,24 +636,24 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.position = pos;
             return item;
         }
+
+        public static AdapterItem asFolder(int pos, String sectionName,
+                                           DrawerFolderInfo folderInfo, int folderIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
+            return item;
+        }
+
+        public static AdapterItem asSearchSuggestion(int pos, String suggestion) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_SUGGESTION;
+            item.position = pos;
+            item.suggestion = suggestion;
+            return item;
+        }
     }
 
-    /**
-     * Common interface for different merging strategies.
-     */
-    public interface MergeAlgorithm {
-        boolean continueMerging(SectionInfo section);
-    }
-
-    /**
-     * Info about a section in the alphabetic list
-     */
-    public static class SectionInfo {
-        // The number of applications in this section
-        public int numApps;
-        // The section break AdapterItem for this section
-        public AdapterItem sectionBreakItem;
-        // The first app AdapterItem for this section
-        public AdapterItem firstAppItem;
-    }
 }

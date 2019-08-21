@@ -69,6 +69,7 @@ import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
+import org.zimmob.zimlx.util.JSONMap
 import java.lang.reflect.Field
 import java.security.MessageDigest
 import java.util.*
@@ -653,6 +654,8 @@ fun getTabRipple(context: Context, accent: Int): ColorStateList {
 fun JSONObject.getNullable(key: String): Any? {
     return opt(key)
 }
+
+fun JSONObject.asMap() = JSONMap(this)
 
 fun String.asNonEmpty(): String? {
     if (TextUtils.isEmpty(this)) return null
