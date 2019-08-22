@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps;
 
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -24,10 +23,8 @@ import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.PackageUserKey;
 
 import org.zimmob.zimlx.util.DbHelper;
@@ -55,18 +52,7 @@ public class AllAppsStore {
     private boolean mDeferUpdates = false;
     private boolean mUpdatePending = false;
 
-    // The set of predicted app component names
-    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
-    private final List<AppInfo> mPredictedApps = new ArrayList<>();
-    // The current set of adapter items
-    private List<AlphabeticalAppsList.AdapterItem> mAdapterItems = new ArrayList<>();
     private AllAppsGridAdapter mAdapter;
-    private int mNumPredictedAppsPerRow;
-
-    // The set of filtered apps with the current filter
-    private List<AppInfo> mFilteredApps = new ArrayList<>();
-
-
 
     public Collection<AppInfo> getApps() {
         return mComponentToAppMap.values();
@@ -105,30 +91,6 @@ public class AllAppsStore {
         notifyUpdate();
     }
 
-    private List<AppInfo> processPredictedAppComponents(List<ComponentKeyMapper<AppInfo>> components) {
-        if (mComponentToAppMap.isEmpty()) {
-            // Apps have not been bound yet.
-            return Collections.emptyList();
-        }
-
-        List<AppInfo> predictedApps = new ArrayList<>();
-        for (ComponentKeyMapper<AppInfo> mapper : components) {
-            AppInfo info = mapper.getItem(mComponentToAppMap);
-            if (info != null) {
-                predictedApps.add(info);
-            } else {
-                if (FeatureFlags.IS_DOGFOOD_BUILD) {
-                    Log.e("AllAppsStore", "Predicted app not found: " + mapper);
-                }
-            }
-            // Stop at the number of predicted apps
-            if (predictedApps.size() == mNumPredictedAppsPerRow) {
-                break;
-            }
-        }
-        return predictedApps;
-    }
-
     /**
      * Sets the adapter to notify when this dataset changes.
      */
@@ -149,7 +111,6 @@ public class AllAppsStore {
         db.close();
         notifyUpdate();
     }
-
 
     private void notifyUpdate() {
         if (mDeferUpdates) {
@@ -195,7 +156,7 @@ public class AllAppsStore {
         });
 
         Set<FolderIcon> foldersToUpdate = new HashSet<>();
-        /*for (FolderIcon folderIcon : mFolderIcons) {
+        for (FolderIcon folderIcon : mFolderIcons) {
             folderIcon.getFolder().iterateOverItems((info, view) -> {
                 if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
                     if (view instanceof BubbleTextView) {
@@ -205,7 +166,7 @@ public class AllAppsStore {
                 }
                 return false;
             });
-        }*/
+        }
 
         for (FolderIcon folderIcon : foldersToUpdate) {
             folderIcon.updateIconBadges(updatedBadges, mTempKey);

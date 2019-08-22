@@ -14,6 +14,7 @@ import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 
 public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdateListener, Callbacks {
@@ -46,19 +47,26 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
-        if (apps != null && getParent() != null) {
-            mApps.setOrderedFilter(apps);
-            dV();
-            x(true);
-            mAppsView.setLastSearchQuery(query);
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
+        if (getParent() != null) {
+            if (apps != null) {
+                mApps.setOrderedFilter(apps);
+            }
+            if (suggestions != null) {
+                mApps.setSearchSuggestions(suggestions);
+            }
+            if (apps != null || suggestions != null) {
+                dV();
+                x(true);
+                mAppsView.setLastSearchQuery(query);
+            }
         }
     }
 
     @Override
     public final void clearSearchResult() {
         if (getParent() != null) {
-            if (mApps.setOrderedFilter(null)) {
+            if (mApps.setOrderedFilter(null) || mApps.setSearchSuggestions(null)) {
                 dV();
             }
             x(false);

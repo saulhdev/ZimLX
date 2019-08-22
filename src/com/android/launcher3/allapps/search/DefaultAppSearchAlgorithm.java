@@ -31,10 +31,14 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.util.ComponentKey;
 
 import org.zimmob.zimlx.ZimAppFilter;
+import org.zimmob.zimlx.globalsearch.SearchProvider;
+import org.zimmob.zimlx.globalsearch.SearchProviderController;
+import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
 
 import java.text.Collator;
 import java.text.Normalizer;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Pattern;
 
@@ -69,9 +73,15 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     public void doSearch(final String query,
                          final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(() -> callback.onSearchResult(query, result));
-    }
+        final List<String> suggestions = getSuggestions(query);
+        mResultHandler.post(new Runnable() {
 
+            @Override
+            public void run() {
+                callback.onSearchResult(query, result, suggestions);
+            }
+        });
+    }
     private ArrayList<ComponentKey> getTitleMatchResult(String query) {
         // Do an intersection of the words in the query and each title, and filter out all the
         // apps that don't match all of the words in the query.
@@ -84,6 +94,15 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             }
         }
         return result;
+    }
+
+    private List<String> getSuggestions(String query) {
+        SearchProvider provider = SearchProviderController.Companion
+                .getInstance(mContext).getSearchProvider();
+        if (provider instanceof WebSearchProvider) {
+            return ((WebSearchProvider) provider).getSuggestions(query);
+        }
+        return Collections.emptyList();
     }
 
     public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps, AppFilter filter) {

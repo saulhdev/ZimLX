@@ -34,6 +34,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -173,8 +174,10 @@ public class AllAppsSearchBarController
          * Called when the search is complete.
          *
          * @param apps sorted list of matching components or null if in case of failure.
+         * @param suggestions relevancy sorted list of matching suggestions or null
          */
-        void onSearchResult(String query, ArrayList<ComponentKey> apps);
+        void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions);
+
 
         /**
          * Called when the search results should be cleared.

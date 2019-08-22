@@ -41,6 +41,7 @@ import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
@@ -175,9 +176,14 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
         if (apps != null) {
             mApps.setOrderedFilter(apps);
+        }
+        if (suggestions != null) {
+            mApps.setSearchSuggestions(suggestions);
+        }
+        if (apps != null || suggestions != null) {
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
@@ -192,7 +198,6 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         getContext().startActivity(i);
         return true;
     }
-
 
     @Override
     public void clearSearchResult() {
