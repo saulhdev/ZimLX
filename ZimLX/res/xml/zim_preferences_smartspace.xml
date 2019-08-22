@@ -8,8 +8,8 @@
         android:key="pref_smartspace"
         android:title="@string/title__desktop_smartspace"
         app:iconSpaceReserved="false" />
-    <!--
-        <org.zimmob.zimlx.preferences.PreviewPreference
+
+    <org.zimmob.zimlx.preferences.PreviewPreference
             android:key="pref_smartspace_preview"
             android:dependency="pref_smartspace"
             app:previewLayout="@layout/smartspace_preview" /> -->

@@ -944,6 +944,15 @@
     <string name="custom">Custom</string>
 
     <string name="default_tab_name">New tab</string>
+
+    <string name="icon_shape_top_left">Top left</string>
+    <string name="icon_shape_top_right">Top right</string>
+    <string name="icon_shape_bottom_left">Bottom left</string>
+    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Cut</string>
+
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d app</item>
         <item quantity="other">%1$d apps</item>

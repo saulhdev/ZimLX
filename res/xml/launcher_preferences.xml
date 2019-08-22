@@ -71,11 +71,11 @@
         android:persistent="true" />
 
     <ListPreference
-        android:key="pref_override_icon_shape"
+        android:key="pref_icon_shape"
         android:title="@string/icon_shape_override_label"
         android:summary="%s"
-        android:entries="@array/icon_shape_override_paths_names"
-        android:entryValues="@array/icon_shape_override_paths_values"
+        android:entries="@array/icon_shape_names"
+        android:entryValues="@array/icon_shape_values"
         android:defaultValue="0"
         android:persistent="false" />
 
@@ -102,7 +102,7 @@
             android:persistent="false">
             <intent
                 android:action="android.settings.APPLICATION_DETAILS_SETTINGS"
-                android:data="package:ch.deletescape.lawnchair" />
+                android:data="package:org.zimmob.zimlx" />
         </Preference>
 
         <!--

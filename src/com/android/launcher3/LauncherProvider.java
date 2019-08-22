@@ -53,7 +53,6 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.model.DbDowngradeHelper;
 import com.android.launcher3.provider.LauncherDbUtils;
@@ -115,8 +114,6 @@ public class LauncherProvider extends ContentProvider {
 
         // The content provider exists for the entire duration of the launcher main process and
         // is the first component to get created.
-        FileLog.setDir(getContext().getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(getContext());
         MainProcessInitializer.initialize(getContext().getApplicationContext());
         return true;
     }

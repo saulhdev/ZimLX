@@ -69,6 +69,7 @@
         android:summary="@string/summary_app_suggestions"
         android:title="@string/title_app_suggestions"
         app:controllerClass="org.zimmob.zimlx.settings.controllers.AppSuggestionsController"
+        android:disableDependentsState="true"
         app:iconSpaceReserved="false" />
 
     <ListPreference
@@ -76,7 +77,7 @@
         android:entries="@array/predictive_apps_values"
         android:entryValues="@array/predictive_apps_values"
         android:key="pref_predictive_apps_values"
-        android:dependency="pref_show_predictions"
+        android:dependency="pref_key__sort_mode"
         android:persistent="true"
         android:summary="%s"
         android:title="@string/pref_title__predictive_apps_num"
@@ -90,6 +91,8 @@
         android:persistent="true"
         android:summary="%s"
         android:title="@string/title__sort_mode"
+        android:dependency="pref_show_predictions"
+        android:disableDependentsState="false"
         app:iconSpaceReserved="false" />/>
 
     <Preference

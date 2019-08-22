@@ -8,6 +8,7 @@ import android.os.Looper
 import android.text.TextUtils
 import android.util.TypedValue
 import com.android.launcher3.*
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
@@ -146,6 +147,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerTabs get() = appGroupsManager.drawerTabs
     val appGroupsManager by lazy { AppGroupsManager(this) }
     val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
+    val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
 
     // Search
     var searchProvider by StringPref("pref_globalSearchProvider",

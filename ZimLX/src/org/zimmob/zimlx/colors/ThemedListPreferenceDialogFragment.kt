@@ -28,7 +28,7 @@ import androidx.preference.PreferenceDialogFragmentCompat
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.applyAccent
 
-class ThemedListPreferenceDialogFragment : ListPreferenceDialogFragmentCompat() {
+open class ThemedListPreferenceDialogFragment : ListPreferenceDialogFragmentCompat() {
 
     override fun onStart() {
         super.onStart()

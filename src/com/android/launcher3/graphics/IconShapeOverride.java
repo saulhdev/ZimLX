@@ -23,6 +23,10 @@ import android.os.Build;
 import android.text.TextUtils;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+import androidx.preference.ListPreference;
+import androidx.preference.Preference;
+
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
@@ -33,10 +37,6 @@ import org.zimmob.zimlx.ZimLauncher;
 import java.lang.reflect.Field;
 import java.util.Arrays;
 
-import androidx.annotation.NonNull;
-import androidx.preference.ListPreference;
-import androidx.preference.Preference;
-
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
 /**
@@ -45,7 +45,7 @@ import static com.android.launcher3.Utilities.getPrefs;
 @TargetApi(Build.VERSION_CODES.O)
 public class IconShapeOverride {
 
-    public static final String KEY_PREFERENCE = "pref_override_icon_shape";
+    public static final String KEY_PREFERENCE = "pref_icon_shape";
     private static final String TAG = "IconShapeOverride";
 
     // Time to wait before killing the process this ensures that the progress bar is visible for

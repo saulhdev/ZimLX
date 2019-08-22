@@ -19,27 +19,11 @@ package org.zimmob.zimlx.settings.controllers
 
 import android.content.Context
 import androidx.annotation.Keep
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import com.android.launcher3.R
 import com.android.launcher3.graphics.IconShapeOverride
 import org.zimmob.zimlx.settings.ui.PreferenceController
-import org.zimmob.zimlx.zimPrefs
 
 @Keep
 class IconShapeOverrideController(context: Context) : PreferenceController(context) {
 
     override val isVisible = IconShapeOverride.isSupported(context)
-
-    override fun onPreferenceAdded(preference: Preference): Boolean {
-        if (!super.onPreferenceAdded(preference)) return false
-        if (preference is ListPreference) {
-            if (context.zimPrefs.developerOptionsEnabled) {
-                preference.setEntries(R.array.icon_shape_override_paths_values)
-                preference.setEntryValues(R.array.icon_shape_override_paths_names)
-            }
-            IconShapeOverride.handlePreferenceUi(preference)
-        }
-        return true
-    }
 }

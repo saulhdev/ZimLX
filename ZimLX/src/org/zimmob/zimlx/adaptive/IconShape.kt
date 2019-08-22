@@ -24,10 +24,10 @@ import android.graphics.PointF
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 
-open class IconShape(private val topLeft: Corner,
-                     private val topRight: Corner,
-                     private val bottomLeft: Corner,
-                     private val bottomRight: Corner) {
+open class IconShape(val topLeft: Corner,
+                     val topRight: Corner,
+                     val bottomLeft: Corner,
+                     val bottomRight: Corner) {
 
     constructor(topLeftShape: IconCornerShape,
                 topRightShape: IconCornerShape,

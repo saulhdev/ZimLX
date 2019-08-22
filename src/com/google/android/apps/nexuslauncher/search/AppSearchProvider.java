@@ -13,14 +13,14 @@ import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
-import com.android.launcher3.allapps.AppInfoComparator;
-import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.model.BgDataModel;
 import com.android.launcher3.model.LoaderResults;
@@ -28,6 +28,7 @@ import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 
 import org.zimmob.zimlx.ZimAppFilter;
+import org.zimmob.zimlx.allapps.FuzzyAppSearchAlgorithm;
 
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -40,8 +41,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
-
-import androidx.annotation.NonNull;
 
 public class AppSearchProvider extends ContentProvider {
     private static final String[] eK = new String[]{"_id", "suggest_text_1", "suggest_icon_1", "suggest_intent_action", "suggest_intent_data"};
@@ -205,22 +204,13 @@ public class AppSearchProvider extends ContentProvider {
                 Log.d("AppSearchProvider", "Loading workspace failed");
                 return Collections.emptyList();
             }
-            final ArrayList<AppInfo> list = new ArrayList<>();
-            final List<AppInfo> data = DefaultAppSearchAlgorithm.getApps(mApp.getContext(), mAllAppsList.data, getBaseFilter());
-            final DefaultAppSearchAlgorithm.StringMatcher instance = DefaultAppSearchAlgorithm.StringMatcher.getInstance();
-
-            for (final AppInfo appInfo : data) {
-                if (DefaultAppSearchAlgorithm.matches(appInfo, this.mQuery, instance)) {
-                    list.add(appInfo);
-                    if (!appInfo.usingLowResIcon) {
-                        continue;
-                    }
-                    this.mApp.getIconCache().getTitleAndIcon(appInfo, false);
+            final List<AppInfo> results = FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
+            for (AppInfo appInfo : results) {
+                if (appInfo.usingLowResIcon) {
+                    mApp.getIconCache().getTitleAndIcon(appInfo, false);
                 }
             }
-
-            Collections.sort(list, new AppInfoComparator(this.mApp.getContext()));
-            return list;
+            return results;
         }
 
         public void init(final LauncherAppState mApp, final LauncherModel mModel, final BgDataModel mBgDataModel, final AllAppsList mAllAppsList, final Executor executor) {

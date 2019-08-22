@@ -18,9 +18,9 @@ package com.android.launcher3;
 
 import android.content.Context;
 
-import com.android.launcher3.graphics.IconShapeOverride;
 import com.android.launcher3.logging.FileLog;
 
+import org.zimmob.zimlx.adaptive.IconShapeManager;
 import org.zimmob.zimlx.folder.FolderShape;
 
 /**
@@ -36,7 +36,7 @@ public class MainProcessInitializer {
 
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
-        IconShapeOverride.apply(context);
+        IconShapeManager.Companion.getInstance(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
         FolderShape.init(context);
     }

@@ -40,6 +40,8 @@ import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
+import org.zimmob.zimlx.allapps.FuzzyAppSearchAlgorithm;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -143,8 +145,9 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mApps = appsView.getApps();
         mAppsView = appsView;
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mLauncher.getApplicationContext(), mApps.getApps()), this, mLauncher, this);
+                new FuzzyAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
     }
+
 
     @Override
     public void onAppsUpdated() {
