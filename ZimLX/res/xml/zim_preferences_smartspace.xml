@@ -12,7 +12,7 @@
     <org.zimmob.zimlx.preferences.PreviewPreference
             android:key="pref_smartspace_preview"
             android:dependency="pref_smartspace"
-            app:previewLayout="@layout/smartspace_preview" /> -->
+        app:previewLayout="@layout/smartspace_preview" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"

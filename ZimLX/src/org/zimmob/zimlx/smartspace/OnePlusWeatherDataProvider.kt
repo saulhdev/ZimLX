@@ -16,19 +16,22 @@
  */
 package org.zimmob.zimlx.smartspace
 
-import android.Manifest
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.location.Criteria
 import android.location.LocationManager
 import androidx.annotation.Keep
-import com.android.launcher3.Utilities
+import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
-import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator
-import com.luckycatlabs.sunrisesunset.dto.Location
 import net.oneplus.launcher.OPWeatherProvider
+import og.zimmob.zimlx.twilight.TwilightManager
+import org.zimmob.zimlx.checkLocationAccess
+import org.zimmob.zimlx.location.IPLocation
+import org.zimmob.zimlx.perms.CustomPermissionManager
+import org.zimmob.zimlx.runOnMainThread
+import org.zimmob.zimlx.runOnUiWorkerThread
+import org.zimmob.zimlx.smartspace.weather.icons.WeatherIconManager
 import org.zimmob.zimlx.util.Temperature
 import java.util.*
 import java.util.Calendar.HOUR_OF_DAY
@@ -39,15 +42,13 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         ZimSmartspaceController.DataProvider(controller), OPWeatherProvider.IWeatherCallback {
 
     private val provider by lazy { OPWeatherProvider(context) }
-    private val locationAccess by lazy {
-        Utilities.hasPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) ||
-                Utilities.hasPermission(context, Manifest.permission.ACCESS_FINE_LOCATION)
-    }
+    private val locationAccess by lazy { context.checkLocationAccess() }
     private val locationManager: LocationManager? by lazy {
         if (locationAccess) {
             context.getSystemService(Context.LOCATION_SERVICE) as LocationManager?
         } else null
     }
+    private val ipLocation = IPLocation(context)
 
     init {
         if (!OnePlusWeatherDataProvider.isAvailable(context)) {
@@ -55,18 +56,37 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         }
     }
 
-    override fun performSetup() {
+    override fun startListening() {
         provider.registerContentObserver(context.contentResolver)
         provider.subscribeCallback(this)
-        super.performSetup()
+        super.startListening()
+    }
+
+    override fun forceUpdate() {
+        super.forceUpdate()
+        provider.getCurrentWeatherInformation(this)
     }
 
     override fun onWeatherUpdated(weatherData: OPWeatherProvider.WeatherData) {
-        updateData(ZimSmartspaceController.WeatherData(
-                getConditionIcon(weatherData),
-                Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
-                forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
-        ), null)
+        if (locationAccess) {
+            update(weatherData)
+        } else {
+            CustomPermissionManager.getInstance(context).checkOrRequestPermission(CustomPermissionManager.PERMISSION_IPLOCATE, R.string.permission_iplocate_twilight_explanation) {
+                // update regardless of the result
+                update(weatherData)
+            }
+        }
+    }
+
+    private fun update(weatherData: OPWeatherProvider.WeatherData) {
+        runOnUiWorkerThread {
+            val weather = ZimSmartspaceController.WeatherData(
+                    getConditionIcon(weatherData),
+                    Temperature(weatherData.temperature, getTemperatureUnit(weatherData)),
+                    forecastIntent = Intent().setClassName(OPWeatherProvider.WEATHER_PACKAGE_NAME, OPWeatherProvider.WEATHER_LAUNCH_ACTIVITY)
+            )
+            runOnMainThread { updateData(weather, null) }
+        }
     }
 
     private fun getConditionIcon(data: OPWeatherProvider.WeatherData): Bitmap {
@@ -74,22 +94,19 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         val c = Calendar.getInstance().apply { timeInMillis = TimeUnit.SECONDS.toMillis(data.timestamp) }
         var isDay = c.get(HOUR_OF_DAY) in 6 until 20
         if (locationAccess) {
-            val locationProvider = locationManager?.getBestProvider(Criteria(), true)
-            val location = locationManager?.getLastKnownLocation(locationProvider)
-            if (location != null) {
-                val calc = SunriseSunsetCalculator(Location(location.latitude, location.longitude), c.timeZone)
-                val sunrise = calc.getOfficialSunriseCalendarForDate(c)
-                val sunset = calc.getOfficialSunsetCalendarForDate(c)
-                isDay = sunrise.before(c) && sunset.after(c)
+            locationManager?.getBestProvider(Criteria(), true)?.let { provider ->
+                locationManager?.getLastKnownLocation(provider)?.let { location ->
+                    isDay = TwilightManager.calculateTwilightState(location.latitude, location.longitude, c.timeInMillis)?.isNight != true
+                }
+            }
+        } else {
+            val res = ipLocation.get()
+            if (res.success) {
+                isDay = TwilightManager.calculateTwilightState(res.lat, res.lon, c.timeInMillis)?.isNight != true
             }
         }
 
-        val resId = if (isDay) {
-            OPWeatherProvider.getWeatherIconResourceId(data.weatherCode)
-        } else {
-            OPWeatherProvider.getNightWeatherIconResourceId(data.weatherCode)
-        }
-        return BitmapFactory.decodeResource(context.resources, resId)
+        return WeatherIconManager.getInstance(context).getIcon(data.icon, !isDay)
     }
 
     private fun getTemperatureUnit(data: OPWeatherProvider.WeatherData): Temperature.Unit {
@@ -99,8 +116,8 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
     }
 
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         provider.unregisterContentObserver(context.contentResolver)
         provider.unsubscribeCallback(this)
     }
@@ -112,3 +129,4 @@ class OnePlusWeatherDataProvider(controller: ZimSmartspaceController) :
         }
     }
 }
+

@@ -16,6 +16,7 @@ import android.graphics.RectF;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Process;
+import android.provider.AlarmClock;
 import android.provider.CalendarContract;
 import android.text.TextPaint;
 import android.text.TextUtils;
@@ -28,6 +29,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
@@ -47,10 +50,18 @@ import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController;
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController.CardData;
+import org.zimmob.zimlx.views.SmartspacePreview;
 
-public class SmartspaceView extends FrameLayout
-        implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
-        View.OnClickListener, View.OnLongClickListener, Runnable, ZimSmartspaceController.Listener {
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.Line;
+import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.Listener;
+import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.WeatherData;
+
+public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
+        View.OnClickListener, View.OnLongClickListener, Runnable, Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private View mTitleSeparator;
@@ -69,7 +80,10 @@ public class SmartspaceView extends FrameLayout
     private boolean ds;
     private boolean mDoubleLine;
     private final OnClickListener mCalendarClickListener;
+    private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
+    private OnClickListener mEventClickListener;
+    private View mSubtitleLine;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
     private ViewGroup mSubtitleWeatherContent;
@@ -93,6 +107,8 @@ public class SmartspaceView extends FrameLayout
     private Paint mTextPaint = new Paint();
     private Rect mTextBounds = new Rect();
 
+    private boolean mPerformingSetup = false;
+
     public SmartspaceView(final Context context, AttributeSet set) {
         super(context, set);
 
@@ -109,12 +125,17 @@ public class SmartspaceView extends FrameLayout
                     .setData(appendPath.build())
                     .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             try {
-                final Context context1 = getContext();
-                Launcher.getLauncher(context1).startActivitySafely(v, addFlags, null);
+                Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
                         new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
             }
+        };
+
+        mClockClickListener = v -> {
+            Launcher.getLauncher(getContext()).startActivitySafely(v,
+                    new Intent(AlarmClock.ACTION_SHOW_ALARMS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK
+                            | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED), null);
         };
 
         mWeatherClickListener = v -> {
@@ -188,40 +209,90 @@ public class SmartspaceView extends FrameLayout
         }
     }
 
+    private void setupIfNeeded() {
+        if (!mPerformingSetup && mController.getRequiresSetup()) {
+            mPerformingSetup = true;
+            mController.startSetup(() -> {
+                mPerformingSetup = false;
+                return null;
+            });
+        }
+    }
+
     @Override
-    public void onDataUpdated(@NotNull ZimSmartspaceController.DataContainer data) {
-        if (mDoubleLine != data.isDoubleLine()) {
-            mDoubleLine = data.isDoubleLine();
+    public void onDataUpdated(@Nullable WeatherData weather, @Nullable CardData card) {
+        if (mController.getRequiresSetup()) {
+            if (getParent() instanceof SmartspacePreview) {
+                setupIfNeeded();
+            } else {
+                List<Line> lines = new ArrayList<>();
+                lines.add(new Line(getContext().getString(R.string.smartspace_setup_text)));
+                card = new CardData(null, lines, v -> setupIfNeeded(), false);
+            }
+        }
+
+        mEventClickListener = card != null ? card.getOnClickListener() : null;
+        boolean doubleLine = card != null && card.isDoubleLine();
+        if (mDoubleLine != doubleLine) {
+            mDoubleLine = doubleLine;
             cs();
         }
         setOnClickListener(this);
         setOnLongClickListener(co());
-        mWeatherAvailable = data.isWeatherAvailable();
+        mWeatherAvailable = weather != null;
         if (mDoubleLine) {
-            loadDoubleLine(data);
+            loadDoubleLine(weather, card);
         } else {
-            loadSingleLine(data);
+            loadSingleLine(weather, card);
         }
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadDoubleLine(final ZimSmartspaceController.DataContainer data) {
+    private void loadDoubleLine(@Nullable WeatherData weather, @NotNull CardData card) {
+        setOnClickListener(mEventClickListener);
         setBackgroundResource(mSmartspaceBackgroundRes);
-        mTitleText.setText(data.getCard().getTitle());
-        mTitleText.setEllipsize(data.getCard().getTitleEllipsize());
-        mSubtitleText.setText(data.getCard().getSubtitle());
-        mSubtitleText.setEllipsize(data.getCard().getSubtitleEllipsize());
+        mTitleText.setText(card.getTitle());
+        mTitleText.setEllipsize(card.getTitleEllipsize());
+        mSubtitleText.setText(card.getSubtitle());
+        mSubtitleText.setEllipsize(card.getSubtitleEllipsize());
         mSubtitleIcon.setImageTintList(dH);
-        mSubtitleIcon.setImageBitmap(data.getCard().getIcon());
-        bindWeather(data, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
+        mSubtitleIcon.setImageBitmap(card.getIcon());
+        bindWeather(weather, mSubtitleWeatherContent, mSubtitleWeatherText, mSubtitleWeatherIcon);
         bindClockAbove(false);
     }
 
     @SuppressWarnings("ConstantConditions")
-    private void loadSingleLine(final ZimSmartspaceController.DataContainer data) {
+    private void loadSingleLine(@Nullable WeatherData weather, @Nullable CardData card) {
+        setOnClickListener(null);
         setBackgroundResource(0);
-        bindWeather(data, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
+        bindWeather(weather, mTitleWeatherContent, mTitleWeatherText, mTitleWeatherIcon);
         bindClockAndSeparator(false);
+        int clockAboveTextSize;
+        if (card != null) {
+            mSubtitleLine.setVisibility(View.VISIBLE);
+            mSubtitleText.setText(card.getTitle());
+            mSubtitleText.setEllipsize(card.getTitleEllipsize());
+            mSubtitleText.setOnClickListener(mEventClickListener);
+
+            Bitmap icon = card.getIcon();
+            if (icon != null) {
+                mSubtitleIcon.setVisibility(View.VISIBLE);
+                mSubtitleIcon.setImageTintList(dH);
+                mSubtitleIcon.setImageBitmap(icon);
+                mSubtitleIcon.setOnClickListener(mEventClickListener);
+            } else {
+                mSubtitleIcon.setVisibility(View.GONE);
+            }
+
+            clockAboveTextSize = R.dimen.smartspace_title_size;
+        } else {
+            mSubtitleLine.setVisibility(View.GONE);
+            mSubtitleText.setOnClickListener(null);
+            mSubtitleIcon.setOnClickListener(null);
+            clockAboveTextSize = R.dimen.smartspace_clock_above_size;
+        }
+        mClockAboveView.setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                getResources().getDimensionPixelSize(clockAboveTextSize));
     }
 
     private void bindClockAndSeparator(boolean forced) {
@@ -245,8 +316,7 @@ public class SmartspaceView extends FrameLayout
     private void bindClockAbove(boolean forced) {
         if (mPrefs.getSmartspaceTime() && mPrefs.getSmartspaceTimeAbove()) {
             mClockAboveView.setVisibility(View.VISIBLE);
-            // TODO: Create click listener opening clock
-            mClockAboveView.setOnClickListener(mCalendarClickListener);
+            mClockAboveView.setOnClickListener(mClockClickListener);
             mClockAboveView.setOnLongClickListener(co());
             if (forced)
                 mClockAboveView.reloadDateFormat(true);
@@ -257,15 +327,15 @@ public class SmartspaceView extends FrameLayout
         }
     }
 
-    private void bindWeather(ZimSmartspaceController.DataContainer data, View container, TextView title, ImageView icon) {
-        mWeatherAvailable = data.isWeatherAvailable();
+    private void bindWeather(@Nullable WeatherData weather, View container, TextView title, ImageView icon) {
+        mWeatherAvailable = weather != null;
         if (mWeatherAvailable) {
             container.setVisibility(View.VISIBLE);
             container.setOnClickListener(mWeatherClickListener);
             container.setOnLongClickListener(co());
-            title.setText(data.getWeather().getTitle(
+            title.setText(weather.getTitle(
                     Utilities.getZimPrefs(getContext()).getWeatherUnit()));
-            icon.setImageBitmap(addShadowToBitmap(data.getWeather().getIcon()));
+            icon.setImageBitmap(addShadowToBitmap(weather.getIcon()));
         } else {
             container.setVisibility(View.GONE);
         }
@@ -291,6 +361,7 @@ public class SmartspaceView extends FrameLayout
 
     private void loadViews() {
         mTitleText = findViewById(R.id.title_text);
+        mSubtitleLine = findViewById(R.id.subtitle_line);
         mSubtitleText = findViewById(R.id.subtitle_text);
         mSubtitleIcon = findViewById(R.id.subtitle_icon);
         mTitleWeatherIcon = findViewById(R.id.title_weather_icon);
@@ -406,10 +477,13 @@ public class SmartspaceView extends FrameLayout
             return false;
         }
         Rect rect = new Rect();
+        float tmp = 0f;
         Launcher launcher = Launcher.getLauncher(getContext());
         launcher.getDragLayer().getDescendantRectRelativeToSelf(view, rect);
-        Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
-        float tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        if (textView != null) {
+            Paint.FontMetrics fontMetrics = textView.getPaint().getFontMetrics();
+            tmp = (((float) view.getHeight()) - (fontMetrics.bottom - fontMetrics.top)) / 2.0f;
+        }
         RectF rectF = new RectF();
         float exactCenterX = rect.exactCenterX();
         rectF.right = exactCenterX;
@@ -468,3 +542,4 @@ public class SmartspaceView extends FrameLayout
         }
     }
 }
+

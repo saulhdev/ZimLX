@@ -46,20 +46,23 @@ class PersonalityProvider(controller: ZimSmartspaceController) :
     var time = currentTime()
     var randomIndex = 0
     val isMorning get() = time.hourOfDay in 5 until 9
-    val isEvening get() = time.hourOfDay in 19 until 24 || time.hourOfDay == 0
+    val isEvening get() = time.hourOfDay in 19 until 21
+    val isNight get() = time.hourOfDay in 22 until 24 || time.hourOfDay in 0 until 4
     val morningGreeting get() = morningStrings[randomIndex % morningStrings.size]
     val eveningGreeting get() = eveningStrings[randomIndex % eveningStrings.size]
+    val nightGreeting get() = nightStrings[randomIndex % nightStrings.size]
 
     private val morningStrings = controller.context.resources.getStringArray(R.array.greetings_morning)
     private val eveningStrings = controller.context.resources.getStringArray(R.array.greetings_evening)
+    private val nightStrings = controller.context.resources.getStringArray(R.array.greetings_night)
 
     private val handler = Handler(Looper.getMainLooper())
     private val onUpdateRunnable = ::onUpdate
 
     private fun currentTime() = Calendar.getInstance()
 
-    override fun performSetup() {
-        super.performSetup()
+    override fun startListening() {
+        super.startListening()
         context.registerReceiver(
                 timeReceiver,
                 IntentFilter().apply {
@@ -80,8 +83,8 @@ class PersonalityProvider(controller: ZimSmartspaceController) :
         handler.postDelayed(onUpdateRunnable, updateInterval - now % updateInterval)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         handler.removeCallbacks(onUpdateRunnable)
     }
 
@@ -90,6 +93,7 @@ class PersonalityProvider(controller: ZimSmartspaceController) :
         when {
             isMorning -> lines.add(ZimSmartspaceController.Line(morningGreeting))
             isEvening -> lines.add(ZimSmartspaceController.Line(eveningGreeting))
+            isNight -> lines.add(ZimSmartspaceController.Line(nightGreeting))
             else -> return null
         }
         return ZimSmartspaceController.CardData(

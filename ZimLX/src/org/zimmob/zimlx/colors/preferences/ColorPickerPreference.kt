@@ -16,11 +16,11 @@
  */
 package org.zimmob.zimlx.colors.preferences
 
-import android.app.FragmentManager
 import android.content.Context
 import android.graphics.Color
 import android.graphics.PorterDuff
 import android.util.AttributeSet
+import androidx.fragment.app.FragmentManager
 import androidx.preference.Preference
 import com.android.launcher3.R
 import me.priyesh.chroma.ColorMode
@@ -74,7 +74,7 @@ open class ColorPickerPreference(context: Context, attrs: AttributeSet?)
 
     fun showDialog(fragmentManager: FragmentManager) {
         val resolver = engine.getResolver(key)
-        //ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers).show(fragmentManager, key)
+        ColorPickerDialog.newInstance(key, resolver.resolveColor(), colorMode, resolvers).show(fragmentManager, key)
     }
 }
 

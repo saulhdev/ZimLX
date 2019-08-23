@@ -16,9 +16,6 @@
 
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
-import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Color;
@@ -35,8 +32,9 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.TextView;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -46,8 +44,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
-
-import androidx.core.graphics.ColorUtils;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
@@ -214,7 +210,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
 
-    public void updateColor(ExtractedColors extractedColors, boolean animate) {
+    /*public void updateColor(ExtractedColors extractedColors, boolean animate) {
         if (!(mBackground instanceof ColorDrawable)) return;
         if (!mHasVerticalHotseat) {
             int color = extractedColors.getDockColor(getContext());
@@ -237,20 +233,20 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             }
             mBackgroundColor = color;
         }
-    }
+    }*/
 
-    public void setBackgroundTransparent(boolean enable) {
+    /*public void setBackgroundTransparent(boolean enable) {
         if (mBackground == null) return;
         if (enable) {
             mBackground.setAlpha(0);
         } else {
             mBackground.setAlpha(255);
         }
-    }
+    }*/
 
-    public int getBackgroundDrawableColor() {
+    /*public int getBackgroundDrawableColor() {
         return mBackgroundColor;
-    }
+    }*/
 
     @Override
     protected void onDetachedFromWindow() {

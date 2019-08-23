@@ -16,7 +16,6 @@
   -->
 
 <org.zimmob.zimlx.views.ColoredButton xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="match_parent"
@@ -25,5 +24,4 @@
     android:textColor="@color/all_apps_tab_text"
     android:textSize="14sp"
     android:padding="8dp"
-    app:customFontType="drawerTab"
     tools:text="@string/all_apps_personal_tab" />

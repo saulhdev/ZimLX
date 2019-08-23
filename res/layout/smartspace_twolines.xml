@@ -45,7 +45,6 @@
         launcher:keyShadowBlur="2dp"
         launcher:keyShadowColor="?workspaceKeyShadowColor"
         launcher:keyShadowOffset="0.5dip"
-        launcher:customFontType="smartspaceText"
         android:layout_marginBottom="4dp"
         tools:visibility="visible" />
 
@@ -62,8 +61,7 @@
         launcher:ambientShadowColor="?workspaceAmbientShadowColor"
         launcher:keyShadowBlur="2dp"
         launcher:keyShadowColor="?workspaceKeyShadowColor"
-        launcher:keyShadowOffset="0.5dip"
-        launcher:customFontType="smartspaceText" />
+        launcher:keyShadowOffset="0.5dip" />
 
     <LinearLayout
         android:id="@+id/subtitle_line"
@@ -98,13 +96,11 @@
             android:paddingTop="4dp"
             android:textColor="?workspaceTextColor"
             android:textSize="16dp"
-            android:inputType="textNoSuggestions"
             launcher:ambientShadowBlur="3dp"
             launcher:ambientShadowColor="?workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
             launcher:keyShadowColor="?workspaceKeyShadowColor"
-            launcher:keyShadowOffset="0.5dip"
-            launcher:customFontType="smartspaceText" />
+            launcher:keyShadowOffset="0.5dip" />
 
         <LinearLayout
             android:id="@+id/subtitle_weather_content"
@@ -122,14 +118,13 @@
             android:paddingRight="6dp"
             android:paddingTop="6dp">
 
-            <View
+            <org.zimmob.zimlx.smartspace.SmartspaceDividerView
                 android:id="@+id/subtitle_sep"
                 android:layout_width="@dimen/smartspace_title_sep_width"
                 android:layout_height="fill_parent"
                 android:layout_marginBottom="4dp"
                 android:layout_marginRight="6dp"
-                android:layout_marginTop="4dp"
-                android:background="?workspaceTextColor" />
+                android:layout_marginTop="4dp" />
 
             <ImageView
                 android:id="@+id/subtitle_weather_icon"
@@ -151,8 +146,7 @@
                 launcher:ambientShadowColor="?workspaceAmbientShadowColor"
                 launcher:keyShadowBlur="2dp"
                 launcher:keyShadowColor="?workspaceKeyShadowColor"
-                launcher:keyShadowOffset="0.5dip"
-                launcher:customFontType="smartspaceText" />
+                launcher:keyShadowOffset="0.5dip" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

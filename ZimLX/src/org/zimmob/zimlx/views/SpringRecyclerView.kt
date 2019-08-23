@@ -25,8 +25,8 @@ import android.util.AttributeSet
 import androidx.annotation.Keep
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.Utilities
-import org.zimmob.zimlx.getColorAccent
 import org.zimmob.zimlx.getColorAttr
+import org.zimmob.zimlx.zimPrefs
 
 open class SpringRecyclerView @JvmOverloads constructor(
         context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -35,7 +35,7 @@ open class SpringRecyclerView @JvmOverloads constructor(
     private val springManager = SpringEdgeEffect.Manager(this)
     private val scrollBarColor by lazy {
         val colorControlNormal = context.getColorAttr(android.R.attr.colorControlNormal)
-        val useAccentColor = colorControlNormal == context.getColorAccent()
+        val useAccentColor = colorControlNormal == context.zimPrefs.accentColor
         if (useAccentColor) Utilities.getZimPrefs(context).accentColor else colorControlNormal
     }
 

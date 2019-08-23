@@ -18,6 +18,7 @@
 package org.zimmob.zimlx.smartspace
 
 import android.app.Activity
+import android.app.PendingIntent
 import android.appwidget.AppWidgetHost
 import android.appwidget.AppWidgetHostView
 import android.appwidget.AppWidgetManager
@@ -28,6 +29,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.text.TextUtils
+import android.view.View
 import android.widget.ImageView
 import android.widget.RemoteViews
 import android.widget.TextView
@@ -48,12 +50,15 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
     private val widgetIdPref = prefs::smartspaceWidgetId
     private val providerInfo = getSmartspaceWidgetProvider(context)
     private var isWidgetBound = false
+    private val pendingIntentTagId = context.resources.getIdentifier("pending_intent_tag", "id", "android")
 
     init {
         if (!Utilities.ATLEAST_NOUGAT) throw IllegalStateException("only available on Nougat and above")
+
+        bindWidget { }
     }
 
-    private fun startBinding() {
+    private fun bindWidget(onSetupComplete: () -> Unit) {
         val widgetManager = AppWidgetManager.getInstance(context)
 
         var widgetId = widgetIdPref.get()
@@ -82,7 +87,7 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
                     .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, providerInfo.provider)
             BlankActivity.startActivityForResult(context, bindIntent, 1028, 0) { resultCode, _ ->
                 if (resultCode == Activity.RESULT_OK) {
-                    startBinding()
+                    bindWidget(onSetupComplete)
                 } else {
                     smartspaceWidgetHost.deleteAppWidgetId(widgetId)
                     widgetId = -1
@@ -97,33 +102,44 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
         }
     }
 
-    override fun performSetup() {
-        startBinding()
+    override fun requiresSetup(): Boolean {
+        return !isWidgetBound
     }
 
-    override fun waitForSetup() {
-        super.waitForSetup()
-
-        if (!isWidgetBound) throw IllegalStateException("widget must be bound")
+    override fun startSetup(onFinish: (Boolean) -> Unit) {
+        bindWidget {
+            onFinish(isWidgetBound)
+        }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
 
         smartspaceWidgetHost.stopListening()
     }
 
-    fun updateData(weatherIcon: Bitmap?, temperature: String?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
+    private fun updateData(weatherIcon: Bitmap?, temperature: TextView?, cardIcon: Bitmap?, title: TextView?, subtitle: TextView?, subtitle2: TextView?) {
         val weather = parseWeatherData(weatherIcon, temperature)
         val card = if (cardIcon != null && title != null && subtitle != null) {
+            val pendingIntent = getPendingIntent(title.parent.parent.parent as? View)
             val ttl = title.text.toString() + if (subtitle2 != null) subtitle.text.toString() else ""
             val sub = subtitle2 ?: subtitle
-            ZimSmartspaceController.CardData(cardIcon,
-                    ttl, title.ellipsize, sub.text.toString(), sub.ellipsize)
+            ZimSmartspaceController.CardData(cardIcon, ttl, title.ellipsize,
+                    sub.text.toString(), sub.ellipsize,
+                    pendingIntent = pendingIntent)
         } else {
             null
         }
         updateData(weather, card)
+    }
+
+    private fun parseWeatherData(weatherIcon: Bitmap?, temperatureText: TextView?): ZimSmartspaceController.WeatherData? {
+        val temperature = temperatureText?.text?.toString()
+        return parseWeatherData(weatherIcon, temperature, getPendingIntent(temperatureText))
+    }
+
+    private fun getPendingIntent(view: View?): PendingIntent? {
+        return view?.getTag(pendingIntentTagId) as? PendingIntent
     }
 
     inner class SmartspaceWidgetHost : AppWidgetHost(context, 1027) {
@@ -143,15 +159,15 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             val texts = (childs.filter { it is TextView } as List<TextView>).filter { !TextUtils.isEmpty(it.text) }
             val images = childs.filter { it is ImageView } as List<ImageView>
             var weatherIconView: ImageView? = null
-            var temperature = "0C"
             var cardIconView: ImageView? = null
             var title: TextView? = null
             var subtitle: TextView? = null
             var subtitle2: TextView? = null
+            var temperatureText: TextView? = null
             if (texts.isEmpty()) return
             if (images.size >= 2) {
                 weatherIconView = images.last()
-                temperature = texts.last().text.toString()
+                temperatureText = texts.last()
             }
             if (images.isNotEmpty() && images.size != 2) {
                 cardIconView = images.first()
@@ -161,7 +177,7 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
                     subtitle2 = texts[2]
                 }
             }
-            updateData(extractBitmap(weatherIconView), temperature, extractBitmap(cardIconView), title, subtitle, subtitle2)
+            updateData(extractBitmap(weatherIconView), temperatureText, extractBitmap(cardIconView), title, subtitle, subtitle2)
         }
     }
 
@@ -189,7 +205,7 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
                             ?: context
                     if (foreground is AppCompatActivity) {
                         AlertDialog.Builder(foreground)
-                                .setTitle(R.string.smartspace_provider_error)
+                                .setTitle(R.string.failed)
                                 .setMessage(R.string.smartspace_widget_provider_not_found)
                                 .setNegativeButton(android.R.string.cancel, null).create().apply {
                                     show()
@@ -202,7 +218,7 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
             }
         }
 
-        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?): ZimSmartspaceController.WeatherData? {
+        fun parseWeatherData(weatherIcon: Bitmap?, temperature: String?, intent: PendingIntent? = null): ZimSmartspaceController.WeatherData? {
             return if (weatherIcon != null && temperature != null) {
                 try {
                     val value = temperature.substring(0, temperature.indexOfFirst { (it < '0' || it > '9') && it != '-' }).toInt()
@@ -211,7 +227,7 @@ class SmartspaceDataWidget(controller: ZimSmartspaceController) : ZimSmartspaceC
                         temperature.contains("F") -> Temperature.Unit.Fahrenheit
                         temperature.contains("K") -> Temperature.Unit.Kelvin
                         else -> throw IllegalArgumentException("only supports C, F and K")
-                    }))
+                    }), pendingIntent = intent)
                 } catch (e: NumberFormatException) {
                     null
                 } catch (e: IllegalArgumentException) {

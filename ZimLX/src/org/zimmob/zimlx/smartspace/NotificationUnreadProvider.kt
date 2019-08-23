@@ -27,13 +27,15 @@ import com.android.launcher3.util.PackageUserKey
 import org.zimmob.zimlx.flowerpot.Flowerpot
 import org.zimmob.zimlx.flowerpot.FlowerpotApps
 import org.zimmob.zimlx.loadSmallIcon
+import org.zimmob.zimlx.runOnMainThread
 import org.zimmob.zimlx.runOnUiWorkerThread
-import org.zimmob.zimlx.smartspace.ZimSmartspaceController.*
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController.CardData
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController.Line
 import org.zimmob.zimlx.toBitmap
 
 @Keep
 class NotificationUnreadProvider(controller: ZimSmartspaceController) :
-        NotificationBasedDataProvider(controller),
+        ZimSmartspaceController.NotificationBasedDataProvider(controller),
         NotificationsManager.OnChangeListener {
 
     private val manager = NotificationsManager.instance
@@ -51,8 +53,8 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
         zenModeEnabled = it
     }
 
-    override fun waitForSetup() {
-        super.waitForSetup()
+    override fun startListening() {
+        super.startListening()
 
         manager.addListener(this)
         zenModeListener.startListening()
@@ -65,7 +67,9 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
     }
 
     override fun onNotificationsChanged() {
-        updateData(null, getEventCard())
+        runOnMainThread {
+            updateData(null, getEventCard())
+        }
     }
 
     private fun isCommunicationApp(sbn: StatusBarNotification): Boolean {
@@ -110,7 +114,7 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
         }
         return CardData(
                 sbn.loadSmallIcon(context)?.toBitmap(), lines,
-                NotificationClickListener(sbn))
+                ZimSmartspaceController.NotificationClickListener(sbn))
     }
 
     private fun splitTitle(title: String): Array<String> {
@@ -123,9 +127,10 @@ class NotificationUnreadProvider(controller: ZimSmartspaceController) :
         return arrayOf(title)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         manager.removeListener(this)
         zenModeListener.stopListening()
     }
 }
+

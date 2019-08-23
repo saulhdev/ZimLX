@@ -44,6 +44,12 @@
             android:persistent="true"
             app:iconSpaceReserved="false"
             android:title="@string/pref_title__label_two_lines" />
+
+        <org.zimmob.zimlx.preferences.Preference
+            android:title="@string/categorization"
+            app:iconSpaceReserved="false"
+            android:fragment="org.zimmob.zimlx.groups.ui.AppCategorizationFragment" />
+
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_search">

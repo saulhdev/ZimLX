@@ -20,15 +20,15 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 
+import androidx.annotation.Nullable;
+import androidx.core.graphics.ColorUtils;
+import androidx.palette.graphics.Palette;
+
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import androidx.annotation.Nullable;
-import androidx.core.graphics.ColorUtils;
-import androidx.palette.graphics.Palette;
 
 /**
  * Saves and loads colors extracted from the wallpaper, as well as the associated wallpaper id.
@@ -194,7 +194,7 @@ public class ExtractedColors {
      * - 25% lightMuted or 18% white for super dark
      * - 40% lightVibrant or 25% white otherwise
      */
-    public int getDockColor(Context context) {
+    /*public int getDockColor(Context context) {
         if (Utilities.getZimPrefs(context).getTransparentDock()) {
             return Color.TRANSPARENT;
         }
@@ -229,7 +229,7 @@ public class ExtractedColors {
         }
         return hotseatColor;
     }
-
+*/
     /**
      * Interface for listening for extracted color changes
      */

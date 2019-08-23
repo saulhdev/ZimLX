@@ -57,6 +57,7 @@ public class DashUtils {
             case LauncherSettings:
                 context.startActivity(new Intent(context, SettingsActivity.class));
                 break;
+
             case AppDrawer:
                 if (!Launcher.getLauncher(mContext).isInState(ALL_APPS)) {
                     Launcher.getLauncher(mContext).getUserEventDispatcher()

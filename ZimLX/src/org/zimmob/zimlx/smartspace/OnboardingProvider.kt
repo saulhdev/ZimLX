@@ -38,15 +38,15 @@ class OnboardingProvider(controller: ZimSmartspaceController) :
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val prefs = Utilities.getPrefs(context)
 
-    override fun performSetup() {
-        super.performSetup()
+    override fun startListening() {
+        super.startListening()
         devicePrefs.registerOnSharedPreferenceChangeListener(this)
         prefs.registerOnSharedPreferenceChangeListener(this)
         update()
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         devicePrefs.unregisterOnSharedPreferenceChangeListener(this)
         prefs.unregisterOnSharedPreferenceChangeListener(this)
     }

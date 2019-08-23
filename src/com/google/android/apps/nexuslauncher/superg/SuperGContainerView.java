@@ -2,14 +2,20 @@ package com.google.android.apps.nexuslauncher.superg;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 
+import org.zimmob.zimlx.ZimUtilsKt;
+
 public class SuperGContainerView extends BaseGContainerView {
+
+    private int mQsbColor = Color.WHITE;
 
     public SuperGContainerView(Context paramContext) {
         this(paramContext, null);
@@ -37,7 +43,7 @@ public class SuperGContainerView extends BaseGContainerView {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         int qsbOverlapMargin = -getResources().getDimensionPixelSize(R.dimen.qsb_overlap_margin);
-        DeviceProfile deviceProfile = mLauncher.getDeviceProfile();
+        DeviceProfile deviceProfile = LauncherAppState.getIDP(getContext()).getDeviceProfile(getContext());
         int size = MeasureSpec.getSize(widthMeasureSpec) - qsbOverlapMargin;
 
         int qsbWidth;
@@ -55,7 +61,7 @@ public class SuperGContainerView extends BaseGContainerView {
         if (mQsbView != null) {
             LayoutParams layoutParams = (LayoutParams) mQsbView.getLayoutParams();
             layoutParams.width = qsbWidth / deviceProfile.inv.numColumns;
-            if (mLauncher.useVerticalBarLayout()) {
+            if (deviceProfile.isVerticalBarLayout()) {
                 layoutParams.width = Math.max(layoutParams.width,
                         getResources().getDimensionPixelSize(R.dimen.qsb_min_width_with_mic));
             } else {
@@ -75,5 +81,22 @@ public class SuperGContainerView extends BaseGContainerView {
     @Override
     protected void setGoogleAnimationStart(Rect rect, Intent intent) {
 
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+    }
+
+    @Override
+    protected void applyQsbColor() {
+        super.applyQsbColor();
+        float radius = ZimUtilsKt.dpToPx(100);
+        mQsbView.setBackground(ZimUtilsKt.createRipplePill(getContext(), mQsbColor, radius));
     }
 }

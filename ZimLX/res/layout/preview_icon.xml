@@ -15,7 +15,7 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<com.android.internal.widget.PreferenceImageView xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.internal.PreferenceImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/icon"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"

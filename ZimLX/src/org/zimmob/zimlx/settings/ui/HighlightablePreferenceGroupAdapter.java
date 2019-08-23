@@ -20,17 +20,13 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ArgbEvaluator;
 import android.animation.ValueAnimator;
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.View;
-
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-
-import org.zimmob.zimlx.preferences.AdvancedPreferencesGroup;
 
 import androidx.annotation.VisibleForTesting;
 import androidx.core.content.ContextCompat;
@@ -42,8 +38,14 @@ import androidx.preference.PreferenceScreen;
 import androidx.preference.PreferenceViewHolder;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
+
+import org.zimmob.zimlx.preferences.AdvancedPreferencesGroup;
+
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.EXTRA_FRAGMENT_ARG_KEY;
 
+@SuppressLint("RestrictedApi")
 public class HighlightablePreferenceGroupAdapter extends PreferenceGroupAdapter {
 
     private static final String TAG = "HighlightableAdapter";

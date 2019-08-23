@@ -25,6 +25,7 @@ import android.widget.EdgeEffect
 import androidx.dynamicanimation.animation.SpringAnimation
 import androidx.dynamicanimation.animation.SpringForce
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.EdgeEffectFactory.*
 import com.android.launcher3.touch.OverScroll
 import org.zimmob.zimlx.KFloatProperty
 import org.zimmob.zimlx.KFloatPropertyCompat
@@ -36,7 +37,8 @@ class SpringEdgeEffect(
         private val getMax: () -> Int,
         private val target: KMutableProperty0<Float>,
         private val activeEdge: KMutableProperty0<SpringEdgeEffect?>,
-        private val velocityMultiplier: Float) : EdgeEffect(context) {
+        private val velocityMultiplier: Float,
+        private val reverseAbsorb: Boolean) : EdgeEffect(context) {
 
     private val prefs = context.zimPrefs
 
@@ -49,7 +51,11 @@ class SpringEdgeEffect(
     override fun draw(canvas: Canvas) = false
 
     override fun onAbsorb(velocity: Int) {
-        releaseSpring(velocityMultiplier * velocity)
+        if (reverseAbsorb) {
+            releaseSpring(-velocityMultiplier * velocity)
+        } else {
+            releaseSpring(velocityMultiplier * velocity)
+        }
     }
 
     override fun onPull(deltaDistance: Float, displacement: Float) {
@@ -133,16 +139,21 @@ class SpringEdgeEffect(
 
         fun createFactory() = SpringEdgeEffectFactory()
 
+        fun createEdgeEffect(direction: Int, reverseAbsorb: Boolean = false): EdgeEffect? {
+            return when (direction) {
+                DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, 0.3f, reverseAbsorb)
+                DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY, ::activeEdgeY, 0.3f, reverseAbsorb)
+                DIRECTION_RIGHT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, -0.3f, reverseAbsorb)
+                DIRECTION_BOTTOM -> SpringEdgeEffect(view.context, view::getWidth, ::shiftY, ::activeEdgeY, -0.3f, reverseAbsorb)
+                else -> null
+            }
+        }
+
         inner class SpringEdgeEffectFactory : RecyclerView.EdgeEffectFactory() {
 
             override fun createEdgeEffect(recyclerView: RecyclerView, direction: Int): EdgeEffect {
-                return when (direction) {
-                    DIRECTION_LEFT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, 0.3f)
-                    DIRECTION_TOP -> SpringEdgeEffect(view.context, view::getHeight, ::shiftY, ::activeEdgeY, 0.3f)
-                    DIRECTION_RIGHT -> SpringEdgeEffect(view.context, view::getWidth, ::shiftX, ::activeEdgeX, -0.3f)
-                    DIRECTION_BOTTOM -> SpringEdgeEffect(view.context, view::getWidth, ::shiftY, ::activeEdgeY, -0.3f)
-                    else -> super.createEdgeEffect(recyclerView, direction)
-                }
+                return createEdgeEffect(direction)
+                        ?: super.createEdgeEffect(recyclerView, direction)
             }
         }
     }

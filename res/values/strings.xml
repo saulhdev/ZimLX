@@ -821,7 +821,7 @@
     <string name="action_none">Do nothing</string>
 
     <string name="action_voice_search">Voice search</string>
-    <string name="zim_action_failed">Something went wrong</string>
+    <string name="failed">Something went wrong</string>
     <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
     <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
 
@@ -919,6 +919,14 @@
         <item>What did you do today?</item>
     </string-array>
 
+    <string-array name="greetings_night">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+    </string-array>
+
     <string name="open_image_picker">Open image picker</string>
     <string name="import_icon">Import icon</string>
     <string name="import_as_adaptive">As adaptive icon</string>
@@ -927,12 +935,14 @@
     <string name="pref_sesame_disabled">No data shared</string>
     <string name="pref_sesame_show_shortcuts">App shortcuts</string>
     <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
 
+    <string name="weather_icons_default">Default</string>
     <string name="button_organize_screens">Organize screens</string>
     <string name="tab_bottom_sheet_save">Save</string>
     <string name="tab_hide_from_main">Hide from main tab</string>
     <string name="tab_color">Tab color</string>
-    <string name="default_folder_name">New folder</string>
     <string name="selected_count">%1$d selected</string>
 
     <string name="tab_manage_apps">Manage apps</string>
@@ -943,8 +953,6 @@
     <string name="apps_label">Apps</string>
     <string name="custom">Custom</string>
 
-    <string name="default_tab_name">New tab</string>
-
     <string name="icon_shape_top_left">Top left</string>
     <string name="icon_shape_top_right">Top right</string>
     <string name="icon_shape_bottom_left">Bottom left</string>
@@ -952,6 +960,40 @@
     <string name="icon_shape_corner_round">Round</string>
     <string name="icon_shape_corner_squircle">Squircle</string>
     <string name="icon_shape_corner_cut">Cut</string>
+    <string name="smartspace_setup_text">Tap to set-up</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
+    <string name="drawer_tabs">Tabs</string>
+    <string name="add_new_tab">Add</string>
+    <string name="rename_tab">Rename</string>
+
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
+    <string name="pref_appcategorization_flowerpot_title">Category</string>
+    <string name="pref_appcategorization_flowerpot_summary">Apps are automatically picked based on their metadata.</string>
+    <string name="select_tab_type">Tab type</string>
+    <string name="tab_type_custom">Custom tab</string>
+    <string name="tab_type_custom_desc">Manually pick apps for this tab.</string>
+    <string name="tab_type_smart">Smart tab</string>
+    <string name="categorization">Categorization</string>
+
+    <string name="folder_cover_mode">Cover mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+
+
+    <string name="default_tab_name">New tab</string>
+    <string name="show_in_tabs">Tabs</string>
+    <string name="tabs_manage">Manage</string>
 
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d app</item>

@@ -54,8 +54,6 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
         return prefs.customAppIcon[info.toComponentKey()]
     }
 
-    override fun supportsSwipeUp() = true
-
     override fun supportsIcon() = true
 
     override fun setSwipeUpAction(info: FolderInfo, action: String?) {

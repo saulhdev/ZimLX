@@ -13,6 +13,8 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -23,10 +25,12 @@ import com.android.launcher3.Workspace.OnStateChangeListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.google.android.apps.nexuslauncher.smartspace.SmartspacePreferencesShortcut;
 
-import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController;
+
+import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.CardData;
+import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.WeatherData;
 
 /**
  * A simple view used to show the region blocked by QSB during drag and drop.
@@ -114,7 +118,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
     }
 
     @Override
-    public void onDataUpdated(@NotNull ZimSmartspaceController.DataContainer data) {
+    public void onDataUpdated(@Nullable WeatherData weather, @Nullable CardData card) {
         final int oldState = mState;
         final View oldView = mView;
 
@@ -122,7 +126,7 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
             return;
         }
 
-        if (data.getWeather() == null) {
+        if (weather == null) {
             mState = 1;
             mView = oldView != null && oldState == 1 ?
                     oldView :
@@ -132,18 +136,13 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
             mView = oldView != null && oldState == 2 ?
                     oldView :
                     LayoutInflater.from(getContext()).inflate(R.layout.weather_widget, this, false);
-            applyWeather(mView, data);
+            applyWeather(mView, weather);
             mView.setOnClickListener(this);
         }
 
         if (oldState != mState) {
             if (oldView != null) {
-                oldView.animate().setDuration(200L).alpha(0f).withEndAction(new Runnable() {
-                    @Override
-                    public void run() {
-                        removeView(oldView);
-                    }
-                });
+                oldView.animate().setDuration(200L).alpha(0f).withEndAction(() -> removeView(oldView));
             }
             addView(mView);
             mView.setAlpha(0f);
@@ -158,11 +157,11 @@ public class QsbBlockerView extends FrameLayout implements OnStateChangeListener
         mView.setOnLongClickListener(this);
     }
 
-    private void applyWeather(View view, ZimSmartspaceController.DataContainer data) {
+    private void applyWeather(View view, WeatherData weather) {
         ImageView weatherIcon = view.findViewById(R.id.weather_widget_icon);
-        weatherIcon.setImageBitmap(data.getWeather().getIcon());
+        weatherIcon.setImageBitmap(weather.getIcon());
         TextView weatherTemperature = view.findViewById(R.id.weather_widget_temperature);
-        weatherTemperature.setText(data.getWeather().getTitle(
+        weatherTemperature.setText(weather.getTitle(
                 Utilities.getZimPrefs(getContext()).getWeatherUnit()));
     }
 

@@ -23,18 +23,23 @@ import android.content.Context;
 import android.os.Bundle;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.widget.custom.CustomWidgetParser;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
-import androidx.annotation.Nullable;
-
 public abstract class AppWidgetManagerCompat {
 
+    private static final List<String> EMUI_BLACKLIST = Arrays.asList("com.android.systemui", "com.android.gallery3d", "com.android.mediacenter", "com.android.settings");
     private static final Object sInstanceLock = new Object();
     private static AppWidgetManagerCompat sInstance;
     final AppWidgetManager mAppWidgetManager;
@@ -43,6 +48,10 @@ public abstract class AppWidgetManagerCompat {
     AppWidgetManagerCompat(Context context) {
         mContext = context;
         mAppWidgetManager = AppWidgetManager.getInstance(context);
+    }
+
+    boolean isBlacklisted(String packageName) {
+        return Utilities.isEmui() && (packageName.toLowerCase().contains("huawei") || EMUI_BLACKLIST.contains(packageName));
     }
 
     public static AppWidgetManagerCompat getInstance(Context context) {
@@ -63,7 +72,12 @@ public abstract class AppWidgetManagerCompat {
     }
 
     public LauncherAppWidgetProviderInfo getLauncherAppWidgetInfo(int appWidgetId) {
-        AppWidgetProviderInfo info = getAppWidgetInfo(appWidgetId);
+        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
+                && appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+            return CustomWidgetParser.getWidgetProvider(mContext, appWidgetId);
+        }
+
+        AppWidgetProviderInfo info = mAppWidgetManager.getAppWidgetInfo(appWidgetId);
         return info == null ? null : LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
     }
 

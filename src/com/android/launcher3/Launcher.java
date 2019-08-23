@@ -349,8 +349,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         setupViews();
 
-        mExtractedColors = new ExtractedColors();
-        loadExtractedColorsAndColorItems();
+        //mExtractedColors = new ExtractedColors();
+        //loadExtractedColorsAndColorItems();
 
         mPopupDataProvider = new PopupDataProvider(this);
 
@@ -2481,11 +2481,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
-    private void loadExtractedColorsAndColorItems() {
+    /*private void loadExtractedColorsAndColorItems() {
         mExtractedColors.load(this);
         mHotseat.updateColor(mExtractedColors, !mPaused);
-    }
-
+    }*/
 
     public BlurWallpaperProvider getBlurWallpaperProvider() {
         return mBlurWallpaperProvider;

@@ -766,6 +766,10 @@ public final class Utilities {
         handler.sendMessage(msg);
     }
 
+    public static Boolean isEmui() {
+        return !TextUtils.isEmpty(getSystemProperty("ro.build.version.emui", ""));
+    }
+
     public static Boolean isOnePlusStock() {
         return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", "")) || !TextUtils
                 .isEmpty(getSystemProperty("ro.hydrogen.version", ""));

@@ -114,15 +114,16 @@ abstract class DockStyle(protected val manager: StyleManager) {
 
         fun <T> setProp(property: KMutableProperty0<T>, value: T, defaultValue: T) {
             if (value != defaultValue) {
-                manager.prefs.bulkEdit {
-                    gradientProperty.set(enableGradient)
-                    shadowProperty.set(enableShadow)
-                    radiusProperty.set(radius)
-                    opacityProperty.set(opacity)
-                    showArrowProperty.set(enableArrow)
-                    if (manager.dockPreset != 5)
+                manager.prefs.blockingEdit {
+                    bulkEdit {
+                        gradientProperty.set(enableGradient)
+                        shadowProperty.set(enableShadow)
+                        radiusProperty.set(radius)
+                        opacityProperty.set(opacity)
+                        showArrowProperty.set(enableArrow)
                         manager.dockPreset = 0
-                    property.set(value)
+                        property.set(value)
+                    }
                 }
             }
         }

@@ -83,6 +83,7 @@ import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
 import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.colors.preferences.ColorPickerPreference;
 import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
@@ -275,6 +276,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
         Fragment fragment;
         if (preference instanceof SubPreference) {
             ((SubPreference) preference).start(this);
+            return true;
+        } else if (preference instanceof ColorPickerPreference) {
+            ((ColorPickerPreference) preference).showDialog(getSupportFragmentManager());
             return true;
         } else {
             fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
@@ -815,10 +819,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         DashUtils.RunAction(DashAction.Action.EditMinibar, getActivity());
                         break;
 
-                    case "pref_hiddenApps":
-                        startFragment(mContext, preference.getFragment());
-                        break;
-
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
@@ -1071,8 +1071,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
     }
 
-    public static void startFragment(Context context, String fragment) {
-        startFragment(context, fragment, null);
+    public static void startFragment(Context context, String fragment, int title) {
+        startFragment(context, fragment, null, context.getString(title));
     }
 
     public static void startFragment(Context context, String fragment, @Nullable Bundle args) {

@@ -46,6 +46,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsBottomSheet;
 
 import org.zimmob.zimlx.ZimLauncher;
@@ -54,6 +55,7 @@ import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.ui.LauncherGesturePreference;
 import org.zimmob.zimlx.override.CustomInfoProvider;
+import org.zimmob.zimlx.preferences.MultiSelectTabPreference;
 
 public class CustomBottomSheet extends WidgetsBottomSheet {
     private FragmentManager mFragmentManager;
@@ -63,7 +65,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     private CustomInfoProvider<ItemInfo> mInfoProvider;
 
     private boolean mForceOpen;
-
 
     public CustomBottomSheet(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -86,6 +87,8 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         ((PrefsFragment) mFragmentManager.findFragmentById(R.id.sheet_prefs)).loadForApp(itemInfo,
                 this::setForceOpen, this::unsetForceOpen, this::reopen);
 
+        boolean allowTitleEdit = true;
+
         if (itemInfo instanceof ItemInfoWithIcon || mInfoProvider.supportsIcon()) {
             ImageView icon = findViewById(R.id.icon);
             if (itemInfo instanceof ShortcutInfo && ((ShortcutInfo) itemInfo).customIcon != null) {
@@ -93,14 +96,32 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             } else if (itemInfo instanceof ItemInfoWithIcon) {
                 icon.setImageBitmap(((ItemInfoWithIcon) itemInfo).iconBitmap);
             } else if (itemInfo instanceof FolderInfo) {
-                icon.setImageDrawable(((FolderInfo) itemInfo).getIcon(mLauncher));
+                FolderInfo folderInfo = (FolderInfo) itemInfo;
+                icon.setImageDrawable(folderInfo.getIcon(mLauncher));
+                // Drawer folder
+                if (folderInfo.container == ItemInfo.NO_ID) {
+                    // TODO: Allow editing title for drawer folder & sync with group backend
+                    allowTitleEdit = false;
+                }
             }
             if (mInfoProvider != null) {
                 ZimLauncher launcher = ZimLauncher.getLauncher(getContext());
-                icon.setOnClickListener(v -> launcher.startEditIcon(mItemInfo, mInfoProvider));
+                icon.setOnClickListener(v -> {
+                    ItemInfo editItem;
+                    if (mItemInfo instanceof FolderInfo && ((FolderInfo) mItemInfo).isCoverMode()) {
+                        editItem = ((FolderInfo) mItemInfo).getCoverInfo();
+                    } else {
+                        editItem = mItemInfo;
+                    }
+                    CustomInfoProvider editProvider
+                            = CustomInfoProvider.Companion.forItem(getContext(), editItem);
+                    if (editProvider != null) {
+                        launcher.startEditIcon(editItem, editProvider);
+                    }
+                });
             }
         }
-        if (mInfoProvider != null) {
+        if (mInfoProvider != null && allowTitleEdit) {
             mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
             if (mPreviousTitle == null)
                 mPreviousTitle = "";
@@ -129,7 +150,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         super.onDetachedFromWindow();
     }
 
-
     @Override
     protected void handleClose(boolean animate, long defaultDuration) {
         if (mForceOpen) return;
@@ -154,16 +174,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
     protected void onWidgetsBound() {
     }
 
-    public static class PrefsFragment extends PreferenceFragment
-            implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
+    public static class PrefsFragment extends PreferenceFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         private final static String PREF_HIDE = "pref_app_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
         private final static boolean HIDE_PREDICTION_OPTION = true;
         public final static int requestCode = "swipeUp".hashCode() & 65535;
 
-        private SwitchPreference mPrefHide;
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
+        private MultiSelectTabPreference mTabsPref;
+        private SwitchPreference mPrefCoverMode;
         private ZimPreferences prefs;
 
         private ComponentKey mKey;
@@ -175,9 +195,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private Runnable unsetForceOpen;
         private Runnable reopen;
 
-        private String previousSwipeUpAction;
-
-        CustomInfoProvider mProvider;
+        private CustomInfoProvider mProvider;
 
         @Override
         public void onCreate(Bundle savedInstanceState) {
@@ -199,8 +217,12 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
             PreferenceScreen screen = getPreferenceScreen();
             prefs = Utilities.getZimPrefs(getActivity());
             mSwipeUpPref = (LauncherGesturePreference) screen.findPreference("pref_swipe_up_gesture");
-            mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
-            mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            mTabsPref = (MultiSelectTabPreference) screen.findPreference("pref_show_in_tabs");
+            if (!(itemInfo instanceof FolderInfo)) {
+                mKey = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            }
+            SwitchPreference mPrefHide = (SwitchPreference) findPreference(PREF_HIDE);
+            mPrefCoverMode = (SwitchPreference) findPreference("pref_cover_mode");
 
             if (isApp) {
                 mPrefHide.setChecked(CustomAppFilter.isHiddenApp(context, mKey));
@@ -209,8 +231,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 screen.removePreference(mPrefHide);
             }
 
-            if (mProvider != null && mProvider.supportsSwipeUp()) {
-                previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
+            if (!isApp || !prefs.getDrawerTabs().isEnabled()) {
+                screen.removePreference(mTabsPref);
+            } else {
+                mTabsPref.setComponentKey(mKey);
+                mTabsPref.loadSummary();
+            }
+
+            if (mProvider != null && mProvider.supportsSwipeUp(itemInfo)) {
+                String previousSwipeUpAction = mProvider.getSwipeUpAction(itemInfo);
                 mSwipeUpPref.setValue(previousSwipeUpAction);
                 mSwipeUpPref.setOnSelectHandler(gestureHandler -> {
                     onSelectHandler(gestureHandler);
@@ -225,13 +254,16 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 mPrefHidePredictions.setOnPreferenceChangeListener(this);
             }
 
-            if (prefs.getShowDebugInfo() && mKey.componentName != null) {
+            if (prefs.getShowDebugInfo() && mKey != null && mKey.componentName != null) {
                 Preference componentPref = getPreferenceScreen().findPreference("componentName");
+                Preference versionPref = getPreferenceScreen().findPreference("versionName");
+
                 componentPref.setOnPreferenceClickListener(this);
+                versionPref.setOnPreferenceClickListener(this);
                 componentPref.setSummary(mKey.toString());
+                versionPref.setSummary(new PackageManagerHelper(context).getPackageVersion(mKey.componentName.getPackageName()));
             } else {
                 getPreferenceScreen().removePreference(getPreferenceScreen().findPreference("debug"));
-
             }
 
             mPrefHidePredictions = (SwitchPreference) getPreferenceScreen()
@@ -240,6 +272,14 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                     && mPrefHidePredictions != null) {
                 getPreferenceScreen().removePreference(mPrefHidePredictions);
             }
+
+            if (itemInfo instanceof FolderInfo) {
+                mPrefCoverMode.setChecked(((FolderInfo) itemInfo).isCoverMode());
+            } else {
+                getPreferenceScreen().removePreference(mPrefCoverMode);
+            }
+
+            // TODO: Add link to edit bottom sheet for drawer folder
         }
 
         private void onSelectHandler(GestureHandler handler) {
@@ -298,6 +338,20 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 CustomInfoProvider provider = CustomInfoProvider.Companion.forItem(getActivity(), itemInfo);
                 provider.setSwipeUpAction(itemInfo, stringValue);
             }
+
+            if (mTabsPref.getEdited()) {
+                prefs.getDrawerTabs().saveToJson();
+            }
+
+            if (itemInfo instanceof FolderInfo) {
+                FolderInfo folderInfo = (FolderInfo) itemInfo;
+                boolean coverEnabled = mPrefCoverMode.isChecked();
+                if (folderInfo.isCoverMode() != coverEnabled) {
+                    Launcher launcher = Launcher.getLauncher(getActivity());
+                    folderInfo.setCoverMode(coverEnabled, launcher.getModelWriter());
+                    folderInfo.onIconChanged();
+                }
+            }
         }
 
         @Override
@@ -308,7 +362,6 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 case PREF_HIDE:
                     CustomAppFilter.setComponentNameState(launcher, mKey, enabled);
                     break;
-
                 case PREF_HIDE_FROM_PREDICTIONS:
                     CustomAppPredictor.setComponentNameState(launcher, mKey, enabled);
             }
@@ -317,10 +370,17 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
-            ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
-            ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), mKey.componentName.flattenToString());
-            clipboard.setPrimaryClip(clip);
-            Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
+            switch (preference.getKey()) {
+                case "componentName":
+                case "versionName":
+                    ClipboardManager clipboard = (ClipboardManager) getActivity().getSystemService(Context.CLIPBOARD_SERVICE);
+                    ClipData clip = ClipData.newPlainText(getString(R.string.debug_component_name), preference.getSummary());
+                    clipboard.setPrimaryClip(clip);
+                    Toast.makeText(getActivity(), R.string.debug_component_name_copied, Toast.LENGTH_SHORT).show();
+                    break;
+                default:
+                    break;
+            }
             return true;
         }
     }

@@ -17,6 +17,7 @@ package com.android.launcher3.views;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
@@ -36,6 +37,7 @@ import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 import java.util.ArrayList;
@@ -206,10 +208,13 @@ public class OptionsPopupView extends ArrowPopup
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        intent.addFlags(
+                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
 
         String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
-        if (!TextUtils.isEmpty(pickerPackage)) {
+        PackageManager pm = v.getContext().getPackageManager();
+        if (!TextUtils.isEmpty(pickerPackage) && PackageManagerHelper
+                .isAppEnabled(pm, pickerPackage, 0)) {
             intent.setPackage(pickerPackage);
         } else {
             // If there is no target package, use the default intent chooser animation

@@ -20,21 +20,23 @@ import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Process;
 import android.os.UserHandle;
 import android.os.UserManager;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
+import com.android.launcher3.widget.custom.CustomWidgetParser;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.Nullable;
 
 class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
 
@@ -55,8 +57,23 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
             for (UserHandle user : mUserManager.getUserProfiles()) {
                 providers.addAll(mAppWidgetManager.getInstalledProvidersForProfile(user));
             }
+            Iterator<AppWidgetProviderInfo> iterator = providers.iterator();
+            while (iterator.hasNext()) {
+                if (isBlacklisted(iterator.next().provider.getPackageName())) {
+                    iterator.remove();
+                }
+            }
+
+            if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
+                providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
+            }
             return providers;
         }
+
+        if (isBlacklisted(packageUser.mPackageName)) {
+            return Collections.emptyList();
+        }
+
         // Only get providers for the given package/user.
         List<AppWidgetProviderInfo> providers = new ArrayList<>(mAppWidgetManager
                 .getInstalledProvidersForProfile(packageUser.mUser));
@@ -66,9 +83,13 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
                 iterator.remove();
             }
         }
+
+        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS && Process.myUserHandle().equals(packageUser.mUser)
+                && mContext.getPackageName().equals(packageUser.mPackageName)) {
+            providers.addAll(CustomWidgetParser.getCustomWidgets(mContext));
+        }
         return providers;
     }
-
     @Override
     public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
                                             Bundle options) {

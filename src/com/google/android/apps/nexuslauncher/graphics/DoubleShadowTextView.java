@@ -22,6 +22,7 @@ public class DoubleShadowTextView extends TextView {
         super(context, attrs, defStyleAttr);
         mShadowInfo = new DoubleShadowBubbleTextView.ShadowInfo(context, attrs, defStyleAttr);
         setShadowLayer(Math.max(mShadowInfo.keyShadowBlur + mShadowInfo.keyShadowOffset, mShadowInfo.ambientShadowBlur), 0f, 0f, mShadowInfo.keyShadowColor);
+
     }
 
     protected void onDraw(Canvas canvas) {

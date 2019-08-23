@@ -61,13 +61,13 @@ class BatteryStatusProvider(controller: ZimSmartspaceController) :
         if (!full) {
             lines.add(Line("$level%"))
         }
-        return CardData(
+        return ZimSmartspaceController.CardData(
                 lines = lines,
                 forceSingleLine = true)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun stopListening() {
+        super.stopListening()
         context.unregisterReceiver(batteryReceiver)
     }
 }

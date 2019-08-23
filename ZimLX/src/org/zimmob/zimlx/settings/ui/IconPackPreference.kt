@@ -29,6 +29,7 @@ import com.android.launcher3.R
 import org.zimmob.zimlx.iconpack.DefaultPack
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.IconPackFragment
+import org.zimmob.zimlx.settings.ui.search.SearchIndex
 
 class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
     private val ipm = IconPackManager.getInstance(context)

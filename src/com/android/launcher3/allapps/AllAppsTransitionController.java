@@ -351,11 +351,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
     }
 
-    /*
+/*
     public void setOverlayScroll(float scroll) {
         if (mScrimView instanceof BlurScrimView) {
             ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
         }
-    }
-    */
+    }*/
+
 }

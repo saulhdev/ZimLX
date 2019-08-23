@@ -98,3 +98,4 @@ public class IcuDateTextView extends DoubleShadowTextView {
         }
     }
 }
+

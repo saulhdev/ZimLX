@@ -40,6 +40,12 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context
         setOnLongClickListener(this)
     }
 
+    override fun dispatchDraw(canvas: Canvas) {
+        canvas.drawPaint(clearPaint)
+
+        super.dispatchDraw(canvas)
+    }
+
     override fun onLongClick(v: View): Boolean {
         childs.filterIsInstance<CustomWidgetPreview>().firstOrNull()?.also {
             if (Utilities.ATLEAST_NOUGAT) {

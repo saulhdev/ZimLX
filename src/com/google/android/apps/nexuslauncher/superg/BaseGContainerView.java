@@ -1,5 +1,6 @@
 package com.google.android.apps.nexuslauncher.superg;
 
+import android.animation.ArgbEvaluator;
 import android.animation.ObjectAnimator;
 import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
@@ -17,6 +18,8 @@ import android.view.animation.Interpolator;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 
+import androidx.core.app.ActivityOptionsCompat;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -24,11 +27,13 @@ import com.android.launcher3.Utilities;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 
-import androidx.core.app.ActivityOptionsCompat;
+import kotlin.Unit;
+import kotlin.jvm.functions.Function1;
 
 public abstract class BaseGContainerView extends FrameLayout implements View.OnClickListener, SharedPreferences.OnSharedPreferenceChangeListener {
     private static final String TEXT_ASSIST = "com.google.android.googlequicksearchbox.TEXT_ASSIST";
 
+    private final ArgbEvaluator mArgbEvaluator = new ArgbEvaluator(); //mArgbEvaluator
     private ObjectAnimator mObjectAnimator;
     protected View mQsbView;
     private float mQsbButtonElevation;
@@ -37,14 +42,12 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     private ObjectAnimator mElevationAnimator; //bJ
     protected boolean qsbHidden;
     private int mQsbViewId = 0;
-    protected final Launcher mLauncher;
     private boolean mWindowHasFocus;
 
     protected abstract int getQsbView(boolean withMic);
 
     public BaseGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
-        mLauncher = Launcher.getLauncher(paramContext);
         Utilities.getPrefs(paramContext).registerOnSharedPreferenceChangeListener(this);
     }
 
@@ -66,6 +69,11 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
             mQsbView.setOnClickListener(this);
         }
         loadIcon();
+        applyQsbColor();
+    }
+
+    protected void applyQsbColor() {
+
     }
 
     @Override
@@ -76,7 +84,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         applyVisibility();
     }
 
-    private void applyMinusOnePreference() {
+    private void applyMinusOnePreference() { //bh
         if (mConnectorView != null) {
             removeView(mConnectorView);
             mConnectorView = null;
@@ -104,9 +112,12 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
                     null);
         } else {
             SearchProvider provider = controller.getSearchProvider();
-            provider.startSearch(intent -> {
-                getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
-                return null;
+            provider.startSearch(new Function1<Intent, Unit>() {
+                @Override
+                public Unit invoke(Intent intent) {
+                    getContext().startActivity(intent, ActivityOptionsCompat.makeClipRevealAnimation(mQsbView, 0, 0, mQsbView.getWidth(), mQsbView.getWidth()).toBundle());
+                    return null;
+                }
             });
         }
     }
@@ -211,7 +222,7 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
         } catch (ActivityNotFoundException ignored) {
             try {
                 context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")),
-                        mLauncher.getActivityLaunchOptions(mQsbView).toBundle());
+                        Launcher.getLauncher(context).getActivityLaunchOptions(mQsbView).toBundle());
             } catch (ActivityNotFoundException ignored2) {
             }
         }
@@ -237,9 +248,6 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
 
     private void loadIcon() {
         SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
-        if (mQsbView == null) {
-            applyOpaPreference();
-        }
         ImageView gIcon = mQsbView.findViewById(R.id.g_icon);
         gIcon.setImageDrawable(provider.getIcon(true));
     }
