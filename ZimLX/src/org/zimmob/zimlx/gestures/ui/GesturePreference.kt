@@ -79,13 +79,5 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
         return defaultValue
     }
 
-//    override fun onClick() {
-//        context.startActivity(Intent(context, SelectGestureHandlerActivity::class.java).apply {
-//            putExtra("title", title)
-//            putExtra("key", key)
-//            putExtra("value", value)
-//        })
-//    }
-
     override fun getDialogLayoutResource() = R.layout.dialog_preference_recyclerview
 }

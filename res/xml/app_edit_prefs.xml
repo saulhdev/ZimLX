@@ -22,9 +22,22 @@
         android:summary="@string/hide_app_sum"
         android:title="@string/hide_app" />
 
+    <org.zimmob.zimlx.preferences.MultiSelectTabPreference
+        android:key="pref_show_in_tabs"
+        android:title="@string/show_in_tabs" />
+
     <org.zimmob.zimlx.gestures.ui.LauncherGesturePreference
         android:key="pref_swipe_up_gesture"
-        android:title="@string/gesture_swipe_up" />
+        android:title="@string/gesture_swipe_up"
+        android:dependency="pref_cover_mode" />
+
+    <SwitchPreference
+        android:key="pref_cover_mode"
+        android:title="@string/folder_cover_mode"
+        android:summary="@string/folder_cover_mode_desc"
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:persistent="false" />
 
     <PreferenceCategory
         android:key="debug"
@@ -33,6 +46,9 @@
         <Preference
             android:key="componentName"
             android:title="@string/debug_component_name" />
+        <Preference
+            android:key="versionName"
+            android:title="Version" />
     </PreferenceCategory>
 
 </PreferenceScreen>
