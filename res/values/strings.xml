@@ -658,31 +658,23 @@
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
 
     <!-- PREFERENCES ABOUT-->
-    <string name="pref_key__source_code" translatable="false">pref_key__source_code</string>
-    <string name="pref_key__more_info__settings" translatable="false">pref_key__more_info__settings</string>
-    <string name="pref_key__more_info__project_license" translatable="false">pref_key__more_info__project_license</string>
-    <string name="pref_key__more_info__open_source_licenses" translatable="false">pref_key__more_info__open_source_licenses</string>
-    <string name="pref_key__more_info__bug_reports" translatable="false">pref_key__more_info__bug_reports</string>
-    <string name="pref_key__more_info__help" translatable="false">pref_key__more_info__help</string>
-    <string name="pref_key__more_info__rate_app" translatable="false">pref_key__more_info__rate_app</string>
-    <string name="pref_key__more_info__translate" translatable="false">pref_key__more_info__translate</string>
-    <string name="pref_key__more_info__android_contribution_guide" translatable="false">pref_key__more_info__android_contribution_guide</string>
-    <string name="pref_key__more_info__donate" translatable="false">pref_key__more_info__donate</string>
-    <string name="pref_key__more_info__project_contribution_info" translatable="false">pref_key__more_info__project_contribution_info</string>
-    <string name="pref_key__more_info__project_team" translatable="false">pref_key__more_info__project_team</string>
-    <string name="pref_key__more_info__contributors_public_info" translatable="false">pref_key__more_info__contributors_public_info</string>
-    <string name="pref_key__more_info__copy_build_information" translatable="false">pref_key__more_info__copy_build_information</string>
-    <string name="pref_key__more_info__app" translatable="false">pref_key__more_info__app</string>
+    <string name="pref_key__about_app" translatable="false">pref_key__about_app</string>
+    <string name="pref_key__about_rate_app" translatable="false">pref_key__about_rate_app</string>
+    <string name="pref_key__about_donate" translatable="false">pref_key__about_donate</string>
+    <string name="pref_key__about_bug_report" translatable="false">pref_key__about_bug_report</string>
+    <string name="pref_key__about_project_license" translatable="false">pref_key__about_project_license</string>
+    <string name="pref_key__about_open_source_licenses" translatable="false">pref_key__about_open_source_licenses</string>
+    <string name="pref_key__about_copy_build_information" translatable="false">pref_key__about_copy_build_information</string>
+    <string name="pref_key__about_source_code" translatable="false">pref_key__about_source_code</string>
+    <string name="pref_key__about_project_team" translatable="false">pref_key__about_project_team</string>
+
     <string name="app_license_name" translatable="false">Apache 2.0</string>
     <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
-    <string name="app_translate_url" translatable="false"><![CDATA[https://lonamiwebs.github.io/stringlate/translate?git=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher.git&mail=gro.xobliam@@rentnasg&name=OpenLauncher&web=https%3A%2F%2Fgithub.com%2Fopenlauncherteam%2Fopenlauncher]]></string>
     <string name="app_web_url" translatable="false">https://github.com/otakuhqz</string>
     <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
     <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
-    <string name="app_contribution_info_url" translatable="false">https://github.com/otakuhqz/zimlx/blob/master/README.md#contributions</string>
     <string name="contributors">Contributors</string>
     <string name="changelog">Changelog</string>
-    <string name="more">More</string>
     <string name="rate_the_app">Rate this app</string>
     <string name="contribute">Contribute</string>
     <string name="donate">Donate</string>
@@ -691,7 +683,6 @@
     <string name="project_team">Project Team</string>
     <string name="project_license">Project License</string>
     <string name="more_info_licence">Open Source</string>
-    <string name="help_this_app">More information and help about this app</string>
     <string name="more_info_support">More information on donating or otherwise supporting this project</string>
     <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
     <string name="source_code">Source Code</string>

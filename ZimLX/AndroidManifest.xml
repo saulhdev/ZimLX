@@ -203,12 +203,6 @@
             android:parentActivityName="org.zimmob.zimlx.ZimLauncher"
             android:theme="@style/SettingsTheme.V2" />
 
-        <activity
-            android:name="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
-            android:label="@string/about"
-            android:parentActivityName="org.zimmob.zimlx.settings.ui.SettingsActivity"
-            android:theme="@style/SettingsTheme.V2" />
-
         <!-- Apply directly from iconpack -->
         <activity
             android:name="org.zimmob.zimlx.iconpack.ApplyIconPackActivity"

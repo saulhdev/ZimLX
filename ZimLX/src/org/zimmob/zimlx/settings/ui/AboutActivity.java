@@ -3,7 +3,6 @@ package org.zimmob.zimlx.settings.ui;
 import android.os.Bundle;
 
 import androidx.appcompat.widget.Toolbar;
-import androidx.fragment.app.FragmentTransaction;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -19,7 +18,7 @@ import butterknife.ButterKnife;
  * Project ZimLX
  * henriquez.saul@gmail.com
  */
-public class MoreInfoActivity extends ThemeActivity {
+public class AboutActivity extends ThemeActivity {
 
     @BindView(R.id.toolbar)
     public Toolbar toolbar;
@@ -43,12 +42,5 @@ public class MoreInfoActivity extends ThemeActivity {
         toolbar.setNavigationIcon(getResources().getDrawable(R.drawable.ic_arrow_back_white_24px));
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setTitle(R.string.about_title);
-
-        MoreInfoFragment moreInfoFragment;
-        if (savedInstanceState == null) {
-            FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-            moreInfoFragment = MoreInfoFragment.newInstance();
-            t.replace(R.id.more__fragment__placeholder_fragment, moreInfoFragment, MoreInfoFragment.TAG).commit();
-        }
     }
 }

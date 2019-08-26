@@ -82,4 +82,5 @@ public class Config {
     public boolean enableSmartspace() {
         return context.getResources().getBoolean(R.bool.config_enable_smartspace);
     }
+
 }

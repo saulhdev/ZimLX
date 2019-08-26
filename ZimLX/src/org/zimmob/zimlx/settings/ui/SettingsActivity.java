@@ -28,6 +28,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.util.Log;
@@ -75,6 +76,8 @@ import com.android.launcher3.views.ButtonPreference;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import net.gsantner.opoc.format.markdown.SimpleMarkdownParser;
+
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
 import org.zimmob.zimlx.ZimPreferences;
@@ -105,6 +108,8 @@ import org.zimmob.zimlx.theme.ThemeOverride.ThemeSet;
 import org.zimmob.zimlx.util.ZimFlags;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
+import java.io.IOException;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -654,7 +659,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                     break;
 
                 case R.xml.zim_preferences_notification:
-
                     if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
                         ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(ICON_BADGING_PREFERENCE_KEY);
                         // Listen to system notification badge settings while this UI is active.
@@ -669,7 +673,52 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;
+
+                case R.xml.zim_preferences_about:
+                    AboutUtils au = new AboutUtils(getActivity(), getContext());
+                    Preference app = findPreference("pref_key__about_app");
+                    Preference appInfo = findPreference("pref_key__about_copy_build_information");
+                    au.updateAppSummary(app);
+                    au.updateAppInfoSummary(appInfo);
+                    updateProjectTeam(au);
+                    break;
             }
+        }
+
+        public void updateProjectTeam(AboutUtils au) {
+            Locale locale = Locale.getDefault();
+            Preference pref;
+            String tmp;
+            if ((pref = findPreference("pref_key__about_project_team")) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
+                String[] data = (au.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
+                for (int i = 0; i + 2 < data.length; i += 4) {
+                    Preference person = new Preference(getContext());
+                    person.setTitle(data[i]);
+                    person.setSummary(data[i + 1]);
+                    person.setIcon(R.drawable.ic_person_black_24dp);
+                    try {
+                        Uri uri = Uri.parse(data[i + 2]);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        person.setIntent(intent);
+                    } catch (Exception ignored) {
+                    }
+                    appendPreference(person, (PreferenceGroup) pref);
+                }
+
+            }
+        }
+
+        protected boolean appendPreference(Preference pref, @Nullable PreferenceGroup target) {
+            if (target == null) {
+                if ((target = getPreferenceScreen()) == null) {
+                    return false;
+                }
+            }
+            if (pref.getIcon() != null) {
+                pref.setIcon(pref.getIcon());
+            }
+            return target.addPreference(pref);
         }
 
         @Override
@@ -803,21 +852,75 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 case "kill":
                     Utilities.killLauncher();
                     break;
-
-                case "crashLauncher":
-                    throw new RuntimeException("Triggered from developer options");
-
             }
             return false;
         }
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
+            AboutUtils au = new AboutUtils(getActivity(), getContext());
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
                     case ZimFlags.MINIBAR:
                         DashUtils.RunAction(DashAction.Action.EditMinibar, getActivity());
                         break;
+
+                    case "pref_key__about_rate_app":
+                        au.showGooglePlayEntryForThisApp();
+                        break;
+
+                    case "pref_key__about_donate":
+                        au.openWebpageInExternalBrowser(getString(R.string.app_donate_url));
+                        break;
+
+                    case "pref_key__about_bug_report":
+                        au.openWebpageInExternalBrowser(getString(R.string.app_bugreport_url));
+                        break;
+
+                    case "pref_key__about_project_license":
+                        try {
+                            au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
+                                    getResources().openRawResource(R.raw.license),
+                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+
+                    case "pref_key__about_open_source_licenses":
+                        try {
+                            au.showDialogWithHtmlTextView(R.string.licenses, new SimpleMarkdownParser().parse(
+                                    getResources().openRawResource(R.raw.opensource),
+                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+
+                    case "pref_key__about_source_code":
+                        au.openWebpageInExternalBrowser(getString(R.string.app_source_code_url));
+                        break;
+
+                    case "pref_key__about_contributors_public_info":
+                        try {
+                            au.showDialogWithHtmlTextView(R.string.contributors, new SimpleMarkdownParser().parse(
+                                    getResources().openRawResource(R.raw.contributors),
+                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "pref_key__about_copy_build_information":
+                        au.setClipboard(preference.getSummary());
+                        SimpleMarkdownParser smp = new SimpleMarkdownParser();
+                        try {
+                            String html = smp.parse(getResources().openRawResource(R.raw.changelog), "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW, SimpleMarkdownParser.FILTER_CHANGELOG).getHtml();
+                            au.showDialogWithHtmlTextView(R.string.changelog, html);
+                        } catch (Exception ignored) {
+
+                        }
+                        break;
+
 
                     default:
                         if (preference instanceof ColorPreferenceCompat) {

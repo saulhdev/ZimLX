@@ -140,7 +140,6 @@ import org.zimmob.zimlx.minibar.DashAdapter;
 import org.zimmob.zimlx.minibar.DashModel;
 import org.zimmob.zimlx.minibar.DashUtils;
 import org.zimmob.zimlx.minibar.SwipeListView;
-import org.zimmob.zimlx.settings.AppSettings;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -229,7 +228,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private final ArrayList<Integer> mSynchronouslyBoundPages = new ArrayList<>();
     public View mWeightWatcher;
     public ViewGroupFocusHelper mFocusHandler;
-    protected AppSettings appSettings;
 
     private LauncherAppTransitionManager mAppTransitionManager;
     private Configuration mOldConfig;

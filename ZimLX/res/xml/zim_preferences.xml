@@ -57,13 +57,7 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__others">
-        <!--<org.zimmob.zimlx.settings.ui.SubPreference
-            android:icon="@drawable/ic_debug"
-            android:key="pref_key__developer_options"
-            android:summary="@string/pref_summary__developer"
-            android:title="@string/pref_title__developer"
-            app:content="@xml/zim_preferences_dev_options" />
--->
+
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_more_horiz"
             android:summary="@string/pref_summary__advanced"
@@ -71,15 +65,23 @@
             app:content="@xml/zim_preferences_advanced"
             app:longClickContent="@xml/zim_preferences_advanced" />
 
+        <org.zimmob.zimlx.settings.ui.SubPreference
+            android:icon="@drawable/ic_information"
+            android:summary="@string/pref_summary__about"
+            android:title="@string/about_title"
+            app:content="@xml/zim_preferences_about"
+            app:longClickContent="@xml/zim_preferences_about" />
+
+
+        <!--
         <Preference
             android:icon="@drawable/ic_information"
             android:summary="@string/pref_summary__about"
             android:title="@string/about_title">
 
-            <!--suppress AndroidDomInspection (Injected at compile time) -->
             <intent
-                android:targetClass="org.zimmob.zimlx.settings.ui.MoreInfoActivity"
+                android:targetClass="org.zimmob.zimlx.settings.ui.AboutActivity"
                 android:targetPackage="@string/application_id" />
-        </Preference>
+        </Preference> -->
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 </PreferenceScreen>
