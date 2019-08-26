@@ -38,6 +38,7 @@
 
     <!-- Pixel Blue -->
     <color name="legacy_icon_background">#FFFFFF</color>
+    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
@@ -53,14 +54,14 @@
     <color name="qsb_dark_icon_tint">#ff757575</color>
     <color name="colorPrimary">#fff5f5f5</color>
     <color name="colorPrimaryDark">#ffe0e0e0</color>
-    <color name="colorAccent">#FF2196F3</color>
+    <color name="colorAccent">#EC4310</color>
+    <color name="colorAccentDark">#ff8AB4f8</color>
     <color name="white">#ffffff</color>
 
     <!-- NOTIFICATION -->
     <color name="notification_background">#EB0854</color>
     <color name="transparentish">#B0101010</color>
 
-    <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 
     <!-- Pixel 1 -->
     <color name="qsb_connector">#fff2f2f2</color>

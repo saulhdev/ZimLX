@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
@@ -171,8 +172,20 @@ public class FolderInfo extends ItemInfo {
         if (icn != null) {
             return icn;
         }
+        if (isCoverMode()) {
+            return DrawableFactory.get(context).newIcon(getCoverInfo());
+        }
         return getFolderIcon(launcher);
     }
+
+    public Drawable getDefaultIcon(Launcher launcher) {
+        if (isCoverMode()) {
+            return new FastBitmapDrawable(getCoverInfo().iconBitmap);
+        } else {
+            return getFolderIcon(launcher);
+        }
+    }
+
 
     public Drawable getFolderIcon(Launcher launcher) {
         int iconSize = launcher.mDeviceProfile.iconSizePx;
@@ -199,7 +212,6 @@ public class FolderInfo extends ItemInfo {
         Launcher launcher = ZimLauncher.getLauncher(context);
         return getIconInternal(launcher) != null;
     }
-
 
     public boolean hasCustomIcon(Context context) {
         Launcher launcher = ZimLauncher.getLauncher(context);

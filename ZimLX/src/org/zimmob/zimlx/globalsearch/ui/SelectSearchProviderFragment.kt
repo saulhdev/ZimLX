@@ -1,6 +1,7 @@
 package org.zimmob.zimlx.globalsearch.ui
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +13,10 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import org.zimmob.zimlx.applyAccent
 import org.zimmob.zimlx.globalsearch.SearchProvider
 import org.zimmob.zimlx.globalsearch.SearchProviderController
+import org.zimmob.zimlx.zimPrefs
 
 class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
 
@@ -41,6 +44,11 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
         builder.setPositiveButton(null, null)
     }
 
+    override fun onStart() {
+        super.onStart()
+        (dialog as AlertDialog).applyAccent()
+    }
+
     override fun onDialogClosed(positiveResult: Boolean) {
 
     }
@@ -64,11 +72,11 @@ class SelectSearchProviderFragment : PreferenceDialogFragmentCompat() {
 
             val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
                 setOnClickListener(this@Holder)
-                /*val tintList = ColorStateList.valueOf(ColorEngine.getInstance(context).accent)
+                val tintList = ColorStateList.valueOf(context.zimPrefs.accentColor)
                 if (Utilities.ATLEAST_MARSHMALLOW) {
                     compoundDrawableTintList = tintList
                 }
-                backgroundTintList = tintList*/
+                backgroundTintList = tintList
             }
 
             override fun onClick(v: View) {

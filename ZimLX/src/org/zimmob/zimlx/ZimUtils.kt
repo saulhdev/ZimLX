@@ -71,7 +71,6 @@ import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import org.zimmob.zimlx.util.JSONMap
 import java.lang.reflect.Field
-import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -152,21 +151,6 @@ fun Context.getThemeAttr(attr: Int): Int {
     return theme
 }
 
-fun Context.getDrawableAttr(attr: Int): Drawable? {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    val drawable = ta.getDrawable(0)
-    ta.recycle()
-    return drawable
-}
-
-fun Context.getDrawableAttrNullable(attr: Int): Drawable? {
-    return try {
-        getDrawableAttr(attr)
-    } catch (e: Resources.NotFoundException) {
-        null
-    }
-}
-
 fun Context.getDimenAttr(attr: Int): Int {
     val ta = obtainStyledAttributes(intArrayOf(attr))
     val size = ta.getDimensionPixelSize(0, 0)
@@ -177,13 +161,6 @@ fun Context.getDimenAttr(attr: Int): Int {
 fun Context.getBooleanAttr(attr: Int): Boolean {
     val ta = obtainStyledAttributes(intArrayOf(attr))
     val value = ta.getBoolean(0, false)
-    ta.recycle()
-    return value
-}
-
-fun Context.getIntAttr(attr: Int): Int {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    val value = ta.getInt(0, 0)
     ta.recycle()
     return value
 }
@@ -247,17 +224,6 @@ class KFloatProperty(private val property: KMutableProperty0<Float>, name: Strin
     }
 }
 
-val SCALE_XY: Property<View, Float> = object : Property<View, Float>(Float::class.java, "scaleXY") {
-    override fun set(view: View, value: Float) {
-        view.scaleX = value
-        view.scaleY = value
-    }
-
-    override fun get(view: View): Float {
-        return view.scaleX
-    }
-}
-
 fun Float.clamp(min: Float, max: Float): Float {
     if (this <= min) return min
     if (this >= max) return max
@@ -267,8 +233,6 @@ fun Float.clamp(min: Float, max: Float): Float {
 fun Float.round() = roundToInt().toFloat()
 
 fun Float.ceilToInt() = ceil(this).toInt()
-
-fun Double.ceilToInt() = ceil(this).toInt()
 
 class PropertyDelegate<T>(private val property: KMutableProperty0<T>) {
 
@@ -435,16 +399,11 @@ fun dpToPx(size: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
 }
 
-fun pxToDp(size: Float): Float {
-    return size / dpToPx(1f)
-}
-
 fun Drawable.toBitmap(): Bitmap? {
     return Utilities.drawableToBitmap(this)
 }
 
 fun AlertDialog.applyAccent() {
-    //val color = ColorEngine.getInstance(context).accent
     val color = Utilities.getZimPrefs(context).accentColor
 
     getButton(AlertDialog.BUTTON_NEGATIVE)?.apply {
@@ -471,19 +430,6 @@ fun android.app.AlertDialog.applyAccent() {
 
 fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
-}
-
-fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup?): View? {
-    views.forEach { view ->
-        if (view == null || view.width == 0 || view.height == 0) return@forEach
-        view.forEachChild { item ->
-            val info = item.tag as ItemInfo?
-            if (op.evaluate(info, item)) {
-                return item
-            }
-        }
-    }
-    return null
 }
 
 class ReverseOutputInterpolator(private val base: Interpolator) : Interpolator {
@@ -580,31 +526,10 @@ fun CheckedTextView.applyAccent() {
     backgroundTintList = tintList
 }
 
-fun ViewGroup.isChild(view: View): Boolean = indexOfChild(view) != -1
-
 fun ImageView.tintDrawable(color: Int) {
     val drawable = drawable.mutate()
     drawable.setTint(color)
     setImageDrawable(drawable)
-}
-
-fun View.runOnAttached(runnable: Runnable) {
-    if (isAttachedToWindow) {
-        runnable.run()
-    } else {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-
-            override fun onViewAttachedToWindow(v: View?) {
-                runnable.run()
-                removeOnAttachStateChangeListener(this)
-            }
-
-            override fun onViewDetachedFromWindow(v: View?) {
-                removeOnAttachStateChangeListener(this)
-            }
-        })
-
-    }
 }
 
 @Suppress("UNCHECKED_CAST")
@@ -616,29 +541,11 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
     return arrayList
 }
 
-fun Collection<String>.toJsonStringArray(): JSONArray {
-    val array = JSONArray()
-    forEach { array.put(it) }
-    return array
-}
-
 fun Context.resourcesForApplication(packageName: String): Resources? {
     return try {
         packageManager.getResourcesForApplication(packageName)
     } catch (e: PackageManager.NameNotFoundException) {
         null
-    }
-}
-
-fun ViewGroup.setCustomFont(type: Int, allCaps: Boolean? = null) {
-    forEachChild {
-        if (it is ViewGroup) {
-            it.setCustomFont(type, allCaps)
-        } else if (it is TextView) {
-            if (allCaps != null) {
-                it.isAllCaps = allCaps
-            }
-        }
     }
 }
 
@@ -666,21 +573,6 @@ fun createRipple(foreground: Int, background: Int): RippleDrawable {
     val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(foreground, 31))
     return RippleDrawable(rippleColor, ShapeDrawable().apply { paint.color = background }, ShapeDrawable())
 }
-
-/*fun Context.createColoredButtonBackground(color: Int): Drawable {
-    val shape = getDrawable(R.drawable.colored_button_shape)!!
-    shape.setTintList(ColorStateList(arrayOf(
-            intArrayOf(-android.R.attr.state_enabled),
-            intArrayOf()),
-            intArrayOf(
-                    getDisabled(getColorAttr(R.attr.colorButtonNormal)),
-                    color)))
-    val highlight = getColorAttr(R.attr.colorControlHighlight)
-    val ripple = RippleDrawable(ColorStateList.valueOf(highlight), shape, null)
-    val insetHorizontal = resources.getDimensionPixelSize(R.dimen.abc_button_inset_horizontal_material)
-    val insetVertical = resources.getDimensionPixelSize(R.dimen.abc_button_inset_vertical_material)
-    return InsetDrawable(ripple, insetHorizontal, insetVertical, insetHorizontal, insetVertical)
-}*/
 
 fun Context.createDisabledColor(color: Int): ColorStateList {
     return ColorStateList(arrayOf(
@@ -746,11 +638,6 @@ fun ContentResolver.getDisplayName(uri: Uri): String? {
     return null
 }
 
-inline fun avg(vararg of: Float) = of.average()
-inline fun avg(vararg of: Int) = of.average()
-inline fun avg(vararg of: Long) = of.average()
-inline fun avg(vararg of: Double) = of.average()
-
 fun Context.checkLocationAccess(): Boolean {
     return Utilities.hasPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) ||
             Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
@@ -772,22 +659,6 @@ inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>
 }
 
 inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0
-
-fun String.hash(type: String): String {
-    val chars = "0123456789abcdef"
-    val bytes = MessageDigest
-            .getInstance(type)
-            .digest(toByteArray())
-    val result = StringBuilder(bytes.size * 2)
-
-    bytes.forEach {
-        val i = it.toInt()
-        result.append(chars[i shr 4 and 0x0f])
-        result.append(chars[i and 0x0f])
-    }
-
-    return result.toString()
-}
 
 val Context.locale: Locale
     get() {

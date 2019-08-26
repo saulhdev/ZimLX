@@ -66,6 +66,8 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         return info.customIconEntry
     }
 
+    override fun supportsSwipeUp(info: ShortcutInfo) = true
+
     override fun setSwipeUpAction(info: ShortcutInfo, action: String?) {
         info.setSwipeUpAction(context, action)
     }

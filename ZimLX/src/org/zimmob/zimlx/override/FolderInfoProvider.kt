@@ -19,6 +19,7 @@ package org.zimmob.zimlx.override
 
 import android.content.Context
 import com.android.launcher3.FolderInfo
+import com.android.launcher3.ItemInfo
 import com.android.launcher3.R
 import org.zimmob.zimlx.ensureOnMainThread
 import org.zimmob.zimlx.iconpack.IconPackManager
@@ -53,6 +54,8 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
     override fun getIcon(info: FolderInfo): IconPackManager.CustomIconEntry? {
         return prefs.customAppIcon[info.toComponentKey()]
     }
+
+    override fun supportsSwipeUp(info: FolderInfo) = info.container != ItemInfo.NO_ID.toLong()
 
     override fun supportsIcon() = true
 

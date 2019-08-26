@@ -107,10 +107,19 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int folderCellWidthPx;
     public int folderCellHeightPx;
 
+    // Drawer folder cell
+    public int allAppsFolderCellWidthPx;
+    public int allAppsFolderCellHeightPx;
+
     // Folder child
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
+
+    // Drawer folder child
+    public int allAppsFolderChildIconSizePx;
+    public int allAppsFolderChildTextSizePx;
+    public int allAppsFolderChildDrawablePaddingPx;
 
     // Hotseat
     public int hotseatCellHeightPx;
@@ -555,6 +564,25 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         if (scale < 1f) {
             updateFolderCellSize(scale, dm, res);
         }
+
+        // Drawer Folders
+        updateDrawerFolderCellSize(1f, dm, res);
+
+        // Check if the icons fit within the available height.
+        usedHeight = allAppsFolderCellHeightPx * inv.numFolderRows + folderBottomPanelSize;
+        maxHeight = availableHeightPx - totalWorkspacePadding.y - folderMargin;
+        scaleY = maxHeight / usedHeight;
+
+        // Check if the icons fit within the available width.
+        usedWidth = allAppsFolderCellWidthPx * inv.numFolderColumns;
+        maxWidth = availableWidthPx - totalWorkspacePadding.x - folderMargin;
+        scaleX = maxWidth / usedWidth;
+
+        scale = Math.min(scaleX, scaleY);
+        if (scale < 1f) {
+            updateDrawerFolderCellSize(scale, dm, res);
+        }
+
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
@@ -572,6 +600,25 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
 
+    private void updateDrawerFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        // Drawer folders
+        int folderLabelRowCount = Utilities.getZimPrefs(mContext).getHomeLabelRows();
+
+        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
+        allAppsFolderChildTextSizePx =
+                (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
+
+        int textHeight =
+                Utilities.calculateTextHeight(allAppsFolderChildTextSizePx) * folderLabelRowCount;
+        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
+        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
+
+        allAppsFolderCellWidthPx = allAppsFolderChildIconSizePx + 2 * cellPaddingX;
+        allAppsFolderCellHeightPx = allAppsFolderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        allAppsFolderChildDrawablePaddingPx = Math.max(0,
+                (allAppsFolderCellHeightPx - allAppsFolderChildIconSizePx - textHeight) / 3);
+    }
+
     public void updateInsets(Rect insets) {
         mInsets.set(insets);
         updateWorkspacePadding();
@@ -579,22 +626,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
     public Rect getInsets() {
         return mInsets;
-    }
-
-    public void updateAppsViewNumCols() {
-        allAppsNumCols = allAppsNumPredictiveCols = inv.numColumns;
-    }
-
-    private int getCurrentWidth() {
-        return isLandscape
-                ? Math.max(widthPx, heightPx)
-                : Math.min(widthPx, heightPx);
-    }
-
-    private int getCurrentHeight() {
-        return isLandscape
-                ? Math.min(widthPx, heightPx)
-                : Math.max(widthPx, heightPx);
     }
 
     public Point getCellSize() {

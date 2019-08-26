@@ -22,9 +22,10 @@ import android.content.pm.LauncherApps;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.model.WidgetItem;
@@ -38,14 +39,14 @@ import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.widget.WidgetListRowEntry;
 
+import org.zimmob.zimlx.popup.ZimShortcut;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-
-import androidx.annotation.NonNull;
 
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
@@ -83,7 +84,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
         mSystemShortcuts = new SystemShortcut[]{
-                Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
+                //Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
                 new SystemShortcut.AppInfo(),
                 new SystemShortcut.Widgets(),
                 new SystemShortcut.Install()
@@ -232,14 +233,14 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public @NonNull
     List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
-        for (SystemShortcut systemShortcut : mSystemShortcuts) {
+        for (SystemShortcut systemShortcut :
+                ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
             if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
                 systemShortcuts.add(systemShortcut);
             }
         }
         return systemShortcuts;
     }
-
     public void cancelNotification(String notificationKey) {
         NotificationListener notificationListener = NotificationListener.getInstanceIfConnected();
         if (notificationListener == null) {

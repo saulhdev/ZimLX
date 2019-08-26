@@ -212,6 +212,9 @@ public class DragView extends View {
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             return;
         }
+        if (info instanceof FolderInfo && ((FolderInfo) info).usingCustomIcon(mLauncher)) {
+            return;
+        }
         // Load the adaptive icon on a background thread and add the view in ui thread.
         final Looper workerLooper = LauncherModel.getWorkerLooper();
         new Handler(workerLooper).postAtFrontOfQueue(new Runnable() {

@@ -201,6 +201,8 @@ public class DeepShortcutManager {
                 Log.e(TAG, "Failed to get shortcut icon", e);
                 mWasLastCallSuccess = false;
             }
+        } else {
+            return DeepShortcutManagerBackport.getShortcutIconDrawable(shortcutInfo, density);
         }
         return null;
     }

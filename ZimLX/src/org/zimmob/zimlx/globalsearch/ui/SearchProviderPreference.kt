@@ -8,7 +8,8 @@ import androidx.preference.DialogPreference
 import com.android.launcher3.R
 import org.zimmob.zimlx.globalsearch.SearchProviderController
 
-class SearchProviderPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
+class SearchProviderPreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs),
+        SharedPreferences.OnSharedPreferenceChangeListener {
 
     var value = ""
     var defaultValue = ""

@@ -422,6 +422,13 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
     /**
      * Animators for the "floating view" of the view used to launch the target.
      */
+    public void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
+        playIconAnimators(appOpenAnimator, v, windowTargetBounds, false);
+    }
+
+    /**
+     * Animators for the "floating view" of the view used to launch the target.
+     */
     private void playIconAnimators(AnimatorSet appOpenAnimator, View v, Rect windowTargetBounds) {
         final boolean isBubbleTextView = v instanceof BubbleTextView;
         mFloatingView = new View(mLauncher);
@@ -429,6 +436,12 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             // Create a copy of the app icon
             mFloatingView.setBackground(
                     DrawableFactory.get(mLauncher).newIcon((ItemInfoWithIcon) v.getTag()));
+        }else if (v.getTag() instanceof FolderInfo) {
+            FolderInfo folderInfo = (FolderInfo) v.getTag();
+            if (folderInfo.isCoverMode()) {
+                mFloatingView.setBackground(
+                        DrawableFactory.get(mLauncher).newIcon(folderInfo.getCoverInfo()));
+            }
         }
 
         // Position the floating view exactly on top of the original

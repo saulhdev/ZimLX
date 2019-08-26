@@ -8,6 +8,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 
 import androidx.core.app.ActivityCompat;
 
@@ -18,7 +19,6 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
@@ -30,7 +30,6 @@ import org.zimmob.zimlx.iconpack.EditIconActivity;
 import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
-import org.zimmob.zimlx.settings.ui.SettingsActivity;
 import org.zimmob.zimlx.views.OptionsPanel;
 import org.zimmob.zimlx.views.ZimBackgroundView;
 
@@ -51,6 +50,8 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     private boolean paused = false;
     private boolean sRestart = false;
     private OptionsPanel optionView;
+    //private OptionsPanel dummyView;
+
 
     public static ZimLauncher getLauncher(Context context) {
 
@@ -75,19 +76,22 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
         background = findViewById(R.id.zim_background);
+        //dummyView = findViewById(R.id.dummy_view);
+    }
+
+    @Override
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+        boolean success = super.startActivitySafely(v, intent, item);
+        /*if (success) {
+            (ZimAppTransitionManagerImpl)launcherAppTransitionManager.playLaunchAnimation(this, v, intent);
+        }*/
+        return success;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        if (FeatureFlags.QSB_ON_FIRST_SCREEN != showSmartspace()) {
-            if (Utilities.ATLEAST_NOUGAT) {
-                recreate();
-            } else {
-                finish();
-                startActivity(getIntent());
-            }
-        }
+        //(ZimAppTransitionManagerImpl)launcherAppTransitionManager.overrideResumeAnimation(this);
     }
 
     public OptionsPanel getOptionsView() {
@@ -162,12 +166,25 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         Utilities.onLauncherStart();
     }
 
-    public GestureController getGestureController() {
-        return gestureController;
+    /*public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
+        int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
+        int halfSize = size / 2;
+        prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
     }
 
-    private boolean showSmartspace() {
-        return Utilities.getPrefs(this).getBoolean(SettingsActivity.SMARTSPACE_PREF, true);
+    public void prepareDummyView(int left, int top, int right, int bottom, @NotNull Function0<Unit> callback) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) dummyView.getLayoutParams();
+        lp.leftMargin = left;
+        lp.topMargin = top;
+        lp.height = bottom-top;
+        lp.width = right-left;
+        dummyView.setLayoutParams(lp);
+        dummyView.requestLayout();
+        dummyView.post(() -> callback.invoke());
+    }*/
+
+    public GestureController getGestureController() {
+        return gestureController;
     }
 
     @Override
@@ -215,7 +232,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             currentEditIcon = new BitmapDrawable(mContext.getResources(), ((ShortcutInfo) itemInfo).iconBitmap);
         } else if (itemInfo instanceof FolderInfo) {
             component = ((FolderInfo) itemInfo).toComponentKey();
-            currentEditIcon = ((FolderInfo) itemInfo).getIcon(mContext);
+            currentEditIcon = ((FolderInfo) itemInfo).getDefaultIcon(this);
         } else {
             component = null;
             currentEditIcon = null;
@@ -248,5 +265,4 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             CustomInfoProvider.Companion.forItem(this, itemInfo).setIcon(itemInfo, customIconEntry);
         }
     }
-
 }

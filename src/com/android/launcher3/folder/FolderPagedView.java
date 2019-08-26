@@ -257,7 +257,11 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         CellLayout page = (CellLayout) mInflater.inflate(R.layout.folder_page, this, false);
-        page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        if (mFolder.isInAppDrawer()) {
+            page.setCellDimensions(grid.allAppsFolderCellWidthPx, grid.allAppsFolderCellHeightPx);
+        } else {
+            page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
+        }
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);

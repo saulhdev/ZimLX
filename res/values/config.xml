@@ -93,6 +93,9 @@
     <!-- Name of a custom shortcut class. -->
     <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
 
+    <string name="overview_callbacks_class" translatable="false">org.zimmob.zimlx.ZimOverviewCallbacks</string>
+
+
     <!-- Name of a color extraction implementation class. -->
     <string name="color_extraction_impl_class" translatable="false"></string>
 

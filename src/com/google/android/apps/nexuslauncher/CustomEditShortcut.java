@@ -3,6 +3,8 @@ package com.google.android.apps.nexuslauncher;
 import android.content.Context;
 import android.view.View;
 
+import androidx.annotation.Keep;
+
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
@@ -10,10 +12,9 @@ import com.android.launcher3.popup.SystemShortcut;
 
 import org.zimmob.zimlx.override.CustomInfoProvider;
 
-import androidx.annotation.Keep;
-
 @Keep
 public class CustomEditShortcut extends SystemShortcut.Custom {
+
     public CustomEditShortcut(Context context) {
         super();
     }

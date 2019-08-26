@@ -35,4 +35,5 @@ public class DoubleShadowTextView extends TextView {
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset, mShadowInfo.keyShadowColor);
         super.onDraw(canvas);
     }
+
 }

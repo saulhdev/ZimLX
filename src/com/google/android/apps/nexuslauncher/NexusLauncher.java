@@ -132,7 +132,6 @@ public class NexusLauncher {
 
             SmartspaceController.get(mLauncher).cW();
             mQsbAnimationController = new QsbAnimationController(mLauncher);
-            //mSmartspace = mLauncher.findViewById(R.id.search_container_workspace);
 
             mUiInformation.putInt("system_ui_visibility", mLauncher.getWindow().getDecorView().getSystemUiVisibility());
             applyFeedTheme(false);

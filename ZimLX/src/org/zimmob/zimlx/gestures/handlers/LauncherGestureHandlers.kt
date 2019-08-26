@@ -240,9 +240,9 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         if (view == null) {
             val down = controller.touchDownPoint
-            /*controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
-                onGestureTrigger(controller, it)
-            }*/
+            //controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
+            //onGestureTrigger(controller, it)
+        }
             return
         }
         /*val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
@@ -255,23 +255,23 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
-                val transitionManager = controller.launcher.launcherAppTransitionManager
+                /*val transitionManager = controller.launcher.launcherAppTransitionManager
                         as? ZimAppTransitionManagerImpl
                 transitionManager?.playLaunchAnimation(controller.launcher, view,
                         Intent().setComponent(target!!.componentName))
+                */
             }
             "shortcut" -> {
                 if (id?.startsWith("sesame_") == true) {
-                    context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
+                    //context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
                 } else {
                     DeepShortcutManager.getInstance(context)
                             .startShortcut(packageName, id, intent, opts, user)
                 }
             }
-        }*/
-    }
+        }
+    }*/
 }
-
 
 @Keep
 class StartAssistantGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {

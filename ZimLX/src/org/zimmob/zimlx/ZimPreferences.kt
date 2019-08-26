@@ -233,7 +233,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
     val folderBgColored by BooleanPref("pref_folderBgColorGen", false)
-
+    val brightnessTheme by BooleanPref("pref_brightnessTheme", false, restart)
 
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()

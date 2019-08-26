@@ -469,7 +469,11 @@ public class LauncherModel extends BroadcastReceiver
      * not be called as DB updates are automatically followed by UI update
      */
     public void forceReload() {
-        synchronized (mLock) {
+        forceReload(-1);
+    }
+
+    public void forceReload(int page) {
+        synchronized (this.mLock) {
             // Stop any existing loaders first, so they don't set mModelLoaded to true later
             stopLoader();
             mModelLoaded = false;
@@ -477,9 +481,9 @@ public class LauncherModel extends BroadcastReceiver
 
         // Start the loader if launcher is already running, otherwise the loader will run,
         // the next time launcher starts
-        Callbacks callbacks = getCallback();
-        if (callbacks != null) {
-            startLoader(callbacks.getCurrentWorkspaceScreen());
+        Callbacks callback = getCallback();
+        if (callback != null) {
+            startLoader(page < 0 ? callback.getCurrentWorkspaceScreen() : page);
         }
     }
 

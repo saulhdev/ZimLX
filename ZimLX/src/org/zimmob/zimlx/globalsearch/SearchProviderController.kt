@@ -90,12 +90,13 @@ class SearchProviderController(private val context: Context) {
         fun getSearchProviders(context: Context) = listOf(
                 AppSearchSearchProvider(context),
                 GoogleSearchProvider(context),
+                // TODO: fall back to this if google is not available per default
                 GoogleWebSearchProvider(context),
                 SFinderSearchProvider(context),
-                DisabledDummySearchProvider(context),
                 GoogleGoSearchProvider(context),
                 FirefoxSearchProvider(context),
                 DuckDuckGoSearchProvider(context),
+                DDGWebSearchProvider(context),
                 BingSearchProvider(context),
                 BingWebSearchProvider(context),
                 BaiduSearchProvider(context),

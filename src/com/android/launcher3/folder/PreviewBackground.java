@@ -41,7 +41,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.util.Themes;
 
-import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.folder.FolderShape;
 
 /**
@@ -51,16 +50,6 @@ import org.zimmob.zimlx.folder.FolderShape;
 public class PreviewBackground {
 
     private static final int CONSUMPTION_ANIMATION_DURATION = 100;
-
-    private final PorterDuffXfermode mClipPorterDuffXfermode
-            = new PorterDuffXfermode(PorterDuff.Mode.DST_IN);
-    // Create a RadialGradient such that it draws a black circle and then extends with
-    // transparent. To achieve this, we keep the gradient to black for the range [0, 1) and
-    // just at the edge quickly change it to transparent.
-    private final RadialGradient mClipShader = new RadialGradient(0, 0, 1,
-            new int[]{Color.BLACK, Color.BLACK, Color.TRANSPARENT},
-            new float[]{0, 0.999f, 1},
-            Shader.TileMode.CLAMP);
 
     private final PorterDuffXfermode mShadowPorterDuffXfermode
             = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
@@ -314,32 +303,10 @@ public class PreviewBackground {
         mScale = originalScale;
     }
 
-    private void drawCircle(@NotNull Canvas canvas, float deltaRadius) {
-        float radius = getScaledRadius();
-        canvas.drawCircle(radius + getOffsetX(), radius + getOffsetY(),
-                radius - deltaRadius, mPaint);
-    }
-
     public Path getClipPath() {
         mPath.reset();
         FolderShape.sInstance.addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
-    }
-
-    // It is the callers responsibility to save and restore the canvas layers.
-    void clipCanvasHardware(Canvas canvas) {
-        mPaint.setColor(Color.BLACK);
-        mPaint.setStyle(Paint.Style.FILL);
-        mPaint.setXfermode(mClipPorterDuffXfermode);
-
-        float radius = getScaledRadius();
-        mShaderMatrix.setScale(radius, radius);
-        mShaderMatrix.postTranslate(radius + getOffsetX(), radius + getOffsetY());
-        mClipShader.setLocalMatrix(mShaderMatrix);
-        mPaint.setShader(mClipShader);
-        canvas.drawPaint(mPaint);
-        mPaint.setXfermode(null);
-        mPaint.setShader(null);
     }
 
     private void delegateDrawing(CellLayout delegate, int cellX, int cellY) {
@@ -429,9 +396,5 @@ public class PreviewBackground {
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-    }
-
-    public float getStrokeWidth() {
-        return mStrokeWidth;
     }
 }

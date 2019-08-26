@@ -26,6 +26,7 @@ import com.google.android.apps.nexuslauncher.utils.ThemedContextProvider
 import org.zimmob.zimlx.*
 import org.zimmob.zimlx.colors.resolvers.DockQsbAutoResolver
 import org.zimmob.zimlx.colors.resolvers.DrawerQsbAutoResolver
+import org.zimmob.zimlx.colors.resolvers.WorkspaceLabelAutoResolver
 import org.zimmob.zimlx.theme.ThemeOverride
 import org.zimmob.zimlx.util.Config
 import org.zimmob.zimlx.util.SingletonHolder
@@ -147,6 +148,7 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
             const val ACCENT = "pref_key__accent_color"
             const val HOTSEAT_QSB_BG = "pref_hotseatQsbColorResolver"
             const val ALLAPPS_QSB_BG = "pref_allappsQsbColorResolver"
+            const val WORKSPACE_ICON_LABEL = "pref_workspaceLabelColorResolver"
 
             fun getDefaultResolver(key: String, engine: ColorEngine): ColorResolver {
                 val context = engine.context
@@ -160,9 +162,11 @@ class ColorEngine private constructor(val context: Context) : ZimPreferences.OnP
                     /*ALLAPPS_ICON_LABEL -> {
                         DrawerLabelAutoResolver(createConfig(key, engine))
                     }
+                    */
                     WORKSPACE_ICON_LABEL -> {
                         WorkspaceLabelAutoResolver(createConfig(key, engine))
                     }
+                    /*
                     HOTSEAT_ICON_LABEL -> {
                         WorkspaceLabelAutoResolver(createConfig(key, engine))
                     }

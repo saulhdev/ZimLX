@@ -27,6 +27,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -73,6 +74,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
+    private static final int DISPLAY_DRAWER_FOLDER = 5;
 
     private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
 
@@ -113,7 +115,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final float mSlop;
 
     private final boolean mLayoutHorizontal;
-    private final int mIconSize;
+    private int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
@@ -152,7 +154,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        //mActivity = BaseDraggingActivity.fromContext(context);
         mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
 
         if (mActivity == null) {
@@ -180,7 +181,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
-            setSingleLine(lines == 1);
         } else if (display == DISPLAY_ALL_APPS) {
             mHideText = prefs.getHideAllAppsAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
@@ -189,7 +189,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             defaultIconSize = grid.allAppsIconSizePx;
             int lines = prefs.getDrawerLabelRows();
             setMaxLines(lines);
-            setSingleLine(lines == 1);
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
@@ -198,8 +197,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             defaultIconSize = grid.folderChildIconSizePx;
             int lines = prefs.getHomeLabelRows();
             setMaxLines(lines);
-            setSingleLine(lines == 1);
+        } else if (display == DISPLAY_DRAWER_FOLDER) {
+            mHideText = prefs.getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX,
+                    isTextHidden() ? 0 : grid.allAppsFolderChildTextSizePx);
+            setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
+            defaultIconSize = grid.allAppsFolderChildIconSizePx;
+            int lines = prefs.getDrawerLabelRows();
+            setLineCount(lines);
         }
+
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
@@ -209,9 +216,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLongPressHelper = new CheckLongPressHelper(this);
         mStylusEventHelper = new StylusEventHelper(new SimpleOnStylusPressListener(this), this);
 
-        setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
+    }
+
+    public void setLineCount(int lines) {
+        setMaxLines(lines);
+        setSingleLine(lines == 1);
+        setEllipsize(TextUtils.TruncateAt.END);
+        // This shouldn't even be needed, what is going on?!
+        setLines(lines);
     }
 
     @Override
@@ -711,6 +725,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    public void setIconSize(int iconSize) {
+        mIconSize = iconSize;
+        setIcon(mIcon);
     }
 
     protected boolean isTextHidden() {

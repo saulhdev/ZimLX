@@ -10,9 +10,6 @@ import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
-
-import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static org.zimmob.zimlx.minibar.DashAction.Action;
@@ -45,6 +42,7 @@ public class DashUtils {
             }
             case AppSettings: {
                 context.startActivity(new Intent(Settings.ACTION_MANAGE_ALL_APPLICATIONS_SETTINGS));
+
                 break;
             }
             case SetWallpaper:
@@ -55,18 +53,18 @@ public class DashUtils {
                 context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                 break;
             case LauncherSettings:
-                context.startActivity(new Intent(context, SettingsActivity.class));
+                //context.startActivity(new Intent(context, SettingsActivity.class));
+                context.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                        .setPackage(context.getPackageName())
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+
                 break;
 
             case AppDrawer:
-                if (!Launcher.getLauncher(mContext).isInState(ALL_APPS)) {
-                    Launcher.getLauncher(mContext).getUserEventDispatcher()
-                            .logActionOnControl(LauncherLogProto.Action.Touch.TAP,
-                                    LauncherLogProto.ControlType.ALL_APPS_BUTTON);
-                    Launcher.getLauncher(mContext).getStateManager().goToState(ALL_APPS);
-                    ((DrawerLayout) Launcher.getLauncher(mContext).findViewById(R.id.drawer_layout)).closeDrawers();
+                if (!Launcher.getLauncher(context).isInState(ALL_APPS)) {
+                    Launcher.getLauncher(context).getStateManager().goToState(ALL_APPS);
+                    ((DrawerLayout) Launcher.getLauncher(context).findViewById(R.id.drawer_layout)).closeDrawers();
                 }
-
                 break;
             case VolumeDialog:
                 if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.M) {
