@@ -28,6 +28,8 @@ import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
+import org.zimmob.zimlx.views.Snackbar;
+
 public class DeleteDropTarget extends ButtonDropTarget {
 
     private int mControlType = ControlType.DEFAULT_CONTROLTYPE;
@@ -100,7 +102,14 @@ public class DeleteDropTarget extends ButtonDropTarget {
     public void completeDrop(DragObject d) {
         ItemInfo item = d.dragInfo;
         if ((d.dragSource instanceof Workspace) || (d.dragSource instanceof Folder)) {
+            mLauncher.getModelWriter().prepareToUndo();
+
             onAccessibilityDrop(null, item);
+
+            int currentPage = this.mLauncher.getWorkspace().getCurrentPage();
+            Snackbar.show(mLauncher, R.string.item_removed, R.string.undo,
+                    () -> mLauncher.getModelWriter().commitDelete(),
+                    () -> mLauncher.getModelWriter().undoDelete(currentPage));
         }
     }
 

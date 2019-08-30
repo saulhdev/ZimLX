@@ -38,11 +38,15 @@ import android.util.ArrayMap;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
+
+import androidx.annotation.IntDef;
+import androidx.core.view.ViewCompat;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.accessibility.DragAndDropAccessibilityDelegate;
@@ -69,9 +73,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Stack;
-
-import androidx.annotation.IntDef;
-import androidx.core.view.ViewCompat;
 
 public class CellLayout extends ViewGroup {
     public static final int WORKSPACE_ACCESSIBILITY_DRAG = 2;
@@ -166,6 +167,9 @@ public class CellLayout extends ViewGroup {
 
     private final float mChildScale = 1f;
 
+    private final int mDockIconSize;
+    private final int mDockIconTextSize;
+
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
     public static final int MODE_ON_DROP = 2;
@@ -221,6 +225,9 @@ public class CellLayout extends ViewGroup {
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
+
+        mDockIconSize = grid.hotseatIconSizePx;
+        mDockIconTextSize = grid.hotseatIconTextSizePx;
 
         mCountX = grid.inv.numColumns;
         mCountY = grid.inv.numRows;
@@ -574,6 +581,11 @@ public class CellLayout extends ViewGroup {
         return mContainerType == WORKSPACE;
     }
 
+    public boolean isHotseat() {
+        return mContainerType == HOTSEAT;
+    }
+
+
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
                                        boolean markCells) {
         final LayoutParams lp = params;
@@ -581,7 +593,13 @@ public class CellLayout extends ViewGroup {
         // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
+            if (isHotseat()) {
+                bubbleChild.setTextVisibility(!mPrefs.getHideDockLabels());
+                bubbleChild.setIconSize(mDockIconSize);
+                bubbleChild.setLineCount(mPrefs.getDockLabelRows());
+                bubbleChild.setTextSize(TypedValue.COMPLEX_UNIT_PX, mDockIconTextSize);
+                // TODO: seperate font selection for dock
+            }
         }
 
         child.setScaleX(mChildScale);
@@ -1212,7 +1230,7 @@ public class CellLayout extends ViewGroup {
      *         nearest the requested location.
      */
     private int[] findNearestArea(int cellX, int cellY, int spanX, int spanY, int[] direction,
-                                  boolean[][] occupied, boolean blockOccupied[][], int[] result) {
+                                  boolean[][] occupied, boolean[][] blockOccupied, int[] result) {
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         float bestDistance = Float.MAX_VALUE;
@@ -1797,7 +1815,7 @@ public class CellLayout extends ViewGroup {
 
         // We find the nearest cell into which we would place the dragged item, assuming there's
         // nothing in its way.
-        int result[] = new int[2];
+        int[] result = new int[2];
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
         boolean success;
@@ -2256,7 +2274,7 @@ public class CellLayout extends ViewGroup {
     }
 
     int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
-                         View dragView, int[] result, int resultSpan[], int mode) {
+                         View dragView, int[] result, int[] resultSpan, int mode) {
         // First we determine if things have moved enough to cause a different layout
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 

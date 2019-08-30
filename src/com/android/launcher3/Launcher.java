@@ -40,7 +40,6 @@ import android.content.res.Configuration;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.graphics.Rect;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -1725,18 +1724,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * Deletes the widget info and the widget id.
      */
     private void deleteWidgetInfo(final LauncherAppWidgetInfo widgetInfo) {
-        final LauncherAppWidgetHost appWidgetHost = getAppWidgetHost();
-        if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
-            // Deleting an app widget ID is a void call but writes to disk before returning
-            // to the caller...
-            new AsyncTask<Void, Void, Void>() {
-                public Void doInBackground(Void... args) {
-                    appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
-                    return null;
-                }
-            }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
-        }
-        getModelWriter().deleteItemFromDatabase(widgetInfo);
+        getModelWriter().deleteWidgetInfo(widgetInfo, getAppWidgetHost());
     }
 
     @Override

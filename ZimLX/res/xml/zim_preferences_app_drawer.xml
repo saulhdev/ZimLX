@@ -45,6 +45,11 @@
             app:iconSpaceReserved="false"
             android:title="@string/pref_title__label_two_lines" />
 
+        <org.zimmob.zimlx.settings.ui.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/zim_preferences_drawer_icon_popup_menu" />
+
         <org.zimmob.zimlx.preferences.Preference
             android:title="@string/categorization"
             app:iconSpaceReserved="false"

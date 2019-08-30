@@ -95,6 +95,9 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int workspaceCellPaddingXPx;
     private final int mBottomMarginHw;
 
+    public int hotseatIconSizePx;
+    public int hotseatIconSizeOriginalPx;
+
     // Folder
     public int folderIconSizePx;
     public int folderIconOffsetYPx;
@@ -125,11 +128,13 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int hotseatCellHeightPx;
     // In portrait: size = height, in landscape: size = width
     public int hotseatBarSizePx;
+    public int hotseatBarTopPaddingPx;
+    public int hotseatBarBottomPaddingPx;
     // Start is the side next to the nav bar, end is the side next to the workspace
     public int hotseatBarSidePaddingStartPx;
     public int hotseatBarSidePaddingEndPx;
-    public int hotseatBarTopPaddingPx;
-    public int hotseatBarBottomPaddingPx;
+    public int hotseatIconTextSizePx;
+    public int hotseatIconTextSizeOriginalPx;
 
     // All apps
     public int allAppsCellHeightPx;
@@ -275,7 +280,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
 
         Utilities.getZimPrefs(context)
-                .addOnPreferenceChangeListener(this,
+                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets",
                         "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
     }
 
@@ -313,7 +318,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         hotseatBarSidePaddingStartPx = isMultiWindowMode && isVerticalBarLayout()
                 ? edgeMarginPx : 0;
         hotseatBarSizePx = isVerticalBarLayout()
-                ? iconSizePx + hotseatBarSidePaddingStartPx
+                ? hotseatIconSizePx + hotseatBarSidePaddingStartPx
                 + hotseatBarSidePaddingEndPx
                 : res.getDimensionPixelSize(
                 R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
@@ -431,12 +436,14 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
 
+        int labelRows = Utilities.getZimPrefs(mContext).getDrawerLabelRows();
+
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
         // All Apps cell height.
         int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx) * labelRows
                 + topBottomPadding * 2;
     }
 
@@ -470,6 +477,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         boolean dockVisible = !prefs.getDockHide();
         int labelRowCount = prefs.getHomeLabelRows();
         int drawerLabelRowCount = prefs.getDrawerLabelRows();
+        int dockLabelRowCount = prefs.getDockLabelRows();
 
         // Workspace
         final boolean isVerticalLayout = isVerticalBarLayout();
@@ -511,12 +519,21 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         }
 
         // Hotseat
+        float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        hotseatIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
+        hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * workspaceScale);
+        textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;
+        hotseatIconSizeOriginalPx = Utilities.pxFromDp(invHotseatIconSizePx, dm);
+        hotseatIconSizePx = (int) (hotseatIconSizeOriginalPx * workspaceScale);
         if (isVerticalLayout) {
             hotseatBarSizePx =
-                    iconSizePx * prefs.getDockRowsCount()
+                    hotseatIconSizePx * prefs.getDockRowsCount()
                             + hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx;
         }
-        hotseatCellHeightPx = iconSizePx;
+        int additionalHeight =
+                prefs.getHideDockLabels() ? 0 : (int) (textHeight + (iconDrawablePaddingOriginalPx
+                        * workspaceScale));
+        hotseatCellHeightPx = hotseatIconSizePx + additionalHeight;
 
         if (!isVerticalLayout) {
             int expectedWorkspaceHeight = availableHeightPx - (dockVisible ? hotseatBarSizePx : 0)
@@ -586,11 +603,14 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     }
 
     private void updateFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        // Home Folders
+        int folderLabelRowCount = Utilities.getZimPrefs(mContext).getHomeLabelRows();
+
         folderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         folderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
-        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx);
+        int textHeight = Utilities.calculateTextHeight(folderChildTextSizePx) * folderLabelRowCount;
         int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
         int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
 

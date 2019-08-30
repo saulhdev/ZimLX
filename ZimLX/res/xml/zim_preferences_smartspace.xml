@@ -19,7 +19,7 @@
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
         android:title="@string/title_show_google_app"
-        app:controllerClass="org.zimmob.zimlx.settings.controllers.MinusOneController"
+        app:controllerClass=".MinusOneController"
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference

@@ -22,8 +22,6 @@
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
     <color name="uninstall_target_hover_tint">#EB3F0B</color>
 
-    <color name="all_apps_prediction_row_separator">#3c000000</color>
-    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
     <color name="focused_background">#80c6c5c5</color>
 
     <color name="default_shadow_color_no_alpha">#FF000000</color>
@@ -90,5 +88,8 @@
     <!-- <color name="qsb_background_drawer_black">#ee000000</color> -->
     <color name="qsb_drawer_text_color_normal">#ff212121</color>
     <color name="qsb_drawer_text_color_dark">#ffe0e0e0</color>
-
+    <color name="all_apps_prediction_row_separator">#3c000000</color>
+    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
+    <color name="dismiss_target_hover_tint">#ffea4335</color>
+    <color name="bugNotificationColor">#ff4caf50</color>
 </resources>

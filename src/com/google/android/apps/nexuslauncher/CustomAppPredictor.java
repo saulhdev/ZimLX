@@ -28,13 +28,13 @@ import java.util.List;
 import java.util.Set;
 
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    private static int MAX_PREDICTIONS = 10;
+    public static int MAX_PREDICTIONS = 10;
     private static final int BOOST_ON_OPEN = 9;
     private static final String PREDICTION_SET = "pref_prediction_set";
     private static final String PREDICTION_PREFIX = "pref_prediction_count_";
     private static final String HIDDEN_PREDICTIONS_SET_PREF = "pref_hidden_prediction_set";
     private static final Set<String> EMPTY_SET = new HashSet<>();
-    private final static String[] PLACE_HOLDERS = new String[]{
+    public final static String[] PLACE_HOLDERS = new String[]{
             "com.google.android.apps.photos",
             "com.google.android.apps.maps",
             "com.google.android.gm",
@@ -185,7 +185,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return false;
     }
 
-    private boolean isPredictorEnabled() {
+    public boolean isPredictorEnabled() {
         return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, true);
     }
 
@@ -209,7 +209,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         }
     }
 
-    private ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
+    public ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
         return new ComponentKeyMapper<>(new ComponentKey(mContext, str));
     }
 

@@ -2,7 +2,6 @@ package com.android.launcher3.accessibility;
 
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
-import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Handler;
@@ -219,13 +218,9 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
 
             new AlertDialog.Builder(mLauncher)
                     .setTitle(R.string.action_resize)
-                    .setItems(labels, new DialogInterface.OnClickListener() {
-
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            performResizeAction(actions.get(which), host, info);
-                            dialog.dismiss();
-                        }
+                    .setItems(labels, (dialog, which) -> {
+                        performResizeAction(actions.get(which), host, info);
+                        dialog.dismiss();
                     })
                     .show();
             return true;

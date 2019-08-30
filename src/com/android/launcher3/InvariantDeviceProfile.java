@@ -27,18 +27,21 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Thunk;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.settings.IconScale;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import androidx.annotation.VisibleForTesting;
+import static java.lang.Math.max;
 
 public class InvariantDeviceProfile {
 
@@ -67,8 +70,6 @@ public class InvariantDeviceProfile {
     public int numRowsOriginal;
     public int numColumns;
     public int numColumnsOriginal;
-    public float allAppsIconSize;
-    public float iconSizeOriginal;
 
     /**
      * Number of icons per row in the drawer
@@ -84,10 +85,21 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public float iconSizeOriginal;
+    public float hotseatIconSize;
+    public float hotseatIconSizeOriginal;
     public float landscapeIconSize;
+    public float landscapeIconSizeOriginal;
+    public float landscapeHotseatIconSize;
+    public float landscapeHotseatIconSizeOriginal;
+    public float allAppsIconSize;
+    public float allAppsIconSizeOriginal;
+    public float landscapeAllAppsIconSize;
+    public float landscapeAllAppsIconSizeOriginal;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+
 
     /**
      * Number of icons inside the hotseat area.
@@ -167,11 +179,27 @@ public class InvariantDeviceProfile {
         numFolderColumns = closestProfile.numFolderColumns;
 
         iconSize = interpolatedDeviceProfileOut.iconSize;
-        iconSizeOriginal = iconSize;
-        allAppsIconSize = iconSize;
+        iconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
         landscapeIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
-        iconBitmapSize = Utilities.pxFromDp(iconSize, dm);
+        landscapeIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
+        hotseatIconSize = interpolatedDeviceProfileOut.iconSize;
+        hotseatIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
+        landscapeHotseatIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        landscapeHotseatIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
+        allAppsIconSize = interpolatedDeviceProfileOut.iconSize;
+        allAppsIconSizeOriginal = interpolatedDeviceProfileOut.iconSize;
+        landscapeAllAppsIconSize = interpolatedDeviceProfileOut.landscapeIconSize;
+        landscapeAllAppsIconSizeOriginal = interpolatedDeviceProfileOut.landscapeIconSize;
+
         iconTextSize = interpolatedDeviceProfileOut.iconTextSize;
+
+        new IconScale(Utilities.getZimPrefs(context), "iconSize", this);
+        new IconScale(Utilities.getZimPrefs(context), "allAppsIconSize", this);
+        new IconScale(Utilities.getZimPrefs(context), "hotseatIconSize", "iconSize", this);
+
+        // Initialize these *after* the icon scale has been applied, this ensures we load icons of proper resolution
+        iconBitmapSize = Utilities.pxFromDp(max(max(iconSize, allAppsIconSize), hotseatIconSize), dm);
+
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
         // If the partner customization apk contains any grid overrides, apply them
@@ -183,7 +211,7 @@ public class InvariantDeviceProfile {
         // The real size never changes. smallSide and largeSide will remain the
         // same in any orientation.
         int smallSide = Math.min(realSize.x, realSize.y);
-        int largeSide = Math.max(realSize.x, realSize.y);
+        int largeSide = max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
@@ -197,7 +225,7 @@ public class InvariantDeviceProfile {
                     (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
                     largeSide);
         } else {
-            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+            defaultWallpaperSize = new Point(max(smallSide * 2, largeSide), largeSide);
         }
     }
 
@@ -215,8 +243,8 @@ public class InvariantDeviceProfile {
             float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;
         }
-        float maxSize = Math.max(Math.max(iconSize, allAppsIconSize), iconSize);
-        iconBitmapSize = Math.max(1, Utilities.pxFromDp(maxSize, dm));
+        float maxSize = max(max(iconSize, allAppsIconSize), iconSize);
+        iconBitmapSize = max(1, Utilities.pxFromDp(maxSize, dm));
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
     }
 

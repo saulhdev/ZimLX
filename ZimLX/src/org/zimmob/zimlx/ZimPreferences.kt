@@ -55,9 +55,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
-    private val updateSmartspace = { updateSmartspace() }
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
-    private val restart = { restart() }
+    val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
     private val reloadIcons = { reloadIcons() }
@@ -96,8 +95,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
     val dockShowArrow by BooleanPref("pref_enableArrow", true, recreate)
-    //val dockCustomOpacity by FloatPref("opacityPref", .5f, recreate)
-
     val dockScale by FloatPref(ZimFlags.HOTSEAT_ICON_SCALE, 1f, recreate)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
@@ -112,6 +109,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val transparentDock by BooleanPref("pref_isHotseatTransparent", false, recreate)
     val dockShouldUseExtractedColors by BooleanPref("pref_hotseatShouldUseExtractedColors", true, recreate)
     val dockShouldUseCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, recreate)
+    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
+    val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
+    val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
 
     // App Drawer
     val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)

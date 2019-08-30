@@ -17,7 +17,8 @@ import com.android.launcher3.Utilities
 
 open class SeekbarPreference
 @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0)
-    : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener, MenuItem.OnMenuItemClickListener {
+    : Preference(context, attrs, defStyleAttr), SeekBar.OnSeekBarChangeListener, View.OnCreateContextMenuListener,
+        MenuItem.OnMenuItemClickListener {
 
     private var mSeekbar: SeekBar? = null
     var mValueText: TextView? = null
@@ -28,6 +29,8 @@ open class SeekbarPreference
     private var multiplier: Int = 0
     private var format: String? = null
     var steps: Int = 100
+    private var lastPersist = Float.NaN
+
     open val allowResetToDefault = true
 
     private val handlerThread = HandlerThread("debounce").apply { start() }
@@ -58,14 +61,17 @@ open class SeekbarPreference
         mSeekbar = view.findViewById(R.id.seekbar)
         mValueText = view.findViewById(R.id.txtValue)
         mSeekbar!!.max = steps
+
         mSeekbar!!.setOnSeekBarChangeListener(this)
         val stateList = ColorStateList.valueOf(Utilities.getZimPrefs(context).accentColor)
         mSeekbar!!.thumbTintList = stateList
         mSeekbar!!.progressTintList = stateList
         mSeekbar!!.progressBackgroundTintList = stateList
+
         current = getPersistedFloat(defaultValue)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
+
         if (allowResetToDefault) view.setOnCreateContextMenuListener(this)
         updateSummary()
     }
@@ -76,7 +82,7 @@ open class SeekbarPreference
         updateDisplayedValue()
     }
 
-    private fun updateDisplayedValue() {
+    protected open fun updateDisplayedValue() {
         mSeekbar?.setOnSeekBarChangeListener(null)
         val progress = ((current - min) / ((max - min) / steps))
         mSeekbar!!.progress = Math.round(progress)
@@ -98,7 +104,15 @@ open class SeekbarPreference
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {}
 
-    override fun onStopTrackingTouch(seekBar: SeekBar) {}
+    override fun onStopTrackingTouch(seekBar: SeekBar) {
+        persistFloat(current)
+    }
+
+    override fun persistFloat(value: Float): Boolean {
+        if (value == lastPersist) return true
+        lastPersist = value
+        return super.persistFloat(value)
+    }
 
     override fun onCreateContextMenu(menu: ContextMenu, v: View, menuInfo: ContextMenu.ContextMenuInfo?) {
         menu.setHeaderTitle(title)

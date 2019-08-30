@@ -22,6 +22,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
@@ -29,6 +30,8 @@ import android.util.Log;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetHost;
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherProvider;
@@ -332,6 +335,43 @@ public class ModelWriter {
         } else {
             mWorkerExecutor.execute(runnable);
         }
+    }
+
+    public void deleteWidgetInfo(LauncherAppWidgetInfo widgetInfo, LauncherAppWidgetHost appWidgetHost) {
+        enqueueDeleteRunnable(() -> {
+            if (appWidgetHost != null && !widgetInfo.isCustomWidget() && widgetInfo.isWidgetIdAllocated()) {
+                // Deleting an app widget ID is a void call but writes to disk before returning
+                // to the caller...
+                new AsyncTask<Void, Void, Void>() {
+                    public Void doInBackground(Void... args) {
+                        appWidgetHost.deleteAppWidgetId(widgetInfo.appWidgetId);
+                        return null;
+                    }
+                }.executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
+            }
+            deleteItemFromDatabase(widgetInfo);
+        });
+    }
+
+    public void prepareToUndo() {
+        if (!mPreparingToUndo) {
+            mDeleteRunnables.clear();
+            mPreparingToUndo = true;
+        }
+    }
+
+    public void commitDelete() {
+        mPreparingToUndo = false;
+        for (Runnable execute : this.mDeleteRunnables) {
+            mWorkerExecutor.execute(execute);
+        }
+        mDeleteRunnables.clear();
+    }
+
+    public void undoDelete(int reloadPage) {
+        mPreparingToUndo = false;
+        mDeleteRunnables.clear();
+        mModel.forceReload(reloadPage);
     }
 
     private class UpdateItemRunnable extends UpdateItemBaseRunnable {

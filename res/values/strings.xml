@@ -952,6 +952,8 @@
     <string name="icon_shape_corner_squircle">Squircle</string>
     <string name="icon_shape_corner_cut">Cut</string>
     <string name="smartspace_setup_text">Tap to set-up</string>
+    <string name="icon_scale_pref_title">Icon size</string>
+    <string name="pref_icon_popup_menu">Popup menu items</string>
 
     <string name="pref_appcategorization_enable_title">Categorize Apps</string>
     <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
@@ -985,6 +987,7 @@
     <string name="default_tab_name">New tab</string>
     <string name="show_in_tabs">Tabs</string>
     <string name="tabs_manage">Manage</string>
+    <string name="dismiss_drop_target_label">"Don\’t show"</string>
 
     <plurals name="tab_apps_count">
         <item quantity="one">%1$d app</item>

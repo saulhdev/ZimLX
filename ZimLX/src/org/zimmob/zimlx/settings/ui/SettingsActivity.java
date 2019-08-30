@@ -96,6 +96,7 @@ import org.zimmob.zimlx.minibar.DashUtils;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
+import org.zimmob.zimlx.preferences.IconShapePreference;
 import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
@@ -135,6 +136,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
+    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
+    public final static String HIDDEN_ACTIONS_PREF = "pref_hidden_prediction_action_set";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
@@ -774,6 +777,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
             } else if (preference instanceof PreferenceDialogPreference) {
                 f = PreferenceScreenDialogFragment.Companion
                         .newInstance((PreferenceDialogPreference) preference);
+            } else if (preference instanceof IconShapePreference) {
+                f = ((IconShapePreference) preference).createDialogFragment();
             } else if (preference instanceof ListPreference) {
                 Log.d("success", "onDisplayPreferenceDialog: yay");
                 f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());

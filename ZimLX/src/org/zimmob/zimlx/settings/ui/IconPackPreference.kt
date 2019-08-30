@@ -32,6 +32,7 @@ import org.zimmob.zimlx.preferences.IconPackFragment
 import org.zimmob.zimlx.settings.ui.search.SearchIndex
 
 class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Preference(context, attrs) {
+
     private val ipm = IconPackManager.getInstance(context)
     private val packList = ipm.packList
 
@@ -41,7 +42,6 @@ class IconPackPreference(context: Context, attrs: AttributeSet? = null) : Prefer
         layoutResource = R.layout.pref_with_preview_icon
         fragment = IconPackFragment::class.java.name
     }
-
     override fun onAttached() {
         super.onAttached()
         ipm.addListener(onChangeListener)
