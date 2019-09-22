@@ -23,7 +23,7 @@
             android:defaultValue=""
             android:entries="@array/icon_shape_names"
             android:entryValues="@array/icon_shape_values"
-            android:key="pref_icon_shape"
+            android:key="pref_iconShape"
             android:persistent="true"
             android:summary="%s"
             android:title="@string/title__theme_icon_shape"

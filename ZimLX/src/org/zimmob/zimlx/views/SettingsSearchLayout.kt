@@ -25,8 +25,8 @@ import androidx.cardview.widget.CardView
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.IconShapeOverride
 import org.zimmob.zimlx.folder.FolderShape
+import org.zimmob.zimlx.util.ZimFlags.THEME_ICON_SHAPE
 
 class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -44,7 +44,7 @@ class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableF
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == IconShapeOverride.KEY_PREFERENCE) {
+        if (key == THEME_ICON_SHAPE) {
             updateRadius()
         }
     }

@@ -34,6 +34,7 @@ import org.zimmob.zimlx.adaptive.IconShapeDrawable
 import org.zimmob.zimlx.adaptive.IconShapeManager
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment
 import org.zimmob.zimlx.settings.ui.ControlledPreference
+import org.zimmob.zimlx.util.ZimFlags
 import org.zimmob.zimlx.util.buildEntries
 
 class IconShapePreference(context: Context, attrs: AttributeSet?) :
@@ -82,12 +83,12 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
 
     override fun onAttached() {
         super.onAttached()
-        context.zimPrefs.addOnPreferenceChangeListener("pref_icon_shape", this)
+        context.zimPrefs.addOnPreferenceChangeListener(ZimFlags.THEME_ICON_SHAPE, this)
     }
 
     override fun onDetached() {
         super.onDetached()
-        context.zimPrefs.removeOnPreferenceChangeListener("pref_icon_shape", this)
+        context.zimPrefs.removeOnPreferenceChangeListener(ZimFlags.THEME_ICON_SHAPE, this)
     }
 
     override fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean) {

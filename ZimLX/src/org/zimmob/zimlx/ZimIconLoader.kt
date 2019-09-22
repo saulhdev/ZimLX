@@ -70,4 +70,5 @@ class ZimIconLoader(private val context: Context, iconCache: TaskKeyLruCache<Dra
 }
 
 
-class NonAdaptiveIconDrawable(dr: Drawable?) : DrawableWrapper(dr)*/
+class NonAdaptiveIconDrawable(dr: Drawable?) : DrawableWrapper(dr)
+        */

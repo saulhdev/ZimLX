@@ -36,6 +36,7 @@ import com.android.launcher3.graphics.IconShapeOverride
 import org.zimmob.zimlx.folder.FolderShape
 import org.zimmob.zimlx.iconpack.AdaptiveIconCompat
 import org.zimmob.zimlx.runOnMainThread
+import org.zimmob.zimlx.util.ZimFlags.THEME_ICON_SHAPE
 import org.zimmob.zimlx.util.ZimSingletonHolder
 import org.zimmob.zimlx.zimPrefs
 
@@ -43,7 +44,7 @@ class IconShapeManager(private val context: Context) {
 
     private val systemIconShape = getSystemShape()
     var iconShape by context.zimPrefs.StringBasedPref(
-            "pref_icon_shape", systemIconShape, ::onShapeChanged,
+            THEME_ICON_SHAPE, systemIconShape, ::onShapeChanged,
             {
                 IconShape.fromString(it) ?: systemIconShape
             }, IconShape::toString) { /* no dispose */ }
@@ -59,7 +60,7 @@ class IconShapeManager(private val context: Context) {
         if (!TextUtils.isEmpty(override)) {
             try {
                 iconShape = findNearestShape(PathParser.createPathFromPathData(override))
-                Utilities.getPrefs(context).edit().remove(IconShapeOverride.KEY_PREFERENCE).apply()
+                Utilities.getPrefs(context).edit().remove(THEME_ICON_SHAPE).apply()
             } catch (e: RuntimeException) {
                 // Just ignore the error
             }

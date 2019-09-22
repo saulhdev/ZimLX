@@ -98,7 +98,7 @@
     <ListPreference
         android:defaultValue="0"
         android:entries="@array/entries__sort_mode"
-        android:entryValues="@array/values__zero_to_three"
+        android:entryValues="@array/values__zero_to_four"
         android:key="pref_key__sort_mode"
         android:persistent="true"
         android:summary="%s"

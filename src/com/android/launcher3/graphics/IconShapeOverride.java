@@ -39,13 +39,14 @@ import java.util.Arrays;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
+import static org.zimmob.zimlx.util.ZimFlags.THEME_ICON_SHAPE;
+
 /**
  * Utility class to override shape of {@link android.graphics.drawable.AdaptiveIconDrawable}.
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class IconShapeOverride {
 
-    public static final String KEY_PREFERENCE = "pref_icon_shape";
     private static final String TAG = "IconShapeOverride";
 
     // Time to wait before killing the process this ensures that the progress bar is visible for
@@ -96,7 +97,7 @@ public class IconShapeOverride {
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
-            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
+            getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
         }
     }
 
@@ -115,14 +116,14 @@ public class IconShapeOverride {
     }
 
     public static String getAppliedValue(Context context) {
-        String devValue = getDevicePrefs(context).getString(KEY_PREFERENCE, "");
+        String devValue = getDevicePrefs(context).getString(THEME_ICON_SHAPE, "");
         if (!TextUtils.isEmpty(devValue)) {
             // Migrate to general preferences to back up shape overrides
-            getPrefs(context).edit().putString(KEY_PREFERENCE, devValue).apply();
-            getDevicePrefs(context).edit().remove(KEY_PREFERENCE).apply();
+            getPrefs(context).edit().putString(THEME_ICON_SHAPE, devValue).apply();
+            getDevicePrefs(context).edit().remove(THEME_ICON_SHAPE).apply();
         }
 
-        return getPrefs(context).getString(KEY_PREFERENCE, "");
+        return getPrefs(context).getString(THEME_ICON_SHAPE, "");
     }
 
     public static void handlePreferenceUi(ListPreference preference) {
@@ -208,7 +209,7 @@ public class IconShapeOverride {
         @Override
         public void run() {
             // Synchronously write the preference.
-            getDevicePrefs(mContext).edit().putString(KEY_PREFERENCE, mValue).commit();
+            getDevicePrefs(mContext).edit().putString(THEME_ICON_SHAPE, mValue).commit();
             // Clear the icon cache.
             LauncherAppState.getInstance(mContext).getIconCache().clear();
 
