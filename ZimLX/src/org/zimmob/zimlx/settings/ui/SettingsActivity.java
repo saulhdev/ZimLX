@@ -798,7 +798,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 return;
             }
             f.setTargetFragment(this, 0);
-            f.show(getFragmentManager(), preference.getKey());
+            f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+            //f.show(getFragmentManager(), preference.getKey());
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {

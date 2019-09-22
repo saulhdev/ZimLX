@@ -232,8 +232,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
     @SuppressLint("InflateParams")
     public View createNewView(ShortcutInfo item) {
-        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
-                R.layout.folder_application, null, false);
+        int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
+                : R.layout.folder_application;
+        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
         textView.applyFromShortcutInfo(item);
         textView.setHapticFeedbackEnabled(false);
         textView.setOnClickListener(ItemClickHandler.INSTANCE);
