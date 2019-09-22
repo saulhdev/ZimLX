@@ -35,6 +35,7 @@
         android:key="enableGradient"
         android:title="@string/dock_fill"
         android:dependency="pref_dockPreset"
+        app:iconSpaceReserved="false"
         android:persistent="true" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference

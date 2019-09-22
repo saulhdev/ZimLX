@@ -39,7 +39,6 @@ class ZimShortcut(private val context: Context) {
 
     private val shortcuts = listOf(
             ShortcutEntry("edit", Edit(), true),
-            //ShortcutEntry("sesame", SesameSettings(), true),
             ShortcutEntry("info", SystemShortcut.AppInfo(), true),
             ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
             ShortcutEntry("install", SystemShortcut.Install(), true),

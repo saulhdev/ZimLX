@@ -10,7 +10,7 @@
      limitations under the License.
 -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
@@ -72,16 +72,5 @@
             app:content="@xml/zim_preferences_about"
             app:longClickContent="@xml/zim_preferences_about" />
 
-
-        <!--
-        <Preference
-            android:icon="@drawable/ic_information"
-            android:summary="@string/pref_summary__about"
-            android:title="@string/about_title">
-
-            <intent
-                android:targetClass="org.zimmob.zimlx.settings.ui.AboutActivity"
-                android:targetPackage="@string/application_id" />
-        </Preference> -->
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

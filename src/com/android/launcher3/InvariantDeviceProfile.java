@@ -100,7 +100,6 @@ public class InvariantDeviceProfile {
     public int fillResIconDpi;
     public float iconTextSize;
 
-
     /**
      * Number of icons inside the hotseat area.
      */
@@ -426,5 +425,4 @@ public class InvariantDeviceProfile {
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
     }
-
 }

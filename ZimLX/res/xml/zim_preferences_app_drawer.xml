@@ -48,9 +48,10 @@
         <org.zimmob.zimlx.settings.ui.PreferenceDialogPreference
             android:key="pref_iconPopupMenu"
             android:title="@string/pref_icon_popup_menu"
+            app:iconSpaceReserved="false"
             app:content="@xml/zim_preferences_drawer_icon_popup_menu" />
 
-        <org.zimmob.zimlx.preferences.Preference
+        <Preference
             android:title="@string/categorization"
             app:iconSpaceReserved="false"
             android:fragment="org.zimmob.zimlx.groups.ui.AppCategorizationFragment" />
@@ -80,7 +81,7 @@
         android:summary="@string/summary_app_suggestions"
         android:title="@string/title_app_suggestions"
         app:controllerClass="org.zimmob.zimlx.settings.controllers.AppSuggestionsController"
-        android:disableDependentsState="true"
+        android:disableDependentsState="false"
         app:iconSpaceReserved="false" />
 
     <ListPreference
@@ -102,7 +103,6 @@
         android:persistent="true"
         android:summary="%s"
         android:title="@string/title__sort_mode"
-        android:dependency="pref_show_predictions"
         android:disableDependentsState="false"
         app:iconSpaceReserved="false" />/>
 

@@ -23,7 +23,6 @@ import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.view.animation.Interpolator;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -35,11 +34,11 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.ComponentKeyMapper;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.predictions.ZimEventPredictor;
 
 import java.util.List;
 
 import static com.google.android.apps.nexuslauncher.allapps.PredictionRowView.DividerType;
-
 
 @TargetApi(26)
 public class PredictionsFloatingHeader extends FloatingHeaderView implements Insettable {
@@ -52,14 +51,13 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             return predictionsFloatingHeader.mContentAlpha;
         }
     };
-    //private ActionsRowView mActionsRowView;
     private float mContentAlpha;
-    private final int mHeaderTopPadding;
+    private int mHeaderTopPadding;
     private boolean mIsCollapsed;
     private boolean mIsVerticalLayout;
     private PredictionRowView mPredictionRowView;
-    //private final PredictionUiStateManager mPredictionUiStateManager;
     private boolean mShowAllAppsLabel;
+    private ZimEventPredictor appPredictor;
 
     public PredictionsFloatingHeader(Context context) {
         this(context, null);
@@ -69,37 +67,33 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super(context, attributeSet);
         mContentAlpha = 1.0f;
         mHeaderTopPadding = context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        //mPredictionUiStateManager = PredictionUiStateManager.getInstance(context);
+        appPredictor = new ZimEventPredictor(context);
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mPredictionRowView = findViewById(R.id.prediction_row);
-        //mActionsRowView = findViewById(R.id.actions_row);
         updateShowAllAppsLabel();
     }
 
     @Override
     public void setup(AdapterHolder[] adapterHolderArr, boolean z) {
-        mPredictionRowView.setup(this, Utilities.getZimPrefs(getContext()).getShowPredictions());
-        //mActionsRowView.setup(this);
+        mPredictionRowView.setup(this, appPredictor.getUiManager().isEnabled());
         mTabsHidden = z;
-        //ActionsRowView actionsRowView = mActionsRowView;
-        //actionsRowView.setDisabled(mIsVerticalLayout && !mTabsHidden);
         updateExpectedHeight();
         super.setup(adapterHolderArr, z);
     }
 
     private void updateExpectedHeight() {
-        //boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
+        boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
         //mActionsRowView.setShowAllAppsLabel(useAllAppsLabel && mActionsRowView.shouldDraw(), false);
-        DividerType dividerType = DividerType.ALL_APPS_LABEL;
-        /*if (useAllAppsLabel && !mActionsRowView.shouldDraw()) {
+        DividerType dividerType = DividerType.NONE;
+        if (useAllAppsLabel) {
             dividerType = DividerType.ALL_APPS_LABEL;
-        } else if (mTabsHidden && !mActionsRowView.shouldDraw()) {
+        } else if (mTabsHidden) {
             dividerType = DividerType.LINE;
-        }*/
+        }
         mPredictionRowView.setDividerType(dividerType, false);
         //mMaxTranslation = mPredictionRowView.getExpectedHeight() + mActionsRowView.getExpectedHeight();
         mMaxTranslation = mPredictionRowView.getExpectedHeight();
@@ -120,17 +114,12 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         return mPredictionRowView;
     }
 
-    /*public ActionsRowView getActionsRowView() {
-        return mActionsRowView;
-    }*/
-
     @Override
     public void setInsets(Rect rect) {
         DeviceProfile deviceProfile = Launcher.getLauncher(getContext()).getDeviceProfile();
         int i = deviceProfile.desiredWorkspaceLeftRightMarginPx + deviceProfile.cellLayoutPaddingLeftRightPx;
         mPredictionRowView.setPadding(i, mPredictionRowView.getPaddingTop(), i, mPredictionRowView.getPaddingBottom());
         mIsVerticalLayout = deviceProfile.isVerticalBarLayout();
-        //mActionsRowView.setDisabled(mIsVerticalLayout && !mTabsHidden);
     }
 
     public void headerChanged() {
@@ -145,7 +134,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     protected void applyScroll(int uncappedY, int currentY) {
         if (uncappedY < currentY - mHeaderTopPadding) {
             mPredictionRowView.setScrolledOut(true);
-            //mActionsRowView.setHidden(true);
             return;
         }
         ZimPreferences prefs = Utilities.getZimPrefs(getContext());
@@ -155,8 +143,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             translationY -= mHeaderTopPadding;
             translationY += qsbHeight / 2;
         }
-        //mActionsRowView.setHidden(false);
-        //mActionsRowView.setTranslationY(translationY);
         mPredictionRowView.setScrolledOut(false);
         mPredictionRowView.setScrollTranslation(translationY);
     }
@@ -185,24 +171,22 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     private void setContentAlpha(float alpha) {
         mContentAlpha = alpha;
         mTabLayout.setAlpha(alpha);
-        //mActionsRowView.setAlpha(alpha);
     }
 
     public boolean hasVisibleContent() {
-        return Utilities.getZimPrefs(getContext()).getShowPredictions();
+        return appPredictor.getUiManager().isEnabled();
+
     }
 
     public void setCollapsed(boolean collapsed) {
         if (collapsed != mIsCollapsed) {
             mIsCollapsed = collapsed;
-            //mActionsRowView.setCollapsed(collapsed);
             mPredictionRowView.setCollapsed(collapsed);
             headerChanged();
         }
     }
 
-    public void setPredictedApps(boolean isPredictions, List<ComponentKeyMapper<AppInfo>> list) {
-        mPredictionRowView.setPredictedApps(isPredictions, list);
+    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+        mPredictionRowView.setPredictedApps(z, list);
     }
 }
-

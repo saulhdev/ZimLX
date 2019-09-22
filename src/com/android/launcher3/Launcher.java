@@ -100,6 +100,7 @@ import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -156,6 +157,7 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.NORMAL;
 import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_LAUNCHER_LOAD;
 import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+import static com.android.launcher3.logging.LoggerUtils.newTarget;
 import static com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 
 /**
@@ -346,8 +348,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         setupViews();
 
-        //mExtractedColors = new ExtractedColors();
-        //loadExtractedColorsAndColorItems();
+        //PREDICTED APPS
+        /*if(prefs.getShowPredictions()){
+            updatePredictions(true);
+        }*/
 
         mPopupDataProvider = new PopupDataProvider(this);
 
@@ -463,7 +467,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         });
         // frame layout spans the entire side while the minibar container has gaps at the top and bottom
         ((FrameLayout) minibar.getParent()).setBackgroundColor(prefs.getMinibarColor());
-
     }
 
     public static Launcher getLauncher(Context context) {
@@ -925,6 +928,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel.refreshShortcutsIfRequired();
 
         DiscoveryBounce.showForHomeIfNeeded(this);
+
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
@@ -1089,6 +1093,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mDropTargetBar.setup(mDragController);
 
         mAllAppsController.setupViews(mAppsView, getHotseat());
+
     }
 
 
@@ -1490,8 +1495,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-
-
     public LauncherAccessibilityDelegate getAccessibilityDelegate() {
         return mAccessibilityDelegate;
     }
@@ -1561,8 +1564,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mPendingRequestArgs = args;
     }
 
-
-
     void addAppWidgetFromDropImpl(int appWidgetId, ItemInfo info, AppWidgetHostView boundWidget,
                                   WidgetAddFlowHandler addFlowHandler) {
         if (LOGD) {
@@ -1584,8 +1585,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
         }
     }
-
-
 
     public void addPendingItem(PendingAddItemInfo info, long container, long screenId,
                                int[] cell, int spanX, int spanY) {
@@ -1786,6 +1785,24 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         int[] pos = new int[2];
         v.getLocationOnScreen(pos);
         return new Rect(pos[0], pos[1], pos[0] + v.getWidth(), pos[1] + v.getHeight());
+    }
+
+    @Override
+    public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {
+        if (event.srcTarget != null && event.srcTarget.length > 0 &&
+                event.srcTarget[1].containerType == ContainerType.PREDICTION) {
+            Target[] targets = new Target[3];
+            targets[0] = event.srcTarget[0];
+            targets[1] = event.srcTarget[1];
+            targets[2] = newTarget(Target.Type.CONTAINER);
+            event.srcTarget = targets;
+            LauncherState state = mStateManager.getState();
+            if (state == LauncherState.ALL_APPS) {
+                event.srcTarget[2].containerType = ContainerType.ALLAPPS;
+            } else if (state == LauncherState.OVERVIEW) {
+                event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
+            }
+        }
     }
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {

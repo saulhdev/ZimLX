@@ -286,10 +286,10 @@ public class ConfigBuilder {
         List<b_search> bSearches = new ArrayList<>();
         final int count = Math.min(predictedApps.size(), allAppsCols);
         for (int i = 0; i < count; i++) {
-            /*b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getComponentKey()), i);
+            b_search bSearch = bZ(mActivity.getAppsView().getAppsStore().getApp(predictedApps.get(i).getKey()), i);
             if (bSearch != null) {
                 bSearches.add(bSearch);
-            }*/
+            }
         }
         mNano.eo = new b_search[bSearches.size()];
         bSearches.toArray(mNano.eo);

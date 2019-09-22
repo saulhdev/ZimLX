@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewParent;
 
 import com.android.launcher3.AppFilter;
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.logging.UserEventDispatcher;
@@ -28,7 +27,7 @@ import java.util.List;
 import java.util.Set;
 
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public static int MAX_PREDICTIONS = 10;
+    public int MAX_PREDICTIONS = 10;
     private static final int BOOST_ON_OPEN = 9;
     private static final String PREDICTION_SET = "pref_prediction_set";
     private static final String PREDICTION_PREFIX = "pref_prediction_count_";
@@ -67,12 +66,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             "com.google.android.talk"
     };
     private final Context mContext;
-    private final AppFilter mAppFilter;
+    public final AppFilter mAppFilter;
     private final SharedPreferences mPrefs;
     private final PackageManager mPackageManager;
 
     private final UiManager mUiManager;
-
     public CustomAppPredictor(Context context) {
         mContext = context;
         mAppFilter = AppFilter.newInstance(mContext);
@@ -83,47 +81,47 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         mUiManager = new UiManager(this);
     }
 
-    public List<ComponentKeyMapper<AppInfo>> getPredictions() {
-        List<ComponentKeyMapper<AppInfo>> list = new ArrayList<>();
+    public List<ComponentKeyMapper> getPredictions() {
+        List<ComponentKeyMapper> list = new ArrayList<>();
         if (isPredictorEnabled()) {
-            clearNonExistentPackages();
+            clearNonExistingComponents();
 
             List<String> predictionList = new ArrayList<>(getStringSetCopy());
 
             Collections.sort(predictionList, (o1, o2) -> Integer.compare(getLaunchCount(o2), getLaunchCount(o1)));
 
             for (String prediction : predictionList) {
-                list.add(getComponentFromString(prediction));
-            }
-
-            if (list.size() < MAX_PREDICTIONS) {
-                for (String placeHolder : PLACE_HOLDERS) {
-                    Intent intent = mPackageManager.getLaunchIntentForPackage(placeHolder);
-                    if (intent != null) {
-                        ComponentName componentInfo = intent.getComponent();
-                        if (componentInfo != null) {
-                            ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
-                            if (!predictionList.contains(key.toString())) {
-                                list.add(new ComponentKeyMapper<>(key));
-                            }
-                        }
-                    }
+                ComponentKeyMapper keyMapper = getComponentFromString(prediction);
+                if (!isHiddenApp(mContext, keyMapper.getKey())) {
+                    list.add(keyMapper);
                 }
             }
 
-            if (list.size() > MAX_PREDICTIONS) {
-                list = list.subList(0, MAX_PREDICTIONS);
+            for (int i = 0; i < PLACE_HOLDERS.length && list.size() < MAX_PREDICTIONS; i++) {
+                String placeHolder = PLACE_HOLDERS[i];
+                Intent intent = mPackageManager.getLaunchIntentForPackage(placeHolder);
+                if (intent != null) {
+                    ComponentName componentInfo = intent.getComponent();
+                    if (componentInfo != null) {
+                        ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
+                        if (!predictionList.contains(key.toString()) && !isHiddenApp(mContext,
+                                key)) {
+                            list.add(new ComponentKeyMapper(mContext, key));
+                        }
+                    }
+                }
             }
         }
         return list;
     }
 
+    @Override
     public void logAppLaunch(View v, Intent intent, UserHandle user) {
-        super.logAppLaunch(v, intent);
+        super.logAppLaunch(v, intent, user);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
-            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo)) {
-                clearNonExistentPackages();
+            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, user)) {
+                clearNonExistingComponents();
 
                 Set<String> predictionSet = getStringSetCopy();
                 SharedPreferences.Editor edit = mPrefs.edit();
@@ -172,7 +170,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return mPrefs.getInt(PREDICTION_PREFIX + component, 0);
     }
 
-    private boolean recursiveIsDrawer(View v) {
+    protected boolean recursiveIsDrawer(View v) {
         if (v != null) {
             ViewParent parent = v.getParent();
             while (parent != null) {
@@ -209,21 +207,31 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         }
     }
 
-    public ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
-        return new ComponentKeyMapper<>(new ComponentKey(mContext, str));
+    public ComponentKeyMapper getComponentFromString(String str) {
+        int index = str.indexOf('/');
+        return new ComponentKeyMapper(mContext, new ComponentKey(new ComponentName(str.substring(0, index), str.substring(index + 1)), Process.myUserHandle()));
     }
 
-    private void clearNonExistentPackages() {
+    private void clearNonExistingComponents() {
         Set<String> originalSet = mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET);
         Set<String> predictionSet = new HashSet<>(originalSet);
 
         SharedPreferences.Editor edit = mPrefs.edit();
         for (String prediction : originalSet) {
+            ComponentName cn = new ComponentKey(mContext, prediction).componentName;
             try {
-                mPackageManager.getPackageInfo(new ComponentKey(mContext, prediction).componentName.getPackageName(), 0);
+                mPackageManager.getActivityInfo(cn, 0);
             } catch (PackageManager.NameNotFoundException e) {
                 predictionSet.remove(prediction);
                 edit.remove(PREDICTION_PREFIX + prediction);
+                Intent intent = mPackageManager.getLaunchIntentForPackage(cn.getPackageName());
+                if (intent != null) {
+                    ComponentName componentInfo = intent.getComponent();
+                    if (componentInfo != null) {
+                        ComponentKey key = new ComponentKey(componentInfo, Process.myUserHandle());
+                        predictionSet.add(key.toString());
+                    }
+                }
             }
         }
 
@@ -275,6 +283,14 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             mPredictor = predictor;
         }
 
+        public static void setTargetAppsView(Object o) {
+
+        }
+
+        public static void dispatchOnChange() {
+
+        }
+
         public void addListener(Listener listener) {
             mListeners.add(listener);
             listener.onPredictionsUpdated();
@@ -288,11 +304,11 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             return mPredictor.isPredictorEnabled();
         }
 
-        public List<ComponentKeyMapper<AppInfo>> getPredictions() {
+        public List<ComponentKeyMapper> getPredictions() {
             return mPredictor.getPredictions();
         }
 
-        public /* private */ void onPredictionsUpdated() {
+        public void onPredictionsUpdated() {
             for (Listener listener : mListeners) {
                 listener.onPredictionsUpdated();
             }
@@ -303,4 +319,5 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             void onPredictionsUpdated();
         }
     }
+
 }

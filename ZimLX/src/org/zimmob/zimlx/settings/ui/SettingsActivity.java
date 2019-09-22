@@ -115,6 +115,8 @@ import java.util.Objects;
 import java.util.Set;
 
 import static androidx.preference.PreferenceFragmentCompat.OnPreferenceDisplayDialogCallback;
+import static androidx.recyclerview.widget.RecyclerView.Adapter;
+import static androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 /**
  * Settings activity for Launcher.
@@ -136,8 +138,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
     private final static String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
-    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
-    public final static String HIDDEN_ACTIONS_PREF = "pref_hidden_prediction_action_set";
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     public final static String FEED_THEME_PREF = "pref_feedTheme";
     public final static String SMARTSPACE_PREF = "pref_smartspace";
@@ -294,6 +294,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (fragment instanceof DialogFragment) {
             ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
         } else {
+            Log.i("SETTINGS", "FRAGMENT: " + preference.getFragment());
             startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
         }
         return true;
@@ -341,10 +342,10 @@ public class SettingsActivity extends SettingsBaseActivity implements
         private HighlightablePreferenceGroupAdapter mAdapter;
         private boolean mPreferenceHighlighted = false;
 
-        private RecyclerView.Adapter mCurrentRootAdapter;
+        private Adapter mCurrentRootAdapter;
         private boolean mIsDataSetObserverRegistered = false;
-        private RecyclerView.AdapterDataObserver mDataSetObserver =
-                new RecyclerView.AdapterDataObserver() {
+        private AdapterDataObserver mDataSetObserver =
+                new AdapterDataObserver() {
                     @Override
                     public void onChanged() {
                         onDataSetChanged();
@@ -398,9 +399,11 @@ public class SettingsActivity extends SettingsBaseActivity implements
         @SuppressLint("RestrictedApi")
         public RecyclerView onCreateRecyclerView(LayoutInflater inflater, ViewGroup parent,
                                                  Bundle savedInstanceState) {
-            SpringRecyclerView recyclerView = (SpringRecyclerView) inflater
+            RecyclerView recyclerView = (RecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
-            recyclerView.setShouldTranslateSelf(false);
+            if (recyclerView instanceof SpringRecyclerView) {
+                ((SpringRecyclerView) recyclerView).setShouldTranslateSelf(false);
+            }
 
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
@@ -422,7 +425,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         @Override
-        protected RecyclerView.Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
+        protected Adapter onCreateAdapter(PreferenceScreen preferenceScreen) {
             final Bundle arguments = getActivity().getIntent().getExtras();
             mAdapter = new HighlightablePreferenceGroupAdapter(preferenceScreen,
                     arguments == null
@@ -598,7 +601,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
 
         @Override
         protected int getRecyclerViewLayoutRes() {
-            return R.layout.preference_spring_recyclerview;
+            return R.layout.preference_dialog_recyclerview;
         }
     }
 
@@ -795,7 +798,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
                 return;
             }
             f.setTargetFragment(this, 0);
-            f.show(getFragmentManager(), "androidx.preference.PreferenceFragment.DIALOG");
+            f.show(getFragmentManager(), preference.getKey());
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {

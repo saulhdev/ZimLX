@@ -20,13 +20,12 @@ package com.android.launcher3.config;
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
-    // When enabled, icons not supporting {@link AdaptiveIconDrawable} will be wrapped in {@link FixedScaleDrawable}.
-    public static final boolean LEGACY_ICON_TREATMENT = false;
-
     public static boolean LAUNCHER3_P_ALL_APPS = true;
     public static boolean FORCE_FEED_BRIDGE = false;
     public static boolean FEATURE_SETTINGS_SEARCH = false;
     public static boolean REFLECTION_FORCE_OVERVIEW_MODE = true;
+    // When enabled prediction row is rendered as it's own custom view
+    public static final boolean ALL_APPS_PREDICTION_ROW_VIEW = false;
 
     private FeatureFlags() {
     }

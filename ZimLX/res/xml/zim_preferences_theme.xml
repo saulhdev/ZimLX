@@ -28,7 +28,7 @@
             android:summary="%s"
             android:title="@string/title__theme_icon_shape"
             app:iconSpaceReserved="false"
-            app:controllerClass=".IconShapeOverrideController" />
+            app:controllerClass="org.zimmob.zimlx.settings.ui.IconShapeOverrideController" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="@bool/config_enable_legacy_treatment"

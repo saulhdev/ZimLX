@@ -31,14 +31,14 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -362,6 +362,11 @@ public class RecyclerViewFastScroller extends View {
         top = Utilities.boundToRange(top,
                 mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
         mPopupView.setTranslationY(top);
+    }
+
+    public void setColor(int color, int foregroundColor) {
+        mThumbPaint.setColor(color);
+        mPopupView.setTextColor(foregroundColor);
     }
 
     public boolean isHitInParent(float x, float y, Point outOffset) {

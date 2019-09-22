@@ -30,15 +30,12 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
-
-import org.zimmob.zimlx.colors.ColorEngine;
 
 import java.util.List;
 
@@ -51,7 +48,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
-    private final int mNumAppsPerRow;
+    private int mNumAppsPerRow;
 
     // The specific view heights that we use to calculate scroll
     private SparseIntArray mViewHeights = new SparseIntArray();
@@ -78,7 +75,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
-        mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
+        //mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
     }
 
     /**
@@ -101,6 +98,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET, 1);
         pool.setMaxRecycledViews(AllAppsGridAdapter.VIEW_TYPE_ICON, approxRows * mNumAppsPerRow);
+
         mViewHeights.clear();
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_FOLDER, grid.allAppsCellHeightPx);
@@ -146,6 +144,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
             targetParent.containerType = ContainerType.ALLAPPS;
         }
     }
+
 
     public void onSearchResultsChanged() {
         // Always scroll the view to the top so the user can see the changed results
@@ -422,7 +421,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         return false;
     }
 
-    public void setScrollbarColor(ColorEngine.ColorResolver colorResolver) {
-        //mScrollbar.setColor(colorResolver.resolveColor(), colorResolver.computeForegroundColor());
+    public void setScrollbarColor(int color) {
+        mScrollbar.setColor(color, color);
     }
 }

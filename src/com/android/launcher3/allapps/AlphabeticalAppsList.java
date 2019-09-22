@@ -16,18 +16,23 @@
 package com.android.launcher3.allapps;
 
 import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.UserHandle;
 
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.IconCache;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
@@ -68,28 +73,140 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     private final int mFastScrollDistributionMode = FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS;
 
+    /**
+     * Info about a fast scroller section, depending if sections are merged, the fast scroller
+     * sections will not be the same set as the section headers.
+     */
+    public static class FastScrollSectionInfo {
+        // The section name
+        public String sectionName;
+        // The AdapterItem to scroll to for this section
+        public AdapterItem fastScrollToItem;
+        // The touch fraction that should map to this fast scroll section info
+        public float touchFraction;
+        // The color of this fast scroll section
+        public int color;
+
+        public FastScrollSectionInfo(String sectionName, int color) {
+            this.sectionName = sectionName;
+            this.color = color;
+        }
+    }
+
+    /**
+     * Info about a particular adapter item (can be either section or app)
+     */
+    public static class AdapterItem {
+        /**
+         * Common properties
+         */
+        // The index of this adapter item in the list
+        public int position;
+        // The type of this item
+        public int viewType;
+
+        /**
+         * App-only properties
+         */
+        // The section name of this app.  Note that there can be multiple items with different
+        // sectionNames in the same section
+        public String sectionName = null;
+        // The row that this item shows up on
+        public int rowIndex;
+        // The index of this app in the row
+        public int rowAppIndex;
+        // The associated AppInfo for the app
+        public AppInfo appInfo = null;
+        // The index of this app not including sections
+        public int appIndex = -1;
+
+        /**
+         * Folder-only properties
+         */
+        // The associated folder for the folder
+        public DrawerFolderItem folderItem = null;
+
+        /**
+         * Search suggestion-only properties
+         */
+        public String suggestion;
+
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                                        int appIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
+            return item;
+        }
+
+        public static AdapterItem asEmptySearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asAllAppsDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asMarketSearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asWorkTabFooter(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asFolder(int pos, String sectionName,
+                                           DrawerFolderInfo folderInfo, int folderIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
+            return item;
+        }
+
+        public static AdapterItem asSearchSuggestion(int pos, String suggestion) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_SUGGESTION;
+            item.position = pos;
+            item.suggestion = suggestion;
+            return item;
+        }
+    }
+
     private final Launcher mLauncher;
 
     // The set of apps from the system
     private final List<AppInfo> mApps = new ArrayList<>();
     private final AllAppsStore mAllAppsStore;
-    private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
+
     // The set of filtered apps with the current filter
     private final List<AppInfo> mFilteredApps = new ArrayList<>();
     // The current set of adapter items
     private final ArrayList<AdapterItem> mAdapterItems = new ArrayList<>();
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
-    // The set of predicted app component names
-    private final List<ComponentKeyMapper<AppInfo>> mPredictedAppComponents = new ArrayList<>();
     // Is it the work profile app list.
     private boolean mIsWork;
-    // The set of predicted apps resolved from the component names and the current set of apps
-    private final List<AppInfo> mPredictedApps = new ArrayList<>();
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
-    private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
+    private HashMap<AppInfo, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
@@ -108,7 +225,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mAppNameComparator = new AppInfoComparator(context);
         mAppColorComparator = new AppColorComparator(context);
         mIsWork = isWork;
-        mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
+        mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColsDrawer;
         mAllAppsStore.addUpdateListener(this);
         prefs = Utilities.getZimPrefs(context);
     }
@@ -130,13 +247,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
      */
     public List<AppInfo> getApps() {
         return mApps;
-    }
-
-    /**
-     * Returns the predicted apps.
-     */
-    public List<AppInfo> getPredictedApps() {
-        return mPredictedApps;
     }
 
     private void sortApps(int sortType) {
@@ -269,11 +379,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             }
         }
 
-        Context context = mLauncher.getApplicationContext();
-        ZimPreferences pref = new ZimPreferences(context);
-        if (!pref.getShowPredictions()) {
-            sortApps(pref.getSortMode());
-        } else {
+        if (!prefs.getShowPredictions()) {
+            sortApps(prefs.getSortMode());
+        }
+        else{
             Collections.sort(mApps, mAppNameComparator);
         }
 
@@ -281,7 +390,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
         Locale curLocale = mLauncher.getResources().getConfiguration().locale;
-        boolean localeRequiresSectionSorting = curLocale.equals(Locale.SIMPLIFIED_CHINESE);
+        boolean localeRequiresSectionSorting =
+                curLocale.getLanguage().equals(Locale.SIMPLIFIED_CHINESE.getLanguage()) &&
+                        curLocale.getCountry().equals(Locale.SIMPLIFIED_CHINESE.getCountry());
         if (localeRequiresSectionSorting) {
             // Compute the section headers. We use a TreeMap with the section name comparator to
             // ensure that the sections are ordered when we iterate over it later
@@ -388,7 +499,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
                 int color = 0;
-                if (prefs.getSortMode() == 4) {
+                if (prefs.getSortMode()==SORT_BY_COLOR) {
                     color = info.iconColor;
                 }
                 lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName, color);
@@ -477,26 +588,37 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
                 (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
-                        || mLauncher.checkSelfPermission("android.permission.MODIFY_QUIET_MODE")
-                        == PackageManager.PERMISSION_GRANTED);
+                        || Utilities
+                        .hasPermission(mLauncher, "android.permission.MODIFY_QUIET_MODE"));
     }
 
     private List<AppInfo> getFiltersAppInfos() {
         if (mSearchResults == null) {
             return mApps;
         }
+
+        final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(mLauncher);
+        final UserHandle user = android.os.Process.myUserHandle();
+        final IconCache iconCache = LauncherAppState.getInstance(mLauncher).getIconCache();
+        boolean quietMode = UserManagerCompat.getInstance(mLauncher).isQuietModeEnabled(user);
         ArrayList<AppInfo> result = new ArrayList<>();
         for (ComponentKey key : mSearchResults) {
             AppInfo match = mAllAppsStore.getApp(key);
             if (match != null) {
                 result.add(match);
+            } else {
+                for (LauncherActivityInfo info : launcherApps
+                        .getActivityList(key.componentName.getPackageName(), user)) {
+                    if (info.getComponentName().equals(key.componentName)) {
+                        final AppInfo appInfo = new AppInfo(info, user, quietMode);
+                        iconCache.getTitleAndIcon(appInfo, false);
+                        result.add(appInfo);
+                        break;
+                    }
+                }
             }
         }
         return result;
-    }
-
-    public AppInfo AllAppsList(ComponentKeyMapper<AppInfo> mapper) {
-        return mapper.getItem(mComponentToAppMap);
     }
 
     /**
@@ -506,14 +628,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private String getAndUpdateCachedSectionName(AppInfo info) {
         String sectionName = mCachedSectionNames.get(info);
         if (sectionName == null) {
-            if (prefs.getSortMode() == 4) {
+            if (prefs.getSortMode()==SORT_BY_COLOR) {
                 float[] hsl = new float[3];
                 ColorUtils.colorToHSL(info.iconColor, hsl);
                 sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
             } else {
                 sectionName = mIndexer.computeSectionName(info.title);
             }
-            mCachedSectionNames.put(info.title, sectionName);
+            mCachedSectionNames.put(info, sectionName);
         }
         return sectionName;
     }
@@ -538,122 +660,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public void reset() {
         updateAdapterItems();
-    }
-
-    /**
-     * Info about a fast scroller section, depending if sections are merged, the fast scroller
-     * sections will not be the same set as the section headers.
-     */
-    public static class FastScrollSectionInfo {
-        // The section name
-        public String sectionName;
-        // The AdapterItem to scroll to for this section
-        public AdapterItem fastScrollToItem;
-        // The touch fraction that should map to this fast scroll section info
-        public float touchFraction;
-        // The color of this fast scroll section
-        public int color;
-
-        public FastScrollSectionInfo(String sectionName, int color) {
-            this.sectionName = sectionName;
-            this.color = color;
-        }
-    }
-
-    /**
-     * Info about a particular adapter item (can be either section or app)
-     */
-    public static class AdapterItem {
-        /**
-         * Common properties
-         */
-        // The index of this adapter item in the list
-        public int position;
-        // The type of this item
-        public int viewType;
-
-        /**
-         * App-only properties
-         */
-        // The section name of this app.  Note that there can be multiple items with different
-        // sectionNames in the same section
-        public String sectionName = null;
-        // The row that this item shows up on
-        public int rowIndex;
-        // The index of this app in the row
-        public int rowAppIndex;
-        // The associated AppInfo for the app
-        public AppInfo appInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
-
-        /**
-         * Folder-only properties
-         */
-        // The associated folder for the folder
-        public DrawerFolderItem folderItem = null;
-
-        /**
-         * Search suggestion-only properties
-         */
-        public String suggestion;
-
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
-                                        int appIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
-            item.position = pos;
-            item.sectionName = sectionName;
-            item.appInfo = appInfo;
-            item.appIndex = appIndex;
-            return item;
-        }
-
-        public static AdapterItem asEmptySearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asAllAppsDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asMarketSearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asWorkTabFooter(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
-            item.position = pos;
-            return item;
-        }
-
-        public static AdapterItem asFolder(int pos, String sectionName,
-                                           DrawerFolderInfo folderInfo, int folderIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
-            item.position = pos;
-            item.sectionName = sectionName;
-            item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
-            return item;
-        }
-
-        public static AdapterItem asSearchSuggestion(int pos, String suggestion) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_SUGGESTION;
-            item.position = pos;
-            item.suggestion = suggestion;
-            return item;
-        }
     }
 
 }

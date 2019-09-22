@@ -62,6 +62,7 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.allapps.PredictionsDividerLayout;
 import org.zimmob.zimlx.anim.AnimatedFloat;
 
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ import java.util.List;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-public class PredictionRowView extends LinearLayout implements UserEventDispatcher.LogContainerProvider,
+public class PredictionRowView extends PredictionsDividerLayout implements UserEventDispatcher.LogContainerProvider,
         OnUpdateListener, OnDeviceProfileChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
@@ -150,8 +151,10 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
-        mIconFullTextAlpha = 1;
+        mIconTextColor = Color.BLACK;
+        mIconFullTextAlpha = Color.alpha(mIconTextColor);
         mIconCurrentTextAlpha = mIconFullTextAlpha;
+
         mAllAppsLabelTextPaint.setColor(ContextCompat.getColor(context, isMainColorDark ? R.color.all_apps_label_text_dark : R.color.all_apps_label_text));
         mAllAppsLabelTextColor = mAllAppsLabelTextPaint.getColor();
         mAllAppsLabelTextFullAlpha = Color.alpha(mAllAppsLabelTextColor);
@@ -192,7 +195,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     protected void onMeasure(int i, int i2) {
-        super.onMeasure(i, MeasureSpec.makeMeasureSpec(getExpectedHeight(), MeasureSpec.EXACTLY));
+        super.onMeasure(i, View.MeasureSpec.makeMeasureSpec(getExpectedHeight(), MeasureSpec.EXACTLY));
     }
 
     protected void dispatchDraw(Canvas canvas) {
@@ -240,7 +243,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         return this.mPredictedApps;
     }
 
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper<AppInfo>> list) {
+    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
         setPredictionsEnabled(z);
         this.mPredictedAppComponents.clear();
         this.mPredictedAppComponents.addAll(list);
@@ -385,6 +388,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         setAlpha(mContentAlphaFactor.value * (interpolation + ((1.0f - interpolation) * (mScrolledOut ? 0f : 1f))));
     }
 
+    @SuppressLint("NewApi")
     public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
         int i = 0;
         boolean visible = getAlpha() > 0f;
@@ -426,3 +430,4 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         }
     }
 }
+

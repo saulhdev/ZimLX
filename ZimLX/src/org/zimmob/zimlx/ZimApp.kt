@@ -38,7 +38,7 @@ class ZimApp : Application() {
     var accessibilityService: ZimAccessibilityService? = null
 
     init {
-        //registerActivityLifecycleCallbacks(activityHandler)
+        registerActivityLifecycleCallbacks(activityHandler)
     }
 
     override fun onCreate() {

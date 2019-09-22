@@ -6,12 +6,13 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import android.text.TextUtils
-import android.util.TypedValue
 import com.android.launcher3.*
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zimmob.zimlx.gestures.BlankGestureHandler
+import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.groups.AppGroupsManager
 import org.zimmob.zimlx.groups.DrawerTabs
@@ -120,8 +121,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, recreate)
-    val saveScrollPosition by BooleanPref("pref_keepScrollState", false, doNothing)
-    val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, doNothing)
+    val saveScrollPosition by BooleanPref("pref_keepScrollState", false, recreate)
+    val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, false, recreate)
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
     val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
@@ -155,7 +156,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.defaultSearchProvider) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
-    val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, doNothing)
+    val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
 
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -171,9 +172,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.enableColorizedLegacyTreatment(), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment(), reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
-    val defaultBlurStrength = TypedValue().apply {
-        context.resources.getValue(R.dimen.config_default_blur_strength, this, true)
-    }
 
     val blurRadius by FloatPref("pref_blurRadius", zimConfig.defaultBlurStrength, updateBlur)
     var enableBlur by BooleanPref("pref_enableBlur", zimConfig.defaultEnableBlur(), updateBlur)
@@ -743,6 +741,109 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    fun migrateConfig(prefs: SharedPreferences) {
+        val version = prefs.getInt(VERSION_KEY, CURRENT_VERSION)
+        if (version != CURRENT_VERSION) {
+            with(prefs.edit()) {
+                // Migration codes here
+
+                if (version == 100) {
+                    migrateFromV1(this, prefs)
+                }
+
+                putInt(VERSION_KEY, CURRENT_VERSION)
+                commit()
+            }
+        }
+    }
+
+    private fun migrateFromV1(editor: SharedPreferences.Editor, prefs: SharedPreferences) = with(
+            editor
+    ) {
+        // Set flags
+        putBoolean("pref_legacyUpgrade", true)
+        putBoolean("pref_restoreSuccess", false)
+        // Reset icon shape to system shape
+        // TODO: possibly create some sort of migration shape which uses a path stored in another pref
+        // TODO: where we would move the current value of this to
+        putString("pref_iconShape", "")
+
+        // Dt2s
+        putString("pref_gesture_double_tap",
+                when (prefs.getString("pref_dt2sHandler", "")) {
+                    "" -> BlankGestureHandler(context, null)
+                    "org.zimmob.zimlx.gestures.dt2s.DoubleTapGesture\$SleepGestureHandlerTimeout" ->
+                        SleepGestureHandlerTimeout(context, null)
+                    else -> SleepGestureHandler(context, null)
+                }.toString())
+
+        // Dock
+        putString("pref_dockPreset", "0")
+        putBoolean("pref_dockShadow", false)
+        putBoolean("pref_hotseatShowArrow", prefs.getBoolean("pref_hotseatShowArrow", true))
+        putFloat("pref_dockRadius", 0f)
+        putBoolean("pref_dockGradient", prefs.getBoolean("pref_isHotseatTransparent", false))
+        if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
+            putFloat("pref_hotseatCustomOpacity", -1f / 255)
+        }
+        putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f))
+
+        // Home widget
+        val pillQsb = prefs.getBoolean("pref_showPixelBar", true)
+                // The new dock qsb should be close enough I guess
+                && !prefs.getBoolean("pref_fullWidthSearchbar", false)
+        putBoolean("pref_use_pill_qsb", pillQsb)
+        if (pillQsb) {
+            putBoolean("pref_dockSearchBar", false)
+        }
+        if (!prefs.getBoolean("pref_showDateOrWeather", true)) {
+            putString("pref_smartspace_widget_provider", BlankDataProvider::class.java.name)
+        }
+        val showAssistant = prefs.getBoolean("pref_showMic", false)
+        putBoolean("opa_enabled", showAssistant)
+        putBoolean("opa_assistant", showAssistant)
+
+        // Colors
+        /*ColorEngine.setColor(
+                this,
+                ColorEngine.Resolvers.WORKSPACE_ICON_LABEL,
+                prefs.getInt("pref_workspaceLabelColor", Color.WHITE));
+        if (prefs.getBoolean("pref_allAppsCustomLabelColor", false)) {
+            ColorEngine.setColor(this,
+                    ColorEngine.Resolvers.ALLAPPS_ICON_LABEL,
+                    prefs.getInt("pref_allAppsCustomLabelColor",
+                            0x666666 or 0xff shl 24));
+        }*/
+
+        // Theme
+        putString("pref_launcherTheme",
+                when (prefs.getString("pref_theme", "0")) {
+                    "1" -> ThemeManager.THEME_DARK
+                    "2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
+                    else -> 0
+                }.toString())
+        putString("pref_icon_pack", prefs.getString("pref_iconPackPackage", ""))
+
+        // Gestures
+        putString("pref_gesture_swipe_down",
+                when (prefs.getInt("pref_pulldownAction", 1)) {
+                    1 -> NotificationsOpenGestureHandler(context, null)
+                    2 -> StartGlobalSearchGestureHandler(context, null)
+                    3 -> StartAppSearchGestureHandler(context, null)
+                    else -> BlankGestureHandler(context, null)
+                }.toString())
+        if (prefs.getBoolean("pref_homeOpensDrawer", false)) {
+            putString("pref_gesture_press_home",
+                    OpenDrawerGestureHandler(context, null).toString())
+        }
+
+        // misc
+        putBoolean("pref_add_icon_to_home", prefs.getBoolean("pref_autoAddShortcuts", true))
+
+        // Disable some newer features per default
+        putBoolean("pref_allAppsGoogleSearch", false)
+    }
+
     interface OnPreferenceChangeListener {
 
         fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean)
@@ -754,6 +855,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         private var INSTANCE: ZimPreferences? = null
 
         const val CURRENT_VERSION = 200
+        const val VERSION_KEY = "config_version"
 
         fun getInstance(context: Context): ZimPreferences {
             if (INSTANCE == null) {

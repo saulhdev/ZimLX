@@ -11,8 +11,6 @@ import com.android.launcher3.SecondaryDropTarget;
 import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-import org.zimmob.zimlx.predictions.ZimEventPredictor;
-
 public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 
     public static final int DISMISS = R.id.action_dismiss_suggestion;
@@ -51,9 +49,6 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
 
     @Override
     public boolean supportsAccessibilityDrop(ItemInfo info, View view) {
-        /*if (((ActionsRowView) this.mLauncher.findViewById(R.id.actions_row)).getAction(info) == null) {
-            return super.supportsAccessibilityDrop(info, view);
-        }*/
         setupUi(R.id.action_dismiss_suggestion);
         return true;
     }
@@ -63,16 +58,6 @@ public class NexusSecondaryDropTarget extends SecondaryDropTarget {
         if (this.mCurrentAccessibilityAction != DISMISS) {
             return super.performDropAction(view, info);
         }
-
-        //Action action = ((ActionsRowView) mLauncher.findViewById(R.id.actions_row)).getAction(info);
-        ZimEventPredictor eventPredictor = (ZimEventPredictor) mLauncher
-                .getUserEventDispatcher();
-        //if (eventPredictor.isActionsEnabled()) {
-        //eventPredictor.setHiddenAction(action.toString());
-        //    mLauncher.getUserEventDispatcher().updateActions();
-        //} else {
-        //ActionsController.get(getContext()).onActionDismissed(action);
-        //}
         return null;
     }
 }

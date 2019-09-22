@@ -16,26 +16,32 @@ package com.android.launcher3.util;
  * limitations under the License.
  */
 
+import android.content.Context;
+
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.allapps.AllAppsStore;
+import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.shortcuts.ShortcutStore;
 
-import java.util.Map;
-
-import androidx.annotation.Nullable;
-
-public class ComponentKeyMapper<T> {
-
+public class ComponentKeyMapper {
+    private Context mContext;
     protected final ComponentKey mComponentKey;
 
     public ComponentKeyMapper(ComponentKey key) {
         this.mComponentKey = key;
     }
 
-    public @Nullable
+    public ComponentKeyMapper(Context context, ComponentKey componentKey) {
+        mContext = context;
+        mComponentKey = componentKey;
+    }
+
+    /*public @Nullable
     T getItem(Map<ComponentKey, T> map) {
         return map.get(mComponentKey);
     }
-
+*/
     public String getPackage() {
         return mComponentKey.componentName.getPackageName();
     }
@@ -54,7 +60,13 @@ public class ComponentKeyMapper<T> {
     }
 
     public ItemInfoWithIcon getApp(AllAppsStore allAppsStore) {
-        return allAppsStore.getApp(mComponentKey);
-
+        AppInfo app = allAppsStore.getApp(mComponentKey);
+        if (app != null) {
+            return app;
+        }
+        if (mComponentKey instanceof ShortcutKey) {
+            return ShortcutStore.getInstance(mContext).mComponentToShortcutMap.get(mComponentKey);
+        }
+        return null;
     }
 }

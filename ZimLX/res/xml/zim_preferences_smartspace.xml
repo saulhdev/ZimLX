@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
@@ -8,11 +8,11 @@
         android:key="pref_smartspace"
         android:title="@string/title__desktop_smartspace"
         app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.PreviewPreference
-            android:key="pref_smartspace_preview"
-            android:dependency="pref_smartspace"
-        app:previewLayout="@layout/smartspace_preview" />
+    <!--
+        <org.zimmob.zimlx.preferences.PreviewPreference
+                android:key="pref_smartspace_preview"
+                android:dependency="pref_smartspace"
+            app:previewLayout="@layout/smartspace_preview" /> -->
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
@@ -88,4 +88,4 @@
             android:summary="%s"
             app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>

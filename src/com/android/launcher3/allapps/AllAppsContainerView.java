@@ -87,13 +87,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
+    private int mNavBarScrimColor;
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
     private PredictionsFloatingHeader mHeader;
 
-    private SpannableStringBuilder mSearchQueryBuilder = null;
+    private SpannableStringBuilder mSearchQueryBuilder;
 
     private boolean mUsingTabs;
     private boolean mSearchModeWhileUsingTabs = false;
@@ -126,12 +127,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mTabsController = new AllAppsTabsController(allAppsTabs, this);
         createHolders();
 
-        mAH = new AdapterHolder[2];
-        mAH[AdapterHolder.MAIN] = new AdapterHolder(false /* isWork */);
-        mAH[AdapterHolder.WORK] = new AdapterHolder(true /* isWork */);
+        mNavBarScrimColor = Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor);
 
         mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+        mNavBarScrimPaint.setColor(mNavBarScrimColor);
+
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
         addSpringView(R.id.all_apps_header);
@@ -181,7 +181,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             force = allAppsTabs.getHasWorkApps() != hasWorkApps;
             allAppsTabs.setHasWorkApps(hasWorkApps);
         }
-        rebindAdapters(force);
+
+        rebindAdapters(mTabsController.getShouldShowTabs(), force);
     }
 
     /**
@@ -316,12 +317,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         int leftRightPadding = grid.desiredWorkspaceLeftRightMarginPx
                 + grid.cellLayoutPaddingLeftRightPx;
 
-        /*for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.bottom = insets.bottom;
-            mAH[i].padding.left = mAH[i].padding.right = leftRightPadding;
-            mAH[i].applyPadding();
-        }*/
-
         mTabsController.setPadding(leftRightPadding, insets.bottom);
 
         ViewGroup.MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
@@ -342,6 +337,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mNavBarScrimHeight = insets.bottom;
         InsettableFrameLayout.dispatchInsets(this, insets);
     }
+
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
@@ -389,11 +385,11 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             onTabChanged(currentTab);
         } else {
             mTabsController.setup((View) findViewById(R.id.apps_list_view));
-            AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
-            /*if (recyclerView != null) {
-                ZimUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
-                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
-            }*/
+            if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
+                setupHeader();
+            } else {
+                mHeader.setVisibility(View.GONE);
+            }
         }
         setupHeader();
 
@@ -433,19 +429,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     public void onTabChanged(int pos) {
         pos = Utilities.boundToRange(pos, 0, mTabsController.getTabsCount() - 1);
-        reset(true /* animate */);
+        mHeader.setCurrentActive(pos);
+        reset(true /* animate */, true);
         if (mAH[pos].recyclerView != null) {
             mAH[pos].recyclerView.bindFastScrollbar();
-            /*mAH[pos].recyclerView.setScrollbarColor(mTabsController.getTabs().get(pos)
-                    .getDrawerTab().getColorResolver().value());*/
+            mAH[pos].recyclerView.setScrollbarColor(Utilities.getZimPrefs(getContext()).getAccentColor());
 
-            findViewById(R.id.tab_personal)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.MAIN));
-            findViewById(R.id.tab_work)
-                    .setOnClickListener((View view) -> mViewPager.snapToPage(AdapterHolder.WORK));
-
+            mTabsController.bindButtons(findViewById(R.id.tabs), mViewPager);
         }
-        if (pos == AdapterHolder.WORK) {
+        if (mAH[pos].isWork) {
             BottomUserEducationView.showIfNeeded(mLauncher);
         }
     }
@@ -584,6 +576,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         final LinearLayoutManager layoutManager;
         final AlphabeticalAppsList appsList;
         public final Rect padding = new Rect();
+        int paddingTopForTabs;
         public AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
@@ -615,7 +608,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         public void applyPadding() {
             if (recyclerView != null) {
-                recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
+                int paddingTop = mUsingTabs || FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW
+                        ? paddingTopForTabs : padding.top;
+                recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
             }
         }
 

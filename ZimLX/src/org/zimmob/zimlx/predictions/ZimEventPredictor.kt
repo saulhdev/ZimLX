@@ -17,16 +17,34 @@
 
 package org.zimmob.zimlx.predictions
 
-import android.content.Context
+import android.bluetooth.BluetoothHeadset
+import android.bluetooth.BluetoothProfile
+import android.content.*
+import android.content.pm.PackageManager
+import android.os.*
+import android.view.View
+import com.android.launcher3.LauncherAppState
+import com.android.launcher3.Utilities
+import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.ComponentKeyMapper
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
+import org.json.JSONObject
+import org.zimmob.zimlx.runOnMainThread
+import org.zimmob.zimlx.settings.ui.SettingsActivity
+import java.util.concurrent.TimeUnit
 
+// TODO: Fix action icons being loaded too early, leading to f*cked icons when using sesame
+/**
+ * Fallback app predictor for users without quickswitch
+ */
 open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(context) {
-/*
+
     private val prefs by lazy { Utilities.getZimPrefs(context) }
     private val packageManager by lazy { context.packageManager }
     private val launcher by lazy { LauncherAppState.getInstance(context).launcher }
     private val predictionsHeader by lazy { launcher.appsView.floatingHeaderView as PredictionsFloatingHeader }
-    private val actionsRow by lazy { predictionsHeader.actionsRowView }
     private val deepShortcutManager by lazy { DeepShortcutManager.getInstance(context) }
 
     private val handlerThread by lazy { HandlerThread("event-predictor").apply { start() }}
@@ -35,12 +53,6 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     private val devicePrefs = Utilities.getDevicePrefs(context)
     private val appsList = CountRankedArrayPreference(devicePrefs, "recent_app_launches", 250)
     private val phonesList = CountRankedArrayPreference(devicePrefs, "plugged_app_launches", 20)
-    private val actionList = CountRankedArrayPreference(devicePrefs, "recent_shortcut_launches", 100)
-    open val isActionsEnabled get() = !(PackageManagerHelper.isAppEnabled(context.packageManager, ACTIONS_PACKAGE, 0) && ActionsController.get(context).actions.size > 0) && prefs.showActions
-
-    private var actionsCache = listOf<String>()
-
-    //private val sesameComponent = ComponentName.unflattenFromString("ninja.sesame.app.edge/.activities.MainActivity")
 
     /**
      * Time at which headphones have been plugged in / connected. 0 if disconnected, -1 before initialized
@@ -98,9 +110,9 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     }
 
     init {
-        /*if (isPredictorEnabled && !Sesame.isAvailable(context)) {
+        if (isPredictorEnabled) {
             setupBroadcastReceiver()
-        }*/
+        }
     }
 
     private fun setupBroadcastReceiver() {
@@ -128,18 +140,6 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         }
     }
 
-    override fun updateActions() {
-        super.updateActions()
-        if (isActionsEnabled) {
-            getActions {
-                actions ->
-                runOnMainThread {
-                    actionsRow.onUpdated(actions)
-                }
-            }
-        }
-    }
-
     override fun logAppLaunch(v: View?, intent: Intent?, user: UserHandle?) {
         super.logAppLaunch(v, intent, user)
         logAppLaunchImpl(v, intent, user ?: Process.myUserHandle())
@@ -147,10 +147,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
 
     private fun logAppLaunchImpl(v: View?, intent: Intent?, user: UserHandle) {
         if (isPredictorEnabled) {
-            //if (Sesame.isAvailable(context)) {
-            //    updatePredictions()
-            //} else
-                if (v !is ActionView && intent?.component != null && mAppFilter.shouldShowApp(intent.component, user)) {
+            if (intent?.component != null && mAppFilter.shouldShowApp(intent.component, user)) {
                 clearRemovedComponents()
 
                 var changed = false
@@ -172,65 +169,15 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         }
     }
 
-    override fun logShortcutLaunch(intent: Intent, info: ItemInfo) {
-        super.logShortcutLaunch(intent, info)
-        if (isActionsEnabled) {
-            //if (Sesame.isAvailable(context)) {
-            //    runOnMainThread {
-            //        updateActions()
-            //    }
-            //} else
-                if (info is ShortcutInfo && info.shortcutInfo != null) {
-                runOnThread(handler) {
-                    cleanActions()
-
-                    val badge = info.shortcutInfo.getBadgePackage(context)
-                    actionList.add(actionToString(info.shortcutInfo.id, badge, badge))
-                    val new = actionList.getRanked().take(ActionsController.MAX_ITEMS)
-                    if (new != actionsCache) {
-                        actionsCache = new
-                        runOnMainThread {
-                            updateActions()
-                        }
-                    } else {
-                        //Log.d("EventPredictor", "Stayed same")
-                    }
-                }
-            }
-        }
-    }
-
     // TODO: There must be a better, more elegant way to concatenate these lists
     override fun getPredictions(): MutableList<ComponentKeyMapper> {
-        //return if(isPredictorEnabled && Sesame.isAvailable(context)) {
-        return if(isPredictorEnabled) {
-            /*val lst = SesameFrontend.getUsageCounts(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(3),
-                    System.currentTimeMillis(), MAX_PREDICTIONS * 2,
-                    arrayOf(ShortcutType.APP_COMPONENT))
-            */
-            val user = Process.myUserHandle()
-            val fullList = lst?.mapNotNull { it.shortcut.componentName }
-                    ?.map { getComponentFromString(it) }
-                    //?.filterNot { it.componentKey.componentName == sesameComponent }
-                    ?.filterNot { isHiddenApp(context, it.componentKey) }
-                    ?.filter {
-                        mAppFilter.shouldShowApp(it.componentKey.componentName, user)
-                    }?.toMutableList() ?: mutableListOf<ComponentKeyMapper>()
-            if (fullList.size < MAX_PREDICTIONS) {
-                fullList.addAll(
-                        PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
-                                .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
-                                .filterNot { fullList.contains(it) }
-                )
-            }
-            fullList.take(MAX_PREDICTIONS).toMutableList()
-        } else if (isPredictorEnabled) {
+        return if (isPredictorEnabled) {
             clearRemovedComponents()
             val user = Process.myUserHandle()
             val appList = if (phonesJustConnected) phonesList.getRanked().take(MAX_HEADPHONE_SUGGESTIONS).toMutableList() else mutableListOf()
             appList.addAll(appsList.getRanked().filterNot { appList.contains(it) }.take(MAX_PREDICTIONS - appList.size))
             val fullList = appList.map { getComponentFromString(it) }
-                    .filterNot { isHiddenApp(context, it.componentKey) }.toMutableList()
+                    .filterNot { isHiddenApp(context, it.key) }.toMutableList()
             if (fullList.size < MAX_PREDICTIONS) {
                 fullList.addAll(
                         PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
@@ -241,30 +188,10 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         } else mutableListOf()
     }
 
-    open fun setHiddenAction(action: String) {
-        val hiddenActionSet = HashSet(Utilities.getZimPrefs(context).hiddenPredictActionSet)
-        hiddenActionSet.add(action)
-        Utilities.getZimPrefs(context).hiddenPredictActionSet = hiddenActionSet
-    }
-
-    private fun isHiddenAction(action: String): Boolean {
-        return HashSet(Utilities.getZimPrefs(context).hiddenPredictActionSet).contains(action)
-    }
-
-    private fun getFilteredActionList(actionList: ArrayList<Action>): ArrayList<Action> {
-        val arrayList = ArrayList<Action>()
-        for (action: Action in actionList) {
-            if (!isHiddenAction(action.toString())) {
-                arrayList.add(action)
-            }
-        }
-        return arrayList
-    }
-
     // TODO: Extension function?
     private fun clearRemovedComponents() {
         appsList.removeAll {
-            val component = getComponentFromString(it).componentKey?.componentName ?: return@removeAll true
+            val component = getComponentFromString(it).key?.componentName ?: return@removeAll true
             try {
                 packageManager.getActivityInfo(component, 0)
                 false
@@ -282,7 +209,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
             }
         }
         phonesList.removeAll {
-            val component = getComponentFromString(it).componentKey?.componentName ?: return@removeAll true
+            val component = getComponentFromString(it).key?.componentName ?: return@removeAll true
             try {
                 packageManager.getActivityInfo(component, 0)
                 false
@@ -301,41 +228,6 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         }
     }
 
-    fun getActions(callback: (ArrayList<Action>) -> Unit) {
-        cleanActions()
-        if (!isActionsEnabled) {
-            callback(ArrayList())
-            return
-        }
-        runOnUiWorkerThread {
-            /*if (Sesame.isAvailable(context)) {
-                val lst = SesameFrontend.getUsageCounts(System.currentTimeMillis() - TimeUnit.HOURS.toMillis(4),
-                        System.currentTimeMillis(), ActionsController.MAX_ITEMS + 3,
-                        arrayOf(ShortcutType.DEEP_LINK, ShortcutType.CONTACT))
-                if (lst != null) {
-                    callback(getFilteredActionList(ArrayList(lst.mapIndexedNotNull { index, usage ->
-                        val shortcut = SesameShortcutInfo(context, usage.shortcut)
-                        actionFromString(
-                                actionToString(shortcut.id, shortcut.getBadgePackage(context), shortcut.`package`),
-                                index.toLong())
-                    })))
-                    return@runOnUiWorkerThread
-                }
-            }*/
-            callback(getFilteredActionList(ArrayList(actionList.getRanked()
-                    .take(ActionsController.MAX_ITEMS)
-                    .mapIndexedNotNull { index, s ->
-                        actionFromString(s, index.toLong())
-                    })))
-        }
-    }
-
-    fun cleanActions() {
-        runOnUiWorkerThread {
-            actionList.removeAll { actionFromString(it) == null }
-        }
-    }
-
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences, key: String) {
         if (key == SettingsActivity.SHOW_PREDICTIONS_PREF) {
             if (!isPredictorEnabled) {
@@ -344,17 +236,6 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
             } else {
                 setupBroadcastReceiver()
             }
-        } else if (key == SettingsActivity.SHOW_ACTIONS_PREF) {
-            if (!isActionsEnabled) {
-                getActions {
-                    actions ->
-                    runOnMainThread {
-                        actionsRow.onUpdated(actions)
-                    }
-                }
-            }
-        } else if (key == SettingsActivity.HIDDEN_ACTIONS_PREF) {
-            updateActions()
         }
     }
 
@@ -402,46 +283,6 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         put(KEY_BADGE, badge)
     }.toString()
 
-    private fun actionFromString(string: String, position: Long = 0): Action? {
-        try {
-            val obj = JSONObject(string)
-            val id = obj.getString(KEY_ID)
-            //val expiration = obj.getLong(KEY_EXPIRATION)
-            val publisher = obj.getString(KEY_PUBLISHER)
-            val badge = obj.getString(KEY_BADGE)
-            //val pos = obj.getLong(KEY_POSITION)
-            val list = deepShortcutManager.queryForFullDetails(publisher, listOf(id), Process.myUserHandle())
-            if (!list.isEmpty()) {
-                val shortcutInfo = list[0]
-                val info = ShortcutInfo(shortcutInfo, context)
-                val li = LauncherIcons.obtain(context)
-                li.createShortcutIcon(shortcutInfo, true, null).applyTo(info)
-                li.recycle()
-                val appName = try {
-                    packageManager.getApplicationInfo(badge, 0).loadLabel(packageManager)
-                } catch (ignore: PackageManager.NameNotFoundException) {
-                    try {
-                        packageManager.getApplicationInfo(publisher, 0).loadLabel(packageManager)
-                    } catch (ignore: PackageManager.NameNotFoundException) {
-                        context.getString(R.string.package_state_unknown)
-                    }
-                }
-                return Action(
-                        id,
-                        id,
-                        Long.MAX_VALUE,
-                        publisher,
-                        badge,
-                        appName,
-                        shortcutInfo,
-                        info,
-                        position
-                )
-            }
-        } catch (ignore: Throwable) { }
-        return null
-    }
-
     companion object {
         const val ACTIONS_PACKAGE = "com.google.android.as"
 
@@ -456,6 +297,5 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         // Our definition of "Recently"
         @JvmStatic
         val DURATION_RECENTLY = TimeUnit.MINUTES.toMillis(2)
-    }*/
+    }
 }
-

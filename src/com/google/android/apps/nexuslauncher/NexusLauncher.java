@@ -17,7 +17,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
-import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
@@ -28,13 +27,13 @@ import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
 import com.google.android.libraries.gsa.launcherclient.StaticInteger;
 
+import org.zimmob.zimlx.predictions.ZimEventPredictor;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
 
@@ -81,7 +80,7 @@ public class NexusLauncher {
 
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
-            //PredictionUiStateManager.getInstance(mLauncher).dispatchOnChange();
+            ZimEventPredictor.UiManager.dispatchOnChange();
             mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
@@ -93,11 +92,6 @@ public class NexusLauncher {
         }
         public boolean handleBackPressed() {
             return false;
-        }
-
-
-        public List<ComponentKeyMapper<AppInfo>> getPredictedApps() {
-            return ((CustomAppPredictor) mLauncher.getUserEventDispatcher()).getPredictions();
         }
 
         public boolean hasCustomContentToLeft() {
@@ -141,24 +135,6 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            /*PredictionUiStateManager predictionUiStateManager = getInstance(mLauncher);
-            predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
-            if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
-                predictionUiStateManager.switchClient(Client.OVERVIEW);
-            }*/
-
-        }
-
-        public void updatePredictions(boolean force) {
-            if (mLauncher.hasBeenResumed() || force) {
-                List<ComponentKeyMapper<AppInfo>> apps = ((CustomAppPredictor) mLauncher.getUserEventDispatcher()).getPredictions();
-                if (apps != null) {
-                    mLauncher
-                            .mAppsView
-                            .getFloatingHeaderView()
-                            .setPredictedApps(Utilities.getZimPrefs(mLauncher.getApplicationContext()).getShowPredictions(), apps);
-                }
-            }
         }
 
 
@@ -195,7 +171,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onDestroy();
 
-            //PredictionUiStateManager.getInstance(mLauncher).setTargetAppsView(null);
+            ZimEventPredictor.UiManager.setTargetAppsView(null);
         }
 
         public void onDetachedFromWindow() {
@@ -218,12 +194,6 @@ public class NexusLauncher {
 
             for (SmartspaceView smartspace : mSmartspaceViews) {
                 smartspace.onPause();
-            }
-
-            Handler handler = mLauncher.getDragLayer().getHandler();
-            if (handler != null) {
-                handler.removeCallbacks(mUpdatePredictionsIfResumed);
-                Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
             }
         }
 

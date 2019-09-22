@@ -130,8 +130,8 @@ class ThemeManager(val context: Context) : WallpaperColorInfo.OnChangeListener {
 
         private const val THEME_AUTO = 1                     // 00001
         private const val THEME_DARK_TEXT = 1 shl 1          // 00010
-        private const val THEME_DARK = 1 shl 2               // 00100
-        private const val THEME_USE_BLACK = 1 shl 3          // 01000
+        const val THEME_DARK = 1 shl 2               // 00100
+        const val THEME_USE_BLACK = 1 shl 3          // 01000
         private const val THEME_AUTO_NIGHT_MODE = 1 shl 4    // 10000
 
         fun isDarkText(flags: Int) = (flags and THEME_DARK_TEXT) != 0

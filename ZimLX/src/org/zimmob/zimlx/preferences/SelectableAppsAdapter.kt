@@ -18,8 +18,10 @@
 package org.zimmob.zimlx.preferences
 
 import android.content.Context
+import android.content.res.ColorStateList
 import android.view.View
 import com.android.launcher3.AppFilter
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.comparing
 import org.zimmob.zimlx.then
@@ -29,7 +31,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
     : AppsAdapter(context, null, filter) {
 
     private val selections = HashSet<ComponentKey>()
-    //private val accentTintList = ZimPreferences.getInstance(context).accentColor
+    private val accentTintList = ColorStateList.valueOf(Utilities.getZimPrefs(context).accentColor)
 
     override val comparator = comparing<App, Int> { if (isSelected(it.key)) 0 else 1 }
             .then { it.info.label.toString().toLowerCase() }
@@ -56,7 +58,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
         holder.checkBox.apply {
             visibility = View.VISIBLE
             isChecked = isSelected(app.key)
-            //buttonTintList = accentTintList
+            buttonTintList = accentTintList
         }
     }
 
