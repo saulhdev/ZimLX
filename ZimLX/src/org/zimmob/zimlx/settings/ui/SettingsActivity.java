@@ -110,7 +110,6 @@ import org.zimmob.zimlx.util.ZimFlags;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.io.IOException;
-import java.util.Locale;
 import java.util.Objects;
 import java.util.Set;
 
@@ -282,6 +281,8 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
+        Log.i("SETTINGS", "Opening Fragment: " + preference.getFragment());
+
         if (preference instanceof SubPreference) {
             ((SubPreference) preference).start(this);
             return true;
@@ -294,7 +295,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
         if (fragment instanceof DialogFragment) {
             ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
         } else {
-            Log.i("SETTINGS", "FRAGMENT: " + preference.getFragment());
             startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
         }
         return true;
@@ -692,9 +692,7 @@ public class SettingsActivity extends SettingsBaseActivity implements
         }
 
         public void updateProjectTeam(AboutUtils au) {
-            Locale locale = Locale.getDefault();
             Preference pref;
-            String tmp;
             if ((pref = findPreference("pref_key__about_project_team")) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
                 String[] data = (au.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
                 for (int i = 0; i + 2 < data.length; i += 4) {
@@ -930,7 +928,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
                         }
                         break;
 
-
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
@@ -943,6 +940,9 @@ public class SettingsActivity extends SettingsBaseActivity implements
                                 }
                             });
                             dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
+                        } else if (preference.getFragment() != null) {
+                            Log.d("Settings", "Opening Fragment: " + preference.getFragment());
+                            SettingsActivity.startFragment(getContext(), preference.getFragment(), null, preference.getTitle());
                         }
                 }
             }
