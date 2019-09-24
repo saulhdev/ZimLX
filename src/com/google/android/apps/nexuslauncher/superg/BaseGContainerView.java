@@ -242,7 +242,9 @@ public abstract class BaseGContainerView extends FrameLayout implements View.OnC
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String s) {
         if ("pref_globalSearchProvider".equals(s)) {
-            loadIcon();
+            if (!Utilities.getZimPrefs(getContext()).getUsePillQsb()) {
+                loadIcon();
+            }
         }
     }
 
