@@ -86,7 +86,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
     }
 
-    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
+    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, doNothing)
 
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
@@ -140,7 +140,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")!!
-        recreate
+        reloadApps
         return sort.toInt()
     }
 

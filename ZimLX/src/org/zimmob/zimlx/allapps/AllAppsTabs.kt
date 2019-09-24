@@ -24,6 +24,7 @@ import com.android.launcher3.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
 import org.zimmob.zimlx.groups.DrawerTabs
+import org.zimmob.zimlx.groups.FlowerpotTabs
 import org.zimmob.zimlx.zimPrefs
 
 class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
@@ -62,10 +63,10 @@ class AllAppsTabs(private val context: Context) : Iterable<AllAppsTabs.Tab> {
                     }
                     Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
                 }
-                /*it is FlowerpotTabs.FlowerpotTab && !it.getMatches().isEmpty() -> {
+                it is FlowerpotTabs.FlowerpotTab && !it.getMatches().isEmpty() -> {
                     addedApps.addAll(it.getMatches())
                     Tab(it.getTitle(), it.getFilter(context).matcher, drawerTab = it)
-                }*/
+                }
                 else -> null
             }
         }

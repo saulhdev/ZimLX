@@ -18,6 +18,7 @@
 package org.zimmob.zimlx.groups
 
 import android.content.Context
+import android.graphics.Color
 import android.os.Process
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import android.widget.TextView
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.ZimPreferencesChangeCallback
+import org.zimmob.zimlx.groups.FlowerpotTabs.FlowerpotTab
 import org.zimmob.zimlx.preferences.SelectableAppsActivity
 import org.zimmob.zimlx.tintDrawable
 import org.zimmob.zimlx.zimPrefs
@@ -44,7 +46,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
             TYPE_PERSONAL -> ::createPersonalTab
             TYPE_WORK -> ::createWorkTab
             TYPE_ALL_APPS -> ::createAllAppsTab
-            //FlowerpotTabs.TYPE_FLOWERPOT -> ::FlowerpotTab
+            FlowerpotTabs.TYPE_FLOWERPOT -> ::FlowerpotTab
             else -> ::createNull
         }
     }
@@ -64,6 +66,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
 
         //val colorResolver = ColorRow(KEY_COLOR, AppGroupsUtils.getInstance(context).defaultColorResolver)
+        val colorResolver = ColorRow(KEY_COLOR, Color.CYAN)
 
         init {
             //     addCustomization(colorResolver)

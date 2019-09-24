@@ -524,14 +524,12 @@
 
     <string name="pref_drawer_columns">Number of columns</string>
     <string name="pref_prediction_count">Number of suggestions</string>
+    <string name="separate_work_apps_pref_title">Second tab for work apps</string>
 
     <!-- PREFERENCES BEHAVIOR -->
     <string name="title__behavior_widget_provider">Weather source</string>
     <string name="title__behavior_weather_units">Temperature unit</string>
-    <string name="title__behavior_weather_city">City</string>
-    <string name="title__behavior_event_provider">Calendar source</string>
     <string name="category__behavior_weather">Weather</string>
-    <string name="default_city">San Salvador, SV</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>

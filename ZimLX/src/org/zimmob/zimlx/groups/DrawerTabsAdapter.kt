@@ -37,12 +37,12 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
 
     override fun createGroup(callback: (DrawerTabs.Tab, Boolean) -> Unit) {
         DrawerTabTypeSelectionBottomSheet.show(context, mapOf(
-                //FlowerpotTabs.TYPE_FLOWERPOT to arrayOf(R.string.tab_type_smart, R.string.pref_appcategorization_flowerpot_summary, R.drawable.ic_category),
+                FlowerpotTabs.TYPE_FLOWERPOT to arrayOf(R.string.tab_type_smart, R.string.pref_appcategorization_flowerpot_summary, R.drawable.ic_category),
                 DrawerTabs.TYPE_CUSTOM to arrayOf(R.string.tab_type_custom, R.string.tab_type_custom_desc, R.drawable.ic_list)
         )) {
             when (it) {
                 DrawerTabs.TYPE_CUSTOM -> callback(DrawerTabs.CustomTab(context), false)
-                //FlowerpotTabs.TYPE_FLOWERPOT -> callback(FlowerpotTabs.FlowerpotTab(context), false)
+                FlowerpotTabs.TYPE_FLOWERPOT -> callback(FlowerpotTabs.FlowerpotTab(context), false)
             }
         }
     }
@@ -59,7 +59,5 @@ open class DrawerTabsAdapter(context: Context) : AppGroupsAdapter<DrawerTabsAdap
         }
     }
 
-    open inner class TabHolder(itemView: View) : GroupHolder(itemView) {
-
-    }
+    open inner class TabHolder(itemView: View) : GroupHolder(itemView)
 }

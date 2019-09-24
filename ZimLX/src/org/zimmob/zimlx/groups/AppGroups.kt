@@ -18,21 +18,29 @@
 package org.zimmob.zimlx.groups
 
 import android.content.Context
+import android.content.res.Configuration
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
+import me.priyesh.chroma.ColorMode
+import me.priyesh.chroma.orientation
+import me.priyesh.chroma.percentOf
+import me.priyesh.chroma.screenDimensions
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import org.zimmob.zimlx.*
 import org.zimmob.zimlx.preferences.SelectableAppsActivity
+import org.zimmob.zimlx.preferences.TabbedPickerView
 import org.zimmob.zimlx.util.SingletonHolder
 
 typealias GroupCreator<T> = (Context) -> T?
@@ -343,23 +351,24 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
         }
 
-        /*open class ColorCustomization(key: String, default: ColorEngine.ColorResolver) :
-                Customization<ColorEngine.ColorResolver, String>(key, default) {
+        open class ColorCustomization(key: String, default: Int) :
+                Customization<Int, String>(key, default) {
 
-            /*override fun loadFromJson(context: Context, obj: String?) {
-                value = obj?.let { AppGroupsUtils.getInstance(context).createColorResolver(it) }
-            }*/
+            override fun loadFromJson(context: Context, obj: String?) {
+                value = obj?.let { it.toInt() }
+            }
 
             override fun saveToJson(context: Context): String? {
-                return if (value is ZimAccentResolver) null else value.toString()
+                //return if (value is ZimAccentResolver) null else value.toString()
+                return value.toString()
             }
 
-            override fun clone(): Customization<ColorEngine.ColorResolver, String> {
+            override fun clone(): Customization<Int, String> {
                 return ColorCustomization(key, default).also { it.value = value }
             }
-        }*/
+        }
 
-        /*class ColorRow(key: String, default: ColorEngine.ColorResolver) :
+        class ColorRow(key: String, default: Int) :
                 ColorCustomization(key, default) {
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
@@ -373,9 +382,9 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                     val current = value()
                     val resolvers = resources.getStringArray(R.array.resolver_tabs)
                     with(dialog) {
-                        val tabbedPickerView = TabbedPickerView(this.context, "tabs", current.resolveColor(),
-                                ColorMode.RGB, resolvers, current.isCustom, {
-                            value = it
+                        val tabbedPickerView = TabbedPickerView(this.context, "tabs", current,
+                                ColorMode.RGB, resolvers, false, {
+                            value = current
                             updateColor(view)
                         }, dialog::dismiss)
                         setView(tabbedPickerView)
@@ -401,13 +410,13 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
 
             private fun updateColor(view: View) {
-                view.findViewById<ImageView>(R.id.color_ring_icon).tintDrawable(value().resolveColor())
+                view.findViewById<ImageView>(R.id.color_ring_icon).tintDrawable(value())
             }
 
-            override fun clone(): Customization<ColorEngine.ColorResolver, String> {
+            override fun clone(): Customization<Int, String> {
                 return ColorRow(key, default).also { it.value = value }
             }
-        }*/
+        }
 
         abstract class SetCustomization<T : Any, S : Any>(key: String, default: MutableSet<T>) :
                 Customization<MutableSet<T>, JSONArray>(key, default) {
@@ -546,15 +555,15 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
 class AppGroupsUtils(context: Context) {
 
-    /*private val colorEngine = ColorEngine.getInstance(context)
-    //val defaultColorResolver = ZimAccentResolver(
-    //        ColorEngine.ColorResolver.Config("groups", colorEngine))
+    //private val colorEngine = ColorEngine.getInstance(context)
+    /*val defaultColorResolver = ZimAccentResolver(
+            ColorEngine.ColorResolver.Config("groups", colorEngine))
 
     fun createColorResolver(resolver: String?): ColorEngine.ColorResolver {
         return colorEngine.createColorResolverNullable("group", resolver ?: "")
                 ?: defaultColorResolver
-    }
-    */
+    }*/
+
 
     companion object : SingletonHolder<AppGroupsUtils, Context>(
             ensureOnMainThread(useApplicationContext(::AppGroupsUtils)))

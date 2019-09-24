@@ -22,7 +22,6 @@ import android.content.Context
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.ItemInfoMatcher
-import org.zimmob.zimlx.iconpack.IconPackManager
 
 abstract class Filter<T>(val context: Context) {
 
@@ -39,18 +38,6 @@ class CustomFilter(context: Context, override val matches: Set<ComponentKey>) : 
         get() = object : ItemInfoMatcher() {
             override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
                 return matches.contains(ComponentKey(info.targetComponent, info.user))
-            }
-        }
-}
-
-class IconPackFilter(context: Context) : Filter<String>(context) {
-
-    override val matches = IconPackManager.getInstance(context).getPackProviders().map { it.name }.toHashSet()
-
-    override val matcher
-        get() = object : ItemInfoMatcher() {
-            override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
-                return matches.contains(info.targetComponent.packageName)
             }
         }
 }

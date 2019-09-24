@@ -25,13 +25,13 @@ class AppGroupsManager(val prefs: ZimPreferences) {
     var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
 
     val drawerTabs by lazy { CustomTabs(this) }
-    //val flowerpotTabs by lazy { FlowerpotTabs(this) }
+    val flowerpotTabs by lazy { FlowerpotTabs(this) }
     val drawerFolders by lazy { DrawerFolders(this) }
 
     private fun onPrefsChanged() {
         prefs.getOnChangeCallback()?.let {
             drawerTabs.checkIsEnabled(it)
-            //flowerpotTabs.checkIsEnabled(it)
+            flowerpotTabs.checkIsEnabled(it)
             drawerFolders.checkIsEnabled(it)
         }
     }
@@ -46,7 +46,7 @@ class AppGroupsManager(val prefs: ZimPreferences) {
 
     private fun getModel(type: CategorizationType): AppGroups<*> {
         return when (type) {
-            //CategorizationType.Flowerpot -> flowerpotTabs
+            CategorizationType.Flowerpot -> flowerpotTabs
             CategorizationType.Tabs -> drawerTabs
             CategorizationType.Folders -> drawerFolders
         }
@@ -56,6 +56,6 @@ class AppGroupsManager(val prefs: ZimPreferences) {
 
         Tabs("pref_drawerTabs"),
         Folders("pref_drawerFolders"),
-        //Flowerpot("pref_drawerFlowerpot")
+        Flowerpot("pref_drawerFlowerpot")
     }
 }

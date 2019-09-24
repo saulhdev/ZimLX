@@ -151,15 +151,6 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
     public boolean itemTouchOnMove(int oldPosition, int newPosition) {
         Collections.swap(_adapter.getAdapterItems(), oldPosition, newPosition);
         _adapter.notifyAdapterDataSetChanged();
-
-        Set<String> minibarArrangement = new HashSet<>();
-        for (Item item : _adapter.getAdapterItems()) {
-            if (item.enable)
-                minibarArrangement.add(Long.toString(item.id));
-
-        }
-        prefs.setMinibarItems(minibarArrangement);
-
         return false;
     }
 

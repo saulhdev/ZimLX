@@ -34,7 +34,6 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.StringRes;
-import androidx.dynamicanimation.animation.DynamicAnimation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
 import com.android.launcher3.AppInfo;
@@ -60,6 +59,7 @@ import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.allapps.AllAppsTabs;
 import org.zimmob.zimlx.allapps.AllAppsTabsController;
 
@@ -385,10 +385,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             onTabChanged(currentTab);
         } else {
             mTabsController.setup((View) findViewById(R.id.apps_list_view));
-            if (FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW) {
-                setupHeader();
-            } else {
-                mHeader.setVisibility(View.GONE);
+            AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
+            if (recyclerView != null) {
+                ZimUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
+                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
             }
         }
         setupHeader();
@@ -483,6 +483,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public void setLastSearchQuery(String query) {
+        mLastSearchQuery = query;
         for (int i = 0; i < mAH.length; i++) {
             mAH[i].adapter.setLastSearchQuery(query);
         }
@@ -544,13 +545,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                     addSpringView(searchViewId);
 
                     finishWithShiftAndVelocity(1, velocity * FLING_VELOCITY_MULTIPLIER,
-                            new DynamicAnimation.OnAnimationEndListener() {
-                                @Override
-                                public void onAnimationEnd(DynamicAnimation animation,
-                                                           boolean canceled, float value, float velocity) {
-                                    removeSpringView(searchViewId);
-                                }
-                            });
+                            (animation, canceled, value, velocity1) -> removeSpringView(searchViewId));
 
                     shouldSpring = false;
                 }
@@ -576,7 +571,6 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         final LinearLayoutManager layoutManager;
         final AlphabeticalAppsList appsList;
         public final Rect padding = new Rect();
-        int paddingTopForTabs;
         public AllAppsRecyclerView recyclerView;
         boolean verticalFadingEdge;
 
@@ -608,16 +602,13 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
         public void applyPadding() {
             if (recyclerView != null) {
-                int paddingTop = mUsingTabs || FeatureFlags.ALL_APPS_PREDICTION_ROW_VIEW
-                        ? paddingTopForTabs : padding.top;
-                recyclerView.setPadding(padding.left, paddingTop, padding.right, padding.bottom);
+                recyclerView.setPadding(padding.left, padding.top, padding.right, padding.bottom);
             }
         }
 
         public void applyVerticalFadingEdgeEnabled(boolean enabled) {
             verticalFadingEdge = enabled;
-            mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs
-                    && verticalFadingEdge);
+            mAH[AdapterHolder.MAIN].recyclerView.setVerticalFadingEdgeEnabled(!mUsingTabs && verticalFadingEdge);
         }
 
         public void setIsWork(boolean isWork) {

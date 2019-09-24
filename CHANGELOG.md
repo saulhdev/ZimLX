@@ -5,8 +5,7 @@
 *   support order by icon color
 
 ### v0.6.2
-*   Add Preferences for landscape and tables
-*   Enable global search in all aps
+*   Enable global search in all apps
 
 ### v0.6.1
 *   Support for android Pie

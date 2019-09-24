@@ -30,6 +30,7 @@ import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
@@ -75,7 +76,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
-        //mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
+        mNumAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
     }
 
     /**
@@ -180,10 +181,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public String scrollToPositionAtProgress(float touchFraction) {
+    public PositionThumbInfo scrollToPositionAtProgress(float touchFraction) {
         int rowCount = mApps.getNumAppRows();
         if (rowCount == 0) {
-            return "";
+            return new PositionThumbInfo("", 0);
         }
 
         // Stop the scroller if it is scrolling
@@ -205,7 +206,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         int scrollY = getCurrentScrollY();
         int availableScrollHeight = getAvailableScrollHeight();
         mFastScrollHelper.smoothScrollToSection(scrollY, availableScrollHeight, lastInfo);
-        return lastInfo.sectionName;
+        return new PositionThumbInfo(lastInfo.sectionName, lastInfo.color);
     }
 
     @Override

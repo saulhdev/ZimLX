@@ -50,7 +50,7 @@ public abstract class BaseFlags {
     // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
     public static final boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
     // Feature flag to enable moving the QSB on the 0th screen of the workspace.
-    public static boolean QSB_ON_FIRST_SCREEN = true;
+    public static boolean QSB_ON_FIRST_SCREEN = false;
     // When enabled shows a work profile tab in all apps
     public static final boolean ALL_APPS_TABS_ENABLED = true;
     public static boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;

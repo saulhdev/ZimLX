@@ -47,6 +47,8 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private int mBackgroundColor;
     private Context mContext;
 
+    private final boolean mLowPerformanceMode;
+
     public AllAppsQsbLayout(Context context) {
         this(context, null);
     }
@@ -64,6 +66,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
         mContext = context;
+
+        prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        mLowPerformanceMode = prefs.getLowPerformanceMode();
     }
 
     public void applyTheme() {
@@ -115,15 +120,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            float range = HotseatQsbWidget.getBottomMargin(mActivity) + ((mlp.height + mlp.topMargin) + Dy);
-            ZimPreferences prefs = ZimPreferences.Companion.getInstance(getContext());
-            if (!prefs.getDockSearchBar()) {
-                range -= mlp.height;
-                range -= mlp.topMargin;
-                range -= mlp.bottomMargin;
-                range += Dy;
+            float delta = HotseatQsbWidget.getBottomMargin(mActivity) + Dy;
+            if (!prefs.getDockHide()) {
+                delta += mlp.height + mlp.topMargin;
+                if (!prefs.getDockSearchBar()) {
+                    delta -= mlp.height;
+                    delta -= mlp.topMargin;
+                    delta -= mlp.bottomMargin;
+                    delta += Dy;
+                }
+            } else {
+                delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
             }
-            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(range));
+            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(delta));
         }
     }
 
@@ -138,9 +147,9 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }
 
     @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String str) {
-        super.onSharedPreferenceChanged(sharedPreferences, str);
-        if (str.equals("pref_allAppsGoogleSearch")) {
+    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
+        super.onSharedPreferenceChanged(sharedPreferences, key);
+        if (key.equals("pref_allAppsGoogleSearch")) {
             loadPreferences(sharedPreferences);
         }
     }

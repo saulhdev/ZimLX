@@ -532,6 +532,25 @@ fun ImageView.tintDrawable(color: Int) {
     setImageDrawable(drawable)
 }
 
+fun View.runOnAttached(runnable: Runnable) {
+    if (isAttachedToWindow) {
+        runnable.run()
+    } else {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+
+            override fun onViewAttachedToWindow(v: View?) {
+                runnable.run()
+                removeOnAttachStateChangeListener(this)
+            }
+
+            override fun onViewDetachedFromWindow(v: View?) {
+                removeOnAttachStateChangeListener(this)
+            }
+        })
+
+    }
+}
+
 @Suppress("UNCHECKED_CAST")
 fun <T> JSONArray.toArrayList(): ArrayList<T> {
     val arrayList = ArrayList<T>()

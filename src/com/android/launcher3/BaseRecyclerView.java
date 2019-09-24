@@ -22,9 +22,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.android.launcher3.views.RecyclerViewFastScroller;
-
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
 /**
@@ -135,10 +135,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
 
         // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
-        if (getCurrentScrollY() == 0) {
-            return true;
-        }
-        return false;
+        return getCurrentScrollY() == 0;
     }
 
     /**
@@ -160,7 +157,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      * <p>Override in each subclass of this base class.
      */
-    public abstract String scrollToPositionAtProgress(float touchFraction);
+    public abstract PositionThumbInfo scrollToPositionAtProgress(float touchFraction);
 
     /**
      * Updates the bounds for the scrollbar.
@@ -172,4 +169,14 @@ public abstract class BaseRecyclerView extends RecyclerView {
      * <p>Override in each subclass of this base class.
      */
     public void onFastScrollCompleted() {}
+
+    public class PositionThumbInfo {
+        public String name;
+        public int color;
+
+        public PositionThumbInfo(String name, int color) {
+            this.name = name;
+            this.color = color;
+        }
+    }
 }
