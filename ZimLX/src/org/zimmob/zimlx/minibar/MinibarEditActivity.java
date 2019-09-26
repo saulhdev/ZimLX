@@ -16,9 +16,11 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 import com.mikepenz.fastadapter.commons.adapters.FastItemAdapter;
 import com.mikepenz.fastadapter.items.AbstractItem;
 import com.mikepenz.fastadapter_extensions.drag.ItemTouchCallback;
@@ -84,8 +86,19 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
         mLauncher = Launcher.getLauncher(Launcher.mContext);
 
         final Set<String> minibarItems = prefs.getMinibarItems();
-        for (DashModel item : DashUtils.actionDisplayItems) {
+        for (DashItem item : DashUtils.actionDisplayItems) {
             _adapter.add(new Item(item.id, item, minibarItems.contains(Integer.toString(item.id))));
+        }
+        for (String act : minibarItems) {
+            if (act.length() != 2) {
+                ComponentKey keyMapper = new ComponentKey(this, act);
+                AppInfo app = mLauncher.getAppsView().getAppsStore().getApp(keyMapper);
+                if (app != null) {
+                    DashItem item = DashItem.asApp(app, 0);
+                    _adapter.add(new Item(item.id, item, true));
+                }
+
+            }
         }
 
         int[][] states = new int[][]{
@@ -160,11 +173,11 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
 
     public static class Item extends AbstractItem<Item, Item.ViewHolder> {
         final long id;
-        final DashModel item;
+        final DashItem item;
         boolean enable;
         boolean edited;
 
-        Item(long id, DashModel item, boolean enable) {
+        Item(long id, DashItem item, boolean enable) {
             this.id = id;
             this.item = item;
             this.enable = enable;
@@ -199,7 +212,7 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             };
             ColorStateList thstateList = new ColorStateList(states, colors);
 
-            holder._tv.setText(item.label);
+            holder._tv.setText(item.title);
             holder._tv2.setText(item.description);
             holder._iv.setImageResource(item.icon);
 
@@ -212,13 +225,13 @@ public class MinibarEditActivity extends ThemeActivity implements ItemTouchCallb
             super.bindView(holder, payloads);
         }
 
-        static class ViewHolder extends RecyclerView.ViewHolder {
+        public static class ViewHolder extends RecyclerView.ViewHolder {
             TextView _tv;
             TextView _tv2;
             ImageView _iv;
             CheckBox _cb;
 
-            ViewHolder(View itemView) {
+            public ViewHolder(View itemView) {
                 super(itemView);
                 _tv = itemView.findViewById(R.id.tv);
                 _tv2 = itemView.findViewById(R.id.tv2);

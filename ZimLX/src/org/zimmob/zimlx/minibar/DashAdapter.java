@@ -14,9 +14,9 @@ import java.util.List;
 public class DashAdapter extends BaseAdapter {
 
     private Context context;
-    private List<DashModel> dashItems;
+    private List<DashItem> dashItems;
 
-    public DashAdapter(Context context, List<DashModel> items) {
+    public DashAdapter(Context context, List<DashItem> items) {
         this.context = context;
         this.dashItems = items;
     }

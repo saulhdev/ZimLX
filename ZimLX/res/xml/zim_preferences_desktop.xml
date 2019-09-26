@@ -8,6 +8,14 @@
         android:summary="@string/pref_summary__minibar"
         android:title="@string/pref_title__minibar" />
 
+    <Preference
+        android:key="pref_key__dash_edit"
+        android:fragment="org.zimmob.zimlx.minibar.DashFragment"
+        android:persistent="true"
+        android:title="@string/pref_title__minibar"
+        android:summary="@string/pref_summary__minibar"
+        app:iconSpaceReserved="false" />
+
     <org.zimmob.zimlx.preferences.GridSizePreference
         app:iconSpaceReserved="false"
         android:key="pref_desktop_grid_size"

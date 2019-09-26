@@ -16,15 +16,15 @@ import static org.zimmob.zimlx.minibar.DashAction.Action;
 
 public class DashUtils {
     public static Context mContext = Launcher.mContext;
-    public static DashModel[] actionDisplayItems = new DashModel[]{
-            new DashModel(Action.EditMinibar, "EditMinibar", mContext.getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 10),
-            new DashModel(Action.SetWallpaper, "SetWallpaper", mContext.getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 11),
-            new DashModel(Action.LauncherSettings, "LauncherSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 12),
-            new DashModel(Action.VolumeDialog, "VolumeDialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 13),
-            new DashModel(Action.DeviceSettings, "DeviceSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 14),
-            new DashModel(Action.MobileNetworkSettings, "MobileNetworkSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 15),
-            new DashModel(Action.AppSettings, "AppSettings", Launcher.getLauncher(mContext).getString(R.string.minibar_11), R.drawable.ic_font_download, 16),
-            new DashModel(Action.AppDrawer, "AppDrawer", mContext.getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 17)
+    public static DashItem[] actionDisplayItems = new DashItem[]{
+            DashItem.asCustomItem(Action.AppDrawer, "App Drawer", mContext.getString(R.string.minibar_8), R.drawable.ic_apps_dark_24dp, 17),
+            DashItem.asCustomItem(Action.EditMinibar, "Edit Minibar", mContext.getString(R.string.minibar_0), R.drawable.ic_mode_edit_black_24dp, 10),
+            DashItem.asCustomItem(Action.SetWallpaper, "Set Wallpaper", mContext.getString(R.string.minibar_1), R.drawable.ic_photo_black_24dp, 11),
+            DashItem.asCustomItem(Action.LauncherSettings, "Launcher Settings", Launcher.getLauncher(mContext).getString(R.string.minibar_5), R.drawable.ic_settings_launcher_black_24dp, 12),
+            DashItem.asCustomItem(Action.VolumeDialog, "Volume Dialog", Launcher.getLauncher(mContext).getString(R.string.minibar_7), R.drawable.ic_volume_up_black_24dp, 13),
+            DashItem.asCustomItem(Action.DeviceSettings, "Device Settings", Launcher.getLauncher(mContext).getString(R.string.minibar_4), R.drawable.ic_build, 14),
+            DashItem.asCustomItem(Action.MobileNetworkSettings, "Mobile Network Settings", Launcher.getLauncher(mContext).getString(R.string.minibar_10), R.drawable.ic_network_24dp, 15),
+            DashItem.asCustomItem(Action.AppSettings, "App Settings", Launcher.getLauncher(mContext).getString(R.string.minibar_11), R.drawable.ic_font_download, 16)
     };
 
     public static void RunAction(DashAction.Action action, final Context context) {
@@ -53,7 +53,6 @@ public class DashUtils {
                 context.startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
                 break;
             case LauncherSettings:
-                //context.startActivity(new Intent(context, SettingsActivity.class));
                 context.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                         .setPackage(context.getPackageName())
                         .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
@@ -86,8 +85,8 @@ public class DashUtils {
         }
     }
 
-    public static DashModel getDashItemFromString(String string) {
-        for (DashModel item : actionDisplayItems) {
+    public static DashItem getDashItemFromString(String string) {
+        for (DashItem item : actionDisplayItems) {
             if (Integer.toString(item.id).equals(string)) {
                 return item;
             }

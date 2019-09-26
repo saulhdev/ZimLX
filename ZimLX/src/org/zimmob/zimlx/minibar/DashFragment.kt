@@ -1,0 +1,21 @@
+package org.zimmob.zimlx.minibar
+
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.ItemTouchHelper
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import org.zimmob.zimlx.preferences.RecyclerViewFragment
+
+class DashFragment : RecyclerViewFragment() {
+    private val adapter by lazy { DashEditAdapter(requireContext()) }
+
+
+    override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
+        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        recyclerView.adapter = adapter
+        (recyclerView.itemAnimator as? DefaultItemAnimator)?.supportsChangeAnimations = false
+        adapter.itemTouchHelper = ItemTouchHelper(adapter.TouchHelperCallback()).apply {
+            attachToRecyclerView(recyclerView)
+        }
+    }
+}
