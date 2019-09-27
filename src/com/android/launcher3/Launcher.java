@@ -137,7 +137,7 @@ import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.minibar.DashAction;
 import org.zimmob.zimlx.minibar.DashAdapter;
-import org.zimmob.zimlx.minibar.DashModel;
+import org.zimmob.zimlx.minibar.DashItem;
 import org.zimmob.zimlx.minibar.DashUtils;
 import org.zimmob.zimlx.minibar.SwipeListView;
 
@@ -148,6 +148,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 import static android.content.pm.ActivityInfo.CONFIG_ORIENTATION;
@@ -278,7 +279,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     private PendingRequestArgs mPendingRequestArgs;
 
-    private float mLastDispatchTouchEventX = 0.0f;
     private boolean mRotationEnabled = false;
     private LauncherCallbacks mLauncherCallbacks;
     public static boolean showNotificationCount;
@@ -347,11 +347,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mLauncherView = LayoutInflater.from(this).inflate(R.layout.launcher, null);
 
         setupViews();
-
-        //PREDICTED APPS
-        /*if(prefs.getShowPredictions()){
-            updatePredictions(true);
-        }*/
 
         mPopupDataProvider = new PopupDataProvider(this);
 
@@ -446,10 +441,23 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public void initMinibar() {
         ZimPreferences prefs = Utilities.getZimPrefs(this);
-        ArrayList<DashModel> dashItems = new ArrayList<>();
+        ArrayList<DashItem> dashItems = new ArrayList<>();
         for (String act : prefs.getMinibarItems()) {
             if (act.length() > 1) {
-                DashModel item = DashUtils.getDashItemFromString(act);
+                DashItem item = null;
+                if (act.length() == 2) {
+                    item = DashUtils.getDashItemFromString(act);
+                } else {
+                    ComponentKey keyMapper = new ComponentKey(this, act);
+
+                    AppInfo app = mAllAppsController.getAppsView().getAppsStore().getApp(keyMapper);
+
+                    Log.d("Dash APP", "Loading App ");
+                    if (app != null) {
+                        item = DashItem.asApp(app, 0);
+                    }
+                }
+
                 if (item != null) {
                     dashItems.add(item);
                 }
@@ -457,9 +465,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         SwipeListView minibar = findViewById(R.id.minibar);
+
         minibar.setAdapter(new DashAdapter(this, dashItems));
+
+
         minibar.setOnItemClickListener((parent, view, i, id) -> {
-            DashAction.Action action = DashAction.Action.valueOf(dashItems.get(i).label);
+            DashAction.Action action = DashAction.Action.valueOf(dashItems.get(i).action.name());
             DashUtils.RunAction(action, this);
             if (action != DashAction.Action.DeviceSettings && action != DashAction.Action.LauncherSettings && action != DashAction.Action.EditMinibar) {
                 ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
@@ -1288,24 +1299,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     /**
-     * Shows the overview button.
-     */
-    public void showOverviewMode(boolean animated) {
-        showOverviewMode(animated, false);
-    }
-
-    /**
      * Shows the overview button, and if {@param requestButtonFocus} is set, will force the focus
      * onto one of the overview panel buttons.
      */
     void showOverviewMode(boolean animated, boolean requestButtonFocus) {
         if (requestButtonFocus) {
-            Runnable postAnimRunnable = () -> {
-                // Hitting the menu button when in touch mode does not trigger touch mode to
-                // be disabled, so if requested, force focus on one of the overview panel
-                // buttons.
-                mOverviewPanel.requestFocusFromTouch();
-            };
         }
         mWorkspace.setVisibility(View.VISIBLE);
         //mStateTransitionAnimation.startAnimationToWorkspace(mState, mWorkspace.getState(),
@@ -1775,10 +1773,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     @Override
     public ActivityOptions getActivityLaunchOptions(View v) {
         return mAppTransitionManager.getActivityLaunchOptions(this, v);
-    }
-
-    public LauncherAppTransitionManager getAppTransitionManager() {
-        return mAppTransitionManager;
     }
 
     public Rect getViewBounds(View v) {
@@ -2712,7 +2706,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         private void hideOverlay(boolean animate) {
             Launcher launcher = Launcher.this;
             if (launcher instanceof NexusLauncherActivity) {
-                ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
+                Objects.requireNonNull(((NexusLauncherActivity) launcher).getGoogleNow()).hideOverlay(animate);
             }
         }
 
@@ -2730,12 +2724,5 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         public void onStateTransitionComplete(LauncherState finalState) {
 
         }
-    }
-
-    public boolean isInOverview() {
-        LauncherState state = mStateManager.getState();
-        LauncherState toState = mStateManager.getToState();
-        return (state == LauncherState.OVERVIEW && toState != LauncherState.NORMAL)
-                || state == LauncherState.FAST_OVERVIEW;
     }
 }

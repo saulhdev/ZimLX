@@ -4,6 +4,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.preferences.RecyclerViewFragment
 
 class DashFragment : RecyclerViewFragment() {
@@ -17,5 +18,16 @@ class DashFragment : RecyclerViewFragment() {
         adapter.itemTouchHelper = ItemTouchHelper(adapter.TouchHelperCallback()).apply {
             attachToRecyclerView(recyclerView)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Utilities.getZimPrefs(context).minibarItems = adapter.getDashItems()
+    }
+
+    override fun onPause() {
+        super.onPause()
+
+        Utilities.getZimPrefs(context).minibarItems = adapter.getDashItems()
     }
 }

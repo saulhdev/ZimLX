@@ -37,7 +37,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="?android:attr/textColorPrimary"
-            android:textSize="18sp"
+            android:textSize="16sp"
             tools:text="Icon pack" />
 
         <TextView
@@ -47,7 +47,6 @@
             android:ellipsize="end"
             android:textColor="?android:attr/textColorSecondary"
             android:textSize="14sp"
-            android:visibility="gone"
             tools:text="com.example.dash"
             tools:visibility="visible" />
     </LinearLayout>

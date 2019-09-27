@@ -3,6 +3,7 @@ package org.zimmob.zimlx.minibar
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Handler
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -18,6 +19,14 @@ import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.isVisible
+import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_APP
+import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_ITEM
+import java.util.HashSet
+import kotlin.collections.ArrayList
+import kotlin.collections.MutableList
+import kotlin.collections.Set
+import kotlin.collections.count
+import kotlin.collections.forEach
 
 class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.Holder>() {
     private val prefs = Utilities.getZimPrefs(context)
@@ -28,18 +37,18 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
 
     private val adapterItems = ArrayList<Item>()
     private val currentSpecs = ArrayList<String>()
-    private val divider: DividerItem
-    private val otherItems = ArrayList<CustomDashItem>()
+    private val divider = DividerItem()
+    private val enabledItems = ArrayList<CustomDashItem>()
     private var isDragging = false
 
     private var enable: Boolean = false
-    private var edited: Boolean = false
 
     var itemTouchHelper: ItemTouchHelper? = null
 
     init {
         val currentItems = ArrayList<String>()
         val dashItems = ArrayList<CustomDashItem>()
+
         for (act in prefs.minibarItems) {
             if (act.length > 1) {
                 var item: DashItem? = null
@@ -57,7 +66,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
         currentSpecs.addAll(currentItems)
         allItems.addAll(dashItems)
-        divider = DividerItem(allItems[0].info)
         fillItems()
     }
 
@@ -82,21 +90,30 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         return adapterItems[position].type
     }
 
-    fun saveSpecs(): ArrayList<String> {
-        val newSpecs = ArrayList<String>()
+    fun getDashItems(): Set<String> {
+        val items = HashSet<String>()
         val iterator = adapterItems.iterator()
-
         while (iterator.hasNext()) {
             val item = iterator.next()
-            if (item is CustomDashItem) newSpecs.add(item.info.title)
-            if (item is DividerItem) break
+            if (item is CustomDashItem) {
+                if (item.info.viewType == VIEW_TYPE_DASH_ITEM) {
+                    items.add(item.info.id.toString())
+                } else if (item.info.viewType == VIEW_TYPE_DASH_APP) {
+                    items.add(item.info.component)
+                }
+                Log.d("DashEditAdapter", "Item " + item.info.title)
+
+            } else if (item is DividerItem)
+                break
+            iterator.remove()
         }
-        return newSpecs
+
+        return items
     }
 
     private fun fillItems() {
-        otherItems.clear()
-        otherItems.addAll(allItems)
+        enabledItems.clear()
+        enabledItems.addAll(allItems)
 
         adapterItems.clear()
         adapterItems.add(EnableItem())
@@ -109,11 +126,11 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
         dividerIndex = adapterItems.count()
         adapterItems.add(divider)
-        adapterItems.addAll(otherItems)
+        adapterItems.addAll(enabledItems)
     }
 
     private fun getAndRemoveOther(s: String): CustomDashItem? {
-        val iterator = otherItems.iterator()
+        val iterator = enabledItems.iterator()
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.info.title == s) {
@@ -155,7 +172,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         override val type = TYPE_DASH_ITEM
     }
 
-    class DividerItem(info: DashItem) : CustomDashItem(info) {
+    class DividerItem : Item() {
 
         override val isStatic = true
         override val type = TYPE_DIVIDER
@@ -251,8 +268,8 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             val item = dashItem
             if (adapterPosition > dividerIndex) {
                 adapterItems.removeAt(adapterPosition)
-                adapterItems.add(1, item)
-                notifyItemMoved(adapterPosition, 1)
+                adapterItems.add(2, item)
+                notifyItemMoved(adapterPosition, 2)
                 dividerIndex++
             } else {
                 adapterItems.removeAt(adapterPosition)
@@ -269,9 +286,10 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             }
             return false
         }
+
     }
 
-    inner class DividerHolder(itemView: View) : DashItemHolder(itemView) {
+    inner class DividerHolder(itemView: View) : Holder(itemView) {
 
         val text: TextView = itemView.findViewById(android.R.id.text1)
 
@@ -282,7 +300,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             } else {
                 text.setText(com.android.launcher3.R.string.drag_to_enable_packs)
             }
-            text.isVisible = isDragging || dividerIndex != adapterItems.size - 2
+            text.isVisible = isDragging || dividerIndex != adapterItems.size - 1
         }
     }
 
@@ -295,7 +313,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
 
         override fun canDropOver(recyclerView: RecyclerView, current: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
-            return target.adapterPosition in 1..dividerIndex
+            return target.adapterPosition in 2..dividerIndex
         }
 
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
@@ -314,7 +332,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     }
 
     companion object {
-
         const val TYPE_ENABLE = 0
         const val TYPE_HEADER = 1
         const val TYPE_DASH_ITEM = 2
