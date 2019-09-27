@@ -333,6 +333,12 @@
         <item name="workspaceKeyShadowColor">#44000000</item>
     </style>
 
+    <style name="SleepTimeoutTheme" parent="@android:style/Theme.Material.NoActionBar.Fullscreen">
+        <item name="android:windowBackground">@android:color/black</item>
+        <item name="android:windowAnimationStyle">@null</item>
+        <item name="android:windowLightStatusBar" tools:ignore="NewApi">true</item>
+        <item name="android:windowLightNavigationBar" tools:ignore="NewApi">true</item>
+    </style>
 
     <!--
     Theme overrides to element on homescreen, i.e., which are drawn on top on wallpaper.
