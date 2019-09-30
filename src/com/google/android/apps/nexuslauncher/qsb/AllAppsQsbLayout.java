@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -30,6 +29,9 @@ import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
+import org.zimmob.zimlx.theme.ThemeManager;
+
+import java.util.Objects;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
@@ -45,6 +47,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     boolean mDoNotRemoveFallback;
     private ZimPreferences prefs;
     private int mForegroundColor;
+    private int mBackgroundColor;
     private Context mContext;
 
     private final boolean mLowPerformanceMode;
@@ -65,11 +68,43 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
-        prefs = Utilities.getZimPrefs(context);
-
         mLowPerformanceMode = prefs.getLowPerformanceMode();
+        applyTheme();
+    }
 
+    private void applyTheme() {
+        prefs = ZimPreferences.Companion.getInstanceNoCreate();
         mForegroundColor = prefs.getAccentColor();
+        boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+        boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
+                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+
+        int theme = prefs.getLauncherTheme();
+        if (themeBlack)
+            theme = 12;
+        else if (themeDark)
+            theme = 4;
+
+        switch (theme) {
+            case 0: //light theme
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+                break;
+
+            case 4://dark theme
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
+                break;
+
+            case 12://black theme
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
+                break;
+
+            default:
+                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+
+        }
+
+        ay(mBackgroundColor);
+        az(this.Dc);
     }
 
     protected void onFinishInflate() {
@@ -176,10 +211,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void dN() {
         az(this.Dc);
-
-        //TODO: MIGRATE TO SUPPORT THEME COLORS
-        ay(Color.WHITE);
-
         h(this.Ds.micStrokeWidth());
         this.Dh = this.Ds.hintIsForAssistant();
         mUseTwoBubbles = useTwoBubbles();
@@ -212,7 +243,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             searchFallback(str);
         } else if (controller.isGoogle()) {
             final ConfigBuilder f = new ConfigBuilder(this, true);
-            if (!mActivity.getGoogleNow().startSearch(f.build(), f.getExtras())) {
+            if (!Objects.requireNonNull(mActivity.getGoogleNow()).startSearch(f.build(), f.getExtras())) {
                 searchFallback(str);
                 if (mFallback != null) {
                     mFallback.setHint(null);
