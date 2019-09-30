@@ -1,7 +1,6 @@
 package org.zimmob.zimlx.preferences
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuInflater
 import android.view.MenuItem
@@ -18,7 +17,6 @@ class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callbac
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setHasOptionsMenu(true)
-        Log.d("HIDDEN APPS", " Abriendo Fragment")
     }
 
     override fun onRecyclerViewCreated(recyclerView: RecyclerView) {

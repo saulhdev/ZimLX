@@ -256,7 +256,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         }
     }
 
-    public void setOverscroll(float progress) {
+    /*public void setOverscroll(float progress) {
         if (mBackground instanceof BlurDrawable) {
             ((BlurDrawable) mBackground).setOverscroll(progress);
         }
@@ -266,5 +266,5 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public void setTranslationX(float translationX) {
         super.setTranslationX(translationX);
         LauncherAppState.getInstance(getContext()).getLauncher().mHotseat.setOverscroll(translationX);
-    }
+    }*/
 }

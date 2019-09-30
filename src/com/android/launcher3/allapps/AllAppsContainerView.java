@@ -387,8 +387,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mTabsController.setup((View) findViewById(R.id.apps_list_view));
             AllAppsRecyclerView recyclerView = mAH[AdapterHolder.MAIN].recyclerView;
             if (recyclerView != null) {
-                ZimUtilsKt.runOnAttached(recyclerView, () -> recyclerView.setScrollbarColor(
-                        mTabsController.getTabs().get(0).getDrawerTab().getColorResolver().value()));
+                ZimUtilsKt.runOnAttached(recyclerView, () ->
+                        recyclerView.setScrollbarColor(Utilities.getZimPrefs(getContext()).getAccentColor()));
             }
         }
         setupHeader();

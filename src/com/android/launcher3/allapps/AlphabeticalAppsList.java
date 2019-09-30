@@ -206,7 +206,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
-    private HashMap<AppInfo, String> mCachedSectionNames = new HashMap<>();
+    private HashMap<CharSequence, String> mCachedSectionNames = new HashMap<>();
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
@@ -378,14 +378,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 mApps.add(app);
             }
         }
+        sortApps(prefs.getSortMode());
 
-        if (!prefs.getShowPredictions()) {
+        /*if (!prefs.getShowPredictions()) {
             sortApps(prefs.getSortMode());
         }
         else{
             Collections.sort(mApps, mAppNameComparator);
-        }
-
+        }*/
 
         // As a special case for some languages (currently only Simplified Chinese), we may need to
         // coalesce sections
@@ -498,7 +498,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             // Create a new section if the section names do not match
             if (!sectionName.equals(lastSectionName)) {
                 lastSectionName = sectionName;
-                int color = 0;
+                int color = Color.WHITE;
                 if (prefs.getSortMode()==SORT_BY_COLOR) {
                     color = info.iconColor;
                 }
@@ -631,11 +631,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             if (prefs.getSortMode()==SORT_BY_COLOR) {
                 float[] hsl = new float[3];
                 ColorUtils.colorToHSL(info.iconColor, hsl);
-                sectionName = String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
+                sectionName = "";//String.format("%d:%d:%d", AppColorComparator.remapHue(hsl[0]), AppColorComparator.remap(hsl[2]), AppColorComparator.remap(hsl[1]));
             } else {
                 sectionName = mIndexer.computeSectionName(info.title);
             }
-            mCachedSectionNames.put(info, sectionName);
+            mCachedSectionNames.put(info.title, sectionName);
         }
         return sectionName;
     }

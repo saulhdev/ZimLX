@@ -19,6 +19,13 @@
         android:key="pref_debugOkhttp"
         android:title="Enable full network log"
         android:summary="Useful for debugging some weather providers"
-        android:defaultValue="false" />
+        android:defaultValue="false"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_debugDisplayState"
+        android:title="Debug information overlay"
+        android:summary="Display informations such as the current Launcher State"
+        app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

@@ -71,7 +71,7 @@ class ColorPickerDialog : DialogFragment() {
         tabbedPickerView = TabbedPickerView.fromPrefs(context, key, initialColor, colorMode, resolvers!!, ::dismiss)
         return AlertDialog.Builder(context).setView(tabbedPickerView).create().apply {
             setOnShowListener {
-                val width: Int;
+                val width: Int
                 val height: Int
                 if (orientation(context) == ORIENTATION_LANDSCAPE) {
                     height = WindowManager.LayoutParams.WRAP_CONTENT

@@ -112,9 +112,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWidgetImage = (WidgetImageView) findViewById(R.id.widget_preview);
-        mWidgetName = ((TextView) findViewById(R.id.widget_name));
-        mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
+        mWidgetImage = findViewById(R.id.widget_preview);
+        mWidgetName = findViewById(R.id.widget_name);
+        mWidgetDims = findViewById(R.id.widget_dims);
     }
 
     /**

@@ -39,13 +39,13 @@
         android:gravity="center"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="?workspaceTextColor"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="@dimen/smartspace_clock_above_size"
         android:visibility="gone"
         launcher:ambientShadowBlur="3dp"
-        launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+        launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
         launcher:keyShadowBlur="2dp"
-        launcher:keyShadowColor="?workspaceKeyShadowColor"
+        launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
         launcher:keyShadowOffset="0.5dip"
         tools:visibility="gone" />
 
@@ -69,12 +69,12 @@
             android:maxLines="1"
             android:paddingLeft="10dp"
             android:paddingRight="10dp"
-            android:textColor="?workspaceTextColor"
+            android:textColor="?attr/workspaceTextColor"
             android:textSize="@dimen/smartspace_title_size"
             launcher:ambientShadowBlur="3dp"
-            launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
-            launcher:keyShadowColor="?workspaceKeyShadowColor"
+            launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
             launcher:keyShadowOffset="0.5dip" />
 
         <org.zimmob.zimlx.smartspace.SmartspaceDividerView
@@ -116,12 +116,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawablePadding="6dp"
-                android:textColor="?workspaceTextColor"
+                android:textColor="?attr/workspaceTextColor"
                 android:textSize="@dimen/smartspace_title_size"
                 launcher:ambientShadowBlur="3dp"
-                launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+                launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
                 launcher:keyShadowBlur="2dp"
-                launcher:keyShadowColor="?workspaceKeyShadowColor"
+                launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
                 launcher:keyShadowOffset="0.5dip"
                 tools:text="30°C" />
         </LinearLayout>
@@ -159,13 +159,13 @@
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
             android:text="Test"
-            android:textColor="?workspaceTextColor"
+            android:textColor="?attr/workspaceTextColor"
             android:textSize="16dp"
             android:inputType="textNoSuggestions"
             launcher:ambientShadowBlur="3dp"
-            launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
-            launcher:keyShadowColor="?workspaceKeyShadowColor"
+            launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
             launcher:keyShadowOffset="0.5dip" />
     </LinearLayout>
 </LinearLayout>

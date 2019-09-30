@@ -429,8 +429,6 @@ public class LoaderCursor extends CursorWrapper {
             int hotseatX = (int) (item.screenId % hotseatSize);
             int hotseatY = (int) (item.screenId / hotseatSize);
 
-            Log.e(TAG, "Rows X" + item.screenId);
-
             if (item.screenId >= mIDP.numHotseatIcons * hotseatRows) {
                 Log.e(TAG, "Error loading shortcut " + item
                         + " into hotseat position " + item.screenId

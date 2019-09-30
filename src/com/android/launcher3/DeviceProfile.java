@@ -87,6 +87,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int iconSizePx;
     public int iconSizeOriginalPx;
     public int iconTextSizePx;
+    public int iconTextSizeOriginalPx;
     public int iconDrawablePaddingPx;
     public int iconDrawablePaddingOriginalPx;
 
@@ -142,8 +143,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int allAppsButtonVisualSize;
     public int allAppsIconDrawablePaddingPx;
     public float allAppsIconTextSizePx;
+    public float allAppsIconTextSizeOriginalPx;
     public int allAppsNumCols;
-    public int allAppsNumPredictiveCols;
 
     // Widgets
     public final PointF appWidgetScale = new PointF(1.0f, 1.0f);
@@ -296,6 +297,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
         boolean fullWidthWidgets = Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets();
         boolean dockHidden = prefs.getDockHide();
+        boolean dockSearchBar = prefs.getDockSearchBar();
         int dockRows = prefs.getDockRowsCount();
         float dockScale = prefs.getDockScale();
 
@@ -306,11 +308,14 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(
+                res.getDimensionPixelSize(dockSearchBar ?
+                        R.dimen.dynamic_grid_hotseat_top_padding :
                         R.dimen.v1_dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
-                + res.getDimensionPixelSize(
+        int extraHotseatBottomPadding = !prefs.getDockGradientStyle() ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
+        hotseatBarBottomPaddingPx = extraHotseatBottomPadding
+                + res.getDimensionPixelSize(dockSearchBar ?
+                R.dimen.dynamic_grid_hotseat_bottom_padding :
                 R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
@@ -328,6 +333,28 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
+
+        iconTextSizePx = (int) (iconTextSizeOriginalPx * prefs.getDesktopTextScale());
+        allAppsIconTextSizePx = (int) (allAppsIconTextSizeOriginalPx * prefs.getDrawerTextScale());
+        float dockTextScale = prefs.getDockTextScale();
+        if (dockTextScale < 0) {
+            hotseatIconTextSizePx = iconTextSizePx;
+        } else {
+            hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * dockTextScale);
+        }
+
+        // Calculate again to apply text size
+        updateAvailableDimensions(dm, res);
+
+        int extraSpaceFromY = Math.max(0, getCellSizeOriginal().y - iconSizeOriginalPx
+                - iconDrawablePaddingOriginalPx * 2 - verticalDragHandleSizePx
+                - extraHotseatBottomPadding);
+        int extraSpaceFromScale;
+        if (dockScale < 0f) {
+            extraSpaceFromScale = extraSpaceFromY;
+        } else {
+            extraSpaceFromScale = (int) (hotseatBarSizePx * (dockScale - 1));
+        }
 
         // Now that we have all of the variables calculated, we can tune certain sizes.
         if (!isVerticalBarLayout() && isPhone && isTallDevice) {
@@ -352,10 +379,12 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
             updateAvailableDimensions(dm, res);
         } else if (!isVerticalBarLayout()) {
-            verticalDragHandleSizePx *= dockScale;
-            int bottomPaddingNew = Math.max((int) (hotseatBarBottomPaddingPx * dockScale), 0);
-            if (prefs.getDockShouldUseCustomOpacity() || prefs.getDockShouldUseExtractedColors()) {
-                hotseatBarTopPaddingPx *= dockScale;
+            float adjustedDockScale = (float) extraSpaceFromScale / hotseatBarSizePx + 1;
+            int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
+            verticalDragHandleSizePx *= adjustedDockScale;
+            int bottomPaddingNew = Math.max((int) (hotseatBarBottomPaddingPx * adjustedDockScale), dockSearchBar ? qsbHeight : 0);
+            if (prefs.getDockGradientStyle()) {
+                hotseatBarTopPaddingPx *= adjustedDockScale;
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             } else {
                 int difference = hotseatBarBottomPaddingPx - bottomPaddingNew;
@@ -363,9 +392,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             }
 
-            // TODO: Fix icon cut off on smaller devices with lower values
             int minHeight = hotseatCellHeightPx * dockRows + hotseatBarBottomPaddingPx + hotseatBarTopPaddingPx;
-            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * dockScale));
+            hotseatBarSizePx = Math.max(minHeight, (int) (hotseatBarSizePx * adjustedDockScale));
         }
 
         updateWorkspacePadding();
@@ -485,8 +513,11 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
         iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
         iconSizePx = (int) (iconSizeOriginalPx * workspaceScale);
+        iconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
-        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale);
+        iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale) -
+                (iconTextSizeOriginalPx - iconTextSizePx);
+
         int textHeight = Utilities.calculateTextHeight(iconTextSizePx) * labelRowCount;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
@@ -501,10 +532,13 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        allAppsIconTextSizePx = iconTextSizePx;
-        textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
         allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale);
+        allAppsIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * allAppsScale);
+        allAppsIconTextSizePx = (int) (allAppsIconTextSizePx * allAppsScale);
+        textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
+        allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale) -
+                (int) (allAppsIconTextSizeOriginalPx - allAppsIconTextSizePx);
+
         int additionalPadding = (int) (
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs
                         .getDrawerPaddingScale());

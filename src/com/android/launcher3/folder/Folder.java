@@ -1328,13 +1328,9 @@ public class Folder extends AbstractFloatingView implements DragSource,
     public ArrayList<View> getItemsInReadingOrder() {
         if (mItemsInvalidated) {
             mItemsInReadingOrder.clear();
-            mContent.iterateOverItems(new ItemOperator() {
-
-                @Override
-                public boolean evaluate(ItemInfo info, View view) {
-                    mItemsInReadingOrder.add(view);
-                    return false;
-                }
+            mContent.iterateOverItems((info, view) -> {
+                mItemsInReadingOrder.add(view);
+                return false;
             });
             mItemsInvalidated = false;
         }
@@ -1452,17 +1448,13 @@ public class Folder extends AbstractFloatingView implements DragSource,
     }
 
     // Compares item position based on rank and position giving priority to the rank.
-    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = new Comparator<ItemInfo>() {
-
-        @Override
-        public int compare(ItemInfo lhs, ItemInfo rhs) {
-            if (lhs.rank != rhs.rank) {
-                return lhs.rank - rhs.rank;
-            } else if (lhs.cellY != rhs.cellY) {
-                return lhs.cellY - rhs.cellY;
-            } else {
-                return lhs.cellX - rhs.cellX;
-            }
+    public static final Comparator<ItemInfo> ITEM_POS_COMPARATOR = (lhs, rhs) -> {
+        if (lhs.rank != rhs.rank) {
+            return lhs.rank - rhs.rank;
+        } else if (lhs.cellY != rhs.cellY) {
+            return lhs.cellY - rhs.cellY;
+        } else {
+            return lhs.cellX - rhs.cellX;
         }
     };
 

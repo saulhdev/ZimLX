@@ -56,11 +56,6 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         addOnItemTouchListener(this);
     }
 
-    public WidgetsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
-                               int defStyleRes) {
-        this(context, attrs, defStyleAttr);
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -79,10 +74,10 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public PositionThumbInfo scrollToPositionAtProgress(float touchFraction) {
+    public String scrollToPositionAtProgress(float touchFraction) {
         // Skip early if widgets are not bound.
         if (isModelNotReady()) {
-            return new PositionThumbInfo("", 0);
+            return "";
         }
 
         // Stop the scroller if it is scrolling
@@ -95,7 +90,7 @@ public class WidgetsRecyclerView extends BaseRecyclerView implements OnItemTouch
         layoutManager.scrollToPositionWithOffset(0, (int) -(availableScrollHeight * touchFraction));
 
         int posInt = (int) ((touchFraction == 1) ? pos - 1 : pos);
-        return new PositionThumbInfo(mAdapter.getSectionName(posInt), 0);
+        return mAdapter.getSectionName(posInt);
     }
 
     /**

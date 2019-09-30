@@ -313,7 +313,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
         mContext = this;
-        //appSettings = new AppSettings(mContext);
 
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
         wallpaperColorInfo.setOnThemeChangeListener(this);
@@ -465,7 +464,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         SwipeListView minibar = findViewById(R.id.minibar);
-
         minibar.setAdapter(new DashAdapter(this, dashItems));
 
 
@@ -2723,6 +2721,28 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         @Override
         public void onStateTransitionComplete(LauncherState finalState) {
 
+        }
+
+        public boolean hasSettings() {
+            if (mLauncherCallbacks != null) {
+                return mLauncherCallbacks.hasSettings();
+            } else {
+                // On O and above we there is always some setting present settings (add icon to
+                // home screen or icon badging). On earlier APIs we will have the allow rotation
+                // setting, on devices with a locked orientation,
+                return Utilities.ATLEAST_OREO || !getResources().getBoolean(R.bool.allow_rotation);
+            }
+        }
+
+        public boolean isInState(LauncherState state) {
+            return mStateManager.getState() == state;
+        }
+
+        public boolean isInOverview() {
+            LauncherState state = mStateManager.getState();
+            LauncherState toState = mStateManager.getToState();
+            return (state == LauncherState.OVERVIEW && toState != LauncherState.NORMAL)
+                    || state == LauncherState.FAST_OVERVIEW;
         }
     }
 }

@@ -176,6 +176,11 @@
         <attr name="searchTitle" format="string" />
         <attr name="controllerClass" format="string" />
     </declare-styleable>
+
+    <declare-styleable name="ThemeFlagSwitchPreference">
+        <attr name="switchFlag" format="integer" />
+    </declare-styleable>
+
     <!-- Custom -->
     <attr name="bottomSheetNavBarColor" format="color" />
     <attr name="useLightSystemBars" format="boolean" />

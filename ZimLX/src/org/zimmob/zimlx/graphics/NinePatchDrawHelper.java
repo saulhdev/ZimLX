@@ -43,7 +43,12 @@ public class NinePatchDrawHelper {
         canvas.drawBitmap(bitmap, mSrc, mDst, paint);
     }
 
-    /*public void drawVerticallyStretched(Bitmap bitmap, Canvas canvas, float left, float top,
+    /**
+     * Draws the bitmap split horizontally into 3 parts (same as {@link #draw}) and split
+     * vertically into two parts, bottom part of size {@link #EXTENSION_PX} / 2 which is
+     * stretched vertically.
+     */
+    public void drawVerticallyStretched(Bitmap bitmap, Canvas canvas, float left, float top,
                                         float right, float bottom) {
         draw(bitmap, canvas, left, top, right);
 
@@ -54,5 +59,5 @@ public class NinePatchDrawHelper {
         mDst.top = top + height;
         mDst.bottom = bottom;
         draw3Patch(bitmap, canvas, left, right);
-    }*/
+    }
 }

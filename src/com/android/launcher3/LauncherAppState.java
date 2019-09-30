@@ -33,6 +33,8 @@ import com.android.launcher3.util.ConfigMonitor;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SettingsObserver;
 
+import org.zimmob.zimlx.ZimAppKt;
+
 import java.util.concurrent.ExecutionException;
 
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
@@ -56,6 +58,7 @@ public class LauncherAppState {
         if (INSTANCE == null) {
             if (Looper.myLooper() == Looper.getMainLooper()) {
                 INSTANCE = new LauncherAppState(context.getApplicationContext());
+                ZimAppKt.getZimApp(context).onLauncherAppStateCreated();
             } else {
                 try {
                     return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance(context)).get();

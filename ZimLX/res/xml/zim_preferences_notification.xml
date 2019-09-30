@@ -80,6 +80,15 @@
             android:title="@string/title__app_search_hidden"
             app:iconSpaceReserved="false" />
 
+        <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
+            android:key="pref_searchbarRadius"
+            android:title="@string/pref_search_bar_radius"
+            app:defaultSeekbarValue="-1.0"
+            app:maxValue="24"
+            app:minValue="0.0"
+            app:steps="24"
+            app:summaryFormat="%.0fdp" />
+
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__gestures">

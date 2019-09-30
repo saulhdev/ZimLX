@@ -67,6 +67,7 @@ import com.android.launcher3.util.Provider;
 import com.android.launcher3.util.TraceHelper;
 
 import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.model.HomeWidgetMigrationTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -246,6 +247,10 @@ public class LoaderTask implements Runnable {
         } catch (Exception e) {
             // Migration failed. Clear workspace.
             clearDb = true;
+        }
+
+        if (!clearDb) {
+            HomeWidgetMigrationTask.migrateIfNeeded(context);
         }
 
         if (!clearDb && GridSizeMigrationTask.ENABLED &&

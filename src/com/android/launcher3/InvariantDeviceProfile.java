@@ -425,4 +425,9 @@ public class InvariantDeviceProfile {
         final float y = WALLPAPER_WIDTH_TO_SCREEN_RATIO_PORTRAIT - x * ASPECT_RATIO_PORTRAIT;
         return x * aspectRatio + y;
     }
+
+    public void onDockStyleChanged(ZimPreferences prefs) {
+        portraitProfile.onValueChanged("", prefs, false);
+        landscapeProfile.onValueChanged("", prefs, false);
+    }
 }

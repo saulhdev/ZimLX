@@ -43,7 +43,8 @@ class ZimShortcut(private val context: Context) {
             ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
             ShortcutEntry("install", SystemShortcut.Install(), true),
             ShortcutEntry("remove", Remove(), false),
-            ShortcutEntry("uninstall", Uninstall(), false)
+            ShortcutEntry("uninstall", Uninstall(), false),
+            ShortcutEntry("dash", DashAdd(), false)
     )
 
     inner class ShortcutEntry(key: String, val shortcut: SystemShortcut<*>, enabled: Boolean) {
@@ -121,20 +122,11 @@ class ZimShortcut(private val context: Context) {
         }
     }
 
-    /*class SesameSettings : SystemShortcut<Launcher>(R.drawable.ic_sesame, R.string.shortcut_sesame) {
-
+    class DashAdd : SystemShortcut<Launcher>(R.drawable.ic_add_box, R.string.dash_add_target_label) {
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo.itemType != ITEM_TYPE_APPLICATION) return null
-            val packageName = itemInfo.targetComponent?.packageName ?: itemInfo.intent.`package`
-            ?: itemInfo.intent.component?.packageName ?: return null
-            if (!Sesame.isAvailable(launcher)) return null
-            val intent = SesameFrontend.createAppConfigIntent(packageName) ?: return null
-
-            return View.OnClickListener {
-                launcher.startActivity(intent)
-            }
+            return null
         }
-    }*/
+    }
 
     companion object : ZimSingletonHolder<ZimShortcut>(::ZimShortcut)
 

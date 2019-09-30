@@ -31,25 +31,18 @@
         android:title="@string/hotseat_uses_extracted_colors_pref_title"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.DockSwitchPreference
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:key="enableGradient"
         android:title="@string/dock_fill"
         android:dependency="pref_dockPreset"
         app:iconSpaceReserved="false"
         android:persistent="true" />
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref_hotseatShouldUseCustomOpacity"
-        android:persistent="true"
-        android:title="@string/hotseat_uses_custom_opacity"
-        app:iconSpaceReserved="false" />
-
     <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="opacityPref"
         android:persistent="true"
         android:title="@string/title__dock_custom_opacity"
-        android:dependency="pref_hotseatShouldUseCustomOpacity"
+        android:dependency="enableGradient"
         app:maxValue="1"
         app:minValue="0"
         app:summaryFormat="%.0f%%"

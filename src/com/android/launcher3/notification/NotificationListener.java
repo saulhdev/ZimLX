@@ -30,6 +30,8 @@ import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.SettingsObserver;
@@ -41,8 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import androidx.annotation.Nullable;
 
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
 
@@ -180,7 +180,7 @@ public class NotificationListener extends NotificationListenerService {
             // User turned off badging globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
-                    Collections.<StatusBarNotification>emptyList());
+                    Collections.emptyList());
         }
     }
 
@@ -341,7 +341,7 @@ public class NotificationListener extends NotificationListenerService {
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
         return notifications == null
-                ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
+                ? Collections.emptyList() : Arrays.asList(notifications);
     }
 
     /**

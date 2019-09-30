@@ -23,10 +23,6 @@ import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_APP
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_ITEM
 import java.util.HashSet
 import kotlin.collections.ArrayList
-import kotlin.collections.MutableList
-import kotlin.collections.Set
-import kotlin.collections.count
-import kotlin.collections.forEach
 
 class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.Holder>() {
     private val prefs = Utilities.getZimPrefs(context)
@@ -114,7 +110,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     private fun fillItems() {
         enabledItems.clear()
         enabledItems.addAll(allItems)
-
+        //Fill Adapter
         adapterItems.clear()
         adapterItems.add(EnableItem())
         adapterItems.add(HeaderItem())
@@ -125,6 +121,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             }
         }
         dividerIndex = adapterItems.count()
+
         adapterItems.add(divider)
         adapterItems.addAll(enabledItems)
     }
@@ -194,10 +191,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     inner class EnableHolder(itemView: View) : Holder(itemView) {
         val switchEnable: SwitchCompat = itemView.findViewById(R.id.enableSwitch)
 
-        init {
-
-        }
-
         override fun bind(item: Item) {
             super.bind(item)
             val context = Launcher.mContext
@@ -213,21 +206,12 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             switchEnable.isChecked = enable
             switchEnable.thumbTintList = thstateList
             switchEnable.setText(if (enable) R.string.on else R.string.off)
-            switchEnable.setOnCheckedChangeListener({ buttonView, isChecked ->
+            switchEnable.setOnCheckedChangeListener { buttonView, isChecked ->
                 buttonView.setText(if (isChecked) R.string.on else R.string.off)
                 prefs.setMinibarEnable(isChecked)
                 Launcher.getLauncher(context).drawerLayout
                         .setDrawerLockMode(if (isChecked) DrawerLayout.LOCK_MODE_UNLOCKED else DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-            })
-        }
-
-        fun onClick(v: View) {
-            //TODO CREAR OPCIONES DE HABILITAR/DESABILITAR
-
-            /*val intent = Intent.parseUri(v.context.getString(R.string.market_search_intent), 0)
-            intent.data = intent.data!!.buildUpon().appendQueryParameter("q", v.context.getString(R.string.playstore_query_icon_pack)).build()
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            v.context.startActivity(intent)*/
+            }
         }
     }
 
@@ -238,7 +222,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
     }
 
-    open inner class DashItemHolder(itemView: View) : Holder(itemView), View.OnClickListener, View.OnTouchListener {
+    inner class DashItemHolder(itemView: View) : Holder(itemView), View.OnClickListener, View.OnTouchListener {
 
         val icon: ImageView = itemView.findViewById(android.R.id.icon)
         val title: TextView = itemView.findViewById(android.R.id.title)
@@ -296,9 +280,9 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         override fun bind(item: Item) {
             super.bind(item)
             if (isDragging) {
-                text.setText(com.android.launcher3.R.string.drag_to_disable_packs)
+                text.setText(R.string.drag_to_disable_packs)
             } else {
-                text.setText(com.android.launcher3.R.string.drag_to_enable_packs)
+                text.setText(R.string.drag_to_enable_packs)
             }
             text.isVisible = isDragging || dividerIndex != adapterItems.size - 1
         }
@@ -319,7 +303,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         override fun getMovementFlags(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
             val item = adapterItems[viewHolder.adapterPosition]
             val dragFlags = if (item.isStatic) 0 else ItemTouchHelper.UP or ItemTouchHelper.DOWN
-            return ItemTouchHelper.Callback.makeMovementFlags(dragFlags, 0)
+            return makeMovementFlags(dragFlags, 0)
         }
 
         override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {

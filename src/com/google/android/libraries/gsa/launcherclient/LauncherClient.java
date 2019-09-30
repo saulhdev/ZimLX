@@ -133,6 +133,7 @@ public class LauncherClient {
         intentFilter.addDataSchemeSpecificPart("com.google.android.googlequicksearchbox", 0);
         mActivity.registerReceiver(googleInstallListener, intentFilter);
 
+
         if (apiVersion <= 0) {
             loadApiVersion(activity);
         }
@@ -219,12 +220,7 @@ public class LauncherClient {
 
     private void reconnect() {
         if (!mDestroyed && (!mLauncherService.connect() || !mBaseService.connect())) {
-            mActivity.runOnUiThread(new Runnable() {
-                @Override
-                public void run() {
-                    setServiceState(0);
-                }
-            });
+            mActivity.runOnUiThread(() -> setServiceState(0));
         }
     }
 

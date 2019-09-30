@@ -34,7 +34,6 @@ import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.ComponentKeyMapper;
 
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.predictions.ZimEventPredictor;
 
 import java.util.List;
 
@@ -57,7 +56,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     private boolean mIsVerticalLayout;
     private PredictionRowView mPredictionRowView;
     private boolean mShowAllAppsLabel;
-    private ZimEventPredictor appPredictor;
+
+    //private ZimEventPredictor.UiManager mPredictionUiStateManager;
 
     public PredictionsFloatingHeader(Context context) {
         this(context, null);
@@ -67,7 +67,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super(context, attributeSet);
         mContentAlpha = 1.0f;
         mHeaderTopPadding = context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        appPredictor = new ZimEventPredictor(context);
+        //mPredictionUiStateManager = new CustomAppPredictor.UiManager(new ZimEventPredictor(context));
     }
 
     @Override
@@ -79,7 +79,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
 
     @Override
     public void setup(AdapterHolder[] adapterHolderArr, boolean z) {
-        mPredictionRowView.setup(this, appPredictor.getUiManager().isEnabled());
+        //mPredictionRowView.setup(this, mPredictionUiStateManager.isEnabled());
+        mPredictionRowView.setup(this, false);
         mTabsHidden = z;
         updateExpectedHeight();
         super.setup(adapterHolderArr, z);
@@ -174,7 +175,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public boolean hasVisibleContent() {
-        return appPredictor.getUiManager().isEnabled();
+        //return mPredictionUiStateManager.isEnabled();
+        return false;
 
     }
 

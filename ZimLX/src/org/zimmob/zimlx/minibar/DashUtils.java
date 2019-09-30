@@ -11,6 +11,8 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 
+import org.zimmob.zimlx.settings.ui.SettingsActivity;
+
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static org.zimmob.zimlx.minibar.DashAction.Action;
 
@@ -34,7 +36,13 @@ public class DashUtils {
     private static void RunAction(DashAction action, Context context) {
         switch (action.action) {
             case EditMinibar:
-                context.startActivity(new Intent(context, MinibarEditActivity.class));
+                //context.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
+                //        .setPackage(context.getPackageName())
+                //        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+                String fragment = "org.zimmob.zimlx.minibar.DashFragment";
+                SettingsActivity.startFragment(context, fragment, R.string.minibar);
+
+
                 break;
             case MobileNetworkSettings: {
                 context.startActivity(new Intent(Settings.ACTION_DATA_ROAMING_SETTINGS));

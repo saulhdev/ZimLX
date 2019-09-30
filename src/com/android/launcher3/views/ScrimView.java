@@ -37,6 +37,13 @@ import android.view.View;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityManager.AccessibilityStateChangeListener;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
+import androidx.customview.widget.ExploreByTouchHelper;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -52,13 +59,6 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat;
-import androidx.customview.widget.ExploreByTouchHelper;
 
 import static android.content.Context.ACCESSIBILITY_SERVICE;
 import static android.view.MotionEvent.ACTION_DOWN;
@@ -111,7 +111,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     protected final int mDragHandleSize;
     protected float mDragHandleOffset;
-    private final Rect mDragHandleBounds;
+    protected final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
 
     private final AccessibilityHelper mAccessibilityHelper;

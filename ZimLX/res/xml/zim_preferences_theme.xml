@@ -67,14 +67,10 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_cat__theme_style">
 
-        <ListPreference
-            android:defaultValue="1"
-            android:entries="@array/themes"
-            android:entryValues="@array/themeValues"
+        <org.zimmob.zimlx.theme.ui.ThemePreference
             android:key="pref_launcherTheme"
-            android:persistent="true"
-            android:summary="%s"
             android:title="@string/theme_title"
+            app:content="@xml/zim_preferences_theme_dialog"
             app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference

@@ -9,6 +9,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 
 import androidx.core.app.ActivityCompat;
 
@@ -30,10 +31,14 @@ import org.zimmob.zimlx.iconpack.EditIconActivity;
 import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.iconpack.IconPackManager.CustomIconEntry;
 import org.zimmob.zimlx.override.CustomInfoProvider;
+import org.zimmob.zimlx.sensors.BrightnessManager;
 import org.zimmob.zimlx.views.OptionsPanel;
 import org.zimmob.zimlx.views.ZimBackgroundView;
 
 import java.util.Objects;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences.OnPreferenceChangeListener {
 
@@ -50,7 +55,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     private boolean paused = false;
     private boolean sRestart = false;
     private OptionsPanel optionView;
-    //private OptionsPanel dummyView;
+    private View dummyView;
 
 
     public static ZimLauncher getLauncher(Context context) {
@@ -76,26 +81,26 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
         background = findViewById(R.id.zim_background);
-        //dummyView = findViewById(R.id.dummy_view);
+        dummyView = findViewById(R.id.dummy_view);
     }
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
         boolean success = super.startActivitySafely(v, intent, item);
-        /*if (success) {
-            (ZimAppTransitionManagerImpl)launcherAppTransitionManager.playLaunchAnimation(this, v, intent);
-        }*/
         return success;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        //(ZimAppTransitionManagerImpl)launcherAppTransitionManager.overrideResumeAnimation(this);
     }
 
     public OptionsPanel getOptionsView() {
         return optionView = findViewById(R.id.options_view);
+    }
+
+    public ZimBackgroundView getBackground() {
+        return background = findViewById(R.id.zim_background);
     }
 
     @Override
@@ -139,12 +144,13 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         super.onResume();
 
         restartIfPending();
+        BrightnessManager.Companion.getInstance(this).startListening();
         paused = false;
     }
 
     public void onPause() {
         super.onPause();
-
+        BrightnessManager.Companion.getInstance(this).stopListening();
         paused = true;
     }
 
@@ -166,7 +172,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         Utilities.onLauncherStart();
     }
 
-    /*public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
+    public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
         int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
         int halfSize = size / 2;
         prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
@@ -181,7 +187,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         dummyView.setLayoutParams(lp);
         dummyView.requestLayout();
         dummyView.post(() -> callback.invoke());
-    }*/
+    }
 
     public GestureController getGestureController() {
         return gestureController;
@@ -211,7 +217,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             ZimPreferences.Companion.destroyInstance();
         }
     }
-
 
     public boolean shouldRecreate() {
         return !sRestart;

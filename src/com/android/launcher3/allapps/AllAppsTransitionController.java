@@ -28,6 +28,7 @@ import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.colors.ColorEngine;
+import org.zimmob.zimlx.views.BlurScrimView;
 
 import static android.view.ViewGroup.MarginLayoutParams;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
@@ -351,11 +352,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
     }
 
-/*
+
     public void setOverlayScroll(float scroll) {
         if (mScrimView instanceof BlurScrimView) {
             ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
         }
-    }*/
+    }
 
 }

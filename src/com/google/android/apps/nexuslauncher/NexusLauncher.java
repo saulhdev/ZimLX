@@ -27,7 +27,6 @@ import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 import com.google.android.libraries.gsa.launcherclient.LauncherClientService;
 import com.google.android.libraries.gsa.launcherclient.StaticInteger;
 
-import org.zimmob.zimlx.predictions.ZimEventPredictor;
 import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.io.FileDescriptor;
@@ -36,6 +35,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
+
+import static com.google.android.apps.nexuslauncher.CustomAppPredictor.UiManager.setTargetAppsView;
 
 public class NexusLauncher {
     private final Launcher mLauncher;
@@ -80,7 +81,7 @@ public class NexusLauncher {
 
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
-            ZimEventPredictor.UiManager.dispatchOnChange();
+            //ZimEventPredictor.UiManager.dispatchOnChange();
             mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
@@ -135,6 +136,8 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
+            setTargetAppsView(mLauncher.getAppsView());
+
         }
 
 
@@ -171,7 +174,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onDestroy();
 
-            ZimEventPredictor.UiManager.setTargetAppsView(null);
+            setTargetAppsView(null);
         }
 
         public void onDetachedFromWindow() {

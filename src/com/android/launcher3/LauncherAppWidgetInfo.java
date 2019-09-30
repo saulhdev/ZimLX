@@ -104,14 +104,14 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     private boolean mHasNotifiedInitialWidgetSizeChanged;
 
     public LauncherAppWidgetInfo(int appWidgetId, ComponentName providerName) {
-        if (appWidgetId == CUSTOM_WIDGET_ID) {
+        this.appWidgetId = appWidgetId;
+        this.providerName = providerName;
+
+        if (isCustomWidget()) {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
         } else {
             itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
         }
-
-        this.appWidgetId = appWidgetId;
-        this.providerName = providerName;
 
         // Since the widget isn't instantiated yet, we don't know these values. Set them to -1
         // to indicate that they should be calculated based on the layout and minWidth/minHeight
@@ -130,7 +130,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
     }
 
     public boolean isCustomWidget() {
-        return appWidgetId == CUSTOM_WIDGET_ID;
+        return appWidgetId <= CUSTOM_WIDGET_ID;
     }
 
     @Override

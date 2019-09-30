@@ -5,10 +5,7 @@ public class ZimFlags {
     //PREFERENCES FLAGS
     public static final String MINIBAR_COLOR = "pref_key__minibar_color";
     public static final String MINIBAR_ENABLE = "pref_key__minibar_enable";
-    public static final String MINIBAR = "pref_key__minibar";
     public static final String MINIBAR_ITEMS = "pref_key__minibar_items";
-
-    public static final String GESTURES_SWIPE_UP = "pref_key__gesture_swipe_up";
 
     public static final String ACCENT_COLOR = "pref_key__accent_color";
     public static final String PRIMARY_COLOR = "pref_key__primary_color";

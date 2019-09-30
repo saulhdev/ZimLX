@@ -90,13 +90,13 @@ public class DragController implements DragDriver.EventListener, TouchController
     private DropTarget mLastDropTarget;
 
     @Thunk
-    int mLastTouch[] = new int[2];
+    int[] mLastTouch = new int[2];
     @Thunk
     long mLastTouchUpTime = -1;
     @Thunk
     int mDistanceSinceScroll = 0;
 
-    private int mTmpPoint[] = new int[2];
+    private int[] mTmpPoint = new int[2];
     private Rect mDragLayerRect = new Rect();
 
     private boolean mIsInPreDrag;

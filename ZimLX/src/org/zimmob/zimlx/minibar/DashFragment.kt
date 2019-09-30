@@ -20,11 +20,6 @@ class DashFragment : RecyclerViewFragment() {
         }
     }
 
-    override fun onResume() {
-        super.onResume()
-        Utilities.getZimPrefs(context).minibarItems = adapter.getDashItems()
-    }
-
     override fun onPause() {
         super.onPause()
 

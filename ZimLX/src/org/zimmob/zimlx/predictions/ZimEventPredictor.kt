@@ -41,7 +41,6 @@ import java.util.concurrent.TimeUnit
  */
 open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(context) {
 
-    private val prefs by lazy { Utilities.getZimPrefs(context) }
     private val packageManager by lazy { context.packageManager }
     private val launcher by lazy { LauncherAppState.getInstance(context).launcher }
     private val predictionsHeader by lazy { launcher.appsView.floatingHeaderView as PredictionsFloatingHeader }

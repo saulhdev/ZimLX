@@ -181,10 +181,10 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
      * Maps the touch (from 0..1) to the adapter position that should be visible.
      */
     @Override
-    public PositionThumbInfo scrollToPositionAtProgress(float touchFraction) {
+    public String scrollToPositionAtProgress(float touchFraction) {
         int rowCount = mApps.getNumAppRows();
         if (rowCount == 0) {
-            return new PositionThumbInfo("", 0);
+            return "";
         }
 
         // Stop the scroller if it is scrolling
@@ -206,7 +206,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         int scrollY = getCurrentScrollY();
         int availableScrollHeight = getAvailableScrollHeight();
         mFastScrollHelper.smoothScrollToSection(scrollY, availableScrollHeight, lastInfo);
-        return new PositionThumbInfo(lastInfo.sectionName, lastInfo.color);
+        return lastInfo.sectionName;
     }
 
     @Override
@@ -423,6 +423,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     }
 
     public void setScrollbarColor(int color) {
-        mScrollbar.setColor(color, color);
+        mScrollbar.setColor(color);
     }
 }

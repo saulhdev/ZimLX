@@ -316,9 +316,6 @@
     <dimen name="dashboard_tile_image_margin_start">16dp</dimen>
     <dimen name="dashboard_tile_image_margin_end">20dp</dimen>
 
-    <!-- same as vertical_drag_handle_size -->
-    <dimen name="shelf_surface_offset">18dp</dimen>
-
     <dimen name="margin_normal">16dp</dimen>
 
     <dimen name="snackbar_content_height">32dp</dimen>
@@ -333,4 +330,7 @@
     <dimen name="button_corner_radius">4dp</dimen>
     <dimen name="dialog_horizontal_padding">24dp</dimen>
 
+    <dimen name="shelf_surface_radius">16dp</dimen>
+    <!-- same as vertical_drag_handle_size -->
+    <dimen name="shelf_surface_offset">18dp</dimen>
 </resources>

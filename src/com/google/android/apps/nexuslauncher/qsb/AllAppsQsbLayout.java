@@ -28,7 +28,6 @@ import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
-import org.zimmob.zimlx.theme.ThemeManager;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
@@ -44,7 +43,6 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     boolean mDoNotRemoveFallback;
     private ZimPreferences prefs;
     private int mForegroundColor;
-    private int mBackgroundColor;
     private Context mContext;
 
     private final boolean mLowPerformanceMode;
@@ -69,47 +67,49 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
         prefs = ZimPreferences.Companion.getInstanceNoCreate();
         mLowPerformanceMode = prefs.getLowPerformanceMode();
-    }
 
-    public void applyTheme() {
-        prefs = ZimPreferences.Companion.getInstanceNoCreate();
         mForegroundColor = prefs.getAccentColor();
-        Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
-        Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
-                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
-
-        int theme = prefs.getLauncherTheme();
-        if (themeBlack)
-            theme = 12;
-        else if (themeDark)
-            theme = 4;
-
-        switch (theme) {
-            case 0: //light theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
-                break;
-
-            case 4://dark theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
-                break;
-
-            case 12://black theme
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
-                break;
-
-            default:
-                mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
-
-        }
-
-        ay(mBackgroundColor);
-        az(this.Dc);
     }
 
+    /*    public void applyTheme() {
+            prefs = ZimPreferences.Companion.getInstanceNoCreate();
+            mForegroundColor = prefs.getAccentColor();
+            Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+            Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
+                    ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+
+            int theme = prefs.getLauncherTheme();
+            if (themeBlack)
+                theme = 12;
+            else if (themeDark)
+                theme = 4;
+
+            switch (theme) {
+                case 0: //light theme
+                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+                    break;
+
+                case 4://dark theme
+                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
+                    break;
+
+                case 12://black theme
+                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
+                    break;
+
+                default:
+                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
+
+            }
+
+            ay(mBackgroundColor);
+            az(this.Dc);
+        }
+    */
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHint = findViewById(R.id.qsb_hint);
-        applyTheme();
+        //applyTheme();
     }
 
     public void setInsets(Rect rect) {

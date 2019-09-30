@@ -36,7 +36,7 @@ public class CustomAppFilter extends ZimAppFilter {
         return getHiddenApps(context).contains(key.toString());
     }
 
-    @SuppressWarnings("ConstantConditions") // This can't be null anyway
+    // This can't be null anyway
     public static Set<String> getHiddenApps(Context context) {
         return new HashSet<>(Utilities.getZimPrefs(context).getHiddenAppSet());
     }

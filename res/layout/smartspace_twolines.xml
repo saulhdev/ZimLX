@@ -37,13 +37,13 @@
         android:layout_weight="1.25"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
-        android:textColor="?workspaceTextColor"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="@dimen/smartspace_title_size"
         android:visibility="gone"
         launcher:ambientShadowBlur="3dp"
-        launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+        launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
         launcher:keyShadowBlur="2dp"
-        launcher:keyShadowColor="?workspaceKeyShadowColor"
+        launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
         launcher:keyShadowOffset="0.5dip"
         android:layout_marginBottom="4dp"
         tools:visibility="visible" />
@@ -55,12 +55,12 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:maxLines="1"
-        android:textColor="?workspaceTextColor"
+        android:textColor="?attr/workspaceTextColor"
         android:textSize="@dimen/smartspace_title_size"
         launcher:ambientShadowBlur="3dp"
-        launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+        launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
         launcher:keyShadowBlur="2dp"
-        launcher:keyShadowColor="?workspaceKeyShadowColor"
+        launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
         launcher:keyShadowOffset="0.5dip" />
 
     <LinearLayout
@@ -94,12 +94,12 @@
             android:maxLines="1"
             android:paddingBottom="4dp"
             android:paddingTop="4dp"
-            android:textColor="?workspaceTextColor"
+            android:textColor="?attr/workspaceTextColor"
             android:textSize="16dp"
             launcher:ambientShadowBlur="3dp"
-            launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+            launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
             launcher:keyShadowBlur="2dp"
-            launcher:keyShadowColor="?workspaceKeyShadowColor"
+            launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
             launcher:keyShadowOffset="0.5dip" />
 
         <LinearLayout
@@ -140,12 +140,12 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:drawablePadding="6dp"
-                android:textColor="?workspaceTextColor"
+                android:textColor="?attr/workspaceTextColor"
                 android:textSize="16dp"
                 launcher:ambientShadowBlur="3dp"
-                launcher:ambientShadowColor="?workspaceAmbientShadowColor"
+                launcher:ambientShadowColor="?attr/workspaceAmbientShadowColor"
                 launcher:keyShadowBlur="2dp"
-                launcher:keyShadowColor="?workspaceKeyShadowColor"
+                launcher:keyShadowColor="?attr/workspaceKeyShadowColor"
                 launcher:keyShadowOffset="0.5dip" />
         </LinearLayout>
     </LinearLayout>

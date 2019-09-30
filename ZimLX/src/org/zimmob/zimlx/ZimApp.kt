@@ -28,6 +28,7 @@ import android.provider.Settings
 import androidx.annotation.Keep
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
+import org.zimmob.zimlx.flowerpot.Flowerpot
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController
 import org.zimmob.zimlx.theme.ThemeManager
 
@@ -37,16 +38,20 @@ class ZimApp : Application() {
     val recentsEnabled by lazy { checkRecentsComponent() }
     var accessibilityService: ZimAccessibilityService? = null
 
-    init {
-        registerActivityLifecycleCallbacks(activityHandler)
-    }
-
     override fun onCreate() {
         super.onCreate()
 
         ThemeManager.getInstance(this)
         BlurWallpaperProvider.getInstance(this)
     }
+
+    fun onLauncherAppStateCreated() {
+        registerActivityLifecycleCallbacks(activityHandler)
+
+        BlurWallpaperProvider.getInstance(this)
+        Flowerpot.Manager.getInstance(this)
+    }
+
 
     fun restart(recreateLauncher: Boolean = true) {
         if (recreateLauncher) {
@@ -123,7 +128,7 @@ class ZimApp : Application() {
         val recentsComponent = ComponentName.unflattenFromString(resources.getString(resId))
                 ?: return false
         return recentsComponent.packageName == packageName
-        // && recentsComponent.className == RecentsActivity::class.java.name
+        //&& recentsComponent.className == RecentsActivity::class.java.name
     }
 
 }

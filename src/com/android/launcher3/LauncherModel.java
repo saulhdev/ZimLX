@@ -286,11 +286,9 @@ public class LauncherModel extends BroadcastReceiver
     static void checkItemInfo(final ItemInfo item) {
         final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
         final long itemId = item.id;
-        Runnable r = new Runnable() {
-            public void run() {
-                synchronized (sBgDataModel) {
-                    checkItemInfoLocked(itemId, item, stackTrace);
-                }
+        Runnable r = () -> {
+            synchronized (sBgDataModel) {
+                checkItemInfoLocked(itemId, item, stackTrace);
             }
         };
         runOnWorkerThread(r);
@@ -712,6 +710,12 @@ public class LauncherModel extends BroadcastReceiver
                 bindUpdatedWidgets(dataModel);
             }
         });
+    }
+
+    public List<LauncherAppWidgetInfo> getLoadedWidgets() {
+        synchronized (sBgDataModel) {
+            return new ArrayList<>(sBgDataModel.appWidgets);
+        }
     }
 
     public void dumpState(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {

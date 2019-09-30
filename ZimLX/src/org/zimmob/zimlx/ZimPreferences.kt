@@ -62,9 +62,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val updateBlur = { updateBlur() }
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
-
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
-
+    private val reloadDockStyle = {
+        LauncherAppState.getIDP(context).onDockStyleChanged(this)
+        recreate()
+    }
     private val zimConfig = Config.getInstance(context)
 
     var restoreSuccess by BooleanPref("pref_restoreSuccess", false)
@@ -82,37 +84,38 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
+    val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     fun setMinibarEnable(enable: Boolean) {
         sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
     }
 
-    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, doNothing)
-
+    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, restart)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
 
     //dock
+    val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockRadius get() = dockStyles.currentStyle.radius
     val dockShadow get() = dockStyles.currentStyle.enableShadow
-    val dockShowArrow by BooleanPref("pref_enableArrow", true, recreate)
+    val dockShowArrow get() = dockStyles.currentStyle.enableArrow
+    val dockOpacity get() = dockStyles.currentStyle.opacity
     val dockScale by FloatPref(ZimFlags.HOTSEAT_ICON_SCALE, 1f, recreate)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
-    val dockStyles = DockStyle.StyleManager(this, restart, resetAllApps)
-    val dockHide by BooleanPref(ZimFlags.HOTSEAT_HIDE, false, recreate)
+    val dockHide get() = dockStyles.currentStyle.hide
     val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
     val dockGridSize by dockGridSizeDelegate
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", false, doNothing)
     val transparentDock by BooleanPref("pref_isHotseatTransparent", false, recreate)
-    val dockShouldUseExtractedColors by BooleanPref("pref_hotseatShouldUseExtractedColors", true, recreate)
-    val dockShouldUseCustomOpacity by BooleanPref("pref_hotseatShouldUseCustomOpacity", false, recreate)
     private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
     val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
     val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
+    val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
+    val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
 
     // App Drawer
     val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)
@@ -128,7 +131,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
     private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
     val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
-
+    val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
     val drawerGridSize by drawerGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
@@ -158,11 +161,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
 
+    var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
+
+
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
             if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()) {
-
         override fun unflattenValue(value: String) = value
     }
     val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
@@ -171,14 +176,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds",
             zimConfig.enableColorizedLegacyTreatment(), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment(), reloadIcons)
-    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).onExtractedColorsChanged(null) }
+    var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).updateTheme() }
 
     val blurRadius by FloatPref("pref_blurRadius", zimConfig.defaultBlurStrength, updateBlur)
     var enableBlur by BooleanPref("pref_enableBlur", zimConfig.defaultEnableBlur(), updateBlur)
-    val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, recreate)
-    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
-    val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, recreate)
-
+    val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, restart)
+    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, restart)
+    val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, restart)
     val allAppsColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
@@ -572,6 +576,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
     }
 
+    open inner class DimensionPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
+            PrefDelegate<Float>(key, defaultValue, onChange) {
+
+        override fun onGetValue(): Float = dpToPx(sharedPrefs.getFloat(getKey(), defaultValue))
+
+        override fun onSetValue(value: Float) {
+            edit { putFloat(getKey(), pxToDp(value)) }
+        }
+    }
+
     open inner class FloatPref(key: String, defaultValue: Float = 0f, onChange: () -> Unit = doNothing) :
             PrefDelegate<Float>(key, defaultValue, onChange) {
         override fun onGetValue(): Float = sharedPrefs.getFloat(getKey(), defaultValue)
@@ -802,18 +816,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         val showAssistant = prefs.getBoolean("pref_showMic", false)
         putBoolean("opa_enabled", showAssistant)
         putBoolean("opa_assistant", showAssistant)
-
-        // Colors
-        /*ColorEngine.setColor(
-                this,
-                ColorEngine.Resolvers.WORKSPACE_ICON_LABEL,
-                prefs.getInt("pref_workspaceLabelColor", Color.WHITE));
-        if (prefs.getBoolean("pref_allAppsCustomLabelColor", false)) {
-            ColorEngine.setColor(this,
-                    ColorEngine.Resolvers.ALLAPPS_ICON_LABEL,
-                    prefs.getInt("pref_allAppsCustomLabelColor",
-                            0x666666 or 0xff shl 24));
-        }*/
 
         // Theme
         putString("pref_launcherTheme",

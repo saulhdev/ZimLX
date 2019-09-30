@@ -1,13 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <Preference
-        app:iconSpaceReserved="false"
-        android:key="pref_key__minibar"
-        android:summary="@string/pref_summary__minibar"
-        android:title="@string/pref_title__minibar" />
-
     <Preference
         android:key="pref_key__dash_edit"
         android:fragment="org.zimmob.zimlx.minibar.DashFragment"

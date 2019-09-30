@@ -110,8 +110,6 @@ public class ItemLongClickListener {
         // that is subsequently removed from the workspace in startBinding().
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
-        if (launcher.getDragController().isDragging()) return false;
-
-        return true;
+        return !launcher.getDragController().isDragging();
     }
 }

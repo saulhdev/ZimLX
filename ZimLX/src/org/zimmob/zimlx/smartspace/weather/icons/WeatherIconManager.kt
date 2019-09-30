@@ -50,7 +50,7 @@ class WeatherIconManager(private val context: Context) {
                     it.loadLabel(pm).toString(),
                     it.activityInfo.packageName,
                     recoloringMode)
-        }?.let { addAll(it) }
+        }.let { addAll(it) }
     }
 
     fun getIcon(which: Icon, night: Boolean) = getProvider().getIcon(which, night)

@@ -24,10 +24,13 @@ import android.graphics.drawable.Drawable
 import android.os.UserHandle
 import android.util.Log
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.Keep
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.views.OptionsPopupView
 import com.android.launcher3.widget.WidgetsFullSheet
@@ -240,12 +243,12 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         if (view == null) {
             val down = controller.touchDownPoint
-            //controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
+            controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
             //onGestureTrigger(controller, it)
         }
             return
         }
-        /*val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
+        val opts = view.let { controller.launcher.getActivityLaunchOptionsAsBundle(it) }
         when (type) {
             "app" -> {
                 try {
@@ -270,7 +273,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                 }
             }
         }
-    }*/
+    }
 }
 
 @Keep

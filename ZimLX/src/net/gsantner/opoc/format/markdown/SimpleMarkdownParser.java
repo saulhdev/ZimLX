@@ -33,7 +33,7 @@ import java.io.InputStreamReader;
 /**
  * Simple Markdown Parser
  */
-@SuppressWarnings({"WeakerAccess", "CaughtExceptionImmediatelyRethrown", "SameParameterValue", "unused", "SpellCheckingInspection", "RepeatedSpace", "SingleCharAlternation", "Convert2Lambda"})
+@SuppressWarnings({"WeakerAccess", "SameParameterValue", "unused", "SpellCheckingInspection", "RepeatedSpace", "SingleCharAlternation", "Convert2Lambda"})
 public class SimpleMarkdownParser {
     public final static SmpFilter FILTER_ANDROID_TEXTVIEW;
     public final static SmpFilter FILTER_WEB = new SmpFilter() {

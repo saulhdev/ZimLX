@@ -30,4 +30,11 @@
         android:icon="@drawable/ic_edit_no_shadow"
         android:persistent="true"
         android:title="@string/action_preferences" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_iconPopup_dash"
+        android:icon="@drawable/ic_add_box"
+        android:persistent="true"
+        android:title="@string/dash_add_target_label" />
 </androidx.preference.PreferenceScreen>

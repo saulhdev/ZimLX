@@ -28,7 +28,6 @@
         <item name="android:textAppearanceListItem">
             @style/SettingsTheme.PreferenceTheme.Preference.Title
         </item>
-
     </style>
 
     <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/BaseLauncherTheme">
@@ -89,6 +88,8 @@
         <item name="isMainColorDark">true</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg_dark</item>
         <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dark.Dialog</item>
+
+        <item name="android:colorAccent">@color/colorAccentDark</item>
     </style>
 
     <style name="LauncherTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark">
@@ -108,7 +109,7 @@
     <style name="AppTheme.Dark" parent="@style/LauncherTheme.Dark" />
     <style name="AppTheme.Dark.DarkText" parent="@style/LauncherTheme.Dark.DarkText" />
 
-    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />BaseIcon
+    <style name="AppTheme.Black" parent="@style/LauncherTheme.Black" />
     <style name="AppTheme.Black.DarkText" parent="@style/LauncherTheme.Black.DarkText" />
 
     <style name="LauncherTheme.Black" parent="@style/LauncherTheme.Dark">
@@ -256,6 +257,12 @@
         <item name="bottomSheetScrimColor">@android:color/black</item>
         <item name="actionOverflowMenuStyle">@style/SettingsTheme.PopupMenu.Overflow</item>
         <item name="popupMenuStyle">@style/SettingsTheme.PopupMenu</item>
+
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
     </style>
 
     <style name="SettingsTheme.BottomSheetDialog.Light" parent="Theme.Design.Light.BottomSheetDialog">
@@ -291,6 +298,12 @@
         <item name="settingsSearchBackground">@color/settings_background_black_2dp</item>
         <item name="settingsPopupBackground">@color/settings_background_black_8dp</item>
         <item name="actionBarTheme">@style/SettingsTheme.V2.Black.ActionBar</item>
+
+        <item name="workspaceTextColor">#FF212121</item>
+        <item name="workspaceShadowColor">@android:color/transparent</item>
+        <item name="workspaceAmbientShadowColor">@android:color/transparent</item>
+        <item name="workspaceKeyShadowColor">@android:color/transparent</item>
+        <item name="isWorkspaceDarkText">true</item>
     </style>
 
     <style name="SettingsTheme.V2.Black.ActionBar" parent="SettingsTheme.V2.Black">
@@ -524,7 +537,6 @@
         <item name="tabIndicator">@drawable/tab_indicator</item>
         <item name="android:background">?colorBackgroundFloating</item>
     </style>
-
 
     <style name="SettingsTheme.Widget.Button" parent="Widget.AppCompat.Button.Borderless">
         <item name="customFontType">button</item>

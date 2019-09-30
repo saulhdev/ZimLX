@@ -51,17 +51,15 @@ import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController;
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController.CardData;
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController.Line;
+import org.zimmob.zimlx.smartspace.ZimSmartspaceController.WeatherData;
 import org.zimmob.zimlx.views.SmartspacePreview;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.Line;
-import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.Listener;
-import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.WeatherData;
-
 public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAnimator.AnimatorUpdateListener,
-        View.OnClickListener, View.OnLongClickListener, Runnable, Listener {
+        View.OnClickListener, View.OnLongClickListener, Runnable, ZimSmartspaceController.Listener {
     private TextView mSubtitleWeatherText;
     private final TextPaint dB;
     private View mTitleSeparator;

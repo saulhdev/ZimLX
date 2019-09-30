@@ -87,6 +87,9 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.views.ZimBackgroundView;
+
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Set;
@@ -1259,6 +1262,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // device I've tried, translating the launcher causes things to get quite laggy.
         mLauncher.getDragLayer().setTranslationX(transX);
         mLauncher.getDragLayer().getAlphaProperty(ALPHA_INDEX_OVERLAY).setValue(alpha);
+
+        if (mLauncher instanceof ZimLauncher) {
+            ((ZimLauncher) mLauncher).getBackground().getBlurAlphas().getProperty(
+                    ZimBackgroundView.ALPHA_INDEX_OVERLAY).setValue(1 - alpha);
+        }
+        mLauncher.mAllAppsController.setOverlayScroll(transX);
     }
 
     /**

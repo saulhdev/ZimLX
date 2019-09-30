@@ -62,7 +62,7 @@ public class GridSizeMigrationTask {
 
     private final ContentValues mTempValues = new ContentValues();
     protected final ArrayList<Long> mEntryToRemove = new ArrayList<>();
-    private final ArrayList<ContentProviderOperation> mUpdateOperations = new ArrayList<>();
+    public final ArrayList<ContentProviderOperation> mUpdateOperations = new ArrayList<>();
     protected final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
     private final HashSet<String> mValidPackages;
 
@@ -112,7 +112,7 @@ public class GridSizeMigrationTask {
      * Applied all the pending DB operations
      * @return true if any DB operation was commited.
      */
-    private boolean applyOperations() throws Exception {
+    public boolean applyOperations() throws Exception {
         // Update items
         if (!mUpdateOperations.isEmpty()) {
             mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, mUpdateOperations);

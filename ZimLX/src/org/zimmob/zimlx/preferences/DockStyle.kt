@@ -21,7 +21,6 @@ import org.zimmob.zimlx.PropertyDelegate
 import org.zimmob.zimlx.ZimPreferences
 import kotlin.math.roundToInt
 import kotlin.reflect.KMutableProperty0
-
 abstract class DockStyle(protected val manager: StyleManager) {
 
     protected val gradientProperty = manager::dockGradient
@@ -52,7 +51,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
         override var enableArrow
             get() = showArrowProperty.get()
             set(value) {
-                setProp(showArrowProperty, value, defaultArrow)
+                showArrowProperty.set(value)
             }
     }
 
@@ -139,8 +138,8 @@ abstract class DockStyle(protected val manager: StyleManager) {
         var dockOpacity by prefs.AlphaPref("pref_hotseatCustomOpacity", dockDefaultOpacity, onChangeListener)
         var dockRadius by prefs.FloatPref("pref_dockRadius", 16f, onChangeListener)
         var dockShadow by prefs.BooleanPref("pref_dockShadow", true, onChangeListener)
-        var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", true, onChangeListener)
-        var dockGradient by prefs.BooleanPref("pref_dockGradient", true, ::onGradientChanged)
+        var dockShowArrow by prefs.BooleanPref("pref_hotseatShowArrow", false, onChangeListener)
+        var dockGradient by prefs.BooleanPref("pref_dockGradient", false, ::onGradientChanged)
         var dockHidden by prefs.BooleanPref("pref_hideHotseat", false, onChangeListener)
 
         val styles = arrayListOf(CustomStyle(this), RoundedStyle(this), GradientStyle(this), FlatStyle(this),
@@ -182,7 +181,7 @@ abstract class DockStyle(protected val manager: StyleManager) {
                 Pair("enableShadow", DockStyle::enableShadow),
                 Pair("radius", DockStyle::radius),
                 Pair("opacityPref", DockStyle::opacityPref),
-                Pair("pref_enableArrow", DockStyle::enableArrow),
+                Pair("enableArrow", DockStyle::enableArrow),
                 Pair("hide", DockStyle::hide))
     }
 }

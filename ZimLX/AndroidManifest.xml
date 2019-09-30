@@ -197,12 +197,6 @@
                 <data android:pathPattern=".*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\..*\\.zbk" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="org.zimmob.zimlx.minibar.MinibarEditActivity"
-            android:label="Edit Item"
-            android:parentActivityName="org.zimmob.zimlx.ZimLauncher"
-            android:theme="@style/SettingsTheme.V2" />
-
         <!-- Apply directly from iconpack -->
         <activity
             android:name="org.zimmob.zimlx.iconpack.ApplyIconPackActivity"

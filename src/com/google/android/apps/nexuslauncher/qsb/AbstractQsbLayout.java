@@ -35,6 +35,9 @@ import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
@@ -52,8 +55,7 @@ import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.graphics.NinePatchDrawHelper;
 
-import androidx.annotation.Nullable;
-import androidx.core.content.ContextCompat;
+import static org.zimmob.zimlx.ZimUtilsKt.round;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener,
         OnClickListener, OnLongClickListener, Insettable, SearchProviderController.OnProviderChangeListener {
@@ -435,12 +437,21 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return new InsetDrawable(ripple, getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin));
     }
 
-    private float getCornerRadius() {
+    protected float getCornerRadius() {
+        return getCornerRadius(getContext(),
+                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+    }
+
+    public static float getCornerRadius(Context context, float defaultRadius) {
+        float radius = round(Utilities.getZimPrefs(context).getSearchBarRadius());
+        if (radius > 0f) {
+            return radius;
+        }
         TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
-            return edgeRadius.getDimension(getResources().getDisplayMetrics());
+            return edgeRadius.getDimension(context.getResources().getDisplayMetrics());
         } else {
-            return Utilities.pxFromDp(100, getResources().getDisplayMetrics());
+            return defaultRadius;
         }
     }
 

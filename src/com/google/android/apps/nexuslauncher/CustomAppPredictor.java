@@ -184,7 +184,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     public boolean isPredictorEnabled() {
-        return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, true);
+        return Utilities.getZimPrefs(mContext).getShowPredictions();
     }
 
     @Override
@@ -261,7 +261,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return getHiddenApps(context).contains(key.toString());
     }
 
-    @SuppressWarnings("ConstantConditions") // This can't be null anyway
+    // This can't be null anyway
     private static Set<String> getHiddenApps(Context context) {
         return new HashSet<>(Utilities.getZimPrefs(context).getHiddenPredictionAppSet());
     }
@@ -279,7 +279,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         private final CustomAppPredictor mPredictor;
         private final List<Listener> mListeners = new ArrayList<>();
 
-        private UiManager(CustomAppPredictor predictor) {
+        public UiManager(CustomAppPredictor predictor) {
             mPredictor = predictor;
         }
 

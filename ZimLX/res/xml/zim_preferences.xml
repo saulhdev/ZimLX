@@ -29,7 +29,7 @@
             app:content="@xml/zim_preferences_dock" />
 
         <org.zimmob.zimlx.settings.ui.SubPreference
-            android:icon="@drawable/ic_app_drawer"
+            android:icon="@drawable/ic_apps_24dp"
             android:summary="@string/pref_summary__app_drawer"
             android:title="@string/pref_title__app_drawer"
             app:content="@xml/zim_preferences_app_drawer" />

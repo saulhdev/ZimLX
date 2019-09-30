@@ -31,13 +31,13 @@ import android.view.View;
 import android.view.animation.AccelerateInterpolator;
 import android.view.animation.Interpolator;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Draws a translucent radial gradient background from an initial state with progress 0.0 to a
@@ -74,9 +74,8 @@ public class GradientView extends View implements WallpaperColorInfo.OnChangeLis
         this.mMaskHeight = Utilities.pxFromDp(ALPHA_MASK_HEIGHT_DP, dm);
         this.mMaskWidth = Utilities.pxFromDp(ALPHA_MASK_WIDTH_DP, dm);
         Launcher launcher = Launcher.getLauncher(context);
-        //boolean hideDockGradient = Utilities.getZimPrefs(context).getHideDockGradient();
-        //this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
-        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() ? 0 : 100;
+        boolean hideDockGradient = Utilities.getZimPrefs(context).getDockGradientStyle();
+        this.mAlphaStart = launcher.getDeviceProfile().isVerticalBarLayout() || hideDockGradient ? 0 : 100;
         this.mScrimColor = Themes.getAttrColor(context, R.attr.allAppsScrimColor);
         this.mWallpaperColorInfo = WallpaperColorInfo.getInstance(launcher);
         mAlphaColors = getResources().getInteger(R.integer.extracted_color_gradient_alpha);

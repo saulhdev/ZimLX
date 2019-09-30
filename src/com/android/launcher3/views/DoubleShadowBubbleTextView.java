@@ -20,14 +20,13 @@ import android.content.Context;
 import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.Region;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
-
-import androidx.core.graphics.ColorUtils;
 
 /**
  * Extension of {@link BubbleTextView} which draws two shadows on the text (ambient and key shadows}
@@ -64,11 +63,10 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
                 ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
 
         drawWithoutBadge(canvas);
-        //canvas.save(Canvas.CLIP_SAVE_FLAG);
         canvas.save();
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
-                getScrollY() + getHeight(), Region.Op.INTERSECT);
+                getScrollY() + getHeight());
 
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
                 ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
