@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
@@ -28,6 +29,7 @@ import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
+import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
@@ -63,53 +65,16 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
-        mContext = context;
+        prefs = Utilities.getZimPrefs(context);
 
-        prefs = ZimPreferences.Companion.getInstanceNoCreate();
         mLowPerformanceMode = prefs.getLowPerformanceMode();
 
         mForegroundColor = prefs.getAccentColor();
     }
 
-    /*    public void applyTheme() {
-            prefs = ZimPreferences.Companion.getInstanceNoCreate();
-            mForegroundColor = prefs.getAccentColor();
-            Boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
-            Boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
-                    ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
-
-            int theme = prefs.getLauncherTheme();
-            if (themeBlack)
-                theme = 12;
-            else if (themeDark)
-                theme = 4;
-
-            switch (theme) {
-                case 0: //light theme
-                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
-                    break;
-
-                case 4://dark theme
-                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark);
-                    break;
-
-                case 12://black theme
-                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_dark_bar);
-                    break;
-
-                default:
-                    mBackgroundColor = mContext.getResources().getColor(R.color.qsb_background_drawer_default);
-
-            }
-
-            ay(mBackgroundColor);
-            az(this.Dc);
-        }
-    */
     protected void onFinishInflate() {
         super.onFinishInflate();
         mHint = findViewById(R.id.qsb_hint);
-        //applyTheme();
     }
 
     public void setInsets(Rect rect) {
@@ -201,7 +166,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 setShadowAlpha(((BaseRecyclerView) recyclerView).getCurrentScrollY());
             }
         });
-        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(true);
+        mAppsView.setRecyclerViewVerticalFadingEdgeEnabled(!mLowPerformanceMode);
     }
 
     public final void dM() {
@@ -211,6 +176,10 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
 
     private void dN() {
         az(this.Dc);
+
+        //TODO: MIGRATE TO SUPPORT THEME COLORS
+        ay(Color.WHITE);
+
         h(this.Ds.micStrokeWidth());
         this.Dh = this.Ds.hintIsForAssistant();
         mUseTwoBubbles = useTwoBubbles();
@@ -268,6 +237,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         return !Utilities
                 .getZimPrefs(getContext()).getAllAppsGlobalSearch()
                 || provider instanceof AppSearchSearchProvider
+                || provider instanceof WebSearchProvider
                 || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
     }
 
