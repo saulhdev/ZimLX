@@ -77,6 +77,7 @@ class ThemeOverride(private val themeSet: ThemeSet, val listener: ThemeOverrideL
         override val blackDarkTextTheme = R.style.SettingsTheme_V2_Black_Transparent
     }
 
+
     class LauncherDialog : ThemeSet {
 
         override val lightTheme = android.R.style.Theme_Material_Light

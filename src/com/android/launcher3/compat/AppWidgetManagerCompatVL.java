@@ -26,6 +26,7 @@ import android.os.UserManager;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ComponentKey;
@@ -90,11 +91,16 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         }
         return providers;
     }
+
     @Override
-    public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info,
-                                            Bundle options) {
+    public boolean bindAppWidgetIdIfAllowed(int appWidgetId, AppWidgetProviderInfo info, Bundle options) {
         if (FeatureFlags.GO_DISABLE_WIDGETS) {
             return false;
+        }
+
+        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS
+                && appWidgetId <= LauncherAppWidgetInfo.CUSTOM_WIDGET_ID) {
+            return true;
         }
         return mAppWidgetManager.bindAppWidgetIdIfAllowed(
                 appWidgetId, info.getProfile(), info.provider, options);
@@ -111,6 +117,15 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
                 return LauncherAppWidgetProviderInfo.fromProviderInfo(mContext, info);
             }
         }
+
+        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS && Process.myUserHandle().equals(user)) {
+            for (LauncherAppWidgetProviderInfo info :
+                    CustomWidgetParser.getCustomWidgets(mContext)) {
+                if (info.provider.equals(provider)) {
+                    return info;
+                }
+            }
+        }
         return null;
     }
 
@@ -123,7 +138,15 @@ class AppWidgetManagerCompatVL extends AppWidgetManagerCompat {
         for (UserHandle user : mUserManager.getUserProfiles()) {
             for (AppWidgetProviderInfo info :
                     mAppWidgetManager.getInstalledProvidersForProfile(user)) {
-                result.put(new ComponentKey(info.provider, user), info);
+                if (!isBlacklisted(info.provider.getPackageName()))
+                    result.put(new ComponentKey(info.provider, user), info);
+            }
+        }
+
+        if (FeatureFlags.ENABLE_CUSTOM_WIDGETS) {
+            for (LauncherAppWidgetProviderInfo info :
+                    CustomWidgetParser.getCustomWidgets(mContext)) {
+                result.put(new ComponentKey(info.provider, info.getProfile()), info);
             }
         }
         return result;

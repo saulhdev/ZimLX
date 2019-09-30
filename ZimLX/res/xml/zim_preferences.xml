@@ -44,6 +44,7 @@
             android:icon="@drawable/ic_behavior"
             android:summary="@string/pref_summary__smartspace"
             android:title="@string/pref_title__smartspace"
+            app:hasPreview="true"
             app:content="@xml/zim_preferences_smartspace" />
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
