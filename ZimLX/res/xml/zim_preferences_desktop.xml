@@ -72,4 +72,12 @@
         android:summary="@string/full_width_widgets_pref_summary"
         android:title="@string/full_width_width_widgets_pref_title" />
 
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="true"
+        android:key="pref_showTopShadow"
+        android:persistent="true"
+        android:summary="@string/show_top_shadow_pref_summary"
+        android:title="@string/show_top_shadow_pref_title"
+        app:iconSpaceReserved="false" />
+
 </androidx.preference.PreferenceScreen>
