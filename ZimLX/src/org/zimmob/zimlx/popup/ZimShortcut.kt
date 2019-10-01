@@ -38,13 +38,13 @@ import java.net.URISyntaxException
 class ZimShortcut(private val context: Context) {
 
     private val shortcuts = listOf(
+            ShortcutEntry("dash", DashAdd(), true),
             ShortcutEntry("edit", Edit(), true),
             ShortcutEntry("info", SystemShortcut.AppInfo(), true),
             ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
             ShortcutEntry("install", SystemShortcut.Install(), true),
             ShortcutEntry("remove", Remove(), false),
-            ShortcutEntry("uninstall", Uninstall(), false),
-            ShortcutEntry("dash", DashAdd(), false)
+            ShortcutEntry("uninstall", Uninstall(), false)
     )
 
     inner class ShortcutEntry(key: String, val shortcut: SystemShortcut<*>, enabled: Boolean) {
@@ -95,7 +95,7 @@ class ZimShortcut(private val context: Context) {
     class Remove : SystemShortcut<Launcher>(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label) {
 
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo.id == ItemInfo.NO_ID.toLong()) return null
+            if (itemInfo.id == NO_ID.toLong()) return null
             return if (itemInfo is ShortcutInfo || itemInfo is LauncherAppWidgetInfo || itemInfo is FolderInfo) {
                 View.OnClickListener {
                     AbstractFloatingView.closeAllOpenViews(launcher)
@@ -124,10 +124,26 @@ class ZimShortcut(private val context: Context) {
 
     class DashAdd : SystemShortcut<Launcher>(R.drawable.ic_add_box, R.string.dash_add_target_label) {
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            return null
+            return View.OnClickListener {
+                AbstractFloatingView.closeAllOpenViews(launcher)
+                saveDashItems(launcher, itemInfo)
+            }
         }
+
+        fun saveDashItems(context: Context, itemInfo: ItemInfo) {
+            val prefs = Utilities.getZimPrefs(context)
+            val currentItems = ArrayList(prefs.minibarItems)
+            validateDashItems(itemInfo)
+
+            currentItems.add(itemInfo.targetComponent.toString())
+            prefs.saveDashItems = currentItems.toHashSet()
+        }
+
+        fun validateDashItems(itemInfo: ItemInfo) {
+            //TODO VALIDAR DUPLICADOS Y ELIMINADOS
+        }
+
     }
 
     companion object : ZimSingletonHolder<ZimShortcut>(::ZimShortcut)
-
 }

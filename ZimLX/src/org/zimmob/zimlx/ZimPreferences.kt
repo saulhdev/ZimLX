@@ -90,6 +90,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, restart)
+    var saveDashItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, doNothing)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
 

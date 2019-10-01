@@ -68,7 +68,7 @@
             android:summary="%s"
             app:iconSpaceReserved="false" />
 
-        <ListPreference
+        <androidx.preference.ListPreference
             android:defaultValue="metric"
             android:dependency="pref_smartspace_widget_provider"
             android:entries="@array/unitsTexts"

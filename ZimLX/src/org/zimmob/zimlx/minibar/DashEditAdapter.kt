@@ -3,7 +3,6 @@ package org.zimmob.zimlx.minibar
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Handler
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -21,7 +20,7 @@ import com.android.launcher3.Utilities
 import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_APP
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_ITEM
-import java.util.HashSet
+import java.util.*
 import kotlin.collections.ArrayList
 
 class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.Holder>() {
@@ -97,7 +96,6 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
                 } else if (item.info.viewType == VIEW_TYPE_DASH_APP) {
                     items.add(item.info.component)
                 }
-                Log.d("DashEditAdapter", "Item " + item.info.title)
 
             } else if (item is DividerItem)
                 break
