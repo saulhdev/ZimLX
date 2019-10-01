@@ -57,6 +57,13 @@
         android:dependency="pref_hideAppLabels"
         android:persistent="true" />
 
+    <!--
+    <org.zimmob.zimlx.settings.ui.PreferenceDialogPreference
+        android:key="pref_iconPopupMenu"
+        android:title="@string/pref_icon_popup_menu"
+        app:iconSpaceReserved="false"
+        app:content="@xml/zim_preferences_desktop_icon_popup_menu" /> -->
+
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         android:defaultValue="@bool/allow_rotation"

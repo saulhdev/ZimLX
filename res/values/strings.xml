@@ -499,8 +499,9 @@
     <string name="title__desktop_overlap">Overlap Placement</string>
     <string name="title__desktop_smartspace">Show Smart space widget</string>
     <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
-
     <string name="title_use_pill_qsb">Use pill style search bar</string>
+    <string name="show_top_shadow_pref_title">Top shadow</string>
+    <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
 
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
@@ -667,6 +668,7 @@
     <string name="title_search_hidden_apps">Find hidden apps</string>
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
+
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__about_app" translatable="false">pref_key__about_app</string>
     <string name="pref_key__about_rate_app" translatable="false">pref_key__about_rate_app</string>

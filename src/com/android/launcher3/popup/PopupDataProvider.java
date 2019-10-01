@@ -84,7 +84,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     public PopupDataProvider(Launcher launcher) {
         mLauncher = launcher;
         mSystemShortcuts = new SystemShortcut[]{
-                //Utilities.getOverrideObject(SystemShortcut.Custom.class, launcher, R.string.custom_shortcut_class),
                 new SystemShortcut.AppInfo(),
                 new SystemShortcut.Widgets(),
                 new SystemShortcut.Install()
@@ -188,8 +187,6 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return Collections.EMPTY_LIST;
         }
 
-        //List<String> ids = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-        //return ids == null ? Collections.EMPTY_LIST : ids;
         List<String> ids = new ArrayList<>();
         if (!Utilities.ATLEAST_NOUGAT_MR1) {
             for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,

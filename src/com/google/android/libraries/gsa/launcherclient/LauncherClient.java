@@ -387,12 +387,10 @@ public class LauncherClient {
         String pkg = context.getPackageName();
         return new Intent("com.android.launcher3.WINDOW_OVERLAY")
                 .setPackage(bridgeInfo != null ? bridgeInfo.getPackageName() : "com.google.android.googlequicksearchbox")
-                .setData(Uri.parse(new StringBuilder(pkg.length() + 18)
-                        .append("app://")
-                        .append(pkg)
-                        .append(":")
-                        .append(Process.myUid())
-                        .toString())
+                .setData(Uri.parse("app://" +
+                        pkg +
+                        ":" +
+                        Process.myUid())
                         .buildUpon()
                         .appendQueryParameter("v", Integer.toString(7))
                         .appendQueryParameter("cv", Integer.toString(9))

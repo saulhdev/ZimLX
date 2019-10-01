@@ -29,9 +29,10 @@ import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.AppSearchSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider;
 import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
-import org.zimmob.zimlx.theme.ThemeManager;
 
 import java.util.Objects;
+
+import static org.zimmob.zimlx.theme.ThemeManager.Companion;
 
 public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManager, o {
 
@@ -50,7 +51,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     private int mBackgroundColor;
     private Context mContext;
 
-    private final boolean mLowPerformanceMode;
+    private boolean mLowPerformanceMode;
 
     public AllAppsQsbLayout(Context context) {
         this(context, null);
@@ -68,17 +69,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         this.Dt = getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         this.Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
-        mLowPerformanceMode = prefs.getLowPerformanceMode();
+        mContext = context;
         applyTheme();
     }
 
     private void applyTheme() {
         prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        mLowPerformanceMode = prefs.getLowPerformanceMode();
         mForegroundColor = prefs.getAccentColor();
-        boolean themeBlack = ThemeManager.Companion.isBlack(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
-        boolean themeDark = ThemeManager.Companion.isDark(ThemeManager.Companion.getInstance(mContext).getCurrentFlags()) ||
-                ThemeManager.Companion.isDarkText(ThemeManager.Companion.getInstance(mContext).getCurrentFlags());
+        boolean themeBlack = Companion.isBlack(Companion.getInstance(mContext).getCurrentFlags());
+        boolean themeDark = Companion.isDark(Companion.getInstance(mContext).getCurrentFlags()) ||
+                Companion.isDarkText(Companion.getInstance(mContext).getCurrentFlags());
 
+        mBackgroundColor = 0;
         int theme = prefs.getLauncherTheme();
         if (themeBlack)
             theme = 12;
@@ -331,7 +334,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
                 this.Dv = c(
                         getResources().getDimension(R.dimen.hotseat_qsb_scroll_shadow_blur_radius),
                         getResources().getDimension(R.dimen.hotseat_qsb_scroll_key_shadow_offset),
-                        0);
+                        0, true);
             }
             this.mShadowHelper.paint.setAlpha(this.mShadowAlpha);
             a(this.Dv, canvas);
@@ -378,5 +381,19 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     protected String getClipboardText() {
         return shouldUseFallbackSearch() ? super.getClipboardText() : null;
+    }
+
+    @Override
+    protected void clearMainPillBg(Canvas canvas) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
+            drawPill(mClearShadowHelper, mClearBitmap, canvas);
+        }
+    }
+
+    @Override
+    protected void clearPillBg(Canvas canvas, int left, int top, int right) {
+        if (!mLowPerformanceMode && mClearBitmap != null) {
+            mClearShadowHelper.draw(mClearBitmap, canvas, left, top, right);
+        }
     }
 }

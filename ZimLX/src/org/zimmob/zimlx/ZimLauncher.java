@@ -7,7 +7,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -245,7 +244,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         currentEditInfo = itemInfo;
         Boolean folderInfo = itemInfo instanceof FolderInfo;
-        Log.e(TAG, "FOLDER INFO " + folderInfo);
         Intent intent = EditIconActivity
                 .Companion
                 .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
