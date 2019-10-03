@@ -15,7 +15,7 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zimmob.zimlx.settings.controllers
+package org.zimmob.zimlx.settings.ui.controllers
 
 import android.content.Context
 import android.content.pm.PackageManager

@@ -15,15 +15,22 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package org.zimmob.zimlx.settings.controllers
+
+package org.zimmob.zimlx.settings.ui.controllers
 
 import android.content.Context
 import androidx.annotation.Keep
-import com.android.launcher3.graphics.IconShapeOverride
+import androidx.preference.Preference
+import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.settings.ui.PreferenceController
 
 @Keep
-class IconShapeOverrideController(context: Context) : PreferenceController(context) {
+class IconPackMaskingController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = IconShapeOverride.isSupported(context)
+    override val isVisible = IconPackManager.getInstance(context).maskSupported()
+
+    override fun onPreferenceAdded(preference: Preference): Boolean {
+        // Don't remove from ui because this is already handled by SettingsActivity
+        return true
+    }
 }

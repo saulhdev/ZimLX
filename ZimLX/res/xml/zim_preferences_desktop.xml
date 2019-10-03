@@ -23,6 +23,7 @@
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
+        app:controllerClass=".AddIconToHomeController"
         android:defaultValue="true"
         android:key="pref_add_icon_to_home"
         android:persistent="true"

@@ -14,23 +14,16 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-
-package org.zimmob.zimlx.settings.controllers
+package org.zimmob.zimlx.settings.ui.controllers
 
 import android.content.Context
 import androidx.annotation.Keep
-import androidx.preference.Preference
-import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.settings.ui.PreferenceController
 
 @Keep
-class IconPackMaskingController(context: Context) : PreferenceController(context) {
+class AppSuggestionsController(context: Context) : PreferenceController(context) {
 
-    override val isVisible = IconPackManager.getInstance(context).maskSupported()
-
-    override fun onPreferenceAdded(preference: Preference): Boolean {
-        // Don't remove from ui because this is already handled by SettingsActivity
-        return true
-    }
+    /*override val summary = context.getString(if (TouchInteractionService.isConnected())
+        R.string.summary_app_suggestions_lawnstep else R.string.summary_app_suggestions)
+    */
 }

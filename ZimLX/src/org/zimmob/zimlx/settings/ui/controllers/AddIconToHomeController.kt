@@ -14,16 +14,16 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.zimmob.zimlx.settings.controllers
+
+package org.zimmob.zimlx.settings.ui.controllers
 
 import android.content.Context
 import androidx.annotation.Keep
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.settings.ui.PreferenceController
 
 @Keep
-class AppSuggestionsController(context: Context) : PreferenceController(context) {
+class AddIconToHomeController(context: Context) : PreferenceController(context) {
 
-    /*override val summary = context.getString(if (TouchInteractionService.isConnected())
-        R.string.summary_app_suggestions_lawnstep else R.string.summary_app_suggestions)
-        */
+    override val isVisible = Utilities.ATLEAST_OREO
 }
