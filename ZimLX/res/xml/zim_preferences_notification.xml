@@ -39,58 +39,6 @@
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
-        android:key="prefCat_searchbarAppearance"
-        android:title="@string/searchbar_appearance_title"
-        app:iconSpaceReserved="false">
-
-        <org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
-            android:defaultValue="@string/config_default_search_provider"
-            android:key="pref_globalSearchProvider"
-            android:title="@string/pref_global_search_provider"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="false"
-            android:key="opa_enabled"
-            android:persistent="true"
-            android:summary="@string/pref_show_assistant_summary"
-            android:title="@string/pref_show_assistant_title"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="true"
-            android:dependency="opa_enabled"
-            android:key="opa_assistant"
-            android:persistent="true"
-            android:summary="@string/pref_show_as_assistant_summary"
-            android:title="@string/action_assistant"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="false"
-            android:key="pref_bubbleSearchStyle"
-            android:title="@string/bubble_searchbar"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="true"
-            android:key="pref_search_hidden_apps"
-            android:summary="@string/summary__app_search_hidden"
-            android:title="@string/title__app_search_hidden"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
-            android:key="pref_searchbarRadius"
-            android:title="@string/pref_search_bar_radius"
-            app:defaultSeekbarValue="-1.0"
-            app:maxValue="24"
-            app:minValue="0.0"
-            app:steps="24"
-            app:summaryFormat="%.0fdp" />
-
-    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
-
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/pref_category__gestures">
 
         <org.zimmob.zimlx.gestures.ui.GesturePreference

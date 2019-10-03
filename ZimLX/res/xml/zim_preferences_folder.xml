@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
+        android:key="prefCat_searchbarAppearance"
+        android:title="@string/searchbar_appearance_title"
+        app:iconSpaceReserved="false">
+
+        <org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
+            android:defaultValue="@string/config_default_search_provider"
+            android:key="pref_globalSearchProvider"
+            android:title="@string/pref_global_search_provider"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="opa_enabled"
+            android:persistent="true"
+            android:summary="@string/pref_show_assistant_summary"
+            android:title="@string/pref_show_assistant_title"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:dependency="opa_enabled"
+            android:key="opa_assistant"
+            android:persistent="true"
+            android:summary="@string/pref_show_as_assistant_summary"
+            android:title="@string/action_assistant"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="pref_bubbleSearchStyle"
+            android:title="@string/bubble_searchbar"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:key="pref_search_hidden_apps"
+            android:summary="@string/summary__app_search_hidden"
+            android:title="@string/title__app_search_hidden"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
+            android:key="pref_searchbarRadius"
+            android:title="@string/pref_search_bar_radius"
+            app:defaultSeekbarValue="-1.0"
+            app:maxValue="24"
+            app:minValue="0.0"
+            app:steps="24"
+            app:summaryFormat="%.0fdp" />
+
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
+
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
+        android:key="prefCat_searchbarAppearance"
+        android:title="@string/searchbar_appearance_title"
+        app:iconSpaceReserved="false">
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/folderBackground"
+            android:key="pref_key__folder_background"
+            android:title="@string/title__folder_background"
+            app:iconSpaceReserved="false"
+            app:cpv_dialogTitle="@string/title__folder_background"
+            app:cpv_showAlphaSlider="true" />
+
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
+
+
+</androidx.preference.PreferenceScreen>
