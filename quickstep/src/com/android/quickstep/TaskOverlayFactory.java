@@ -26,8 +26,6 @@ import com.android.launcher3.util.Preconditions;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
-import androidx.annotation.AnyThread;
-
 /**
  * Factory class to create and add an overlays on the TaskView
  */
@@ -42,11 +40,6 @@ public class TaskOverlayFactory {
                     context.getApplicationContext(), R.string.task_overlay_factory_class);
         }
         return sInstance;
-    }
-
-    @AnyThread
-    public boolean needAssist() {
-        return false;
     }
 
     public TaskOverlay createOverlay(View thumbnailView) {

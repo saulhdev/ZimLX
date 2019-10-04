@@ -30,7 +30,7 @@ import android.os.Bundle;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.os.Process;
+import android.support.annotation.WorkerThread;
 import android.util.Log;
 import android.util.LruCache;
 import android.util.SparseArray;
@@ -52,8 +52,6 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
-
-import androidx.annotation.WorkerThread;
 
 /**
  * Singleton class to load and manage recents model.
@@ -234,6 +232,7 @@ public class RecentsModel extends TaskStackChangeListener {
 
     public void onStart() {
         mRecentsTaskLoader.startLoader(mContext);
+        mRecentsTaskLoader.getHighResThumbnailLoader().setVisible(true);
     }
 
     public void onTrimMemory(int level) {
@@ -255,10 +254,6 @@ public class RecentsModel extends TaskStackChangeListener {
                     "Failed to notify SysUI of overview shown from " + (fromHome ? "home" : "app")
                             + ": ", e);
         }
-    }
-
-    public void resetAssistCache() {
-        mCachedAssistData.clear();
     }
 
     @WorkerThread

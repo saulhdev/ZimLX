@@ -29,11 +29,11 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:theme="@style/LauncherTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        tools:replace="android:label"
         android:supportsRtl="true">
 
         <service
@@ -63,7 +63,7 @@
         <!-- Content provider to settings search -->
         <provider
             android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-            android:authorities="${applicationId}"
+            android:authorities="com.android.launcher3"
             android:grantUriPermissions="true"
             android:multiprocess="true"
             android:permission="android.permission.READ_SEARCH_INDEXABLES"

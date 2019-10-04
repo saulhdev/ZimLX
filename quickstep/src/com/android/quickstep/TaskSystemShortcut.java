@@ -30,6 +30,7 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -151,7 +152,8 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                             }
                         };
 
-                dismissTaskMenuView(activity);
+                AbstractFloatingView.closeOpenViews(activity, true,
+                        AbstractFloatingView.TYPE_ALL & ~AbstractFloatingView.TYPE_REBIND_SAFE);
 
                 final int navBarPosition = WindowManagerWrapper.getInstance().getNavBarPosition();
                 if (navBarPosition == WindowManagerWrapper.NAV_BAR_POS_INVALID) {
@@ -188,14 +190,9 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     final Rect taskBounds = new Rect(position[0], position[1],
                             position[0] + width, position[1] + height);
 
-                    // Take the thumbnail of the task without a scrim and apply it back after
-                    float alpha = thumbnailView.getDimAlpha();
-                    thumbnailView.setDimAlpha(0);
                     Bitmap thumbnail = RecentsTransition.drawViewIntoHardwareBitmap(
                             taskBounds.width(), taskBounds.height(), thumbnailView, 1f,
                             Color.BLACK);
-                    thumbnailView.setDimAlpha(alpha);
-
                     AppTransitionAnimationSpecsFuture future =
                             new AppTransitionAnimationSpecsFuture(mHandler) {
                         @Override
@@ -249,7 +246,6 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                     }
                 };
                 taskView.launchTask(true, resultCallback, mHandler);
-                dismissTaskMenuView(activity);
             };
         }
     }

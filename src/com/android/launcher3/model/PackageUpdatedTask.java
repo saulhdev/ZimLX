@@ -110,10 +110,6 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     }
                     appsList.addPackage(context, packages[i], mUser);
 
-                    // Automatically add homescreen icon for work profile apps for below O device.
-                    //if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
-                    //    SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
-                    //}
                     if (Utilities.ATLEAST_OREO && prefs.getAutoAddInstalled() &&
                             !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);

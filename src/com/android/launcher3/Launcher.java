@@ -83,7 +83,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.dynamicui.ExtractedColors;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
@@ -288,7 +287,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private final Handler mHandler = new Handler();
     private final Runnable mLogOnDelayedResume = this::logOnDelayedResume;
 
-    private ExtractedColors mExtractedColors;
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
     @Override
@@ -451,7 +449,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
                     AppInfo app = mAllAppsController.getAppsView().getAppsStore().getApp(keyMapper);
 
-                    Log.d("Dash APP", "Loading App ");
+                    Log.d("Dash APP", "Loading App " + act);
                     if (app != null) {
                         item = DashItem.asApp(app, 0);
                     }

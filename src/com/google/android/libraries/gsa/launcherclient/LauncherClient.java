@@ -133,7 +133,6 @@ public class LauncherClient {
         intentFilter.addDataSchemeSpecificPart("com.google.android.googlequicksearchbox", 0);
         mActivity.registerReceiver(googleInstallListener, intentFilter);
 
-
         if (apiVersion <= 0) {
             loadApiVersion(activity);
         }

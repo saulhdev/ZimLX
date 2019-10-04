@@ -49,7 +49,6 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.recents.IOverviewProxy;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
-import com.android.systemui.shared.system.ChoreographerCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
 /**
@@ -171,7 +170,6 @@ public class TouchInteractionService extends Service {
     private OverviewCommandHelper mOverviewCommandHelper;
     private OverviewInteractionState mOverviewInteractionState;
     private OverviewCallbacks mOverviewCallbacks;
-    private TaskOverlayFactory mTaskOverlayFactory;
 
     private Choreographer mMainThreadChoreographer;
     private Choreographer mBackgroundThreadChoreographer;
@@ -188,7 +186,6 @@ public class TouchInteractionService extends Service {
         mEventQueue = new MotionEventQueue(mMainThreadChoreographer, mNoOpTouchConsumer);
         mOverviewInteractionState = OverviewInteractionState.getInstance(this);
         mOverviewCallbacks = OverviewCallbacks.get(this);
-        mTaskOverlayFactory = TaskOverlayFactory.get(this);
 
         sConnected = true;
 
@@ -241,7 +238,7 @@ public class TouchInteractionService extends Service {
                             mOverviewCommandHelper.overviewIntent,
                             mOverviewCommandHelper.getActivityControlHelper(), mMainThreadExecutor,
                             mBackgroundThreadChoreographer, downHitTarget, mOverviewCallbacks,
-                            mTaskOverlayFactory, tracker);
+                            tracker);
         }
     }
 
@@ -409,6 +406,6 @@ public class TouchInteractionService extends Service {
             sRemoteUiThread.start();
         }
         new Handler(sRemoteUiThread.getLooper()).post(() ->
-                mBackgroundThreadChoreographer = ChoreographerCompat.getSfInstance());
+                mBackgroundThreadChoreographer = Choreographer.getInstance());
     }
 }

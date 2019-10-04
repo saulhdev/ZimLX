@@ -16,20 +16,19 @@
 
 package com.android.quickstep.views;
 
-import static com.android.quickstep.views.TaskThumbnailView.DIM_ALPHA;
-
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.content.Context;
-import android.content.res.Configuration;
+import android.graphics.Outline;
+import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
-import android.view.Gravity;
 import android.view.MotionEvent;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
+import android.view.View;
+import android.view.ViewOutlineProvider;
+import android.view.animation.AccelerateDecelerateInterpolator;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -38,8 +37,8 @@ import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
-import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
+import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.views.BaseDragLayer;
 import com.android.quickstep.TaskSystemShortcut;
 import com.android.quickstep.TaskUtils;
@@ -59,14 +58,12 @@ public class TaskMenuView extends AbstractFloatingView {
             new TaskSystemShortcut.Install(),
     };
 
-    private static final int REVEAL_OPEN_DURATION = 150;
-    private static final int REVEAL_CLOSE_DURATION = 100;
+    private static final long OPEN_CLOSE_DURATION = 220;
 
     private BaseDraggingActivity mActivity;
     private TextView mTaskIconAndName;
     private AnimatorSet mOpenCloseAnimator;
     private TaskView mTaskView;
-    private LinearLayout mOptionLayout;
 
     public TaskMenuView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -76,13 +73,20 @@ public class TaskMenuView extends AbstractFloatingView {
         super(context, attrs, defStyleAttr);
 
         mActivity = BaseDraggingActivity.fromContext(context);
+        setClipToOutline(true);
+        setOutlineProvider(new ViewOutlineProvider() {
+            @Override
+            public void getOutline(View view, Outline outline) {
+                float r = getResources().getDimensionPixelSize(R.dimen.task_menu_background_radius);
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(), r);
+            }
+        });
     }
 
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
         mTaskIconAndName = findViewById(R.id.task_icon_and_name);
-        mOptionLayout = findViewById(R.id.menu_option_layout);
     }
 
     @Override
@@ -144,12 +148,6 @@ public class TaskMenuView extends AbstractFloatingView {
         mTaskIconAndName.setText(TaskUtils.getTitle(getContext(), taskView.getTask()));
         mTaskIconAndName.setOnClickListener(v -> close(true));
 
-        // Move the icon and text up half an icon size to lay over the TaskView
-        LinearLayout.LayoutParams params =
-                (LinearLayout.LayoutParams) mTaskIconAndName.getLayoutParams();
-        params.topMargin = (int) -getResources().getDimension(R.dimen.task_thumbnail_top_margin);
-        mTaskIconAndName.setLayoutParams(params);
-
         for (TaskSystemShortcut menuOption : MENU_OPTIONS) {
             OnClickListener onClickListener = menuOption.getOnClickListener(mActivity, taskView);
             if (onClickListener != null) {
@@ -159,25 +157,21 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void addMenuOption(TaskSystemShortcut menuOption, OnClickListener onClickListener) {
-        ViewGroup menuOptionView = (ViewGroup) mActivity.getLayoutInflater().inflate(
-                R.layout.task_view_menu_option, this, false);
-        menuOptionView.findViewById(R.id.icon).setBackgroundResource(menuOption.iconResId);
-        ((TextView) menuOptionView.findViewById(R.id.text)).setText(menuOption.labelResId);
+        DeepShortcutView menuOptionView = (DeepShortcutView) mActivity.getLayoutInflater().inflate(
+                R.layout.system_shortcut, this, false);
+        menuOptionView.getIconView().setBackgroundResource(menuOption.iconResId);
+        menuOptionView.getBubbleText().setText(menuOption.labelResId);
         menuOptionView.setOnClickListener(onClickListener);
-        mOptionLayout.addView(menuOptionView);
+        addView(menuOptionView);
     }
 
     private void orientAroundTaskView(TaskView taskView) {
         measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
         mActivity.getDragLayer().getDescendantRectRelativeToSelf(taskView, sTempRect);
         Rect insets = mActivity.getDragLayer().getInsets();
-        BaseDragLayer.LayoutParams params = (BaseDragLayer.LayoutParams) getLayoutParams();
-        params.width = sTempRect.width();
-        params.gravity = Gravity.LEFT;
-        setLayoutParams(params);
-        setX(sTempRect.left - insets.left);
-        setY(sTempRect.top + getResources().getDimension(R.dimen.task_thumbnail_top_margin)
-                - insets.top);
+        int x = sTempRect.left + (sTempRect.width() - getMeasuredWidth()) / 2 - insets.left;
+        setX(Utilities.isRtl(getResources()) ? -x : x);
+        setY(sTempRect.top - mTaskIconAndName.getPaddingTop() - insets.top);
     }
 
     private void animateOpen() {
@@ -194,13 +188,8 @@ public class TaskMenuView extends AbstractFloatingView {
             return;
         }
         mOpenCloseAnimator = LauncherAnimUtils.createAnimatorSet();
-
-        final Animator revealAnimator = createOpenCloseOutlineProvider()
-                .createRevealAnimator(this, closing);
-        revealAnimator.setInterpolator(Interpolators.DEACCEL);
-        mOpenCloseAnimator.play(revealAnimator);
-        mOpenCloseAnimator.play(ObjectAnimator.ofFloat(mTaskView.getThumbnail(), DIM_ALPHA,
-                closing ? 0 : TaskView.MAX_PAGE_SCRIM_ALPHA));
+        mOpenCloseAnimator.play(createOpenCloseOutlineProvider()
+                .createRevealAnimator(this, closing));
         mOpenCloseAnimator.addListener(new AnimationSuccessListener() {
             @Override
             public void onAnimationStart(Animator animation) {
@@ -215,7 +204,8 @@ public class TaskMenuView extends AbstractFloatingView {
             }
         });
         mOpenCloseAnimator.play(ObjectAnimator.ofFloat(this, ALPHA, closing ? 0 : 1));
-        mOpenCloseAnimator.setDuration(closing ? REVEAL_CLOSE_DURATION: REVEAL_OPEN_DURATION);
+        mOpenCloseAnimator.setDuration(OPEN_CLOSE_DURATION);
+        mOpenCloseAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
         mOpenCloseAnimator.start();
     }
 
@@ -225,9 +215,18 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
-        float radius = getResources().getDimension(R.dimen.task_corner_radius);
-        Rect fromRect = new Rect(0, 0, getWidth(), 0);
+        int iconSize = getResources().getDimensionPixelSize(R.dimen.task_thumbnail_icon_size);
+        float fromRadius = iconSize / 2;
+        float toRadius = getResources().getDimensionPixelSize(
+                R.dimen.task_menu_background_radius);
+        Point iconCenter = new Point(getWidth() / 2, mTaskIconAndName.getPaddingTop() + iconSize / 2);
+        Rect fromRect = new Rect(iconCenter.x, iconCenter.y, iconCenter.x, iconCenter.y);
         Rect toRect = new Rect(0, 0, getWidth(), getHeight());
-        return new RoundedRectRevealOutlineProvider(radius, radius, fromRect, toRect);
+        return new RoundedRectRevealOutlineProvider(fromRadius, toRadius, fromRect, toRect) {
+            @Override
+            public boolean shouldRemoveElevationDuringAnimation() {
+                return true;
+            }
+        };
     }
 }

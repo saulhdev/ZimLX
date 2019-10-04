@@ -229,7 +229,6 @@ public class Folder extends AbstractFloatingView implements DragSource,
         super.onFinishInflate();
         mContent = findViewById(R.id.folder_content);
         mContent.setFolder(this);
-
         mPageIndicator = findViewById(R.id.folder_page_indicator);
         mFolderName = findViewById(R.id.folder_name);
         mFolderName.setOnBackKeyListener(this);

@@ -29,6 +29,7 @@ import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.Shader;
+import android.support.v4.graphics.ColorUtils;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
 import android.util.Property;
@@ -64,19 +65,6 @@ public class TaskThumbnailView extends View {
                 @Override
                 public Float get(TaskThumbnailView thumbnailView) {
                     return thumbnailView.mDimAlphaMultiplier;
-                }
-            };
-
-    public static final Property<TaskThumbnailView, Float> DIM_ALPHA =
-            new FloatProperty<TaskThumbnailView>("dimAlpha") {
-                @Override
-                public void setValue(TaskThumbnailView thumbnail, float dimAlpha) {
-                    thumbnail.setDimAlpha(dimAlpha);
-                }
-
-                @Override
-                public Float get(TaskThumbnailView thumbnailView) {
-                    return thumbnailView.mDimAlpha;
                 }
             };
 
@@ -159,10 +147,6 @@ public class TaskThumbnailView extends View {
     public void setDimAlpha(float dimAlpha) {
         mDimAlpha = dimAlpha;
         updateThumbnailPaintFilter();
-    }
-
-    public float getDimAlpha() {
-        return mDimAlpha;
     }
 
     public Rect getInsets() {

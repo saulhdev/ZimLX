@@ -469,7 +469,7 @@
     <string name="pref_summary__dock">Customize your dock</string>
     <string name="pref_summary__desktop">Customize your desktop</string>
     <string name="pref_summary__theme">Theme different elements</string>
-    <string name="pref_summary__notifications">Notifications, Search Engine and Gestures</string>
+    <string name="pref_summary__notifications">Notifications and Gestures</string>
     <string name="pref_summary__developer">Restart the app if it is needed</string>
     <string name="pref_summary__advanced">Language and backup</string>
     <string name="pref_summary__about">More information about Zim Launcher</string>
@@ -657,6 +657,11 @@
     <string name="gradient">Gradient</string>
 
     <!-- SEARCH -->
+    <string name="pref_title__folder">Search Engine a Folder</string>
+    <string name="pref_summary__folder">Show search Engine and Folder settings</string>
+
+    <string name="title__folder_background">Folder Background</string>
+
     <string name="pref_show_assistant_summary">Display voice search button if supported</string>
     <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
     <string name="pref_show_assistant_title">Voice search button</string>

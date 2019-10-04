@@ -89,8 +89,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
     }
 
-    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, restart)
-    var saveDashItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, doNothing)
+    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
 
@@ -186,18 +185,19 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, restart)
     val allAppsColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
 
+    val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
+        onChangeCallback?.launcher?.background?.onEnabledChanged()
+    }
+
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
 
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, doNothing)
     val enablePhysics get() = !lowPerformanceMode
 
-    val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
-        onChangeCallback?.launcher?.background?.onEnabledChanged()
-    }
-
     //Folder
     val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
+    val folderBackground by IntPref("pref_key__folder_background", R.color.folderBackground, recreate)
 
     //smartspace
     var weatherProvider by StringPref("pref_smartspace_widget_provider",

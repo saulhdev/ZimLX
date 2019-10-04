@@ -26,7 +26,6 @@ import android.database.MatrixCursor;
 import android.os.Build;
 import android.provider.SearchIndexablesContract.XmlResource;
 import android.provider.SearchIndexablesProvider;
-
 import android.util.Xml;
 
 import com.android.launcher3.R;

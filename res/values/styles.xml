@@ -553,4 +553,10 @@
         <item name="android:textColor">?android:colorAccent</item>
     </style>
 
+    <style name="TextAppearance.Small" parent="@android:style/TextAppearance.Material.Small" />
+
+    <style name="TextAppearance.TileTitle" parent="@android:style/TextAppearance.Material.Subhead">
+        <item name="customFontType">settingsTileTitle</item>
+    </style>
+
 </resources>

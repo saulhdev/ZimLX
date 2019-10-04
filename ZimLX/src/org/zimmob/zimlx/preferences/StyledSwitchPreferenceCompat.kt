@@ -25,6 +25,7 @@ import androidx.annotation.Keep
 import androidx.preference.AndroidResources
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimPreferences
 import org.zimmob.zimlx.applyColor
 import org.zimmob.zimlx.settings.ui.ControlledPreference
@@ -41,6 +42,7 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
         checkableView = holder?.findViewById(AndroidResources.ANDROID_R_SWITCH_WIDGET)
+        (checkableView as Switch).applyColor(Utilities.getZimPrefs(context).accentColor)
     }
 
 

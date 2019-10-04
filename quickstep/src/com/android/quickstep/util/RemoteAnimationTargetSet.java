@@ -26,7 +26,6 @@ public class RemoteAnimationTargetSet {
 
     public final RemoteAnimationTargetCompat[] unfilteredApps;
     public final RemoteAnimationTargetCompat[] apps;
-    public final int targetMode;
 
     public RemoteAnimationTargetSet(RemoteAnimationTargetCompat[] apps, int targetMode) {
         ArrayList<RemoteAnimationTargetCompat> filteredApps = new ArrayList<>();
@@ -40,7 +39,6 @@ public class RemoteAnimationTargetSet {
 
         this.unfilteredApps = apps;
         this.apps = filteredApps.toArray(new RemoteAnimationTargetCompat[filteredApps.size()]);
-        this.targetMode = targetMode;
     }
 
     public RemoteAnimationTargetCompat findTask(int taskId) {

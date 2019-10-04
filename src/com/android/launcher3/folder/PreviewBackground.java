@@ -39,7 +39,7 @@ import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.util.Themes;
+import com.android.launcher3.Utilities;
 
 import org.zimmob.zimlx.folder.FolderShape;
 
@@ -134,7 +134,8 @@ public class PreviewBackground {
     public void setup(Launcher launcher, View invalidateDelegate,
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
-        mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+        //mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
+        mBgColor = Utilities.getZimPrefs(launcher).getFolderBackground();
 
         DeviceProfile grid = launcher.getDeviceProfile();
         previewSize = isInDrawer ? grid.allAppsFolderIconSizePx : grid.folderIconSizePx;

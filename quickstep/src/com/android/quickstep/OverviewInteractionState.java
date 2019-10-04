@@ -40,8 +40,6 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import java.util.concurrent.ExecutionException;
 
-import androidx.annotation.WorkerThread;
-
 /**
  * Sets overview interaction flags, such as:
  *

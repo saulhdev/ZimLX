@@ -17,63 +17,34 @@
 package com.android.quickstep.views;
 
 import android.content.Context;
+import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.util.AttributeSet;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.Button;
 
-import com.android.launcher3.Utilities;
-import com.android.quickstep.views.RecentsView.PageCallbacks;
-import com.android.quickstep.views.RecentsView.ScrollState;
+public class ClearAllButton extends Button {
+    RecentsView mRecentsView;
 
-public class ClearAllButton extends Button implements PageCallbacks {
-
-    private float mScrollAlpha = 1;
-    private float mContentAlpha = 1;
-
-    private final boolean mIsRtl;
-
-    private int mScrollOffset;
-
-    public ClearAllButton(Context context, AttributeSet attrs) {
+    public ClearAllButton(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
-        mIsRtl = Utilities.isRtl(context.getResources());
+    }
+
+    public void setRecentsView(RecentsView recentsView) {
+        mRecentsView = recentsView;
     }
 
     @Override
-    protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
-        super.onLayout(changed, left, top, right, bottom);
-
-        RecentsView parent = (RecentsView) getParent();
-        mScrollOffset = mIsRtl ? parent.getPaddingRight() / 2 : - parent.getPaddingLeft() / 2;
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.setParent(mRecentsView); // Pretend we are a part of the task carousel.
     }
 
     @Override
-    public boolean hasOverlappingRendering() {
-        return false;
-    }
-
-    public void setContentAlpha(float alpha) {
-        if (mContentAlpha != alpha) {
-            mContentAlpha = alpha;
-            updateAlpha();
+    protected void onFocusChanged(boolean focused, int direction, Rect previouslyFocusedRect) {
+        super.onFocusChanged(focused, direction, previouslyFocusedRect);
+        if (focused) {
+            mRecentsView.revealClearAllButton();
         }
-    }
-
-    @Override
-    public void onPageScroll(ScrollState scrollState) {
-        float width = getWidth();
-        if (width == 0) {
-            return;
-        }
-
-        float shift = Math.min(scrollState.scrollFromEdge, width);
-        setTranslationX(mIsRtl ? (mScrollOffset - shift) : (mScrollOffset + shift));
-        mScrollAlpha = 1 - shift / width;
-        updateAlpha();
-    }
-
-    private void updateAlpha() {
-        final float alpha = mScrollAlpha * mContentAlpha;
-        setAlpha(alpha);
-        setClickable(alpha == 1);
     }
 }

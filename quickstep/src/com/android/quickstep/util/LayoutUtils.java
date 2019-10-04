@@ -15,20 +15,18 @@
  */
 package com.android.quickstep.util;
 
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.AnyThread;
+import android.support.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 
 import java.lang.annotation.Retention;
-
-import androidx.annotation.AnyThread;
-import androidx.annotation.IntDef;
-
-import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class LayoutUtils {
 
@@ -44,15 +42,7 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            ZimPreferences prefs = Utilities.getZimPrefs(context);
-            if (prefs.getShowPredictions()) {
-                Resources res = context.getResources();
-                int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
-                extraSpace = OverviewState.getDefaultSwipeHeight(dp)
-                        + qsbHeight + dp.verticalDragHandleSizePx;
-            } else {
-                extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
-            }
+            extraSpace = dp.hotseatBarSizePx + dp.verticalDragHandleSizePx;
         }
         calculateTaskSize(context, dp, extraSpace, MULTI_WINDOW_STRATEGY_HALF_SCREEN, outRect);
     }

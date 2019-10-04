@@ -19,6 +19,7 @@ import android.content.Context;
 import android.os.Handler;
 
 import com.android.systemui.shared.system.RotationWatcher;
+
 /**
  * Utility class for listening for rotation changes
  */

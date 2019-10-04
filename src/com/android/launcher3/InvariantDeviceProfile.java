@@ -40,6 +40,7 @@ import org.zimmob.zimlx.settings.IconScale;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Objects;
 
 import static java.lang.Math.max;
 
@@ -231,7 +232,7 @@ public class InvariantDeviceProfile {
     private void customizationHook(Context context) {
         ZimPreferences prefs = Utilities.getZimPrefs(context);
         WindowManager wm = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
-        Display display = wm.getDefaultDisplay();
+        Display display = Objects.requireNonNull(wm).getDefaultDisplay();
         DisplayMetrics dm = new DisplayMetrics();
         display.getMetrics(dm);
         if (prefs.getDesktopIconScale() != 1f) {

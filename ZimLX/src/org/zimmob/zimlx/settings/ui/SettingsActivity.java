@@ -279,8 +279,6 @@ public class SettingsActivity extends SettingsBaseActivity implements
     @Override
     public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
         Fragment fragment;
-        Log.i("SETTINGS", "Opening Fragment: " + preference.getFragment());
-
         if (preference instanceof SubPreference) {
             ((SubPreference) preference).start(this);
             return true;

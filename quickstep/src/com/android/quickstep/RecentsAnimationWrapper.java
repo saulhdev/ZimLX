@@ -49,9 +49,6 @@ public class RecentsAnimationWrapper {
         this.mController = controller;
         this.targetSet = targetSet;
 
-        if (controller == null) {
-            return;
-        }
         if (mInputConsumerEnabled) {
             enableInputConsumer();
         }

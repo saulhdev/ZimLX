@@ -27,8 +27,6 @@ import org.xmlpull.v1.XmlPullParser
 
 class ZimLayoutInflater(original: LayoutInflater, newContext: Context) : LayoutInflater(original, newContext) {
 
-    //private val fontManager by lazy { CustomFontManager.getInstance(context) }
-
     fun installFactory(delegate: AppCompatDelegate) {
         factory2 = object : LayoutInflater.Factory2 {
             override fun onCreateView(parent: View?, name: String, context: Context, attrs: AttributeSet): View? {

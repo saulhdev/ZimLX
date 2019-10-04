@@ -157,9 +157,7 @@
     <!-- Elevation for the drag view. It should be larger than elevation of all other drag sources
          and drop targets like all-apps and folders -->
     <dimen name="drag_elevation">30dp</dimen>
-
     <dimen name="drag_flingToDeleteMinVelocity">-1500dp</dimen>
-
     <dimen name="spring_loaded_panel_border">1dp</dimen>
 
     <!-- Folders -->
@@ -312,9 +310,7 @@
     <!-- Dashboard tile image margin start / end -->
     <dimen name="dashboard_tile_image_margin_start">16dp</dimen>
     <dimen name="dashboard_tile_image_margin_end">20dp</dimen>
-
     <dimen name="margin_normal">16dp</dimen>
-
     <dimen name="snackbar_content_height">32dp</dimen>
     <dimen name="snackbar_max_text_size">14sp</dimen>
     <dimen name="snackbar_elevation">3dp</dimen>
@@ -326,8 +322,10 @@
     <dimen name="snackbar_min_text_size">12sp</dimen>
     <dimen name="button_corner_radius">4dp</dimen>
     <dimen name="dialog_horizontal_padding">24dp</dimen>
-
     <dimen name="shelf_surface_radius">16dp</dimen>
     <!-- same as vertical_drag_handle_size -->
     <dimen name="shelf_surface_offset">18dp</dimen>
+
+    <dimen name="dashboard_tile_minimum_height">72dp</dimen>
+
 </resources>

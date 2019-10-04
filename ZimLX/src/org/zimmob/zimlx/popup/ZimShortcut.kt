@@ -38,7 +38,7 @@ import java.net.URISyntaxException
 class ZimShortcut(private val context: Context) {
 
     private val shortcuts = listOf(
-            ShortcutEntry("dash", DashAdd(), true),
+            ShortcutEntry("dash", DashAdd(), false),
             ShortcutEntry("edit", Edit(), true),
             ShortcutEntry("info", SystemShortcut.AppInfo(), true),
             ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
@@ -130,16 +130,16 @@ class ZimShortcut(private val context: Context) {
             }
         }
 
-        fun saveDashItems(context: Context, itemInfo: ItemInfo) {
+        private fun saveDashItems(context: Context, itemInfo: ItemInfo) {
             val prefs = Utilities.getZimPrefs(context)
             val currentItems = ArrayList(prefs.minibarItems)
             validateDashItems(itemInfo)
 
             currentItems.add(itemInfo.targetComponent.toString())
-            prefs.saveDashItems = currentItems.toHashSet()
+            prefs.minibarItems = currentItems.toHashSet()
         }
 
-        fun validateDashItems(itemInfo: ItemInfo) {
+        private fun validateDashItems(itemInfo: ItemInfo) {
             //TODO VALIDAR DUPLICADOS Y ELIMINADOS
         }
 
