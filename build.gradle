@@ -36,10 +36,6 @@ buildscript {
     }
 }
 
-final String ANDROID_TOP = "${rootDir}/../../.."
-final String FRAMEWORK_PREBUILTS_DIR = "${ANDROID_TOP}/prebuilts/framework_intermediates/"
-
-
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
@@ -101,11 +97,6 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
-        quickstep {
-            dimension "default"
-            applicationId 'org.zimmob.zimlx'
-            testApplicationId 'com.android.launcher3.tests'
-        }
         zim {
             dimension "custom"
             applicationId 'org.zimmob.zimlx'
@@ -152,17 +143,11 @@ android {
             java.srcDirs = ['go/src_flags', "src_ui_overrides"]
             manifest.srcFile "go/AndroidManifest.xml"
         }
-        quickstep {
-            res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['src_flags', 'quickstep/src']
-            manifest.srcFile "quickstep/AndroidManifest.xml"
-        }
         zim {
             res.srcDirs = ['ZimLX/res']
             java.srcDirs = ['ZimLX/src']
             manifest.srcFile "ZimLX/AndroidManifest.xml"
         }
-
     }
     kotlinOptions {
         jvmTarget = '1.8'
@@ -183,8 +168,6 @@ afterEvaluate {
 repositories {
     google()
     jcenter()
-    maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
-    maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
     maven { url 'https://jitpack.io' }
     mavenCentral()
 }
@@ -219,8 +202,6 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
-    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
-    quickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/quickstep/libs", include: 'sysui_shared.jar')
 
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"
