@@ -58,6 +58,6 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
 <table>
 
 ## Want to contribute?
-If you have knowledge in Java or Kotlin you can work on adding features!
+If you have knowledge in Java or Kotlin you can work on additional features!
 
 I will be happy to work on features you would like to include, just open an issue.
