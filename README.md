@@ -8,17 +8,17 @@ Our mission is to create a powerful launcher with smart features to make your de
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 ## Main Features
--   Row and Columns config.
+-   Row and columns config.
 -   Minibar support with custom color configuration.
--   Hide Apps.
--   Custom Scrollbar.
--   Sort apps in the drawer by AZ, ZA, Last Installed, Most used.
--   Theme Color Change.
--   Icon Size configuration.
--   Icon Pack support.
--   Icon Shape support.
+-   Hide apps.
+-   Custom scrollbar.
+-   Sort apps in the drawer by AZ, ZA, last installed, and most used.
+-   Theme color change.
+-   Icon size configuration.
+-   Icon pack support.
+-   Icon shape support.
 -   Show notification counts in folder.
--   Icon Badge support in apps and Folder.
+-   Icon badge support in apps and folder.
 -   Icon badge color configuration.
 
 ## Development Features
