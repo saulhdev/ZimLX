@@ -28,13 +28,11 @@ class ZimOverviewCallbacks(private val context: Context) : OverviewCallbacks() {
     override fun onInitOverviewTransition() {
         super.onInitOverviewTransition()
         if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) return
-        //PredictionUiStateManager.getInstance(context).switchClient(PredictionUiStateManager.Client.OVERVIEW)
     }
 
     override fun onResetOverview() {
         super.onResetOverview()
         if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) return
-        //PredictionUiStateManager.getInstance(context).switchClient(PredictionUiStateManager.Client.HOME)
     }
 
     override fun closeAllWindows() {
