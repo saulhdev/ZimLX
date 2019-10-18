@@ -1,9 +1,5 @@
 <resources>
 
-    <string-array name="predictive_apps_values">
-        <item>5</item>
-        <item>10</item>
-    </string-array>
     <string-array name="theme_colors">
         <item>@string/theme_light</item>
         <item>@string/theme_dark</item>

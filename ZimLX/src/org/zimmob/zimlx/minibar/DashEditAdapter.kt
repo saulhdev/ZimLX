@@ -1,5 +1,6 @@
 package org.zimmob.zimlx.minibar
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Handler
@@ -14,9 +15,13 @@ import androidx.core.widget.CompoundButtonCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.android.launcher3.AppInfo
 import com.android.launcher3.Launcher
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_APP
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_ITEM
@@ -29,27 +34,34 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     private val handler = Handler()
 
     private var dividerIndex = 0
-
     private val adapterItems = ArrayList<Item>()
     private val currentSpecs = ArrayList<String>()
     private val divider = DividerItem()
     private val enabledItems = ArrayList<CustomDashItem>()
     private var isDragging = false
-
+    private val mContext = context
     private var enable: Boolean = false
-
     var itemTouchHelper: ItemTouchHelper? = null
 
     init {
         val currentItems = ArrayList<String>()
         val dashItems = ArrayList<CustomDashItem>()
 
-        for (act in prefs.minibarItems) {
-            if (act.length > 1) {
+        for (action in prefs.minibarItems) {
+            if (action.length > 1) {
                 var item: DashItem? = null
-                if (act.length == 2) {
-                    item = DashUtils.getDashItemFromString(act)
+                if (action.length == 2) {
+                    item = DashUtils.getDashItemFromString(action)
+                } else if (action.length > 2) {
+                    val keyMapper = ComponentKey(mContext, action)
+                    val info = getApp(keyMapper)
+
+                    if (info != null) {
+                        item = DashItem.asApp(info.get(0), 99)
+                        dashItems.add(CustomDashItem(item))
+                    }
                 }
+
                 if (item != null) {
                     currentItems.add(item.title)
                 }
@@ -62,6 +74,21 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         currentSpecs.addAll(currentItems)
         allItems.addAll(dashItems)
         fillItems()
+    }
+
+    fun getApp(componentKey: ComponentKey): ArrayList<AppInfo> {
+        val apps = ArrayList<AppInfo>()
+        val launcherApps = LauncherAppsCompat.getInstance(mContext)
+        val profiles = UserManagerCompat.getInstance(mContext).userProfiles
+        /*val matches = launcherApps.getActivityList(componentKey.componentName.packageName, profiles)
+        profiles.forEach {
+            apps += matches.getActivityList(componetKey.componentName.packageName, it)
+        }
+
+        for (info in matches) {
+            apps.add(AppInfo(mContext, info, info.user))
+        }*/
+        return apps
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): Holder {
@@ -118,6 +145,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
                 adapterItems.add(item)
             }
         }
+
         dividerIndex = adapterItems.count()
 
         adapterItems.add(divider)
@@ -129,7 +157,10 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         while (iterator.hasNext()) {
             val item = iterator.next()
             if (item.info.title == s) {
+                //if(item.type== TYPE_DASH_ITEM){
                 iterator.remove()
+                //}
+
                 return item
             }
         }
@@ -162,7 +193,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         override val type = TYPE_HEADER
     }
 
-    open class CustomDashItem(val info: DashItem) : Item() {
+    class CustomDashItem(val info: DashItem) : Item() {
         override val isStatic = false
         override val type = TYPE_DASH_ITEM
     }
@@ -187,8 +218,9 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     }
 
     inner class EnableHolder(itemView: View) : Holder(itemView) {
-        val switchEnable: SwitchCompat = itemView.findViewById(R.id.enableSwitch)
+        private val switchEnable: SwitchCompat = itemView.findViewById(R.id.enableSwitch)
 
+        @SuppressLint("PrivateResource")
         override fun bind(item: Item) {
             super.bind(item)
             val context = Launcher.mContext
@@ -213,7 +245,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
         }
     }
 
-    class HeaderHolder(itemView: View) : Holder(itemView) {
+    inner class HeaderHolder(itemView: View) : Holder(itemView) {
 
         init {
             itemView.findViewById<TextView>(android.R.id.text1).setText(R.string.enabled_icon_packs)
@@ -262,6 +294,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
             notifyItemChanged(dividerIndex)
         }
 
+        @SuppressLint("ClickableViewAccessibility")
         override fun onTouch(v: View, event: MotionEvent): Boolean {
             if (v == dragHandle && event.actionMasked == MotionEvent.ACTION_DOWN) {
                 itemTouchHelper?.startDrag(this)

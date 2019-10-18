@@ -44,7 +44,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public static final int CODE_EDIT_ICON = 100;
-    public static Context mContext;
+    public Context mContext;
     public static Drawable currentEditIcon = null;
     public static ItemInfo currentEditInfo = null;
     private ZimPreferences mZimPrefs;
@@ -76,6 +76,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         gestureController = new GestureController(this);
 
         super.onCreate(savedInstanceState);
+
         mContext = this;
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
@@ -85,8 +86,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        boolean success = super.startActivitySafely(v, intent, item);
-        return success;
+        return super.startActivitySafely(v, intent, item);
     }
 
     @Override
@@ -111,9 +111,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
                         .setMessage(R.string.content_storage_permission_required)
                         .setCancelable(false)
                         .setNegativeButton(android.R.string.no, null)
-                        .setPositiveButton(android.R.string.yes, (dialog, which) -> {
-                            Utilities.requestStoragePermission(this);
-                        })
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> Utilities.requestStoragePermission(this))
                         .show();
 
             }
@@ -185,7 +183,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         lp.width = right-left;
         dummyView.setLayoutParams(lp);
         dummyView.requestLayout();
-        dummyView.post(() -> callback.invoke());
+        dummyView.post(callback::invoke);
     }
 
     public GestureController getGestureController() {

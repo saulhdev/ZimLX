@@ -134,6 +134,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
         super.updatePredictions()
         if (isPredictorEnabled) {
             runOnMainThread {
+
                 predictionsHeader.setPredictedApps(isPredictorEnabled, predictions)
             }
         }

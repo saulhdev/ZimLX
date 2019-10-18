@@ -28,4 +28,11 @@
         android:summary="Display informations such as the current Launcher State"
         app:iconSpaceReserved="false" />
 
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:key="pref_folderBgColorGen"
+        android:title="Generate folder color"
+        android:summary="Generates the folder color based on custom icons [this breaks readability depending on the color]"
+        android:defaultValue="false" />
+
+
 </androidx.preference.PreferenceScreen>

@@ -5,13 +5,16 @@
     <org.zimmob.zimlx.theme.ui.ThemeDarkModeListPreference
         android:key="pref_dark_theme_mode"
         android:title="@string/theme_dark_theme_mode"
+        app:iconSpaceReserved="false"
         android:summary="%s" />
 
     <org.zimmob.zimlx.theme.ui.ThemeBlackSwitchPreference
         android:title="@string/theme_use_black"
+        app:iconSpaceReserved="false"
         app:switchFlag="8" />
 
     <org.zimmob.zimlx.theme.ui.ThemeFlagSwitchPreference
         android:title="@string/theme_use_dark_text"
+        app:iconSpaceReserved="false"
         app:switchFlag="2" />
 </androidx.preference.PreferenceScreen>

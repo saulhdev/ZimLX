@@ -243,10 +243,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     }
 
     public AllAppsRecyclerView getActiveRecyclerView() {
-        if (!mUsingTabs || mViewPager.getNextPage() == 0) {
+        if (!mUsingTabs) {
             return mAH[AdapterHolder.MAIN].recyclerView;
         } else {
-            return mAH[AdapterHolder.WORK].recyclerView;
+            return mAH[mViewPager.getNextPage()].recyclerView;
         }
     }
 
@@ -476,9 +476,9 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mHeader.setup(mAH, !mUsingTabs);
 
         int padding = mHeader.getMaxTranslation();
-        for (int i = 0; i < mAH.length; i++) {
-            mAH[i].padding.top = padding;
-            mAH[i].applyPadding();
+        for (AdapterHolder adapterHolder : mAH) {
+            adapterHolder.padding.top = padding;
+            adapterHolder.applyPadding();
         }
     }
 

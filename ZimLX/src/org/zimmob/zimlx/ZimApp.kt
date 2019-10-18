@@ -116,8 +116,6 @@ class ZimApp : Application() {
         }
     }
 
-
-
     @Keep
     fun checkRecentsComponent(): Boolean {
         if (!Utilities.ATLEAST_P) return false

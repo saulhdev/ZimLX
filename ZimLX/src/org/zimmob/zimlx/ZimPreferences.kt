@@ -78,7 +78,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
     val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
     val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
-    val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
+    val showTopShadow by BooleanPref(ZimFlags.DESKTOP_TOP_SHADOW, true, recreate) // TODO: update the scrim instead of doing this
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
@@ -124,6 +124,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allAppsEndAlpha get() = allAppsOpacity
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
     val allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, recreate)
+
+    val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", true) {
+        val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
+        header?.updateShowAllAppsLabel()
+    }
+
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, recreate)
     val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, false, recreate)
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
@@ -135,11 +141,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
     val drawerGridSize by drawerGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
-
-    fun getNumPredictedApps(): Int {
-        recreate
-        return sharedPrefs.getString("pref_predictive_apps_values", "5")!!.toInt()
-    }
 
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")!!
@@ -162,7 +163,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
 
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
-
 
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -218,10 +218,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             BatteryStatusProvider::class.java.name,
             PersonalityProvider::class.java.name))
 
-
     val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
             Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
-    val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace())
+    //val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace())
     var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
     var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 

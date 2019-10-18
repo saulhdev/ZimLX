@@ -55,8 +55,8 @@
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
-        android:key="prefCat_searchbarAppearance"
-        android:title="@string/searchbar_appearance_title"
+        android:key="prefCat_FolderAppearance"
+        android:title="@string/pref_categ_folder"
         app:iconSpaceReserved="false">
 
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat

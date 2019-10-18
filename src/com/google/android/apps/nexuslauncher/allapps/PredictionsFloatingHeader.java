@@ -28,7 +28,7 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AllAppsContainerView.AdapterHolder;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.util.ComponentKeyMapper;
@@ -56,8 +56,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     private boolean mIsVerticalLayout;
     private PredictionRowView mPredictionRowView;
     private boolean mShowAllAppsLabel;
-
-    //private ZimEventPredictor.UiManager mPredictionUiStateManager;
+    private Context mContext;
 
     public PredictionsFloatingHeader(Context context) {
         this(context, null);
@@ -67,7 +66,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         super(context, attributeSet);
         mContentAlpha = 1.0f;
         mHeaderTopPadding = context.getResources().getDimensionPixelSize(R.dimen.all_apps_header_top_padding);
-        //mPredictionUiStateManager = new CustomAppPredictor.UiManager(new ZimEventPredictor(context));
+        mContext = context;
     }
 
     @Override
@@ -78,17 +77,15 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     @Override
-    public void setup(AdapterHolder[] adapterHolderArr, boolean z) {
-        //mPredictionRowView.setup(this, mPredictionUiStateManager.isEnabled());
-        mPredictionRowView.setup(this, false);
-        mTabsHidden = z;
+    public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+        mPredictionRowView.setup(this, Utilities.getZimPrefs(mContext).getShowPredictions());
+        mTabsHidden = tabsHidden;
         updateExpectedHeight();
-        super.setup(adapterHolderArr, z);
+        super.setup(mAH, tabsHidden);
     }
 
     private void updateExpectedHeight() {
         boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
-        //mActionsRowView.setShowAllAppsLabel(useAllAppsLabel && mActionsRowView.shouldDraw(), false);
         DividerType dividerType = DividerType.NONE;
         if (useAllAppsLabel) {
             dividerType = DividerType.ALL_APPS_LABEL;
@@ -96,7 +93,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             dividerType = DividerType.LINE;
         }
         mPredictionRowView.setDividerType(dividerType, false);
-        //mMaxTranslation = mPredictionRowView.getExpectedHeight() + mActionsRowView.getExpectedHeight();
         mMaxTranslation = mPredictionRowView.getExpectedHeight();
     }
 
@@ -159,7 +155,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public void updateShowAllAppsLabel() {
-        //setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW && Utilities.getZimPrefs(getContext()).getShowAllAppsLabel());
+        setShowAllAppsLabel(Utilities.ATLEAST_MARSHMALLOW && Utilities.getZimPrefs(getContext()).getShowAllAppsLabel());
     }
 
     public void setShowAllAppsLabel(boolean show) {
@@ -175,9 +171,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     }
 
     public boolean hasVisibleContent() {
-        //return mPredictionUiStateManager.isEnabled();
-        return false;
-
+        return Utilities.getZimPrefs(mContext).getShowPredictions();
     }
 
     public void setCollapsed(boolean collapsed) {

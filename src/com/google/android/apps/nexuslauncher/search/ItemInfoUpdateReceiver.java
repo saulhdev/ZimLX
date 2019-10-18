@@ -23,7 +23,7 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
     public void di() {
         /*final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
         final IconCache iconCache = LauncherAppState.getInstance(this.mLauncher).getIconCache();
-        final Iterator<ComponentKeyMapper<AppInfo>> iterator = this.mCallbacks.getPredictedApps().iterator();
+        final Iterator<ComponentKeyMapper> iterator = this.mCallbacks.getPredictedApps().iterator();
         int n = 0;
         while (iterator.hasNext()) {
             final AppInfo app = apps.findApp(iterator.next());

@@ -526,6 +526,7 @@
     <string name="pref_drawer_columns">Number of columns</string>
     <string name="pref_prediction_count">Number of suggestions</string>
     <string name="separate_work_apps_pref_title">Second tab for work apps</string>
+    <string name="all_apps_label_pref_title">Show "All Apps" label</string>
 
     <!-- PREFERENCES BEHAVIOR -->
     <string name="title__behavior_widget_provider">Weather source</string>
@@ -583,6 +584,9 @@
     <string name="icon_pack_applied_toast">%s applied</string>
     <string name="pref_icon_pack">Icon pack</string>
     <string name="pref_smartspace_widget_provider">Weather source</string>
+
+    <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
+    <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
 
     <!-- PREFERENCES GESTURES -->
     <string name="gestures_none">None</string>
@@ -984,6 +988,8 @@
     <string name="drawer_tabs">Tabs</string>
     <string name="add_new_tab">Add</string>
     <string name="rename_tab">Rename</string>
+
+    <string name="pref_categ_folder">Folder Customize</string>
 
     <string name="permission_iplocate">Allow access to coarse, network based location?</string>
     <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>

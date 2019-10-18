@@ -64,11 +64,11 @@ import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import com.android.launcher3.views.OptionsPopupView
+import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.CustomIconUtils
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
-import org.zimmob.zimlx.predictions.ZimEventPredictor
 import org.zimmob.zimlx.util.JSONMap
 import java.lang.reflect.Field
 import java.util.*
@@ -347,7 +347,7 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
         }
         if (launcher != null) {
             runOnMainThread {
-                (launcher.userEventDispatcher as ZimEventPredictor).uiManager.onPredictionsUpdated()
+                (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
             }
         }
     }

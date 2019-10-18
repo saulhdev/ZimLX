@@ -9,10 +9,6 @@ Version 2.0, January 2004<br/>
 ~° Copyright (c) The Android Open Source Project
 ~° ![https://developer.android.com/topic/libraries/support-library](https://developer.android.com/topic/libraries/support-library)<br/>
 
-* **FastAdaptern**
-~° Copyright (c) Mike Penz
-~° ![https://github.com/mikepenz/FastAdapter](https://github.com/mikepenz/FastAdapter)<br/>
-
 * **Butterknife**
 ~° Copyright (c) 2013 Jake Wharton
 ~° ![https://github.com/JakeWharton/butterknife](https://github.com/JakeWharton/butterknife)<br/>

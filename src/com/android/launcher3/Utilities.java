@@ -73,7 +73,6 @@ import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
-import org.zimmob.zimlx.override.OverviewState;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -879,13 +878,13 @@ public final class Utilities {
         }
     }*/
 
-    public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
+    /*public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
         if (Utilities.getZimPrefs(launcher).getDockGradientStyle()) return targetProgress;
         if (toState == LauncherState.OVERVIEW) {
             return OverviewState.getNormalVerticalProgress(launcher);
         }
         return targetProgress;
-    }
+    }*/
 
     public static void openURLinBrowser(Context context, String url) {
         openURLinBrowser(context, url, null, null);

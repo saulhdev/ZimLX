@@ -84,17 +84,6 @@
         app:iconSpaceReserved="false" />
 
     <ListPreference
-        android:defaultValue="5"
-        android:entries="@array/predictive_apps_values"
-        android:entryValues="@array/predictive_apps_values"
-        android:key="pref_predictive_apps_values"
-        android:dependency="pref_show_predictions"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/pref_title__predictive_apps_num"
-        app:iconSpaceReserved="false" />
-
-    <ListPreference
         android:defaultValue="0"
         android:entries="@array/entries__sort_mode"
         android:entryValues="@array/values__zero_to_four"
@@ -111,6 +100,14 @@
         android:summary="@string/hide_apps_sum"
         android:title="@string/hide_apps"
         app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:key="pref_showAllAppsLabel"
+        android:title="@string/all_apps_label_pref_title"
+        android:defaultValue="false"
+        android:persistent="true"
+        app:iconSpaceReserved="false"
+        app:controllerClass="org.zimmob.zimlx.settings.ui.controllers.AllAppsLabelController" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:key="pref_separateWorkApps"

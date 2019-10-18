@@ -13,7 +13,6 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.LauncherExterns;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
@@ -36,13 +35,12 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-import static com.google.android.apps.nexuslauncher.CustomAppPredictor.UiManager.setTargetAppsView;
 
 public class NexusLauncher {
     private final Launcher mLauncher;
     private NexusLauncherCallbacks mCallbacks;
     private boolean mFeedRunning;
-    private final LauncherExterns mExterns;
+    private LauncherExterns mExterns;
     private boolean mRunning;
     LauncherClient mClient;
     private NexusLauncherOverlay mOverlay;
@@ -51,7 +49,6 @@ public class NexusLauncher {
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
 
     QsbAnimationController mQsbAnimationController;
-    private Handler handler = new Handler(LauncherModel.getUiWorkerLooper());
 
     public NexusLauncher(NexusLauncherActivity activity) {
         mLauncher = activity;
@@ -65,11 +62,12 @@ public class NexusLauncher {
         mCallbacks.registerSmartspaceView(smartspace);
     }
 
+
     class NexusLauncherCallbacks implements LauncherCallbacks, SharedPreferences.OnSharedPreferenceChangeListener, WallpaperColorInfo.OnChangeListener {
         private Set<SmartspaceView> mSmartspaceViews = Collections.newSetFromMap(new WeakHashMap<>());
         private final FeedReconnector mFeedReconnector = new FeedReconnector();
 
-        private final Runnable mUpdatePredictionsIfResumed = this::updatePredictionsIfResumed;
+        //private final Runnable mUpdatePredictionsIfResumed = this::updatePredictionsIfResumed;
 
         private ItemInfoUpdateReceiver getUpdateReceiver() {
             if (mItemInfoUpdateReceiver == null) {
@@ -81,8 +79,7 @@ public class NexusLauncher {
 
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
-            //ZimEventPredictor.UiManager.dispatchOnChange();
-            mLauncher.getUserEventDispatcher().updatePredictions();
+            //mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
@@ -136,7 +133,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            setTargetAppsView(mLauncher.getAppsView());
+            //setTargetAppsView(mLauncher.getAppsView());
 
         }
 
@@ -174,7 +171,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onDestroy();
 
-            setTargetAppsView(null);
+            //setTargetAppsView(null);
         }
 
         public void onDetachedFromWindow() {
@@ -215,11 +212,11 @@ public class NexusLauncher {
                 smartspace.onResume();
             }
 
-            Handler handler = mLauncher.getDragLayer().getHandler();
+           /* Handler handler = mLauncher.getDragLayer().getHandler();
             if (handler != null) {
                 handler.removeCallbacks(mUpdatePredictionsIfResumed);
                 Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
-            }
+            }*/
         }
 
         public void onSaveInstanceState(final Bundle bundle) {
@@ -308,7 +305,7 @@ public class NexusLauncher {
             }
         }
 
-        private void updatePredictionsIfResumed() {
+        /*private void updatePredictionsIfResumed() {
             if (mLauncher.hasBeenResumed()) {
                 //ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
                 //        FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
@@ -317,7 +314,7 @@ public class NexusLauncher {
                     mLauncher.getUserEventDispatcher().updateActions();
                 });
             }
-        }
+        }*/
 
         class FeedReconnector implements Runnable {
             private final static int MAX_RETRIES = 10;

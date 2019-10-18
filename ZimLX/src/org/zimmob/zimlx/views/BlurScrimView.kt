@@ -40,9 +40,7 @@ import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.dpToPx
 import org.zimmob.zimlx.graphics.NinePatchDrawHelper
 import org.zimmob.zimlx.isVisible
-import org.zimmob.zimlx.override.OverviewState
 import org.zimmob.zimlx.runOnMainThread
-import org.zimmob.zimlx.states.HomeState
 
 class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(context, attrs),
         ZimPreferences.OnPreferenceChangeListener, View.OnLayoutChangeListener,
@@ -374,13 +372,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         if (useFlatColor) {
             blurDrawable?.setBounds(left, top, right, bottom)
         }
-    }
-
-    override fun getMidProgress(): Float {
-        if (!prefs.dockGradientStyle) {
-            return Math.max(HomeState.getNormalProgress(mLauncher), OverviewState.getNormalVerticalProgress(mLauncher))
-        }
-        return super.getMidProgress()
     }
 
     override fun onLayoutChange(v: View?, left: Int, top: Int, right: Int, bottom: Int, oldLeft: Int, oldTop: Int, oldRight: Int, oldBottom: Int) {

@@ -31,6 +31,7 @@ import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.android.launcher3.R;
+import com.android.launcher3.allapps.AllAppsContainerView.AdapterHolder;
 import com.android.launcher3.anim.PropertySetter;
 
 import java.util.ArrayList;
@@ -88,17 +89,17 @@ public class FloatingHeaderView extends LinearLayout implements
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mTabLayout = findViewById(R.id.tabs);
+        mTabLayout = findViewById(R.id.tabs_scroller);
     }
 
-    public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
+    public void setup(AdapterHolder[] mAH, boolean tabsHidden) {
         mTabsHidden = tabsHidden;
         mTabLayout.setVisibility(tabsHidden ? View.GONE : View.VISIBLE);
         for (AllAppsRecyclerView recyclerView : mRVs) {
             recyclerView.removeOnScrollListener(mOnScrollListener);
         }
         mRVs.clear();
-        for (AllAppsContainerView.AdapterHolder holder : mAH) {
+        for (AdapterHolder holder : mAH) {
             if (holder.recyclerView != null) {
                 mRVs.add(setupRV(null, holder.recyclerView));
             }

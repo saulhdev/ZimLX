@@ -1,8 +1,8 @@
 ### v0.6.3
-*   Add Overview Mode for desktop
-*   Add web search providers
-*   Support for folders in appdrawer.
-*   support order by icon color
+*   Add Overview Mode for desktop.
+*   Add web search providers.
+*   Support for folders in App drawer.
+*   support order by icon color.
 
 ### v0.6.2
 *   Enable global search in all apps

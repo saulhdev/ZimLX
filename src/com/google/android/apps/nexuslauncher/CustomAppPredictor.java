@@ -27,22 +27,27 @@ import java.util.List;
 import java.util.Set;
 
 public class CustomAppPredictor extends UserEventDispatcher implements SharedPreferences.OnSharedPreferenceChangeListener {
-    public int MAX_PREDICTIONS = 10;
+    protected static final int MAX_PREDICTIONS = 5;
     private static final int BOOST_ON_OPEN = 9;
     private static final String PREDICTION_SET = "pref_prediction_set";
     private static final String PREDICTION_PREFIX = "pref_prediction_count_";
     private static final String HIDDEN_PREDICTIONS_SET_PREF = "pref_hidden_prediction_set";
     private static final Set<String> EMPTY_SET = new HashSet<>();
-    public final static String[] PLACE_HOLDERS = new String[]{
-            "com.google.android.apps.photos",
-            "com.google.android.apps.maps",
-            "com.google.android.gm",
-            "com.google.android.deskclock",
-            "com.android.settings",
+    private final Context mContext;
+    protected final AppFilter mAppFilter;
+    private final SharedPreferences mPrefs;
+    private final PackageManager mPackageManager;
+
+    protected final static String[] PLACE_HOLDERS = new String[]{
             "com.whatsapp",
             "com.facebook.katana",
             "com.facebook.orca",
             "com.google.android.youtube",
+            "com.android.settings",
+            "com.google.android.apps.photos",
+            "com.google.android.apps.maps",
+            "com.google.android.gm",
+            "com.google.android.deskclock",
             "com.yodo1.crossyroad",
             "com.spotify.music",
             "com.android.chrome",
@@ -65,19 +70,15 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             "com.google.android.apps.plus",
             "com.google.android.talk"
     };
-    private final Context mContext;
-    public final AppFilter mAppFilter;
-    private final SharedPreferences mPrefs;
-    private final PackageManager mPackageManager;
 
     private final UiManager mUiManager;
+
     public CustomAppPredictor(Context context) {
         mContext = context;
         mAppFilter = AppFilter.newInstance(mContext);
         mPrefs = Utilities.getPrefs(context);
         mPrefs.registerOnSharedPreferenceChangeListener(this);
         mPackageManager = context.getPackageManager();
-        MAX_PREDICTIONS = Utilities.getZimPrefs(context).getNumPredictedApps();
         mUiManager = new UiManager(this);
     }
 
@@ -162,7 +163,6 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     /**
      * Zero-based launch count of a shortcut
-     *
      * @param component serialized component
      * @return the number of launches, at least zero
      */
@@ -183,8 +183,8 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return false;
     }
 
-    public boolean isPredictorEnabled() {
-        return Utilities.getZimPrefs(mContext).getShowPredictions();
+    protected boolean isPredictorEnabled() {
+        return Utilities.getPrefs(mContext).getBoolean(SettingsActivity.SHOW_PREDICTIONS_PREF, true);
     }
 
     @Override
@@ -201,15 +201,15 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
                 edit.putStringSet(PREDICTION_SET, EMPTY_SET);
                 edit.apply();
             }
+
             mUiManager.onPredictionsUpdated();
         } else if (key.equals(HIDDEN_PREDICTIONS_SET_PREF)) {
             mUiManager.onPredictionsUpdated();
         }
     }
 
-    public ComponentKeyMapper getComponentFromString(String str) {
-        int index = str.indexOf('/');
-        return new ComponentKeyMapper(mContext, new ComponentKey(new ComponentName(str.substring(0, index), str.substring(index + 1)), Process.myUserHandle()));
+    protected ComponentKeyMapper getComponentFromString(String str) {
+        return new ComponentKeyMapper(mContext, new ComponentKey(mContext, str));
     }
 
     private void clearNonExistingComponents() {
@@ -240,9 +240,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private Set<String> getStringSetCopy() {
-        Set<String> set = new HashSet<>();
-        set.addAll(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
-        return set;
+        return new HashSet<>(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
     }
 
     static void setComponentNameState(Context context, ComponentKey key, boolean hidden) {
@@ -261,7 +259,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         return getHiddenApps(context).contains(key.toString());
     }
 
-    // This can't be null anyway
+    @SuppressWarnings("ConstantConditions") // This can't be null anyway
     private static Set<String> getHiddenApps(Context context) {
         return new HashSet<>(Utilities.getZimPrefs(context).getHiddenPredictionAppSet());
     }
@@ -279,16 +277,8 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         private final CustomAppPredictor mPredictor;
         private final List<Listener> mListeners = new ArrayList<>();
 
-        public UiManager(CustomAppPredictor predictor) {
+        private UiManager(CustomAppPredictor predictor) {
             mPredictor = predictor;
-        }
-
-        public static void setTargetAppsView(Object o) {
-
-        }
-
-        public static void dispatchOnChange() {
-
         }
 
         public void addListener(Listener listener) {
@@ -319,5 +309,4 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             void onPredictionsUpdated();
         }
     }
-
 }

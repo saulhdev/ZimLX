@@ -24,8 +24,7 @@
     <com.google.android.apps.nexuslauncher.allapps.PredictionRowView
         android:id="@+id/prediction_row"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:accessibilityPaneTitle="@string/title_app_suggestions_in_search" />
+        android:layout_height="wrap_content" />
 
     <HorizontalScrollView
         android:id="@+id/tabs_scroller"

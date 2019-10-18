@@ -1,4 +1,6 @@
 /*
+ *     Copyright (C) 2019 Lawnchair Team.
+ *
  *     This file is part of Lawnchair Launcher.
  *
  *     Lawnchair Launcher is free software: you can redistribute it and/or modify
@@ -14,16 +16,27 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
-
-
-package org.zimmob.zimlx.allapps
+package org.zimmob.zimlx.preferences
 
 import android.content.Context
 import android.util.AttributeSet
-import android.widget.LinearLayout
+import org.zimmob.zimlx.iconpack.IconPackManager
 
-abstract class PredictionsDividerLayout(context: Context, attrs: AttributeSet?)
-    : LinearLayout(context, attrs) {
+class IconMaskingPreference(context: Context, attrs: AttributeSet?) :
+        StyledSwitchPreferenceCompat(context, attrs) {
 
-    //abstract fun onAllAppsLabelColorChanged()
+    private val manager = IconPackManager.getInstance(context)
+    private val listener = {
+        isVisible = manager.maskSupported()
+    }
+
+    override fun onAttached() {
+        super.onAttached()
+        manager.addListener(listener)
+    }
+
+    override fun onDetached() {
+        super.onDetached()
+        manager.removeListener(listener)
+    }
 }

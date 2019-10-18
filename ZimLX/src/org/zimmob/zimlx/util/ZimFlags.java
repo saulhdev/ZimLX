@@ -13,13 +13,12 @@ public class ZimFlags {
     public static final String DESKTOP_HIDE_LABELS = "pref_hideAppLabels";
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";
     public static final String DESKTOP_OVERLAP_WIDGET = "pref_key__overlap_widget";
+    public static final String DESKTOP_TOP_SHADOW = "pref_showTopShadow";
 
-    public static final String HOTSEAT_HIDE = "pref_hideHotseat";
     public static final String HOTSEAT_ICON_SCALE = "pref_dockScale";
 
     public static final String APPDRAWER_ICON_SCALE = "pref_allAppsIconScale";
     public static final String APPDRAWER_HIDE_APP_LABEL = "pref_hideAllAppsAppLabels";
-    public static final String APPDRAWER_ALL_APPS_ICON_PADDING_SCALE = "pref_allAppsIconPaddingScale";
     public static final String APPDRAWER_SHOW_PREDICTIONS = "pref_show_predictions";
     public static final String APPDRAWER_SORT_MODE = "pref_key__sort_mode";
 

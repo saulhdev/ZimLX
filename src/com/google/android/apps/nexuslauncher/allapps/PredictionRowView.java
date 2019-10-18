@@ -62,7 +62,6 @@ import com.android.launcher3.touch.ItemLongClickListener;
 import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.Themes;
 
-import org.zimmob.zimlx.allapps.PredictionsDividerLayout;
 import org.zimmob.zimlx.anim.AnimatedFloat;
 
 import java.util.ArrayList;
@@ -71,7 +70,7 @@ import java.util.List;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-public class PredictionRowView extends PredictionsDividerLayout implements UserEventDispatcher.LogContainerProvider,
+public class PredictionRowView extends LinearLayout implements UserEventDispatcher.LogContainerProvider,
         OnUpdateListener, OnDeviceProfileChangeListener {
     private static final Interpolator ALPHA_FACTOR_INTERPOLATOR = input -> input < 0.8f ? 0.0f : (input - 0.8f) / 0.2f;
     private static final String TAG = "PredictionRowView";
@@ -147,7 +146,7 @@ public class PredictionRowView extends PredictionsDividerLayout implements UserE
         mPaint.setStrokeWidth((float) context.getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
         mStrokeColor = mPaint.getColor();
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
-        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer; // TODO: make a separated pref
+        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numPredictions; // TODO: make a separated pref
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 
@@ -274,36 +273,38 @@ public class PredictionRowView extends PredictionsDividerLayout implements UserE
                 removeViewAt(0);
             }
             while (getChildCount() < mNumPredictedAppsPerRow) {
-                BubbleTextView bubbleTextView = (BubbleTextView) mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
-                bubbleTextView.setOnClickListener(ItemClickHandler.INSTANCE);
-                bubbleTextView.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                bubbleTextView.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
-                bubbleTextView.setOnFocusChangeListener(mFocusHelper);
-                LayoutParams layoutParams = (LayoutParams) bubbleTextView.getLayoutParams();
-                layoutParams.height = getExpectedHeight();
+                BubbleTextView icon = (BubbleTextView) mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
+                icon.setOnClickListener(ItemClickHandler.INSTANCE);
+                icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
+                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
+                icon.setOnFocusChangeListener(mFocusHelper);
+                LayoutParams layoutParams = (LayoutParams) icon.getLayoutParams();
+                layoutParams.height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 layoutParams.width = 0;
                 layoutParams.weight = 1.0f;
-                addView(bubbleTextView);
+                addView(icon);
             }
         }
-        int size = mPredictedApps.size();
+        int predictionCount = mPredictedApps.size();
         int alphaComponent = ColorUtils.setAlphaComponent(mIconTextColor, mIconCurrentTextAlpha);
+
         for (int i = 0; i < getChildCount(); i++) {
-            BubbleTextView bubbleTextView2 = (BubbleTextView) getChildAt(i);
-            bubbleTextView2.reset();
-            if (size > i) {
-                bubbleTextView2.setVisibility(View.VISIBLE);
+            BubbleTextView icon = (BubbleTextView) getChildAt(i);
+            icon.reset();
+            if (predictionCount > i) {
+                icon.setVisibility(View.VISIBLE);
                 if (mPredictedApps.get(i) instanceof AppInfo) {
-                    bubbleTextView2.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
+                    icon.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
                 } else if (mPredictedApps.get(i) instanceof ShortcutInfo) {
-                    bubbleTextView2.applyFromShortcutInfo((ShortcutInfo) mPredictedApps.get(i));
+                    icon.applyFromShortcutInfo((ShortcutInfo) mPredictedApps.get(i));
                 }
-                bubbleTextView2.setTextColor(alphaComponent);
+                icon.setTextColor(alphaComponent);
             } else {
-                bubbleTextView2.setVisibility(size == 0 ? View.GONE : View.VISIBLE);
+                icon.setVisibility(predictionCount == 0 ? View.GONE : View.VISIBLE);
             }
+
         }
-        if (size == 0) {
+        if (predictionCount == 0) {
             if (mLoadingProgress == null) {
                 mLoadingProgress = LayoutInflater.from(getContext()).inflate(R.layout.prediction_load_progress, this, false);
             }
@@ -336,8 +337,7 @@ public class PredictionRowView extends PredictionsDividerLayout implements UserE
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
             float height = (float) (getHeight() - (getPaddingBottom() / 2));
             Canvas canvas2 = canvas;
-            float f = height;
-            canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), f, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, mPaint);
+            canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), height, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, mPaint);
         } else if (mDividerType == DividerType.ALL_APPS_LABEL) {
             drawAllAppsHeader(canvas);
         }

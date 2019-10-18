@@ -105,6 +105,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ActivityResultInfo;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ComponentKeyMapper;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.MultiValueAlpha;
@@ -129,16 +130,12 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
-import org.zimmob.zimlx.minibar.DashAction;
-import org.zimmob.zimlx.minibar.DashAdapter;
-import org.zimmob.zimlx.minibar.DashItem;
-import org.zimmob.zimlx.minibar.DashUtils;
-import org.zimmob.zimlx.minibar.SwipeListView;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -289,6 +286,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
+    public Runnable mUpdatePredictionsIfResumed = () -> updatePredictions(false);
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         if (DEBUG_STRICT_MODE) {
@@ -396,9 +395,23 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onCreate(savedInstanceState);
         }
         mRotationHelper.initialize();
-        initMinibar();
+        //initMinibar();
         TraceHelper.endSection("Launcher-onCreate");
         Utilities.checkRestoreSuccess(this);
+
+        if (prefs.getShowPredictions()) {
+            updatePredictions(true);
+        }
+    }
+
+    public void updatePredictions(boolean force) {
+        if (hasBeenResumed() || force) {
+            List<ComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
+            if (apps != null) {
+                mAppsView.getFloatingHeaderView().setPredictedApps(Utilities.getZimPrefs(this).getShowPredictions(), apps);
+                Log.e(TAG, "Predictions Size " + apps.size());
+            }
+        }
     }
 
     @Override
@@ -436,29 +449,30 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public void initMinibar() {
+    /*public void initMinibar() {
         ZimPreferences prefs = Utilities.getZimPrefs(this);
         ArrayList<DashItem> dashItems = new ArrayList<>();
-        for (String act : prefs.getMinibarItems()) {
-            if (act.length() > 1) {
-                DashItem item = null;
-                if (act.length() == 2) {
-                    item = DashUtils.getDashItemFromString(act);
-                } else {
-                    ComponentKey keyMapper = new ComponentKey(this, act);
+        for (String action : prefs.getMinibarItems()) {
+            //if (action.length() > 1) {
+            Log.d("Dash APP", "Loading Action lenght: " + action.length());
+            DashItem item = null;
+            if (action.length() == 2) {
+                item = DashUtils.getDashItemFromString(action);
+            } else {
+                ComponentKey keyMapper = new ComponentKey(this, action);
 
-                    AppInfo app = mAllAppsController.getAppsView().getAppsStore().getApp(keyMapper);
+                AppInfo app = mAllAppsController.getAppsView().getAppsStore().getApp(keyMapper);
 
-                    Log.d("Dash APP", "Loading App " + act);
-                    if (app != null) {
-                        item = DashItem.asApp(app, 0);
-                    }
-                }
-
-                if (item != null) {
-                    dashItems.add(item);
+                Log.d("Dash APP", "Loading App " + action);
+                if (app != null) {
+                    item = DashItem.asApp(app, 0);
                 }
             }
+
+            if (item != null) {
+                dashItems.add(item);
+            }
+            //}
         }
 
         SwipeListView minibar = findViewById(R.id.minibar);
@@ -474,7 +488,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         });
         // frame layout spans the entire side while the minibar container has gaps at the top and bottom
         ((FrameLayout) minibar.getParent()).setBackgroundColor(prefs.getMinibarColor());
-    }
+    }*/
 
     public static Launcher getLauncher(Context context) {
         if (context instanceof Launcher) {
@@ -517,7 +531,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     @Override
-    protected void reapplyUi() {
+    public void reapplyUi() {
         getRootView().dispatchInsets();
         getStateManager().reapplyState(true /* cancelCurrentAnimation */);
     }
@@ -938,6 +952,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
+        }
+
+        Handler handler = getDragLayer().getHandler();
+        if (handler != null) {
+            handler.removeCallbacks(mUpdatePredictionsIfResumed);
+            Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
         }
 
         UiFactory.onLauncherStateOrResumeChanged(this);

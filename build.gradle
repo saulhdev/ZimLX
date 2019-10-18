@@ -54,7 +54,7 @@ android {
         localProps.load(localPropsFile.newDataInputStream())
     }
     def name = "0.6.3"
-    def code = 3014
+    def code = 3015
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 28
@@ -190,9 +190,6 @@ dependencies {
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.3'
-    implementation 'com.mikepenz:fastadapter:3.2.6@aar'
-    implementation 'com.mikepenz:fastadapter-commons:3.2.6@aar'
-    implementation 'com.mikepenz:fastadapter-extensions:3.2.6@aar'
     implementation 'com.balysv:material-ripple:1.0.2'
     implementation 'cat.ereza:customactivityoncrash:2.2.0'
     implementation 'com.jaredrummler:colorpicker:1.1.0'

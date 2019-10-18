@@ -71,5 +71,5 @@ public interface LauncherCallbacks {
      */
     boolean hasSettings();
 
-    //List<ComponentKeyMapper<AppInfo>> getPredictedApps();
+    //List<ComponentKeyMapper> getPredictedApps();
 }
