@@ -15,6 +15,14 @@
 
 <favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
+    <custom-appwidget
+        launcher:providerId="1"
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="0"
+        launcher:spanX="6"
+        launcher:spanY="1" />
+
     <!-- Hotseat -->
     <include launcher:workspace="@xml/dw_hotseat_6" />
     <!-- Google Folder -->
@@ -22,7 +30,7 @@
         launcher:screen="0"
         launcher:title="@string/google_title"
         launcher:x="0"
-        launcher:y="4">
+        launcher:y="5">
         <favorite
             launcher:className="com.google.android.googlequicksearchbox.SearchActivity"
             launcher:packageName="com.google.android.googlequicksearchbox" />
@@ -63,7 +71,7 @@
         launcher:screen="0"
         launcher:title="@string/play_folder_title"
         launcher:x="1"
-        launcher:y="4">
+        launcher:y="5">
         <favorite
             launcher:className="com.android.music.activitymanagement.TopLevelActivity"
             launcher:packageName="com.google.android.music" />

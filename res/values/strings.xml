@@ -677,6 +677,7 @@
     <string name="title_search_hidden_apps">Find hidden apps</string>
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
+    <string name="background_color">Background color</string>
 
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__about_app" translatable="false">pref_key__about_app</string>
