@@ -17,11 +17,12 @@ package com.android.systemui.shared.system;
 
 import android.graphics.Canvas;
 import android.graphics.Rect;
-import android.support.annotation.Keep;
 import android.view.DisplayListCanvas;
 import android.view.View;
 import android.view.ViewRootImpl;
 import android.view.WindowCallbacks;
+
+import androidx.annotation.Keep;
 
 public class WindowCallbacksCompat {
 
