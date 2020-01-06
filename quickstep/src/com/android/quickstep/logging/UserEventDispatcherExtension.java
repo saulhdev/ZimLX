@@ -18,15 +18,16 @@ package com.android.quickstep.logging;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.launcher3.userevent.nano.LauncherLogProto;
+
+import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
+
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CANCEL_TARGET;
-import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
 import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
-
-import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
-import com.android.launcher3.userevent.nano.LauncherLogProto;
+import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
 
 /**
  * This class handles AOSP MetricsLogger function calls and logging around

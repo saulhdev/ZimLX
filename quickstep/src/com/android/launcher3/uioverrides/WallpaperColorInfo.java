@@ -1,6 +1,7 @@
 package com.android.launcher3.uioverrides;
 
 import android.content.Context;
+
 import com.android.launcher3.Utilities;
 
 public abstract class WallpaperColorInfo {

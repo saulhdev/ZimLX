@@ -15,11 +15,6 @@
  */
 package com.android.quickstep.views;
 
-import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.ACCEL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -29,13 +24,19 @@ import android.graphics.Path.Direction;
 import android.graphics.Path.Op;
 import android.util.AttributeSet;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
+
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
+import static android.support.v4.graphics.ColorUtils.setAlphaComponent;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 /**
  * Scrim used for all-apps and shelf in Overview

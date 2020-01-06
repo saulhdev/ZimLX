@@ -15,19 +15,22 @@
  */
 package com.android.quickstep.util;
 
-import static java.lang.annotation.RetentionPolicy.SOURCE;
-
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
 import android.support.annotation.AnyThread;
 import android.support.annotation.IntDef;
-import ch.deletescape.lawnchair.LawnchairPreferences;
+
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
+
 import java.lang.annotation.Retention;
+
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
 
 public class LayoutUtils {
 

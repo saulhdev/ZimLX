@@ -1,7 +1,7 @@
 import java.text.SimpleDateFormat
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.3.61'
     ext.version_library_butterknife = "10.1.0"
     ext.version_plugin_kotlin = "1.3.31"
     ext.enable_plugin_kotlin = true
@@ -29,7 +29,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.0'
+        classpath 'com.android.tools.build:gradle:3.5.3'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -46,14 +46,14 @@ if (enable_plugin_kotlin) {
 }
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 28
     buildToolsVersion '28.0.3'
     Properties localProps = new Properties()
     File localPropsFile = project.rootProject.file('local.properties')
     if (localPropsFile.exists()) {
         localProps.load(localPropsFile.newDataInputStream())
     }
-    def name = "0.6.3"
+    def name = "0.6.5"
     def code = 3015
     defaultConfig {
         minSdkVersion 21
@@ -95,6 +95,11 @@ android {
         l3go {
             dimension "default"
             applicationId 'com.android.launcher3'
+            testApplicationId 'com.android.launcher3.tests'
+        }
+        quickstep {
+            dimension "default"
+            applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
         zim {
@@ -143,12 +148,26 @@ android {
             java.srcDirs = ['go/src_flags', "src_ui_overrides"]
             manifest.srcFile "go/AndroidManifest.xml"
         }
+
+        quickstep {
+            res.srcDirs = ['quickstep/res']
+            java.srcDirs = ['src_flags', 'quickstep/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
+
         zim {
             res.srcDirs = ['ZimLX/res']
             java.srcDirs = ['ZimLX/src']
             manifest.srcFile "ZimLX/AndroidManifest.xml"
         }
     }
+
+    gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs.add('-Xbootclasspath/p:ZimLX/libs/framework.jar')
+        }
+    }
+
     kotlinOptions {
         jvmTarget = '1.8'
     }
@@ -199,6 +218,8 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
+
+    quickstepImplementation project(':systemui-shared')
 
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"

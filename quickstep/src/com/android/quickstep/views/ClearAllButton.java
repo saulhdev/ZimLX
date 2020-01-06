@@ -18,12 +18,13 @@ package com.android.quickstep.views;
 
 import android.content.Context;
 import android.util.AttributeSet;
-
 import android.widget.Button;
-import ch.deletescape.lawnchair.font.CustomFontManager;
+
 import com.android.launcher3.Utilities;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
+
+import ch.deletescape.lawnchair.font.CustomFontManager;
 
 public class ClearAllButton extends Button implements PageCallbacks {
 

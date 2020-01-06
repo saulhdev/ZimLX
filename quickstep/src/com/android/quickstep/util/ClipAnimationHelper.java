@@ -15,11 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
-
 import android.annotation.TargetApi;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -31,7 +26,6 @@ import android.os.Build;
 import android.os.RemoteException;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.view.Surface;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -51,8 +45,12 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.Surfac
 import com.android.systemui.shared.system.TransactionCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.quickstep.QuickScrubController.QUICK_SCRUB_TRANSLATION_Y_FACTOR;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_CLOSING;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 /**
  * Utility class to handle window clip animation

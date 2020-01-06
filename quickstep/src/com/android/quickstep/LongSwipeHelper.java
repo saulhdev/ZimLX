@@ -15,18 +15,10 @@
  */
 package com.android.quickstep;
 
-import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.anim.Interpolators.DEACCEL;
-import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
-import static com.android.quickstep.WindowTransformSwipeHandler.MIN_OVERSHOOT_DURATION;
-
 import android.animation.ValueAnimator;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
@@ -44,6 +36,13 @@ import com.android.launcher3.util.FlingBlockCheck;
 import com.android.quickstep.util.RemoteAnimationTargetSet;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
+
+import static com.android.launcher3.LauncherAnimUtils.MIN_PROGRESS_TO_ALL_APPS;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.quickstep.WindowTransformSwipeHandler.MAX_SWIPE_DURATION;
+import static com.android.quickstep.WindowTransformSwipeHandler.MIN_OVERSHOOT_DURATION;
 
 /**
  * Utility class to handle long swipe from an app.

@@ -15,13 +15,8 @@
  */
 package com.android.launcher3.uioverrides;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
-
 import android.view.View;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -33,6 +28,10 @@ import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.quickstep.RecentsModel;
 import com.android.quickstep.views.RecentsView;
+
+import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.states.RotationHelper.REQUEST_ROTATE;
 
 /**
  * Definition for overview state

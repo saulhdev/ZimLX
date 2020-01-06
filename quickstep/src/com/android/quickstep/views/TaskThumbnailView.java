@@ -16,8 +16,6 @@
 
 package com.android.quickstep.views;
 
-import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
-
 import android.content.Context;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -34,7 +32,6 @@ import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
 import com.android.launcher3.BaseActivity;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
@@ -46,7 +43,12 @@ import com.android.quickstep.TaskOverlayFactory;
 import com.android.quickstep.TaskOverlayFactory.TaskOverlay;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
+
 import org.jetbrains.annotations.NotNull;
+
+import ch.deletescape.lawnchair.LawnchairPreferences;
+
+import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 /**
  * A task in the Recents view.

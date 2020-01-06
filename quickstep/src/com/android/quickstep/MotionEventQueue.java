@@ -15,12 +15,6 @@
  */
 package com.android.quickstep;
 
-import static android.view.MotionEvent.ACTION_CANCEL;
-import static android.view.MotionEvent.ACTION_MASK;
-import static android.view.MotionEvent.ACTION_MOVE;
-import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
-import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
-
 import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
@@ -30,6 +24,12 @@ import android.view.MotionEvent;
 import com.android.systemui.shared.system.ChoreographerCompat;
 
 import java.util.ArrayList;
+
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_MASK;
+import static android.view.MotionEvent.ACTION_MOVE;
+import static android.view.MotionEvent.ACTION_POINTER_INDEX_SHIFT;
+import static com.android.quickstep.TouchConsumer.INTERACTION_QUICK_SCRUB;
 
 /**
  * Helper class for batching input events

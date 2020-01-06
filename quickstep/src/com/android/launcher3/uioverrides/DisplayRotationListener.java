@@ -17,8 +17,8 @@ package com.android.launcher3.uioverrides;
 
 import android.content.Context;
 import android.os.Handler;
-
 import android.view.OrientationEventListener;
+
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.RotationWatcher;
 

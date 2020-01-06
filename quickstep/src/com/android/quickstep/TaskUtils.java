@@ -16,12 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
-import static com.android.systemui.shared.recents.utilities.Utilities.getNextFrameNumber;
-import static com.android.systemui.shared.recents.utilities.Utilities.getSurface;
-import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
-
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.Context;
@@ -30,7 +24,6 @@ import android.content.pm.PackageManager;
 import android.graphics.RectF;
 import android.os.UserHandle;
 import android.util.Log;
-import android.view.Surface;
 import android.view.View;
 
 import com.android.launcher3.BaseDraggingActivity;
@@ -49,6 +42,10 @@ import com.android.systemui.shared.system.RemoteAnimationTargetCompat;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 
 import java.util.List;
+
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.TOUCH_RESPONSE_INTERPOLATOR;
+import static com.android.systemui.shared.system.RemoteAnimationTargetCompat.MODE_OPENING;
 
 /**
  * Contains helpful methods for retrieving data from {@link Task}s.

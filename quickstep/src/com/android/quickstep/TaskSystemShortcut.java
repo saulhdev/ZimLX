@@ -16,8 +16,6 @@
 
 package com.android.quickstep;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
-
 import android.app.ActivityManager;
 import android.app.ActivityOptions;
 import android.app.admin.DevicePolicyManager;
@@ -37,7 +35,7 @@ import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
-import ch.deletescape.lawnchair.HiddenApiCompat;
+
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.DeviceProfile;
@@ -59,9 +57,14 @@ import com.android.systemui.shared.recents.view.RecentsTransition;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
+
+import ch.deletescape.lawnchair.HiddenApiCompat;
+
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
 /**
  * Represents a system shortcut that can be shown for a recent task.
