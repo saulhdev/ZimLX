@@ -16,9 +16,6 @@
 
 package com.android.systemui.shared.system;
 
-import static android.view.WindowManager.INPUT_CONSUMER_PIP;
-import static android.view.WindowManager.INPUT_CONSUMER_RECENTS_ANIMATION;
-
 import android.os.Binder;
 import android.os.IBinder;
 import android.os.Looper;
@@ -26,13 +23,16 @@ import android.os.RemoteException;
 import android.util.Log;
 import android.view.BatchedInputEventReceiver;
 import android.view.Choreographer;
+import android.view.IWindowManager;
 import android.view.InputChannel;
 import android.view.InputEvent;
-import android.view.IWindowManager;
 import android.view.MotionEvent;
 import android.view.WindowManagerGlobal;
 
 import java.io.PrintWriter;
+
+import static android.view.WindowManager.INPUT_CONSUMER_PIP;
+import static android.view.WindowManager.INPUT_CONSUMER_RECENTS_ANIMATION;
 
 /**
  * Manages the input consumer that allows the SystemUI to directly receive touch input.

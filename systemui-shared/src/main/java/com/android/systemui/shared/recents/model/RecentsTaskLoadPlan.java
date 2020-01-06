@@ -16,8 +16,6 @@
 
 package com.android.systemui.shared.recents.model;
 
-import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
-
 import android.app.ActivityManager;
 import android.app.KeyguardManager;
 import android.content.ComponentName;
@@ -34,6 +32,8 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static android.app.WindowConfiguration.WINDOWING_MODE_FREEFORM;
 
 
 /**

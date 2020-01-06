@@ -16,12 +16,12 @@
 
 package com.android.systemui.shared.recents.model;
 
-import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
-import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_UNDEFINED;
-
 import android.app.ActivityManager.TaskSnapshot;
 import android.graphics.Bitmap;
 import android.graphics.Rect;
+
+import static android.content.res.Configuration.ORIENTATION_UNDEFINED;
+import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_UNDEFINED;
 
 /**
  * Data for a single thumbnail.

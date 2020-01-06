@@ -16,8 +16,6 @@
 
 package com.android.systemui.shared.system;
 
-import static android.view.Display.DEFAULT_DISPLAY;
-
 import android.app.WindowConfiguration;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -26,12 +24,13 @@ import android.util.Log;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
 
-import static android.view.WindowManagerPolicyConstants.NAV_BAR_RIGHT;
-import static android.view.WindowManagerPolicyConstants.NAV_BAR_BOTTOM;
-import static android.view.WindowManagerPolicyConstants.NAV_BAR_LEFT;
-
 import com.android.systemui.shared.recents.view.AppTransitionAnimationSpecsFuture;
 import com.android.systemui.shared.recents.view.RecentsTransition;
+
+import static android.view.Display.DEFAULT_DISPLAY;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_BOTTOM;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_LEFT;
+import static android.view.WindowManagerPolicyConstants.NAV_BAR_RIGHT;
 
 public class WindowManagerWrapper {
 

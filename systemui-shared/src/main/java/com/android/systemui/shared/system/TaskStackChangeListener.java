@@ -16,7 +16,6 @@
 
 package com.android.systemui.shared.system;
 
-import android.app.ActivityManager.TaskSnapshot;
 import android.content.ComponentName;
 import android.os.UserHandle;
 import android.util.Log;

@@ -20,7 +20,6 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.os.IBinder;
 import android.view.Surface;
-import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
 
 public class TransactionCompat {

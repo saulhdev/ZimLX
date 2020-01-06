@@ -17,9 +17,7 @@
 package com.android.systemui.shared.system;
 
 import android.annotation.IntDef;
-import android.content.Context;
 import android.content.res.Resources;
-import android.util.DisplayMetrics;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

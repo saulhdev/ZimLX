@@ -19,7 +19,6 @@ package com.android.systemui.shared.recents.view;
 import android.graphics.Outline;
 import android.graphics.Rect;
 import android.view.View;
-import android.view.ViewDebug;
 import android.view.ViewOutlineProvider;
 
 import com.android.systemui.shared.recents.utilities.Utilities;

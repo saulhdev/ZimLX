@@ -15,8 +15,6 @@
  */
 package com.android.systemui.shared.recents.model;
 
-import static android.content.pm.PackageManager.MATCH_ANY_USER;
-
 import android.app.ActivityManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -33,6 +31,8 @@ import android.util.Log;
 import android.util.LruCache;
 
 import com.android.systemui.shared.system.PackageManagerWrapper;
+
+import static android.content.pm.PackageManager.MATCH_ANY_USER;
 
 public abstract class IconLoader {
 

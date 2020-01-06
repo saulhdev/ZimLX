@@ -21,9 +21,9 @@ import android.graphics.Rect;
 import android.view.Surface;
 import android.view.SurfaceControl;
 import android.view.SurfaceControl.Transaction;
+import android.view.ThreadedRenderer.FrameDrawingCallback;
 import android.view.View;
 import android.view.ViewRootImpl;
-import android.view.ThreadedRenderer.FrameDrawingCallback;
 
 /**
  * Helper class to apply surface transactions in sync with RenderThread.

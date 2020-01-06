@@ -15,9 +15,9 @@
  */
 package com.android.systemui.shared.system;
 
-import static android.view.Choreographer.CALLBACK_INPUT;
-
 import android.view.Choreographer;
+
+import static android.view.Choreographer.CALLBACK_INPUT;
 
 /**
  * Wraps the internal choreographer.
