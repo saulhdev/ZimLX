@@ -18,7 +18,7 @@
 apply plugin: 'com.android.library'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
 
     defaultConfig {
         minSdkVersion 21
@@ -53,13 +53,17 @@ android {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:lawnchair/libs/framework.jar')
+            options.compilerArgs.add('-Xbootclasspath/p:ZimLX/libs/framework.jar')
         }
     }
 }
-
+repositories {
+    jcenter()
+    google()
+    maven { url 'https://jitpack.io' }
+}
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation "com.android.support:support-annotations:28.0.0-alpha1"
+    implementation "com.android.support:support-annotations:28.0.0"
 }
