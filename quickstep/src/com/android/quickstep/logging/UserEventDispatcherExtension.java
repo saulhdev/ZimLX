@@ -20,7 +20,7 @@ import android.util.Log;
 
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 
-import ch.deletescape.lawnchair.predictions.LawnchairEventPredictor;
+import org.zimmob.zimlx.predictions.ZimEventPredictor;
 
 import static com.android.launcher3.logging.LoggerUtils.newLauncherEvent;
 import static com.android.launcher3.userevent.nano.LauncherLogProto.ControlType.CANCEL_TARGET;
@@ -34,7 +34,7 @@ import static com.android.systemui.shared.system.LauncherEventUtil.VISIBLE;
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
-public class UserEventDispatcherExtension extends LawnchairEventPredictor {
+public class UserEventDispatcherExtension extends ZimEventPredictor {
 
     private static final String TAG = "UserEventDispatcher";
 

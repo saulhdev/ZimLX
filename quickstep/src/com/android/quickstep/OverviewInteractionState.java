@@ -24,8 +24,9 @@ import android.os.Looper;
 import android.os.Message;
 import android.os.RemoteException;
 import android.provider.Settings;
-import android.support.annotation.WorkerThread;
 import android.util.Log;
+
+import androidx.annotation.WorkerThread;
 
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
@@ -34,11 +35,9 @@ import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.ZimPreferences;
 
 import java.util.concurrent.ExecutionException;
-
-import ch.deletescape.lawnchair.LawnchairPreferences;
-import ch.deletescape.lawnchair.customnavbar.CustomNavBar;
 
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_QUICK_SCRUB;
 import static com.android.systemui.shared.system.NavigationBarCompat.FLAG_DISABLE_SWIPE_UP;
@@ -54,7 +53,7 @@ import static com.android.systemui.shared.system.SettingsCompat.SWIPE_UP_SETTING
  *
  * @see com.android.systemui.shared.system.NavigationBarCompat.InteractionType and associated flags.
  */
-public class OverviewInteractionState implements LawnchairPreferences.OnPreferenceChangeListener {
+public class OverviewInteractionState implements ZimPreferences.OnPreferenceChangeListener {
 
     private static final String TAG = "OverviewFlags";
 
@@ -117,7 +116,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
             mSwipeUpSettingObserver.register();
         } else {
             mSwipeUpSettingObserver = null;
-            Utilities.getLawnchairPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
+            Utilities.getZimPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
             mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
         }
     }
@@ -133,7 +132,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     public void setBackButtonAlpha(float alpha, boolean animate) {
         if (!mSwipeUpEnabled) {
             alpha = 1;
-        } else if (Utilities.getLawnchairPrefs(mContext).getSwipeLeftToGoBack()) {
+        } else if (Utilities.getZimPrefs(mContext).getSwipeLeftToGoBack()) {
             alpha = 0;
         }
         mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
@@ -198,7 +197,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     @WorkerThread
     private void applyBackButtonAlpha(float alpha, boolean animate) {
         if (mISystemUiProxy == null) {
-            CustomNavBar.Companion.getInstance(mContext).setBackButtonAlpha(alpha);
+            //CustomNavBar.Companion.getInstance(mContext).setBackButtonAlpha(alpha);
             return;
         }
         try {
@@ -278,7 +277,7 @@ public class OverviewInteractionState implements LawnchairPreferences.OnPreferen
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs, boolean force) {
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
         mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
         mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
     }

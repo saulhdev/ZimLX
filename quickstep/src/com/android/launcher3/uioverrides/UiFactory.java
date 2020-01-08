@@ -41,15 +41,13 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.gestures.VerticalSwipeGestureController;
+import org.zimmob.zimlx.touch.PinchStateChangeTouchController;
+
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.zip.Deflater;
-
-import ch.deletescape.lawnchair.ClockVisibilityManager;
-import ch.deletescape.lawnchair.ClockVisibilityManager.ClockStateHandler;
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.gestures.VerticalSwipeGestureController;
-import ch.deletescape.lawnchair.touch.PinchStateChangeTouchController;
 
 import static android.view.View.VISIBLE;
 import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
@@ -125,8 +123,8 @@ public class UiFactory {
     }
 
     public static boolean hasBackGesture(Launcher launcher) {
-        if (launcher instanceof LawnchairLauncher) {
-            return ((LawnchairLauncher) launcher).getGestureController().getHasBackGesture();
+        if (launcher instanceof ZimLauncher) {
+            return ((ZimLauncher) launcher).getGestureController().getHasBackGesture();
         } else {
             return false;
         }
@@ -210,7 +208,7 @@ public class UiFactory {
                 WindowManagerWrapper.getInstance().setShelfHeight(
                         (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
                                 && !profile.isVerticalBarLayout(),
-                        ((LawnchairLauncher) launcher).getShelfHeight());
+                        ((ZimLauncher) launcher).getShelfHeight());
             } catch (Exception ignore) {
 
             }

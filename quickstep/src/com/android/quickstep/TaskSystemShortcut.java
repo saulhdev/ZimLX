@@ -31,10 +31,11 @@ import android.os.Handler;
 import android.os.Looper;
 import android.os.RemoteException;
 import android.os.UserHandle;
-import android.support.annotation.RequiresApi;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
+
+import androidx.annotation.RequiresApi;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.BuildConfig;
@@ -58,11 +59,11 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ActivityOptionsCompat;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import org.zimmob.zimlx.HiddenApiCompat;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
-import ch.deletescape.lawnchair.HiddenApiCompat;
 
 import static com.android.launcher3.userevent.nano.LauncherLogProto.Action.Touch.TAP;
 
@@ -290,7 +291,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
         }
 
         @Override
-        public View.OnClickListener getOnClickListener(
+        public OnClickListener getOnClickListener(
                 BaseDraggingActivity activity, TaskView taskView) {
             if (Utilities.hasPermission(activity, "android.permission.FORCE_STOP_PACKAGES")) {
                 final PackageManager pm = activity.getPackageManager();
@@ -306,7 +307,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 iconResId = R.drawable.ic_remove_no_shadow;
                 // If this is Lawnchair itself we simply ignore device admin state
                 if (BuildConfig.APPLICATION_ID.equals(packageName)) {
-                    labelResId = R.string.restart_lawnchair_pref_title;
+                    labelResId = R.string.restart_zim_pref_title;
                     iconResId = R.drawable.ic_restart;
                 } else if (dpm.packageHasActiveAdmins(packageName)) {
                     return null;
@@ -320,7 +321,7 @@ public class TaskSystemShortcut<T extends SystemShortcut> extends SystemShortcut
                 }
                 return v -> {
                     try {
-                        final boolean dismissTasks = Utilities.getLawnchairPrefs(activity).getDismissTasksOnKill();
+                        final boolean dismissTasks = Utilities.getZimPrefs(activity).getDismissTasksOnKill();
                         ActivityManager.getService().forceStopPackage(packageName, userId);
                         if (dismissTasks) recentsView.removeIgnoreResetTask(taskView);
                         dismissTaskMenuView(activity);

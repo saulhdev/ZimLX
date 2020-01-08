@@ -37,7 +37,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
     private val adapterItems = ArrayList<Item>()
     private val currentSpecs = ArrayList<String>()
     private val divider = DividerItem()
-    private val enabledItems = ArrayList<CustomDashItem>()
+    private var enabledItems = ArrayList<CustomDashItem>()
     private var isDragging = false
     private val mContext = context
     private var enable: Boolean = false

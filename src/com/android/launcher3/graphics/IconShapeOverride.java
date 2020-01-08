@@ -49,6 +49,8 @@ public class IconShapeOverride {
 
     private static final String TAG = "IconShapeOverride";
 
+    public static final String KEY_PREFERENCE = "pref_override_icon_shape";
+
     // Time to wait before killing the process this ensures that the progress bar is visible for
     // sufficient time so that there is no flicker.
     private static final long PROCESS_KILL_DELAY_MS = 1000;

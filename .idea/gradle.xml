@@ -8,6 +8,7 @@
         <option name="modules">
           <set>
             <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/systemui-shared" />
           </set>
         </option>
         <option name="resolveModulePerSourceSet" value="false" />

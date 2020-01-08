@@ -33,7 +33,6 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
 import android.os.UserHandle;
-import android.support.annotation.Nullable;
 import android.text.Layout;
 import android.text.StaticLayout;
 import android.text.TextPaint;
@@ -52,7 +51,16 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.ListView;
 
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.AbstractFloatingView;
+import com.android.launcher3.BaseActivity;
+import com.android.launcher3.BaseDraggingActivity;
+import com.android.launcher3.DeviceProfile;
+import com.android.launcher3.Insettable;
+import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimatorPlaybackController;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.config.FeatureFlags;

@@ -18,17 +18,18 @@ package com.android.quickstep.util;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Rect;
-import android.support.annotation.AnyThread;
-import android.support.annotation.IntDef;
+
+import androidx.annotation.AnyThread;
+import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.OverviewState;
 
-import java.lang.annotation.Retention;
+import org.zimmob.zimlx.ZimPreferences;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
+import java.lang.annotation.Retention;
 
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
@@ -46,7 +47,7 @@ public class LayoutUtils {
         if (dp.isVerticalBarLayout()) {
             extraSpace = 0;
         } else {
-            LawnchairPreferences prefs = Utilities.getLawnchairPrefs(context);
+            ZimPreferences prefs = Utilities.getZimPrefs(context);
             if (prefs.getShowPredictions()) {
                 Resources res = context.getResources();
                 int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);

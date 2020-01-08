@@ -17,9 +17,10 @@ package com.android.quickstep;
 
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.support.annotation.IntDef;
 import android.view.Choreographer;
 import android.view.MotionEvent;
+
+import androidx.annotation.IntDef;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

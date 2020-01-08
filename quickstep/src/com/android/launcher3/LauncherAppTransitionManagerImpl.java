@@ -63,9 +63,9 @@ import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier;
 import com.android.systemui.shared.system.SyncRtSurfaceTransactionApplier.SurfaceParams;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
-import ch.deletescape.lawnchair.util.InvertedMultiValueAlpha;
-import ch.deletescape.lawnchair.views.LawnchairBackgroundView;
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.util.InvertedMultiValueAlpha;
+import org.zimmob.zimlx.views.ZimBackgroundView;
 
 import static com.android.launcher3.BaseActivity.INVISIBLE_ALL;
 import static com.android.launcher3.BaseActivity.INVISIBLE_BY_APP_TRANSITIONS;
@@ -431,10 +431,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             transY.setDuration(350);
             launcherAnimator.play(transY);
 
-            LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
-            background.getBlurAlphas().getProperty(LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(blurAlphas[0]);
+            ZimBackgroundView background = ZimLauncher.getLauncher(mLauncher).getBackground();
+            background.getBlurAlphas().getProperty(ZimBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(blurAlphas[0]);
             ObjectAnimator blurAlpha = ObjectAnimator.ofFloat(background.getBlurAlphas().getProperty(
-                    LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS),
+                    ZimBackgroundView.ALPHA_INDEX_TRANSITIONS),
                     InvertedMultiValueAlpha.VALUE, blurAlphas);
             blurAlpha.setDuration(217);
             blurAlpha.setInterpolator(LINEAR);
@@ -884,10 +884,10 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
             workspaceAnimator.setDuration(333);
             workspaceAnimator.setInterpolator(Interpolators.DEACCEL_1_7);
 
-            LawnchairBackgroundView background = LawnchairLauncher.getLauncher(mLauncher).getBackground();
-            background.getBlurAlphas().getProperty(LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(1f);
+            ZimBackgroundView background = ZimLauncher.getLauncher(mLauncher).getBackground();
+            background.getBlurAlphas().getProperty(ZimBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(1f);
             workspaceAnimator.play(ObjectAnimator.ofFloat(background.getBlurAlphas().getProperty(
-                    LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS),
+                    ZimBackgroundView.ALPHA_INDEX_TRANSITIONS),
                     InvertedMultiValueAlpha.VALUE, 1f, 0f));
 
             mDragLayer.getScrim().hideSysUiScrim(true);
@@ -914,8 +914,8 @@ public class LauncherAppTransitionManagerImpl extends LauncherAppTransitionManag
         mDragLayer.setScaleX(1f);
         mDragLayer.setScaleY(1f);
         mDragLayer.getScrim().hideSysUiScrim(false);
-        LawnchairLauncher.getLauncher(mLauncher).getBackground().getBlurAlphas()
-                .getProperty(LawnchairBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(0f);
+        ZimLauncher.getLauncher(mLauncher).getBackground().getBlurAlphas()
+                .getProperty(ZimBackgroundView.ALPHA_INDEX_TRANSITIONS).setValue(0f);
     }
 
     protected boolean hasControlRemoteAppTransitionPermission() {

@@ -27,9 +27,10 @@ import android.graphics.Rect;
 import android.os.Build;
 import android.os.Handler;
 import android.os.Looper;
-import android.support.annotation.Nullable;
-import android.support.annotation.UiThread;
 import android.view.View;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;

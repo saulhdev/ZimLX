@@ -61,6 +61,7 @@ public class Interpolators {
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f, 0, 0.4f, 1);
 
     public static final Interpolator EXAGGERATED_EASE;
+    public static final Interpolator EXAGGERATED_EASE_REVERSED;
 
     private static final int MIN_SETTLE_DURATION = 200;
     private static final float OVERSHOOT_FACTOR = 0.9f;
@@ -71,6 +72,7 @@ public class Interpolators {
         exaggeratedEase.cubicTo(0.05f, 0f, 0.133333f, 0.08f, 0.166666f, 0.4f);
         exaggeratedEase.cubicTo(0.225f, 0.94f, 0.5f, 1f, 1f, 1f);
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
+        EXAGGERATED_EASE_REVERSED = new ReverseOutputInterpolator(EXAGGERATED_EASE);
     }
 
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);

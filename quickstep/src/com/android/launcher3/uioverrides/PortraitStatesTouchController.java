@@ -38,7 +38,7 @@ import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
 
-import ch.deletescape.lawnchair.LawnchairLauncher;
+import org.zimmob.zimlx.ZimLauncher;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.FAST_OVERVIEW;
@@ -137,8 +137,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
             if (TouchInteractionService.isConnected() && mGoToOverview) {
                 return OVERVIEW;
             }
-            if (mLauncher instanceof LawnchairLauncher) {
-                return ((LawnchairLauncher) mLauncher).getGestureController()
+            if (mLauncher instanceof ZimLauncher) {
+                return ((ZimLauncher) mLauncher).getGestureController()
                         .getVerticalSwipeGesture().getTargetState(mStartedFromHotseat);
             } else {
                 return ALL_APPS;
@@ -285,7 +285,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.getInstance(mLauncher).onOverviewShown(true, TAG);
         } else if (mStartState == NORMAL && targetState == ALL_APPS) {
-            LawnchairLauncher.Companion.getLauncher(mLauncher).getGestureController()
+            ZimLauncher.getLauncher(mLauncher).getGestureController()
                     .getVerticalSwipeGesture().onSwipeUpAllAppsComplete(mStartedFromHotseat);
         }
     }

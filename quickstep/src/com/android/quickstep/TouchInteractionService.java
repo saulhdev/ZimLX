@@ -43,8 +43,6 @@ import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.ChoreographerCompat;
 import com.android.systemui.shared.system.NavigationBarCompat.HitTarget;
 
-import ch.deletescape.lawnchair.gestures.NavigationBarGestureConsumer;
-
 import static android.view.MotionEvent.ACTION_CANCEL;
 import static android.view.MotionEvent.ACTION_DOWN;
 import static android.view.MotionEvent.ACTION_MOVE;

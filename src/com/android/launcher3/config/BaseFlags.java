@@ -56,4 +56,8 @@ public abstract class BaseFlags {
     // When true, custom widgets are loaded using CustomWidgetParser.
     public static final boolean ENABLE_CUSTOM_WIDGETS = true;
 
+    // When true, overview shows screenshots in the orientation they were taken rather than
+    // trying to make them fit the orientation the device is in.
+    public static final boolean OVERVIEW_USE_SCREENSHOT_ORIENTATION = true;
+
 }

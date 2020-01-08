@@ -24,9 +24,10 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Build;
 import android.os.RemoteException;
-import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.animation.Interpolator;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.BaseDraggingActivity;
 import com.android.launcher3.DeviceProfile;

@@ -60,7 +60,7 @@
             android:taskAffinity="" />
 
         <!-- Content provider to settings search -->
-        <provider
+        <!--<provider
             android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
             android:authorities="${applicationId}"
             android:grantUriPermissions="true"
@@ -71,7 +71,7 @@
                 <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
             </intent-filter>
         </provider>
-
+-->
 
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"

@@ -45,6 +45,7 @@ import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.recents.model.ThumbnailData;
 
 import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.ZimPreferences;
 
 import ch.deletescape.lawnchair.LawnchairPreferences;
 
@@ -54,7 +55,7 @@ import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_
  * A task in the Recents view.
  */
 public class TaskThumbnailView extends View implements
-    LawnchairPreferences.OnPreferenceChangeListener {
+    ZimPreferences.OnPreferenceChangeListener {
 
     private static final LightingColorFilter[] sDimFilterCache = new LightingColorFilter[256];
     private static final LightingColorFilter[] sHighlightFilterCache = new LightingColorFilter[256];
@@ -119,14 +120,14 @@ public class TaskThumbnailView extends View implements
         mBackgroundPaint.setColor(Color.WHITE);
         mActivity = BaseActivity.fromContext(context);
         mIsDarkTextTheme = Themes.getAttrBoolean(mActivity, R.attr.isWorkspaceDarkText);
-        Utilities.getLawnchairPrefs(context)
+        Utilities.getZimPrefs(context)
             .addOnPreferenceChangeListener("pref_recents_radius", this);
     }
 
     @Override
-    public void onValueChanged(@NotNull String key, @NotNull LawnchairPreferences prefs,
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs,
         boolean force) {
-        mCornerRadius = Utilities.getLawnchairPrefs(getContext()).getRecentsRadius();
+        mCornerRadius = Utilities.getZimPrefs(getContext()).getRecentsRadius();
         if (!force) {
             invalidate();
         }

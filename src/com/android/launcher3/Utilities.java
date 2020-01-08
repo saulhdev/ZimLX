@@ -26,6 +26,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.ApplicationInfo;
+import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
@@ -40,8 +41,6 @@ import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.media.AudioDeviceInfo;
-import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -49,6 +48,7 @@ import android.os.DeadObjectException;
 import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
+import android.os.Process;
 import android.os.TransactionTooLargeException;
 import android.os.UserHandle;
 import android.text.Spannable;
@@ -67,7 +67,11 @@ import android.widget.Toast;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.graphics.BitmapInfo;
+import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.uioverrides.OverviewState;
 
 import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;
@@ -80,7 +84,6 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -857,7 +860,7 @@ public final class Utilities {
         return false;
     }
 
-    /*public static Drawable getIconForTask(Context context, int userId, String packageName) {
+    public static Drawable getIconForTask(Context context, int userId, String packageName) {
         IconCache ic = LauncherAppState.getInstanceNoCreate().getIconCache();
         LauncherAppsCompat lac = LauncherAppsCompat.getInstance(context);
         UserHandle user = UserHandle.of(userId);
@@ -876,15 +879,9 @@ public final class Utilities {
         } else {
             return null;
         }
-    }*/
+    }
 
-    /*public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
-        if (Utilities.getZimPrefs(launcher).getDockGradientStyle()) return targetProgress;
-        if (toState == LauncherState.OVERVIEW) {
-            return OverviewState.getNormalVerticalProgress(launcher);
-        }
-        return targetProgress;
-    }*/
+
 
     public static void openURLinBrowser(Context context, String url) {
         openURLinBrowser(context, url, null, null);
@@ -943,40 +940,15 @@ public final class Utilities {
         return typedValue.data;
     }
 
-    public static boolean hasHeadset(Context context) {
-        if (ATLEAST_NOUGAT) {
-            AudioManager manager = context.getSystemService(AudioManager.class);
-            if (manager == null) {
-                return false;
-            }
-
-            AudioDeviceInfo[] devices = manager.getDevices(AudioManager.GET_DEVICES_OUTPUTS);
-            for (AudioDeviceInfo device : devices) {
-                switch (device.getType()) {
-                    case AudioDeviceInfo.TYPE_BLUETOOTH_A2DP:
-                    case AudioDeviceInfo.TYPE_USB_HEADSET:
-                    case AudioDeviceInfo.TYPE_WIRED_HEADPHONES:
-                    case AudioDeviceInfo.TYPE_WIRED_HEADSET:
-                        return true;
-                }
-            }
+    public static float getScrimProgress(Launcher launcher, LauncherState toState, float targetProgress) {
+        if (Utilities.getZimPrefs(launcher).getDockGradientStyle()) return targetProgress;
+        if (toState == LauncherState.OVERVIEW) {
+            return OverviewState.getNormalVerticalProgress(launcher);
         }
-
-        return false;
+        return targetProgress;
     }
 
-    public static Boolean isMiui() {
-        return !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.code", "")) ||
-                !TextUtils.isEmpty(getSystemProperty("ro.miui.ui.version.name", ""));
-    }
-
-    private static final int SUGGESTIONS_DAY_START = 5;
-    private static final int SUGGESTIONS_DAY_END = 21;
-
-
-    public static boolean isDayTime() {
-        Calendar calendar = Calendar.getInstance();
-        int hours = calendar.get(Calendar.HOUR_OF_DAY);
-        return hours > SUGGESTIONS_DAY_START && hours < SUGGESTIONS_DAY_END;
+    public static int getUserId() {
+        return UserHandle.myUserId();
     }
 }

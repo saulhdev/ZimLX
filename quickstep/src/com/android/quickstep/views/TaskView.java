@@ -298,7 +298,7 @@ public class TaskView extends FrameLayout implements TaskCallbacks, PageCallback
         @Override
         public void getOutline(View view, Outline outline) {
             outline.setRoundRect(0, mMarginTop, view.getWidth(),
-                view.getHeight(), Utilities.getLawnchairPrefs(mContext).getRecentsRadius());
+                view.getHeight(), Utilities.getZimPrefs(mContext).getRecentsRadius());
         }
     }
 
