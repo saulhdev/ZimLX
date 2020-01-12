@@ -36,6 +36,14 @@
             android:title="@string/bubble_searchbar"
             app:iconSpaceReserved="false" />
 
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/white"
+            android:key="pref_key__google_color"
+            android:title="@string/title__folder_google_color"
+            app:iconSpaceReserved="false"
+            app:cpv_dialogTitle="@string/title__folder_google_color"
+            app:cpv_showAlphaSlider="true" />
+
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_search_hidden_apps"

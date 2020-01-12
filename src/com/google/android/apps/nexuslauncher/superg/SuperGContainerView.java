@@ -11,11 +11,13 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 
+import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.ZimUtilsKt;
 
 public class SuperGContainerView extends BaseGContainerView {
 
     private int mQsbColor = Color.WHITE;
+    private ZimPreferences prefs;
 
     public SuperGContainerView(Context paramContext) {
         this(paramContext, null);
@@ -27,6 +29,7 @@ public class SuperGContainerView extends BaseGContainerView {
 
     public SuperGContainerView(Context paramContext, AttributeSet paramAttributeSet, int paramInt) {
         super(paramContext, paramAttributeSet, paramInt);
+        prefs = ZimPreferences.Companion.getInstance(paramContext);
         View.inflate(paramContext, R.layout.qsb_blocker_view, this);
     }
 
@@ -97,6 +100,7 @@ public class SuperGContainerView extends BaseGContainerView {
     protected void applyQsbColor() {
         super.applyQsbColor();
         float radius = ZimUtilsKt.dpToPx(100);
+        mQsbColor = prefs.getGoogleColor();
         mQsbView.setBackground(ZimUtilsKt.createRipplePill(getContext(), mQsbColor, radius));
     }
 }

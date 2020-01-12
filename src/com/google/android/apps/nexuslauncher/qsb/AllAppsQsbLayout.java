@@ -123,7 +123,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
             mActivity.getAllAppsController().setScrollRangeDelta(0);
         } else {
-            float delta = HotseatQsbWidget.getBottomMargin(mActivity) + Dy;
+            float delta = HotseatQsbWidget.getBottomMargin(mActivity, false) + Dy;
             if (!prefs.getDockHide()) {
                 delta += mlp.height + mlp.topMargin;
                 if (!prefs.getDockSearchBar()) {

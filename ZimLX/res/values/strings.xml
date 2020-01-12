@@ -256,6 +256,10 @@
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="background_color">Background color</string>
 
+
+    <!-- SEARCH AND FOLDER -->
+    <string name="title__folder_google_color">Google Icon Color</string>
+
     <!-- PREFERENCES ABOUT-->
     <string name="pref_key__about_app" translatable="false">pref_key__about_app</string>
     <string name="pref_key__about_rate_app" translatable="false">pref_key__about_rate_app</string>
@@ -576,4 +580,6 @@
     <plurals name="hidden_apps_count">
         <item quantity="other">%1$d hidden</item>
     </plurals>
+
+    <string name="pref_category_searchbar">Search Bar</string>
 </resources>
