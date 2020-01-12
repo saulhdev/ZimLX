@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Pixel 1 -->
+    <dimen name="qsb_overlap_margin">0dp</dimen>
+
     <!-- Smartspace dimens -->
     <dimen name="smartspaceAmbientShadowBlur">1.5dp</dimen>
     <dimen name="smartspaceKeyShadowBlur">2dp</dimen>
