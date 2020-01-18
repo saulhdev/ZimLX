@@ -238,7 +238,7 @@
     <string name="gradient">Gradient</string>
 
     <!-- SEARCH -->
-    <string name="pref_title__folder">Search Engine a Folder</string>
+    <string name="pref_title__folder">Search Engine and Folder</string>
     <string name="pref_summary__folder">Show search Engine and Folder settings</string>
 
     <string name="title__folder_background">Folder Background</string>
@@ -582,4 +582,5 @@
     </plurals>
 
     <string name="pref_category_searchbar">Search Bar</string>
+
 </resources>
