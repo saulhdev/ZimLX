@@ -9,6 +9,7 @@ public class ZimFlags {
 
     public static final String ACCENT_COLOR = "pref_key__accent_color";
     public static final String PRIMARY_COLOR = "pref_key__primary_color";
+    public static final String GOOGLE_COLOR = "pref_key__google_color";
 
     public static final String DESKTOP_HIDE_LABELS = "pref_hideAppLabels";
     public static final String DESKTOP_ICON_SCALE = "pref_iconScaleSB";

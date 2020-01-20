@@ -3,6 +3,7 @@ package org.zimmob.zimlx
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
+import android.graphics.Color
 import android.net.Uri
 import android.os.Looper
 import android.text.TextUtils
@@ -190,6 +191,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, restart)
     val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, restart)
     val allAppsColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
+    val googleColor by IntPref(ZimFlags.GOOGLE_COLOR, Color.WHITE, recreate)
 
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
