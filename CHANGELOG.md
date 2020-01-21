@@ -1,3 +1,7 @@
+### v0.6.5
+*   Fix gestures
+*   Fix full widgets width
+
 ### v0.6.3
 *   Add Overview Mode for desktop.
 *   Add web search providers.
@@ -18,7 +22,7 @@
 *   Fix Icon Scale on app drawer
 
 ### v0.5.0
-*   Quick actions per apps support.
+*   Support for Quick actions.
 *   Accent color change setting.
 
 ### v0.4.4
