@@ -203,6 +203,7 @@
     <string name="title__hotseat_custom_opacity">Dock opacity</string>
     <string name="title__hotseat_uses_custom_opacity">Custom dock opacity</string>
     <string name="title__hotseat_show_arrow">Show arrow</string>
+    <string name="title__hotseat_hide">Hide Dock</string>
     <string name="title__dock_style">Dock style</string>
     <string name="title__dock_fill">Background</string>
     <string name="title__dock_shadow">Shadow</string>

@@ -91,6 +91,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
+
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
 
@@ -106,7 +107,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
-    val dockHide get() = dockStyles.currentStyle.hide
+    var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
+
     val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }
     val dockGridSize by dockGridSizeDelegate
@@ -163,13 +165,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
-
-    // Quickstep
-    //var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
-    //val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
-    //val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
-    //    OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
-    //}
 
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)

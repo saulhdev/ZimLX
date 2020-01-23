@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
+    <!--
     <org.zimmob.zimlx.preferences.DockPresetPreference
         android:key="pref_dockPreset"
         android:title="@string/dock_style_pref_title"
@@ -12,6 +12,13 @@
         android:disableDependentsState="true"
         app:iconSpaceReserved="false"
         android:persistent="true" />
+ -->
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_key__hide_hotseat"
+        android:persistent="true"
+        android:title="@string/title__hotseat_hide"
+        app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
@@ -34,7 +41,6 @@
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:key="enableGradient"
         android:title="@string/dock_fill"
-        android:dependency="pref_dockPreset"
         app:iconSpaceReserved="false"
         android:persistent="true" />
 
@@ -42,7 +48,6 @@
         android:key="opacityPref"
         android:persistent="true"
         android:title="@string/title__dock_custom_opacity"
-        android:dependency="enableGradient"
         app:maxValue="1"
         app:minValue="0"
         app:summaryFormat="%.0f%%"
@@ -92,13 +97,6 @@
         android:summary="%s"
         android:title="@string/title__hotseat_num_icons"
         app:iconSpaceReserved="false" />
-    <!--
-        <SwitchPreference
-            android:defaultValue="false"
-            android:key="pref_twoRowDock"
-            android:title="@string/title__hotseat_two_row"
-            app:iconSpaceReserved="false" />
-    -->
 
     <org.zimmob.zimlx.preferences.AutoModeScalePreference
         android:key="pref_hotseatIconSize"
