@@ -273,7 +273,11 @@ public class Folder extends AbstractFloatingView implements DragSource,
         ImageButton settingButton = findViewById(R.id.settings_button);
         settingButton.setOnClickListener(v -> {
             animateClosed();
-            CustomBottomSheet.show(mLauncher, mInfo);
+            if (mInfo instanceof DrawerFolderInfo) {
+                ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
+            } else {
+                CustomBottomSheet.show(mLauncher, mInfo);
+            }
         });
     }
 

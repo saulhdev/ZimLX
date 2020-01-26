@@ -10,7 +10,6 @@ import org.zimmob.zimlx.preferences.RecyclerViewFragment
 class DashFragment : RecyclerViewFragment() {
     private val adapter by lazy { DashEditAdapter(requireContext()) }
 
-
     override fun onRecyclerViewCreated(recyclerView: RecyclerView) {
         recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
         recyclerView.adapter = adapter

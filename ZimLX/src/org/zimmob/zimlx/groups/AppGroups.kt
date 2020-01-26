@@ -351,6 +351,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
         }
 
+
         open class ColorCustomization(key: String, default: Int) :
                 Customization<Int, String>(key, default) {
 

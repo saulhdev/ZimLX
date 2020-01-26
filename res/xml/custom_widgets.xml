@@ -13,7 +13,6 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-
 <widgets xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
 
@@ -31,4 +30,19 @@
         launcher:customizeTitle="@string/home_widget"
         launcher:customizeScreen="@xml/zim_preferences_smartspace"
         launcher:customizeHasPreview="true" />
+
+    <widget
+        android:icon="@mipmap/ic_launcher"
+        android:initialLayout="@layout/search_widget"
+        android:label="@string/pref_category_searchbar"
+        android:resizeMode="horizontal|vertical"
+        launcher:customizeHasPreview="false"
+        launcher:customizeScreen="@xml/zim_preferences_folder"
+        launcher:customizeTitle="@string/pref_category_searchbar"
+        launcher:noPadding="true"
+        launcher:numColumns="5"
+        launcher:numMinColumns="3"
+        launcher:numMinRows="1"
+        launcher:numRows="1"
+        launcher:providerId="2" />
 </widgets>

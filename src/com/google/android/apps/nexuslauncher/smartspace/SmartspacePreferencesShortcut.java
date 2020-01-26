@@ -13,7 +13,7 @@ import org.zimmob.zimlx.settings.ui.SettingsActivity;
 public class SmartspacePreferencesShortcut extends OptionsPopupView.OptionItem {
 
     public SmartspacePreferencesShortcut() {
-        super(R.string.smartspace_preferences, R.drawable.ic_smartspace_preferences, LauncherLogProto.ControlType.SETTINGS_BUTTON,
+        super(R.string.customize, R.drawable.ic_smartspace_preferences, LauncherLogProto.ControlType.SETTINGS_BUTTON,
                 SmartspacePreferencesShortcut::startSmartspacePreferences);
     }
 

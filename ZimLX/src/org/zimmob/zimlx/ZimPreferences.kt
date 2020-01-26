@@ -108,6 +108,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     val hideDockButton by BooleanPref("pref__hide_dock_button", false, recreate)
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
+    var dockBackground by IntPref("pref_key__dock_color", R.color.transparentish, recreate)
 
     val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), recreate) }

@@ -210,6 +210,7 @@
     <string name="title__dock_radius">Corner rounding</string>
     <string name="title__dock_custom_opacity">Opacity</string>
     <string name="title__dock_scale">Dock scale</string>
+    <string name="title__dock_color">Dock Background</string>
     <string name="transparent_hotseat_pref_title">Transparent dock</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
@@ -233,7 +234,7 @@
     <string name="dock_search_bar">Dock search bar</string>
     <string name="automatic_short">Auto</string>
     <string name="dock_shadow">Shadow</string>
-    <string name="dock_fill">Background</string>
+    <string name="dock_fill">Enable Background</string>
 
     <string name="radius">Corner rounding</string>
     <string name="gradient">Gradient</string>

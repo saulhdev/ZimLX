@@ -8,4 +8,5 @@
     <dimen name="smartspaceKeyShadowBlur">2dp</dimen>
     <dimen name="smartspaceKeyShadowOffset">0.5dp</dimen>
     <dimen name="smartspaceLetterSpacing">0.02</dimen>
+
 </resources>

@@ -30,13 +30,16 @@ import com.android.launcher3.states.InternalStateHandler
 import com.android.launcher3.widget.WidgetsFullSheet
 import org.zimmob.zimlx.settings.ui.ControlledPreference
 
+
 class SmartspaceAddToHomePreference(context: Context, attrs: AttributeSet?) :
         Preference(context, attrs), ResumablePreference,
         ControlledPreference by ControlledPreference.Delegate(context, attrs) {
 
     override fun onResume() {
+
         isVisible = LauncherAppState.getInstance(context).model
                 .loadedWidgets?.any { it.isCustomWidget } != true
+
     }
 
     override fun onClick() {

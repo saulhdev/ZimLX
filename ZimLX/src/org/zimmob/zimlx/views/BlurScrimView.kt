@@ -52,10 +52,11 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private val key_dock_arrow = "pref_hotseatShowArrow"
     private val key_search_radius = "pref_searchbarRadius"
     private val key_debug_state = "pref_debugDisplayState"
+    private val key_dock_background = "pref_key__dock_color"
 
     private val prefsToWatch =
             arrayOf(key_radius, key_opacity, key_dock_opacity, key_dock_arrow, key_search_radius,
-                    key_debug_state)
+                    key_debug_state, key_dock_background)
 
     private val blurDrawableCallback by lazy {
         object : Drawable.Callback {
@@ -153,6 +154,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
+        dockBackground = Utilities.getZimPrefs(getContext()).dockBackground
         rebuildColors()
         super.reInitUi()
     }
@@ -195,6 +197,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             }
             key_debug_state -> {
                 shouldDrawDebug = prefs.displayDebugOverlay
+            }
+            key_dock_background -> {
+                dockBackground = prefs.dockBackground
             }
         }
     }

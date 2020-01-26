@@ -312,31 +312,28 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
 
-        Runnable r = new Runnable() {
-            @Override
-            public void run() {
-                ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
-                // Clear the table
-                ops.add(ContentProviderOperation.newDelete(uri).build());
-                int count = screensCopy.size();
-                for (int i = 0; i < count; i++) {
-                    ContentValues v = new ContentValues();
-                    long screenId = screensCopy.get(i);
-                    v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
-                    v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
-                }
+        Runnable r = () -> {
+            ArrayList<ContentProviderOperation> ops = new ArrayList<>();
+            // Clear the table
+            ops.add(ContentProviderOperation.newDelete(uri).build());
+            int count = screensCopy.size();
+            for (int i = 0; i < count; i++) {
+                ContentValues v = new ContentValues();
+                long screenId = screensCopy.get(i);
+                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
+            }
 
-                try {
-                    cr.applyBatch(LauncherProvider.AUTHORITY, ops);
-                } catch (Exception ex) {
-                    throw new RuntimeException(ex);
-                }
+            try {
+                cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
 
-                synchronized (sBgDataModel) {
-                    sBgDataModel.workspaceScreens.clear();
-                    sBgDataModel.workspaceScreens.addAll(screensCopy);
-                }
+            synchronized (sBgDataModel) {
+                sBgDataModel.workspaceScreens.clear();
+                sBgDataModel.workspaceScreens.addAll(screensCopy);
             }
         };
         runOnWorkerThread(r);

@@ -25,6 +25,7 @@ import com.android.launcher3.uioverrides.OverviewState;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
+import org.zimmob.zimlx.states.HomeState;
 import org.zimmob.zimlx.states.OptionsState;
 
 import java.util.Arrays;
@@ -79,9 +80,17 @@ public class LauncherState {
     /**
      * TODO: Create a separate class for NORMAL state.
      */
-    public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
+    /*public static final LauncherState NORMAL = new LauncherState(0, ContainerType.WORKSPACE, 0,
             FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
                     FLAG_HAS_SYS_UI_SCRIM);
+*/
+    /**
+     * TODO: Create a separate class for NORMAL state.
+     */
+    public static final LauncherState NORMAL = new HomeState(0, ContainerType.WORKSPACE, 0,
+            FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED | FLAG_HIDE_BACK_BUTTON |
+                    FLAG_HAS_SYS_UI_SCRIM);
+
 
     /**
      * Various Launcher states arranged in the increasing order of UI layers

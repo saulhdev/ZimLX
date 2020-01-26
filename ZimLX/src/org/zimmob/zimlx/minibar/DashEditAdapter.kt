@@ -126,7 +126,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
 
             } else if (item is DividerItem)
                 break
-            iterator.remove()
+            //iterator.remove()
         }
 
         return items

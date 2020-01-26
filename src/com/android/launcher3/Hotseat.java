@@ -137,8 +137,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             int allAppsButtonRank = grid.inv.getAllAppsButtonRank();
 
             LayoutInflater inflater = LayoutInflater.from(context);
-            TextView allAppsButton = (TextView)
-                    inflater.inflate(R.layout.all_apps_button, mContent, false);
+            TextView allAppsButton = (TextView) inflater.inflate(R.layout.all_apps_button, mContent, false);
             Drawable d = context.getResources().getDrawable(R.drawable.all_apps_button_icon);
             d.setBounds(0, 0, grid.hotseatIconSizePx, grid.hotseatIconSizePx);
 
@@ -233,18 +232,18 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             }
             mBackgroundColor = color;
         }
-    }*/
+    }
 
-    /*public void setBackgroundTransparent(boolean enable) {
+    public void setBackgroundTransparent(boolean enable) {
         if (mBackground == null) return;
         if (enable) {
             mBackground.setAlpha(0);
         } else {
             mBackground.setAlpha(255);
         }
-    }*/
+    }
 
-    /*public int getBackgroundDrawableColor() {
+    public int getBackgroundDrawableColor() {
         return mBackgroundColor;
     }*/
 
@@ -256,9 +255,9 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         }
     }
 
-    /*public void setOverscroll(float progress) {
+    public void setOverscroll(float progress) {
         if (mBackground instanceof BlurDrawable) {
-            ((BlurDrawable) mBackground).setOverscroll(progress);
+            //((BlurDrawable) mBackground).setOverscroll(progress);
         }
     }
 
@@ -266,5 +265,5 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public void setTranslationX(float translationX) {
         super.setTranslationX(translationX);
         LauncherAppState.getInstance(getContext()).getLauncher().mHotseat.setOverscroll(translationX);
-    }*/
+    }
 }

@@ -35,6 +35,7 @@ import org.zimmob.zimlx.*
 import org.zimmob.zimlx.groups.AppGroupsManager
 import org.zimmob.zimlx.groups.DrawerFoldersAdapter
 import org.zimmob.zimlx.groups.DrawerTabsAdapter
+import org.zimmob.zimlx.groups.FlowerpotTabsAdapter
 
 @Keep
 class AppCategorizationFragment : Fragment(), ZimPreferences.OnPreferenceChangeListener {
@@ -59,6 +60,7 @@ class AppCategorizationFragment : Fragment(), ZimPreferences.OnPreferenceChangeL
             }
         }
     private val drawerTabsAdapter by lazy { DrawerTabsAdapter(ourContext) }
+    private val flowerpotTabsAdapter by lazy { FlowerpotTabsAdapter(ourContext) }
     private val drawerFoldersAdapter by lazy { DrawerFoldersAdapter(ourContext) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -94,6 +96,7 @@ class AppCategorizationFragment : Fragment(), ZimPreferences.OnPreferenceChangeL
 
     private fun updateGroupAdapter() {
         groupAdapter = when (manager.getEnabledType()) {
+            AppGroupsManager.CategorizationType.Flowerpot -> flowerpotTabsAdapter
             AppGroupsManager.CategorizationType.Tabs -> drawerTabsAdapter
             AppGroupsManager.CategorizationType.Folders -> drawerFoldersAdapter
             else -> null

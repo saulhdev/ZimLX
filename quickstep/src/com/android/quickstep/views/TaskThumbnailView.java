@@ -47,8 +47,6 @@ import com.android.systemui.shared.recents.model.ThumbnailData;
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
 
-import ch.deletescape.lawnchair.LawnchairPreferences;
-
 import static com.android.systemui.shared.system.WindowManagerWrapper.WINDOWING_MODE_FULLSCREEN;
 
 /**
@@ -127,7 +125,7 @@ public class TaskThumbnailView extends View implements
     @Override
     public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs,
         boolean force) {
-        mCornerRadius = Utilities.getZimPrefs(getContext()).getRecentsRadius();
+        //mCornerRadius = Utilities.getZimPrefs(getContext()).getRecentsRadius();
         if (!force) {
             invalidate();
         }

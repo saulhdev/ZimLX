@@ -1,48 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <!--
-    <org.zimmob.zimlx.preferences.DockPresetPreference
-        android:key="pref_dockPreset"
-        android:title="@string/dock_style_pref_title"
-        android:summary="%s"
-        android:entries="@array/dockStyles"
-        android:entryValues="@array/dockStyleValues"
-        android:defaultValue="1"
-        android:disableDependentsState="true"
-        app:iconSpaceReserved="false"
-        android:persistent="true" />
- -->
+
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"
         android:key="pref_key__hide_hotseat"
         android:persistent="true"
         android:title="@string/title__hotseat_hide"
         app:iconSpaceReserved="false" />
+    <!--
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="pref_isHotseatTransparent"
+            android:disableDependentsState="true"
+            android:persistent="true"
+            android:title="@string/transparent_hotseat_pref_title"
+            app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref_isHotseatTransparent"
-        android:disableDependentsState="true"
-        android:persistent="true"
-        android:title="@string/transparent_hotseat_pref_title"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="true"
-        android:key="pref_hotseatShouldUseExtractedColors"
-        android:persistent="true"
-        android:dependency="pref_isHotseatTransparent"
-        android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
-        android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
-        android:title="@string/hotseat_uses_extracted_colors_pref_title"
-        app:iconSpaceReserved="false" />
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:key="pref_hotseatShouldUseExtractedColors"
+            android:persistent="true"
+            android:dependency="pref_isHotseatTransparent"
+            android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
+            android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
+            android:title="@string/hotseat_uses_extracted_colors_pref_title"
+            app:iconSpaceReserved="false" />
+    -->
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:key="enableGradient"
         android:title="@string/dock_fill"
         app:iconSpaceReserved="false"
         android:persistent="true" />
+
+    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+        android:defaultValue="@color/transparentish"
+        android:dependency="enableGradient"
+        android:key="pref_key__dock_color"
+        android:title="@string/title__dock_color"
+        app:cpv_dialogTitle="@string/title__dock_color"
+        app:cpv_showAlphaSlider="true"
+        app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.SeekbarPreference
         android:key="opacityPref"
