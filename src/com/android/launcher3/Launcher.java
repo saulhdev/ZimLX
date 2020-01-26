@@ -396,6 +396,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
         mRotationHelper.initialize();
         //initMinibar();
+        DrawerLayout dl = findViewById(R.id.drawer_layout);
+        dl.setDrawerLockMode(prefs.getMinibarEnable() ? DrawerLayout.LOCK_MODE_UNLOCKED : DrawerLayout.LOCK_MODE_LOCKED_CLOSED);
+
         TraceHelper.endSection("Launcher-onCreate");
         Utilities.checkRestoreSuccess(this);
 
