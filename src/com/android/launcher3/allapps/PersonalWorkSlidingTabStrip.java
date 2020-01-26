@@ -24,7 +24,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.Button;
 import android.widget.HorizontalScrollView;
 import android.widget.LinearLayout;
 
@@ -40,6 +39,8 @@ import com.android.launcher3.util.Themes;
 import org.zimmob.zimlx.allapps.AllAppsTabs;
 import org.zimmob.zimlx.preferences.DrawerTabEditBottomSheet;
 import org.zimmob.zimlx.views.ColoredButton;
+
+import static org.zimmob.zimlx.allapps.AllAppsTabs.Tab;
 
 /**
  * Supports two indicator colors, dedicated for personal and work tabs.
@@ -71,17 +72,13 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
         setOrientation(HORIZONTAL);
         setWillNotDraw(false);
 
-        mSelectedIndicatorHeight =
-                getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
+        mSelectedIndicatorHeight = getResources().getDimensionPixelSize(R.dimen.all_apps_tabs_indicator_height);
 
         mSelectedIndicatorPaint = new Paint();
-        //mSelectedIndicatorPaint.setColor(Utilities.getZimPrefs(context).getAccentColor());
-        //Themes.getAttrColor(context, android.R.attr.colorAccent));
 
         mDividerPaint = new Paint();
         mDividerPaint.setColor(Themes.getAttrColor(context, android.R.attr.colorControlHighlight));
-        mDividerPaint.setStrokeWidth(
-                getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
+        mDividerPaint.setStrokeWidth(getResources().getDimensionPixelSize(R.dimen.all_apps_divider_height));
 
         mSharedPreferences = Launcher.getLauncher(getContext()).getSharedPrefs();
         mIsRtl = Utilities.isRtl(getResources());
@@ -95,7 +92,7 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
     private void updateTabTextColor(int pos) {
         mSelectedPosition = pos;
         for (int i = 0; i < getChildCount(); i++) {
-            Button tab = (Button) getChildAt(i);
+            ColoredButton tab = (ColoredButton) getChildAt(i);
             tab.setSelected(i == pos);
         }
     }
@@ -296,9 +293,8 @@ public class PersonalWorkSlidingTabStrip extends LinearLayout implements PageInd
             removeViewAt(0);
         }
         for (int i = 0; i < tabs.getCount(); i++) {
-            AllAppsTabs.Tab tab = tabs.get(i);
+            Tab tab = tabs.get(i);
             ColoredButton button = (ColoredButton) getChildAt(i);
-            //button.setColorResolver(tab.getDrawerTab().getColorResolver().value());
             button.setText(tab.getName());
             button.setOnLongClickListener(v -> {
                 DrawerTabEditBottomSheet.Companion

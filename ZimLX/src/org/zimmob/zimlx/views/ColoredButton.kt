@@ -29,19 +29,12 @@ import org.zimmob.zimlx.getTabRipple
 
 class ColoredButton(context: Context, attrs: AttributeSet) : Button(context, attrs) {
 
-    /*var colorResolver: ColorEngine.ColorResolver = ColorEngine.getInstance(context).accentResolver
-        set(value) {
-            if (field != value) {
-                field = value
-                reset()
-            }
-        }
-        */
     var color: Int = 0
 
     private var defaultColor = currentTextColor
 
     init {
+        color = Utilities.getZimPrefs(context).accentColor
         //CustomFontManager.getInstance(context).loadCustomFont(this, attrs)
     }
 
