@@ -75,11 +75,11 @@
     <string name="title__desktop_icon_scale">Icon scale</string>
     <string name="title__desktop_overlap">Overlap Placement</string>
     <string name="title__desktop_smartspace">Show Smart space widget</string>
+    <string name="title__desktop_lock">Lock Desktop</string>
     <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
     <string name="title_use_pill_qsb">Use pill style search bar</string>
     <string name="show_top_shadow_pref_title">Top shadow</string>
     <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
-
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
     <string name="cat__app_search">Search Bar</string>
@@ -257,7 +257,6 @@
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="background_color">Background color</string>
-
 
     <!-- SEARCH AND FOLDER -->
     <string name="title__folder_google_color">Google Icon Color</string>

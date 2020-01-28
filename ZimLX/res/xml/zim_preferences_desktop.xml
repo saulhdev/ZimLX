@@ -22,6 +22,12 @@
         android:title="@string/title__desktop_overlap" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_lockDesktop"
+        android:title="@string/title__desktop_lock"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
         app:iconSpaceReserved="false"
         app:controllerClass=".AddIconToHomeController"
         android:defaultValue="true"

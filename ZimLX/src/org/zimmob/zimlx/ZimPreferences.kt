@@ -167,6 +167,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
 
+    // Quickstep
+    var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
+    //val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
+    /*val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
+        OverviewInteractionState.getInstance(context).setBackButtonAlpha(1f, true)
+    }*/
+
     // Theme
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
