@@ -2,24 +2,60 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:key="pref_allAppsOpacitySB"
-        android:persistent="true"
-        android:title="@string/title__app_all_apps_opacity"
-        app:iconSpaceReserved="false"
-        app:defaultSeekbarValue="0.75"
-        app:maxValue="1"
-        app:minValue="0"
-        app:summaryFormat="%.0f%%"
-        app:summaryMultiplier="100" />
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_layout">
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:persistent="true"
+            android:title="@string/title__app_all_apps_opacity"
+            app:defaultSeekbarValue="0.75"
+            app:iconSpaceReserved="false"
+            app:maxValue="1"
+            app:minValue="0"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <androidx.preference.Preference
+            android:fragment="org.zimmob.zimlx.groups.ui.AppCategorizationFragment"
+            android:key="pref_categorization"
+            android:title="@string/categorization"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_show_predictions"
+            android:summary="@string/summary_app_suggestions"
+            android:title="@string/title_app_suggestions"
+            app:iconSpaceReserved="false" />
+
+        <ListPreference
+            android:defaultValue="0"
+            android:disableDependentsState="false"
+            android:entries="@array/entries__sort_mode"
+            android:entryValues="@array/values__zero_to_four"
+            android:key="pref_key__sort_mode"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/title__sort_mode"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_showAllAppsLabel"
+            android:persistent="true"
+            android:title="@string/all_apps_label_pref_title"
+            app:controllerClass="org.zimmob.zimlx.settings.ui.controllers.AllAppsLabelController"
+            app:iconSpaceReserved="false" />
+
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_icons">
         <org.zimmob.zimlx.preferences.SeekbarPreference
             android:key="pref_allAppsIconScale"
             android:persistent="true"
             android:title="@string/title__app_icon_scale"
-            app:iconSpaceReserved="false"
             app:defaultSeekbarValue="1.0"
+            app:iconSpaceReserved="false"
             app:maxValue="1.5"
             app:minValue="0.5"
             app:steps="100"
@@ -35,26 +71,20 @@
             android:defaultValue="false"
             android:key="pref_hideAllAppsAppLabels"
             android:persistent="true"
-            app:iconSpaceReserved="false"
-            android:title="@string/hide_all_apps_icon_labels_pref_title" />
+            android:title="@string/hide_all_apps_icon_labels_pref_title"
+            app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_iconLabelsInTwoLines"
             android:persistent="true"
-            app:iconSpaceReserved="false"
-            android:title="@string/pref_title__label_two_lines" />
+            android:title="@string/pref_title__label_two_lines"
+            app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.settings.ui.PreferenceDialogPreference
             android:key="pref_iconPopupMenu"
             android:title="@string/pref_icon_popup_menu"
-            app:iconSpaceReserved="false"
-            app:content="@xml/zim_preferences_drawer_icon_popup_menu" />
-
-        <androidx.preference.Preference
-            android:fragment="org.zimmob.zimlx.groups.ui.AppCategorizationFragment"
-            android:title="@string/categorization"
-            android:key="pref_categorization"
+            app:content="@xml/zim_preferences_drawer_icon_popup_menu"
             app:iconSpaceReserved="false" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
@@ -62,65 +92,41 @@
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_search">
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
-            app:iconSpaceReserved="false"
             android:key="pref_allAppsSearch"
             android:summary="@string/summary__app_search_show"
-            android:title="@string/title__app_search" />
+            android:title="@string/title__app_search"
+            app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
-            app:iconSpaceReserved="false"
             android:key="pref_allAppsGoogleSearch"
             android:summary="@string/summary__app_search_global"
-            android:title="@string/title__app_search_global" />
-
+            android:title="@string/title__app_search_global"
+            app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="pref_show_predictions"
-        android:summary="@string/summary_app_suggestions"
-        android:title="@string/title_app_suggestions"
-        app:iconSpaceReserved="false" />
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/cat__app_misc">
 
-    <ListPreference
-        android:defaultValue="0"
-        android:entries="@array/entries__sort_mode"
-        android:entryValues="@array/values__zero_to_four"
-        android:key="pref_key__sort_mode"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/title__sort_mode"
-        android:disableDependentsState="false"
-        app:iconSpaceReserved="false" />/>
+        <androidx.preference.Preference
+            android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
+            android:key="pref_hiddenApps"
+            android:summary="@string/hide_apps_sum"
+            android:title="@string/hide_apps"
+            app:iconSpaceReserved="false" />
 
-    <androidx.preference.Preference
-        android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
-        android:key="pref_hiddenApps"
-        android:summary="@string/hide_apps_sum"
-        android:title="@string/hide_apps"
-        app:iconSpaceReserved="false" />
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:key="pref_separateWorkApps"
+            android:persistent="true"
+            android:title="@string/separate_work_apps_pref_title"
+            app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:key="pref_showAllAppsLabel"
-        android:title="@string/all_apps_label_pref_title"
-        android:defaultValue="false"
-        android:persistent="true"
-        app:iconSpaceReserved="false"
-        app:controllerClass="org.zimmob.zimlx.settings.ui.controllers.AllAppsLabelController" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:key="pref_separateWorkApps"
-        android:title="@string/separate_work_apps_pref_title"
-        android:defaultValue="true"
-        android:persistent="true"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref_keepScrollState"
-        android:persistent="true"
-        android:title="@string/keep_scroll_state_pref_title"
-        app:iconSpaceReserved="false" />
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="pref_keepScrollState"
+            android:persistent="true"
+            android:title="@string/keep_scroll_state_pref_title"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

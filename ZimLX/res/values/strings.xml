@@ -83,12 +83,18 @@
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
     <string name="cat__app_search">Search Bar</string>
+    <string name="cat__app_misc">Miscellanea</string>
+    <string name="cat__app_layout">Layout and Appearance</string>
     <string name="title__app_spring">Spring effect</string>
     <string name="title__app_search">Show Search Bar</string>
     <string name="title__app_search_global">Global search in app drawer</string>
     <string name="title__app_search_hidden">Search hidden Apps</string>
     <string name="title__app_icon_scale">Icon scale</string>
     <string name="title__app_all_apps_opacity">Drawer opacity</string>
+    <string name="title__layout_mode">Display Layout</string>
+    <string name="title__layout_vertical">Vertical Grid</string>
+    <string name="title__layout_horizontal">Horizontal Grid</string>
+    <string name="title__layout_alphabetical">Alphabetical Grid</string>
     <string name="title__sort_mode">App Sort</string>
     <string name="title__sort_alphabetical_az">Alphabetical AZ</string>
     <string name="title__sort_alphabetical_za">Alphabetical ZA</string>
