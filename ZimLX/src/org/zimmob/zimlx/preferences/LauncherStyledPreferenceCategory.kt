@@ -31,5 +31,7 @@ class LauncherStyledPreferenceCategory(context: Context, attrs: AttributeSet) : 
         val title = holder!!.findViewById(android.R.id.title) as TextView
         title.textSize = 16f
         title.setTextColor(getZimPrefs(context).accentColor)
+
+
     }
 }

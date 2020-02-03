@@ -23,8 +23,8 @@ import androidx.annotation.RequiresApi;
 
 @RequiresApi(Build.VERSION_CODES.P)
 public class HiddenApiCompat {
-/*
-    public static boolean tryAccess() {
+
+    /*public static boolean tryAccess() {
         // TODO: is there a better way?
         try {
             ThreadedRenderer.class.getMethod("setContextPriority", int.class);
@@ -33,6 +33,7 @@ public class HiddenApiCompat {
             return false;
         }
     }
+
 
     public static boolean supportsMultiWindow(Context context) {
         return ActivityManager.supportsMultiWindow(context);

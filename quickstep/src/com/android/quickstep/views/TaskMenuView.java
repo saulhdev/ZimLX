@@ -129,7 +129,8 @@ public class TaskMenuView extends AbstractFloatingView {
     }
 
     private void setBackgroundRadius() {
-        float radius = Utilities.getZimPrefs(getContext()).getRecentsRadius();
+        //float radius = Utilities.getZimPrefs(getContext()).getRecentsRadius();
+        float radius = 2;
         GradientDrawable background = (GradientDrawable) ((LayerDrawable) getBackground()).getDrawable(1);
         background.setCornerRadii(new float[] {radius, radius, radius, radius, 0, 0, 0, 0});
     }

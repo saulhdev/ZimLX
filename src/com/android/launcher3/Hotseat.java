@@ -36,7 +36,6 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
-import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -46,6 +45,7 @@ import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 
 import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 
 public class Hotseat extends FrameLayout implements LogContainerProvider, Insettable {
 
@@ -145,8 +145,11 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             Rect bounds = d.getBounds();
             d.setBounds(bounds.left, bounds.top + scaleDownPx / 2, bounds.right - scaleDownPx,
                     bounds.bottom - scaleDownPx / 2);
+
             allAppsButton.setCompoundDrawables(null, d, null, null);
 
+            allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
+            allAppsButton.setOnKeyListener(new HotseatIconKeyEventListener());
             allAppsButton.setContentDescription(context.getString(R.string.all_apps_button_label));
             if (mLauncher != null) {
                 allAppsButton.setOnClickListener((v) -> {

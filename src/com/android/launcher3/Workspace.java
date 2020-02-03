@@ -87,6 +87,7 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.android.launcher3.widget.PendingAddWidgetInfo;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 
+import org.zimmob.zimlx.ClockVisibilityManager;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.views.ZimBackgroundView;
 
@@ -1331,6 +1332,8 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             int swipeDirection = (prevPage < mCurrentPage) ? Action.Direction.RIGHT : Action.Direction.LEFT;
             mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.SWIPE,
                     swipeDirection, ContainerType.WORKSPACE, prevPage);
+            ClockVisibilityManager.Companion.getInstance(getContext())
+                    .onWorkspacePageChanged(this, mCurrentPage);
         }
     }
 
@@ -1345,7 +1348,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void lockWallpaperToDefaultPage() {
-        mWallpaperOffset.setLockToDefaultPage(true);
+        mWallpaperOffset.setLockToDefaultPage(false);
     }
 
     public void unlockWallpaperFromDefaultPageOnNextLayout() {
@@ -3485,6 +3488,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     public static boolean isQsbContainerPage(int pageNo) {
         return pageNo == 0;
+    }
+
+    public boolean inTransition() {
+        return isPageInTransition();
+    }
+
+    @Override
+    public void setCurrentPage(int currentPage) {
+        super.setCurrentPage(currentPage);
+        ClockVisibilityManager.Companion.getInstance(getContext())
+                .onWorkspacePageChanged(this, mCurrentPage);
     }
 
     /**

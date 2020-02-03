@@ -228,7 +228,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         if (itemInfo instanceof AppInfo) {
             component = ((AppInfo) itemInfo).toComponentKey();
-            currentEditIcon = IconPackManager.Companion.getInstance(this).getEntryForComponent(component).getDrawable();
+            currentEditIcon = Objects.requireNonNull(IconPackManager.Companion.getInstance(this).getEntryForComponent(component)).getDrawable();
         } else if (itemInfo instanceof ShortcutInfo) {
             component = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             currentEditIcon = new BitmapDrawable(mContext.getResources(), ((ShortcutInfo) itemInfo).iconBitmap);
@@ -241,7 +241,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         }
 
         currentEditInfo = itemInfo;
-        Boolean folderInfo = itemInfo instanceof FolderInfo;
+        boolean folderInfo = itemInfo instanceof FolderInfo;
         Intent intent = EditIconActivity
                 .Companion
                 .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
@@ -263,7 +263,7 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
             String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
             CustomIconEntry customIconEntry = CustomIconEntry.Companion.fromNullableString(entryString);
 
-            CustomInfoProvider.Companion.forItem(this, itemInfo).setIcon(itemInfo, customIconEntry);
+            Objects.requireNonNull(CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
         }
     }
 }

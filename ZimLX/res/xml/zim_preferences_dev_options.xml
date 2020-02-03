@@ -15,24 +15,15 @@
         android:title="@string/show_debug_info_pref_title"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:key="pref_debugOkhttp"
-        android:title="Enable full network log"
-        android:summary="Useful for debugging some weather providers"
-        android:defaultValue="false"
+    <ListPreference
+        android:defaultValue="0"
+        android:disableDependentsState="false"
+        android:entries="@array/entries__layout_mode"
+        android:entryValues="@array/values__zero_to_two"
+        android:key="pref_key__layout_mode"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/title__layout_mode"
         app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:key="pref_debugDisplayState"
-        android:title="Debug information overlay"
-        android:summary="Display informations such as the current Launcher State"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:key="pref_folderBgColorGen"
-        android:title="Generate folder color"
-        android:summary="Generates the folder color based on custom icons [this breaks readability depending on the color]"
-        android:defaultValue="false" />
-
 
 </androidx.preference.PreferenceScreen>

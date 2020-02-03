@@ -24,8 +24,6 @@ import com.android.launcher3.Utilities;
 import com.android.quickstep.views.RecentsView.PageCallbacks;
 import com.android.quickstep.views.RecentsView.ScrollState;
 
-import ch.deletescape.lawnchair.font.CustomFontManager;
-
 public class ClearAllButton extends Button implements PageCallbacks {
 
     private float mScrollAlpha = 1;
@@ -38,7 +36,7 @@ public class ClearAllButton extends Button implements PageCallbacks {
     public ClearAllButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         mIsRtl = Utilities.isRtl(context.getResources());
-        CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
+        //CustomFontManager.Companion.getInstance(context).loadCustomFont(this, attrs);
     }
 
     @Override

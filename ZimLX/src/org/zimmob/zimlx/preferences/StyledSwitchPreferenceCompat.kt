@@ -21,7 +21,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.View
 import android.widget.Switch
-import androidx.annotation.Keep
 import androidx.preference.AndroidResources
 import androidx.preference.PreferenceViewHolder
 import androidx.preference.SwitchPreference
@@ -87,12 +86,5 @@ open class StyledSwitchPreferenceCompat(context: Context, attrs: AttributeSet? =
         override fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean) {
             isChecked = prefs.sharedPrefs.getBoolean(key, defaultValue)
         }
-    }
-
-    companion object {
-
-        @Keep
-        @JvmStatic
-        val sliceProvider = SearchIndex.SliceProvider.fromLambda(::SwitchSlice)
     }
 }

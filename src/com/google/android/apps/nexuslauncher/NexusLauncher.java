@@ -13,6 +13,7 @@ import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.LauncherExterns;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.dynamicui.WallpaperColorInfo;
@@ -35,7 +36,6 @@ import java.util.Collections;
 import java.util.Set;
 import java.util.WeakHashMap;
 
-
 public class NexusLauncher {
     private final Launcher mLauncher;
     private NexusLauncherCallbacks mCallbacks;
@@ -47,7 +47,7 @@ public class NexusLauncher {
     private boolean mStarted;
     private final Bundle mUiInformation = new Bundle();
     private ItemInfoUpdateReceiver mItemInfoUpdateReceiver;
-
+    private Handler handler = new Handler(LauncherModel.getUiWorkerLooper());
     QsbAnimationController mQsbAnimationController;
 
     public NexusLauncher(NexusLauncherActivity activity) {
@@ -67,7 +67,7 @@ public class NexusLauncher {
         private Set<SmartspaceView> mSmartspaceViews = Collections.newSetFromMap(new WeakHashMap<>());
         private final FeedReconnector mFeedReconnector = new FeedReconnector();
 
-        //private final Runnable mUpdatePredictionsIfResumed = this::updatePredictionsIfResumed;
+        private final Runnable mUpdatePredictionsIfResumed = this::updatePredictionsIfResumed;
 
         private ItemInfoUpdateReceiver getUpdateReceiver() {
             if (mItemInfoUpdateReceiver == null) {
@@ -79,7 +79,7 @@ public class NexusLauncher {
 
         public void bindAllApplications(final ArrayList<AppInfo> list) {
             getUpdateReceiver().di();
-            //mLauncher.getUserEventDispatcher().updatePredictions();
+            mLauncher.getUserEventDispatcher().updatePredictions();
         }
 
         public void dump(final String s, final FileDescriptor fileDescriptor, final PrintWriter printWriter, final String[] array) {
@@ -133,7 +133,11 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            //setTargetAppsView(mLauncher.getAppsView());
+            /*PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
+            predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
+            if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
+                predictionUiStateManager.switchClient(Client.OVERVIEW);
+            }*/
 
         }
 
@@ -212,11 +216,11 @@ public class NexusLauncher {
                 smartspace.onResume();
             }
 
-           /* Handler handler = mLauncher.getDragLayer().getHandler();
+            Handler handler = mLauncher.getDragLayer().getHandler();
             if (handler != null) {
                 handler.removeCallbacks(mUpdatePredictionsIfResumed);
                 Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
-            }*/
+            }
         }
 
         public void onSaveInstanceState(final Bundle bundle) {
@@ -305,7 +309,7 @@ public class NexusLauncher {
             }
         }
 
-        /*private void updatePredictionsIfResumed() {
+        private void updatePredictionsIfResumed() {
             if (mLauncher.hasBeenResumed()) {
                 //ReflectionClient.getInstance(mLauncher).updatePredictionsNow(
                 //        FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE ? Client.OVERVIEW.id : Client.HOME.id);
@@ -314,7 +318,7 @@ public class NexusLauncher {
                     mLauncher.getUserEventDispatcher().updateActions();
                 });
             }
-        }*/
+        }
 
         class FeedReconnector implements Runnable {
             private final static int MAX_RETRIES = 10;

@@ -100,6 +100,8 @@ import java.util.regex.Pattern;
  */
 public final class Utilities {
 
+    /*public static final boolean ATLEAST_Q =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;*/
     public static final boolean ATLEAST_P =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
     public static final boolean ATLEAST_OREO_MR1 =
@@ -950,5 +952,10 @@ public final class Utilities {
 
     public static int getUserId() {
         return UserHandle.myUserId();
+    }
+
+    public static boolean hasWriteSecureSettingsPermission(Context context) {
+        return ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
     }
 }
