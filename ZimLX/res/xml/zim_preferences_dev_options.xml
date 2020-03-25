@@ -15,6 +15,13 @@
         android:title="@string/show_debug_info_pref_title"
         app:iconSpaceReserved="false" />
 
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_key__auto_delete_desktop"
+        android:persistent="true"
+        android:title="@string/auto_delete_desktop"
+        app:iconSpaceReserved="false" />
+
     <ListPreference
         android:defaultValue="0"
         android:disableDependentsState="false"

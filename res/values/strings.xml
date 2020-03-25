@@ -401,6 +401,7 @@
     <string name="restart_zim_pref_title">Restart Launcher</string>
     <string name="restart_zim_pref_summary">Can be helpful if some settings are not properly applied</string>
     <string name="show_debug_info_pref_title">Show debug info</string>
+    <string name="auto_delete_desktop">Auto delete empty Desktop</string>
     <string name="debug_pref_title">Debug</string>
     <string name="debug_component_name">Component name</string>
     <string name="debug_component_name_copied">Copied</string>
