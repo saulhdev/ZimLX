@@ -24,7 +24,6 @@
     <string name="google_title" translatable="false">Google</string>
     <string name="play_folder_title">Play</string>
 
-    <string name="about">About</string>
     <!-- PREFERENCES GENERAL  -->
     <string name="pref_category__interfaces">Interfaces</string>
     <string name="pref_category__inputs">Gestures and Search</string>
@@ -63,11 +62,11 @@
     <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
 
     <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
-
     <string name="pref_summary__language">Change language of this app</string>
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
 
     <!-- PREFERENCES DESKTOP -->
+    <string name="general_pref_title">Desktop</string>
     <string name="title__desktop_indicator_style">Indicator Style</string>
     <string name="desktop_indicator_mode_normal">Normal</string>
     <string name="desktop_indicator_mode_arrow">Arrow</string>
@@ -80,6 +79,9 @@
     <string name="title_use_pill_qsb">Use pill style search bar</string>
     <string name="show_top_shadow_pref_title">Top shadow</string>
     <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+    <string name="full_width_width_widgets_pref_title">Full width widgets</string>
+
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
     <string name="cat__app_search">Search Bar</string>
@@ -110,11 +112,28 @@
     <string name="pref_prediction_count">Number of suggestions</string>
     <string name="separate_work_apps_pref_title">Second tab for work apps</string>
     <string name="all_apps_label_pref_title">Show "All Apps" label</string>
+    <string name="title_app_suggestions">Display app suggestions</string>
+    <string name="summary_app_suggestions">At the top of your All Apps list</string>
+    <string name="summary_app_suggestions_lawnstep">In recent apps screen and app drawer</string>
+    <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
+    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
+    <string name="label_turn_off_suggestions">TURN OFF</string>
 
-    <!-- PREFERENCES BEHAVIOR -->
-    <string name="title__behavior_widget_provider">Weather source</string>
-    <string name="title__behavior_weather_units">Temperature unit</string>
-    <string name="category__behavior_weather">Weather</string>
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
+    <string name="drawer_tabs">Tabs</string>
+    <string name="add_new_tab">Add</string>
+    <string name="rename_tab">Rename</string>
+    <string name="title_app_suggestions_in_search">App suggestions</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
@@ -170,6 +189,28 @@
 
     <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
     <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
+    <string name="pref_icon_pack_masking">Icon masking</string>
+    <string name="pref_icon_pack_masking_summary">Make unthemed icons match applied icon pack</string>
+    <string name="color_theme_based">Follow theme</string>
+    <string name="icon_shape_top_left">Top left</string>
+    <string name="icon_shape_top_right">Top right</string>
+    <string name="icon_shape_bottom_left">Bottom left</string>
+    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_scale_pref_title">Icon size</string>
+    <string name="pref_icon_popup_menu">Popup menu items</string>
+    <string name="pref_legacy_treatment_title">Create adaptive icons</string>
+    <string name="pref_legacy_treatment_summary">Automatic adaptive icons for all apps</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Coloured backgrounds for generated adaptive icons</string>
+    <string name="pref_white_only_treatment">Replace white backgrounds</string>
+    <string name="pref_white_only_treatment_summary">Coloured backgrounds for all adaptive icons</string>
+    <string name="pref_legacy_colored_backgrounds">Coloured backgrounds</string>
+    <string name="state_loading">Applying…</string>
+    <string name="icon_shape_override_label_location">on Home screen</string>
+    <string name="icon_pack">Icon pack</string>
 
     <!-- PREFERENCES GESTURES -->
     <string name="gestures_none">None</string>
@@ -192,12 +233,40 @@
     <string name="gesture_swipe_up">Swipe up</string>
     <string name="gesture_dock_swipe_up">Swipe up on dock</string>
 
+    <string name="action_open_drawer">Open app drawer</string>
+    <string name="action_last_task">Open last app</string>
+    <string name="action_open_widgets">Open widget drawer</string>
+    <string name="action_open_settings">Open launcher settings</string>
+    <string name="action_open_overview">Open home screen pop-up</string>
+
+    <string name="action_global_search">Open global search</string>
+    <string name="action_app_search">Open app search</string>
+    <string name="action_overlay">Open Google feed</string>
+    <string name="action_assistant">Open assistant</string>
+
+    <string name="action_open_notifications">Open notifications</string>
+    <string name="action_close_notifications">Close notifications</string>
+    <string name="action_sleep_timeout">Sleep (using timeout)</string>
+    <string name="action_open_app">Open app</string>
+
+    <string name="action_open_app_with_target">Open %s</string>
+    <string name="action_open_app_select_app">Pick app</string>
+    <string name="action_none">Do nothing</string>
+
+    <string name="action_voice_search">Voice search</string>
+    <string name="failed">Something went wrong</string>
+    <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
+    <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
+
+    <string name="app_gesture_failed_toast">Something went wrong</string>
+    <string name="action_sleep">Sleep</string>
+
+
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
     <string name="icon_badging_title">Enable Notifications</string>
     <string name="pref_category__notifications">Notifications</string>
     <string name="pref_category__gestures">Gestures</string>
-
     <string name="pref_title__notification_background_color">Notification Background Color</string>
     <string name="pref_title__notification_count">Show Notification Count</string>
 
@@ -245,10 +314,9 @@
     <string name="radius">Corner rounding</string>
     <string name="gradient">Gradient</string>
 
-    <!-- SEARCH -->
+    <!-- SEARCH AND FOLDER-->
     <string name="pref_title__folder">Search Engine and Folder</string>
     <string name="pref_summary__folder">Show search Engine and Folder settings</string>
-
     <string name="title__folder_background">Folder Background</string>
 
     <string name="pref_show_assistant_summary">Display voice search button if supported</string>
@@ -264,88 +332,12 @@
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="background_color">Background color</string>
 
-    <!-- SEARCH AND FOLDER -->
     <string name="title__folder_google_color">Google Icon Color</string>
-
-    <!-- PREFERENCES ABOUT-->
-    <string name="pref_key__about_app" translatable="false">pref_key__about_app</string>
-    <string name="pref_key__about_rate_app" translatable="false">pref_key__about_rate_app</string>
-    <string name="pref_key__about_donate" translatable="false">pref_key__about_donate</string>
-    <string name="pref_key__about_bug_report" translatable="false">pref_key__about_bug_report</string>
-    <string name="pref_key__about_project_license" translatable="false">pref_key__about_project_license</string>
-    <string name="pref_key__about_open_source_licenses" translatable="false">pref_key__about_open_source_licenses</string>
-    <string name="pref_key__about_copy_build_information" translatable="false">pref_key__about_copy_build_information</string>
-    <string name="pref_key__about_source_code" translatable="false">pref_key__about_source_code</string>
-    <string name="pref_key__about_project_team" translatable="false">pref_key__about_project_team</string>
-
-    <string name="app_license_name" translatable="false">Apache 2.0</string>
-    <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
-    <string name="app_web_url" translatable="false">https://github.com/otakuhqz</string>
-    <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
-    <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
-    <string name="contributors">Contributors</string>
-    <string name="changelog">Changelog</string>
-    <string name="rate_the_app">Rate this app</string>
-    <string name="contribute">Contribute</string>
-    <string name="donate">Donate</string>
-    <string name="bug_reports">Report bugs</string>
-    <string name="help">Help</string>
-    <string name="project_team">Project Team</string>
-    <string name="project_license">Project License</string>
-    <string name="more_info_licence">Open Source</string>
-    <string name="more_info_support">More information on donating or otherwise supporting this project</string>
-    <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
-    <string name="source_code">Source Code</string>
-    <string name="licenses">Licenses</string>
-    <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
-
     <string name="title_folder_circle">Circle</string>
     <string name="title_folder_circle_bg">Circle Shadow</string>
     <string name="title_folder_square">Square</string>
     <string name="title_folder_square_bg">Square Shadow</string>
 
-    <string name="smartspace_time_24_h">24-hour format</string>
-    <string name="weather_provider_disabled">Disabled</string>
-    <string name="weather_provider_widget">Google app</string>
-    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
-    <string name="weather_provider_pe">PixelExperience</string>
-    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
-    <string name="weather_provider_testing">Debug</string>
-
-    <string name="units_metric">Celsius</string>
-    <string name="units_imperial">Fahrenheit</string>
-    <string name="units_kelvin">Kelvin</string>
-    <string name="units_rakine">Rankine</string>
-    <string name="units_newton">Newton</string>
-    <string name="units_delisle">Delisle</string>
-    <string name="units_reaumur">Réaumur</string>
-    <string name="units_romer">Rømer</string>
-
-    <string name="week_day_format">%1$s, %2$s</string>
-    <string name="error_no_browser">No activity found to handle URLs</string>
-    <string name="home_widget">Home widget</string>
-    <string name="smartspace_provider_error">Something went wrong</string>
-    <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
-
-    <!-- Subtext explaining that the icons will only be affected on the home screen. This text follows the actual icon action: Change icon shape, on Home screen [CHAR LIMIT=100] -->
-    <string name="icon_shape_override_label_location">on Home screen</string>
-    <string name="config_default_color_resolver" translatable="false">org.zimmob.zimlx.colors.ARGBColorResolver</string>
-
-    <string name="change_default_home">Set as home screen</string>
-    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-
-    <string name="developer_options_title">Developer options</string>
-    <string name="developer_options_enabled">Developer options enabled</string>
-
-    <string name="blur_wallpaper_failed">Something went wrong</string>
-    <string name="blur_oom">Something went wrong</string>
-    <string name="advanced_settings">More %s settings</string>
-    <string name="search_pref_title">Search</string>
-
-    <string name="pref_multiline_labels">Multiline app names</string>
-    <string name="hotseat_qsb_preferences">Customise</string>
-
-    <string name="keep_scroll_state_pref_title">Remember scroll position</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -353,7 +345,7 @@
     <string name="search_no_results">Nothing found</string>
     <string name="search_menu">Find settings</string>
     <string name="search_provider_s_finder">S Finder</string>
-    <string name="color_theme_based">Follow theme</string>
+    <string name="search_pref_title">Search</string>
     <string name="pref_global_search_provider">Search engine</string>
     <string name="searchbar_appearance_title">Search Options</string>
     <string name="google">Google</string>
@@ -376,109 +368,90 @@
     <string name="web_search_naver">Naver (web)</string>
     <string name="web_search_baidu">Baidu (web)</string>
     <string name="web_search_yahoo">Yahoo (web)</string>
+    <string name="label_search">Search</string>
+    <string name="label_voice_search">Voice search</string>
 
-    <string name="action_open_drawer">Open app drawer</string>
+    <!-- PREFERENCES ABOUT-->
+    <string name="about">About</string>
+    <string name="app_license_name" translatable="false">Apache 2.0</string>
+    <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
+    <string name="app_web_url" translatable="false">https://github.com/otakuhqz</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
+    <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
+    <string name="contributors">Contributors</string>
+    <string name="changelog">Changelog</string>
+    <string name="rate_the_app">Rate this app</string>
+    <string name="contribute">Contribute</string>
+    <string name="donate">Donate</string>
+    <string name="bug_reports">Report bugs</string>
+    <string name="help">Help</string>
+    <string name="project_team">Project Team</string>
+    <string name="project_license">Project License</string>
+    <string name="more_info_licence">Open Source</string>
+    <string name="more_info_support">More information on donating or otherwise supporting this project</string>
+    <string name="contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
+    <string name="source_code">Source Code</string>
+    <string name="licenses">Licenses</string>
+    <string name="bug_reports_suggest_improvements">Give feedback, report bugs or suggest improvements</string>
 
-    <string name="action_last_task">Open last app</string>
-    <string name="action_open_widgets">Open widget drawer</string>
-    <string name="action_open_settings">Open launcher settings</string>
-    <string name="action_open_overview">Open home screen pop-up</string>
+    <!-- SMARTSPACE -->
+    <string name="title__behavior_widget_provider">Weather source</string>
+    <string name="title__behavior_weather_units">Temperature unit</string>
+    <string name="category__behavior_weather">Weather</string>
 
-    <string name="action_global_search">Open global search</string>
-    <string name="action_app_search">Open app search</string>
-    <string name="action_overlay">Open Google feed</string>
-    <string name="action_assistant">Open assistant</string>
+    <string name="smartspace_time_24_h">24-hour format</string>
+    <string name="smartspace_provider_error">Something went wrong</string>
+    <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
+    <string name="smartspace_time">Show time</string>
+    <string name="smartspace_date">Show time and date</string>
+    <string name="smartspace_preferences">Preferences</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="weather_provider_disabled">Disabled</string>
+    <string name="weather_provider_widget">Google app</string>
+    <string name="weather_provider_pe">PixelExperience</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+    <string name="weather_provider_testing">Debug</string>
 
-    <string name="action_open_notifications">Open notifications</string>
-    <string name="action_close_notifications">Close notifications</string>
-    <string name="action_sleep_timeout">Sleep (using timeout)</string>
-    <string name="action_open_app">Open app</string>
+    <string name="units_metric">Celsius</string>
+    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_kelvin">Kelvin</string>
+    <string name="units_rakine">Rankine</string>
+    <string name="units_newton">Newton</string>
+    <string name="units_delisle">Delisle</string>
+    <string name="units_reaumur">Réaumur</string>
+    <string name="units_romer">Rømer</string>
 
-    <string name="action_open_app_with_target">Open %s</string>
-    <string name="action_open_app_select_app">Pick app</string>
-    <string name="action_none">Do nothing</string>
+    <string name="week_day_format">%1$s, %2$s</string>
+    <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="home_widget">Home widget</string>
+    <string name="pref_category_searchbar">Search Bar</string>
+    <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
+    <string name="icu_abbrev_time">HH:mm</string>
+    <string name="icu_abbrev_time_12h">hh:mm aa</string>
+    <string name="icu_abbrev_date"> dd MMMM</string>
+    <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
 
-    <string name="action_voice_search">Voice search</string>
-    <string name="failed">Something went wrong</string>
-    <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
-    <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
-
-    <string name="app_gesture_failed_toast">Something went wrong</string>
-    <string name="action_sleep">Sleep</string>
-
-    <string name="suggestion_pref_screen_title">Suggestions</string>
-    <string name="title_app_suggestions_in_search">App suggestions</string>
-
-    <string name="all_apps_label">All Apps</string>
-
-    <string name="pref_icon_pack_masking">Icon masking</string>
-    <string name="pref_icon_pack_masking_summary">Make unthemed icons match applied icon pack</string>
-    <string name="zim_actions">Actions</string>
-    <string name="search_breadcrumb_connector" translatable="false"><xliff:g name="first_item">%1$s</xliff:g> > <xliff:g name="second_item">%2$s</xliff:g></string>
-    <string name="pref_legacy_treatment_title">Create adaptive icons</string>
-    <string name="pref_legacy_treatment_summary">Automatic adaptive icons for all apps</string>
-    <string name="pref_legacy_colored_backgrounds_summary">Coloured backgrounds for generated adaptive icons</string>
-    <string name="pref_white_only_treatment">Replace white backgrounds</string>
-    <string name="pref_white_only_treatment_summary">Coloured backgrounds for all adaptive icons</string>
-    <string name="pref_legacy_colored_backgrounds">Coloured backgrounds</string>
-
-    <string name="blur_pref_title">Blur</string>
-    <string name="blur_pref_summary">Blur effect for app drawer, dock, settings backgrounds</string>
-    <string name="blur_radius_pref_title">Blur strength</string>
-    <string name="customize">Customise</string>
-    <string name="action_preferences">@string/customize</string>
-    <string name="theme_title">Theme</string>
-    <string name="search">Search</string>
-    <string name="zim_accent">Accent Color</string>
-    <string name="color_system_accent">System accent</string>
-    <string name="reset_to_default">Reset to default</string>
-
-    <string name="theme_based">Follow theme</string>
-    <string name="color_pixel_accent">Pixel blue</string>
-    <string name="color_presets">Presets</string>
-
-    <string name="color_wallpaper_main">Wallpaper — primary</string>
-    <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
-    <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
-
-    <string name="bridge_missing_title">Lawnfeed</string>
-    <string name="bridge_missing_message">Install or update Lawnfeed</string>
-
-    <string name="google_app">Google app</string>
-    <string name="pref_open_source_licenses_title">Licenses</string>
-
-    <string name="reset_custom_icons">Reset custom icons</string>
-    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
-
-    <!-- Summary for Notification dots setting. Tapping this will link enable/disable notification dots feature on the home screen. [CHAR LIMIT=50] -->
-    <string name="icon_badging_service_title">Show notification dots</string>
-    <string name="title_storage_permission_required">Storage permission needed</string>
-    <string name="content_storage_permission_required">Grant storage permission to set wallpaper</string>
+    <string name="in_smartspace">In \"At a Glance\" widget</string>
+    <string name="title_show_google_app">Display %1$s</string>
+    <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
+    <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
     <string name="pref_smartspace_time_above">Show large clock</string>
     <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
 
+    <string name="smartspace_setup_text">Tap to set-up</string>
     <string name="smartspace_preferences_in_settings">At a Glance</string>
     <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
-    <string name="about_app_version">Version</string>
 
-    <string name="onbording">Onboarding</string>
-    <string name="onbording_settings_title">Set-up %s</string>
-    <string name="onbording_settings_summary">Long press your home screen</string>
-    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
-
-    <string name="pref_smartspace_event_providers">Events sources</string>
     <string name="event_provider_now_playing">Now playing</string>
     <string name="battery_status">Battery status</string>
     <string name="battery_charging">Battery charging</string>
     <string name="battery_full">Battery full</string>
     <string name="battery_low">Battery low</string>
+    <string name="pref_smartspace_event_providers">Events sources</string>
     <string name="event_provider_unread_notifications">Unread notifications</string>
     <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
     <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
-    <string name="zen_mode_enabled">Do not disturb is enabled</string>
-    <string name="crash_report_notif_title">%1$s crashed!</string>
-    <string name="general_pref_title">Desktop</string>
-
     <string name="personality_provider">Contextual messages</string>
     <string-array name="greetings_morning">
         <item>Good morning!</item>
@@ -504,24 +477,51 @@
         <item>Don\'t stay up too long</item>
     </string-array>
 
-    <string name="open_image_picker">Open image picker</string>
-    <string name="import_icon">Import icon</string>
-    <string name="import_as_adaptive">As adaptive icon</string>
+    <!-- DEVELOPER -->
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+    <string name="restart_zim_pref_title">Restart Launcher</string>
+    <string name="restart_zim_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="show_debug_info_pref_title">Show debug info</string>
+    <string name="auto_delete_desktop">Auto delete empty Desktop</string>
+    <string name="debug_pref_title">Debug</string>
 
-    <string name="pref_sesame_enabled">Sesame shortcut data shared</string>
-    <string name="pref_sesame_disabled">No data shared</string>
-    <string name="pref_sesame_show_shortcuts">App shortcuts</string>
-    <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
-    <string name="allow">Allow</string>
-    <string name="deny">Deny</string>
+    <!-- BACK UP -->
+    <string name="backups">Backups</string>
+    <string name="backup_delete">Hide</string>
+    <string name="backup_delete_failed">Something went wrong</string>
+    <string name="backup_share">Share</string>
+    <string name="backup_pref_summary">Save home screen, restore backups</string>
+    <string name="new_backup">Create</string>
+    <string name="restore_backup">Restore</string>
+    <string name="backup_name">Name</string>
+    <string name="backup_location">Location</string>
+    <string name="backup_homescreen">Homescreen</string>
+    <string name="backup_contents">Backup contents</string>
+    <string name="backup_settings">Settings</string>
+    <string name="backup_wallpaper">Wallpaper</string>
+    <string name="backup_error_blank_name">Name must not be blank</string>
+    <string name="backup_error_blank_contents">Contents must not be blank</string>
+    <string name="backup_creating">Creating backup</string>
+    <string name="no_recent_backups">No recent backups</string>
+    <string name="backup_loading">Loading...</string>
+    <string name="backup_invalid">Unavailable</string>
+    <string name="backup_remove_from_recents">Remove from list</string>
+    <string name="backup_timestamp">Created at</string>
+    <string name="backup_restoring">Restoring backup</string>
+    <string name="backup_restarting">Restarting</string>
+    <string name="restore_contents">Restore contents</string>
+    <string name="restore_success">Restore success</string>
+    <string name="backup_failed">Backup failed</string>
+    <string name="restore_failed">Restore failed</string>
+    <string name="restore_read_meta_fail">Invalid backup file</string>
+    <string name="backup_share_title">Share backup</string>
+    <string name="backup_share_text">Zim backup file</string>
+    <string name="local_backups">Local backups</string>
+    <string name="backup_location_device_storage">Device storage</string>
+    <string name="backup_location_documents_storage">Documents storage</string>
 
-    <string name="weather_icons_default">Default</string>
-    <string name="button_organize_screens">Organize screens</string>
-    <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from main tab</string>
-    <string name="tab_color">Tab color</string>
-    <string name="selected_count">%1$d selected</string>
-
+    <!-- CATEGORIZACION-->
     <string name="tab_manage_apps">Manage apps</string>
     <string name="delete">Delete</string>
     <string name="none">None</string>
@@ -529,32 +529,6 @@
     <string name="name">Name</string>
     <string name="apps_label">Apps</string>
     <string name="custom">Custom</string>
-
-    <string name="icon_shape_top_left">Top left</string>
-    <string name="icon_shape_top_right">Top right</string>
-    <string name="icon_shape_bottom_left">Bottom left</string>
-    <string name="icon_shape_bottom_right">Bottom right</string>
-    <string name="icon_shape_corner_round">Round</string>
-    <string name="icon_shape_corner_squircle">Squircle</string>
-    <string name="icon_shape_corner_cut">Cut</string>
-    <string name="smartspace_setup_text">Tap to set-up</string>
-    <string name="icon_scale_pref_title">Icon size</string>
-    <string name="pref_icon_popup_menu">Popup menu items</string>
-
-    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
-    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
-    <string name="pref_appcategorization_style_text">Style</string>
-    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
-    <string name="pref_app_groups_create">Create</string>
-    <string name="pref_appcategorization_folders_title">Folders</string>
-    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
-    <string name="pref_appcategorization_tabs_title">Tabs</string>
-    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
-    <string name="default_folder_name">New folder</string>
-    <string name="drawer_folders">Folders</string>
-    <string name="drawer_tabs">Tabs</string>
-    <string name="add_new_tab">Add</string>
-    <string name="rename_tab">Rename</string>
 
     <string name="pref_categ_folder">Folder Customize</string>
 
@@ -571,11 +545,86 @@
     <string name="folder_cover_mode">Cover mode</string>
     <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
 
-
     <string name="default_tab_name">New tab</string>
     <string name="show_in_tabs">Tabs</string>
     <string name="tabs_manage">Manage</string>
     <string name="dismiss_drop_target_label">"Don\’t show"</string>
+
+
+    <!-- Subtext explaining that the icons will only be affected on the home screen. This text follows the actual icon action: Change icon shape, on Home screen [CHAR LIMIT=100] -->
+    <string name="config_default_color_resolver" translatable="false">org.zimmob.zimlx.colors.ARGBColorResolver</string>
+
+    <string name="change_default_home">Set as home screen</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+
+    <string name="blur_wallpaper_failed">Something went wrong</string>
+    <string name="blur_oom">Something went wrong</string>
+    <string name="advanced_settings">More %s settings</string>
+
+    <string name="pref_multiline_labels">Multiline app names</string>
+    <string name="hotseat_qsb_preferences">Customise</string>
+
+    <string name="keep_scroll_state_pref_title">Remember scroll position</string>
+
+
+    <string name="all_apps_label">All Apps</string>
+
+    <string name="zim_actions">Actions</string>
+    <string name="search_breadcrumb_connector" translatable="false"><xliff:g name="first_item">%1$s</xliff:g> > <xliff:g name="second_item">%2$s</xliff:g></string>
+
+    <string name="blur_pref_title">Blur</string>
+    <string name="blur_pref_summary">Blur effect for app drawer, dock, settings backgrounds</string>
+    <string name="blur_radius_pref_title">Blur strength</string>
+    <string name="customize">Customise</string>
+    <string name="action_preferences">@string/customize</string>
+
+    <string name="search">Search</string>
+    <string name="zim_accent">Accent Color</string>
+    <string name="color_system_accent">System accent</string>
+    <string name="reset_to_default">Reset to default</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_based">Follow theme</string>
+    <string name="color_pixel_accent">Pixel blue</string>
+    <string name="color_presets">Presets</string>
+
+    <string name="color_wallpaper_main">Wallpaper — primary</string>
+    <string name="color_wallpaper_secondary">Wallpaper — secondary</string>
+    <string name="color_wallpaper_tertiary">Wallpaper — tertiary</string>
+
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
+
+    <string name="google_app">Google app</string>
+    <string name="pref_open_source_licenses_title">Licenses</string>
+
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Are you sure you want to reset all custom icons? This action is non-reversible.</string>
+
+    <string name="about_app_version">Version</string>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="crash_report_notif_title">%1$s crashed!</string>
+
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+
+    <string name="pref_sesame_show_shortcuts">App shortcuts</string>
+    <string name="pref_sesame_show_shortcuts_summary">Show Sesame shortcuts in icon bubbles</string>
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
+
+    <string name="weather_icons_default">Default</string>
+    <string name="button_organize_screens">Organize screens</string>
+    <string name="tab_bottom_sheet_save">Save</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
+    <string name="tab_color">Tab color</string>
+    <string name="selected_count">%1$d selected</string>
 
     <!-- Content description for the recent apps panel (not shown on the screen). [CHAR LIMIT=NONE] -->
     <string name="accessibility_desc_recent_apps">Overview</string>
@@ -588,6 +637,28 @@
         <item quantity="other">%1$d hidden</item>
     </plurals>
 
-    <string name="pref_category_searchbar">Search Bar</string>
+    <string name="default_live_wallpaper">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
+
+    <string name="action_edit">Edit</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app">Hide app</string>
+
+    <string name="default_text">Default</string>
+
+    <string name="hidden_app">Hide apps</string>
+    <string name="hide_app_selected">&#160; hidden</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
+
+    <string name="hide_apps">Hide apps</string>
+    <string name="hide_apps_sum">Hide app from the app drawer</string>
+    <string name="grid_size">Grid size</string>
+    <string name="grid_size_default">Default</string>
+    <string name="debug_component_name">Component name</string>
+    <string name="debug_component_name_copied">Copied</string>
+    <string name="read_external_storage_required">Storage permission is required to create backup</string>
+    <string name="grid_size_height">Height</string>
+    <string name="grid_size_width">Width</string>
 
 </resources>

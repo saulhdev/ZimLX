@@ -84,7 +84,7 @@
         <org.zimmob.zimlx.settings.ui.SubPreference
             android:icon="@drawable/ic_information"
             android:summary="@string/pref_summary__about"
-            android:title="@string/about_title"
+            android:title="@string/about"
             android:layout="@layout/home_preference"
             app:content="@xml/zim_preferences_about"
             app:longClickContent="@xml/zim_preferences_about" />

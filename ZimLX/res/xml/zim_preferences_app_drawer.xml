@@ -22,7 +22,7 @@
             app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-            android:defaultValue="false"
+            android:defaultValue="true"
             android:key="pref_show_predictions"
             android:summary="@string/summary_app_suggestions"
             android:title="@string/title_app_suggestions"

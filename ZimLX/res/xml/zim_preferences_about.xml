@@ -3,37 +3,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:title="@string/about_title">
+    android:title="@string/about">
 
     <Preference
-        android:key="@string/pref_key__about_app"
+        android:key="pref_key__about_app"
         android:title="@string/app_name"
         tools:icon="@drawable/ic_launcher"
         tools:summary="Version 0.2.5" />
 
     <Preference
         android:icon="@drawable/ic_thumb_up_black_24dp"
-        android:key="@string/pref_key__about_rate_app"
+        android:key="pref_key__about_rate_app"
         android:title="@string/rate_the_app" />
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/contribute">
 
         <Preference
             android:icon="@drawable/ic_favorite_black_24dp"
-            android:key="@string/pref_key__about_donate"
+            android:key="pref_key__about_donate"
             android:summary="@string/more_info_support"
             android:title="@string/donate" />
 
         <Preference
             android:icon="@drawable/ic_bug_report_black_24dp"
-            android:key="@string/pref_key__about_bug_report"
+            android:key="pref_key__about_bug_report"
             android:summary="@string/bug_reports_suggest_improvements"
             android:title="@string/bug_reports" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
-        android:key="@string/pref_key__about_project_team"
+        android:key="pref_key__about_project_team"
         android:title="@string/project_team">
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
@@ -41,22 +41,22 @@
     <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory android:title="@string/licenses">
         <Preference
             android:icon="@drawable/ic_copyright_black_24dp"
-            android:key="@string/pref_key__about_project_license"
+            android:key="pref_key__about_project_license"
             android:title="@string/project_license"
             android:summary="@string/app_license_name" />
         <Preference
             android:icon="@drawable/ic_copyright_black_24dp"
-            android:key="@string/pref_key__about_open_source_licenses"
+            android:key="pref_key__about_open_source_licenses"
             android:title="@string/more_info_licence" />
         <Preference
             android:icon="@drawable/ic_code_black_24dp"
-            android:key="@string/pref_key__about_source_code"
+            android:key="pref_key__about_source_code"
             android:summary="@string/contribute_code"
             android:title="@string/source_code" />
 
         <Preference
             android:icon="@drawable/ic_code_black_24dp"
-            android:key="@string/pref_key__about_copy_build_information"
+            android:key="pref_key__about_copy_build_information"
             android:title="Copy build information" />
 
     </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
