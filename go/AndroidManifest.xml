@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 **
 ** Copyright 2017, The Android Open Source Project
@@ -16,36 +17,33 @@
 ** limitations under the License.
 */
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.android.launcher3">
+    package="com.android.launcher3" >
 
-    <uses-sdk
-        android:targetSdkVersion="23"
-        android:minSdkVersion="21" />
+    <uses-sdk android:targetSdkVersion="28" android:minSdkVersion="25"/>
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
+        android:theme="@style/AppTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        tools:replace="android:label"
-        android:supportsRtl="true">
+        android:supportsRtl="true" >
 
-        <!-- Activity for handling PinItemRequest. Only supports shortcuts -->
-        <activity
-            android:name="com.android.launcher3.dragndrop.AddItemActivity"
+        <!-- Activity for handling PinItemRequest is disabled on Android Go. -->
+        <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
             android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert"
             android:excludeFromRecents="true"
             android:autoRemoveFromRecents="true"
             android:label="@string/action_add_to_workspace"
-            tools:node="replace">
-            <intent-filter>
-                <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
-            </intent-filter>
+            android:enabled="false"
+            tools:node="replace" >
         </activity>
 
     </application>
