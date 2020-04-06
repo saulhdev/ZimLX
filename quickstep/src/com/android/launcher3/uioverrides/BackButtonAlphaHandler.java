@@ -35,7 +35,7 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
 
     public BackButtonAlphaHandler(Launcher launcher) {
         mLauncher = launcher;
-        mOverviewInteractionState = OverviewInteractionState.getInstance(mLauncher);
+        mOverviewInteractionState = OverviewInteractionState.INSTANCE.get(mLauncher);
     }
 
     @Override
@@ -50,7 +50,7 @@ public class BackButtonAlphaHandler implements LauncherStateManager.StateHandler
             return;
         }
         float fromAlpha = mOverviewInteractionState.getBackButtonAlpha();
-        float toAlpha = toState.hideBackButton && !UiFactory.hasBackGesture(mLauncher) ? 0 : 1;
+        float toAlpha = toState.hideBackButton ? 0 : 1;
         if (Float.compare(fromAlpha, toAlpha) != 0) {
             ValueAnimator anim = ValueAnimator.ofFloat(fromAlpha, toAlpha);
             anim.setDuration(config.duration);
