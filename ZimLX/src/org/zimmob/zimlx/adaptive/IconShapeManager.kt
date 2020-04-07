@@ -33,12 +33,12 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
 import com.android.launcher3.graphics.IconShapeOverride
-import org.zimmob.zimlx.folder.FolderShape
 import org.zimmob.zimlx.iconpack.AdaptiveIconCompat
 import org.zimmob.zimlx.runOnMainThread
 import org.zimmob.zimlx.util.ZimFlags.THEME_ICON_SHAPE
 import org.zimmob.zimlx.util.ZimSingletonHolder
 import org.zimmob.zimlx.zimPrefs
+import com.android.launcher3.graphics.IconShape as L3IconShape
 
 class IconShapeManager(private val context: Context) {
 
@@ -118,7 +118,8 @@ class IconShapeManager(private val context: Context) {
 
             runOnMainThread {
                 AdaptiveIconCompat.resetMask()
-                FolderShape.init(context)
+                //FolderShape.init(context)
+                L3IconShape.init(context)
                 context.zimPrefs.recreate()
             }
         }
