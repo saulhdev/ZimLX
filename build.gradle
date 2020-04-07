@@ -29,7 +29,7 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.5.3'
+        classpath 'com.android.tools.build:gradle:3.6.2'
         classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
 
@@ -54,9 +54,9 @@ android {
         localProps.load(localPropsFile.newDataInputStream())
     }
     def name = "0.6.5"
-    def code = 3016
+    def code = 3017
     defaultConfig {
-        minSdkVersion 21
+        minSdkVersion 25
         targetSdkVersion 28
 
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
@@ -85,7 +85,7 @@ android {
             //signingConfig signingConfigs
         }
     }
-    flavorDimensions "default", "custom"
+    flavorDimensions "default", "custom", "recents"
     productFlavors {
         aosp {
             dimension "default"
@@ -97,8 +97,13 @@ android {
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
         }
-        quickstep {
-            dimension "default"
+        withoutQuickstep {
+            dimension "recents"
+            applicationId 'org.zimmob.zimlx'
+        }
+
+        withQuickstep {
+            dimension "recents"
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
@@ -140,7 +145,7 @@ android {
         }
 
         aosp {
-            java.srcDirs = ['src_flags', "src_ui_overrides"]
+            java.srcDirs = ['src_flags', "src_shortcuts_overrides"]
         }
 
         l3go {
@@ -148,10 +153,13 @@ android {
             java.srcDirs = ['go/src_flags', "src_ui_overrides"]
             manifest.srcFile "go/AndroidManifest.xml"
         }
+        withoutQuickstep {
+            java.srcDirs = ['src_ui_overrides']
+        }
 
-        quickstep {
-            res.srcDirs = ['quickstep/res']
-            java.srcDirs = ['src_flags', 'quickstep/src']
+        withQuickstep {
+            res.srcDirs = ['quickstep/res', 'quickstep/recents_ui_overrides/res']
+            java.srcDirs = ['quickstep/src', 'quickstep/recents_ui_overrides/src']
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
 
@@ -203,7 +211,7 @@ dependencies {
     implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta2'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
     implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
@@ -218,8 +226,16 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
+    //implementation fileTree(dir: "ZimLX/libs", include: 'launcher_protos.jar')
+    //withQuickstepImplementation project(':systemui-shared')
 
-    quickstepImplementation project(':systemui-shared')
+    // Recents lib dependency
+    withQuickstepImplementation fileTree(dir: "ZimLX/libs", include: 'sysui_shared.jar')
+
+    // Required for AOSP to compile. This is already included in the sysui_shared.jar
+    withoutQuickstepImplementation fileTree(dir: "ZimLX/libs", include: 'plugin_core.jar')
+
+    implementation project(':IconLoader')
 
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"

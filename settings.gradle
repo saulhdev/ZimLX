@@ -15,4 +15,6 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include ':systemui-shared'
+/*include ':systemui-shared'*/
+include ':IconLoader'
+project(':IconLoader').projectDir = new File(rootDir, 'iconloaderlib')
