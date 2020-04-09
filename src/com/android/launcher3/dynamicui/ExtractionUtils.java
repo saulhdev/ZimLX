@@ -18,21 +18,17 @@ package com.android.launcher3.dynamicui;
 
 import android.annotation.TargetApi;
 import android.app.WallpaperManager;
-import android.app.job.JobInfo;
-import android.app.job.JobScheduler;
-import android.content.ComponentName;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.os.Build;
 
-import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
-
-import java.util.List;
-
 import androidx.core.graphics.ColorUtils;
 import androidx.palette.graphics.Palette;
+
+import com.android.launcher3.Utilities;
+
+import java.util.List;
 
 /**
  * Contains helper fields and methods related to extracting colors from the wallpaper.
@@ -42,40 +38,6 @@ public class ExtractionUtils {
     public static final String WALLPAPER_ID_PREFERENCE_KEY = "pref_wallpaperId";
 
     private static final float MIN_CONTRAST_RATIO = 2f;
-
-    /**
-     * Extract colors in the :wallpaper-chooser process, if the wallpaper id has changed.
-     * When the new colors are saved in the LauncherProvider,
-     * Launcher will be notified in Launcher#onSettingsChanged(String, String).
-     */
-    public static void startColorExtractionServiceIfNecessary(final Context context) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            return;
-        }
-        // Run on a background thread, since the service is asynchronous anyway.
-        Utilities.THREAD_POOL_EXECUTOR.execute(new Runnable() {
-            @Override
-            public void run() {
-                if (hasWallpaperIdChanged(context)) {
-                    startColorExtractionService(context);
-                }
-            }
-        });
-    }
-
-    /**
-     * Starts the {@link ColorExtractionService} without checking the wallpaper id
-     */
-    public static void startColorExtractionService(Context context) {
-        if (FeatureFlags.LAUNCHER3_GRADIENT_ALL_APPS) {
-            return;
-        }
-        JobScheduler jobScheduler = (JobScheduler) context.getSystemService(
-                Context.JOB_SCHEDULER_SERVICE);
-        jobScheduler.schedule(new JobInfo.Builder(Utilities.COLOR_EXTRACTION_JOB_ID,
-                new ComponentName(context, ColorExtractionService.class))
-                .setMinimumLatency(0).build());
-    }
 
     private static boolean hasWallpaperIdChanged(Context context) {
         if (!Utilities.ATLEAST_NOUGAT) {
