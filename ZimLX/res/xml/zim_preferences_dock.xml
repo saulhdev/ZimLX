@@ -8,25 +8,6 @@
         android:persistent="true"
         android:title="@string/title__hotseat_hide"
         app:iconSpaceReserved="false" />
-    <!--
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="false"
-            android:key="pref_isHotseatTransparent"
-            android:disableDependentsState="true"
-            android:persistent="true"
-            android:title="@string/transparent_hotseat_pref_title"
-            app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.StyledSwitchPreference
-            android:defaultValue="true"
-            android:key="pref_hotseatShouldUseExtractedColors"
-            android:persistent="true"
-            android:dependency="pref_isHotseatTransparent"
-            android:summaryOff="@string/hotseat_uses_extracted_colors_pref_off"
-            android:summaryOn="@string/hotseat_uses_extracted_colors_pref_on"
-            android:title="@string/hotseat_uses_extracted_colors_pref_title"
-            app:iconSpaceReserved="false" />
-    -->
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:key="enableGradient"
@@ -108,12 +89,5 @@
         app:steps="170"
         app:summaryFormat="%.0f%%"
         app:summaryMultiplier="100" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref__hide_dock_button"
-        android:persistent="true"
-        android:title="@string/title__hotseat_hide_button"
-        app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

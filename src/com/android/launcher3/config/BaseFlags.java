@@ -16,6 +16,7 @@
 
 package com.android.launcher3.config;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.SharedPreferences;
 
@@ -24,6 +25,8 @@ import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.TogglableFlag;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +49,7 @@ public abstract class BaseFlags {
     @GuardedBy("sLock")
     private static final List<TogglableFlag> sFlags = new ArrayList<>();
 
-    static final String FLAGS_PREF_NAME = "featureFlags";
+    private static final String FLAGS_PREF_NAME = "featureFlags";
 
     BaseFlags() {
     }
@@ -66,7 +69,7 @@ public abstract class BaseFlags {
     // When enabled allows use of spring motions on the icons.
     public static final boolean LAUNCHER3_SPRING_ICONS = true;
     // When enabled the all-apps icon is not added to the hotseat.
-    public static final boolean NO_ALL_APPS_ICON = false;
+    public static final boolean NO_ALL_APPS_ICON = true;
     // When enabled the status bar may show dark icons based on the top of the wallpaper.
     public static final boolean LIGHT_STATUS_BAR = true;
     // When enabled, the qsb will be moved to the hotseat.
@@ -157,6 +160,7 @@ public abstract class BaseFlags {
         private final String description;
         private boolean currentValue;
 
+        @SuppressLint("RestrictedApi")
         public BaseTogglableFlag(
                 String key,
                 boolean defaultValue,
@@ -220,6 +224,7 @@ public abstract class BaseFlags {
             return description;
         }
 
+        @NotNull
         @Override
         public String toString() {
             return "TogglableFlag{"

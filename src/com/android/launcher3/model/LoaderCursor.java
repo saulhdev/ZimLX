@@ -424,7 +424,7 @@ public class LoaderCursor extends CursorWrapper {
 
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             // Return early if we detect that an item is under the hotseat button
-            if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mContext).getHideDockButton() && !prefs.getDockHide() &&
+            if (!FeatureFlags.NO_ALL_APPS_ICON && !prefs.getDockHide() &&
                     mIDP.isAllAppsButtonRank(item.screenId)) {
                 Log.e(TAG, "Error loading shortcut into hotseat " + item
                         + " into position (" + item.screenId + ":" + item.cellX + ","
