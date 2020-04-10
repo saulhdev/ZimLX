@@ -80,30 +80,22 @@
     <!-- Name of a subclass of com.android.launcher3.AppFilter used to
          filter the activities shown in the launcher. Can be empty. -->
     <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
-
-    <!-- Name of an icon provider class. -->
     <string name="icon_provider_class" translatable="false">org.zimmob.zimlx.iconpack.ZimIconProvider</string>
-
-    <!-- Name of a drawable factory class. -->
     <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
-
-    <!-- Name of a user event dispatcher class. -->
     <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
-
-    <!-- Name of a custom shortcut class. -->
     <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
-
     <string name="overview_callbacks_class" translatable="false">org.zimmob.zimlx.ZimOverviewCallbacks</string>
-
-
-    <!-- Name of a color extraction implementation class. -->
+    <string name="stats_log_manager_class" translatable="false"></string>
+    <string name="system_shortcut_factory_class" translatable="false"></string>
     <string name="color_extraction_impl_class" translatable="false"></string>
-
-    <!-- Name of a subclass of com.android.launcher3.util.InstantAppResolver. Can be empty. -->
     <string name="instant_app_resolver_class" translatable="false"></string>
+    <string name="launcher_activity_logic_class" translatable="false"></string>
+    <string name="app_launch_tracker_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
     <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
+    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
+    <string name="shortcutinfo_badgepkg_whitelist" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
     <item name="qsb_widget" type="id" />
@@ -116,7 +108,7 @@
 
     <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
-    <integer name="config_popupArrowOpenDuration">80</integer>
+    <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
     <!-- Accessibility actions -->

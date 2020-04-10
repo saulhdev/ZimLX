@@ -18,29 +18,18 @@
 package org.zimmob.zimlx.model;
 
 import android.annotation.SuppressLint;
-import android.content.ContentProviderOperation;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppWidgetProviderInfo;
-import com.android.launcher3.LauncherModel;
-import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.Workspace;
 import com.android.launcher3.model.GridSizeMigrationTask;
-import com.android.launcher3.util.GridOccupancy;
-import com.android.launcher3.widget.custom.CustomWidgetParser;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 
-import static org.zimmob.zimlx.settings.ui.SettingsActivity.ALLOW_OVERLAP_PREF;
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.SMARTSPACE_PREF;
 
 public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
@@ -50,7 +39,15 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
     private final Context mContext;
     private final int mTrgX, mTrgY;
 
-    private HomeWidgetMigrationTask(Context context,
+    protected HomeWidgetMigrationTask(Context context, SQLiteDatabase db, HashSet<String> validPackages, Point sourceSize, Point targetSize) {
+        super(context, db, validPackages, sourceSize, targetSize);
+        mContext = context;
+
+        mTrgX = sourceSize.x;
+        mTrgY = sourceSize.y;
+    }
+
+    /*private HomeWidgetMigrationTask(Context context,
                                     InvariantDeviceProfile idp,
                                     HashSet<String> validPackages,
                                     Point size) {
@@ -60,11 +57,11 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         mTrgX = size.x;
         mTrgY = size.y;
-    }
+    }*/
 
     @Override
     protected boolean migrateWorkspace() throws Exception {
-        ArrayList<Long> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+        /*ArrayList<Integer> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -115,7 +112,8 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
             }
         }
 
-        return applyOperations();
+        return applyOperations();*/
+        return false;
     }
 
     @SuppressLint("ApplySharedPref")
@@ -134,10 +132,10 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
         Point size = new Point(idp.numColumns, idp.numRows);
 
         try {
-            if (!new HomeWidgetMigrationTask(context, LauncherAppState.getIDP(context),
+            /*if (!new HomeWidgetMigrationTask(context, LauncherAppState.getIDP(context),
                     validPackages, size).migrateWorkspace()) {
                 throw new RuntimeException("Failed to migrate Smartspace");
-            }
+            }*/
         } catch (Exception e) {
             e.printStackTrace();
         }

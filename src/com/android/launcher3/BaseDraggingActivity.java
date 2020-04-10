@@ -31,17 +31,18 @@ import android.view.ActionMode;
 import android.view.View;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.badge.BadgeInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.views.BaseDragLayer;
 
 import org.zimmob.zimlx.theme.ThemeOverride;
-
-import androidx.annotation.NonNull;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -127,8 +128,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract View getRootView();
 
-    public abstract BadgeInfo getBadgeInfoForItem(ItemInfo info);
-
     public abstract void invalidateParent(ItemInfo info);
 
     public static BaseDraggingActivity fromContext(Context context) {
@@ -174,10 +173,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
         try {
             boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof ShortcutInfo)
+                    && (item instanceof WorkspaceItemInfo)
                     && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
                     || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((ShortcutInfo) item).isPromise();
+                    && !((WorkspaceItemInfo) item).isPromise();
             if (isShortcut) {
                 // Shortcuts need some special checks due to legacy reasons.
                 startShortcutIntentSafely(intent, optsBundle, item);
@@ -197,6 +196,83 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
+    public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
+                                       @Nullable String sourceContainer) {
+        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
+            Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        Bundle optsBundle = (v != null) ? getActivityLaunchOptionsAsBundle(v) : null;
+        UserHandle user = item == null ? null : item.user;
+
+        // Prepare intent
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        if (v != null) {
+            intent.setSourceBounds(getViewBounds(v));
+        }
+        try {
+            boolean isShortcut = (item instanceof WorkspaceItemInfo)
+                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
+                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
+                    && !((WorkspaceItemInfo) item).isPromise();
+            if (isShortcut) {
+                // Shortcuts need some special checks due to legacy reasons.
+                startShortcutIntentSafely(intent, optsBundle, item, sourceContainer);
+            } else if (user == null || user.equals(Process.myUserHandle())) {
+                // Could be launching some bookkeeping activity
+                startActivity(intent, optsBundle);
+                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
+                        Process.myUserHandle(), sourceContainer);
+            } else {
+                LauncherAppsCompat.getInstance(this).startActivityForProfile(
+                        intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
+                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), user,
+                        sourceContainer);
+            }
+            getUserEventDispatcher().logAppLaunch(v, intent);
+            getStatsLogManager().logAppLaunch(v, intent);
+            return true;
+        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
+            Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
+        }
+        return false;
+    }
+
+    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,
+                                           @Nullable String sourceContainer) {
+        try {
+            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
+            try {
+                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
+                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
+                // is enabled by default on NYC.
+                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
+                        .penaltyLog().build());
+
+                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
+                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
+                    String packageName = intent.getPackage();
+                    DeepShortcutManager.getInstance(this).startShortcut(
+                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
+                    AppLaunchTracker.INSTANCE.get(this).onStartShortcut(packageName, id, info.user,
+                            sourceContainer);
+                } else {
+                    // Could be launching some bookkeeping activity
+                    startActivity(intent, optsBundle);
+                }
+            } finally {
+                StrictMode.setVmPolicy(oldPolicy);
+            }
+        } catch (SecurityException e) {
+            if (!onErrorStartingShortcut(intent, info)) {
+                throw e;
+            }
+        }
+    }
+
+
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
@@ -208,7 +284,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         .penaltyLog().build());
 
                 if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((ShortcutInfo) info).getDeepShortcutId();
+                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
                     String packageName = intent.getPackage();
                     DeepShortcutManager.getInstance(this).startShortcut(
                             packageName, id, intent.getSourceBounds(), optsBundle, info.user);

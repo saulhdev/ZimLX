@@ -34,7 +34,6 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
 import com.android.launcher3.Utilities;
@@ -42,9 +41,8 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertyResetListener;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
 import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.Themes;
-
-import org.zimmob.zimlx.folder.FolderShape;
 
 import java.util.List;
 
@@ -174,7 +172,7 @@ public class FolderAnimationManager {
         float finalRadius = Utilities.pxFromDp(2, mContext.getResources().getDisplayMetrics());
 
         // Create the animators.
-        AnimatorSet a = LauncherAnimUtils.createAnimatorSet();
+        AnimatorSet a = new AnimatorSet();
 
         // Initialize the Folder items' text.
         PropertyResetListener colorResetListener =
@@ -197,7 +195,7 @@ public class FolderAnimationManager {
         play(a, getAnimator(mFolder, SCALE_PROPERTY, initialScale, finalScale));
         play(a, getAnimator(mFolderBackground, "color", initialColor, finalColor));
         play(a, mFolderIcon.mFolderName.createTextAlphaAnimator(!mIsOpening));
-        play(a, FolderShape.sInstance.createRevealAnimator(mFolder, startRect, endRect, finalRadius, !mIsOpening));
+        play(a, IconShape.getShape().createRevealAnimator(mFolder, startRect, endRect, finalRadius, !mIsOpening));
 
         RoundedRectRevealOutlineProvider outlineProvider = new RoundedRectRevealOutlineProvider(
                 initialRadius, finalRadius, startRect, endRect) {

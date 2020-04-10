@@ -16,10 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.Utilities.getDevicePrefs;
-import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
-import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
-
 import android.annotation.TargetApi;
 import android.appwidget.AppWidgetHostView;
 import android.content.BroadcastReceiver;
@@ -42,6 +38,9 @@ import android.util.Xml;
 import android.view.Display;
 import android.view.WindowManager;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.ConfigMonitor;
@@ -56,8 +55,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
+import static com.android.launcher3.Utilities.getDevicePrefs;
+import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
+import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
 
 public class InvariantDeviceProfile {
 
@@ -90,7 +90,9 @@ public class InvariantDeviceProfile {
      * Number of icons per row and column in the workspace.
      */
     public int numRows;
+    public int numRowsOriginal;
     public int numColumns;
+    public int numColumnsOriginal;
 
     /**
      * Number of icons per row and column in the folder.
@@ -113,6 +115,7 @@ public class InvariantDeviceProfile {
      * Number of icons inside the hotseat area.
      */
     public int numHotseatIcons;
+    public int numHotseatIconsOriginal;
 
     public int defaultLayoutId;
     int demoModeLayoutId;
@@ -132,7 +135,9 @@ public class InvariantDeviceProfile {
 
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
         numRows = p.numRows;
+        numRowsOriginal = numRows;
         numColumns = p.numColumns;
+        numColumnsOriginal = p.numColumns;
         numPredictions = numPredictionsOriginal = numColumns;
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
@@ -141,6 +146,7 @@ public class InvariantDeviceProfile {
         landscapeIconSize = p.landscapeIconSize;
         iconTextSize = p.iconTextSize;
         numHotseatIcons = p.numHotseatIcons;
+        numHotseatIconsOriginal = p.numHotseatIcons;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
         mExtraAttrs = p.mExtraAttrs;
@@ -199,8 +205,11 @@ public class InvariantDeviceProfile {
 
         GridOption closestProfile = allOptions.get(0).grid;
         numRows = closestProfile.numRows;
+        numRowsOriginal = numRows;
         numColumns = closestProfile.numColumns;
+        numColumnsOriginal = numColumns;
         numHotseatIcons = closestProfile.numHotseatIcons;
+        numHotseatIconsOriginal = numHotseatIcons;
         defaultLayoutId = closestProfile.defaultLayoutId;
         demoModeLayoutId = closestProfile.demoModeLayoutId;
         numFolderRows = closestProfile.numFolderRows;

@@ -12,6 +12,9 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewDebug;
 
+import java.util.Collections;
+import java.util.List;
+
 import static com.android.launcher3.util.SystemUiController.FLAG_DARK_NAV;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_ROOT_VIEW;
 
@@ -22,8 +25,14 @@ public class LauncherRootView extends InsettableFrameLayout {
     @ViewDebug.ExportedProperty(category = "launcher")
     private final Rect mConsumedInsets = new Rect();
 
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
+
     private View mAlignedView;
     private WindowStateListener mWindowStateListener;
+    @ViewDebug.ExportedProperty(category = "launcher")
+    private boolean mDisallowBackGesture;
 
     public LauncherRootView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -112,12 +121,6 @@ public class LauncherRootView extends InsettableFrameLayout {
         super.setInsets(mInsets);
     }
 
-    public boolean isInMultiWindowModeCompat() {
-        return false;
-        //return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
-    }
-
-
     @Override
     protected void dispatchDraw(Canvas canvas) {
         super.dispatchDraw(canvas);
@@ -154,6 +157,25 @@ public class LauncherRootView extends InsettableFrameLayout {
         if (mWindowStateListener != null) {
             mWindowStateListener.onWindowVisibilityChanged(visibility);
         }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        super.onLayout(changed, l, t, r, b);
+        SYSTEM_GESTURE_EXCLUSION_RECT.get(0).set(l, t, r, b);
+        setDisallowBackGesture(mDisallowBackGesture);
+    }
+
+
+    @TargetApi(Build.VERSION_CODES.Q)
+    public void setDisallowBackGesture(boolean disallowBackGesture) {
+        if (!Utilities.ATLEAST_Q) {
+            return;
+        }
+        mDisallowBackGesture = disallowBackGesture;
+        setSystemGestureExclusionRects(mDisallowBackGesture
+                ? SYSTEM_GESTURE_EXCLUSION_RECT
+                : Collections.emptyList());
     }
 
     public interface WindowStateListener {

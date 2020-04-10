@@ -121,7 +121,7 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
         overrideDragging = true
     }
 
-    override fun onDrag(displacement: Float, velocity: Float): Boolean {
+    fun onDrag(displacement: Float, velocity: Float): Boolean {
         if (state != GestureState.Locked) {
             val wasFree = state == GestureState.Free
             if (overrideDragging) {
@@ -162,6 +162,10 @@ class VerticalSwipeGestureController(private val launcher: Launcher) : TouchCont
     override fun onDragEnd(velocity: Float, fling: Boolean) {
         launcher.workspace.postDelayed(detector::finishedScrolling, 200)
         sendOnDragEnd(velocity, fling)
+    }
+
+    override fun onDrag(displacement: Float): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     private fun sendOnDragEnd(velocity: Float, fling: Boolean) {

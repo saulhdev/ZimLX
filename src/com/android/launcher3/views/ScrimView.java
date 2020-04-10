@@ -52,10 +52,11 @@ import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.LauncherStateManager.StateListener;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
-import com.android.launcher3.dynamicui.WallpaperColorInfo.OnChangeListener;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.Themes;
 
 import java.util.List;
@@ -91,6 +92,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     private static final int WALLPAPERS = R.string.wallpaper_button_text;
     private static final int WIDGETS = R.string.widget_button_text;
     private static final int SETTINGS = R.string.settings_button_text;
+    private static final int ALPHA_CHANNEL_COUNT = 1;
 
     private final Rect mTempRect = new Rect();
     private final int[] mTempPos = new int[2];
@@ -113,6 +115,8 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected float mDragHandleOffset;
     protected final Rect mDragHandleBounds;
     private final RectF mHitRect = new RectF();
+
+    private final MultiValueAlpha mMultiValueAlpha;
 
     private final AccessibilityHelper mAccessibilityHelper;
     @Nullable
@@ -137,7 +141,13 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
         mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
         setFocusable(false);
+        mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
     }
+
+    public MultiValueAlpha.AlphaProperty getAlphaProperty(int index) {
+        return mMultiValueAlpha.getProperty(index);
+    }
+
 
     @NonNull
     protected AccessibilityHelper createAccessibilityHelper() {
@@ -315,7 +325,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
         if (enabled) {
             stateManager.addStateListener(this);
-            onStateSetImmediately(mLauncher.getStateManager().getState());
+            handleStateChangedComplete(stateManager.getState());
         } else {
             setImportantForAccessibility(IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
         }
@@ -366,12 +376,11 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     @Override
     public void onStateTransitionComplete(LauncherState finalState) {
-        onStateSetImmediately(finalState);
+
     }
 
-    @Override
-    public void onStateSetImmediately(LauncherState state) {
-        setImportantForAccessibility(state == ALL_APPS
+    private void handleStateChangedComplete(LauncherState finalState) {
+        setImportantForAccessibility(finalState == ALL_APPS
                 ? IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS
                 : IMPORTANT_FOR_ACCESSIBILITY_AUTO);
     }

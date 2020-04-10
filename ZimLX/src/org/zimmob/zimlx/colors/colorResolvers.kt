@@ -23,7 +23,7 @@ import android.view.ContextThemeWrapper
 import androidx.annotation.Keep
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.dynamicui.WallpaperColorInfo
+import com.android.launcher3.uioverrides.WallpaperColorInfo
 import org.zimmob.zimlx.getColorAccent
 import org.zimmob.zimlx.getColorAttr
 import org.zimmob.zimlx.theme.ThemeOverride

@@ -16,6 +16,7 @@
 
 package com.android.launcher3.anim;
 
+import android.content.Context;
 import android.graphics.Path;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.AccelerateInterpolator;
@@ -27,10 +28,7 @@ import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.Utilities;
 
-import org.zimmob.zimlx.ReverseInputInterpolator;
-import org.zimmob.zimlx.ReverseOutputInterpolator;
-
-import static com.android.launcher3.Utilities.SINGLE_FRAME_MS;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 
 /**
@@ -56,12 +54,11 @@ public class Interpolators {
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
-    public static final Interpolator AGGRESSIVE_EASE_REVERSED = new ReverseOutputInterpolator(AGGRESSIVE_EASE);
-    public static final Interpolator AGGRESSIVE_EASE_REVERSED2 = new ReverseInputInterpolator(AGGRESSIVE_EASE);
     public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f, 0, 0.4f, 1);
 
     public static final Interpolator EXAGGERATED_EASE;
-    public static final Interpolator EXAGGERATED_EASE_REVERSED;
+
+    public static final Interpolator INSTANT = t -> 1;
 
     private static final int MIN_SETTLE_DURATION = 200;
     private static final float OVERSHOOT_FACTOR = 0.9f;
@@ -72,10 +69,10 @@ public class Interpolators {
         exaggeratedEase.cubicTo(0.05f, 0f, 0.133333f, 0.08f, 0.166666f, 0.4f);
         exaggeratedEase.cubicTo(0.225f, 0.94f, 0.5f, 1f, 1f, 1f);
         EXAGGERATED_EASE = new PathInterpolator(exaggeratedEase);
-        EXAGGERATED_EASE_REVERSED = new ReverseOutputInterpolator(EXAGGERATED_EASE);
     }
 
     public static final Interpolator OVERSHOOT_1_2 = new OvershootInterpolator(1.2f);
+    public static final Interpolator OVERSHOOT_1_7 = new OvershootInterpolator(1.7f);
 
     public static final Interpolator TOUCH_RESPONSE_INTERPOLATOR =
             new PathInterpolator(0.3f, 0f, 0.1f, 1f);
@@ -135,7 +132,6 @@ public class Interpolators {
 
     /**
      * Create an OvershootInterpolator with tension directly related to the velocity (in px/ms).
-     *
      * @param velocity The start velocity of the animation we want to overshoot.
      */
     public static Interpolator overshootInterpolatorForVelocity(float velocity) {
@@ -149,7 +145,8 @@ public class Interpolators {
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
                                                float upperBound) {
         if (upperBound <= lowerBound) {
-            throw new IllegalArgumentException("lowerBound must be less than upperBound");
+            throw new IllegalArgumentException(String.format(
+                    "lowerBound (%f) must be less than upperBound (%f)", lowerBound, upperBound));
         }
         return t -> {
             if (t < lowerBound) {
@@ -183,23 +180,22 @@ public class Interpolators {
 
         /**
          * Given the input params, sets OvershootParams variables to be used by the caller.
-         *
-         * @param startProgress         The progress from 0 to 1 that the overshoot starts from.
+         * @param startProgress The progress from 0 to 1 that the overshoot starts from.
          * @param overshootPastProgress The progress from 0 to 1 where we overshoot past (should
-         *                              either be equal to startProgress or endProgress, depending on if we want to
-         *                              overshoot immediately or only once we reach the end).
-         * @param endProgress           The final progress from 0 to 1 that we will settle to.
-         * @param velocityPxPerMs       The initial velocity that causes this overshoot.
-         * @param totalDistancePx       The distance against which progress is calculated.
+         *        either be equal to startProgress or endProgress, depending on if we want to
+         *        overshoot immediately or only once we reach the end).
+         * @param endProgress The final progress from 0 to 1 that we will settle to.
+         * @param velocityPxPerMs The initial velocity that causes this overshoot.
+         * @param totalDistancePx The distance against which progress is calculated.
          */
         public OvershootParams(float startProgress, float overshootPastProgress,
-                               float endProgress, float velocityPxPerMs, int totalDistancePx) {
+                               float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
             velocityPxPerMs = Math.abs(velocityPxPerMs);
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
             // Overshoot by about half a frame.
             float overshootBy = OVERSHOOT_FACTOR * velocityPxPerMs *
-                    SINGLE_FRAME_MS / totalDistancePx / 2;
+                    getSingleFrameMs(context) / totalDistancePx / 2;
             overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
             end = overshootPastProgress + overshootBy;
             int endPx = (int) (end * totalDistancePx);

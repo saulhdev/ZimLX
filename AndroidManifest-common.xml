@@ -40,6 +40,28 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
+    <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
+
+    <!--
+    Permissions required for read/write access to the workspace data. These permission name
+    should not conflict with that defined in other apps, as such an app should embed its package
+    name in the permissions. eq com.mypackage.permission.READ_SETTINGS
+    -->
+    <permission
+        android:name="${packageName}.permission.READ_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem"
+        android:label="@string/permlab_read_settings"
+        android:description="@string/permdesc_read_settings" />
+    <permission
+        android:name="${packageName}.permission.WRITE_SETTINGS"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem"
+        android:label="@string/permlab_write_settings"
+        android:description="@string/permdesc_write_settings" />
+
+    <uses-permission android:name="${packageName}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${packageName}.permission.WRITE_SETTINGS" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
@@ -75,6 +97,15 @@
                 <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
             </intent-filter>
         </receiver>
+        <!--
+      The content provider for exposing various launcher grid options.
+      TODO: Add proper permissions
+      -->
+        <provider
+            android:name="com.android.launcher3.graphics.GridOptionsProvider"
+            android:authorities="${packageName}.grid_control"
+            android:enabled="false"
+            android:exported="true" />
 
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
@@ -120,6 +151,26 @@
         <meta-data
             android:name="com.android.launcher3.launcher_dump_provider"
             android:value="com.android.launcher3.LauncherProvider" />
+        <!--
+                The settings provider contains Home's data, like the workspace favorites. The permissions
+                should be changed to what is defined above. The authorities should also be changed to
+                represent the package name.
+                -->
+        <provider
+            android:name="com.android.launcher3.LauncherProvider"
+            android:authorities="${packageName}.settings"
+            android:exported="true"
+            android:writePermission="${packageName}.permission.WRITE_SETTINGS"
+            android:readPermission="${packageName}.permission.READ_SETTINGS" />
 
+        <!--
+        The content provider for exposing various launcher grid options.
+        TODO: Add proper permissions
+        -->
+        <provider
+            android:name="com.android.launcher3.graphics.GridOptionsProvider"
+            android:authorities="${packageName}.grid_control"
+            android:enabled="false"
+            android:exported="true" />
     </application>
 </manifest>

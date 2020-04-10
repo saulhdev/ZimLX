@@ -4,11 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ public class CustomIconUtils {
     public static void reloadIcon(DeepShortcutManager shortcutManager, LauncherModel model, UserHandle user, String pkg) {
         model.onPackageChanged(pkg, user);
         if (shortcutManager.wasLastCallSuccess()) {
-            List<ShortcutInfoCompat> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
+            List<ShortcutInfo> shortcuts = shortcutManager.queryForPinnedShortcuts(pkg, user);
             if (!shortcuts.isEmpty()) {
                 model.updatePinnedShortcuts(pkg, shortcuts, user);
             }

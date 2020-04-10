@@ -17,10 +17,6 @@
 
 package org.zimmob.zimlx.settings.ui
 
-import android.animation.Animator
-import android.animation.AnimatorListenerAdapter
-import android.animation.ObjectAnimator
-import android.animation.PropertyValuesHolder
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
@@ -32,7 +28,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.graphics.ColorUtils
 import com.android.launcher3.Insettable
-import com.android.launcher3.LauncherAnimUtils
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.anim.Interpolators
@@ -61,7 +56,6 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         }
 
     private var isOpen = false
-    private val openCloseAnimator: ObjectAnimator
     private var scrollInterpolator = Interpolators.SCROLL_CUBIC
     private val mSwipeDetector = SwipeDetector(context, this, SwipeDetector.VERTICAL)
     private val content = this
@@ -69,13 +63,6 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     init {
         setWillNotDraw(false)
         mInsets = Rect()
-
-        openCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this)
-        openCloseAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                mSwipeDetector.finishedScrolling()
-            }
-        })
     }
 
     private fun createScrim(): ColorScrim {
@@ -111,8 +98,8 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
         mSwipeDetector.onTouchEvent(ev)
         if (ev.action == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
-            val isOpening = isOpen && openCloseAnimator.isRunning
-            if (!isOpening && !activity.dragLayer.isEventOverView(content, ev)) {
+            val isOpening = isOpen
+            if (!activity.dragLayer.isEventOverView(content, ev)) {
                 close(true)
             }
         }
@@ -120,22 +107,15 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     }
 
     private fun animateOpen(animate: Boolean) {
-        if (isOpen || openCloseAnimator.isRunning) {
+        if (isOpen) {
             return
         }
         isOpen = true
-        openCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED))
-        openCloseAnimator.interpolator = Interpolators.FAST_OUT_SLOW_IN
-        if (!animate) {
-            openCloseAnimator.duration = 0
-        }
-        openCloseAnimator.start()
     }
 
     override fun onDragStart(start: Boolean) {}
 
-    override fun onDrag(displacement: Float, velocity: Float): Boolean {
+    fun onDrag(displacement: Float, velocity: Float): Boolean {
         val range = content.height.toFloat()
         val bounded = Utilities.boundToRange(displacement, 0f, range)
         translationShift = bounded / range
@@ -145,16 +125,12 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
     override fun onDragEnd(velocity: Float, fling: Boolean) {
         if (fling && velocity > 0 || translationShift > 0.5f) {
             scrollInterpolator = scrollInterpolatorForVelocity(velocity)
-            openCloseAnimator.duration = SwipeDetector.calculateDuration(
-                    velocity, TRANSLATION_SHIFT_CLOSED - translationShift)
             close(true)
-        } else {
-            openCloseAnimator.setValues(PropertyValuesHolder.ofFloat(
-                    TRANSLATION_SHIFT, TRANSLATION_SHIFT_OPENED))
-            openCloseAnimator.duration = SwipeDetector.calculateDuration(velocity, translationShift)
-            openCloseAnimator.interpolator = Interpolators.DEACCEL
-            openCloseAnimator.start()
         }
+    }
+
+    override fun onDrag(displacement: Float): Boolean {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun close(animate: Boolean) {
@@ -168,28 +144,13 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
 
     private fun handleClose(animate: Boolean, defaultDuration: Long) {
         if (isOpen && !animate) {
-            openCloseAnimator.cancel()
             translationShift = TRANSLATION_SHIFT_CLOSED
             onCloseComplete()
             return
         }
-        if (!isOpen || openCloseAnimator.isRunning) {
+        if (!isOpen) {
             return
         }
-        openCloseAnimator.setValues(
-                PropertyValuesHolder.ofFloat(TRANSLATION_SHIFT, TRANSLATION_SHIFT_CLOSED))
-        openCloseAnimator.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                onCloseComplete()
-            }
-        })
-        if (mSwipeDetector.isIdleState) {
-            openCloseAnimator.duration = defaultDuration
-            openCloseAnimator.interpolator = Interpolators.ACCEL
-        } else {
-            openCloseAnimator.interpolator = scrollInterpolator
-        }
-        openCloseAnimator.start()
     }
 
     private fun onCloseComplete() {

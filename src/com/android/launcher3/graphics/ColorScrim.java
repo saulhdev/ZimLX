@@ -20,11 +20,11 @@ import android.graphics.Color;
 import android.view.View;
 import android.view.animation.Interpolator;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
-
-import androidx.core.graphics.ColorUtils;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * Simple scrim which draws a color

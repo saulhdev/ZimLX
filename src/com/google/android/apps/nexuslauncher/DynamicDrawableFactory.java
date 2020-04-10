@@ -18,7 +18,6 @@ public class DynamicDrawableFactory extends DrawableFactory {
         mDynamicClockDrawer = new DynamicClock(context);
     }
 
-    @Override
     public FastBitmapDrawable newIcon(Bitmap icon, ItemInfo info) {
         if (info != null &&
                 Utilities.ATLEAST_OREO &&
@@ -27,6 +26,6 @@ public class DynamicDrawableFactory extends DrawableFactory {
                 info.user.equals(Process.myUserHandle())) {
             return mDynamicClockDrawer.drawIcon(icon);
         }
-        return super.newIcon(icon, info);
+        return null;
     }
 }

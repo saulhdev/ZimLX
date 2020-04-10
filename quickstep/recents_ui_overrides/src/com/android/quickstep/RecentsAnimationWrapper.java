@@ -216,9 +216,9 @@ public class RecentsAnimationWrapper {
     }
 
     public void setDeferCancelUntilNextTransition(boolean defer, boolean screenshot) {
-        if (targetSet != null) {
+        /*if (targetSet != null) {
             targetSet.controller.setDeferCancelUntilNextTransition(defer, screenshot);
-        }
+        }*/
     }
 
     public SwipeAnimationTargetSet getController() {

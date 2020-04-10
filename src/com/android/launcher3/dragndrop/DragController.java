@@ -16,6 +16,7 @@
 
 package com.android.launcher3.dragndrop;
 
+import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
@@ -33,7 +34,7 @@ import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
@@ -230,6 +231,12 @@ public class DragController implements DragDriver.EventListener, TouchController
         }
     }
 
+    public void addFirstFrameAnimationHelper(ValueAnimator anim) {
+        if (mDragObject != null && mDragObject.dragView != null) {
+            mDragObject.dragView.mFirstFrameAnimatorHelper.addTo(anim);
+        }
+    }
+
     /**
      * Call this from a drag source view like this:
      *
@@ -281,7 +288,7 @@ public class DragController implements DragDriver.EventListener, TouchController
         // Cancel the current drag if we are removing an app that we are dragging
         if (mDragObject != null) {
             ItemInfo dragInfo = mDragObject.dragInfo;
-            if (dragInfo instanceof ShortcutInfo) {
+            if (dragInfo instanceof WorkspaceItemInfo) {
                 ComponentName cn = dragInfo.getTargetComponent();
                 if (cn != null && matcher.matches(dragInfo, cn)) {
                     cancelDrag();

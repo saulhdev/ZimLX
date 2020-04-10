@@ -93,7 +93,6 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         if (mLauncher.isInState(LauncherState.NORMAL) || mLauncher.isInState(LauncherState.OPTIONS)) {
             if (mLauncher.isWorkspaceLocked()) return false;
             if (mWorkspace.isSwitchingState()) return false;
-            if (mWorkspace.duringScrollInteraction()) return false;
             if (AbstractFloatingView.getTopOpenView(mLauncher) != null) return false;
 
             mToState = mFromState = null;
@@ -104,7 +103,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
     }
 
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-        if (mCurrentAnimation == null) {
+        /*if (mCurrentAnimation == null) {
             Log.d(TAG, "onScale# No animation.");
             return false;
         }
@@ -119,7 +118,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
         updateProgress(currentSpan);
         mProgressDelta = currentSpan - mCurrentAnimation.getProgressFraction();
         mTimeDelta = System.currentTimeMillis() - mPreviousTimeMillis;
-        mPreviousTimeMillis = System.currentTimeMillis();
+        mPreviousTimeMillis = System.currentTimeMillis();*/
         return false;
     }
 
@@ -179,7 +178,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
     }
 
     private void onPinchInteractionCompleted(LauncherState launcherState, int i) {
-        clearState();
+        /*clearState();
         boolean i2 = true;
         if (mPendingAnimation != null) {
             boolean z = mToState == launcherState;
@@ -193,7 +192,7 @@ public class PinchStateChangeTouchController extends AnimatorListenerAdapter imp
                         mFromState.containerType, mToState.containerType, mLauncher.getWorkspace().getCurrentPage());
             }
             mLauncher.getStateManager().goToState(launcherState, false);
-        }
+        }*/
     }
 
     private void clearState() {

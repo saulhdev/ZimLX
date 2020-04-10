@@ -76,7 +76,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
-        mNumAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
+        mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
     }
 
     /**
@@ -153,7 +153,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
-                mEmptySearchBackground = DrawableFactory.get(getContext())
+                mEmptySearchBackground = DrawableFactory.INSTANCE.get(getContext())
                         .getAllAppsBackground(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);

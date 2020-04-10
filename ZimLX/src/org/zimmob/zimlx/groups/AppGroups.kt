@@ -42,6 +42,7 @@ import org.zimmob.zimlx.*
 import org.zimmob.zimlx.preferences.SelectableAppsActivity
 import org.zimmob.zimlx.preferences.TabbedPickerView
 import org.zimmob.zimlx.util.SingletonHolder
+import org.zimmob.zimlx.util.ZimComponentKey
 
 typealias GroupCreator<T> = (Context) -> T?
 
@@ -458,7 +459,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
 
             override fun unflatten(context: Context, value: String): ComponentKey {
-                return ComponentKey(context, value)
+                return ZimComponentKey(context, value)
             }
 
             override fun flatten(value: ComponentKey): String {

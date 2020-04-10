@@ -14,6 +14,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
+import com.android.launcher3.views.BaseDragLayer;
 
 public class AppLaunchActivity extends BaseActivity {
     private void startUri(Uri uri) {
@@ -52,5 +53,10 @@ public class AppLaunchActivity extends BaseActivity {
             startUri(data);
         }
         finish();
+    }
+
+    @Override
+    public BaseDragLayer getDragLayer() {
+        return null;
     }
 }

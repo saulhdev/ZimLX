@@ -10,7 +10,6 @@ import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.View.OnLongClickListener;
-import android.view.ViewConfiguration;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -81,7 +80,7 @@ public class ActionView extends BubbleTextView implements OnLongClickListener {
         this.mIsRTL = Utilities.isRtl(getResources());
         setOnClickListener(ItemClickHandler.INSTANCE);
         setOnLongClickListener(this);
-        setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
+        setLongPressTimeoutFactor(1f);
         setCompoundDrawablePadding(getResources().getDimensionPixelSize(R.dimen.action_view_compound_drawable_padding));
 
         BaseDraggingActivity activity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);

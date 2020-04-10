@@ -31,6 +31,7 @@ import org.zimmob.zimlx.ZimPreferencesChangeCallback
 import org.zimmob.zimlx.groups.FlowerpotTabs.FlowerpotTab
 import org.zimmob.zimlx.preferences.SelectableAppsActivity
 import org.zimmob.zimlx.tintDrawable
+import org.zimmob.zimlx.util.ZimComponentKey
 import org.zimmob.zimlx.zimPrefs
 
 abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.CategorizationType)
@@ -104,7 +105,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         override fun getSummary(context: Context): String? {
             val hidden = context.zimPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { ZimComponentKey(context, it) }
                     .filter(getWorkFilter(filterIsWork))
             val size = hidden.size
             if (size == 0) {
@@ -162,16 +163,17 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         private fun filteredValue(context: Context): Collection<ComponentKey> {
             return context.zimPrefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { ZimComponentKey(context, it) }
                     .filter(predicate)
         }
 
         private fun setHiddenApps(context: Context, hidden: Collection<ComponentKey>) {
             val prefs = context.zimPrefs
             val hiddenSet = ArrayList(prefs.hiddenAppSet
-                    .map { ComponentKey(context, it) }
+                    .map { ZimComponentKey(context, it) }
                     .filter { !predicate(it) })
-            hiddenSet.addAll(hidden)
+
+            hiddenSet.addAll(hidden as Collection<ZimComponentKey>)
             prefs.hiddenAppSet = hiddenSet.map(ComponentKey::toString).toSet()
         }
 

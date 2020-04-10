@@ -27,6 +27,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup.MarginLayoutParams;
+import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ExtendedEditText;
@@ -37,6 +38,7 @@ import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 
@@ -48,7 +50,8 @@ import java.util.List;
 import static android.view.View.MeasureSpec.EXACTLY;
 import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
-import static com.android.launcher3.graphics.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 /**
  * Layout to contain the All-apps search UI.
@@ -236,6 +239,16 @@ public class AppsSearchContainerLayout extends ExtendedEditText
 
     @Override
     public void startSearch() {
+    }
 
+    @Override
+    public float getScrollRangeDelta(Rect insets) {
+        return 0;
+    }
+
+    @Override
+    public void setContentVisibility(int visibleElements, PropertySetter setter,
+                                     Interpolator interpolator) {
+        setter.setViewAlpha(this, (visibleElements & ALL_APPS_HEADER) != 0 ? 1 : 0, interpolator);
     }
 }

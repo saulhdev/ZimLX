@@ -27,12 +27,12 @@ import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.android.launcher3.util.ComponentKeyMapper
 import com.google.android.apps.nexuslauncher.CustomAppPredictor
 import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
 import org.json.JSONObject
 import org.zimmob.zimlx.runOnMainThread
 import org.zimmob.zimlx.settings.ui.SettingsActivity
+import org.zimmob.zimlx.util.CustomComponentKeyMapper
 import java.util.concurrent.TimeUnit
 
 // TODO: Fix action icons being loaded too early, leading to f*cked icons when using sesame
@@ -170,7 +170,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
     }
 
     // TODO: There must be a better, more elegant way to concatenate these lists
-    override fun getPredictions(): MutableList<ComponentKeyMapper> {
+    override fun getPredictions(): MutableList<CustomComponentKeyMapper> {
         return if (isPredictorEnabled) {
             clearRemovedComponents()
             val user = Process.myUserHandle()
@@ -181,7 +181,7 @@ open class ZimEventPredictor(private val context: Context) : CustomAppPredictor(
             if (fullList.size < MAX_PREDICTIONS) {
                 fullList.addAll(
                         PLACE_HOLDERS.mapNotNull { packageManager.getLaunchIntentForPackage(it)?.component }
-                                .map { ComponentKeyMapper(context, ComponentKey(it, user)) }
+                                .map { CustomComponentKeyMapper(ComponentKey(it, user)) }
                 )
             }
             fullList.take(MAX_PREDICTIONS).toMutableList()

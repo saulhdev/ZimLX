@@ -26,6 +26,7 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.util.MultiHashMap;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -34,13 +35,15 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import static android.os.Process.myUserHandle;
+
 /**
  * Helper class to send broadcasts to package installers that have:
  * - Items on the first screen
  * - Items with an active install session
- * <p>
+ *
  * The packages are broken down by: folder items, workspace items, hotseat items, and widgets.
- * <p>
+ *
  * Package installers only receive data for items that they are installing.
  */
 public class FirstScreenBroadcast {
@@ -60,20 +63,22 @@ public class FirstScreenBroadcast {
 
     private final MultiHashMap<String, String> mPackagesForInstaller;
 
-    public FirstScreenBroadcast(HashMap<String, SessionInfo> sessionInfoForPackage) {
+    public FirstScreenBroadcast(HashMap<PackageUserKey, SessionInfo> sessionInfoForPackage) {
         mPackagesForInstaller = getPackagesForInstaller(sessionInfoForPackage);
     }
 
     /**
      * @return Map where the key is the package name of the installer, and the value is a list
-     * of packages with active sessions for that installer.
+     *         of packages with active sessions for that installer.
      */
     private MultiHashMap<String, String> getPackagesForInstaller(
-            HashMap<String, SessionInfo> sessionInfoForPackage) {
+            HashMap<PackageUserKey, SessionInfo> sessionInfoForPackage) {
         MultiHashMap<String, String> packagesForInstaller = new MultiHashMap<>();
-        for (Map.Entry<String, SessionInfo> entry : sessionInfoForPackage.entrySet()) {
-            packagesForInstaller.addToList(entry.getValue().getInstallerPackageName(),
-                    entry.getKey());
+        for (Map.Entry<PackageUserKey, SessionInfo> entry : sessionInfoForPackage.entrySet()) {
+            if (myUserHandle().equals(entry.getKey().mUser)) {
+                packagesForInstaller.addToList(entry.getValue().getInstallerPackageName(),
+                        entry.getKey().mPackageName);
+            }
         }
         return packagesForInstaller;
     }
@@ -90,8 +95,8 @@ public class FirstScreenBroadcast {
 
     /**
      * @param installerPackageName Package name of the package installer.
-     * @param packages             List of packages with active sessions for this package installer.
-     * @param firstScreenItems     List of items on the first screen.
+     * @param packages List of packages with active sessions for this package installer.
+     * @param firstScreenItems List of items on the first screen.
      */
     private void sendBroadcastToInstaller(Context context, String installerPackageName,
                                           List<String> packages, List<ItemInfo> firstScreenItems) {

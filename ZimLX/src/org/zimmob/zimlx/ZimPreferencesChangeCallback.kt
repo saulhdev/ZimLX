@@ -31,7 +31,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun refreshGrid() {
-        launcher.refreshGrid()
+        //launcher.refreshGrid()
     }
 
     fun updateBlur() {
@@ -54,7 +54,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun updateSmartspace() {
-        launcher.refreshGrid()
+        //launcher.refreshGrid()
     }
 
     fun updateWeatherData() {

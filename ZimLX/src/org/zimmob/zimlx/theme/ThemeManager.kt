@@ -20,10 +20,10 @@ import android.content.Context
 import android.content.res.Configuration
 import android.os.Handler
 import com.android.launcher3.R
-import com.android.launcher3.dynamicui.WallpaperColorInfo
-import og.zimmob.zimlx.twilight.TwilightManager
+import com.android.launcher3.uioverrides.WallpaperColorInfo
 import org.zimmob.zimlx.*
 import org.zimmob.zimlx.twilight.TwilightListener
+import org.zimmob.zimlx.twilight.TwilightManager
 import org.zimmob.zimlx.twilight.TwilightState
 import org.zimmob.zimlx.util.SingletonHolder
 import org.zimmob.zimlx.util.hasFlag

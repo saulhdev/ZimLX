@@ -25,9 +25,8 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
 import com.android.launcher3.graphics.BitmapRenderer;
-import com.android.launcher3.util.ComponentKeyMapper;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
@@ -35,6 +34,8 @@ import com.google.android.apps.nexuslauncher.search.nano.SearchProto.a_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.b_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.c_search;
 import com.google.android.apps.nexuslauncher.search.nano.SearchProto.d_search;
+
+import org.zimmob.zimlx.util.CustomComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -282,7 +283,7 @@ public class ConfigBuilder {
             mNano.ez = viewBounds3;
         }
         bW();
-        List<ComponentKeyMapper> predictedApps = mActivity.getAppsView().getFloatingHeaderView().getPredictionRowView().getPredictedAppComponents();
+        List<CustomComponentKeyMapper> predictedApps = mActivity.getAppsView().getFloatingHeaderView().getPredictionRowView().getPredictedAppComponents();
         List<b_search> bSearches = new ArrayList<>();
         final int count = Math.min(predictedApps.size(), allAppsCols);
         for (int i = 0; i < count; i++) {
@@ -296,7 +297,6 @@ public class ConfigBuilder {
     }
 
     private void cf() {
-        int n2 = 0;
         mNano.es = mActivity.getDeviceProfile().inv.numColumns;
         final int width = mActivity.getHotseat().getWidth();
         final int dimensionPixelSize = mActivity.getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);

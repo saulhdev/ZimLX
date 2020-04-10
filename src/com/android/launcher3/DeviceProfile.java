@@ -29,8 +29,9 @@ import android.view.Surface;
 import android.view.WindowManager;
 
 import com.android.launcher3.CellLayout.ContainerType;
-import com.android.launcher3.badge.BadgeRenderer;
-import com.android.launcher3.graphics.IconNormalizer;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.icons.DotRenderer;
+import com.android.launcher3.icons.IconNormalizer;
 
 import org.zimmob.zimlx.ZimPreferences;
 
@@ -55,6 +56,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public final int heightPx;
     public final int availableWidthPx;
     public final int availableHeightPx;
+
+    public final float aspectRatio;
     /**
      * The maximum amount of left/right workspace padding as a percentage of the screen width.
      * To be clear, this means that up to 7% of the screen width can be used as left padding, and
@@ -159,12 +162,13 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     private boolean mIsSeascape;
 
     // Icon badges
-    public BadgeRenderer mBadgeRenderer;
     private Context mContext;
 
     // Listeners
     private ArrayList<LauncherLayoutChangeListener> mListeners = new ArrayList<>();
 
+    // Notification dots
+    public DotRenderer mDotRenderer;
 
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
@@ -194,7 +198,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         isTablet = res.getBoolean(R.bool.is_tablet);
         isLargeTablet = res.getBoolean(R.bool.is_large_tablet);
         isPhone = !isTablet && !isLargeTablet;
-        float aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
+        aspectRatio = ((float) Math.max(widthPx, heightPx)) / Math.min(widthPx, heightPx);
         boolean isTallDevice = Float.compare(aspectRatio, TALL_DEVICE_ASPECT_RATIO_THRESHOLD) >= 0;
 
         // Some more constants
@@ -278,8 +282,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
-
+        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
+                IconShape.DEFAULT_PATH_SIZE);
         Utilities.getZimPrefs(context)
                 .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets",
                         "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
@@ -292,7 +296,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
      */
     @Override
     public void onValueChanged(String key, ZimPreferences prefs, boolean force) {
-        Resources res = mContext.getResources();
+        /*Resources res = mContext.getResources();
         DisplayMetrics dm = res.getDisplayMetrics();
 
         boolean fullWidthWidgets = Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets();
@@ -399,7 +403,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);
+        mBadgeRenderer = new BadgeRenderer(mContext, iconSizePx);*/
     }
 
     public DeviceProfile copy(Context context) {
@@ -511,8 +515,9 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
         iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
-        iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
-        iconSizePx = (int) (iconSizeOriginalPx * workspaceScale);
+        //iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
+        //iconSizePx = (int) (iconSizeOriginalPx * workspaceScale);
+        iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * workspaceScale));
         iconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale) -
@@ -532,7 +537,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
+        //allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
+        allAppsIconSizePx = iconSizePx;
         allAppsIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * allAppsScale);
         allAppsIconTextSizePx = (int) (allAppsIconTextSizePx * allAppsScale);
         textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
@@ -553,7 +559,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         }
 
         // Hotseat
-        float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        //float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
+        float invHotseatIconSizePx = inv.iconSize;
         hotseatIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * workspaceScale);
         textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;
@@ -658,7 +665,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         // Drawer folders
         int folderLabelRowCount = Utilities.getZimPrefs(mContext).getHomeLabelRows();
 
-        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
+        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.iconSize, dm) * scale);
         allAppsFolderChildTextSizePx =
                 (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
 
@@ -694,17 +701,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         return result;
     }
 
-    public Point getCellSizeOriginal() {
-        Point result = new Point();
-        // Since we are only concerned with the overall padding, layout direction does
-        // not matter.
-        Point padding = getTotalWorkspacePadding();
-        result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumnsOriginal);
-        result.y = calculateCellHeight(availableHeightPx - padding.y
-                - cellLayoutBottomPaddingPx, inv.numRowsOriginal);
-        return result;
-    }
     public Point getTotalWorkspacePadding() {
         updateWorkspacePadding();
         return new Point(workspacePadding.left + workspacePadding.right,

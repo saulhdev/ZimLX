@@ -21,7 +21,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.ColorStateList;
-import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
@@ -98,7 +97,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
         mTextAndBackground = findViewById(R.id.text_and_background);
         ColorDrawable colorBackground = (ColorDrawable) mTextAndBackground.getBackground();
-        mBackgroundColor = Color.RED;//colorBackground.getColor();
+        mBackgroundColor = colorBackground.getColor();
         RippleDrawable rippleBackground = new RippleDrawable(ColorStateList.valueOf(
                 Themes.getAttrColor(getContext(), android.R.attr.colorControlHighlight)),
                 colorBackground, null);
@@ -181,7 +180,7 @@ public class NotificationMainView extends FrameLayout implements SwipeDetector.L
 
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         setContentTranslation(canChildBeDismissed()
                 ? displacement : OverScroll.dampedScroll(displacement, getWidth()));
         mContentTranslateAnimator.cancel();

@@ -19,10 +19,10 @@ package org.zimmob.zimlx.flowerpot
 
 import android.content.Context
 import android.content.Intent
+import android.content.pm.ShortcutInfo
 import android.os.UserHandle
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.PackageUserKey
 import org.zimmob.zimlx.flowerpot.rules.CodeRule
@@ -115,7 +115,7 @@ class FlowerpotApps(private val context: Context, private val pot: Flowerpot) : 
         packageNames.forEach { onPackageAdded(it, user) }
     }
 
-    override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfoCompat>?, user: UserHandle?) {
+    override fun onShortcutsChanged(packageName: String?, shortcuts: MutableList<ShortcutInfo>?, user: UserHandle?) {
 
     }
 }

@@ -20,6 +20,8 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
+import android.content.Context;
+import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -28,6 +30,7 @@ import android.graphics.Path;
 import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.RadialGradient;
+import android.graphics.Rect;
 import android.graphics.Region;
 import android.graphics.Shader;
 import android.util.Property;
@@ -37,11 +40,12 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.R;
+import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.views.ActivityContext;
 
-import org.zimmob.zimlx.folder.FolderShape;
+import static com.android.launcher3.graphics.IconShape.getShape;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -63,6 +67,8 @@ public class PreviewBackground {
     float mScale = 1f;
     private float mColorMultiplier = 1f;
     private int mBgColor;
+    private int mStrokeColor;
+    private int mDotColor;
     private float mStrokeWidth;
     private int mStrokeAlpha = MAX_BG_OPACITY;
     private int mShadowAlpha = 255;
@@ -131,21 +137,24 @@ public class PreviewBackground {
                 }
             };
 
-    public void setup(Launcher launcher, View invalidateDelegate,
+    public void setup(Context context, ActivityContext activity, View invalidateDelegate,
                       int availableSpaceX, int topPadding) {
         mInvalidateDelegate = invalidateDelegate;
-        //mBgColor = Themes.getAttrColor(launcher, android.R.attr.colorPrimary);
-        mBgColor = Utilities.getZimPrefs(launcher).getFolderBackground();
 
-        DeviceProfile grid = launcher.getDeviceProfile();
-        previewSize = isInDrawer ? grid.allAppsFolderIconSizePx : grid.folderIconSizePx;
+        TypedArray ta = context.getTheme().obtainStyledAttributes(R.styleable.FolderIconPreview);
+        mDotColor = ta.getColor(R.styleable.FolderIconPreview_folderDotColor, 0);
+        mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
+        mBgColor = ta.getColor(R.styleable.FolderIconPreview_folderFillColor, 0);
+        ta.recycle();
+
+        DeviceProfile grid = activity.getWallpaperDeviceProfile();
+        previewSize = grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
-        basePreviewOffsetY = topPadding +
-                (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
+        basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
 
         // Stroke width is 1dp
-        mStrokeWidth = launcher.getResources().getDisplayMetrics().density;
+        mStrokeWidth = context.getResources().getDisplayMetrics().density;
 
         float radius = getScaledRadius();
         float shadowRadius = radius + mStrokeWidth;
@@ -156,6 +165,14 @@ public class PreviewBackground {
                 Shader.TileMode.CLAMP);
 
         invalidate();
+    }
+
+    void getBounds(Rect outBounds) {
+        int top = basePreviewOffsetY;
+        int left = basePreviewOffsetX;
+        int right = left + previewSize;
+        int bottom = top + previewSize;
+        outBounds.set(left, top, right, bottom);
     }
 
     int getRadius() {
@@ -210,7 +227,8 @@ public class PreviewBackground {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
-        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        //FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         drawShadow(canvas);
     }
@@ -246,7 +264,7 @@ public class PreviewBackground {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            FolderShape.sInstance.drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
+            IconShape.getShape().drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
             mPaint.setXfermode(null);
         }
 
@@ -286,11 +304,13 @@ public class PreviewBackground {
     }
 
     public void drawBackgroundStroke(Canvas canvas) {
-        mPaint.setColor(ColorUtils.setAlphaComponent(mBgColor, mStrokeAlpha));
+        mPaint.setColor(setColorAlphaBound(mStrokeColor, mStrokeAlpha));
         mPaint.setStyle(Paint.Style.STROKE);
         mPaint.setStrokeWidth(mStrokeWidth);
-        FolderShape.sInstance.drawShape(canvas, getOffsetX() + 1, getOffsetY() + 1, getScaledRadius() - 1, mPaint);
 
+        float inset = 1f;
+        getShape().drawShape(canvas,
+                getOffsetX() + inset, getOffsetY() + inset, getScaledRadius() - inset, mPaint);
     }
 
     public void drawLeaveBehind(Canvas canvas) {
@@ -299,14 +319,14 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;
     }
 
     public Path getClipPath() {
         mPath.reset();
-        FolderShape.sInstance.addShape(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        IconShape.getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 
@@ -348,13 +368,16 @@ public class PreviewBackground {
             mScaleAnimator.cancel();
         }
 
-        mScaleAnimator = LauncherAnimUtils.ofFloat(0f, 1.0f);
+        mScaleAnimator = ValueAnimator.ofFloat(0f, 1.0f);
 
-        mScaleAnimator.addUpdateListener(animation -> {
-            float prog = animation.getAnimatedFraction();
-            mScale = prog * scale1 + (1 - prog) * scale0;
-            mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
-            invalidate();
+        mScaleAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+            @Override
+            public void onAnimationUpdate(ValueAnimator animation) {
+                float prog = animation.getAnimatedFraction();
+                mScale = prog * scale1 + (1 - prog) * scale0;
+                mColorMultiplier = prog * bgMultiplier1 + (1 - prog) * bgMultiplier0;
+                invalidate();
+            }
         });
         mScaleAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
@@ -397,5 +420,9 @@ public class PreviewBackground {
 
     public int getBackgroundAlpha() {
         return (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
+    }
+
+    public float getStrokeWidth() {
+        return mStrokeWidth;
     }
 }

@@ -26,23 +26,22 @@ import android.provider.BaseColumns;
  * Settings related utilities.
  */
 public class LauncherSettings {
+
     /**
-     * Columns required on table staht will be subject to backup and restore.
+     * Favorites.
      */
-    interface ChangeLogColumns extends BaseColumns {
+    public static final class Favorites implements BaseColumns {
         /**
          * The time of the last update to this row.
          * <P>Type: INTEGER</P>
          */
-        String MODIFIED = "modified";
-    }
+        public static final String MODIFIED = "modified";
 
-    public interface BaseLauncherColumns extends ChangeLogColumns {
         /**
          * Descriptive name of the gesture that can be displayed to the user.
          * <P>Type: TEXT</P>
          */
-        String TITLE = "title";
+        public static final String TITLE = "title";
 
         /**
          * The Intent URL of the gesture, describing what it points to. This
@@ -50,76 +49,53 @@ public class LauncherSettings {
          * an Intent that can be launched.
          * <P>Type: TEXT</P>
          */
-        String INTENT = "intent";
+        public static final String INTENT = "intent";
 
         /**
          * The type of the gesture
          *
          * <P>Type: INTEGER</P>
          */
-        String ITEM_TYPE = "itemType";
+        public static final String ITEM_TYPE = "itemType";
 
         /**
          * The gesture is an application
          */
-        int ITEM_TYPE_APPLICATION = 0;
+        public static final int ITEM_TYPE_APPLICATION = 0;
 
         /**
          * The gesture is an application created shortcut
          */
-        int ITEM_TYPE_SHORTCUT = 1;
+        public static final int ITEM_TYPE_SHORTCUT = 1;
 
         /**
          * The icon package name in Intent.ShortcutIconResource
          * <P>Type: TEXT</P>
          */
-        String ICON_PACKAGE = "iconPackage";
+        public static final String ICON_PACKAGE = "iconPackage";
 
         /**
          * The icon resource name in Intent.ShortcutIconResource
          * <P>Type: TEXT</P>
          */
-        String ICON_RESOURCE = "iconResource";
+        public static final String ICON_RESOURCE = "iconResource";
 
         /**
          * The custom icon bitmap.
          * <P>Type: BLOB</P>
          */
-        String ICON = "icon";
+        public static final String ICON = "icon";
 
-        String CUSTOM_ICON = "customIcon";
+        public static final String CUSTOM_ICON = "customIcon";
 
-        String CUSTOM_ICON_ENTRY = "customIconEntry";
-    }
-
-    /**
-     * Workspace Screens.
-     *
-     * Tracks the order of workspace screens.
-     */
-    public static final class WorkspaceScreens implements ChangeLogColumns {
-
-        public static final String TABLE_NAME = "workspaceScreens";
-
-        /**
-         * The content:// style URL for this table
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The rank of this screen -- ie. how it is ordered relative to the other screens.
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SCREEN_RANK = "screenRank";
-    }
-
-    /**
-     * Favorites.
-     */
-    public static final class Favorites implements BaseLauncherColumns {
+        public static final String CUSTOM_ICON_ENTRY = "customIconEntry";
 
         public static final String TABLE_NAME = "favorites";
+
+        /**
+         * Backup table created when when the favorites table is modified during grid migration
+         */
+        public static final String BACKUP_TABLE_NAME = "favorites_bakup";
 
         /**
          * The content:// style URL for this table
@@ -131,9 +107,10 @@ public class LauncherSettings {
          * The content:// style URL for a given row, identified by its id.
          *
          * @param id The row id.
+         *
          * @return The unique content URL for the specified row.
          */
-        public static Uri getContentUri(long id) {
+        public static Uri getContentUri(int id) {
             return Uri.parse("content://" + LauncherProvider.AUTHORITY +
                     "/" + TABLE_NAME + "/" + id);
         }
@@ -277,8 +254,13 @@ public class LauncherSettings {
         public static final String SWIPE_UP_ACTION = "swipeUpAction";
 
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
+            addTableToDb(db, myProfileId, optional, TABLE_NAME);
+        }
+
+        public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional,
+                                        String tableName) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
-            db.execSQL("CREATE TABLE " + ifNotExists + TABLE_NAME + " (" +
+            db.execSQL("CREATE TABLE " + ifNotExists + tableName + " (" +
                     "_id INTEGER PRIMARY KEY," +
                     "title TEXT," +
                     "intent TEXT," +
@@ -327,12 +309,11 @@ public class LauncherSettings {
 
         public static final String METHOD_LOAD_DEFAULT_FAVORITES = "load_default_favorites";
 
-        public static final String METHOD_SET_EXTRACTED_COLORS_AND_WALLPAPER_ID =
-                "set_extracted_colors_and_wallpaper_id_setting";
-        public static final String EXTRA_EXTRACTED_COLORS = "extra_extractedColors";
-        public static final String EXTRA_WALLPAPER_ID = "extra_wallpaperId";
-
         public static final String METHOD_REMOVE_GHOST_WIDGETS = "remove_ghost_widgets";
+
+        public static final String METHOD_NEW_TRANSACTION = "new_db_transaction";
+
+        public static final String METHOD_REFRESH_BACKUP_TABLE = "refresh_backup_table";
 
         public static final String EXTRA_VALUE = "value";
 

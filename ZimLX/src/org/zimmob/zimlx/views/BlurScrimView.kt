@@ -154,7 +154,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         blurDrawable = createBlurDrawable()
         shadowBitmap = generateShadowBitmap()
         blurDrawable?.alpha = 0
-        dockBackground = Utilities.getZimPrefs(getContext()).dockBackground
+        dockBackground = Utilities.getZimPrefs(context).dockBackground
         rebuildColors()
         super.reInitUi()
     }
@@ -392,7 +392,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         listOf(
                 "version: ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})",
                 "state: ${mLauncher.stateManager.state::class.java.simpleName}",
-                "toState: ${mLauncher.stateManager.toState::class.java.simpleName}"
+                "toState: ${mLauncher.stateManager.state::class.java.simpleName}"
         ).forEachIndexed { index, line ->
             canvas.drawText(line, 50f, 200f + (DEBUG_LINE_HEIGHT * index), debugTextPaint)
         }

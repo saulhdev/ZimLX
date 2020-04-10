@@ -94,6 +94,11 @@ public class UserEventDispatcher {
         return newInstance(context, dp, null);
     }
 
+    public static UserEventDispatcher newInstance(Context context) {
+        return newInstance(context, null);
+    }
+
+
     public interface UserEventDelegate {
         void modifyUserEvent(LauncherEvent event);
     }
@@ -147,6 +152,7 @@ public class UserEventDispatcher {
     protected InstantAppResolver mInstantAppResolver;
     private boolean mAppOrTaskLaunch;
     private UserEventDelegate mDelegate;
+    private boolean mPreviousHomeGesture;
 
     //                      APP_ICON    SHORTCUT    WIDGET
     // --------------------------------------------------------------
@@ -247,6 +253,14 @@ public class UserEventDispatcher {
 
     public void logActionCommand(int command, int srcContainerType, int dstContainerType) {
         logActionCommand(command, newContainerTarget(srcContainerType),
+                dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
+    }
+
+    public void logActionCommand(int command, int srcContainerType, int dstContainerType,
+                                 int pageIndex) {
+        Target srcTarget = newContainerTarget(srcContainerType);
+        srcTarget.pageIndex = pageIndex;
+        logActionCommand(command, srcTarget,
                 dstContainerType >= 0 ? newContainerTarget(dstContainerType) : null);
     }
 
@@ -356,7 +370,7 @@ public class UserEventDispatcher {
      * (1) WORKSPACE: if the launcher is the foreground activity
      * (2) APP: if another app was the foreground activity
      */
-    public void logStateChangeAction(int action, int dir, int srcChildTargetType,
+    public void logStateChangeAction(int action, int dir, int downX, int downY, int srcChildTargetType,
                                      int srcParentContainerType, int dstContainerType,
                                      int pageIndex) {
         LauncherEvent event;
@@ -374,6 +388,8 @@ public class UserEventDispatcher {
         event.action.dir = dir;
         event.action.isStateChange = true;
         event.srcTarget[0].pageIndex = pageIndex;
+        event.srcTarget[0].spanX = downX;
+        event.srcTarget[0].spanY = downY;
         dispatchUserEvent(event, null);
         resetElapsedContainerMillis("state changed");
     }
@@ -430,6 +446,27 @@ public class UserEventDispatcher {
         dispatchUserEvent(event, null);
     }
 
+    public void logActionBack(boolean completed, int downX, int downY, boolean isButton,
+                              boolean gestureSwipeLeft, int containerType) {
+        int actionTouch = isButton ? Action.Touch.TAP : Action.Touch.SWIPE;
+        Action action = newCommandAction(actionTouch);
+        action.command = Action.Command.BACK;
+        action.dir = isButton
+                ? Action.Direction.NONE
+                : gestureSwipeLeft
+                ? Action.Direction.LEFT
+                : Action.Direction.RIGHT;
+        Target target = newControlTarget(isButton
+                ? LauncherLogProto.ControlType.BACK_BUTTON
+                : LauncherLogProto.ControlType.BACK_GESTURE);
+        target.spanX = downX;
+        target.spanY = downY;
+        target.cardinality = completed ? 1 : 0;
+        LauncherEvent event = newLauncherEvent(action, target, newContainerTarget(containerType));
+
+        dispatchUserEvent(event, null);
+    }
+
     /**
      * Currently logs following containers: workspace, allapps, widget tray.
      * @param reason
@@ -449,14 +486,23 @@ public class UserEventDispatcher {
         mElapsedContainerMillis = SystemClock.uptimeMillis();
     }
 
+    public final void setPreviousHomeGesture(boolean homeGesture) {
+        mPreviousHomeGesture = homeGesture;
+    }
+
+    public final boolean isPreviousHomeGesture() {
+        return mPreviousHomeGesture;
+    }
+
     public final void resetActionDurationMillis() {
         mActionDurationMillis = SystemClock.uptimeMillis();
     }
 
     public void dispatchUserEvent(LauncherEvent ev, Intent intent) {
+        if (mPreviousHomeGesture) {
+            mPreviousHomeGesture = false;
+        }
         mAppOrTaskLaunch = false;
-        ev.isInLandscapeMode = mIsInLandscapeMode;
-        ev.isInMultiWindowMode = mIsInMultiWindowMode;
         ev.elapsedContainerMillis = SystemClock.uptimeMillis() - mElapsedContainerMillis;
         ev.elapsedSessionMillis = SystemClock.uptimeMillis() - mElapsedSessionMillis;
 
@@ -476,10 +522,9 @@ public class UserEventDispatcher {
                 ev.elapsedContainerMillis,
                 ev.elapsedSessionMillis,
                 ev.actionDurationMillis);
-        log += "\n isInLandscapeMode " + ev.isInLandscapeMode;
-        log += "\n isInMultiWindowMode " + ev.isInMultiWindowMode;
         log += "\n\n";
         Log.d(TAG, log);
+        return;
     }
 
     private static String getTargetsStr(Target[] targets) {

@@ -14,7 +14,6 @@ import android.os.Looper;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.util.Preconditions;
 
 import java.util.Collections;
@@ -58,7 +57,7 @@ public class CustomClock {
         layers.mDefaultMinute = metadata.DEFAULT_MINUTE;
         layers.mDefaultSecond = metadata.DEFAULT_SECOND;
         if (normalizeIcon) {
-            layers.scale = IconNormalizer.getInstance(context).getScale(layers.mDrawable, null, null, null);
+            //layers.scale = IconNormalizer.getScale(layers.mDrawable, null, null, null);
         }
 
         LayerDrawable layerDrawable = layers.getLayerDrawable();

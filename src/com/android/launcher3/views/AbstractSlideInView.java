@@ -28,7 +28,6 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.touch.SwipeDetector;
@@ -76,7 +75,7 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
         mScrollInterpolator = Interpolators.SCROLL_CUBIC;
         mSwipeDetector = new SwipeDetector(context, this, SwipeDetector.VERTICAL);
 
-        mOpenCloseAnimator = LauncherAnimUtils.ofPropertyValuesHolder(this);
+        mOpenCloseAnimator = ObjectAnimator.ofPropertyValuesHolder(this);
         mOpenCloseAnimator.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationEnd(Animator animation) {
@@ -103,29 +102,33 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
                 directionsToDetectScroll, false);
         mSwipeDetector.onTouchEvent(ev);
         return mSwipeDetector.isDraggingOrSettling()
-                || !mLauncher.getDragLayer().isEventOverView(mContent, ev);
+                || !getPopupContainer().isEventOverView(mContent, ev);
     }
 
     @Override
     public boolean onControllerTouchEvent(MotionEvent ev) {
         mSwipeDetector.onTouchEvent(ev);
-        if (ev.getAction() == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState()) {
+        if (ev.getAction() == MotionEvent.ACTION_UP && mSwipeDetector.isIdleState()
+                && !isOpeningAnimationRunning()) {
             // If we got ACTION_UP without ever starting swipe, close the panel.
-            if (!mLauncher.getDragLayer().isEventOverView(mContent, ev)) {
+            if (!getPopupContainer().isEventOverView(mContent, ev)) {
                 close(true);
             }
         }
         return true;
     }
 
-    /* SwipeDetector.Listener */
+    private boolean isOpeningAnimationRunning() {
+        return mIsOpen && mOpenCloseAnimator.isRunning();
+    }
 
+    /* SwipeDetector.Listener */
     @Override
     public void onDragStart(boolean start) {
     }
 
     @Override
-    public boolean onDrag(float displacement, float velocity) {
+    public boolean onDrag(float displacement) {
         float range = mContent.getHeight();
         displacement = Utilities.boundToRange(displacement, 0, range);
         setTranslationShift(displacement / range);
@@ -179,6 +182,10 @@ public abstract class AbstractSlideInView extends AbstractFloatingView
 
     protected void onCloseComplete() {
         mIsOpen = false;
-        mLauncher.getDragLayer().removeView(this);
+        getPopupContainer().removeView(this);
+    }
+
+    protected BaseDragLayer getPopupContainer() {
+        return mLauncher.getDragLayer();
     }
 }

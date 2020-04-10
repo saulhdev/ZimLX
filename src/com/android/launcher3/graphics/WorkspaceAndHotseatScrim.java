@@ -35,17 +35,17 @@ import android.util.DisplayMetrics;
 import android.util.Property;
 import android.view.View;
 
+import androidx.core.graphics.ColorUtils;
+
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
 import org.zimmob.zimlx.theme.ThemeManager;
-
-import androidx.core.graphics.ColorUtils;
 
 import static android.content.Intent.ACTION_SCREEN_OFF;
 import static android.content.Intent.ACTION_USER_PRESENT;
@@ -213,6 +213,15 @@ public class WorkspaceAndHotseatScrim implements
                 canvas.drawBitmap(mBottomMask, null, mFinalMaskRect, mBottomMaskPaint);
             }
         }
+    }
+
+    public void animateToSysuiMultiplier(float toMultiplier, long duration,
+                                         long startDelay) {
+        ObjectAnimator anim = ObjectAnimator.ofFloat(this, SYSUI_ANIM_MULTIPLIER, toMultiplier);
+        anim.setAutoCancel(true);
+        anim.setDuration(duration);
+        anim.setStartDelay(startDelay);
+        anim.start();
     }
 
     public void onInsetsChanged(Rect insets) {

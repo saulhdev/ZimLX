@@ -28,6 +28,8 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.R;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 /**
  * Extension of {@link BubbleTextView} which draws two shadows on the text (ambient and key shadows}
  */
@@ -60,20 +62,20 @@ public class DoubleShadowBubbleTextView extends BubbleTextView {
 
         // We enhance the shadow by drawing the shadow twice
         getPaint().setShadowLayer(mShadowInfo.ambientShadowBlur, 0, 0,
-                ColorUtils.setAlphaComponent(mShadowInfo.ambientShadowColor, alpha));
+                setColorAlphaBound(mShadowInfo.ambientShadowColor, alpha));
 
-        drawWithoutBadge(canvas);
+        drawWithoutDot(canvas);
         canvas.save();
         canvas.clipRect(getScrollX(), getScrollY() + getExtendedPaddingTop(),
                 getScrollX() + getWidth(),
                 getScrollY() + getHeight());
 
         getPaint().setShadowLayer(mShadowInfo.keyShadowBlur, 0.0f, mShadowInfo.keyShadowOffset,
-                ColorUtils.setAlphaComponent(mShadowInfo.keyShadowColor, alpha));
-        drawWithoutBadge(canvas);
+                setColorAlphaBound(mShadowInfo.keyShadowColor, alpha));
+        drawWithoutDot(canvas);
         canvas.restore();
 
-        drawBadgeIfNecessary(canvas);
+        drawDotIfNecessary(canvas);
     }
 
     public static class ShadowInfo {

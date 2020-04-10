@@ -30,7 +30,7 @@ public class AllAppsPaged extends PagedView<PageIndicatorDots> {
     public AllAppsPaged(Context context, AttributeSet attrs) {
         super(context, attrs);
         InvariantDeviceProfile profile = LauncherAppState.getIDP(context);
-        mMaxCountX = profile.numColsDrawer;
+        mMaxCountX = profile.numColumns;
         mMaxCountY = profile.numRows;
 
         mMaxItemsPerPage = mMaxCountX * mMaxCountY;

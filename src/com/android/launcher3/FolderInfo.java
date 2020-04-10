@@ -74,7 +74,7 @@ public class FolderInfo extends ItemInfo {
     /**
      * The apps and shortcuts
      */
-    public ArrayList<ShortcutInfo> contents = new ArrayList<ShortcutInfo>();
+    public ArrayList<WorkspaceItemInfo> contents = new ArrayList<WorkspaceItemInfo>();
 
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
@@ -93,14 +93,14 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void add(ShortcutInfo item, boolean animate) {
+    public void add(WorkspaceItemInfo item, boolean animate) {
         add(item, contents.size(), animate);
     }
 
     /**
      * Add an app or shortcut for a specified rank.
      */
-    public void add(ShortcutInfo item, int rank, boolean animate) {
+    public void add(WorkspaceItemInfo item, int rank, boolean animate) {
         rank = Utilities.boundToRange(rank, 0, contents.size());
         contents.add(rank, item);
         for (int i = 0; i < listeners.size(); i++) {
@@ -114,7 +114,7 @@ public class FolderInfo extends ItemInfo {
      *
      * @param item
      */
-    public void remove(ShortcutInfo item, boolean animate) {
+    public void remove(WorkspaceItemInfo item, boolean animate) {
         contents.remove(item);
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).onRemove(item);
@@ -159,7 +159,7 @@ public class FolderInfo extends ItemInfo {
 
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
-        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+        //ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
     }
 
     public ComponentKey toComponentKey() {
@@ -173,7 +173,7 @@ public class FolderInfo extends ItemInfo {
             return icn;
         }
         if (isCoverMode()) {
-            return DrawableFactory.get(context).newIcon(getCoverInfo());
+            return DrawableFactory.INSTANCE.get(context).newIcon(getCoverInfo());
         }
         return getFolderIcon(launcher);
     }
@@ -234,7 +234,7 @@ public class FolderInfo extends ItemInfo {
         setOption(FLAG_COVER_MODE, enable, modelWriter);
     }
 
-    public ShortcutInfo getCoverInfo() {
+    public WorkspaceItemInfo getCoverInfo() {
         return firstItemProvider.getFirstItem();
     }
 
@@ -242,7 +242,7 @@ public class FolderInfo extends ItemInfo {
         if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
             return title;
         } else if (isCoverMode()) {
-            ShortcutInfo info = getCoverInfo();
+            WorkspaceItemInfo info = getCoverInfo();
             if (info.customTitle != null) {
                 return info.customTitle;
             }
@@ -284,9 +284,9 @@ public class FolderInfo extends ItemInfo {
     }
 
     public interface FolderListener {
-        void onAdd(ShortcutInfo item, int rank);
+        void onAdd(WorkspaceItemInfo item, int rank);
 
-        void onRemove(ShortcutInfo item);
+        void onRemove(WorkspaceItemInfo item);
 
         void onTitleChanged(CharSequence title);
 

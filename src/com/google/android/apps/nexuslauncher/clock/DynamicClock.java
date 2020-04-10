@@ -19,7 +19,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.IconNormalizer;
 import com.android.launcher3.util.Preconditions;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 
@@ -87,7 +86,7 @@ public class DynamicClock extends BroadcastReceiver {
                     layers.mDefaultMinute = metaData.getInt("com.google.android.apps.nexuslauncher.DEFAULT_MINUTE", 0);
                     layers.mDefaultSecond = metaData.getInt("com.google.android.apps.nexuslauncher.DEFAULT_SECOND", 0);
                     if (normalizeIcon) {
-                        layers.scale = IconNormalizer.getInstance(context).getScale(layers.mDrawable, null, null, null);
+                        //layers.scale = IconNormalizer.getScale(layers.mDrawable, null, null, null);
                     }
 
                     LayerDrawable layerDrawable = layers.getLayerDrawable();

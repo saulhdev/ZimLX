@@ -38,9 +38,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
@@ -179,9 +179,9 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     /**
      * Binds items to the layout.
      */
-    public void bindItems(ArrayList<ShortcutInfo> items) {
+    public void bindItems(ArrayList<WorkspaceItemInfo> items) {
         ArrayList<View> icons = new ArrayList<>();
-        for (ShortcutInfo item : items) {
+        for (WorkspaceItemInfo item : items) {
             icons.add(createNewView(item));
         }
         arrangeChildren(icons, icons.size(), false);
@@ -204,7 +204,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         return rank;
     }
 
-    public View createAndAddViewForRank(ShortcutInfo item, int rank) {
+    public View createAndAddViewForRank(WorkspaceItemInfo item, int rank) {
         View icon = createNewView(item);
         allocateSpaceForRank(rank);
         addViewForRank(icon, item, rank);
@@ -215,7 +215,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * Adds the {@param view} to the layout based on {@param rank} and updated the position
      * related attributes. It assumes that {@param item} is already attached to the view.
      */
-    public void addViewForRank(View view, ShortcutInfo item, int rank) {
+    public void addViewForRank(View view, WorkspaceItemInfo item, int rank) {
         int pagePos = rank % mMaxItemsPerPage;
         int pageNo = rank / mMaxItemsPerPage;
 
@@ -231,7 +231,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     }
 
     @SuppressLint("InflateParams")
-    public View createNewView(ShortcutInfo item) {
+    public View createNewView(WorkspaceItemInfo item) {
         int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
                 : R.layout.folder_application;
         final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
@@ -499,7 +499,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         int delta = scroll - getScrollX();
         if (delta != 0) {
             mScroller.setInterpolator(Interpolators.DEACCEL);
-            mScroller.startScroll(getScrollX(), 0, delta, 0, Folder.SCROLL_HINT_DURATION);
+            mScroller.startScroll(getScrollX(), delta, Folder.SCROLL_HINT_DURATION);
             invalidate();
         }
     }
@@ -638,7 +638,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
             if (v != null) {
                 if (pageToAnimate != p) {
                     page.removeView(v);
-                    addViewForRank(v, (ShortcutInfo) v.getTag(), moveStart);
+                    addViewForRank(v, (WorkspaceItemInfo) v.getTag(), moveStart);
                 } else {
                     // Do a fake animation before removing it.
                     final int newRank = moveStart;
@@ -651,7 +651,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                             mPendingAnimations.remove(v);
                             v.setTranslationX(oldTranslateX);
                             ((CellLayout) v.getParent().getParent()).removeView(v);
-                            addViewForRank(v, (ShortcutInfo) v.getTag(), newRank);
+                            addViewForRank(v, (WorkspaceItemInfo) v.getTag(), newRank);
                         }
                     };
                     v.animate()

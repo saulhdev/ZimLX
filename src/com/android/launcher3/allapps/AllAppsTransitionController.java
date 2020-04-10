@@ -4,6 +4,7 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.graphics.drawable.Drawable;
+import android.util.FloatProperty;
 import android.util.Property;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -21,22 +22,20 @@ import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
-import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.ZimUtilsKt;
-import org.zimmob.zimlx.colors.ColorEngine;
 import org.zimmob.zimlx.views.BlurScrimView;
 
 import static android.view.ViewGroup.MarginLayoutParams;
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.OVERVIEW;
 import static com.android.launcher3.LauncherState.VERTICAL_SWIPE_INDICATOR;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_HEADER_FADE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
 import static com.android.launcher3.anim.Interpolators.FAST_OUT_SLOW_IN;
@@ -54,11 +53,11 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
  * If release velocity < THRES1, snap according to either top or bottom depending on whether it's
  * closer to top or closer to the page indicator.
  */
-public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener,
-        ColorEngine.OnColorChangeListener {
-
-    public static final Property<AllAppsTransitionController, Float> ALL_APPS_PROGRESS =
-            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+public class AllAppsTransitionController implements StateHandler, OnDeviceProfileChangeListener {
+    private static final float SPRING_DAMPING_RATIO = 0.9f;
+    private static final float SPRING_STIFFNESS = 600f;
+    public static final FloatProperty<AllAppsTransitionController> ALL_APPS_PROGRESS =
+            new FloatProperty<AllAppsTransitionController>("allAppsProgress") {
 
                 @Override
                 public Float get(AllAppsTransitionController controller) {
@@ -66,7 +65,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
                 }
 
                 @Override
-                public void set(AllAppsTransitionController controller, Float progress) {
+                public void setValue(AllAppsTransitionController controller, float progress) {
                     controller.setProgress(progress);
                 }
             };
@@ -268,26 +267,32 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         setAlphas(toState, config, builder);
     }
 
+    public Animator createSpringAnimation(float... progressValues) {
+        return new SpringObjectAnimator<>(this, ALL_APPS_PROGRESS, 1f / mShiftRange,
+                SPRING_DAMPING_RATIO, SPRING_STIFFNESS, progressValues);
+    }
     private void setAlphas(LauncherState toState, AnimationConfig config,
                            AnimatorSetBuilder builder) {
-        PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
-                : config.getPropertySetter(builder);
-        int visibleElements = toState.getVisibleElements(mLauncher);
-        ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
-        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
-        boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
-        boolean hasContent = (visibleElements & ALL_APPS_CONTENT) != 0;
-
-        Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
-        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
-        setter.setViewAlpha(mAppsView.getContentView(), hasContent ? 1 : 0, allAppsFade);
-        setter.setViewAlpha(mAppsView.getScrollBar(), hasContent ? 1 : 0, allAppsFade);
-        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasContent, setter, allAppsFade);
-
-        setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
-                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, LINEAR);
+        setAlphas(toState.getVisibleElements(mLauncher), config, builder);
     }
 
+    public void setAlphas(int visibleElements, AnimationConfig config, AnimatorSetBuilder builder) {
+        PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
+                : config.getPropertySetter(builder);
+        boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
+        boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
+
+        Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
+        Interpolator headerFade = builder.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
+        setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
+        setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
+        mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasAllAppsContent,
+                setter, headerFade, allAppsFade);
+        mAppsView.getSearchUiManager().setContentVisibility(visibleElements, setter, allAppsFade);
+
+        setter.setInt(mScrimView, ScrimView.DRAG_HANDLE_ALPHA,
+                (visibleElements & VERTICAL_SWIPE_INDICATOR) != 0 ? 255 : 0, allAppsFade);
+    }
     public AnimatorListenerAdapter getProgressAnimatorListener() {
         return new AnimationSuccessListener() {
             @Override
@@ -347,12 +352,6 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public AllAppsContainerView getAppsView() {
         return mAppsView;
     }
-
-    @Override
-    public void onColorChange(@NotNull ColorEngine.ResolveInfo resolveInfo) {
-        mIsDarkTheme = ZimUtilsKt.isDark(resolveInfo.getColor());
-    }
-
 
     public void setOverlayScroll(float scroll) {
         if (mScrimView instanceof BlurScrimView) {

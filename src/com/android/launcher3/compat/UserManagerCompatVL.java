@@ -17,14 +17,12 @@
 package com.android.launcher3.compat;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.UserHandle;
 import android.os.UserManager;
 import android.util.ArrayMap;
 
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.ManagedProfileHeuristic;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -132,12 +130,24 @@ public class UserManagerCompatVL extends UserManagerCompat {
 
     @Override
     public long getUserCreationTime(UserHandle user) {
-        SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
+        /*SharedPreferences prefs = ManagedProfileHeuristic.prefs(mContext);
         String key = USER_CREATION_TIME_KEY + getSerialNumberForUser(user);
         if (!prefs.contains(key)) {
             prefs.edit().putLong(key, System.currentTimeMillis()).apply();
         }
-        return prefs.getLong(key, 0);
+        return prefs.getLong(key, 0);*/
+        return 0L;
+
+    }
+
+    @Override
+    public boolean hasWorkProfile() {
+        synchronized (this) {
+            if (mUsers != null) {
+                return mUsers.size() > 1;
+            }
+        }
+        return getUserProfiles().size() > 1;
     }
 }
 

@@ -54,6 +54,12 @@ public interface LauncherCallbacks {
     boolean handleBackPressed();
     void onTrimMemory(int level);
 
+    /**
+     * Called when the launcher state changed
+     */
+    default void onStateChanged() {
+    }
+
     /*
      * Extension points for providing custom behavior on certain user interactions.
      */

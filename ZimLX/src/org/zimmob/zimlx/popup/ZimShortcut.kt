@@ -25,7 +25,7 @@ import android.net.Uri
 import android.view.View
 import com.android.launcher3.*
 import com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_YES
-import com.android.launcher3.LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.popup.SystemShortcut
 import com.google.android.apps.nexuslauncher.CustomBottomSheet
@@ -78,7 +78,7 @@ class ZimShortcut(private val context: Context) {
         }
 
         private fun getUninstallTarget(launcher: Launcher, item: ItemInfo): ComponentName? {
-            if (item.itemType == ITEM_TYPE_APPLICATION && item.id == ItemInfo.NO_ID.toLong()) {
+            if (item.itemType == ITEM_TYPE_APPLICATION && item.id == ItemInfo.NO_ID) {
                 val intent = item.intent
                 val user = item.user
                 if (intent != null) {
@@ -95,8 +95,8 @@ class ZimShortcut(private val context: Context) {
     class Remove : SystemShortcut<Launcher>(R.drawable.ic_remove_no_shadow, R.string.remove_drop_target_label) {
 
         override fun getOnClickListener(launcher: Launcher, itemInfo: ItemInfo): View.OnClickListener? {
-            if (itemInfo.id == NO_ID.toLong()) return null
-            return if (itemInfo is ShortcutInfo || itemInfo is LauncherAppWidgetInfo || itemInfo is FolderInfo) {
+            if (itemInfo.id == NO_ID.toInt()) return null
+            return if (itemInfo is WorkspaceItemInfo || itemInfo is LauncherAppWidgetInfo || itemInfo is FolderInfo) {
                 View.OnClickListener {
                     AbstractFloatingView.closeAllOpenViews(launcher)
 

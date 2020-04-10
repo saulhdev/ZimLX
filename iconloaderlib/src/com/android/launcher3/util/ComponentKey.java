@@ -23,10 +23,10 @@ import java.util.Arrays;
 
 public class ComponentKey {
 
-    public final ComponentName componentName;
-    public final UserHandle user;
+    public ComponentName componentName;
+    public UserHandle user;
 
-    private final int mHashCode;
+    public int mHashCode;
 
     public ComponentKey(ComponentName componentName, UserHandle user) {
         if (componentName == null || user == null) {

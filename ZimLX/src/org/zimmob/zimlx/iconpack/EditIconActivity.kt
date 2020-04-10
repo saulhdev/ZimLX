@@ -40,7 +40,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.LauncherIcons
+import com.android.launcher3.icons.LauncherIcons
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import org.zimmob.zimlx.ZimLauncher

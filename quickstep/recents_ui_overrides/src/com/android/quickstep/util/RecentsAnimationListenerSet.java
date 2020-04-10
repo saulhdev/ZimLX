@@ -91,6 +91,10 @@ public class RecentsAnimationListenerSet implements RecentsAnimationListener {
     }
 
     @Override
+    public void onAnimationCanceled(boolean b) {
+
+    }
+
     public final void onAnimationCanceled(ThumbnailData thumbnailData) {
         Utilities.postAsyncCallback(MAIN_THREAD_EXECUTOR.getHandler(), () -> {
             for (SwipeAnimationListener listener : getListeners()) {

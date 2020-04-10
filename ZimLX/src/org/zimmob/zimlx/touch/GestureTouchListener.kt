@@ -41,8 +41,7 @@ open class GestureTouchListener(context: Context) : View.OnTouchListener {
                 touchDownX = ev.x
                 touchDownY = ev.y
                 downInOptions = launcher.isInState(LauncherState.OPTIONS)
-                clickPossible = downInOptions &&
-                        launcher.workspace.isScrollerFinished
+                clickPossible = downInOptions //&& launcher.workspace.isScrollerFinished
             }
             MotionEvent.ACTION_MOVE -> {
                 checkClickPossible(ev.x, ev.y)
@@ -81,7 +80,7 @@ open class GestureTouchListener(context: Context) : View.OnTouchListener {
                             R.string.remove_drop_target_label,
                             R.drawable.ic_remove_no_shadow,
                             -1) {
-                        launcher.workspace.removeScreen(launcher.currentWorkspaceScreen, true)
+                        // launcher.workspace.removeScreen(launcher.currentWorkspaceScreen, true)
                         true
                     }))
         }

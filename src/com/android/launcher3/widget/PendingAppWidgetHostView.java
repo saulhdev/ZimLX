@@ -33,12 +33,12 @@ import android.view.View.OnClickListener;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.IconCache;
-import com.android.launcher3.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
@@ -133,19 +133,19 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             //   1) App icon in the center
             //   2) Preload icon in the center
             //   3) Setup icon in the center and app icon in the top right corner.
-            DrawableFactory drawableFactory = DrawableFactory.get(getContext());
+            DrawableFactory drawableFactory = DrawableFactory.INSTANCE.get(getContext());
             if (mDisabledForSafeMode) {
-                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(info);
+                FastBitmapDrawable disabledIcon = drawableFactory.newIcon(getContext(), info);
                 disabledIcon.setIsDisabled(true);
                 mCenterDrawable = disabledIcon;
                 mSettingIconDrawable = null;
             } else if (isReadyForClickSetup()) {
-                mCenterDrawable = drawableFactory.newIcon(info);
+                mCenterDrawable = drawableFactory.newIcon(getContext(), info);
                 mSettingIconDrawable = getResources().getDrawable(R.drawable.ic_setting).mutate();
                 updateSettingColor(info.iconColor);
             } else {
-                mCenterDrawable = DrawableFactory.get(getContext())
-                        .newPendingIcon(info, getContext());
+                mCenterDrawable = DrawableFactory.INSTANCE.get(getContext())
+                        .newPendingIcon(getContext(), info);
                 mSettingIconDrawable = null;
                 applyState();
             }
@@ -186,12 +186,12 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     /**
      * A pending widget is ready for setup after the provider is installed and
-     * 1) Widget id is not valid: the widget id is not yet bound to the provider, probably
-     * because the launcher doesn't have appropriate permissions.
-     * Note that we would still have an allocated id as that does not
-     * require any permissions and can be done during view inflation.
-     * 2) UI is not ready: the id is valid and the bound. But the widget has a configure activity
-     * which needs to be called once.
+     *   1) Widget id is not valid: the widget id is not yet bound to the provider, probably
+     *                              because the launcher doesn't have appropriate permissions.
+     *                              Note that we would still have an allocated id as that does not
+     *                              require any permissions and can be done during view inflation.
+     *   2) UI is not ready: the id is valid and the bound. But the widget has a configure activity
+     *                       which needs to be called once.
      */
     public boolean isReadyForClickSetup() {
         return !mInfo.hasRestoreFlag(LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY)

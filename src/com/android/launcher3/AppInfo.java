@@ -44,7 +44,7 @@ public class AppInfo extends ItemInfoWithIcon {
     /**
      * {@see ShortcutInfo#isDisabled}
      */
-    public int isDisabled = ShortcutInfo.DEFAULT;
+    public int isDisabled = WorkspaceItemInfo.DEFAULT;
 
     public AppInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
@@ -73,10 +73,10 @@ public class AppInfo extends ItemInfoWithIcon {
         this.user = user;
         intent = makeLaunchIntent(info);
         if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
-            isDisabled |= ShortcutInfo.FLAG_DISABLED_SUSPENDED;
+            isDisabled |= WorkspaceItemInfo.FLAG_DISABLED_SUSPENDED;
         }
         if (quietModeEnabled) {
-            isDisabled |= ShortcutInfo.FLAG_DISABLED_QUIET_USER;
+            isDisabled |= WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER;
         }
         if (quietModeEnabled) {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
@@ -97,8 +97,12 @@ public class AppInfo extends ItemInfoWithIcon {
         return super.dumpProperties() + " componentName=" + componentName;
     }
 
-    public ShortcutInfo makeShortcut() {
-        return new ShortcutInfo(this);
+    public WorkspaceItemInfo makeShortcut() {
+        return new WorkspaceItemInfo(this);
+    }
+
+    public WorkspaceItemInfo makeWorkspaceItem() {
+        return new WorkspaceItemInfo(this);
     }
 
     public ComponentKey toComponentKey() {

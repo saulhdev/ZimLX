@@ -13,136 +13,127 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
 package com.android.launcher3;
 
-import android.animation.Animator;
-import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
+import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.util.Log;
 import android.view.View;
-import android.view.ViewPropertyAnimator;
-import android.view.ViewTreeObserver;
+import android.view.View.OnAttachStateChangeListener;
+import android.view.ViewTreeObserver.OnDrawListener;
 
-import com.android.launcher3.util.Thunk;
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
  *  For the first two frames, it adjusts the current play time of the animation to
  *  prevent jank at the beginning of the animation
  */
-public class FirstFrameAnimatorHelper extends AnimatorListenerAdapter
-        implements ValueAnimator.AnimatorUpdateListener {
+public class FirstFrameAnimatorHelper implements OnDrawListener, OnAttachStateChangeListener {
+
     private static final String TAG = "FirstFrameAnimatorHlpr";
     private static final boolean DEBUG = false;
     private static final int MAX_DELAY = 1000;
-    private static final int IDEAL_FRAME_DURATION = 16;
-    @Thunk
-    static long sGlobalFrameCounter;
-    private static ViewTreeObserver.OnDrawListener sGlobalDrawListener;
-    private static boolean sVisible;
-    private final View mTarget;
-    private long mStartFrame;
-    private long mStartTime = -1;
-    private boolean mHandlingOnAnimationUpdate;
-    private boolean mAdjustedSecondFrameTime;
 
-    public FirstFrameAnimatorHelper(ValueAnimator animator, View target) {
-        mTarget = target;
-        animator.addUpdateListener(this);
-    }
+    private View mRootView;
+    private long mGlobalFrameCount;
 
-    public FirstFrameAnimatorHelper(ViewPropertyAnimator vpa, View target) {
-        mTarget = target;
-        vpa.setListener(this);
-    }
-
-    public static void setIsVisible(boolean visible) {
-        sVisible = visible;
-    }
-
-    public static void initializeDrawListener(View view) {
-        if (sGlobalDrawListener != null) {
-            view.getViewTreeObserver().removeOnDrawListener(sGlobalDrawListener);
+    public FirstFrameAnimatorHelper(View target) {
+        target.addOnAttachStateChangeListener(this);
+        if (target.isAttachedToWindow()) {
+            onViewAttachedToWindow(target);
         }
-        sGlobalDrawListener = new ViewTreeObserver.OnDrawListener() {
-            private long mTime = System.currentTimeMillis();
+    }
 
-            public void onDraw() {
-                sGlobalFrameCounter++;
-                if (DEBUG) {
-                    long newTime = System.currentTimeMillis();
-                    Log.d(TAG, "TICK " + (newTime - mTime));
-                    mTime = newTime;
-                }
+    public <T extends ValueAnimator> T addTo(T anim) {
+        anim.addUpdateListener(new MyListener());
+        return anim;
+    }
+
+    @Override
+    public void onDraw() {
+        mGlobalFrameCount++;
+    }
+
+    @Override
+    public void onViewAttachedToWindow(View view) {
+        mRootView = view.getRootView();
+        mRootView.getViewTreeObserver().addOnDrawListener(this);
+    }
+
+    @Override
+    public void onViewDetachedFromWindow(View view) {
+        if (mRootView != null) {
+            mRootView.getViewTreeObserver().removeOnDrawListener(this);
+            mRootView = null;
+        }
+    }
+
+    private class MyListener implements AnimatorUpdateListener {
+
+        private long mStartFrame;
+        private long mStartTime = -1;
+        private boolean mHandlingOnAnimationUpdate;
+        private boolean mAdjustedSecondFrameTime;
+
+        @Override
+        public void onAnimationUpdate(final ValueAnimator animation) {
+            final long currentTime = System.currentTimeMillis();
+            if (mStartTime == -1) {
+                mStartFrame = mGlobalFrameCount;
+                mStartTime = currentTime;
             }
-        };
-        view.getViewTreeObserver().addOnDrawListener(sGlobalDrawListener);
-        sVisible = true;
-    }
 
-    // only used for ViewPropertyAnimators
-    public void onAnimationStart(Animator animation) {
-        final ValueAnimator va = (ValueAnimator) animation;
-        va.addUpdateListener(FirstFrameAnimatorHelper.this);
-        onAnimationUpdate(va);
-    }
+            final long currentPlayTime = animation.getCurrentPlayTime();
+            boolean isFinalFrame = Float.compare(1f, animation.getAnimatedFraction()) == 0;
 
-    public void onAnimationUpdate(final ValueAnimator animation) {
-        final long currentTime = System.currentTimeMillis();
-        if (mStartTime == -1) {
-            mStartFrame = sGlobalFrameCounter;
-            mStartTime = currentTime;
-        }
+            if (!mHandlingOnAnimationUpdate &&
+                    mRootView != null &&
+                    mRootView.getWindowVisibility() == View.VISIBLE &&
+                    // If the current play time exceeds the duration, or the animated fraction is 1,
+                    // the animation will get finished, even if we call setCurrentPlayTime --
+                    // therefore don't adjust the animation in that case
+                    currentPlayTime < animation.getDuration() && !isFinalFrame) {
+                mHandlingOnAnimationUpdate = true;
+                long frameNum = mGlobalFrameCount - mStartFrame;
 
-        final long currentPlayTime = animation.getCurrentPlayTime();
-        boolean isFinalFrame = Float.compare(1f, animation.getAnimatedFraction()) == 0;
-
-        if (!mHandlingOnAnimationUpdate &&
-                sVisible &&
-                // If the current play time exceeds the duration, or the animated fraction is 1,
-                // the animation will get finished, even if we call setCurrentPlayTime -- therefore
-                // don't adjust the animation in that case
-                currentPlayTime < animation.getDuration() && !isFinalFrame) {
-            mHandlingOnAnimationUpdate = true;
-            long frameNum = sGlobalFrameCounter - mStartFrame;
-            // If we haven't drawn our first frame, reset the time to t = 0
-            // (give up after MAX_DELAY ms of waiting though - might happen, for example, if we
-            // are no longer in the foreground and no frames are being rendered ever)
-            if (frameNum == 0 && currentTime < mStartTime + MAX_DELAY && currentPlayTime > 0) {
-                // The first frame on animations doesn't always trigger an invalidate...
-                // force an invalidate here to make sure the animation continues to advance
-                mTarget.getRootView().invalidate();
-                animation.setCurrentPlayTime(0);
-                // For the second frame, if the first frame took more than 16ms,
-                // adjust the start time and pretend it took only 16ms anyway. This
-                // prevents a large jump in the animation due to an expensive first frame
-            } else if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
-                    !mAdjustedSecondFrameTime &&
-                    currentTime > mStartTime + IDEAL_FRAME_DURATION &&
-                    currentPlayTime > IDEAL_FRAME_DURATION) {
-                animation.setCurrentPlayTime(IDEAL_FRAME_DURATION);
-                mAdjustedSecondFrameTime = true;
-            } else {
-                if (frameNum > 1) {
-                    mTarget.post(new Runnable() {
-                        public void run() {
-                            animation.removeUpdateListener(FirstFrameAnimatorHelper.this);
+                // If we haven't drawn our first frame, reset the time to t = 0
+                // (give up after MAX_DELAY ms of waiting though - might happen, for example, if we
+                // are no longer in the foreground and no frames are being rendered ever)
+                if (frameNum == 0 && currentTime < mStartTime + MAX_DELAY && currentPlayTime > 0) {
+                    // The first frame on animations doesn't always trigger an invalidate...
+                    // force an invalidate here to make sure the animation continues to advance
+                    mRootView.invalidate();
+                    animation.setCurrentPlayTime(0);
+                    // For the second frame, if the first frame took more than 16ms,
+                    // adjust the start time and pretend it took only 16ms anyway. This
+                    // prevents a large jump in the animation due to an expensive first frame
+                } else {
+                    int singleFrameMS = getSingleFrameMs(mRootView.getContext());
+                    if (frameNum == 1 && currentTime < mStartTime + MAX_DELAY &&
+                            !mAdjustedSecondFrameTime &&
+                            currentTime > mStartTime + singleFrameMS &&
+                            currentPlayTime > singleFrameMS) {
+                        animation.setCurrentPlayTime(singleFrameMS);
+                        mAdjustedSecondFrameTime = true;
+                    } else {
+                        if (frameNum > 1) {
+                            mRootView.post(() -> animation.removeUpdateListener(this));
                         }
-                    });
+                        if (DEBUG) print(animation);
+                    }
                 }
+                mHandlingOnAnimationUpdate = false;
+            } else {
                 if (DEBUG) print(animation);
             }
-            mHandlingOnAnimationUpdate = false;
-        } else {
-            if (DEBUG) print(animation);
         }
-    }
 
-    public void print(ValueAnimator animation) {
-        float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
-        Log.d(TAG, sGlobalFrameCounter +
-                "(" + (sGlobalFrameCounter - mStartFrame) + ") " + mTarget + " dirty? " +
-                mTarget.isDirty() + " " + flatFraction + " " + this + " " + animation);
+        public void print(ValueAnimator animation) {
+            float flatFraction = animation.getCurrentPlayTime() / (float) animation.getDuration();
+            Log.d(TAG, mGlobalFrameCount +
+                    "(" + (mGlobalFrameCount - mStartFrame) + ") " + mRootView + " dirty? " +
+                    mRootView.isDirty() + " " + flatFraction + " " + this + " " + animation);
+        }
     }
 }

@@ -30,7 +30,6 @@ import android.util.AttributeSet;
 import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
 import android.widget.LinearLayout;
 
@@ -49,7 +48,7 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.anim.Interpolators;
@@ -59,10 +58,11 @@ import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorH
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.util.ComponentKeyMapper;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.Themes;
 
 import org.zimmob.zimlx.anim.AnimatedFloat;
+import org.zimmob.zimlx.util.CustomComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -106,7 +106,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     private final AnimatedFloat mOverviewScrollFactor;
     private final Paint mPaint;
     private PredictionsFloatingHeader mParent;
-    private final List<ComponentKeyMapper> mPredictedAppComponents;
+    private final List<CustomComponentKeyMapper> mPredictedAppComponents;
     private final ArrayList<ItemInfoWithIcon> mPredictedApps;
     private boolean mPredictionsEnabled;
     private float mScrollTranslation;
@@ -178,19 +178,19 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     public void setup(PredictionsFloatingHeader predictionsFloatingHeader, boolean z) {
-        this.mParent = predictionsFloatingHeader;
+        mParent = predictionsFloatingHeader;
         setPredictionsEnabled(z);
     }
 
-    private void setPredictionsEnabled(boolean z) {
-        if (z != this.mPredictionsEnabled) {
-            this.mPredictionsEnabled = z;
+    private void setPredictionsEnabled(boolean enabled) {
+        if (enabled != mPredictionsEnabled) {
+            mPredictionsEnabled = enabled;
             updateVisibility();
         }
     }
 
     private void updateVisibility() {
-        setVisibility((!this.mPredictionsEnabled || this.mIsCollapsed) ? View.GONE : View.VISIBLE);
+        setVisibility((!mPredictionsEnabled || mIsCollapsed) ? View.GONE : LinearLayout.VISIBLE);
     }
 
     protected void onMeasure(int i, int i2) {
@@ -198,7 +198,7 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     protected void dispatchDraw(Canvas canvas) {
-        this.mFocusHelper.draw(canvas);
+        mFocusHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }
 
@@ -239,17 +239,17 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     public List<ItemInfoWithIcon> getPredictedApps() {
-        return this.mPredictedApps;
+        return mPredictedApps;
     }
 
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+    public void setPredictedApps(boolean z, List<CustomComponentKeyMapper> list) {
         setPredictionsEnabled(z);
-        this.mPredictedAppComponents.clear();
-        this.mPredictedAppComponents.addAll(list);
+        mPredictedAppComponents.clear();
+        mPredictedAppComponents.addAll(list);
         onAppsUpdated();
     }
 
-    public List<ComponentKeyMapper> getPredictedAppComponents() {
+    public List<CustomComponentKeyMapper> getPredictedAppComponents() {
         return mPredictedAppComponents;
     }
 
@@ -276,8 +276,9 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
                 BubbleTextView icon = (BubbleTextView) mLauncher.getLayoutInflater().inflate(R.layout.all_apps_icon, this, false);
                 icon.setOnClickListener(ItemClickHandler.INSTANCE);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
-                icon.setLongPressTimeout(ViewConfiguration.getLongPressTimeout());
+                icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);
+                icon.setVisibility(View.VISIBLE);
                 LayoutParams layoutParams = (LayoutParams) icon.getLayoutParams();
                 layoutParams.height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 layoutParams.width = 0;
@@ -292,13 +293,14 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
             BubbleTextView icon = (BubbleTextView) getChildAt(i);
             icon.reset();
             if (predictionCount > i) {
-                icon.setVisibility(View.VISIBLE);
                 if (mPredictedApps.get(i) instanceof AppInfo) {
                     icon.applyFromApplicationInfo((AppInfo) mPredictedApps.get(i));
-                } else if (mPredictedApps.get(i) instanceof ShortcutInfo) {
-                    icon.applyFromShortcutInfo((ShortcutInfo) mPredictedApps.get(i));
+                    icon.bringToFront();
+                } else if (mPredictedApps.get(i) instanceof WorkspaceItemInfo) {
+                    icon.applyFromShortcutInfo((WorkspaceItemInfo) mPredictedApps.get(i));
                 }
                 icon.setTextColor(alphaComponent);
+                icon.setVisibility(View.VISIBLE);
             } else {
                 icon.setVisibility(predictionCount == 0 ? View.GONE : View.VISIBLE);
             }
@@ -315,17 +317,17 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         mParent.headerChanged();
     }
 
-    private List<ItemInfoWithIcon> processPredictedAppComponents(List<ComponentKeyMapper> list) {
+    private List<ItemInfoWithIcon> processPredictedAppComponents(List<CustomComponentKeyMapper> list) {
         if (getAppsStore().getApps().isEmpty()) {
             return Collections.emptyList();
         }
         List<ItemInfoWithIcon> arrayList = new ArrayList<>();
-        for (ComponentKeyMapper app : list) {
+        for (CustomComponentKeyMapper app : list) {
             ItemInfoWithIcon app2 = app.getApp(getAppsStore());
             if (app2 != null) {
                 arrayList.add(app2);
             }
-            if (arrayList.size() == this.mNumPredictedAppsPerRow) {
+            if (arrayList.size() == mNumPredictedAppsPerRow) {
                 break;
             }
         }
@@ -336,17 +338,16 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
         if (mDividerType == DividerType.LINE) {
             int dimensionPixelSize = getResources().getDimensionPixelSize(R.dimen.dynamic_grid_edge_margin);
             float height = (float) (getHeight() - (getPaddingBottom() / 2));
-            Canvas canvas2 = canvas;
-            canvas2.drawLine((float) (getPaddingLeft() + dimensionPixelSize), height, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, mPaint);
+            canvas.drawLine((float) (getPaddingLeft() + dimensionPixelSize), height, (float) ((getWidth() - getPaddingRight()) - dimensionPixelSize), height, mPaint);
         } else if (mDividerType == DividerType.ALL_APPS_LABEL) {
             drawAllAppsHeader(canvas);
         }
     }
 
     public void fillInLogContainerData(View view, ItemInfo itemInfo, Target target, Target target2) {
-        for (int i = 0; i < this.mPredictedApps.size(); i++) {
-            if (this.mPredictedApps.get(i) == itemInfo) {
-                target2.containerType = 7;
+        for (int i = 0; i < mPredictedApps.size(); i++) {
+            if (mPredictedApps.get(i) == itemInfo) {
+                target2.containerType = LauncherLogProto.ContainerType.PREDICTION;
                 target.predictedRank = i;
                 return;
             }
@@ -420,12 +421,12 @@ public class PredictionRowView extends LinearLayout implements UserEventDispatch
     }
 
     private int getAllAppsLayoutFullHeight() {
-        return (this.mAllAppsLabelLayout.getHeight() + getResources().getDimensionPixelSize(R.dimen.all_apps_label_top_padding)) + getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding);
+        return (mAllAppsLabelLayout.getHeight() + getResources().getDimensionPixelSize(R.dimen.all_apps_label_top_padding)) + getResources().getDimensionPixelSize(R.dimen.all_apps_label_bottom_padding);
     }
 
     public void setCollapsed(boolean z) {
-        if (z != this.mIsCollapsed) {
-            this.mIsCollapsed = z;
+        if (z != mIsCollapsed) {
+            mIsCollapsed = z;
             updateVisibility();
         }
     }

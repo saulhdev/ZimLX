@@ -247,8 +247,12 @@ public class UiFactory extends RecentsUiFactory {
         return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 
-    public static Person[] getPersons(ShortcutInfo si) {
+    /*public static Person[] getPersons(ShortcutInfo si) {
         Person[] persons = si.getPersons();
         return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
+    }*/
+    public static String[] getPersons(ShortcutInfo si) {
+        String [] persons =  Utilities.EMPTY_PERSON_ARRAY;
+        return persons ;
     }
 }

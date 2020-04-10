@@ -16,7 +16,7 @@ import com.android.launcher3.LauncherExterns;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.dynamicui.WallpaperColorInfo;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.qsb.QsbAnimationController;
 import com.google.android.apps.nexuslauncher.search.ItemInfoUpdateReceiver;
@@ -86,13 +86,7 @@ public class NexusLauncher {
             SmartspaceController.get(mLauncher).cX(s, printWriter);
         }
 
-        public void finishBindingItems(final boolean b) {
-        }
         public boolean handleBackPressed() {
-            return false;
-        }
-
-        public boolean hasCustomContentToLeft() {
             return false;
         }
 
@@ -133,7 +127,7 @@ public class NexusLauncher {
 
             getUpdateReceiver().onCreate();
 
-            /*PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
+           /* PredictionUiStateManager predictionUiStateManager = PredictionUiStateManager.getInstance(mLauncher);
             predictionUiStateManager.setTargetAppsView(mLauncher.getAppsView());
             if (FeatureFlags.REFLECTION_FORCE_OVERVIEW_MODE) {
                 predictionUiStateManager.switchClient(Client.OVERVIEW);

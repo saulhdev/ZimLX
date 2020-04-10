@@ -57,14 +57,14 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
     @Override
     protected boolean isLaunchingFromRecents(@NonNull View v,
-            @Nullable RemoteAnimationTargetCompat[] targets) {
+                                             @Nullable RemoteAnimationTargetCompat[] targets) {
         return mLauncher.getStateManager().getState().overviewUi
                 && findTaskViewToLaunch(mLauncher, v, targets) != null;
     }
 
     @Override
     protected void composeRecentsLaunchAnimator(@NonNull AnimatorSet anim, @NonNull View v,
-            @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
+                                                @NonNull RemoteAnimationTargetCompat[] targets, boolean launcherClosing) {
         RecentsView recentsView = mLauncher.getOverviewPanel();
         boolean skipLauncherChanges = !launcherClosing;
 
@@ -116,7 +116,7 @@ public final class LauncherAppTransitionManagerImpl extends QuickstepAppTransiti
 
     @Override
     protected Runnable composeViewContentAnimator(@NonNull AnimatorSet anim, float[] alphas,
-            float[] trans) {
+                                                  float[] trans) {
         RecentsView overview = mLauncher.getOverviewPanel();
         ObjectAnimator alpha = ObjectAnimator.ofFloat(overview,
                 RecentsView.CONTENT_ALPHA, alphas);

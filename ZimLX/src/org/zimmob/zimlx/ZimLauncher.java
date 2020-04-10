@@ -17,9 +17,8 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.uioverrides.OverviewState;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
@@ -127,15 +126,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         BlurWallpaperProvider.Companion.getInstance(this).updateAsync();
     }
 
-    public int getShelfHeight() {
-        if (mZimPrefs.getShowPredictions()) {
-            int qsbHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
-            return (int) (OverviewState.getDefaultSwipeHeight(mDeviceProfile) + qsbHeight);
-        } else {
-            return mDeviceProfile.hotseatBarSizePx;
-        }
-    }
-
     @Override
     public void onResume() {
         super.onResume();
@@ -210,7 +200,6 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
         if (sRestart) {
             sRestart = false;
-            LauncherAppState.destroyInstance();
             ZimPreferences.Companion.destroyInstance();
         }
     }
@@ -219,19 +208,15 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
         return !sRestart;
     }
 
-    public void refreshGrid() {
-        mWorkspace.refreshChildren();
-    }
-
     public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
         ComponentKey component;
 
         if (itemInfo instanceof AppInfo) {
             component = ((AppInfo) itemInfo).toComponentKey();
             currentEditIcon = Objects.requireNonNull(IconPackManager.Companion.getInstance(this).getEntryForComponent(component)).getDrawable();
-        } else if (itemInfo instanceof ShortcutInfo) {
+        } else if (itemInfo instanceof WorkspaceItemInfo) {
             component = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
-            currentEditIcon = new BitmapDrawable(mContext.getResources(), ((ShortcutInfo) itemInfo).iconBitmap);
+            currentEditIcon = new BitmapDrawable(mContext.getResources(), ((WorkspaceItemInfo) itemInfo).iconBitmap);
         } else if (itemInfo instanceof FolderInfo) {
             component = ((FolderInfo) itemInfo).toComponentKey();
             currentEditIcon = ((FolderInfo) itemInfo).getDefaultIcon(this);
@@ -265,5 +250,10 @@ public class ZimLauncher extends NexusLauncherActivity implements ZimPreferences
 
             Objects.requireNonNull(CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
         }
+    }
+
+    @Override
+    public int getCurrentState() {
+        return 0;
     }
 }

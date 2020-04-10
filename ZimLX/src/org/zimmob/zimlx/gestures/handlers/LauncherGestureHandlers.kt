@@ -28,6 +28,7 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -194,7 +195,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             appName = config.getString("appName")
             type = if (config.has("type")) config.getString("type") else "app"
             if (type == "app") {
-                target = ComponentKey(context, config.getString("target"))
+                target = ComponentKey(target!!.componentName, Utilities.myUserHandle())
             } else {
                 intent = Intent.parseUri(config.getString("intent"), 0)
                 user = UserManagerCompat.getInstance(context).getUserForSerialNumber(config.getLong("user"))
@@ -228,7 +229,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             type = data.getStringExtra("type")
             when (type) {
                 "app" -> {
-                    target = ComponentKey(context, data.getStringExtra("target"))
+                    target = ComponentKey(data.component, Utilities.myUserHandle())
                 }
                 "shortcut" -> {
                     intent = Intent.parseUri(data.getStringExtra("intent"), 0)

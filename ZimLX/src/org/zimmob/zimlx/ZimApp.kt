@@ -38,13 +38,6 @@ class ZimApp : Application() {
     val recentsEnabled by lazy { checkRecentsComponent() }
     var accessibilityService: ZimAccessibilityService? = null
 
-    override fun onCreate() {
-        super.onCreate()
-
-        ThemeManager.getInstance(this)
-        BlurWallpaperProvider.getInstance(this)
-    }
-
     fun onLauncherAppStateCreated() {
         registerActivityLifecycleCallbacks(activityHandler)
 

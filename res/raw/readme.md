@@ -21,11 +21,7 @@ Our mission is to create a powerful launcher with smart features to make your de
 -   Icon badge support in apps and folder.
 -   Icon badge color configuration.
 
-## Development Features
-*   App Drawer
-    *   Transitions and animations.
-    *   Horizontal layout.
-    
+
 ## Donations
 Want to buy me a coffee? https://paypal.me/saulhenriquez
 

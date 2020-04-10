@@ -161,12 +161,13 @@ public class RecentTasksList extends TaskStackChangeListener {
             ActivityManager.RecentTaskInfo rawTask = rawTasks.get(i);
             Task.TaskKey taskKey = new Task.TaskKey(rawTask);
             Task task;
-            if (!loadKeysOnly) {
+            /*if (!loadKeysOnly) {
                 boolean isLocked = tmpLockedUsers.get(taskKey.userId);
                 task = Task.from(taskKey, rawTask, isLocked);
             } else {
                 task = new Task(taskKey);
-            }
+            }*/
+            task = new Task(taskKey);
             allTasks.add(task);
         }
 

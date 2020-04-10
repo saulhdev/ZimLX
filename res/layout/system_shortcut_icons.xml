@@ -21,4 +21,11 @@
     android:elevation="1dp"
     android:gravity="end|center_vertical"
     android:orientation="horizontal"
-    android:outlineProvider="none" /><!-- We have elevation so this is drawn on top, but no outline provider to remove shadow -->
+    android:outlineProvider="none">
+
+    <Space
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:id="@+id/separator" />
+</LinearLayout>

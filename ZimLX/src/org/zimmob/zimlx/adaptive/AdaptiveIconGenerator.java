@@ -32,8 +32,8 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ColorExtractor;
 import com.android.launcher3.graphics.FixedScaleDrawable;
-import com.android.launcher3.graphics.IconNormalizer;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.IconNormalizer;
+import com.android.launcher3.icons.LauncherIcons;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
@@ -123,7 +123,7 @@ public class AdaptiveIconGenerator {
             RectF bounds = new RectF();
 
             initTmpIfNeeded();
-            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape, MIN_VISIBLE_ALPHA);
+            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
             if (extractee instanceof ColorDrawable) {

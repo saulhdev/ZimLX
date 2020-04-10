@@ -21,7 +21,11 @@ import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
 import android.graphics.drawable.Drawable;
+import android.util.AttributeSet;
+import android.util.SparseArray;
+import android.util.TypedValue;
 
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 
 /**
@@ -104,5 +108,50 @@ public class Themes {
         target.getArray()[9] = Color.green(dstColor) - Color.green(srcColor);
         target.getArray()[14] = Color.blue(dstColor) - Color.blue(srcColor);
         target.getArray()[19] = Color.alpha(dstColor) - Color.alpha(srcColor);
+    }
+
+    /**
+     * Creates a map for attribute-name to value for all the values in {@param attrs} which can be
+     * held in memory for later use.
+     */
+    public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet,
+                                                         IntArray keysToIgnore) {
+        int count = attrSet.getAttributeCount();
+        IntArray attrNameArray = new IntArray(count);
+        for (int i = 0; i < count; i++) {
+            attrNameArray.add(attrSet.getAttributeNameResource(i));
+        }
+        attrNameArray.removeAllValues(keysToIgnore);
+
+        int[] attrNames = attrNameArray.toArray();
+        SparseArray<TypedValue> result = new SparseArray<>(attrNames.length);
+        TypedArray ta = context.obtainStyledAttributes(attrSet, attrNames);
+        for (int i = 0; i < attrNames.length; i++) {
+            TypedValue tv = new TypedValue();
+            ta.getValue(i, tv);
+            result.put(attrNames[i], tv);
+        }
+
+        return result;
+    }
+
+    public static String getDefaultBodyFont(Context context) {
+        TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,
+                new int[]{android.R.attr.fontFamily});
+        String value = ta.getString(0);
+        ta.recycle();
+        return value;
+    }
+
+    public static float getDialogCornerRadius(Context context) {
+        return getDimension(context, android.R.attr.dialogCornerRadius,
+                context.getResources().getDimension(R.dimen.default_dialog_corner_radius));
+    }
+
+    public static float getDimension(Context context, int attr, float defaultValue) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        float value = ta.getDimension(0, defaultValue);
+        ta.recycle();
+        return value;
     }
 }

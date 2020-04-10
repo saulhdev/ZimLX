@@ -28,11 +28,14 @@ import android.os.UserHandle;
 import android.util.Log;
 import android.util.LongSparseArray;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.graphics.LauncherIcons;
 import com.android.launcher3.graphics.ShadowGenerator;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
@@ -49,8 +52,6 @@ import java.util.Set;
 import java.util.WeakHashMap;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
-
-import androidx.annotation.Nullable;
 
 public class WidgetPreviewLoader {
 
@@ -105,6 +106,11 @@ public class WidgetPreviewLoader {
         CancellationSignal signal = new CancellationSignal();
         signal.setOnCancelListener(task);
         return signal;
+    }
+
+    public void refresh() {
+        mDb.clear();
+
     }
 
     /**

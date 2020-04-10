@@ -27,4 +27,6 @@
     <bool name="config_enable_white_only_treatment">false</bool>
     <!-- Wether the status bar should be hidden on the home screen -->
     <bool name="config_hide_statusbar">false</bool>
+
+    <bool name="notification_dots_enabled">true</bool>
 </resources>

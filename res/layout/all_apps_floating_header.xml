@@ -23,15 +23,15 @@
 
     <com.google.android.apps.nexuslauncher.allapps.PredictionRowView
         android:id="@+id/prediction_row"
-        android:accessibilityPaneTitle="@string/title_app_suggestions_in_search"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:accessibilityPaneTitle="@string/title_app_suggestions_in_search" />
 
     <HorizontalScrollView
         android:id="@+id/tabs_scroller"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@android:color/transparent"
+        android:background="@color/transparent"
         android:paddingLeft="@dimen/all_apps_tabs_side_padding"
         android:paddingRight="@dimen/all_apps_tabs_side_padding"
         android:clipChildren="false"
@@ -46,5 +46,6 @@
             android:clipChildren="false"
             android:clipToPadding="false"
             android:orientation="horizontal" />
+
     </HorizontalScrollView>
 </com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader>

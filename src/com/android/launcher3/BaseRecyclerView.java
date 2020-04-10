@@ -24,6 +24,7 @@ import android.view.ViewGroup;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 
@@ -120,16 +121,15 @@ public abstract class BaseRecyclerView extends RecyclerView {
 
     /**
      * Returns whether the view itself will handle the touch event or not.
-     *
      * @param ev MotionEvent in {@param eventSource}
      */
     public boolean shouldContainerScroll(MotionEvent ev, View eventSource) {
-        int[] point = new int[2];
-        point[0] = (int) ev.getX();
-        point[1] = (int) ev.getY();
+        float[] point = new float[2];
+        point[0] = ev.getX();
+        point[1] = ev.getY();
         Utilities.mapCoordInSelfToDescendant(mScrollbar, eventSource, point);
         // IF the MotionEvent is inside the thumb, container should not be pulled down.
-        if (mScrollbar.shouldBlockIntercept(point[0], point[1])) {
+        if (mScrollbar.shouldBlockIntercept((int) point[0], (int) point[1])) {
             return false;
         }
 
@@ -169,4 +169,13 @@ public abstract class BaseRecyclerView extends RecyclerView {
      * <p>Override in each subclass of this base class.
      */
     public void onFastScrollCompleted() {}
+
+    @Override
+    public void onScrollStateChanged(int state) {
+        super.onScrollStateChanged(state);
+
+        if (state == SCROLL_STATE_IDLE) {
+            AccessibilityManagerCompat.sendScrollFinishedEventToTest(getContext());
+        }
+    }
 }

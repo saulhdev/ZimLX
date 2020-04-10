@@ -20,7 +20,7 @@ package org.zimmob.zimlx.iconpack
 import android.content.Context
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
-import com.android.launcher3.ShortcutInfo
+import com.android.launcher3.WorkspaceItemInfo
 import com.google.android.apps.nexuslauncher.DynamicDrawableFactory
 import com.google.android.apps.nexuslauncher.clock.CustomClock
 
@@ -30,7 +30,7 @@ class ZimDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
     val customClockDrawer by lazy { CustomClock(context) }
 
     override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
-        return iconPackManager.newIcon((info as? ShortcutInfo)?.customIcon ?: info.iconBitmap,
+        return iconPackManager.newIcon((info as? WorkspaceItemInfo)?.customIcon ?: info.iconBitmap,
                 info, this).also { it.setIsDisabled(info.isDisabled) }
     }
 }

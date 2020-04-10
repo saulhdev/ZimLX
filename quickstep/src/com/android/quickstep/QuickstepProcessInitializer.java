@@ -22,6 +22,7 @@ import android.util.Log;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
+import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
 
 @SuppressWarnings("unused")
@@ -36,19 +37,26 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
         // Workaround for b/120550382, an external app can cause the launcher process to start for
         // a work profile user which we do not support. Disable the application immediately when we
         // detect this to be the case.
-        UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
+        /*UserManager um = (UserManager) context.getSystemService(Context.USER_SERVICE);
         if (um.isManagedProfile()) {
             PackageManager pm = context.getPackageManager();
             pm.setApplicationEnabledSetting(context.getPackageName(),
-                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0 /* flags */);
+                    PackageManager.COMPONENT_ENABLED_STATE_DISABLED, 0);
             Log.w(TAG, "Disabling " + BuildConfig.APPLICATION_ID
                     + ", unable to run in a managed profile");
             return;
-        }
+        }*/
+
 
         super.init(context);
 
+        //ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+
         // Elevate GPU priority for Quickstep and Remote animations.
-        ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+        try {
+            ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+        } catch (Throwable t) {
+            Log.e("QuickstepProcessInit", "Hidden APIs allowed but can't invoke setContextPriority", t);
+        }
     }
 }

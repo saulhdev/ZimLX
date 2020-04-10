@@ -61,19 +61,6 @@
             android:resumeWhilePausing="true"
             android:taskAffinity="" />
 
-        <!-- Content provider to settings search. The autority should be same as the packageName -->
-        <provider
-            android:name="com.android.quickstep.LauncherSearchIndexablesProvider"
-            android:authorities="${packageName}"
-            android:grantUriPermissions="true"
-            android:multiprocess="true"
-            android:permission="android.permission.READ_SEARCH_INDEXABLES"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.content.action.SEARCH_INDEXABLES_PROVIDER" />
-            </intent-filter>
-        </provider>
-
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             tools:node="remove" />

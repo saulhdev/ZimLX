@@ -37,6 +37,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.WeakHashMap;
+import java.util.function.Predicate;
 
 /**
  * A utility class to maintain the collection of all apps.
@@ -145,12 +146,12 @@ public class AllAppsStore {
         mFolderIcons.add(folderIcon);
     }
 
-    public void updateIconBadges(Set<PackageUserKey> updatedBadges) {
+    public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
                 ItemInfo info = (ItemInfo) child.getTag();
-                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
-                    child.applyBadgeState(info, true /* animate */);
+                if (mTempKey.updateFromItemInfo(info) && updatedDots.test(mTempKey)) {
+                    child.applyDotState(info, true /* animate */);
                 }
             }
         });
@@ -158,9 +159,9 @@ public class AllAppsStore {
         Set<FolderIcon> foldersToUpdate = new HashSet<>();
         for (FolderIcon folderIcon : mFolderIcons) {
             folderIcon.getFolder().iterateOverItems((info, view) -> {
-                if (mTempKey.updateFromItemInfo(info) && updatedBadges.contains(mTempKey)) {
+                if (mTempKey.updateFromItemInfo(info) && updatedDots.toString().contains(mTempKey.mPackageName)) {
                     if (view instanceof BubbleTextView) {
-                        ((BubbleTextView) view).applyBadgeState(info, true);
+                        ((BubbleTextView) view).applyDotState(info, true);
                     }
                     foldersToUpdate.add(folderIcon);
                 }
@@ -169,7 +170,7 @@ public class AllAppsStore {
         }
 
         for (FolderIcon folderIcon : foldersToUpdate) {
-            folderIcon.updateIconBadges(updatedBadges, mTempKey);
+            folderIcon.updateIconDots(updatedDots, mTempKey);
         }
     }
 

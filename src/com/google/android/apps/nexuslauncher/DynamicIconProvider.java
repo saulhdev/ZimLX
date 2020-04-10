@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
+import android.content.pm.ShortcutInfo;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.drawable.Drawable;
@@ -21,7 +22,6 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.google.android.apps.nexuslauncher.clock.DynamicClock;
 
 import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
@@ -51,7 +51,7 @@ public class DynamicIconProvider extends IconProvider {
                 for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
                     LauncherModel model = LauncherAppState.getInstance(context).getModel();
                     model.onPackageChanged(GOOGLE_CALENDAR, user);
-                    List<ShortcutInfoCompat> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
+                    List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(GOOGLE_CALENDAR, user);
                     if (!shortcuts.isEmpty()) {
                         model.updatePinnedShortcuts(GOOGLE_CALENDAR, shortcuts, user);
                     }
@@ -116,8 +116,4 @@ public class DynamicIconProvider extends IconProvider {
         return drawable == null ? super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable) : drawable;
     }
 
-    @Override
-    public String getIconSystemState(final String s) {
-        return isCalendar(s) ? mSystemState + " " + getDayOfMonth() : mSystemState;
-    }
 }

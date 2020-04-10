@@ -24,7 +24,7 @@ import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
-import com.android.launcher3.graphics.LauncherIcons
+import com.android.launcher3.icons.LauncherIcons
 import org.zimmob.zimlx.gestures.ui.HandlerListAdapter
 import org.zimmob.zimlx.gestures.ui.RunHandlerActivity
 import org.zimmob.zimlx.settings.ui.SettingsBaseActivity

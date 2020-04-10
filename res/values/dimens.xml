@@ -327,4 +327,7 @@
 
     <dimen name="dashboard_tile_minimum_height">72dp</dimen>
 
+    <!-- Theming related -->
+    <dimen name="default_dialog_corner_radius">8dp</dimen>
+
 </resources>

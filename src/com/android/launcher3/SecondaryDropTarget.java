@@ -162,7 +162,7 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         Intent intent = null;
         UserHandle user = null;
         if (item != null &&
-                item.itemType == LauncherSettings.BaseLauncherColumns.ITEM_TYPE_APPLICATION) {
+                item.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             intent = item.getIntent();
             user = item.user;
         }
@@ -191,12 +191,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             DeferredOnComplete deferred = (DeferredOnComplete) d.dragSource;
             if (target != null) {
                 deferred.mPackageName = target.getPackageName();
-                mLauncher.setOnResumeCallback(deferred);
+                mLauncher.addOnResumeCallback(deferred);
             } else {
                 deferred.sendFailure();
             }
         }
     }
+
 
     private View getViewUnderDrag(ItemInfo info) {
         if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP &&

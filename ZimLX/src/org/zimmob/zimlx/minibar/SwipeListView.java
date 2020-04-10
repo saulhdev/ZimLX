@@ -12,6 +12,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.util.ComponentKey;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.ZimComponentKey;
 
 import java.util.ArrayList;
 
@@ -37,7 +38,7 @@ public class SwipeListView extends ListView {
             if (action.length() == 2) {
                 item = DashUtils.getDashItemFromString(action);
             } else {
-                ComponentKey keyMapper = new ComponentKey(mContext, action);
+                ComponentKey keyMapper = new ZimComponentKey(mContext, action);
                 AppInfo app = Launcher.getLauncher(mContext).mAllAppsController.getAppsView().getAppsStore().getApp(keyMapper);
                 if (app != null) {
                     item = DashItem.asApp(app, 0);

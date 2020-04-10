@@ -31,6 +31,7 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.ZimAppFilter
 import org.zimmob.zimlx.groups.DrawerTabs
 import org.zimmob.zimlx.settings.ui.SettingsActivity
+import org.zimmob.zimlx.util.ZimComponentKey
 
 class SelectableAppsActivity : SettingsActivity() {
 
@@ -111,7 +112,7 @@ class SelectableAppsActivity : SettingsActivity() {
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         if (resultCode == Activity.RESULT_OK) {
                             callback(resultData!!.getStringArrayList(KEY_SELECTION)!!.map {
-                                ComponentKey(context, it)
+                                ZimComponentKey(context, it)
                             })
                         } else {
                             callback(null)

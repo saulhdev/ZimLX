@@ -18,7 +18,6 @@ package com.android.launcher3.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
@@ -27,7 +26,7 @@ import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.model.GridSizeMigrationTask;
-import com.android.launcher3.util.LongArrayMap;
+import com.android.launcher3.util.IntSparseArrayMap;
 
 import java.util.ArrayList;
 
@@ -37,26 +36,18 @@ import java.util.ArrayList;
  */
 public class LossyScreenMigrationTask extends GridSizeMigrationTask {
 
-    private final SQLiteDatabase mDb;
-
-    private final LongArrayMap<DbEntry> mOriginalItems;
-    private final LongArrayMap<DbEntry> mUpdates;
+    private final IntSparseArrayMap<DbEntry> mOriginalItems;
+    private final IntSparseArrayMap<DbEntry> mUpdates;
 
     protected LossyScreenMigrationTask(
             Context context, InvariantDeviceProfile idp, SQLiteDatabase db) {
         // Decrease the rows count by 1
-        super(context, idp, getValidPackages(context),
+        super(context, db, getValidPackages(context),
                 new Point(idp.numColumns, idp.numRows + 1),
                 new Point(idp.numColumns, idp.numRows));
 
-        mDb = db;
-        mOriginalItems = new LongArrayMap<>();
-        mUpdates = new LongArrayMap<>();
-    }
-
-    @Override
-    protected Cursor queryWorkspace(String[] columns, String where) {
-        return mDb.query(Favorites.TABLE_NAME, columns, where, null, null, null, null);
+        mOriginalItems = new IntSparseArrayMap<>();
+        mUpdates = new IntSparseArrayMap<>();
     }
 
     @Override
@@ -65,7 +56,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
     }
 
     @Override
-    protected ArrayList<DbEntry> loadWorkspaceEntries(long screen) {
+    protected ArrayList<DbEntry> loadWorkspaceEntries(int screen) {
         ArrayList<DbEntry> result = super.loadWorkspaceEntries(screen);
         for (DbEntry entry : result) {
             mOriginalItems.put(entry.id, entry.copy());
@@ -90,7 +81,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
                 tempValues.clear();
                 update.addToContentValues(tempValues);
                 mDb.update(Favorites.TABLE_NAME, tempValues, "_id = ?",
-                        new String[]{Long.toString(update.id)});
+                        new String[]{Integer.toString(update.id)});
             }
         }
 

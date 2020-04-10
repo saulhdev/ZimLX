@@ -9,6 +9,7 @@ import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Interpolator;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -21,6 +22,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.SearchUiManager;
+import com.android.launcher3.anim.PropertySetter;
 import com.google.android.apps.nexuslauncher.search.SearchThread;
 
 import org.zimmob.zimlx.ZimPreferences;
@@ -235,6 +237,16 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     @Override
     public void startSearch() {
         post(() -> startSearch("", Di));
+    }
+
+    @Override
+    public float getScrollRangeDelta(Rect insets) {
+        return 0;
+    }
+
+    @Override
+    public void setContentVisibility(int visibleElements, PropertySetter setter, Interpolator interpolator) {
+
     }
 
     @Override

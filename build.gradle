@@ -36,6 +36,8 @@ buildscript {
     }
 }
 
+final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
+
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
 
@@ -53,17 +55,15 @@ android {
     if (localPropsFile.exists()) {
         localProps.load(localPropsFile.newDataInputStream())
     }
-    def name = "0.6.5"
+    def name = "0.7.1"
     def code = 3017
     defaultConfig {
         minSdkVersion 25
-        targetSdkVersion 28
+        targetSdkVersion 29
 
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
         buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
-
-        multiDexEnabled false
 
         applicationId "org.zimmob.zimlx"
         versionName name
@@ -119,10 +119,11 @@ android {
         abortOnError false
         checkReleaseBuilds false
     }
+
     sourceSets {
         main {
             res.srcDirs = ['res']
-            java.srcDirs = ['src']
+            java.srcDirs = ['src', 'src_plugins']
             aidl.srcDirs = ['src']
             assets.srcDirs = ['assets']
             manifest.srcFile 'AndroidManifest-common.xml'
@@ -150,7 +151,7 @@ android {
 
         l3go {
             res.srcDirs = ['go/res']
-            java.srcDirs = ['go/src_flags', "src_ui_overrides"]
+            java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
         }
         withoutQuickstep {
@@ -172,7 +173,7 @@ android {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs.add('-Xbootclasspath/p:ZimLX/libs/framework.jar')
+            options.compilerArgs.add("-Xbootclasspath/p:${FRAMEWORK_PREBUILTS_DIR}/libs/framework.jar")
         }
     }
 
@@ -213,7 +214,7 @@ dependencies {
     implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
     implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
-    implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
+    //implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
     implementation 'com.github.florent37:fiftyshadesof:1.0.0'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.3'
@@ -226,16 +227,14 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
-    //implementation fileTree(dir: "ZimLX/libs", include: 'launcher_protos.jar')
-    //withQuickstepImplementation project(':systemui-shared')
+    implementation project(':IconLoader')
+    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
     // Recents lib dependency
-    withQuickstepImplementation fileTree(dir: "ZimLX/libs", include: 'sysui_shared.jar')
+    withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_shared.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
-    withoutQuickstepImplementation fileTree(dir: "ZimLX/libs", include: 'plugin_core.jar')
-
-    implementation project(':IconLoader')
+    withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
     // Tools
     implementation "com.jakewharton:butterknife:${version_library_butterknife}"

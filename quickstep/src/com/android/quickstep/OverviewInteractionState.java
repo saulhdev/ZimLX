@@ -64,8 +64,8 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
-                .addModeChangeListener(this::onNavigationModeChanged));
+        //onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
+        //        .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {

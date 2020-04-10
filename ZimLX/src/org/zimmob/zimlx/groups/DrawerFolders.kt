@@ -76,7 +76,7 @@ class DrawerFolders(private val manager: AppGroupsManager) : AppGroups<DrawerFol
 
         open fun toFolderInfo(getAppInfo: (ComponentKey) -> AppInfo?) = DrawerFolderInfo(this).apply {
             setTitle(this@Folder.getTitle())
-            id = this@Folder.id.value()
+            id = this@Folder.id.value().toInt()
             contents = ArrayList()
         }
     }

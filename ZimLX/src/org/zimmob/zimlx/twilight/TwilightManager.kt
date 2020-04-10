@@ -15,7 +15,7 @@
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package og.zimmob.zimlx.twilight
+package org.zimmob.zimlx.twilight
 
 import android.annotation.SuppressLint
 import android.app.AlarmManager
@@ -38,9 +38,6 @@ import androidx.core.content.ContextCompat
 import com.android.launcher3.BuildConfig
 import org.zimmob.zimlx.checkLocationAccess
 import org.zimmob.zimlx.ensureOnMainThread
-import org.zimmob.zimlx.twilight.SunriseSunsetCalculatorCompat
-import org.zimmob.zimlx.twilight.TwilightListener
-import org.zimmob.zimlx.twilight.TwilightState
 import org.zimmob.zimlx.useApplicationContext
 import org.zimmob.zimlx.util.SingletonHolder
 import java.util.*

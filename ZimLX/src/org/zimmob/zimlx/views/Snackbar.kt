@@ -78,7 +78,7 @@ class Snackbar(context: Context, attributeSet: AttributeSet?) : AbstractFloating
 
         @JvmStatic
         fun show(launcher: Launcher, i: Int, i2: Int, runnable: Runnable?, runnable2: Runnable?) {
-            AbstractFloatingView.closeOpenViews(launcher, true, AbstractFloatingView.TYPE_QUICKSTEP_PREVIEW)
+            AbstractFloatingView.closeOpenViews(launcher, true, AbstractFloatingView.TYPE_OPTIONS_POPUP)
             val snackbar = Snackbar(launcher, null)
             snackbar.orientation = LinearLayout.HORIZONTAL
             snackbar.gravity = 16

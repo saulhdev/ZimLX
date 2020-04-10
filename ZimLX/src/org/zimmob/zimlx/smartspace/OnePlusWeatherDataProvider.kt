@@ -25,13 +25,13 @@ import androidx.annotation.Keep
 import com.android.launcher3.R
 import com.android.launcher3.util.PackageManagerHelper
 import net.oneplus.launcher.OPWeatherProvider
-import og.zimmob.zimlx.twilight.TwilightManager
 import org.zimmob.zimlx.checkLocationAccess
 import org.zimmob.zimlx.location.IPLocation
 import org.zimmob.zimlx.perms.CustomPermissionManager
 import org.zimmob.zimlx.runOnMainThread
 import org.zimmob.zimlx.runOnUiWorkerThread
 import org.zimmob.zimlx.smartspace.weather.icons.WeatherIconManager
+import org.zimmob.zimlx.twilight.TwilightManager
 import org.zimmob.zimlx.util.Temperature
 import java.util.*
 import java.util.Calendar.HOUR_OF_DAY

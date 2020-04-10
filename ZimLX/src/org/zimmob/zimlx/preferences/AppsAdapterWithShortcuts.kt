@@ -45,7 +45,6 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.iconpack.ZimIconProvider
 import org.zimmob.zimlx.isVisible
 
-
 open class AppsAdapterWithShortcuts(
         private val context: Context,
         private val callback: Callback? = null,
@@ -70,7 +69,7 @@ open class AppsAdapterWithShortcuts(
 
     init {
         if (iconProvider == null) {
-            iconProvider = IconProvider.newInstance(context)
+            iconProvider = IconProvider.INSTANCE.get(context)
         }
         Handler(LauncherModel.getWorkerLooper()).postAtFrontOfQueue(::loadAppsList)
     }

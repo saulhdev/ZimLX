@@ -26,7 +26,7 @@ import org.zimmob.zimlx.ZimLauncher
 class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.OVERVIEW,
         SPRING_LOADED_TRANSITION_MS, STATE_FLAGS) {
 
-    override fun getWorkspaceScaleAndTranslation(launcher: Launcher): FloatArray {
+    override fun getWorkspaceScaleAndTranslation(launcher: Launcher): ScaleAndTranslation {
         val grid = launcher.deviceProfile
         val ws = launcher.workspace
 
@@ -41,7 +41,7 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
             val desiredBottom = grid.heightPx - optionsView.height
             val actualBottom = ws.height * 0.5f + (ws.height * 0.5f * scale)
 
-            return floatArrayOf(scale, 0f, Math.max(desiredCenter - actualCenter, desiredBottom - actualBottom))
+            return ScaleAndTranslation(scale, 0f, Math.max(desiredCenter - actualCenter, desiredBottom - actualBottom))
         }
 
         val scale = grid.workspaceOptionsShrinkFactor
@@ -60,7 +60,7 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
         val myCenter = ws.top + halfHeight
         val cellTopFromCenter = halfHeight - ws.getChildAt(0).top
         val actualCellTop = myCenter - cellTopFromCenter * scale
-        return floatArrayOf(scale, 0f, (desiredCellTop - actualCellTop) / scale)
+        return ScaleAndTranslation(scale, 0f, (desiredCellTop - actualCellTop) / scale)
     }
 
     override fun getWorkspaceScrimAlpha(launcher: Launcher?): Float {

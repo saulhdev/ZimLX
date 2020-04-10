@@ -25,14 +25,14 @@ import android.graphics.drawable.Drawable;
 import android.view.View;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.ENTER_INDEX;
 import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.EXIT_INDEX;
@@ -107,7 +107,8 @@ public class PreviewItemManager {
             mTotalWidth = totalSize;
             mPrevTopPadding = mIcon.getPaddingTop();
 
-            mIcon.mBackground.setup(mIcon.mLauncher, mIcon, mTotalWidth, mIcon.getPaddingTop());
+            mIcon.mBackground.setup(mIcon.mLauncher, mIcon.mLauncher, mIcon, mTotalWidth,
+                    mIcon.getPaddingTop());
             mIcon.mPreviewLayoutRule.init(mIcon.mBackground.previewSize, mIntrinsicIconSize,
                     Utilities.isRtl(mIcon.getResources()));
 
@@ -300,7 +301,7 @@ public class PreviewItemManager {
      * @param dropped The item that was dropped onto the FolderIcon.
      */
     public void onDrop(List<BubbleTextView> oldParams, List<BubbleTextView> newParams,
-                       ShortcutInfo dropped) {
+                       WorkspaceItemInfo dropped) {
         int numItems = newParams.size();
         final ArrayList<PreviewItemDrawingParams> params = mFirstPageParams;
         buildParamsForPage(0, params, false);

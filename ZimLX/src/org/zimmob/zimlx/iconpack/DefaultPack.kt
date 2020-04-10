@@ -37,6 +37,7 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import org.zimmob.zimlx.getLauncherActivityInfo
+import org.zimmob.zimlx.util.ZimComponentKey
 import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
@@ -76,7 +77,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
     override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
-        return getIcon(ComponentKey(context, entry.icon), iconDpi)
+        return getIcon(ZimComponentKey(context, entry.icon), iconDpi)
     }
 
     fun getIcon(key: ComponentKey, iconDpi: Int): Drawable? {
@@ -102,7 +103,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val key: ComponentKey
         val info: LauncherActivityInfo
         if (customIconEntry != null && !TextUtils.isEmpty(customIconEntry.icon)) {
-            key = ComponentKey(context, customIconEntry.icon)
+            key = ZimComponentKey(context, customIconEntry.icon)
             info = key.getLauncherActivityInfo(context) ?: launcherActivityInfo
         } else {
             key = ComponentKey(launcherActivityInfo.componentName, launcherActivityInfo.user)
@@ -137,7 +138,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             val component = if (customIconEntry?.icon != null) {
-                ComponentKey(context, customIconEntry.icon).componentName
+                ZimComponentKey(context, customIconEntry.icon).componentName
             } else {
                 itemInfo.targetComponent
             }

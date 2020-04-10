@@ -17,7 +17,6 @@
 package com.android.launcher3.uioverrides;
 
 import android.content.Context;
-import android.provider.DeviceConfig;
 import com.android.launcher3.config.BaseFlags.BaseTogglableFlag;
 
 public class TogglableFlag extends BaseTogglableFlag {
@@ -30,12 +29,13 @@ public class TogglableFlag extends BaseTogglableFlag {
 
     @Override
     public boolean getOverridenDefaultValue(boolean value) {
-        return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, getKey(), value);
+        //return DeviceConfig.getBoolean(NAMESPACE_LAUNCHER, getKey(), value);
+        return false;
     }
 
     @Override
     public void addChangeListener(Context context, Runnable r) {
-        DeviceConfig.addOnPropertiesChangedListener(
+        /*DeviceConfig.addOnPropertiesChangedListener(
             NAMESPACE_LAUNCHER,
             context.getMainExecutor(),
             (properties) -> {
@@ -44,6 +44,6 @@ public class TogglableFlag extends BaseTogglableFlag {
                 }
                 initialize(context);
                 r.run();
-            });
+            });*/
     }
 }

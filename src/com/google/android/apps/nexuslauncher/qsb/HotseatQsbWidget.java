@@ -241,7 +241,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                     LauncherAppsCompat.getInstance(getContext())
                             .showAppDetailsForProfile(
                                     new ComponentName(GOOGLE_QSB, ".SearchActivity"),
-                                    Process.myUserHandle());
+                                    Process.myUserHandle(), null, null);
                 } catch (PackageManager.NameNotFoundException ignored2) {
                 }
             }

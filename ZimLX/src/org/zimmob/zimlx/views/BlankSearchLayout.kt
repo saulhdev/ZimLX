@@ -17,11 +17,14 @@
 package org.zimmob.zimlx.views
 
 import android.content.Context
+import android.graphics.Rect
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
+import android.view.animation.Interpolator
 import com.android.launcher3.allapps.AllAppsContainerView
 import com.android.launcher3.allapps.SearchUiManager
+import com.android.launcher3.anim.PropertySetter
 
 class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, attrs), SearchUiManager {
 
@@ -47,5 +50,13 @@ class BlankSearchLayout(context: Context, attrs: AttributeSet?) : View(context, 
 
     override fun startSearch() {
 
+    }
+
+    override fun setContentVisibility(visibleElements: Int, setter: PropertySetter?, interpolator: Interpolator?) {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun getScrollRangeDelta(insets: Rect?): Float {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 }

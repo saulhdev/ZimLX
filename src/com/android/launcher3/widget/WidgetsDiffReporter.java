@@ -18,14 +18,14 @@ package com.android.launcher3.widget;
 
 import android.util.Log;
 
-import com.android.launcher3.IconCache;
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryComparator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
-
-import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Do diff on widget's tray list items and call the {@link RecyclerView.Adapter}

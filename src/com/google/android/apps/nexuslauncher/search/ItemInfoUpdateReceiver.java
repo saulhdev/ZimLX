@@ -2,10 +2,10 @@ package com.google.android.apps.nexuslauncher.search;
 
 import android.content.SharedPreferences;
 
-import com.android.launcher3.IconCache;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.icons.IconCache;
 
 import org.zimmob.zimlx.util.ZimFlags;
 
@@ -21,12 +21,11 @@ public class ItemInfoUpdateReceiver implements IconCache.ItemInfoUpdateReceiver,
     }
 
     public void di() {
-        /*final AlphabeticalAppsList apps = ((AllAppsRecyclerView) this.mLauncher.findViewById(R.id.apps_list_view)).getApps();
-        final IconCache iconCache = LauncherAppState.getInstance(this.mLauncher).getIconCache();
+        /*final IconCache iconCache = LauncherAppState.getInstance(this.mLauncher).getIconCache();
         final Iterator<ComponentKeyMapper> iterator = this.mCallbacks.getPredictedApps().iterator();
         int n = 0;
         while (iterator.hasNext()) {
-            final AppInfo app = apps.findApp(iterator.next());
+            final AppInfo app = mLauncher.mAppsView.getAppsStore().getApp(iterator.next().getKey());
             int n2;
             if (app != null) {
                 if (app.usingLowResIcon) {

@@ -24,30 +24,24 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
-import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.TextView;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
+import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+import com.android.launcher3.views.Transposable;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurDrawable;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Action;
-
-public class Hotseat extends FrameLayout implements LogContainerProvider, Insettable {
+public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
 
     private final Launcher mLauncher;
     private CellLayout mContent;
@@ -119,15 +113,15 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
         mContent = findViewById(R.id.layout);
     }
 
-    void resetLayout(boolean hasVerticalHotseat) {
+    /*void resetLayout(boolean hasVerticalHotseat) {
         mContent.removeAllViewsInLayout();
         mHasVerticalHotseat = hasVerticalHotseat;
         InvariantDeviceProfile idp = mLauncher.getDeviceProfile().inv;
         int rows = Utilities.getZimPrefs(mLauncher).getDockRowsCount();
         if (hasVerticalHotseat) {
-            mContent.setGridSize(rows, idp.numHotseatIcons);
+            setGridSize(1, idp.numHotseatIcons);
         } else {
-            mContent.setGridSize(idp.numHotseatIcons, rows);
+            setGridSize(idp.numHotseatIcons, 1);
         }
 
         if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mLauncher.getApplicationContext()).getHideDockButton()) {
@@ -170,6 +164,16 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
             lp.canReorder = false;
             mContent.addViewToCellLayout(allAppsButton, -1, allAppsButton.getId(), lp, true);
         }
+    }*/
+    public void resetLayout(boolean hasVerticalHotseat) {
+        removeAllViewsInLayout();
+        mHasVerticalHotseat = hasVerticalHotseat;
+        InvariantDeviceProfile idp = mActivity.getDeviceProfile().inv;
+        if (hasVerticalHotseat) {
+            setGridSize(1, idp.numHotseatIcons);
+        } else {
+            setGridSize(idp.numHotseatIcons, 1);
+        }
     }
 
     @Override
@@ -184,7 +188,7 @@ public class Hotseat extends FrameLayout implements LogContainerProvider, Insett
     public void fillInLogContainerData(View v, ItemInfo info, Target target, Target targetParent) {
         target.gridX = info.cellX;
         target.gridY = info.cellY;
-        targetParent.containerType = ContainerType.HOTSEAT;
+        targetParent.containerType = LauncherLogProto.ContainerType.HOTSEAT;
     }
 
     @Override

@@ -25,6 +25,7 @@ import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.util.Config
 import org.zimmob.zimlx.util.Temperature
+import org.zimmob.zimlx.util.ZimComponentKey
 import org.zimmob.zimlx.util.ZimFlags
 import java.io.File
 import java.util.*
@@ -65,7 +66,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
     private val reloadDockStyle = {
-        LauncherAppState.getIDP(context).onDockStyleChanged(this)
+        //LauncherAppState.getIDP(context).onDockStyleChanged(this)
         recreate()
     }
     private val zimConfig = Config.getInstance(context)
@@ -77,20 +78,20 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
     val allowOverlap by BooleanPref(ZimFlags.DESKTOP_OVERLAP_WIDGET, false, reloadAll)
-    val desktopIconScale by FloatPref(ZimFlags.DESKTOP_ICON_SCALE, 1f, recreate)
-    val hideAppLabels by BooleanPref(ZimFlags.DESKTOP_HIDE_LABELS, false, recreate)
-    val showTopShadow by BooleanPref(ZimFlags.DESKTOP_TOP_SHADOW, true, recreate) // TODO: update the scrim instead of doing this
+    val desktopIconScale by FloatPref("pref_iconScaleSB", 1f, recreate)
+    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+    val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate) // TODO: update the scrim instead of doing this
     val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-    val minibarEnable by BooleanPref(ZimFlags.MINIBAR_ENABLE, true, recreate)
+    val minibarEnable by BooleanPref("pref_key__minibar_enable", true, recreate)
     val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
     fun setMinibarEnable(enable: Boolean) {
-        sharedPrefs.edit().putBoolean(ZimFlags.MINIBAR_ENABLE, enable).apply()
+        sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
     }
 
-    var minibarItems by StringSetPref(ZimFlags.MINIBAR_ITEMS, zimConfig.minibarItems, recreate)
+    var minibarItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
 
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
@@ -102,7 +103,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockShadow get() = dockStyles.currentStyle.enableShadow
     val dockShowArrow get() = dockStyles.currentStyle.enableArrow
     val dockOpacity get() = dockStyles.currentStyle.opacity
-    val dockScale by FloatPref(ZimFlags.HOTSEAT_ICON_SCALE, 1f, recreate)
+    val dockScale by FloatPref("pref_dockScale", 1f, recreate)
     val dockShowPageIndicator by BooleanPref("pref_hotseatShowPageIndicator", true, { onChangeCallback?.updatePageIndicator() })
     val twoRowDock by BooleanPref("pref_twoRowDock", false, recreate)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
@@ -122,7 +123,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val displayDebugOverlay by BooleanPref("pref_debugDisplayState", false)
 
     // App Drawer
-    val hideAllAppsAppLabels by BooleanPref(ZimFlags.APPDRAWER_HIDE_APP_LABEL, false, recreate)
+    val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
     val allAppsStartAlpha get() = dockStyles.currentStyle.opacity
     val allAppsEndAlpha get() = allAppsOpacity
@@ -135,19 +136,19 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     val saveScrollPosition by BooleanPref("pref_keepScrollState", false, recreate)
-    val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, false, recreate)
+    val showPredictions by BooleanPref(ZimFlags.APPDRAWER_SHOW_PREDICTIONS, true, recreate)
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
     val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
     private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
-    val allAppsIconScale by FloatPref(ZimFlags.APPDRAWER_ICON_SCALE, 1f, recreate)
+    val allAppsIconScale by FloatPref("pref_allAppsIconScale", 1f, recreate)
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
     private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
     val drawerGridSize by drawerGridSizeDelegate
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
 
     fun getSortMode(): Int {
-        val sort: String = sharedPrefs.getString(ZimFlags.APPDRAWER_SORT_MODE, "0")!!
+        val sort: String = sharedPrefs.getString("pref_key__sort_mode", "0")!!
         reloadApps
         return sort.toInt()
     }
@@ -190,11 +191,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     val blurRadius by FloatPref("pref_blurRadius", zimConfig.defaultBlurStrength, updateBlur)
     var enableBlur by BooleanPref("pref_enableBlur", zimConfig.defaultEnableBlur(), updateBlur)
-    val primaryColor by IntPref(ZimFlags.PRIMARY_COLOR, R.color.colorPrimary, restart)
-    val accentColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, restart)
-    val minibarColor by IntPref(ZimFlags.MINIBAR_COLOR, R.color.colorPrimary, restart)
-    val allAppsColor by IntPref(ZimFlags.ACCENT_COLOR, R.color.colorAccent, recreate)
-    val googleColor by IntPref(ZimFlags.GOOGLE_COLOR, Color.WHITE, recreate)
+    val primaryColor by IntPref("pref_key__primary_color", R.color.colorPrimary, restart)
+    val accentColor by IntPref("pref_key__accent_color", R.color.colorAccent, restart)
+    val minibarColor by IntPref("pref_key__minibar_color", R.color.colorPrimary, restart)
+    val allAppsColor by IntPref("pref_key__accent_color", R.color.colorAccent, recreate)
+    val googleColor by IntPref("pref_key__google_color", Color.WHITE, recreate)
 
     val recentsBlurredBackground by BooleanPref("pref_recents_blur_background", true) {
         onChangeCallback?.launcher?.background?.onEnabledChanged()
@@ -250,14 +251,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun unflattenKey(key: String) = ZimComponentKey(context, key)
         override fun flattenValue(value: String) = value
         override fun unflattenValue(value: String) = value
     }
 
     val customAppIcon = object : MutableMapPref<ComponentKey, IconPackManager.CustomIconEntry>("pref_appIconMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey(context, key)
+        override fun unflattenKey(key: String) = ZimComponentKey(context, key)
         override fun flattenValue(value: IconPackManager.CustomIconEntry) = value.toString()
         override fun unflattenValue(value: String) = IconPackManager.CustomIconEntry.fromString(value)
     }

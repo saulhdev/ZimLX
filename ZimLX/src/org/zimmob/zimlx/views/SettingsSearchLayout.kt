@@ -18,41 +18,11 @@
 package org.zimmob.zimlx.views
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Rect
 import android.util.AttributeSet
-import androidx.cardview.widget.CardView
 import com.android.launcher3.InsettableFrameLayout
-import com.android.launcher3.R
-import com.android.launcher3.Utilities
-import org.zimmob.zimlx.folder.FolderShape
-import org.zimmob.zimlx.util.ZimFlags.THEME_ICON_SHAPE
 
-class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
-
-    override fun onFinishInflate() {
-        super.onFinishInflate()
-        Utilities.getPrefs(context).registerOnSharedPreferenceChangeListener(this)
-        updateRadius()
-    }
-
-    fun updateRadius() {
-        val edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius)
-        if (edgeRadius != null) {
-            findViewById<CardView>(R.id.search_bar).radius = edgeRadius.getDimension(resources.displayMetrics)
-        }
-    }
-
-    override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {
-        if (key == THEME_ICON_SHAPE) {
-            updateRadius()
-        }
-    }
-
-    override fun onDetachedFromWindow() {
-        super.onDetachedFromWindow()
-        Utilities.getPrefs(context).unregisterOnSharedPreferenceChangeListener(this)
-    }
+class SettingsSearchLayout(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 
     override fun setInsets(insets: Rect) {
         setPadding(0, insets.top, 0, 0)

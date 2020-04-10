@@ -31,9 +31,9 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.util.ComponentKeyMapper;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.CustomComponentKeyMapper;
 
 import java.util.List;
 
@@ -127,7 +127,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
-    @Override
     protected void applyScroll(int uncappedY, int currentY) {
         if (uncappedY < currentY - mHeaderTopPadding) {
             mPredictionRowView.setScrolledOut(true);
@@ -144,7 +143,6 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         mPredictionRowView.setScrollTranslation(translationY);
     }
 
-    @Override
     public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
         if (hasHeader && !hasContent && mIsCollapsed) {
             Launcher.getLauncher(getContext()).getAppsView().getSearchUiManager().resetSearch();
@@ -182,7 +180,18 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
+    public void setPredictedApps(boolean z, List<CustomComponentKeyMapper> list) {
         mPredictionRowView.setPredictedApps(z, list);
+    }
+
+    public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
+                                     PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
+        // Text follows all apps visibility
+        /*int textAlpha = hasHeaderExtra && hasAllAppsContent ? mIconFullTextAlpha : 0;
+        setter.setInt(this, TEXT_ALPHA, textAlpha, allAppsFade);
+        setter.setFloat(mOverviewScrollFactor, AnimatedFloat.VALUE,
+                (hasHeaderExtra && !hasAllAppsContent) ? 1 : 0, LINEAR);
+        setter.setFloat(mContentAlphaFactor, AnimatedFloat.VALUE, hasHeaderExtra ? 1 : 0,
+                headerFade);*/
     }
 }

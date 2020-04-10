@@ -25,6 +25,7 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.isVisible
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_APP
 import org.zimmob.zimlx.minibar.DashItem.VIEW_TYPE_DASH_ITEM
+import org.zimmob.zimlx.util.ZimComponentKey
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -53,7 +54,7 @@ class DashEditAdapter(context: Context) : RecyclerView.Adapter<DashEditAdapter.H
                 if (action.length == 2) {
                     item = DashUtils.getDashItemFromString(action)
                 } else if (action.length > 2) {
-                    val keyMapper = ComponentKey(mContext, action)
+                    val keyMapper = ZimComponentKey(mContext, action)
                     val info = getApp(keyMapper)
 
                     if (info != null) {

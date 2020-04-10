@@ -1,10 +1,7 @@
 package org.zimmob.zimlx.touch;
 
-import android.graphics.Rect;
-import android.util.Log;
 import android.view.MotionEvent;
 
-import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
@@ -48,35 +45,6 @@ public class WorkspaceOptionModeTouchHelper {
         mScreenWidth = launcher.getDeviceProfile().widthPx;
         mMinSnapDistance = mScreenWidth / 3;
         mMinSnapVelocity = 1;
-    }
-
-    public boolean dispatchTouchEvent(MotionEvent motionEvent) {
-        if (!mLauncher.isInState(LauncherState.OPTIONS) || AbstractFloatingView.getTopOpenView(mLauncher) != null) {
-            return false;
-        }
-        switch (motionEvent.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                return handleTouchDown(motionEvent);
-            case MotionEvent.ACTION_MOVE:
-                return handleTouchMove(motionEvent);
-            default:
-                return handleTouchOther(motionEvent);
-        }
-    }
-
-    private boolean handleTouchDown(MotionEvent motionEvent) {
-        if (!isAcceptTouchDownRegion(motionEvent)) {
-            return false;
-        }
-        mTouchDownX = (int) motionEvent.getX();
-        mTouchDownY = (int) motionEvent.getY();
-        mIsInTouchCycle = true;
-        mLastTouchX = mTouchDownX;
-        mLastTouchY = mTouchDownY;
-        if (!mLauncher.getWorkspace().isScrollerFinished()) {
-            mLauncher.getWorkspace().abortScrollerAnimation(false);
-        }
-        return true;
     }
 
     private boolean handleTouchMove(MotionEvent motionEvent) {
@@ -125,29 +93,6 @@ public class WorkspaceOptionModeTouchHelper {
         if (page < mWorkspaceOptionModeStartPage) return mWorkspaceOptionModeStartPage;
         if (page > mWorkspaceOptionModeEndPage) return mWorkspaceOptionModeEndPage;
         return page;
-    }
-
-    private boolean isAcceptTouchDownRegion(MotionEvent motionEvent) {
-        Workspace workspace = mLauncher.getWorkspace();
-        mTouchDownY = (int) motionEvent.getY();
-        mTouchDownX = (int) motionEvent.getX();
-        if (workspace != null) {
-            int[] iArr = new int[2];
-            workspace.getLocationInWindow(iArr);
-            workspace.getLocalVisibleRect(new Rect());
-            if (mTouchDownY >= iArr[1]
-                    && mTouchDownY <= iArr[1] + (workspace.getHeight() * workspace.getScaleY())
-                    && (mTouchDownX < iArr[0] || mTouchDownX > iArr[0] + (workspace.getWidth() * workspace.getScaleX()))) {
-                mTouchDownWorkspaceCurrentPage = workspace.getNextPage();
-                mTouchDownWorkspaceScrollX = workspace.getScrollX();
-                mWorkspaceOptionModeEndPage = workspace.getPageCount() - 1;
-                mWorkspaceOptionModeStartPage = 0;
-                mIsStillPossibleClick = mLauncher.getWorkspace().isScrollerFinished();
-                Log.d(TAG, TAG + " will consume this touch event");
-                return true;
-            }
-        }
-        return false;
     }
 
     private boolean isPossibleClick(MotionEvent motionEvent) {

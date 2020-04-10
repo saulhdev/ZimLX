@@ -133,7 +133,7 @@ public class AppSearchProvider extends ContentProvider {
 
     public boolean onCreate() {
         this.mLooper = new LooperExecutor(LauncherModel.getWorkerLooper());
-        this.mApp = LauncherAppState.getInstance(this.getContext());
+        //this.mApp = LauncherAppState.getInstance(this.getContext());
         return true;
     }
 
@@ -206,7 +206,7 @@ public class AppSearchProvider extends ContentProvider {
             }
             final List<AppInfo> results = FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
             for (AppInfo appInfo : results) {
-                if (appInfo.usingLowResIcon) {
+                if (appInfo.usingLowResIcon()) {
                     mApp.getIconCache().getTitleAndIcon(appInfo, false);
                 }
             }

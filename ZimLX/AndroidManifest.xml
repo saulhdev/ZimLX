@@ -22,11 +22,6 @@
         android:name="android.hardware.telephony"
         android:required="false" />
 
-    <permission
-        android:name="${applicationId}.permission.READ_SETTINGS"
-        android:description="@string/permdesc_read_settings"
-        android:label="@string/permlab_read_settings"
-        android:protectionLevel="normal" />
     <!-- Pixel -->
     <permission
         android:name="${applicationId}.permission.QSB"
@@ -84,7 +79,9 @@
 
     <uses-permission android:name="org.pixelexperience.weather.client.READ_WEATHER" />
 
-    <application android:name="org.zimmob.zimlx.ZimApp">
+    <application
+        android:name="org.zimmob.zimlx.ZimApp"
+        android:sharedUserId="android.uid.systemui">
 
         <!-- The settings activity. When extending keep the intent filter present -->
         <activity

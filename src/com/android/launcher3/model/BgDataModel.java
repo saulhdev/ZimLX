@@ -16,6 +16,7 @@
 package com.android.launcher3.model;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.Log;
@@ -26,18 +27,19 @@ import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
+import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.DumpTargetWrapper;
 import com.android.launcher3.model.nano.LauncherDumpProto;
 import com.android.launcher3.model.nano.LauncherDumpProto.ContainerType;
 import com.android.launcher3.model.nano.LauncherDumpProto.DumpTarget;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.LongArrayMap;
-import com.android.launcher3.util.MultiHashMap;
 import com.google.protobuf.nano.MessageNano;
 
 import java.io.FileDescriptor;
@@ -98,7 +100,7 @@ public class BgDataModel {
     /**
      * Maps all launcher activities to the id's of their shortcuts (if they have any).
      */
-    public final MultiHashMap<ComponentKey, String> deepShortcutMap = new MultiHashMap<>();
+    public final HashMap<ComponentKey, Integer> deepShortcutMap = new HashMap<>();
 
     /**
      * Entire list of widgets.
@@ -121,6 +123,22 @@ public class BgDataModel {
         workspaceScreens.clear();
         pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
+    }
+
+    /**
+     * Creates an array of valid workspace screens based on current items in the model.
+     */
+    public synchronized IntArray collectWorkspaceScreens() {
+        IntSet screenSet = new IntSet();
+        for (ItemInfo item : itemsIdMap) {
+            if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
+                screenSet.add(item.screenId);
+            }
+        }
+        if (FeatureFlags.QSB_ON_FIRST_SCREEN || screenSet.isEmpty()) {
+            screenSet.add(Workspace.FIRST_SCREEN_ID);
+        }
+        return screenSet.getArray();
     }
 
     public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
@@ -153,14 +171,11 @@ public class BgDataModel {
         }
 
         if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
-            writer.println(prefix + "shortcuts");
-            for (ArrayList<String> map : deepShortcutMap.values()) {
-                writer.print(prefix + "  ");
-                for (String str : map) {
-                    writer.print(str + ", ");
-                }
-                writer.println();
+            writer.println(prefix + "shortcut counts ");
+            for (Integer count : deepShortcutMap.values()) {
+                writer.print(count + ", ");
             }
+            writer.println();
         }
     }
 
@@ -180,7 +195,7 @@ public class BgDataModel {
             FolderInfo fInfo = folders.valueAt(i);
             dtw = new DumpTargetWrapper(ContainerType.FOLDER, folders.size());
             dtw.writeToDumpTarget(fInfo);
-            for (ShortcutInfo sInfo : fInfo.contents) {
+            for (WorkspaceItemInfo sInfo : fInfo.contents) {
                 DumpTargetWrapper child = new DumpTargetWrapper(sInfo);
                 child.writeToDumpTarget(sInfo);
                 dtw.add(child);
@@ -330,7 +345,7 @@ public class BgDataModel {
                             Log.e(TAG, msg);
                         }
                     } else {
-                        findOrMakeFolder(item.container).add((ShortcutInfo) item, false);
+                        findOrMakeFolder(item.container).add((WorkspaceItemInfo) item, false);
                     }
 
                 }
@@ -358,10 +373,10 @@ public class BgDataModel {
     }
 
     /**
-     * Clear all the deep shortcuts for the given package, and re-add the new shortcuts.
+     * Clear all the deep shortcut counts for the given package, and re-add the new shortcut counts.
      */
-    public synchronized void updateDeepShortcutMap(
-            String packageName, UserHandle user, List<ShortcutInfoCompat> shortcuts) {
+    public synchronized void updateDeepShortcutCounts(
+            String packageName, UserHandle user, List<ShortcutInfo> shortcuts) {
         if (packageName != null) {
             Iterator<ComponentKey> keysIter = deepShortcutMap.keySet().iterator();
             while (keysIter.hasNext()) {
@@ -374,13 +389,15 @@ public class BgDataModel {
         }
 
         // Now add the new shortcuts to the map.
-        for (ShortcutInfoCompat shortcut : shortcuts) {
+        for (ShortcutInfo shortcut : shortcuts) {
             boolean shouldShowInContainer = shortcut.isEnabled()
                     && (shortcut.isDeclaredInManifest() || shortcut.isDynamic());
             if (shouldShowInContainer) {
                 ComponentKey targetComponent
                         = new ComponentKey(shortcut.getActivity(), shortcut.getUserHandle());
-                deepShortcutMap.addToList(targetComponent, shortcut.getId());
+
+                Integer previousCount = deepShortcutMap.get(targetComponent);
+                deepShortcutMap.put(targetComponent, previousCount == null ? 1 : previousCount + 1);
             }
         }
     }

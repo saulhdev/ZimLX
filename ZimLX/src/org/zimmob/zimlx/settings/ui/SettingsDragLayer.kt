@@ -31,7 +31,7 @@ import org.zimmob.zimlx.forEachChildReversed
 
 class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFrameLayout(context, attrs) {
 
-    private val mTmpXY = IntArray(2)
+    private val mTmpXY = FloatArray(2)
     private val mHitRect = Rect()
 
     private var activeController: TouchController? = null
@@ -83,21 +83,21 @@ class SettingsDragLayer(context: Context, attrs: AttributeSet?) : InsettableFram
     }
 
     fun getDescendantRectRelativeToSelf(descendant: View, r: Rect): Float {
-        mTmpXY[0] = 0
-        mTmpXY[1] = 0
+        mTmpXY[0] = 0F
+        mTmpXY[1] = 0F
         val scale = getDescendantCoordRelativeToSelf(descendant, mTmpXY)
 
-        r.set(mTmpXY[0], mTmpXY[1],
+        r.set(mTmpXY[0].toInt(), mTmpXY[1].toInt(),
                 (mTmpXY[0] + scale * descendant.measuredWidth).toInt(),
                 (mTmpXY[1] + scale * descendant.measuredHeight).toInt())
         return scale
     }
 
-    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: IntArray): Float {
+    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: FloatArray): Float {
         return getDescendantCoordRelativeToSelf(descendant, coord, false)
     }
 
-    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: IntArray,
+    private fun getDescendantCoordRelativeToSelf(descendant: View, coord: FloatArray,
                                                  includeRootScroll: Boolean): Float {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll)

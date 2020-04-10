@@ -47,12 +47,12 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.ShadowGenerator.Builder;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
-import org.zimmob.zimlx.folder.FolderShape;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.graphics.NinePatchDrawHelper;
@@ -362,7 +362,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         builder.keyShadowAlpha = builder.ambientShadowAlpha;
         Bitmap pill;
         if (mRadius < 0) {
-            TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+            TypedValue edgeRadius = IconShape.getShape().getAttrValue(R.attr.qsbEdgeRadius);
             if (edgeRadius != null) {
                 pill = builder.createPill(i2, dC,
                         edgeRadius.getDimension(getResources().getDisplayMetrics()));
@@ -489,7 +489,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (radius > 0f) {
             return radius;
         }
-        TypedValue edgeRadius = FolderShape.sInstance.mAttrs.get(R.attr.qsbEdgeRadius);
+        TypedValue edgeRadius = IconShape.getShape().getAttrValue(R.attr.qsbEdgeRadius);
         if (edgeRadius != null) {
             return edgeRadius.getDimension(context.getResources().getDisplayMetrics());
         } else {
@@ -539,7 +539,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         try {
             getContext().startActivity(new Intent(str).addFlags(268468224).setPackage("com.google.android.googlequicksearchbox"));
         } catch (ActivityNotFoundException e) {
-            LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle());
+            LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(new ComponentName("com.google.android.googlequicksearchbox", ".SearchActivity"), Process.myUserHandle(), null, null);
         }
     }
 

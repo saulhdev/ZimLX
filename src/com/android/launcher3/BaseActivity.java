@@ -21,16 +21,22 @@ import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
+import android.view.ContextThemeWrapper;
 import android.view.View.AccessibilityDelegate;
 
 import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
+import com.android.launcher3.logging.StatsLogManager;
+import com.android.launcher3.logging.StatsLogUtils;
+import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.logging.UserEventDispatcher.UserEventDelegate;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.util.SystemUiController;
+import com.android.launcher3.util.ViewCache;
+import com.android.launcher3.views.ActivityContext;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -40,7 +46,8 @@ import java.util.ArrayList;
 import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
 import static java.lang.annotation.RetentionPolicy.SOURCE;
 
-public abstract class BaseActivity extends Activity implements UserEventDelegate {
+public abstract class BaseActivity extends Activity
+        implements UserEventDelegate, LogStateProvider, ActivityContext {
 
     public static final int INVISIBLE_BY_STATE_HANDLER = 1 << 0;
     public static final int INVISIBLE_BY_APP_TRANSITIONS = 1 << 1;
@@ -72,6 +79,7 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
 
     public DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
+    protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
 
     private static final int ACTIVITY_STATE_STARTED = 1 << 0;
@@ -98,9 +106,18 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     // animation
     @InvisibilityFlags
     private int mForceInvisible;
+    private final ViewCache mViewCache = new ViewCache();
+
+    public ViewCache getViewCache() {
+        return mViewCache;
+    }
 
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
+    }
+
+    public int getCurrentState() {
+        return StatsLogUtils.LAUNCHER_STATE_BACKGROUND;
     }
 
     public AccessibilityDelegate getAccessibilityDelegate() {
@@ -108,6 +125,14 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
     }
 
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
+
+    public final StatsLogManager getStatsLogManager() {
+        if (mStatsLogManager == null) {
+            mStatsLogManager = StatsLogManager.newInstance(this, this);
+        }
+        return mStatsLogManager;
+    }
+
 
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
@@ -120,11 +145,14 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
         return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
     }
 
-    public static BaseActivity fromContext(Context context) {
+    public static <T extends BaseActivity> T fromContext(Context context) {
         if (context instanceof BaseActivity) {
-            return (BaseActivity) context;
+            return (T) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            return fromContext(((ContextWrapper) context).getBaseContext());
+        } else {
+            throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");
         }
-        return ((BaseActivity) ((ContextWrapper) context).getBaseContext());
     }
 
     public SystemUiController getSystemUiController() {
@@ -225,7 +253,6 @@ public abstract class BaseActivity extends Activity implements UserEventDelegate
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
      *
-     * @see LauncherAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;

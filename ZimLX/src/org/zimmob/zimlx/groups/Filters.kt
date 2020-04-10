@@ -35,7 +35,7 @@ abstract class Filter<T>(val context: Context) {
 class CustomFilter(context: Context, override val matches: Set<ComponentKey>) : Filter<ComponentKey>(context) {
 
     override val matcher
-        get() = object : ItemInfoMatcher() {
+        get() = object : ItemInfoMatcher {
             override fun matches(info: ItemInfo, cn: ComponentName?): Boolean {
                 return matches.contains(ComponentKey(info.targetComponent, info.user))
             }

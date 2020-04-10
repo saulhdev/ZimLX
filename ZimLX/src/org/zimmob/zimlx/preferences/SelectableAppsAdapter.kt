@@ -25,6 +25,7 @@ import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.comparing
 import org.zimmob.zimlx.then
+import org.zimmob.zimlx.util.ZimComponentKey
 import kotlin.reflect.KMutableProperty0
 
 abstract class SelectableAppsAdapter(context: Context, private val callback: Callback? = null, filter: AppFilter? = null)
@@ -108,7 +109,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
         fun ofProperty(context: Context, property: KMutableProperty0<Set<String>>,
                        callback: Callback? = null, filter: AppFilter? = null) = object : SelectableAppsAdapter(context, callback, filter) {
 
-            override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(context, it) })
+            override fun getInitialSelections() = HashSet(property.get().map { ZimComponentKey(context, it) })
 
             override fun setSelections(selections: Set<ComponentKey>) {
                 property.set(HashSet(selections.map { it.toString() }))

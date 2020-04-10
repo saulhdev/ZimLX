@@ -33,22 +33,23 @@ import android.util.Log;
 import android.util.LongSparseArray;
 
 import com.android.launcher3.AppInfo;
-import com.android.launcher3.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.ShortcutInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.graphics.BitmapInfo;
-import com.android.launcher3.graphics.LauncherIcons;
+import com.android.launcher3.icons.BitmapInfo;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LongArrayMap;
 
 import org.zimmob.zimlx.ZimPreferences;
@@ -71,8 +72,8 @@ public class LoaderCursor extends CursorWrapper {
     private final IconCache mIconCache;
     private final InvariantDeviceProfile mIDP;
 
-    private final ArrayList<Long> itemsToRemove = new ArrayList<>();
-    private final ArrayList<Long> restoredRows = new ArrayList<>();
+    private final IntArray itemsToRemove = new IntArray();
+    private final IntArray restoredRows = new IntArray();
     private final LongArrayMap<GridOccupancy> occupied = new LongArrayMap<>();
 
     private final int iconPackageIndex;
@@ -94,8 +95,8 @@ public class LoaderCursor extends CursorWrapper {
     // Properties loaded per iteration
     public long serialNumber;
     public UserHandle user;
-    public long id;
-    public long container;
+    public int id;
+    public int container;
     public int itemType;
     public int restoreFlag;
 
@@ -136,7 +137,7 @@ public class LoaderCursor extends CursorWrapper {
             // Load common properties.
             itemType = getInt(itemTypeIndex);
             container = getInt(containerIndex);
-            id = getLong(idIndex);
+            id = getInt(idIndex);
             serialNumber = getInt(profileIdIndex);
             user = allUsers.get(serialNumber);
             restoreFlag = getInt(restoredIndex);
@@ -155,26 +156,37 @@ public class LoaderCursor extends CursorWrapper {
         }
     }
 
-    public ShortcutInfo loadSimpleShortcut() {
-        final ShortcutInfo info = new ShortcutInfo();
+
+    public WorkspaceItemInfo loadSimpleShortcut() {
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         // Non-app shortcuts are only supported for current user.
         info.user = user;
         info.itemType = itemType;
         info.title = getTitle();
         // the fallback icon
-        if (!loadIcon(info)) {
+        /*if (!loadIcon(info)) {
             mIconCache.getDefaultIcon(info.user).applyTo(info);
-        }
+        }*/
 
         // TODO: If there's an explicit component and we can't install that, delete it.
 
         return info;
     }
 
+
     /**
      * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
      */
-    protected boolean loadIcon(ShortcutInfo info) {
+    protected boolean loadIcon(WorkspaceItemInfo info) {
+        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
+            return loadIcon(info, li);
+        }
+    }
+
+    /**
+     * Loads the icon from the cursor and updates the {@param info} if the icon is an app resource.
+     */
+    protected boolean loadIcon(WorkspaceItemInfo info, LauncherIcons li) {
         if (itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
             String packageName = getString(iconPackageIndex);
             String resourceName = getString(iconResourceIndex);
@@ -182,11 +194,9 @@ public class LoaderCursor extends CursorWrapper {
                 info.iconResource = new ShortcutIconResource();
                 info.iconResource.packageName = packageName;
                 info.iconResource.resourceName = resourceName;
-                LauncherIcons li = LauncherIcons.obtain(mContext);
                 BitmapInfo iconInfo = li.createIconBitmap(info.iconResource);
-                li.recycle();
                 if (iconInfo != null) {
-                    iconInfo.applyTo(info);
+                    info.applyFrom(iconInfo);
                     return true;
                 }
             }
@@ -194,16 +204,16 @@ public class LoaderCursor extends CursorWrapper {
 
         // Failed to load from resource, try loading from DB.
         byte[] data = getBlob(iconIndex);
-        try (LauncherIcons li = LauncherIcons.obtain(mContext)) {
-            li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)).applyTo(info);
+        try {
+            info.applyFrom(li.createIconBitmap(BitmapFactory.decodeByteArray(data, 0, data.length)));
             return true;
         } catch (Exception e) {
-            Log.e(TAG, "Failed to load icon for info " + info, e);
+            Log.e(TAG, "Failed to decode byte array for info " + info, e);
             return false;
         }
     }
 
-    public Bitmap loadCustomIcon(ShortcutInfo info) {
+    public Bitmap loadCustomIcon(WorkspaceItemInfo info) {
         byte[] data = getBlob(customIconIndex);
         try {
             if (data != null) {
@@ -230,8 +240,8 @@ public class LoaderCursor extends CursorWrapper {
      * Make an ShortcutInfo object for a restored application or shortcut item that points
      * to a package that is not yet installed on the system.
      */
-    public ShortcutInfo getRestoredItemInfo(Intent intent) {
-        final ShortcutInfo info = new ShortcutInfo();
+    public WorkspaceItemInfo getRestoredItemInfo(Intent intent) {
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.user = user;
         info.intent = intent;
 
@@ -240,12 +250,12 @@ public class LoaderCursor extends CursorWrapper {
             mIconCache.getTitleAndIcon(info, false /* useLowResIcon */);
         }
 
-        if (hasRestoreFlag(ShortcutInfo.FLAG_RESTORED_ICON)) {
+        if (hasRestoreFlag(WorkspaceItemInfo.FLAG_RESTORED_ICON)) {
             String title = getTitle();
             if (!TextUtils.isEmpty(title)) {
                 info.title = Utilities.trim(title);
             }
-        } else if (hasRestoreFlag(ShortcutInfo.FLAG_AUTOINSTALL_ICON)) {
+        } else if (hasRestoreFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
             if (TextUtils.isEmpty(info.title)) {
                 info.title = getTitle();
             }
@@ -262,7 +272,7 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * Make an ShortcutInfo object for a shortcut that is an application.
      */
-    public ShortcutInfo getAppShortcutInfo(
+    public WorkspaceItemInfo getAppShortcutInfo(
             Intent intent, boolean allowMissingTarget, boolean useLowResIcon) {
         if (user == null) {
             Log.d(TAG, "Null user found in getShortcutInfo");
@@ -285,7 +295,7 @@ public class LoaderCursor extends CursorWrapper {
             return null;
         }
 
-        final ShortcutInfo info = new ShortcutInfo();
+        final WorkspaceItemInfo info = new WorkspaceItemInfo();
         info.itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
         info.user = user;
         info.intent = newIntent;
@@ -415,7 +425,7 @@ public class LoaderCursor extends CursorWrapper {
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
             // Return early if we detect that an item is under the hotseat button
             if (!FeatureFlags.NO_ALL_APPS_ICON && !Utilities.getZimPrefs(mContext).getHideDockButton() && !prefs.getDockHide() &&
-                    mIDP.isAllAppsButtonRank((int) item.screenId)) {
+                    mIDP.isAllAppsButtonRank(item.screenId)) {
                 Log.e(TAG, "Error loading shortcut into hotseat " + item
                         + " into position (" + item.screenId + ":" + item.cellX + ","
                         + item.cellY + ") occupied by all apps");
@@ -423,11 +433,11 @@ public class LoaderCursor extends CursorWrapper {
             }
 
             final GridOccupancy hotseatOccupancy =
-                    occupied.get((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT);
+                    occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
             int hotseatRows = prefs.getDockRowsCount();
             int hotseatSize = mIDP.numHotseatIcons;
-            int hotseatX = (int) (item.screenId % hotseatSize);
-            int hotseatY = (int) (item.screenId / hotseatSize);
+            int hotseatX = item.screenId % hotseatSize;
+            int hotseatY = item.screenId / hotseatSize;
 
             if (item.screenId >= mIDP.numHotseatIcons * hotseatRows) {
                 Log.e(TAG, "Error loading shortcut " + item
@@ -450,7 +460,7 @@ public class LoaderCursor extends CursorWrapper {
             } else {
                 final GridOccupancy occupancy = new GridOccupancy(hotseatSize, hotseatRows);
                 occupancy.cells[hotseatX][hotseatY] = true;
-                occupied.put((long) LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
+                occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }
         } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {

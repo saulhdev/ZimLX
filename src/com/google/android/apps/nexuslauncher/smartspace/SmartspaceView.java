@@ -126,7 +126,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 Launcher.getLauncher(getContext()).startActivitySafely(v, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         };
 
@@ -535,7 +535,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
                 Launcher.getLauncher(context).startActivitySafely(view, addFlags, null);
             } catch (ActivityNotFoundException ex) {
                 LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle());
+                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
             }
         }
     }
