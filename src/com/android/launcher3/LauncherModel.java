@@ -17,9 +17,11 @@
 package com.android.launcher3;
 
 import android.content.BroadcastReceiver;
+import android.content.ContentResolver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.os.Looper;
@@ -48,6 +50,7 @@ import com.android.launcher3.model.PackageInstallStateChangedTask;
 import com.android.launcher3.model.PackageUpdatedTask;
 import com.android.launcher3.model.ShortcutsChangedTask;
 import com.android.launcher3.model.UserLockStateChangedTask;
+import com.android.launcher3.provider.LauncherDbUtils;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.IntArray;
@@ -476,6 +479,19 @@ public class LauncherModel extends BroadcastReceiver
             }
         }
     }
+
+    /**
+     * Loads the workspace screen ids in an ordered list.
+     */
+    public static ArrayList<Integer> loadWorkspaceScreensDb(Context context) {
+        final ContentResolver contentResolver = context.getContentResolver();
+        final Uri screensUri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+
+        // Get screens ordered by rank.
+        return LauncherDbUtils.getScreenIdsFromCursor(contentResolver.query(
+                screensUri, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+    }
+
 
     public void onInstallSessionCreated(final PackageInstallInfo sessionInfo) {
         enqueueModelUpdateTask(new BaseModelUpdateTask() {

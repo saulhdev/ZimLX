@@ -18,9 +18,7 @@ package com.android.launcher3;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.graphics.Color;
 import android.graphics.Rect;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -30,8 +28,6 @@ import android.view.ViewDebug;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -39,7 +35,6 @@ import com.android.launcher3.views.Transposable;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurDrawable;
-import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 
 public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
 
@@ -67,7 +62,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     public Hotseat(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         mLauncher = Launcher.getLauncher(context);
-        dockRadius = Utilities.getZimPrefs(context).getDockRadius();
+        /*dockRadius = Utilities.getZimPrefs(context).getDockRadius();
         if (Utilities.getZimPrefs(context).getTransparentDock() || mHasVerticalHotseat) {
             setBackgroundColor(Color.TRANSPARENT);
         } else {
@@ -76,7 +71,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
             mBackground = BlurWallpaperProvider.Companion.isEnabled(BlurWallpaperProvider.BLUR_ALLAPPS) ?
                     mLauncher.getBlurWallpaperProvider().createDrawable() : new ColorDrawable(mBackgroundColor);
             setBackground(mBackground);
-        }
+        }*/
     }
 
     public CellLayout getLayout() {
@@ -110,7 +105,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
             setVisibility(GONE);
         }
 
-        mContent = findViewById(R.id.layout);
+        mContent = findViewById(R.id.hotseat);
     }
 
     /*void resetLayout(boolean hasVerticalHotseat) {
@@ -211,7 +206,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
             lp.height = grid.hotseatBarSizePx + insets.bottom;
         }
         Rect padding = grid.getHotseatLayoutPadding();
-        getLayout().setPadding(padding.left, padding.top, padding.right, padding.bottom);
+        setPadding(padding.left, padding.top, padding.right, padding.bottom);
         setLayoutParams(lp);
         InsettableFrameLayout.dispatchInsets(this, insets);
     }

@@ -174,8 +174,7 @@ public class ImportDataTask {
                     case Favorites.CONTAINER_DESKTOP: {
                         if (screen < Workspace.FIRST_SCREEN_ID) {
                             FileLog.d(TAG, String.format(
-                                    "Skipping item %d, type %d not on a valid screen %d",
-                                    id, type, screen));
+                                    "Skipping item %d, type %d not on a valid screen %d", id, type, screen));
                             continue;
                         }
                         if (firstScreenId == null) {

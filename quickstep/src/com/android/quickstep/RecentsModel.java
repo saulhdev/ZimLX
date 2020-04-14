@@ -15,8 +15,6 @@
  */
 package com.android.quickstep;
 
-import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
-
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.ComponentCallbacks2;
@@ -27,6 +25,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.util.Log;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.shared.recents.ISystemUiProxy;
 import com.android.systemui.shared.recents.model.Task;
@@ -37,6 +36,8 @@ import com.android.systemui.shared.system.TaskStackChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
+
+import static com.android.quickstep.TaskUtils.checkCurrentOrManagedUserId;
 
 /**
  * Singleton class to load and manage recents model.
@@ -67,7 +68,14 @@ public class RecentsModel extends TaskStackChangeListener {
         mTaskList = new RecentTasksList(context);
         mIconCache = new TaskIconCache(context, loaderThread.getLooper());
         mThumbnailCache = new TaskThumbnailCache(context, loaderThread.getLooper());
-        ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        //ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+        if (Utilities.ATLEAST_Q) {
+            try {
+                ActivityManagerWrapper.getInstance().registerTaskStackListener(this);
+            } catch (NoSuchMethodError error) {
+                error.printStackTrace();
+            }
+        }
     }
 
     public TaskIconCache getIconCache() {

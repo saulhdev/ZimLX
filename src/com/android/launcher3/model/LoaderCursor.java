@@ -56,7 +56,6 @@ import org.zimmob.zimlx.ZimPreferences;
 
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
-import java.util.ArrayList;
 
 /**
  * Extension of {@link Cursor} with utility methods for workspace loading.
@@ -408,7 +407,7 @@ public class LoaderCursor extends CursorWrapper {
      * otherwise marks it for deletion.
      */
     public void checkAndAddItem(ItemInfo info, BgDataModel dataModel) {
-        if (checkItemPlacement(info, dataModel.workspaceScreens)) {
+        if (checkItemPlacement(info)) {
             dataModel.addItem(mContext, info, false);
         } else {
             markDeleted("Item position overlap");
@@ -418,23 +417,13 @@ public class LoaderCursor extends CursorWrapper {
     /**
      * check & update map of what's occupied; used to discard overlapping/invalid items
      */
-    protected boolean checkItemPlacement(ItemInfo item, ArrayList<Long> workspaceScreens) {
-        long containerIndex = item.screenId;
-        ZimPreferences prefs = Utilities.getZimPrefs(mContext);
-
+    protected boolean checkItemPlacement(ItemInfo item) {
+        int containerIndex = item.screenId;
         if (item.container == LauncherSettings.Favorites.CONTAINER_HOTSEAT) {
-            // Return early if we detect that an item is under the hotseat button
-            if (!FeatureFlags.NO_ALL_APPS_ICON && !prefs.getDockHide() &&
-                    mIDP.isAllAppsButtonRank(item.screenId)) {
-                Log.e(TAG, "Error loading shortcut into hotseat " + item
-                        + " into position (" + item.screenId + ":" + item.cellX + ","
-                        + item.cellY + ") occupied by all apps");
-                return false;
-            }
-
             final GridOccupancy hotseatOccupancy =
                     occupied.get(LauncherSettings.Favorites.CONTAINER_HOTSEAT);
-            int hotseatRows = prefs.getDockRowsCount();
+
+            int hotseatRows = Utilities.getZimPrefs(mContext).getDockRowsCount();
             int hotseatSize = mIDP.numHotseatIcons;
             int hotseatX = item.screenId % hotseatSize;
             int hotseatY = item.screenId / hotseatSize;
@@ -458,17 +447,12 @@ public class LoaderCursor extends CursorWrapper {
                     return true;
                 }
             } else {
-                final GridOccupancy occupancy = new GridOccupancy(hotseatSize, hotseatRows);
+                final GridOccupancy occupancy = new GridOccupancy(mIDP.numHotseatIcons, hotseatRows);
                 occupancy.cells[hotseatX][hotseatY] = true;
                 occupied.put(LauncherSettings.Favorites.CONTAINER_HOTSEAT, occupancy);
                 return true;
             }
-        } else if (item.container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
-            if (!workspaceScreens.contains(item.screenId)) {
-                // The item has an invalid screen id.
-                return false;
-            }
-        } else {
+        } else if (item.container != LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             // Skip further checking if it is not the hotseat or workspace container
             return true;
         }
@@ -505,7 +489,7 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return prefs.getAllowOverlap();
+            return false;
         }
     }
 }

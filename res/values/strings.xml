@@ -40,7 +40,8 @@
     <string name="home_screen">Home screen</string>
     <!-- Label for showing custom action list of a shortcut or widget. [CHAR_LIMIT=30] -->
     <string name="custom_actions">Custom actions</string>
-
+    <!-- Accessibility title for the list of recent apps [CHAR_LIMIT=none] -->
+    <string name="accessibility_recent_apps">Recent apps</string>
     <!-- Widgets -->
     <!-- Message to tell the user to press and hold on a widget to add it [CHAR_LIMIT=50] -->
     <string name="long_press_widget_to_add">Touch &amp; hold to pick up a widget.</string>

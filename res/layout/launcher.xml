@@ -56,15 +56,26 @@
                 android:theme="@style/HomeScreenElementTheme"
                 launcher:pageIndicator="@+id/page_indicator" />
 
-            <View
-                android:id="@+id/workspace_blocked_row"
-                android:layout_width="0dp"
-                android:layout_height="10dp" />
+            <!-- DO NOT CHANGE THE ID -->
+            <include
+                android:id="@+id/hotseat"
+                layout="@layout/hotseat" />
 
             <include
                 android:id="@+id/overview_panel"
                 layout="@layout/overview_panel"
                 android:visibility="gone" />
+
+            <com.android.launcher3.pageindicators.WorkspacePageIndicator
+                android:id="@+id/page_indicator"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/vertical_drag_handle_size"
+                android:layout_gravity="bottom|center_horizontal"
+                android:theme="@style/HomeScreenElementTheme" />
+            <View
+                android:id="@+id/workspace_blocked_row"
+                android:layout_width="0dp"
+                android:layout_height="10dp" />
 
             <include
                 android:id="@+id/drop_target_bar"
@@ -78,26 +89,12 @@
                 android:id="@+id/options_view"
                 layout="@layout/options_view" />
 
-            <com.android.launcher3.pageindicators.WorkspacePageIndicator
-                android:id="@+id/page_indicator"
-                android:layout_width="match_parent"
-                android:layout_height="@dimen/vertical_drag_handle_size"
-                android:layout_gravity="bottom|center_horizontal"
-                android:theme="@style/HomeScreenElementTheme" />
-
             <include
                 android:id="@+id/apps_view"
                 layout="@layout/all_apps"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:visibility="invisible" />
-
-            <!-- DO NOT CHANGE THE ID -->
-            <include
-                android:id="@+id/hotseat"
-                layout="@layout/hotseat"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
 
         </com.android.launcher3.dragndrop.DragLayer>
 

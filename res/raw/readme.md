@@ -7,6 +7,9 @@ Our mission is to create a powerful launcher with smart features to make your de
 [<img src="Logo/logotype.png" width="28%" alt="Zim Launcher">](https://github.com/otakuhqz/ZimLX)         
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
+## CAUTION
+Flavor AospZimWithQuickstep might not compile yet.
+
 ## Main Features
 -   Row and columns config.
 -   Minibar support with custom color configuration.

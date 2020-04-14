@@ -67,7 +67,7 @@ public class GridSizeMigrationTask {
     protected final IntArray mEntryToRemove = new IntArray();
     protected final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
 
-    private final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
+    public final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
     private final HashSet<String> mValidPackages;
 
     private final int mSrcX, mSrcY;
@@ -116,7 +116,7 @@ public class GridSizeMigrationTask {
      *
      * @return true if any DB operation was commited.
      */
-    private boolean applyOperations() throws Exception {
+    public boolean applyOperations() throws Exception {
         // Update items
         int updateCount = mUpdateOperations.size();
         for (int i = 0; i < updateCount; i++) {

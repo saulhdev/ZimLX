@@ -67,8 +67,7 @@ public interface WorkspaceLayoutManager {
      * @param spanX    The number of cells spanned horizontally by the child.
      * @param spanY    The number of cells spanned vertically by the child.
      */
-    default void addInScreen(View child, int container, int screenId, int x, int y,
-                             int spanX, int spanY) {
+    default void addInScreen(View child, int container, int screenId, int x, int y, int spanX, int spanY) {
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (getScreenWithId(screenId) == null) {
                 Log.e(TAG, "Skipping child, screenId " + screenId + " not found");

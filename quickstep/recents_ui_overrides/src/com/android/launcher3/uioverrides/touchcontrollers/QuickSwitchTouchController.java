@@ -15,23 +15,6 @@
  */
 package com.android.launcher3.uioverrides.touchcontrollers;
 
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.QUICK_SWITCH;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_Y;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
-import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
-import static com.android.launcher3.anim.Interpolators.ACCEL_2;
-import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
-import static com.android.launcher3.anim.Interpolators.INSTANT;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
-import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
-import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
-
 import android.view.MotionEvent;
 
 import androidx.annotation.Nullable;
@@ -50,7 +33,23 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.views.RecentsView;
 import com.android.quickstep.views.TaskView;
-import com.android.systemui.shared.system.QuickStepContract;
+
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.QUICK_SWITCH;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_ALL_APPS_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_TRANSLATE_Y;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_VERTICAL_PROGRESS;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_TRANSLATE;
+import static com.android.launcher3.anim.Interpolators.ACCEL_2;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_2;
+import static com.android.launcher3.anim.Interpolators.INSTANT;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+import static com.android.quickstep.views.RecentsView.UPDATE_SYSUI_FLAGS_THRESHOLD;
+import static com.android.systemui.shared.system.QuickStepContract.SYSUI_STATE_OVERVIEW_DISABLED;
 
 /**
  * Handles quick switching to a recent task from the home screen.
@@ -75,10 +74,7 @@ public class QuickSwitchTouchController extends AbstractStateChangeTouchControll
         if (!mLauncher.isInState(LauncherState.NORMAL)) {
             return false;
         }
-        if ((ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) == 0) {
-            return false;
-        }
-        return true;
+        return (ev.getEdgeFlags() & Utilities.EDGE_NAV_BAR) != 0;
     }
 
     @Override

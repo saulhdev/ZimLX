@@ -134,13 +134,11 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
-import com.google.android.apps.nexuslauncher.CustomAppPredictor;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
-import org.zimmob.zimlx.util.CustomComponentKeyMapper;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -314,7 +312,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private float mCurrentAssistantVisibility = 0f;
     private BlurWallpaperProvider mBlurWallpaperProvider;
 
-    public Runnable mUpdatePredictionsIfResumed = () -> updatePredictions(false);
+    //public Runnable mUpdatePredictionsIfResumed = () -> updatePredictions(false);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -438,14 +436,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         });
 
         ZimPreferences prefs = Utilities.getZimPrefs(this);
-        /*prefs.getGridSize();
+        prefs.getGridSize();
         prefs.getDockGridSize();
         prefs.getDrawerGridSize();
         showNotificationCount = prefs.getFolderBadgeCount();
         mSharedPrefs = Utilities.getPrefs(this);
 
         mIconCache = app.getIconCache();
-         */
+
 
         //initMinibar();
         DrawerLayout dl = findViewById(R.id.drawer_layout);
@@ -453,11 +451,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         TraceHelper.endSection("Launcher-onCreate");
         if (prefs.getShowPredictions()) {
-            updatePredictions(true);
+            //updatePredictions(true);
         }
     }
 
-    public void updatePredictions(boolean force) {
+    /*public void updatePredictions(boolean force) {
         if (hasBeenResumed() || force) {
             List<CustomComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
             if (apps != null) {
@@ -465,7 +463,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 Log.e(TAG, "Predictions Size " + apps.size());
             }
         }
-    }
+    }*/
 
     @Override
     public void onDestroy() {
@@ -1090,10 +1088,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
 
         Handler handler = getDragLayer().getHandler();
-        if (handler != null) {
+        /*if (handler != null) {
             handler.removeCallbacks(mUpdatePredictionsIfResumed);
             Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
-        }
+        }*/
 
         UiFactory.onLauncherStateOrResumeChanged(this);
 
@@ -1343,8 +1341,16 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    public FolderIcon findFolderIcon(final int folderIconId) {
+    /*public FolderIcon findFolderIcon(final int folderIconId) {
         return (FolderIcon) mWorkspace.getHomescreenIconByItemId(folderIconId);
+    }*/
+    public FolderIcon findFolderIcon(final int folderIconId) {
+        return (FolderIcon) mWorkspace.getFirstMatch(new Workspace.ItemOperator() {
+            @Override
+            public boolean evaluate(ItemInfo info, View view) {
+                return info != null && info.id == folderIconId;
+            }
+        });
     }
 
 

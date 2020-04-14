@@ -19,8 +19,8 @@ import android.view.animation.Interpolator;
 
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.states.SpringLoadedState;
-import com.android.launcher3.uioverrides.AllAppsState;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 

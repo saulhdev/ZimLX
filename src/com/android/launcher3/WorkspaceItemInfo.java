@@ -25,14 +25,18 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.app.Person;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ContentWriter;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.iconpack.IconPackManager;
+
+import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -201,10 +205,9 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
 
-        //Person[] persons = UiFactory.getPersons(shortcutInfo);
-        personKeys = Utilities.EMPTY_STRING_ARRAY;
-        /*personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
-            : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);*/
+        Person[] persons = UiFactory.getPersons(shortcutInfo);
+        personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
+                : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);
 
     }
 

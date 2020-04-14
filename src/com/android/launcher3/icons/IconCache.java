@@ -78,6 +78,7 @@ public class IconCache extends BaseIconCache {
     public IconCache(Context context, InvariantDeviceProfile inv) {
         super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
+
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
@@ -206,10 +207,9 @@ public class IconCache extends BaseIconCache {
     /**
      * Fill in {@param mWorkspaceItemInfo} with the icon and label for {@param info}
      */
-    private synchronized void getTitleAndIcon(
-            @NonNull ItemInfoWithIcon infoInOut,
-            @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
-            boolean usePkgIcon, boolean useLowResIcon) {
+    private synchronized void getTitleAndIcon(@NonNull ItemInfoWithIcon infoInOut,
+                                              @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
+                                              boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), infoInOut.user,
                 activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
@@ -237,11 +237,8 @@ public class IconCache extends BaseIconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
-        if (mIconProvider instanceof ZimIconProvider)
-            return ((ZimIconProvider) mIconProvider).getIcon(info, mIconDpi, flattenDrawable);
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
-
 
     public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
         if (mIconProvider instanceof ZimIconProvider)

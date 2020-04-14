@@ -50,7 +50,7 @@ class ZimIconProvider(context: Context) : DynamicIconProvider(context) {
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {
         if (Utilities.ATLEAST_OREO && this is AdaptiveIconDrawable) {
             error("unwrapped AdaptiveIconDrawable for ${
-            if (info is LauncherActivityInfo) info.applicationInfo else info
+            if (info is LauncherActivityInfo) info.componentName else info
             }")
         }
         return this

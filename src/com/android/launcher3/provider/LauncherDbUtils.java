@@ -25,10 +25,12 @@ import android.os.Binder;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.util.IntArray;
 
-import java.util.Locale;
+import java.util.ArrayList;
+import java.util.Collection;
 
 /**
  * A set of utility methods for Launcher DB used for DB updates and migration.
@@ -44,7 +46,7 @@ public class LauncherDbUtils {
      * the first row. The items in the first screen are moved and resized but the carry-forward
      * items are simply deleted.
      */
-    public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
+    /*public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             // Get the first screen
             final int firstScreenId;
@@ -83,13 +85,82 @@ public class LauncherDbUtils {
             Log.e(TAG, "Failed to update workspace size", e);
             return false;
         }
+    }*/
+    public static boolean prepareScreenZeroToHostQsb(Context context, SQLiteDatabase db) {
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            // Get the existing screens
+            ArrayList<Integer> screenIds = getScreenIdsFromCursor(db.query(LauncherSettings.WorkspaceScreens.TABLE_NAME,
+                    null, null, null, null, null, LauncherSettings.WorkspaceScreens.SCREEN_RANK));
+
+            if (screenIds.isEmpty()) {
+                // No update needed
+                t.commit();
+                return true;
+            }
+            if (screenIds.get(0) != 0) {
+                // First screen is not 0, we need to rename screens
+                if (screenIds.indexOf(0L) > -1) {
+                    // There is already a screen 0. First rename it to a different screen.
+                    int newScreenId = 1;
+                    while (screenIds.indexOf(newScreenId) > -1) newScreenId++;
+                    renameScreen(db, 0, newScreenId);
+                }
+
+                // Rename the first screen to 0.
+                renameScreen(db, screenIds.get(0), 0);
+            }
+
+            // Check if the first row is empty
+            if (DatabaseUtils.queryNumEntries(db, Favorites.TABLE_NAME,
+                    "container = -100 and screen = 0 and cellY = 0") == 0) {
+                // First row is empty, no need to migrate.
+                t.commit();
+                return true;
+            }
+
+            new LossyScreenMigrationTask(context, LauncherAppState.getIDP(context), db)
+                    .migrateScreen0();
+            t.commit();
+            return true;
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to update workspace size", e);
+            return false;
+        }
     }
 
     private static void renameScreen(SQLiteDatabase db, int oldScreen, int newScreen) {
         String[] whereParams = new String[]{Integer.toString(oldScreen)};
+        /*
         ContentValues values = new ContentValues();
         values.put(Favorites.SCREEN, newScreen);
         db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
+        */
+        ContentValues values = new ContentValues();
+        values.put(LauncherSettings.WorkspaceScreens._ID, newScreen);
+        db.update(LauncherSettings.WorkspaceScreens.TABLE_NAME, values, "_id = ?", whereParams);
+        values.clear();
+        values.put(Favorites.SCREEN, newScreen);
+        db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
+    }
+
+    /**
+     * Parses the cursor containing workspace screens table and returns the list of screen IDs
+     */
+    public static ArrayList<Integer> getScreenIdsFromCursor(Cursor sc) {
+        try {
+            return iterateCursor(sc,
+                    sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID),
+                    new ArrayList<>());
+        } finally {
+            sc.close();
+        }
+    }
+
+    public static <T extends Collection<Integer>> T iterateCursor(Cursor c, int columnIndex, T out) {
+        while (c.moveToNext()) {
+            out.add(c.getInt(columnIndex));
+        }
+        return out;
     }
 
     public static IntArray queryIntArray(SQLiteDatabase db, String tableName, String columnName,

@@ -54,7 +54,9 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIconPreviewVerifier;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.LauncherActivityCachingLogic;
 import com.android.launcher3.icons.LauncherIcons;
+import com.android.launcher3.icons.cache.IconCacheUpdateHandler;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
@@ -67,6 +69,7 @@ import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.TraceHelper;
 
 import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.model.HomeWidgetMigrationTask;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -185,7 +188,7 @@ public class LoaderTask implements Runnable {
 
             // second step
             TraceHelper.partitionSection(TAG, "step 2.1: loading all apps");
-            loadAllApps();
+            List<LauncherActivityInfo> allActivityList = loadAllApps();
 
             TraceHelper.partitionSection(TAG, "step 2.2: Binding all apps");
             verifyNotStopped();
@@ -193,7 +196,11 @@ public class LoaderTask implements Runnable {
 
             verifyNotStopped();
             TraceHelper.partitionSection(TAG, "step 2.3: Update icon cache");
-            updateIconCache();
+            IconCacheUpdateHandler updateHandler = mIconCache.getUpdateHandler();
+            setIgnorePackages(updateHandler);
+            updateHandler.updateIcons(allActivityList,
+                    LauncherActivityCachingLogic.newInstance(mApp.getContext()),
+                    mApp.getModel()::onPackageIconsUpdated);
 
             // Take a break
             TraceHelper.partitionSection(TAG, "step 2 completed, wait for idle");
@@ -250,7 +257,7 @@ public class LoaderTask implements Runnable {
         }
 
         if (!clearDb) {
-            //HomeWidgetMigrationTask.migrateIfNeeded(context);
+            HomeWidgetMigrationTask.migrateIfNeeded(context);
         }
 
         if (clearDb) {
@@ -795,7 +802,7 @@ public class LoaderTask implements Runnable {
         }
     }
 
-    private void updateIconCache() {
+    private void setIgnorePackages(IconCacheUpdateHandler updateHandler) {
         // Ignore packages which have a promise icon.
         HashSet<String> packagesToIgnore = new HashSet<>();
         synchronized (mBgDataModel) {
@@ -813,12 +820,12 @@ public class LoaderTask implements Runnable {
                 }
             }
         }
-        //mIconCache.updateDbIcons(packagesToIgnore);
+        updateHandler.setPackagesToIgnore(Process.myUserHandle(), packagesToIgnore);
     }
 
-    private void loadAllApps() {
+    private List<LauncherActivityInfo> loadAllApps() {
         final List<UserHandle> profiles = mUserManager.getUserProfiles();
-
+        List<LauncherActivityInfo> allActivityList = new ArrayList<>();
         // Clear the list of apps
         mBgAllAppsList.clear();
         for (UserHandle user : profiles) {
@@ -827,7 +834,7 @@ public class LoaderTask implements Runnable {
             // Fail if we don't have any apps
             // TODO: Fix this. Only fail for the current user.
             if (apps == null || apps.isEmpty()) {
-                return;
+                return allActivityList;
             }
             boolean quietMode = mUserManager.isQuietModeEnabled(user);
             // Create the ApplicationInfos
@@ -836,6 +843,7 @@ public class LoaderTask implements Runnable {
                 // This builds the icon bitmaps.
                 mBgAllAppsList.add(new AppInfo(app, user, quietMode), app);
             }
+            allActivityList.addAll(apps);
         }
 
         if (FeatureFlags.LAUNCHER3_PROMISE_APPS_IN_ALL_APPS) {
@@ -848,6 +856,7 @@ public class LoaderTask implements Runnable {
         }
 
         mBgAllAppsList.added = new ArrayList<>();
+        return allActivityList;
     }
 
     private void loadDeepShortcuts() {

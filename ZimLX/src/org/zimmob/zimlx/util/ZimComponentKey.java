@@ -14,7 +14,6 @@ import java.util.Arrays;
 public class ZimComponentKey extends ComponentKey {
     public ZimComponentKey(ComponentName componentName, UserHandle user) {
         super(componentName, user);
-
     }
 
     /**
@@ -23,7 +22,7 @@ public class ZimComponentKey extends ComponentKey {
      * to the current user.
      */
     public ZimComponentKey(Context context, String componentKeyStr) {
-        super(null, null);
+        super(new ComponentName(context, componentKeyStr), Utilities.myUserHandle());
         int userDelimiterIndex = componentKeyStr.indexOf("#");
         if (userDelimiterIndex != -1) {
             String componentStr = componentKeyStr.substring(0, userDelimiterIndex);

@@ -50,6 +50,7 @@ import com.android.launcher3.util.Themes;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.zimmob.zimlx.settings.IconScale;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -58,6 +59,7 @@ import java.util.Collections;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.config.FeatureFlags.APPLY_CONFIG_AT_RUNTIME;
 import static com.android.launcher3.util.PackageManagerHelper.getPackageFilter;
+import static java.lang.Math.max;
 
 public class InvariantDeviceProfile {
 
@@ -108,11 +110,23 @@ public class InvariantDeviceProfile {
     public int numFolderRows;
     public int numFolderColumns;
     public float iconSize;
+    public float iconSizeOriginal;
     public String iconShapePath;
-    public float landscapeIconSize;
     public int iconBitmapSize;
     public int fillResIconDpi;
     public float iconTextSize;
+
+
+    public float hotseatIconSize;
+    public float hotseatIconSizeOriginal;
+    public float landscapeIconSize;
+    public float landscapeIconSizeOriginal;
+    public float landscapeHotseatIconSize;
+    public float landscapeHotseatIconSizeOriginal;
+    public float allAppsIconSize;
+    public float allAppsIconSizeOriginal;
+    public float landscapeAllAppsIconSize;
+    public float landscapeAllAppsIconSizeOriginal;
 
     private SparseArray<TypedValue> mExtraAttrs;
 
@@ -149,6 +163,7 @@ public class InvariantDeviceProfile {
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
         iconSize = p.iconSize;
+        iconSizeOriginal = iconSize;
         iconShapePath = p.iconShapePath;
         landscapeIconSize = p.landscapeIconSize;
         iconTextSize = p.iconTextSize;
@@ -231,12 +246,32 @@ public class InvariantDeviceProfile {
         }
 
         iconSize = interpolatedDisplayOption.iconSize;
+        iconSizeOriginal = iconSize;
         iconShapePath = getIconShapePath(context);
         landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
-        iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
         iconTextSize = interpolatedDisplayOption.iconTextSize;
-        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
 
+
+        hotseatIconSize = interpolatedDisplayOption.iconSize;
+        hotseatIconSizeOriginal = interpolatedDisplayOption.iconSize;
+        allAppsIconSize = interpolatedDisplayOption.iconSize;
+        allAppsIconSizeOriginal = interpolatedDisplayOption.iconSize;
+        landscapeIconSize = interpolatedDisplayOption.landscapeIconSize;
+        landscapeIconSizeOriginal = interpolatedDisplayOption.landscapeIconSize;
+        landscapeHotseatIconSize = interpolatedDisplayOption.landscapeIconSize;
+        landscapeHotseatIconSizeOriginal = interpolatedDisplayOption.landscapeIconSize;
+        landscapeAllAppsIconSize = interpolatedDisplayOption.landscapeIconSize;
+        landscapeAllAppsIconSizeOriginal = interpolatedDisplayOption.landscapeIconSize;
+        iconTextSize = interpolatedDisplayOption.iconTextSize;
+
+        new IconScale(Utilities.getZimPrefs(context), "iconSize", this);
+        new IconScale(Utilities.getZimPrefs(context), "allAppsIconSize", this);
+        new IconScale(Utilities.getZimPrefs(context), "hotseatIconSize", "iconSize", this);
+
+
+        //iconBitmapSize = ResourceUtils.pxFromDp(iconSize, dm);
+        iconBitmapSize = Utilities.pxFromDp(max(max(iconSize, allAppsIconSize), hotseatIconSize), dm);
+        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
         applyPartnerDeviceProfileOverrides(context, dm);
@@ -246,7 +281,7 @@ public class InvariantDeviceProfile {
         // The real size never changes. smallSide and largeSide will remain the
         // same in any orientation.
         int smallSide = Math.min(realSize.x, realSize.y);
-        int largeSide = Math.max(realSize.x, realSize.y);
+        int largeSide = max(realSize.x, realSize.y);
 
         landscapeProfile = new DeviceProfile(context, this, smallestSize, largestSize,
                 largeSide, smallSide, true /* isLandscape */, false /* isMultiWindowMode */);
@@ -260,7 +295,7 @@ public class InvariantDeviceProfile {
                     (int) (largeSide * wallpaperTravelToScreenWidthRatio(largeSide, smallSide)),
                     largeSide);
         } else {
-            defaultWallpaperSize = new Point(Math.max(smallSide * 2, largeSide), largeSide);
+            defaultWallpaperSize = new Point(max(smallSide * 2, largeSide), largeSide);
         }
 
         ComponentName cn = new ComponentName(context.getPackageName(), getClass().getName());
@@ -566,6 +601,8 @@ public class InvariantDeviceProfile {
         private float iconSize;
         private float landscapeIconSize;
         private float iconTextSize;
+        public float landscapeAllAppsIconSize;
+        public float allAppsIconSize;
 
         DisplayOption(GridOption grid, Context context, AttributeSet attrs) {
             this.grid = grid;
@@ -580,8 +617,8 @@ public class InvariantDeviceProfile {
                     R.styleable.ProfileDisplayOption_canBeDefault, false);
 
             iconSize = a.getFloat(R.styleable.ProfileDisplayOption_iconImageSize, 0);
-            landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize,
-                    iconSize);
+            landscapeIconSize = a.getFloat(R.styleable.ProfileDisplayOption_landscapeIconSize, iconSize);
+
             iconTextSize = a.getFloat(R.styleable.ProfileDisplayOption_iconTextSize, 0);
             a.recycle();
         }
@@ -597,6 +634,8 @@ public class InvariantDeviceProfile {
         private DisplayOption multiply(float w) {
             iconSize *= w;
             landscapeIconSize *= w;
+            allAppsIconSize *= w;
+            landscapeAllAppsIconSize *= w;
             iconTextSize *= w;
             return this;
         }
@@ -604,6 +643,8 @@ public class InvariantDeviceProfile {
         private DisplayOption add(DisplayOption p) {
             iconSize += p.iconSize;
             landscapeIconSize += p.landscapeIconSize;
+            allAppsIconSize += p.allAppsIconSize;
+            landscapeAllAppsIconSize += p.landscapeAllAppsIconSize;
             iconTextSize += p.iconTextSize;
             return this;
         }

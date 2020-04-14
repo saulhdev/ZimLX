@@ -51,8 +51,7 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context
             if (Utilities.ATLEAST_NOUGAT) {
                 val provider = it.provider
                 val bounds = clipBounds
-                val listener = CustomWidgetDragListener(provider, bounds,
-                        width, width)
+                val listener = CustomWidgetDragListener(provider, bounds, width, width)
 
                 val homeIntent = listener.addToIntent(
                         Intent(Intent.ACTION_MAIN)

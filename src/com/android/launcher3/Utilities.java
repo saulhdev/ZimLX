@@ -74,6 +74,7 @@ import android.view.animation.Interpolator;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.Person;
 import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -93,6 +94,7 @@ import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
+import org.zimmob.zimlx.iconpack.IconPackManager;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -120,8 +122,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
  */
 public final class Utilities {
     public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    //public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
-    public static final String[] EMPTY_PERSON_ARRAY = new String[0];
+    public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
     public static final boolean ATLEAST_Q =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
@@ -892,8 +893,11 @@ public final class Utilities {
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
                                            boolean flattenDrawable, Object[] outObj) {
+        IconPackManager.CustomIconEntry customIconEntry = (info instanceof WorkspaceItemInfo) ?
+                ((WorkspaceItemInfo) info).customIconEntry : null;
+
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION || customIconEntry != null) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;

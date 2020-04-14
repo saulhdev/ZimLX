@@ -18,6 +18,7 @@
 package org.zimmob.zimlx.model;
 
 import android.annotation.SuppressLint;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
@@ -25,11 +26,21 @@ import android.graphics.Point;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppWidgetProviderInfo;
+import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.Workspace;
 import com.android.launcher3.model.GridSizeMigrationTask;
+import com.android.launcher3.util.GridOccupancy;
+import com.android.launcher3.widget.custom.CustomWidgetParser;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
+import static com.android.launcher3.LauncherSettings.Favorites;
+import static com.android.launcher3.LauncherSettings.Settings;
+import static org.zimmob.zimlx.settings.ui.SettingsActivity.ALLOW_OVERLAP_PREF;
 import static org.zimmob.zimlx.settings.ui.SettingsActivity.SMARTSPACE_PREF;
 
 public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
@@ -61,7 +72,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
     @Override
     protected boolean migrateWorkspace() throws Exception {
-        /*ArrayList<Integer> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
+        ArrayList<Integer> allScreens = LauncherModel.loadWorkspaceScreensDb(mContext);
         if (allScreens.isEmpty()) {
             throw new Exception("Unable to get workspace screens");
         }
@@ -72,7 +83,7 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
 
         if (!allowOverlap) {
             ArrayList<DbEntry> firstScreenItems = new ArrayList<>();
-            for (long screenId : allScreens) {
+            for (int screenId : allScreens) {
                 ArrayList<DbEntry> items = loadWorkspaceEntries(screenId);
                 if (screenId == Workspace.FIRST_SCREEN_ID) {
                     firstScreenItems.addAll(items);
@@ -92,12 +103,12 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
                 LauncherAppWidgetProviderInfo provider = customWidgets.get(0);
                 int widgetId = CustomWidgetParser
                         .getWidgetIdForCustomProvider(mContext, provider.provider);
-                long itemId = LauncherSettings.Settings.call(mContext.getContentResolver(),
-                        LauncherSettings.Settings.METHOD_NEW_ITEM_ID)
-                        .getLong(LauncherSettings.Settings.EXTRA_VALUE);
+                long itemId = Settings.call(mContext.getContentResolver(),
+                        Settings.METHOD_NEW_ITEM_ID)
+                        .getLong(Settings.EXTRA_VALUE);
 
                 ContentValues values = new ContentValues();
-                values.put(LauncherSettings.Favorites._ID, itemId);
+                values.put(Favorites._ID, itemId);
                 values.put(Favorites.CONTAINER, Favorites.CONTAINER_DESKTOP);
                 values.put(Favorites.SCREEN, Workspace.FIRST_SCREEN_ID);
                 values.put(Favorites.CELLX, 0);
@@ -107,13 +118,11 @@ public class HomeWidgetMigrationTask extends GridSizeMigrationTask {
                 values.put(Favorites.ITEM_TYPE, Favorites.ITEM_TYPE_CUSTOM_APPWIDGET);
                 values.put(Favorites.APPWIDGET_ID, widgetId);
                 values.put(Favorites.APPWIDGET_PROVIDER, provider.provider.flattenToString());
-                mUpdateOperations.add(ContentProviderOperation
-                        .newInsert(Favorites.CONTENT_URI).withValues(values).build());
+                mUpdateOperations.append(0, values);
             }
         }
 
-        return applyOperations();*/
-        return false;
+        return applyOperations();
     }
 
     @SuppressLint("ApplySharedPref")

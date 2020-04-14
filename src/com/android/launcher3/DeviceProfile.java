@@ -479,18 +479,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 + topBottomPadding * 2;
     }
 
-    /**
-     * Determine the exact visual footprint of the all apps button, taking into account scaling
-     * and internal padding of the drawable.
-     */
-    private void computeAllAppsButtonSize(Context context) {
-        Resources res = context.getResources();
-        float padding = res.getInteger(R.integer.config_allAppsButtonPaddingPercent) / 100f;
-        allAppsButtonVisualSize = (int) (iconSizePx * (1 - padding)) - context.getResources()
-                .getDimensionPixelSize(R.dimen.all_apps_button_scale_down);
-    }
-
-
     private void updateAvailableDimensions(DisplayMetrics dm, Resources res) {
         updateIconSize(1f, 1f, res, dm);
         float workspaceScale = 1f;
@@ -515,11 +503,10 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         final boolean isVerticalLayout = isVerticalBarLayout();
         float invIconSizePx = isVerticalLayout ? inv.landscapeIconSize : inv.iconSize;
         iconSizeOriginalPx = Utilities.pxFromDp(invIconSizePx, dm);
-        //iconSizePx = (int) (Utilities.pxFromDp(invIconSizePx, dm) * workspaceScale);
-        //iconSizePx = (int) (iconSizeOriginalPx * workspaceScale);
+        iconSizePx = (int) (iconSizeOriginalPx * workspaceScale);
         iconSizePx = Math.max(1, (int) (ResourceUtils.pxFromDp(invIconSizePx, dm) * workspaceScale));
         iconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
-        iconTextSizePx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
+        iconTextSizePx = (int) (iconTextSizePx * workspaceScale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale) -
                 (iconTextSizeOriginalPx - iconTextSizePx);
 
@@ -537,11 +524,11 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         cellWidthPx = iconSizePx + iconDrawablePaddingPx;
 
         // All apps
-        //allAppsIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * allAppsScale);
-        allAppsIconSizePx = iconSizePx;
+        float invAllAppsIconSizePx = isVerticalLayout ? inv.landscapeAllAppsIconSize : inv.allAppsIconSize;
         allAppsIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * allAppsScale);
         allAppsIconTextSizePx = (int) (allAppsIconTextSizePx * allAppsScale);
         textHeight = Utilities.calculateTextHeight(iconTextSizePx) * drawerLabelRowCount;
+        allAppsIconSizePx = (int) (Utilities.pxFromDp(invAllAppsIconSizePx, dm) * workspaceScale);
         allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * workspaceScale) -
                 (int) (allAppsIconTextSizeOriginalPx - allAppsIconTextSizePx);
 
@@ -559,8 +546,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         }
 
         // Hotseat
-        //float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
-        float invHotseatIconSizePx = inv.iconSize;
+        float invHotseatIconSizePx = isVerticalLayout ? inv.landscapeHotseatIconSize : inv.hotseatIconSize;
         hotseatIconTextSizeOriginalPx = (int) (Utilities.pxFromSp(inv.iconTextSize, dm) * workspaceScale);
         hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * workspaceScale);
         textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;

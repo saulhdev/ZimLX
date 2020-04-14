@@ -203,7 +203,7 @@ public class AutoInstallsLayout {
         try {
             return parseLayout(mInitialLayoutSupplier.get(), screenIds);
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing layout: ", e);
+            Log.e(TAG, "Error parsing layoutError parsing layout: ", e);
             return -1;
         }
     }

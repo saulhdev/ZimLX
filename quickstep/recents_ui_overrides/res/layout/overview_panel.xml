@@ -13,9 +13,11 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
-    <background android:drawable="@color/legacy_icon_background" />
-    <foreground>
-        <com.android.launcher3.graphics.FixedScaleDrawable />
-    </foreground>
-</adaptive-icon>
+<com.android.quickstep.views.LauncherRecentsView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:theme="@style/HomeScreenElementTheme"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:clipChildren="false"
+    android:clipToPadding="false"
+    android:accessibilityPaneTitle="@string/accessibility_recent_apps"
+    android:visibility="invisible" />

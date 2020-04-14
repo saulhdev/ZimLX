@@ -353,7 +353,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
-        setText(info.title);
+        if (!isTextHidden())
+            setText(getTitle(info));
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)

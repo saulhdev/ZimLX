@@ -21,13 +21,13 @@ import android.os.Message;
 import android.os.RemoteException;
 import android.util.Log;
 
+import androidx.annotation.WorkerThread;
+
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.systemui.shared.recents.ISystemUiProxy;
-
-import androidx.annotation.WorkerThread;
 
 /**
  * Sets alpha for the back button
@@ -64,8 +64,8 @@ public class OverviewInteractionState {
         mUiHandler = new Handler(this::handleUiMessage);
         mBgHandler = new Handler(UiThreadHelper.getBackgroundLooper(), this::handleBgMessage);
 
-        //onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
-        //        .addModeChangeListener(this::onNavigationModeChanged));
+        onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
+                .addModeChangeListener(this::onNavigationModeChanged));
     }
 
     public float getBackButtonAlpha() {
@@ -140,6 +140,11 @@ public class OverviewInteractionState {
     }
 
     private boolean modeSupportsGestures() {
-        return SysUINavigationMode.getMode(mContext).hasGestures;
+        //return SysUINavigationMode.INSTANCE.get(mContext).getMode().hasGestures;
+        if (SysUINavigationMode.INSTANCE.get(mContext).getMode() != null) {
+            return SysUINavigationMode.getMode(mContext).hasGestures;
+        } else {
+            return false;
+        }
     }
 }

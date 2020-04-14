@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2011 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2019 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,15 +12,12 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.android.launcher3.Hotseat android:theme="@style/HomeScreenElementTheme"
+<com.android.launcher3.Hotseat
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:launcher="http://schemas.android.com/apk/res-auto">
-
-    <com.android.launcher3.CellLayout
-        android:id="@+id/layout"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
-        launcher:containerType="hotseat"
-        android:importantForAccessibility="no" />
-</com.android.launcher3.Hotseat>
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hotseat"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/HomeScreenElementTheme"
+    android:importantForAccessibility="no"
+    launcher:containerType="hotseat" />

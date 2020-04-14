@@ -23,7 +23,7 @@ import android.graphics.drawable.Drawable
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
-import com.android.launcher3.graphics.FixedScaleDrawable
+import com.android.launcher3.icons.FixedScaleDrawable
 import org.zimmob.zimlx.toBitmap
 
 class IconMask {

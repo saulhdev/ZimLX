@@ -536,7 +536,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
         mWorkspaceScrim.draw(canvas);
-        mOverviewScrim.updateCurrentScrimmedView(this);
+        //mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }

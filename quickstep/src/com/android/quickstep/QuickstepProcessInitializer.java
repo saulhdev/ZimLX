@@ -16,11 +16,7 @@
 package com.android.quickstep;
 
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.os.UserManager;
-import android.util.Log;
 
-import com.android.launcher3.BuildConfig;
 import com.android.launcher3.MainProcessInitializer;
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.system.ThreadedRendererCompat;
@@ -47,16 +43,18 @@ public class QuickstepProcessInitializer extends MainProcessInitializer {
             return;
         }*/
 
-
         super.init(context);
 
         //ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
 
         // Elevate GPU priority for Quickstep and Remote animations.
-        try {
-            ThreadedRendererCompat.setContextPriority(ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
-        } catch (Throwable t) {
-            Log.e("QuickstepProcessInit", "Hidden APIs allowed but can't invoke setContextPriority", t);
+        if (Utilities.ATLEAST_Q) {
+            try {
+                ThreadedRendererCompat.setContextPriority(
+                        ThreadedRendererCompat.EGL_CONTEXT_PRIORITY_HIGH_IMG);
+            } catch (NoSuchMethodError e) {
+                e.printStackTrace();
+            }
         }
     }
 }

@@ -31,7 +31,7 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ColorExtractor;
-import com.android.launcher3.graphics.FixedScaleDrawable;
+import com.android.launcher3.icons.FixedScaleDrawable;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
 
