@@ -13,12 +13,12 @@ import android.graphics.drawable.LayerDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.Preconditions;
 import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter;
 
@@ -34,7 +34,12 @@ public class DynamicClock extends BroadcastReceiver {
     private ClockLayers mLayers;
 
     public DynamicClock(Context context) {
-        mUpdaters = Collections.newSetFromMap(new WeakHashMap<AutoUpdateClock, Boolean>());
+        if (LauncherAppState.getInstanceNoCreate() == null) {
+            RuntimeException e = new RuntimeException("Initializing DynamicClock before LauncherAppState");
+            Log.e("DynamicClock", "Error while initializing DynamicClock", e);
+            throw e;
+        }
+        mUpdaters = Collections.newSetFromMap(new WeakHashMap<>());
         mLayers = new ClockLayers();
         mContext = context;
         final Handler handler = new Handler(LauncherModel.getWorkerLooper());
@@ -43,12 +48,7 @@ public class DynamicClock extends BroadcastReceiver {
                         Intent.ACTION_PACKAGE_ADDED,
                         Intent.ACTION_PACKAGE_CHANGED),
                 null, handler);
-        handler.post(new Runnable() {
-            @Override
-            public void run() {
-                updateMainThread();
-            }
-        });
+        handler.post(this::updateMainThread);
 
         mContext.registerReceiver(new BroadcastReceiver() {
             @Override
@@ -86,7 +86,7 @@ public class DynamicClock extends BroadcastReceiver {
                     layers.mDefaultMinute = metaData.getInt("com.google.android.apps.nexuslauncher.DEFAULT_MINUTE", 0);
                     layers.mDefaultSecond = metaData.getInt("com.google.android.apps.nexuslauncher.DEFAULT_SECOND", 0);
                     if (normalizeIcon) {
-                        //layers.scale = IconNormalizer.getScale(layers.mDrawable, null, null, null);
+                        layers.setupBackground(context);
                     }
 
                     LayerDrawable layerDrawable = layers.getLayerDrawable();
@@ -123,14 +123,8 @@ public class DynamicClock extends BroadcastReceiver {
     }
 
     private void updateMainThread() {
-        new MainThreadExecutor().execute(new Runnable() {
-            @Override
-            public void run() {
-                updateWrapper(getClockLayers(mContext,
-                        LauncherAppState.getIDP(mContext).fillResIconDpi,
-                        !FeatureFlags.LAUNCHER3_DISABLE_ICON_NORMALIZATION));
-            }
-        });
+        new MainThreadExecutor().execute(() -> updateWrapper(getClockLayers(mContext,
+                LauncherAppState.getIDP(mContext).fillResIconDpi, true)));
     }
 
     private void updateWrapper(ClockLayers wrapper) {
