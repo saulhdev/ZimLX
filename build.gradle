@@ -99,6 +99,13 @@ android {
         }
     }
 
+    lintOptions {
+        disable 'MissingTranslation'
+        disable 'ExtraTranslation'
+        abortOnError false
+        checkReleaseBuilds false
+    }
+
     sourceSets {
         main {
             res.srcDirs = ['res']
@@ -176,6 +183,7 @@ dependencies {
     implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
     implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
     implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
+    implementation 'com.balysv:material-ripple:1.0.2'
     implementation project(':IconLoader')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
