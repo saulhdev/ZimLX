@@ -23,7 +23,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * Wrapper around {@link Log} to allow writing to a file.
  * This class can safely be called from main thread.
- * <p>
+ *
  * Note: This should only be used for logging errors which have a persistent effect on user's data,
  * but whose effect may not be visible immediately.
  */
@@ -101,7 +101,6 @@ public final class FileLog {
 
     /**
      * Blocks until all the pending logs are written to the disk
-     *
      * @param out if not null, all the persisted logs are copied to the writer.
      */
     public static void flushAll(PrintWriter out) throws InterruptedException {
@@ -113,27 +112,6 @@ public final class FileLog {
                 Pair.create(out, latch)).sendToTarget();
 
         latch.await(2, TimeUnit.SECONDS);
-    }
-
-    private static void dumpFile(PrintWriter out, String fileName) {
-        File logFile = new File(sLogsDirectory, fileName);
-        if (logFile.exists()) {
-
-            BufferedReader in = null;
-            try {
-                in = new BufferedReader(new FileReader(logFile));
-                out.println();
-                out.println("--- logfile: " + fileName + " ---");
-                String line;
-                while ((line = in.readLine()) != null) {
-                    out.println(line);
-                }
-            } catch (Exception e) {
-                // ignore
-            } finally {
-                Utilities.closeSilently(in);
-            }
-        }
     }
 
     /**
@@ -222,6 +200,27 @@ public final class FileLog {
                 }
             }
             return true;
+        }
+    }
+
+    private static void dumpFile(PrintWriter out, String fileName) {
+        File logFile = new File(sLogsDirectory, fileName);
+        if (logFile.exists()) {
+
+            BufferedReader in = null;
+            try {
+                in = new BufferedReader(new FileReader(logFile));
+                out.println();
+                out.println("--- logfile: " + fileName + " ---");
+                String line;
+                while ((line = in.readLine()) != null) {
+                    out.println(line);
+                }
+            } catch (Exception e) {
+                // ignore
+            } finally {
+                Utilities.closeSilently(in);
+            }
         }
     }
 }

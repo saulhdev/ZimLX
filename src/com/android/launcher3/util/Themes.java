@@ -17,6 +17,7 @@
 package com.android.launcher3.util;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.content.res.TypedArray;
 import android.graphics.Color;
 import android.graphics.ColorMatrix;
@@ -27,17 +28,61 @@ import android.util.TypedValue;
 
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 
 /**
  * Various utility methods associated with theming.
  */
 public class Themes {
-    public static int getColorAccent(Context context) {
-        return Utilities.getZimPrefs(context).getAccentColor();
+
+    public static int getActivityThemeRes(Context context) {
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(context);
+        boolean darkTheme;
+        if (Utilities.ATLEAST_Q) {
+            Configuration configuration = context.getResources().getConfiguration();
+            int nightMode = configuration.uiMode & Configuration.UI_MODE_NIGHT_MASK;
+            darkTheme = nightMode == Configuration.UI_MODE_NIGHT_YES;
+        } else {
+            darkTheme = wallpaperColorInfo.isDark();
+        }
+
+        if (darkTheme) {
+            return wallpaperColorInfo.supportsDarkText() ?
+                    R.style.AppTheme_Dark_DarkText : wallpaperColorInfo.isDark()?// .isMainColorDark() ?
+                            R.style.AppTheme_Dark_DarkMainColor : R.style.AppTheme_Dark;
+        } else {
+            return wallpaperColorInfo.supportsDarkText() ?
+                    R.style.AppTheme_DarkText : wallpaperColorInfo.isDark() ?
+                            R.style.AppTheme_DarkMainColor : R.style.AppTheme;
+        }
     }
+
+    public static String getDefaultBodyFont(Context context) {
+        TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,
+                new int[]{android.R.attr.fontFamily});
+        String value = ta.getString(0);
+        ta.recycle();
+        return value;
+    }
+
+    public static float getDialogCornerRadius(Context context) {
+        return getDimension(context, android.R.attr.dialogCornerRadius,
+                context.getResources().getDimension(R.dimen.default_dialog_corner_radius));
+    }
+
+    public static float getDimension(Context context, int attr, float defaultValue) {
+        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
+        float value = ta.getDimension(0, defaultValue);
+        ta.recycle();
+        return value;
+    }
+
+    public static int getColorAccent(Context context) {
+        return getAttrColor(context, android.R.attr.colorAccent);
+    }
+
     public static int getAttrColor(Context context, int attr) {
         TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-
         int colorAccent = ta.getColor(0, 0);
         ta.recycle();
         return colorAccent;
@@ -80,10 +125,10 @@ public class Themes {
      * G' = g * G
      * B' = b * B
      * A' = a * A
-     * <p>
+     *
      * The matrix will, for instance, turn white into r g b a, and black will remain black.
      *
-     * @param color  The color r g b a
+     * @param color The color r g b a
      * @param target The ColorMatrix to scale
      */
     public static void setColorScaleOnMatrix(int color, ColorMatrix target) {
@@ -93,14 +138,14 @@ public class Themes {
 
     /**
      * Changes a color matrix such that, when applied to srcColor, it produces dstColor.
-     * <p>
+     *
      * Note that values on the last column of target ColorMatrix can be negative, and may result in
      * negative values when applied on a color. Such negative values will be automatically shifted
      * up to 0 by the framework.
      *
      * @param srcColor The color to start from
      * @param dstColor The color to create by applying target on srcColor
-     * @param target   The ColorMatrix to transform the color
+     * @param target The ColorMatrix to transform the color
      */
     public static void setColorChangeOnMatrix(int srcColor, int dstColor, ColorMatrix target) {
         target.reset();
@@ -115,7 +160,7 @@ public class Themes {
      * held in memory for later use.
      */
     public static SparseArray<TypedValue> createValueMap(Context context, AttributeSet attrSet,
-                                                         IntArray keysToIgnore) {
+            IntArray keysToIgnore) {
         int count = attrSet.getAttributeCount();
         IntArray attrNameArray = new IntArray(count);
         for (int i = 0; i < count; i++) {
@@ -133,25 +178,5 @@ public class Themes {
         }
 
         return result;
-    }
-
-    public static String getDefaultBodyFont(Context context) {
-        TypedArray ta = context.obtainStyledAttributes(android.R.style.TextAppearance_DeviceDefault,
-                new int[]{android.R.attr.fontFamily});
-        String value = ta.getString(0);
-        ta.recycle();
-        return value;
-    }
-
-    public static float getDialogCornerRadius(Context context) {
-        return getDimension(context, android.R.attr.dialogCornerRadius,
-                context.getResources().getDimension(R.dimen.default_dialog_corner_radius));
-    }
-
-    public static float getDimension(Context context, int attr, float defaultValue) {
-        TypedArray ta = context.obtainStyledAttributes(new int[]{attr});
-        float value = ta.getDimension(0, defaultValue);
-        ta.recycle();
-        return value;
     }
 }

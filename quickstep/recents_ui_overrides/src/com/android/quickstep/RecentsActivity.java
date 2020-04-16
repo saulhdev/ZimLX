@@ -37,7 +37,6 @@ import android.view.View;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.LauncherAnimationRunner;
 import com.android.launcher3.R;
 import com.android.launcher3.anim.Interpolators;
@@ -132,11 +131,6 @@ public final class RecentsActivity extends BaseRecentsActivity {
     }
 
     @Override
-    public void invalidateParent(ItemInfo info) {
-
-    }
-
-    @Override
     public <T extends View> T getOverviewPanel() {
         return (T) mFallbackRecentsView;
     }
@@ -153,7 +147,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
             @Override
             public void onCreateAnimation(RemoteAnimationTargetCompat[] targetCompats,
-                                          AnimationResult result) {
+                    AnimationResult result) {
                 AnimatorSet anim = composeRecentsLaunchAnimator(taskView, targetCompats);
                 anim.addListener(new AnimatorListenerAdapter() {
                     @Override
@@ -174,7 +168,7 @@ public final class RecentsActivity extends BaseRecentsActivity {
      * Composes the animations for a launch from the recents list if possible.
      */
     private AnimatorSet composeRecentsLaunchAnimator(TaskView taskView,
-                                                     RemoteAnimationTargetCompat[] targets) {
+            RemoteAnimationTargetCompat[] targets) {
         AnimatorSet target = new AnimatorSet();
         boolean activityClosing = taskIsATargetWithMode(targets, getTaskId(), MODE_CLOSING);
         ClipAnimationHelper helper = new ClipAnimationHelper(this);
@@ -215,10 +209,5 @@ public final class RecentsActivity extends BaseRecentsActivity {
 
     public void onTaskLaunched() {
         mFallbackRecentsView.resetTaskVisuals();
-    }
-
-    @Override
-    public int getCurrentState() {
-        return 0;
     }
 }

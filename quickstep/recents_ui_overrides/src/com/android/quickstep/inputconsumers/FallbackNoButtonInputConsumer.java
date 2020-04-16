@@ -124,7 +124,7 @@ public class FallbackNoButtonInputConsumer extends
         mRunningTaskInfo = runningTaskInfo;
         mInQuickSwitchMode = isLikelyToStartNewTask || continuingLastGesture;
         mContinuingLastGesture = continuingLastGesture;
-        //mRunningOverHome = ActivityManagerWrapper.isHomeTask(runningTaskInfo);
+        //mRunningOverHome = ActivityManagerWrapper.getInstance().isHomeTask(runningTaskInfo);
         mRunningOverHome = false;
         mSwipeUpOverHome = mRunningOverHome && !mInQuickSwitchMode;
 

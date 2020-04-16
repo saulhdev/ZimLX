@@ -17,11 +17,12 @@
 package com.android.launcher3.dragndrop;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.MotionEvent;
 
 import com.android.launcher3.DropTarget.DragObject;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
 
 /**
  * Base class for driving a drag/drop operation.
@@ -29,24 +30,21 @@ import com.android.launcher3.Utilities;
 public abstract class DragDriver {
     protected final EventListener mEventListener;
 
-    public DragDriver(EventListener eventListener) {
-        mEventListener = eventListener;
+    public interface EventListener {
+        void onDriverDragMove(float x, float y);
+        void onDriverDragExitWindow();
+        void onDriverDragEnd(float x, float y);
+        void onDriverDragCancel();
     }
 
-    public static DragDriver create(Context context, DragController dragController,
-                                    DragObject dragObject, DragOptions options) {
-        if (Utilities.ATLEAST_NOUGAT && options.systemDndStartPoint != null) {
-            return new SystemDragDriver(dragController, context, dragObject);
-        } else {
-            return new InternalDragDriver(dragController);
-        }
+    public DragDriver(EventListener eventListener) {
+        mEventListener = eventListener;
     }
 
     /**
      * Handles ending of the DragView animation.
      */
-    public void onDragViewAnimationEnd() {
-    }
+    public void onDragViewAnimationEnd() { }
 
     public boolean onTouchEvent(MotionEvent ev) {
         final int action = ev.getAction();
@@ -56,10 +54,16 @@ public abstract class DragDriver {
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_UP:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragDriver.ACTION_UP");
+                }
                 mEventListener.onDriverDragMove(ev.getX(), ev.getY());
                 mEventListener.onDriverDragEnd(ev.getX(), ev.getY());
                 break;
             case MotionEvent.ACTION_CANCEL:
+                if (TestProtocol.sDebugTracing) {
+                    Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragDriver.ACTION_CANCEL");
+                }
                 mEventListener.onDriverDragCancel();
                 break;
         }
@@ -67,7 +71,7 @@ public abstract class DragDriver {
         return true;
     }
 
-    public abstract boolean onDragEvent(DragEvent event);
+    public abstract boolean onDragEvent (DragEvent event);
 
 
     public boolean onInterceptTouchEvent(MotionEvent ev) {
@@ -85,14 +89,13 @@ public abstract class DragDriver {
         return true;
     }
 
-    public interface EventListener {
-        void onDriverDragMove(float x, float y);
-
-        void onDriverDragExitWindow();
-
-        void onDriverDragEnd(float x, float y);
-
-        void onDriverDragCancel();
+    public static DragDriver create(Context context, DragController dragController,
+            DragObject dragObject, DragOptions options) {
+        if (options.systemDndStartPoint != null) {
+            return new SystemDragDriver(dragController, context, dragObject);
+        } else {
+            return new InternalDragDriver(dragController);
+        }
     }
 }
 
@@ -119,7 +122,7 @@ class SystemDragDriver extends DragDriver {
     }
 
     @Override
-    public boolean onDragEvent(DragEvent event) {
+    public boolean onDragEvent (DragEvent event) {
         final int action = event.getAction();
 
         switch (action) {
@@ -166,7 +169,5 @@ class InternalDragDriver extends DragDriver {
     }
 
     @Override
-    public boolean onDragEvent(DragEvent event) {
-        return false;
-    }
+    public boolean onDragEvent (DragEvent event) { return false; }
 }

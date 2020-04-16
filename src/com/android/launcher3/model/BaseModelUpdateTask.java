@@ -20,9 +20,9 @@ import android.util.Log;
 import com.android.launcher3.AllAppsList;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
-import com.android.launcher3.LauncherModel.ModelUpdateTask;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
@@ -47,7 +47,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
     private Executor mUiExecutor;
 
     public void init(LauncherAppState app, LauncherModel model,
-                     BgDataModel dataModel, AllAppsList allAppsList, Executor uiExecutor) {
+            BgDataModel dataModel, AllAppsList allAppsList, Executor uiExecutor) {
         mApp = app;
         mModel = model;
         mDataModel = dataModel;
@@ -91,6 +91,7 @@ public abstract class BaseModelUpdateTask implements ModelUpdateTask {
         // verify changes as the ModelTasks always push the changes to callbacks
         return mModel.getWriter(false /* hasVerticalHotseat */, false /* verifyChanges */);
     }
+
 
     public void bindUpdatedWorkspaceItems(final ArrayList<WorkspaceItemInfo> updatedShortcuts) {
         if (!updatedShortcuts.isEmpty()) {

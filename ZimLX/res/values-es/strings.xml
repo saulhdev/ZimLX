@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="zim_accent">Accent Color</string>
-    <string name="web_search_yandex">Yandex (web)</string>
-    <string name="undo">Deshacer</string>
-    <string name="transparent">Transparente</string>
-    <string name="title_folder_circle">Circulo</string>
-</resources>

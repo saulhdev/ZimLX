@@ -32,9 +32,7 @@ public interface DropTarget {
         public int x = -1;
         public int y = -1;
 
-        /**
-         * X offset from the upper-left corner of the cell to where we touched.
-         */
+        /** X offset from the upper-left corner of the cell to where we touched.  */
         public int xOffset = -1;
 
         /** Y offset from the upper-left corner of the cell to where we touched.  */
@@ -79,18 +77,18 @@ public interface DropTarget {
          * is the appropriate point to use when determining drop location.
          */
         public final float[] getVisualCenter(float[] recycle) {
-            final float[] res = (recycle == null) ? new float[2] : recycle;
+            final float res[] = (recycle == null) ? new float[2] : recycle;
+            Rect dragRegion = dragView.getDragRegion();
 
             // These represent the visual top and left of drag view if a dragRect was provided.
             // If a dragRect was not provided, then they correspond to the actual view left and
             // top, as the dragRect is in that case taken to be the entire dragView.
-            // R.dimen.dragViewOffsetY.
-            int left = x - xOffset;
-            int top = y - yOffset;
+            int left = x - xOffset - dragRegion.left;
+            int top = y - yOffset - dragRegion.top;
 
             // In order to find the visual center, we shift by half the dragRect
-            res[0] = left + dragView.getDragRegion().width() / 2;
-            res[1] = top + dragView.getDragRegion().height() / 2;
+            res[0] = left + dragRegion.width() / 2;
+            res[1] = top + dragRegion.height() / 2;
 
             return res;
         }
@@ -105,11 +103,11 @@ public interface DropTarget {
 
     /**
      * Handle an object being dropped on the DropTarget.
-     * <p>
+     *
      * This will be called only if this target previously returned true for {@link #acceptDrop}. It
      * is the responsibility of this target to exit out of the spring loaded mode (either
      * immediately or after any pending animations).
-     * <p>
+     *
      * If the drop was cancelled for some reason, onDrop will never get called, the UI will
      * automatically exit out of this mode.
      */
@@ -124,7 +122,6 @@ public interface DropTarget {
     /**
      * Check if a drop action can occur at, or near, the requested location.
      * This will be called just before onDrop.
-     *
      * @return True if the drop will be accepted, false otherwise.
      */
     boolean acceptDrop(DragObject dragObject);

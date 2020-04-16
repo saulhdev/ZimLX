@@ -25,12 +25,9 @@ public class CheckLongPressHelper {
 
     public static final float DEFAULT_LONG_PRESS_TIMEOUT_FACTOR = 0.75f;
 
-    @Thunk
-    View mView;
-    @Thunk
-    View.OnLongClickListener mListener;
-    @Thunk
-    boolean mHasPerformedLongPress;
+    @Thunk View mView;
+    @Thunk View.OnLongClickListener mListener;
+    @Thunk boolean mHasPerformedLongPress;
     private float mLongPressTimeoutFactor = DEFAULT_LONG_PRESS_TIMEOUT_FACTOR;
     private CheckForLongPress mPendingCheckForLongPress;
 

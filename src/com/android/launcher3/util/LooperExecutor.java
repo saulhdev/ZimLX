@@ -36,6 +36,7 @@ public class LooperExecutor extends AbstractExecutorService {
     public Handler getHandler() {
         return mHandler;
     }
+
     @Override
     public void execute(Runnable runnable) {
         if (mHandler.getLooper() == Looper.myLooper()) {
@@ -78,7 +79,7 @@ public class LooperExecutor extends AbstractExecutorService {
      */
     @Override
     @Deprecated
-    public boolean awaitTermination(long l, TimeUnit timeUnit) {
+    public boolean awaitTermination(long l, TimeUnit timeUnit) throws InterruptedException {
         throw new UnsupportedOperationException();
     }
 }

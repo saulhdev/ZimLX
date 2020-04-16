@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /* Copyright 2008, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -28,7 +29,7 @@
     <attr name="isWorkspaceDarkText" format="boolean" />
     <attr name="workspaceTextColor" format="color" />
     <attr name="workspaceShadowColor" format="color" />
-    <attr name="workspaceAmbientShadowColor" format="color" />
+    <attr name="workspaceAmbientShadowColor" format="color"/>
     <attr name="workspaceKeyShadowColor" format="color" />
     <attr name="workspaceStatusBarScrim" format="reference" />
     <attr name="widgetsTheme" format="reference" />
@@ -50,9 +51,7 @@
             <enum name="folder" value="2" />
             <enum name="widget_section" value="3" />
             <enum name="shortcut_popup" value="4" />
-            <enum name="drawer_folder" value="5" />
         </attr>
-        <attr name="deferShadowGeneration" format="boolean" />
         <attr name="centerVertically" format="boolean" />
     </declare-styleable>
 
@@ -76,13 +75,6 @@
     <declare-styleable name="PagedView">
         <!-- The page indicator for this workspace -->
         <attr name="pageIndicator" format="reference" />
-    </declare-styleable>
-
-    <!-- BaseContainerView specific attributes. These attributes are used to customize
-         AllApps view and WidgetsView in xml. -->
-    <declare-styleable name="BaseContainerView">
-        <!-- Drawable to use for the reveal animation -->
-        <attr name="revealBackground" format="reference" />
     </declare-styleable>
 
     <!-- XML attributes used by default_workspace.xml -->
@@ -141,10 +133,6 @@
         <attr name="canBeDefault" format="boolean" />
     </declare-styleable>
 
-    <declare-styleable name="ButtonDropTarget">
-        <attr name="hideParentOnDisable" format="boolean" />
-    </declare-styleable>
-
     <declare-styleable name="CellLayout">
         <attr name="containerType" format="integer">
             <enum name="workspace" value="0" />
@@ -157,121 +145,15 @@
         <attr name="android:src" />
         <attr name="android:shadowColor" />
         <attr name="android:elevation" />
-        <attr name="darkTintColor" format="color" />
+        <attr name="darkTintColor" format="color"/>
     </declare-styleable>
 
     <declare-styleable name="RecyclerViewFastScroller">
         <attr name="canThumbDetach" format="boolean" />
     </declare-styleable>
 
-    <!-- Pixel -->
-    <attr name="gIcon" format="reference" />
-    <attr name="micIcon" format="reference" />
-
-    <!-- Lawnchair -->
-    <declare-styleable name="SubPreference">
-        <attr name="content" format="reference" />
-        <attr name="longClickContent" format="reference" />
-        <attr name="hasPreview" format="boolean" />
-    </declare-styleable>
-
-    <declare-styleable name="SeekbarPreference">
-        <attr name="minValue" format="float" />
-        <attr name="maxValue" format="float" />
-        <attr name="summaryFormat" format="string" />
-        <attr name="summaryMultiplier" format="integer" />
-        <attr name="defaultSeekbarValue" format="float" />
-        <attr name="steps" format="integer" />
-    </declare-styleable>
-
-    <declare-styleable name="PreviewPreference">
-        <attr name="previewLayout" format="float" />
-    </declare-styleable>
-    <declare-styleable name="GesturePreference">
-        <attr name="gestureClass" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="ControlledPreference">
-        <attr name="searchTitle" format="string" />
-        <attr name="controllerClass" format="string" />
-    </declare-styleable>
-
-    <declare-styleable name="ThemeFlagSwitchPreference">
-        <attr name="switchFlag" format="integer" />
-    </declare-styleable>
-
-    <!-- Custom -->
-    <attr name="bottomSheetNavBarColor" format="color" />
-    <attr name="useLightSystemBars" format="boolean" />
-    <attr name="settingsSearchBackground" format="color" />
-    <attr name="settingsBackground" format="color" />
-    <attr name="settingsPopupBackground" format="color" />
-    <attr name="bottomSheetScrimColor" format="color" />
-    <attr name="qsbEdgeRadius" format="dimension" />
-
-    <declare-styleable name="AdvancedPreferencesGroup">
-        <attr name="topic" format="string" />
-    </declare-styleable>
-
-
-    <declare-styleable name="CustomFont">
-        <attr name="android:textAppearance" />
-        <attr name="customFontType" format="enum">
-            <enum name="title" value="0" />
-            <enum name="preferenceTitle" value="1" />
-            <enum name="button" value="2" />
-            <enum name="categoryTitle" value="3" />
-            <enum name="dialogTitle" value="4" />
-            <enum name="settingsTab" value="5" />
-            <enum name="text" value="6" />
-            <enum name="settingsTileTitle" value="7" />
-            <enum name="smartspaceText" value="8" />
-            <enum name="baseIcon" value="9" />
-            <enum name="workspaceIcon" value="10" />
-            <enum name="allAppsIcon" value="11" />
-            <enum name="folderIcon" value="12" />
-            <enum name="actionView" value="13" />
-            <enum name="deepShortcut" value="14" />
-            <enum name="systemShortcut" value="15" />
-            <enum name="taskOption" value="16" />
-            <enum name="drawerTab" value="17" />
-        </attr>
-    </declare-styleable>
-
-    <attr name="allAppsContainerColor" format="color" />
-    <attr name="allAppsContainerColorBlur" format="color" />
-
-    <declare-styleable name="IndexablePreference">
-        <attr name="android:key" />
-        <attr name="android:defaultValue" />
-        <attr name="android:icon" />
-        <attr name="android:title" />
-        <attr name="android:summary" />
-        <attr name="searchTitle" />
-        <attr name="controllerClass" />
-        <attr name="content" />
-        <attr name="hasPreview" />
-    </declare-styleable>
-
-    <declare-styleable name="PreferenceDialogPreference">
-        <attr name="content" />
-    </declare-styleable>
-
-    <declare-styleable name="ColorPickerPreference">
-        <attr name="resolvers" format="reference" />
-        <attr name="colorMode" format="integer">
-            <enum name="RGB" value="0" />
-            <enum name="ARGB" value="1" />
-            <enum name="HSV" value="2" />
-        </attr>
-    </declare-styleable>
-
     <declare-styleable name="CustomAppWidgetProviderInfo">
         <attr name="providerId" format="integer" />
-        <attr name="noPadding" format="boolean" />
-        <attr name="customizeTitle" format="string" />
-        <attr name="customizeScreen" format="reference" />
-        <attr name="customizeHasPreview" format="boolean" />
 
         <attr name="android:label" />
         <attr name="android:initialLayout" />

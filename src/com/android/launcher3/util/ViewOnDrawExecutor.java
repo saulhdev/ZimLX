@@ -75,8 +75,7 @@ public class ViewOnDrawExecutor implements Executor, OnDrawListener, Runnable,
     }
 
     @Override
-    public void onViewDetachedFromWindow(View v) {
-    }
+    public void onViewDetachedFromWindow(View v) {}
 
     @Override
     public void onDraw() {

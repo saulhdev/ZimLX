@@ -34,7 +34,6 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
@@ -51,8 +50,6 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
-
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.util.function.Supplier;
 
@@ -78,7 +75,6 @@ public class IconCache extends BaseIconCache {
     public IconCache(Context context, InvariantDeviceProfile inv) {
         super(context, LauncherFiles.APP_ICONS_DB, LauncherModel.getWorkerLooper(),
                 inv.fillResIconDpi, inv.iconBitmapSize, true /* inMemoryCache */);
-
         mComponentWithLabelCachingLogic = new ComponentCachingLogic(context);
         mLauncherActivityInfoCachingLogic = LauncherActivityCachingLogic.newInstance(context);
         mLauncherApps = LauncherAppsCompat.getInstance(mContext);
@@ -122,16 +118,15 @@ public class IconCache extends BaseIconCache {
 
     /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
-     *
      * @return a request ID that can be used to cancel the request.
      */
     public IconLoadRequest updateIconInBackground(final ItemInfoUpdateReceiver caller,
-                                                  final ItemInfoWithIcon info) {
+            final ItemInfoWithIcon info) {
         Preconditions.assertUIThread();
         if (mPendingIconRequestCount <= 0) {
             LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_FOREGROUND);
         }
-        mPendingIconRequestCount++;
+        mPendingIconRequestCount ++;
 
         IconLoadRequest request = new IconLoadRequest(mWorkerHandler, this::onIconRequestEnd) {
             @Override
@@ -152,7 +147,7 @@ public class IconCache extends BaseIconCache {
     }
 
     private void onIconRequestEnd() {
-        mPendingIconRequestCount--;
+        mPendingIconRequestCount --;
         if (mPendingIconRequestCount <= 0) {
             LauncherModel.setWorkerPriority(Process.THREAD_PRIORITY_BACKGROUND);
         }
@@ -174,7 +169,7 @@ public class IconCache extends BaseIconCache {
      * Fill in {@param info} with the icon and label for {@param activityInfo}
      */
     public synchronized void getTitleAndIcon(ItemInfoWithIcon info,
-                                             LauncherActivityInfo activityInfo, boolean useLowResIcon) {
+            LauncherActivityInfo activityInfo, boolean useLowResIcon) {
         // If we already have activity info, no need to use package icon
         getTitleAndIcon(info, () -> activityInfo, false, useLowResIcon);
     }
@@ -207,9 +202,10 @@ public class IconCache extends BaseIconCache {
     /**
      * Fill in {@param mWorkspaceItemInfo} with the icon and label for {@param info}
      */
-    private synchronized void getTitleAndIcon(@NonNull ItemInfoWithIcon infoInOut,
-                                              @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
-                                              boolean usePkgIcon, boolean useLowResIcon) {
+    private synchronized void getTitleAndIcon(
+            @NonNull ItemInfoWithIcon infoInOut,
+            @NonNull Supplier<LauncherActivityInfo> activityInfoProvider,
+            boolean usePkgIcon, boolean useLowResIcon) {
         CacheEntry entry = cacheLocked(infoInOut.getTargetComponent(), infoInOut.user,
                 activityInfoProvider, mLauncherActivityInfoCachingLogic, usePkgIcon, useLowResIcon);
         applyCacheEntry(entry, infoInOut);
@@ -237,12 +233,6 @@ public class IconCache extends BaseIconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info, boolean flattenDrawable) {
-        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
-    }
-
-    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
-        if (mIconProvider instanceof ZimIconProvider)
-            return ((ZimIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 

@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.ALPHA;
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+
 import android.graphics.Rect;
 import android.view.View;
 import android.view.animation.Interpolator;
@@ -22,10 +26,6 @@ import android.view.animation.Interpolator;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.systemui.plugins.AllAppsRow;
-
-import static android.view.View.ALPHA;
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
 
 /**
  * Wrapper over an {@link AllAppsRow} plugin with {@link FloatingHeaderRow} interface so that
@@ -43,12 +43,10 @@ public class PluginHeaderRow implements FloatingHeaderRow {
 
     @Override
     public void setup(FloatingHeaderView parent, FloatingHeaderRow[] allRows,
-                      boolean tabsHidden) {
-    }
+            boolean tabsHidden) { }
 
     @Override
-    public void setInsets(Rect insets, DeviceProfile grid) {
-    }
+    public void setInsets(Rect insets, DeviceProfile grid) { }
 
     @Override
     public int getExpectedHeight() {
@@ -67,7 +65,7 @@ public class PluginHeaderRow implements FloatingHeaderRow {
 
     @Override
     public void setContentVisibility(boolean hasHeaderExtra, boolean hasAllAppsContent,
-                                     PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
+            PropertySetter setter, Interpolator headerFade, Interpolator allAppsFade) {
         // Don't use setViewAlpha as we want to control the visibility ourselves.
         setter.setFloat(mView, ALPHA, hasAllAppsContent ? 1 : 0, headerFade);
     }

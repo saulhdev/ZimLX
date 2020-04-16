@@ -15,6 +15,11 @@
  */
 package com.android.launcher3.widget;
 
+import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
+
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
+
 import android.content.Context;
 import android.graphics.Point;
 import android.util.AttributeSet;
@@ -38,11 +43,6 @@ import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.AbstractSlideInView;
 import com.android.launcher3.views.BaseDragLayer;
-
-import static android.view.ViewGroup.LayoutParams.MATCH_PARENT;
-import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
-import static com.android.launcher3.logging.LoggerUtils.newContainerTarget;
-
 
 /**
  * Base class for various widgets popup
@@ -89,7 +89,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     @Override
-    public final boolean onLongClick(View v) {
+    public boolean onLongClick(View v) {
         if (!ItemLongClickListener.canStartDrag(mLauncher)) return false;
 
         if (v instanceof WidgetCell) {
@@ -133,8 +133,7 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     //
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) { }
 
 
     protected void onCloseComplete() {
@@ -144,13 +143,13 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
     }
 
     protected void clearNavBarColor() {
-        mLauncher.getSystemUiController().updateUiState(
+        getSystemUiController().updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET, 0);
     }
 
     protected void setupNavBarColor() {
-        boolean isSheetDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        mLauncher.getSystemUiController().updateUiState(
+        boolean isSheetDark = Themes.getAttrBoolean(getContext(), R.attr.isMainColorDark);
+        getSystemUiController().updateUiState(
                 SystemUiController.UI_STATE_WIDGET_BOTTOM_SHEET,
                 isSheetDark ? SystemUiController.FLAG_DARK_NAV : SystemUiController.FLAG_LIGHT_NAV);
     }
@@ -163,9 +162,14 @@ abstract class BaseWidgetSheet extends AbstractSlideInView
 
     @Override
     public final void logActionCommand(int command) {
-        Target target = newContainerTarget(ContainerType.WIDGETS);
+        Target target = newContainerTarget(getLogContainerType());
         target.cardinality = getElementsRowCount();
         mLauncher.getUserEventDispatcher().logActionCommand(command, target);
+    }
+
+    @Override
+    public int getLogContainerType() {
+        return ContainerType.WIDGETS;
     }
 
     protected abstract int getElementsRowCount();

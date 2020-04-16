@@ -1,6 +1,8 @@
 
 package com.android.launcher3.model;
 
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 import android.content.pm.PackageManager;
@@ -8,9 +10,9 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.AppFilter;
+import com.android.launcher3.icons.ComponentWithLabel;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
@@ -20,8 +22,6 @@ import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
 import com.android.launcher3.config.FeatureFlags;
-import com.android.launcher3.icons.ComponentWithLabel;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Preconditions;
@@ -37,7 +37,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_HIDE_FROM_PICKER;
+import androidx.annotation.Nullable;
 
 /**
  * Widgets data model that is used by the adapters of the widget views and controllers.
@@ -125,7 +125,7 @@ public class WidgetsModel {
     }
 
     private synchronized void setWidgetsAndShortcuts(ArrayList<WidgetItem> rawWidgetsShortcuts,
-                                                     LauncherAppState app, @Nullable PackageUserKey packageUser) {
+            LauncherAppState app, @Nullable PackageUserKey packageUser) {
         if (DEBUG) {
             Log.d(TAG, "addWidgetsAndShortcuts, widgetsShortcuts#=" + rawWidgetsShortcuts.size());
         }
@@ -202,7 +202,7 @@ public class WidgetsModel {
             if (pInfo == null) {
                 pInfo = new PackageItemInfo(packageName);
                 pInfo.user = item.user;
-                tmpPackageItemInfos.put(packageName, pInfo);
+                tmpPackageItemInfos.put(packageName,  pInfo);
             } else if (!myUser.equals(pInfo.user)) {
                 // Keep updating the user, until we get the primary user.
                 pInfo.user = item.user;
@@ -218,7 +218,7 @@ public class WidgetsModel {
     }
 
     public void onPackageIconsUpdated(Set<String> packageNames, UserHandle user,
-                                      LauncherAppState app) {
+            LauncherAppState app) {
         for (Entry<PackageItemInfo, ArrayList<WidgetItem>> entry : mWidgetsList.entrySet()) {
             if (packageNames.contains(entry.getKey().packageName)) {
                 ArrayList<WidgetItem> items = entry.getValue();

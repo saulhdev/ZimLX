@@ -64,7 +64,7 @@ public abstract class BaseLoaderResults {
     private int mMyBindingId;
 
     public BaseLoaderResults(LauncherAppState app, BgDataModel dataModel,
-                             AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
+            AllAppsList allAppsList, int pageToBindFirst, WeakReference<Callbacks> callbacks) {
         mUiExecutor = new MainThreadExecutor();
         mApp = app;
         mBgDataModel = dataModel;
@@ -170,14 +170,12 @@ public abstract class BaseLoaderResults {
     }
 
 
-    /**
-     * Filters the set of items who are directly or indirectly (via another container) on the
-     * specified screen.
-     */
+    /** Filters the set of items who are directly or indirectly (via another container) on the
+     * specified screen. */
     public static <T extends ItemInfo> void filterCurrentWorkspaceItems(int currentScreenId,
-                                                                        ArrayList<T> allWorkspaceItems,
-                                                                        ArrayList<T> currentScreenItems,
-                                                                        ArrayList<T> otherScreenItems) {
+            ArrayList<T> allWorkspaceItems,
+            ArrayList<T> currentScreenItems,
+            ArrayList<T> otherScreenItems) {
         // Purge any null ItemInfos
         Iterator<T> iter = allWorkspaceItems.iterator();
         while (iter.hasNext()) {
@@ -216,10 +214,8 @@ public abstract class BaseLoaderResults {
         }
     }
 
-    /**
-     * Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
-     * right)
-     */
+    /** Sorts the set of items by hotseat, workspace (spatially from top to bottom, left to
+     * right) */
     protected void sortWorkspaceItemsSpatially(ArrayList<ItemInfo> workspaceItems) {
         final InvariantDeviceProfile profile = mApp.getInvariantDeviceProfile();
         final int screenCols = profile.numColumns;
@@ -257,12 +253,12 @@ public abstract class BaseLoaderResults {
     }
 
     protected void bindWorkspaceItems(final ArrayList<ItemInfo> workspaceItems,
-                                      final Executor executor) {
+            final Executor executor) {
         // Bind the workspace items
         int N = workspaceItems.size();
         for (int i = 0; i < N; i += ITEMS_CHUNK) {
             final int start = i;
-            final int chunkSize = (i + ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N - i);
+            final int chunkSize = (i+ITEMS_CHUNK <= N) ? ITEMS_CHUNK : (N-i);
             executeCallbacksTask(
                     c -> c.bindItems(workspaceItems.subList(start, start + chunkSize), false),
                     executor);

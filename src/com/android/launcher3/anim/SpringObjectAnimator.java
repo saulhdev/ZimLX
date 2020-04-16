@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.anim;
 
+import static androidx.dynamicanimation.animation.FloatPropertyCompat.createFloatPropertyCompat;
+
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -25,14 +29,11 @@ import android.os.Looper;
 import android.util.FloatProperty;
 import android.util.Log;
 
+import java.util.ArrayList;
+
 import androidx.dynamicanimation.animation.DynamicAnimation.OnAnimationEndListener;
 import androidx.dynamicanimation.animation.SpringAnimation;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import java.util.ArrayList;
-
-import static androidx.dynamicanimation.animation.FloatPropertyCompat.createFloatPropertyCompat;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
 
 /**
  * This animator allows for an object's property to be be controlled by an {@link ObjectAnimator} or
@@ -55,7 +56,7 @@ public class SpringObjectAnimator<T> extends ValueAnimator {
     private boolean mEnded = true;
 
     public SpringObjectAnimator(T object, FloatProperty<T> property, float minimumVisibleChange,
-                                float damping, float stiffness, float... values) {
+            float damping, float stiffness, float... values) {
         mSpring = new SpringAnimation(object, createFloatPropertyCompat(property));
         mSpring.setMinimumVisibleChange(minimumVisibleChange);
         mSpring.setSpring(new SpringForce(0)

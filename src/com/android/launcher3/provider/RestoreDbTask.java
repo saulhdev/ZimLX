@@ -16,6 +16,10 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.Utilities.getIntArrayFromString;
+import static com.android.launcher3.Utilities.getStringFromIntArray;
+import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+
 import android.app.backup.BackupManager;
 import android.content.ContentValues;
 import android.content.Context;
@@ -32,17 +36,13 @@ import com.android.launcher3.AppWidgetsRestoredReceiver;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherProvider.DatabaseHelper;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.LogConfig;
 
 import java.io.InvalidObjectException;
-
-import static com.android.launcher3.Utilities.getIntArrayFromString;
-import static com.android.launcher3.Utilities.getStringFromIntArray;
-import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 
 /**
  * Utility class to update DB schema after it has been restored.
@@ -62,7 +62,7 @@ public class RestoreDbTask {
     private static final String APPWIDGET_IDS = "appwidget_ids";
 
     public static boolean performRestore(Context context, DatabaseHelper helper,
-                                         BackupManager backupManager) {
+            BackupManager backupManager) {
         SQLiteDatabase db = helper.getWritableDatabase();
         try (SQLiteTransaction t = new SQLiteTransaction(db)) {
             RestoreDbTask task = new RestoreDbTask();
@@ -126,7 +126,7 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, null, null);
 
         // Mark widgets with appropriate restore flag.
-        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
+        values.put(Favorites.RESTORED,  LauncherAppWidgetInfo.FLAG_ID_NOT_VALID |
                 LauncherAppWidgetInfo.FLAG_PROVIDER_NOT_READY |
                 LauncherAppWidgetInfo.FLAG_UI_NOT_READY |
                 (keepAllIcons ? LauncherAppWidgetInfo.FLAG_RESTORE_STARTED : 0));
@@ -192,10 +192,10 @@ public class RestoreDbTask {
     private LongSparseArray<Long> getManagedProfileIds(SQLiteDatabase db, long defaultProfileId) {
         LongSparseArray<Long> ids = new LongSparseArray<>();
         try (Cursor c = db.rawQuery("SELECT profileId from favorites WHERE profileId != ? "
-                + "GROUP BY profileId", new String[]{Long.toString(defaultProfileId)})) {
-            while (c.moveToNext()) {
-                ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
-            }
+                + "GROUP BY profileId", new String[] {Long.toString(defaultProfileId)})){
+                while (c.moveToNext()) {
+                    ids.put(c.getLong(c.getColumnIndex(Favorites.PROFILE_ID)), null);
+                }
         }
         return ids;
     }
@@ -205,19 +205,18 @@ public class RestoreDbTask {
      * if none found.
      */
     private UserHandle getUserForAncestralSerialNumber(BackupManager backupManager,
-                                                       long ancestralSerialNumber) {
-        /*if (!Utilities.ATLEAST_Q) {
+            long ancestralSerialNumber) {
+        if (!Utilities.ATLEAST_Q) {
             return null;
-        }*/
-        //return backupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
-        return null;
+        }
+        return backupManager.getUserForAncestralSerialNumber(ancestralSerialNumber);
     }
 
     /**
      * Returns the profile id used in the favorites table of the provided db.
      */
     protected long getDefaultProfileId(SQLiteDatabase db) throws Exception {
-        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)) {
+        try (Cursor c = db.rawQuery("PRAGMA table_info (favorites)", null)){
             int nameIndex = c.getColumnIndex(INFO_COLUMN_NAME);
             while (c.moveToNext()) {
                 if (Favorites.PROFILE_ID.equals(c.getString(nameIndex))) {
@@ -252,7 +251,7 @@ public class RestoreDbTask {
     }
 
     public static void setRestoredAppWidgetIds(Context context, @NonNull int[] oldIds,
-                                               @NonNull int[] newIds) {
+            @NonNull int[] newIds) {
         Utilities.getPrefs(context).edit()
                 .putString(APPWIDGET_OLD_IDS, getStringFromIntArray(oldIds))
                 .putString(APPWIDGET_IDS, getStringFromIntArray(newIds))

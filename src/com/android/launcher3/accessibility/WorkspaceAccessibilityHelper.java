@@ -21,8 +21,6 @@ import android.graphics.Rect;
 import android.text.TextUtils;
 import android.view.View;
 
-import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.FolderInfo;
@@ -32,6 +30,8 @@ import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate.DragType;
 import com.android.launcher3.dragndrop.DragLayer;
+
+import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 
 /**
  * Implementation of {@link DragAndDropAccessibilityDelegate} to support DnD on workspace.
@@ -43,30 +43,6 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
 
     public WorkspaceAccessibilityHelper(CellLayout layout) {
         super(layout);
-    }
-
-    public static String getDescriptionForDropOver(View overChild, Context context) {
-        ItemInfo info = (ItemInfo) overChild.getTag();
-        if (info instanceof WorkspaceItemInfo) {
-            return context.getString(R.string.create_folder_with, info.title);
-        } else if (info instanceof FolderInfo) {
-            if (TextUtils.isEmpty(info.title)) {
-                // Find the first item in the folder.
-                FolderInfo folder = (FolderInfo) info;
-                WorkspaceItemInfo firstItem = null;
-                for (WorkspaceItemInfo shortcut : folder.contents) {
-                    if (firstItem == null || firstItem.rank > shortcut.rank) {
-                        firstItem = shortcut;
-                    }
-                }
-
-                if (firstItem != null) {
-                    return context.getString(R.string.add_to_folder_with_app, firstItem.title);
-                }
-            }
-            return context.getString(R.string.add_to_folder, info.title);
-        }
-        return "";
     }
 
     /**
@@ -190,5 +166,29 @@ public class WorkspaceAccessibilityHelper extends DragAndDropAccessibilityDelega
         } else {
             return getDescriptionForDropOver(child, mContext);
         }
+    }
+
+    public static String getDescriptionForDropOver(View overChild, Context context) {
+        ItemInfo info = (ItemInfo) overChild.getTag();
+        if (info instanceof WorkspaceItemInfo) {
+            return context.getString(R.string.create_folder_with, info.title);
+        } else if (info instanceof FolderInfo) {
+            if (TextUtils.isEmpty(info.title)) {
+                // Find the first item in the folder.
+                FolderInfo folder = (FolderInfo) info;
+                WorkspaceItemInfo firstItem = null;
+                for (WorkspaceItemInfo shortcut : folder.contents) {
+                    if (firstItem == null || firstItem.rank > shortcut.rank) {
+                        firstItem = shortcut;
+                    }
+                }
+
+                if (firstItem != null) {
+                    return context.getString(R.string.add_to_folder_with_app, firstItem.title);
+                }
+            }
+            return context.getString(R.string.add_to_folder, info.title);
+        }
+        return "";
     }
 }

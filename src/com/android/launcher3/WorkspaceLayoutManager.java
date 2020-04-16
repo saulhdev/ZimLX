@@ -60,14 +60,15 @@ public interface WorkspaceLayoutManager {
      * Adds the specified child in the specified screen. The position and dimension of
      * the child are defined by x, y, spanX and spanY.
      *
-     * @param child    The child to add in one of the workspace's screens.
+     * @param child The child to add in one of the workspace's screens.
      * @param screenId The screen in which to add the child.
-     * @param x        The X position of the child in the screen's grid.
-     * @param y        The Y position of the child in the screen's grid.
-     * @param spanX    The number of cells spanned horizontally by the child.
-     * @param spanY    The number of cells spanned vertically by the child.
+     * @param x The X position of the child in the screen's grid.
+     * @param y The Y position of the child in the screen's grid.
+     * @param spanX The number of cells spanned horizontally by the child.
+     * @param spanY The number of cells spanned vertically by the child.
      */
-    default void addInScreen(View child, int container, int screenId, int x, int y, int spanX, int spanY) {
+    default void addInScreen(View child, int container, int screenId, int x, int y,
+            int spanX, int spanY) {
         if (container == LauncherSettings.Favorites.CONTAINER_DESKTOP) {
             if (getScreenWithId(screenId) == null) {
                 Log.e(TAG, "Skipping child, screenId " + screenId + " not found");
@@ -136,6 +137,5 @@ public interface WorkspaceLayoutManager {
 
     CellLayout getScreenWithId(int screenId);
 
-    default void onAddDropTarget(DropTarget target) {
-    }
+    default void onAddDropTarget(DropTarget target) { }
 }

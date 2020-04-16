@@ -8,8 +8,6 @@ import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
-import com.android.launcher3.Utilities;
-
 /**
  * A {@link ViewOutlineProvider} that has helper functions to create reveal animations.
  * This class should be extended so that subclasses can define the reveal shape as the
@@ -23,11 +21,8 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
         mOutline = new Rect();
     }
 
-    /**
-     * Returns whether elevation should be removed for the duration of the reveal animation.
-     */
+    /** Returns whether elevation should be removed for the duration of the reveal animation. */
     abstract boolean shouldRemoveElevationDuringAnimation();
-
     /** Sets the progress, from 0 to 1, of the reveal animation. */
     abstract void setProgress(float progress);
 
@@ -61,16 +56,10 @@ public abstract class RevealOutlineAnimation extends ViewOutlineProvider {
 
         });
 
-        va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator arg0) {
-                float progress = (Float) arg0.getAnimatedValue();
-                setProgress(progress);
-                revealView.invalidateOutline();
-                if (!Utilities.ATLEAST_LOLLIPOP_MR1) {
-                    revealView.invalidate();
-                }
-            }
+        va.addUpdateListener(v -> {
+            float progress = (Float) v.getAnimatedValue();
+            setProgress(progress);
+            revealView.invalidateOutline();
         });
         return va;
     }

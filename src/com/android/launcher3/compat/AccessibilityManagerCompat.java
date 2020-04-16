@@ -23,8 +23,8 @@ import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityManager;
 import android.view.accessibility.AccessibilityNodeInfo;
 
-import com.android.launcher3.Utilities;
 import com.android.launcher3.testing.TestProtocol;
+import com.android.launcher3.Utilities;
 
 import java.util.function.Consumer;
 
@@ -89,7 +89,7 @@ public class AccessibilityManagerCompat {
      * Returns accessibility manager to be used for communication with UI Automation tests.
      * The tests may exchange custom accessibility messages with the launcher; the accessibility
      * manager is used in these communications.
-     * <p>
+     *
      * If the launcher runs not under a test, the return is null, and no attempt to process or send
      * custom accessibility messages should be made.
      */
@@ -104,7 +104,7 @@ public class AccessibilityManagerCompat {
     }
 
     public static boolean processTestRequest(Context context, String eventTag, int action,
-                                             Bundle request, Consumer<Bundle> responseFiller) {
+            Bundle request, Consumer<Bundle> responseFiller) {
         final AccessibilityManager accessibilityManager = getAccessibilityManagerForTest(context);
         if (accessibilityManager == null) return false;
 
@@ -122,9 +122,9 @@ public class AccessibilityManagerCompat {
     }
 
     public static int getRecommendedTimeoutMillis(Context context, int originalTimeout, int flags) {
-        //if (Utilities.ATLEAST_Q) {
-        //    return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
-        //}
+        if (Utilities.ATLEAST_Q) {
+            return getManager(context).getRecommendedTimeoutMillis(originalTimeout, flags);
+        }
         return originalTimeout;
     }
 }

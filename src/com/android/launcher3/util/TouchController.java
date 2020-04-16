@@ -32,6 +32,5 @@ public interface TouchController {
      */
     boolean onControllerInterceptTouchEvent(MotionEvent ev);
 
-    default void dump(String prefix, PrintWriter writer) {
-    }
+    default void dump(String prefix, PrintWriter writer) { }
 }

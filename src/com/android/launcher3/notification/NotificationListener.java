@@ -16,6 +16,8 @@
 
 package com.android.launcher3.notification;
 
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
+
 import android.annotation.TargetApi;
 import android.app.Notification;
 import android.app.NotificationChannel;
@@ -26,15 +28,13 @@ import android.os.Message;
 import android.service.notification.NotificationListenerService;
 import android.service.notification.StatusBarNotification;
 import android.text.TextUtils;
-import android.util.ArraySet;
 import android.util.Log;
 import android.util.Pair;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.LauncherModel;
+import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
-import com.android.launcher3.util.SettingsObserver;
+import com.android.launcher3.util.SecureSettingsObserver;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +42,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static org.zimmob.zimlx.settings.ui.SettingsActivity.NOTIFICATION_BADGING;
+import androidx.annotation.Nullable;
 
 /**
  * A {@link NotificationListenerService} that sends updates to its
@@ -70,21 +69,15 @@ public class NotificationListener extends NotificationListenerService {
     private final Handler mWorkerHandler;
     private final Handler mUiHandler;
     private final Ranking mTempRanking = new Ranking();
-    /**
-     * Maps groupKey's to the corresponding group of notifications.
-     */
+    /** Maps groupKey's to the corresponding group of notifications. */
     private final Map<String, NotificationGroup> mNotificationGroupMap = new HashMap<>();
-    /**
-     * Maps keys to their corresponding current group key
-     */
+    /** Maps keys to their corresponding current group key */
     private final Map<String, String> mNotificationGroupKeyMap = new HashMap<>();
 
-    /**
-     * The last notification key that was dismissed from launcher UI
-     */
+    /** The last notification key that was dismissed from launcher UI */
     private String mLastKeyDismissedByLauncher;
 
-    private SettingsObserver mNotificationBadgingObserver;
+    private SecureSettingsObserver mNotificationDotsObserver;
 
     private final Handler.Callback mWorkerCallback = new Handler.Callback() {
         @Override
@@ -165,8 +158,7 @@ public class NotificationListener extends NotificationListenerService {
         sIsCreated = false;
     }
 
-    public static @Nullable
-    NotificationListener getInstanceIfConnected() {
+    public static @Nullable NotificationListener getInstanceIfConnected() {
         return sIsConnected ? sNotificationListenerInstance : null;
     }
 
@@ -177,10 +169,10 @@ public class NotificationListener extends NotificationListenerService {
         if (notificationListener != null) {
             notificationListener.onNotificationFullRefresh();
         } else if (!sIsCreated && sNotificationsChangedListener != null) {
-            // User turned off badging globally, so we unbound this service;
+            // User turned off dots globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
-                    Collections.emptyList());
+                    Collections.<StatusBarNotification>emptyList());
         }
     }
 
@@ -202,17 +194,18 @@ public class NotificationListener extends NotificationListenerService {
         super.onListenerConnected();
         sIsConnected = true;
 
-        mNotificationBadgingObserver = new SettingsObserver.Secure(getContentResolver()) {
-            @Override
-            public void onSettingChanged(boolean isNotificationBadgingEnabled) {
-                if (!isNotificationBadgingEnabled) {
-                    requestUnbind();
-                }
-            }
-        };
-        mNotificationBadgingObserver.register(NOTIFICATION_BADGING);
+        mNotificationDotsObserver =
+                newNotificationSettingsObserver(this, this::onNotificationSettingsChanged);
+        mNotificationDotsObserver.register();
+        mNotificationDotsObserver.dispatchOnChange();
 
         onNotificationFullRefresh();
+    }
+
+    private void onNotificationSettingsChanged(boolean areNotificationDotsEnabled) {
+        if (!areNotificationDotsEnabled && sIsConnected) {
+            requestUnbind();
+        }
     }
 
     private void onNotificationFullRefresh() {
@@ -223,7 +216,7 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
-        mNotificationBadgingObserver.unregister();
+        mNotificationDotsObserver.unregister();
     }
 
     @Override
@@ -234,7 +227,7 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_POSTED, new NotificationPostedMsg(sbn))
-                .sendToTarget();
+            .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
             sStatusBarNotificationsChangedListener.onNotificationPosted(sbn);
         }
@@ -263,10 +256,10 @@ public class NotificationListener extends NotificationListenerService {
             return;
         }
         Pair<PackageUserKey, NotificationKeyData> packageUserKeyAndNotificationKey
-                = new Pair<>(PackageUserKey.fromNotification(sbn),
-                NotificationKeyData.fromNotification(sbn));
+            = new Pair<>(PackageUserKey.fromNotification(sbn),
+            NotificationKeyData.fromNotification(sbn));
         mWorkerHandler.obtainMessage(MSG_NOTIFICATION_REMOVED, packageUserKeyAndNotificationKey)
-                .sendToTarget();
+            .sendToTarget();
         if (sStatusBarNotificationsChangedListener != null) {
             sStatusBarNotificationsChangedListener.onNotificationRemoved(sbn);
         }
@@ -341,7 +334,7 @@ public class NotificationListener extends NotificationListenerService {
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
         return notifications == null
-                ? Collections.emptyList() : Arrays.asList(notifications);
+                ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
     }
 
     /**
@@ -353,7 +346,7 @@ public class NotificationListener extends NotificationListenerService {
     private List<StatusBarNotification> filterNotifications(
             StatusBarNotification[] notifications) {
         if (notifications == null) return null;
-        Set<Integer> removedNotifications = new ArraySet<>();
+        IntSet removedNotifications = new IntSet();
         for (int i = 0; i < notifications.length; i++) {
             if (shouldBeFilteredOut(notifications[i])) {
                 removedNotifications.add(i);
@@ -394,15 +387,14 @@ public class NotificationListener extends NotificationListenerService {
 
     public interface NotificationsChangedListener {
         void onNotificationPosted(PackageUserKey postedPackageUserKey,
-                                  NotificationKeyData notificationKey, boolean shouldBeFilteredOut);
+                NotificationKeyData notificationKey, boolean shouldBeFilteredOut);
         void onNotificationRemoved(PackageUserKey removedPackageUserKey,
-                                   NotificationKeyData notificationKey);
+                NotificationKeyData notificationKey);
         void onNotificationFullRefresh(List<StatusBarNotification> activeNotifications);
     }
 
     public interface StatusBarNotificationsChangedListener {
         void onNotificationPosted(StatusBarNotification sbn);
-
         void onNotificationRemoved(StatusBarNotification sbn);
     }
 }

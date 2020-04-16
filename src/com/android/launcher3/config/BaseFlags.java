@@ -16,70 +16,60 @@
 
 package com.android.launcher3.config;
 
-import android.annotation.SuppressLint;
+import static androidx.core.util.Preconditions.checkNotNull;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.annotation.GuardedBy;
+import androidx.annotation.Keep;
+
 import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.Utilities;
+
 import com.android.launcher3.uioverrides.TogglableFlag;
-
-import org.jetbrains.annotations.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
-import static androidx.core.util.Preconditions.checkNotNull;
-
 /**
  * Defines a set of flags used to control various launcher behaviors.
- * <p>
- * All the flags should be defined here with appropriate default values. To override a value,
- * redefine it in {@link }.
- * <p>
- * This class is kept package-private to prevent direct access.
+ *
+ * <p>All the flags should be defined here with appropriate default values.
  */
+@Keep
 public abstract class BaseFlags {
 
     private static final Object sLock = new Object();
     @GuardedBy("sLock")
     private static final List<TogglableFlag> sFlags = new ArrayList<>();
 
-    private static final String FLAGS_PREF_NAME = "featureFlags";
+    static final String FLAGS_PREF_NAME = "featureFlags";
 
     BaseFlags() {
+        throw new UnsupportedOperationException("Don't instantiate BaseFlags");
+    }
+
+    public static boolean showFlagTogglerUi(Context context) {
+        return Utilities.IS_DEBUG_DEVICE && Utilities.isDevelopersOptionsEnabled(context);
     }
 
     public static final boolean IS_DOGFOOD_BUILD = false;
 
-    // When enabled allows to use any point on the fast scrollbar to start dragging.
-    public static final boolean LAUNCHER3_DIRECT_SCROLL = true;
     // When enabled the promise icon is visible in all apps while installation an app.
-    public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = true;
+    public static final boolean LAUNCHER3_PROMISE_APPS_IN_ALL_APPS = false;
 
     // When enabled a promise icon is added to the home screen when install session is active.
     public static final TogglableFlag PROMISE_APPS_NEW_INSTALLS =
             new TogglableFlag("PROMISE_APPS_NEW_INSTALLS", true,
                     "Adds a promise icon to the home screen for new install sessions.");
 
-    // When enabled allows use of spring motions on the icons.
-    public static final boolean LAUNCHER3_SPRING_ICONS = true;
-    // When enabled the all-apps icon is not added to the hotseat.
-    public static final boolean NO_ALL_APPS_ICON = true;
-    // When enabled the status bar may show dark icons based on the top of the wallpaper.
-    public static final boolean LIGHT_STATUS_BAR = true;
-    // When enabled, the qsb will be moved to the hotseat.
-    public static final boolean QSB_IN_HOTSEAT = true;
-    // When enabled uses the AllAppsRadialGradientAndScrimDrawable for all apps
-    public static final boolean LAUNCHER3_GRADIENT_ALL_APPS = true;
-    // Feature flag to enable moving the QSB on the 0th screen of the workspace.
+    // Enable moving the QSB on the 0th screen of the workspace
     public static final boolean QSB_ON_FIRST_SCREEN = true;
 
-    public static final boolean LAUNCHER3_DISABLE_ICON_NORMALIZATION = false;
+    public static final TogglableFlag EXAMPLE_FLAG = new TogglableFlag("EXAMPLE_FLAG", true,
+            "An example flag that doesn't do anything. Useful for testing");
 
     //Feature flag to enable pulling down navigation shade from workspace.
     public static final boolean PULL_DOWN_STATUS_BAR = true;
@@ -125,7 +115,6 @@ public abstract class BaseFlags {
             "APP_SEARCH_IMPROVEMENTS", false,
             "Adds localized title and keyword search and ranking");
 
-
     public static void initialize(Context context) {
         // Avoid the disk read for user builds
         if (Utilities.IS_DEBUG_DEVICE) {
@@ -146,7 +135,7 @@ public abstract class BaseFlags {
         SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
         synchronized (sLock) {
             for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(flag.getKey(), flag);
+                flagsByKey.put(((BaseTogglableFlag) flag).getKey(), flag);
             }
         }
         return new ArrayList<>(flagsByKey.values());
@@ -160,7 +149,6 @@ public abstract class BaseFlags {
         private final String description;
         private boolean currentValue;
 
-        @SuppressLint("RestrictedApi")
         public BaseTogglableFlag(
                 String key,
                 boolean defaultValue,
@@ -170,13 +158,11 @@ public abstract class BaseFlags {
             this.description = checkNotNull(description);
 
             synchronized (sLock) {
-                sFlags.add((TogglableFlag) this);
+                sFlags.add((TogglableFlag)this);
             }
         }
 
-        /**
-         * Set the value of this flag. This should only be used in tests.
-         */
+        /** Set the value of this flag. This should only be used in tests. */
         @VisibleForTesting
         void setForTests(boolean value) {
             currentValue = value;
@@ -213,9 +199,7 @@ public abstract class BaseFlags {
             return getOverridenDefaultValue(defaultValue);
         }
 
-        /**
-         * Returns the value of the flag at process start, including any overrides present.
-         */
+        /** Returns the value of the flag at process start, including any overrides present. */
         public boolean get() {
             return currentValue;
         }
@@ -224,7 +208,6 @@ public abstract class BaseFlags {
             return description;
         }
 
-        @NotNull
         @Override
         public String toString() {
             return "TogglableFlag{"
@@ -262,5 +245,4 @@ public abstract class BaseFlags {
             return h$;
         }
     }
-
 }

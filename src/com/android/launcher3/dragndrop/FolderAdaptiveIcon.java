@@ -19,41 +19,44 @@ package com.android.launcher3.dragndrop;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.ColorFilter;
 import android.graphics.Matrix;
-import android.graphics.Paint;
 import android.graphics.Path;
-import android.graphics.PixelFormat;
 import android.graphics.Point;
+import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.R;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.folder.PreviewBackground;
-import com.android.launcher3.graphics.BitmapRenderer;
+import com.android.launcher3.graphics.ShiftedBitmapDrawable;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.util.Preconditions;
 
-import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
-
 /**
- * {@link AdaptiveIconCompat} representation of a {@link FolderIcon}
+ * {@link AdaptiveIconDrawable} representation of a {@link FolderIcon}
  */
 @TargetApi(Build.VERSION_CODES.O)
-public class FolderAdaptiveIcon extends AdaptiveIconCompat {
+public class FolderAdaptiveIcon extends AdaptiveIconDrawable {
     private static final String TAG = "FolderAdaptiveIcon";
 
     private final Drawable mBadge;
     private final Path mMask;
+    private final ConstantState mConstantState;
 
     private FolderAdaptiveIcon(Drawable bg, Drawable fg, Drawable badge, Path mask) {
         super(bg, fg);
         mBadge = badge;
         mMask = mask;
+
+        mConstantState = new MyConstantState(bg.getConstantState(), fg.getConstantState(),
+                badge.getConstantState(), mask);
     }
 
     @Override
@@ -65,15 +68,19 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         return mBadge;
     }
 
-    public static FolderAdaptiveIcon createFolderAdaptiveIcon(
+    public static @Nullable FolderAdaptiveIcon createFolderAdaptiveIcon(
             Launcher launcher, int folderId, Point dragViewSize) {
         Preconditions.assertNonUiThread();
         int margin = launcher.getResources()
                 .getDimensionPixelSize(R.dimen.blur_size_medium_outline);
 
         // Allocate various bitmaps on the background thread, because why not!
-        final Bitmap badge = Bitmap.createBitmap(
-                dragViewSize.x - margin, dragViewSize.y - margin, Bitmap.Config.ARGB_8888);
+        int width = dragViewSize.x - margin;
+        int height = dragViewSize.y - margin;
+        if (width <= 0 || height <= 0) {
+            return null;
+        }
+        final Bitmap badge = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
 
         // Create the actual drawable on the UI thread to avoid race conditions with
         // FolderIcon draw pass
@@ -92,7 +99,7 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
      * Initializes various bitmaps on the UI thread and returns the final drawable.
      */
     private static FolderAdaptiveIcon createDrawableOnUiThread(FolderIcon icon,
-                                                               Bitmap badgeBitmap, Point dragViewSize) {
+            Bitmap badgeBitmap, Point dragViewSize) {
         Preconditions.assertUIThread();
         float margin = icon.getResources().getDimension(R.dimen.blur_size_medium_outline) / 2;
 
@@ -103,14 +110,14 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         c.setBitmap(badgeBitmap);
         bg.drawShadow(c);
         bg.drawBackgroundStroke(c);
-        icon.drawBadge(c);
+        icon.drawDot(c);
 
         // Initialize preview
-        final float sizeScaleFactor = 1 + 2 * AdaptiveIconCompat.getExtraInsetFraction();
+        final float sizeScaleFactor = 1 + 2 * AdaptiveIconDrawable.getExtraInsetFraction();
         final int previewWidth = (int) (dragViewSize.x * sizeScaleFactor);
         final int previewHeight = (int) (dragViewSize.y * sizeScaleFactor);
 
-        final float shiftFactor = AdaptiveIconCompat.getExtraInsetFraction() / sizeScaleFactor;
+        final float shiftFactor = AdaptiveIconDrawable.getExtraInsetFraction() / sizeScaleFactor;
         final float previewShiftX = shiftFactor * previewWidth;
         final float previewShiftY = shiftFactor * previewHeight;
 
@@ -135,39 +142,34 @@ public class FolderAdaptiveIcon extends AdaptiveIconCompat {
         return new FolderAdaptiveIcon(new ColorDrawable(bg.getBgColor()), foreground, badge, mask);
     }
 
-    /**
-     * A simple drawable which draws a bitmap at a fixed position irrespective of the bounds
-     */
-    private static class ShiftedBitmapDrawable extends Drawable {
+    @Override
+    public ConstantState getConstantState() {
+        return mConstantState;
+    }
 
-        private final Paint mPaint = new Paint(Paint.FILTER_BITMAP_FLAG);
-        private final Bitmap mBitmap;
-        private final float mShiftX;
-        private final float mShiftY;
+    private static class MyConstantState extends ConstantState {
+        private final ConstantState mBg;
+        private final ConstantState mFg;
+        private final ConstantState mBadge;
+        private final Path mMask;
 
-        ShiftedBitmapDrawable(Bitmap bitmap, float shiftX, float shiftY) {
-            mBitmap = bitmap;
-            mShiftX = shiftX;
-            mShiftY = shiftY;
+        MyConstantState(ConstantState bg, ConstantState fg, ConstantState badge, Path mask) {
+            mBg = bg;
+            mFg = fg;
+            mBadge = badge;
+            mMask = mask;
         }
 
         @Override
-        public void draw(Canvas canvas) {
-            canvas.drawBitmap(mBitmap, mShiftX, mShiftY, mPaint);
+        public Drawable newDrawable() {
+            return new FolderAdaptiveIcon(mBg.newDrawable(), mFg.newDrawable(),
+                    mBadge.newDrawable(), mMask);
         }
 
         @Override
-        public void setAlpha(int i) {
-        }
-
-        @Override
-        public void setColorFilter(ColorFilter colorFilter) {
-            mPaint.setColorFilter(colorFilter);
-        }
-
-        @Override
-        public int getOpacity() {
-            return PixelFormat.TRANSLUCENT;
+        public int getChangingConfigurations() {
+            return mBg.getChangingConfigurations() & mFg.getChangingConfigurations()
+                    & mBadge.getChangingConfigurations();
         }
     }
 }

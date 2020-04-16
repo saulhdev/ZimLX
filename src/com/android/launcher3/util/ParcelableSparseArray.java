@@ -1,12 +1,12 @@
 /**
  * Copyright (C) 2015 The Android Open Source Project
- * <p>
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,23 +20,6 @@ import android.os.Parcelable;
 import android.util.SparseArray;
 
 public class ParcelableSparseArray extends SparseArray<Parcelable> implements Parcelable {
-    public static final Parcelable.Creator<ParcelableSparseArray> CREATOR =
-            new Parcelable.Creator<ParcelableSparseArray>() {
-                public ParcelableSparseArray createFromParcel(Parcel source) {
-                    final ParcelableSparseArray array = new ParcelableSparseArray();
-                    final ClassLoader loader = array.getClass().getClassLoader();
-                    final int count = source.readInt();
-                    for (int i = 0; i < count; i++) {
-                        array.put(source.readInt(), source.readParcelable(loader));
-                    }
-                    return array;
-                }
-
-                public ParcelableSparseArray[] newArray(int size) {
-                    return new ParcelableSparseArray[size];
-                }
-            };
-
     public int describeContents() {
         return 0;
     }
@@ -49,4 +32,21 @@ public class ParcelableSparseArray extends SparseArray<Parcelable> implements Pa
             dest.writeParcelable(valueAt(i), 0);
         }
     }
+
+    public static final Parcelable.Creator<ParcelableSparseArray> CREATOR =
+            new Parcelable.Creator<ParcelableSparseArray>() {
+        public ParcelableSparseArray createFromParcel(Parcel source) {
+            final ParcelableSparseArray array = new ParcelableSparseArray();
+            final ClassLoader loader = array.getClass().getClassLoader();
+            final int count = source.readInt();
+            for (int i = 0; i < count; i++) {
+                array.put(source.readInt(), source.readParcelable(loader));
+            }
+            return array;
+        }
+
+        public ParcelableSparseArray[] newArray(int size) {
+            return new ParcelableSparseArray[size];
+        }
+    };
 }

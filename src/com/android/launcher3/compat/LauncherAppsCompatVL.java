@@ -33,9 +33,6 @@ import android.os.UserHandle;
 import android.util.ArrayMap;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.compat.ShortcutConfigActivityInfo.ShortcutConfigActivityInfoVL;
 import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.PackageUserKey;
@@ -44,13 +41,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     protected final LauncherApps mLauncherApps;
     protected final Context mContext;
 
     private final ArrayMap<OnAppsChangedCallbackCompat, WrappedCallback> mCallbacks =
-            new ArrayMap<>();
+        new ArrayMap<>();
 
     LauncherAppsCompatVL(Context context) {
         mContext = context;
@@ -69,7 +69,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     @Override
     public void startActivityForProfile(ComponentName component, UserHandle user,
-                                        Rect sourceBounds, Bundle opts) {
+            Rect sourceBounds, Bundle opts) {
         mLauncherApps.startMainActivity(component, user, sourceBounds, opts);
     }
 
@@ -101,7 +101,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
     @Override
     public void showAppDetailsForProfile(ComponentName component, UserHandle user,
-                                         Rect sourceBounds, Bundle opts) {
+            Rect sourceBounds, Bundle opts) {
         mLauncherApps.startAppDetailsActivity(component, user, sourceBounds, opts);
     }
 
@@ -164,7 +164,7 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
         @Override
         public void onPackagesUnavailable(String[] packageNames, UserHandle user,
-                                          boolean replacing) {
+                boolean replacing) {
             mCallback.onPackagesUnavailable(packageNames, user, replacing);
         }
 
@@ -184,8 +184,8 @@ public class LauncherAppsCompatVL extends LauncherAppsCompat {
 
         @Override
         public void onShortcutsChanged(@NonNull String packageName,
-                                       @NonNull List<ShortcutInfo> shortcuts,
-                                       @NonNull UserHandle user) {
+            @NonNull List<ShortcutInfo> shortcuts,
+            @NonNull UserHandle user) {
             mCallback.onShortcutsChanged(packageName, shortcuts, user);
         }
     }

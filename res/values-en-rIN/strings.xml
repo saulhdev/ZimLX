@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><!--
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- 
 /*
 * Copyright (C) 2008 The Android Open Source Project
 *
@@ -16,7 +17,8 @@
 */
  -->
 
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <string name="app_name" msgid="649227358658669779">"Launcher3"</string>
     <string name="folder_name" msgid="7371454440695724752"></string>
     <string name="work_folder_name" msgid="3753320833950115786">"Work"</string>
@@ -37,14 +39,20 @@
     <string name="all_apps_loading_message" msgid="5813968043155271636">"Loading apps…"</string>
     <string name="all_apps_no_search_results" msgid="3200346862396363786">"No apps found matching \'<xliff:g id="QUERY">%1$s</xliff:g>\'"</string>
     <string name="all_apps_search_market_message" msgid="1366263386197059176">"Search for more apps"</string>
+    <string name="label_application" msgid="8531721983832654978">"App"</string>
     <string name="notifications_header" msgid="1404149926117359025">"Notifications"</string>
+    <string name="long_press_shortcut_to_add" msgid="4524750017792716791">"Touch &amp; hold to pick up a shortcut."</string>
+    <string name="long_accessible_way_to_add_shortcut" msgid="3327314059613154633">"Double-tap &amp; hold to pick up a shortcut or use custom actions."</string>
     <string name="out_of_space" msgid="4691004494942118364">"No more room on this Home screen."</string>
     <string name="hotseat_out_of_space" msgid="7448809638125333693">"No more room in the Favourites tray"</string>
     <string name="all_apps_button_label" msgid="8130441508702294465">"Apps list"</string>
+    <string name="all_apps_button_personal_label" msgid="1315764287305224468">"Personal apps list"</string>
+    <string name="all_apps_button_work_label" msgid="7270707118948892488">"Work apps list"</string>
     <string name="all_apps_home_button_label" msgid="252062713717058851">"Home"</string>
     <string name="remove_drop_target_label" msgid="7812859488053230776">"Remove"</string>
     <string name="uninstall_drop_target_label" msgid="4722034217958379417">"Uninstall"</string>
     <string name="app_info_drop_target_label" msgid="692894985365717661">"App info"</string>
+    <string name="install_drop_target_label" msgid="2539096853673231757">"Install"</string>
     <string name="permlab_install_shortcut" msgid="5632423390354674437">"install shortcuts"</string>
     <string name="permdesc_install_shortcut" msgid="923466509822011139">"Allows an app to add shortcuts without user intervention."</string>
     <string name="permlab_read_settings" msgid="1941457408239617576">"read Home settings and shortcuts"</string>
@@ -57,6 +65,10 @@
     <string name="uninstall_system_app_text" msgid="4172046090762920660">"This is a system app and can\'t be uninstalled."</string>
     <string name="folder_hint_text" msgid="6617836969016293992">"Unnamed Folder"</string>
     <string name="disabled_app_label" msgid="6673129024321402780">"Disabled <xliff:g id="APP_NAME">%1$s</xliff:g>"</string>
+    <plurals name="dotted_app_label" formatted="false" msgid="5194538107138265416">
+      <item quantity="other"><xliff:g id="APP_NAME_2">%1$s</xliff:g>, has <xliff:g id="NOTIFICATION_COUNT_3">%2$d</xliff:g> notifications</item>
+      <item quantity="one"><xliff:g id="APP_NAME_0">%1$s</xliff:g>, has <xliff:g id="NOTIFICATION_COUNT_1">%2$d</xliff:g> notification</item>
+    </plurals>
     <string name="default_scroll_format" msgid="7475544710230993317">"Page %1$d of %2$d"</string>
     <string name="workspace_scroll_format" msgid="8458889198184077399">"Home screen %1$d of %2$d"</string>
     <string name="workspace_new_page" msgid="257366611030256142">"New home screen page"</string>
@@ -68,27 +80,20 @@
     <string name="folder_name_format" msgid="6629239338071103179">"Folder: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="widget_button_text" msgid="2880537293434387943">"Widgets"</string>
     <string name="wallpaper_button_text" msgid="8404103075899945851">"Wallpapers"</string>
+    <string name="styles_wallpaper_button_text" msgid="4342122323125579619">"Styles &amp; wallpapers"</string>
     <string name="settings_button_text" msgid="8873672322605444408">"Home settings"</string>
     <string name="msg_disabled_by_admin" msgid="6898038085516271325">"Disabled by your admin"</string>
-    <string name="accessibility_action_overview" msgid="6257665857640347026">"Overview"</string>
-    <string name="allow_rotation_title" msgid="7728578836261442095">"Allow Homescreen rotation"</string>
+    <string name="allow_rotation_title" msgid="7728578836261442095">"Allow Home screen rotation"</string>
     <string name="allow_rotation_desc" msgid="8662546029078692509">"When phone is rotated"</string>
-    <string name="allow_rotation_blocked_desc" msgid="3212602545192996253">"Current display setting doesn\'t permit rotation"</string>
-    <string name="icon_badging_title" msgid="874121399231955394">"Notification dots"</string>
-    <string name="icon_badging_desc_on" msgid="2627952638544674079">"On"</string>
-    <string name="icon_badging_desc_off" msgid="5503319969924580241">"Off"</string>
+    <string name="notification_dots_title" msgid="9062440428204120317">"Notification dots"</string>
+    <string name="notification_dots_desc_on" msgid="1679848116452218908">"On"</string>
+    <string name="notification_dots_desc_off" msgid="1760796511504341095">"Off"</string>
     <string name="title_missing_notification_access" msgid="7503287056163941064">"Notification access needed"</string>
     <string name="msg_missing_notification_access" msgid="281113995110910548">"To show Notification Dots, turn on app notifications for <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="title_change_settings" msgid="1376365968844349552">"Change settings"</string>
+    <string name="notification_dots_service_title" msgid="4284221181793592871">"Show notification dots"</string>
     <string name="auto_add_shortcuts_label" msgid="8222286205987725611">"Add icon to Home screen"</string>
     <string name="auto_add_shortcuts_description" msgid="7117251166066978730">"For new apps"</string>
-    <string name="icon_shape_override_label" msgid="2977264953998281004">"Change icon shape"</string>
-    <string name="icon_shape_system_default" msgid="1709762974822753030">"Use system default"</string>
-    <string name="icon_shape_square" msgid="633575066111622774">"Square"</string>
-    <string name="icon_shape_squircle" msgid="5658049910802669495">"Squircle"</string>
-    <string name="icon_shape_circle" msgid="6550072265930144217">"Circle"</string>
-    <string name="icon_shape_teardrop" msgid="4525869388200835463">"Teardrop"</string>
-    <string name="icon_shape_override_progress" msgid="3461735694970239908">"Applying icon shape changes"</string>
     <string name="package_state_unknown" msgid="7592128424511031410">"Unknown"</string>
     <string name="abandoned_clean_this" msgid="7610119707847920412">"Remove"</string>
     <string name="abandoned_search" msgid="891119232568284442">"Search"</string>
@@ -97,10 +102,13 @@
     <string name="app_downloading_title" msgid="8336702962104482644">"<xliff:g id="NAME">%1$s</xliff:g> downloading, <xliff:g id="PROGRESS">%2$s</xliff:g> complete"</string>
     <string name="app_waiting_download_title" msgid="7053938513995617849">"<xliff:g id="NAME">%1$s</xliff:g> waiting to install"</string>
     <string name="widgets_bottom_sheet_title" msgid="2904559530954183366">"<xliff:g id="NAME">%1$s</xliff:g> widgets"</string>
+    <string name="widgets_list" msgid="796804551140113767">"Widgets list"</string>
+    <string name="widgets_list_closed" msgid="6141506579418771922">"Widgets list closed"</string>
     <string name="action_add_to_workspace" msgid="8902165848117513641">"Add to Home screen"</string>
     <string name="action_move_here" msgid="2170188780612570250">"Move item here"</string>
     <string name="item_added_to_workspace" msgid="4211073925752213539">"Item added to home screen"</string>
     <string name="item_removed" msgid="851119963877842327">"Item removed"</string>
+    <string name="undo" msgid="4151576204245173321">"Undo"</string>
     <string name="action_move" msgid="4339390619886385032">"Move item"</string>
     <string name="move_to_empty_cell" msgid="2833711483015685619">"Move to row <xliff:g id="NUMBER_0">%1$s</xliff:g> column <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="move_to_position" msgid="6750008980455459790">"Move to position <xliff:g id="NUMBER">%1$s</xliff:g>"</string>
@@ -112,9 +120,6 @@
     <string name="create_folder_with" msgid="4050141361160214248">"Create folder with: <xliff:g id="NAME">%1$s</xliff:g>"</string>
     <string name="folder_created" msgid="6409794597405184510">"Folder created"</string>
     <string name="action_move_to_workspace" msgid="1603837886334246317">"Move to Home screen"</string>
-    <string name="action_move_screen_left" msgid="8854216831569401665">"Move screen to left"</string>
-    <string name="action_move_screen_right" msgid="329334910274311123">"Move screen to right"</string>
-    <string name="screen_moved" msgid="266230079505650577">"Screen moved"</string>
     <string name="action_resize" msgid="1802976324781771067">"Re-size"</string>
     <string name="action_increase_width" msgid="8773715375078513326">"Increase width"</string>
     <string name="action_increase_height" msgid="459390020612501122">"Increase height"</string>
@@ -122,22 +127,17 @@
     <string name="action_decrease_height" msgid="282377193880900022">"Decrease height"</string>
     <string name="widget_resized" msgid="9130327887929620">"Widget re-sized to width <xliff:g id="NUMBER_0">%1$s</xliff:g> height <xliff:g id="NUMBER_1">%2$s</xliff:g>"</string>
     <string name="action_deep_shortcut" msgid="2864038805849372848">"Short cuts"</string>
-    <string name="shortcuts_menu_description" msgid="406159963824238648">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> shortcuts for <xliff:g id="APP_NAME">%2$s</xliff:g>"</string>
-    <string name="shortcuts_menu_with_notifications_description" msgid="8985659504915468840">"<xliff:g id="NUMBER_OF_SHORTCUTS">%1$d</xliff:g> shortcuts and <xliff:g id="NUMBER_OF_NOTIFICATIONS">%2$d</xliff:g> notifications for <xliff:g id="APP_NAME">%3$s</xliff:g>"</string>
+    <string name="shortcuts_menu_with_notifications_description" msgid="2676582286544232849">"Shortcuts and notifications"</string>
     <string name="action_dismiss_notification" msgid="5909461085055959187">"Dismiss"</string>
     <string name="notification_dismissed" msgid="6002233469409822874">"Notification dismissed"</string>
-    <string name="smartspace_preferences">Preferences</string>
-    <string name="label_search">Search</string>
-    <string name="label_voice_search">Voice search</string>
-    <string name="title_show_google_app">Display %1$s</string>
-    <string name="msg_minus_one_on_left">To the left of the main home screen</string>
-    <string name="about">About</string>
-    <string name="title_google_app">Google app</string>
-    <string name="title_app_suggestions">Display app suggestions</string>
-    <string name="summary_app_suggestions">At the top of your All Apps list</string>
-    <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
-    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list and the usage data used to create them will be permanently erased."</string>
-    <string name="label_turn_off_suggestions">TURN OFF</string>
-    <string name="icon_shape_rounded_square">Rounded square</string>
-    <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="all_apps_personal_tab" msgid="4190252696685155002">"Personal"</string>
+    <string name="all_apps_work_tab" msgid="4884822796154055118">"Work"</string>
+    <string name="work_profile_toggle_label" msgid="3081029915775481146">"Work profile"</string>
+    <string name="bottom_work_tab_user_education_title" msgid="5785851780786322825">"Find work apps here"</string>
+    <string name="bottom_work_tab_user_education_body" msgid="2818107472360579152">"Each work app has a badge and is kept secure by your organisation. Move apps to your Home screen for easier access."</string>
+    <string name="work_mode_on_label" msgid="4781128097185272916">"Managed by your organisation"</string>
+    <string name="work_mode_off_label" msgid="3194894777601421047">"Notifications and apps are off"</string>
+    <string name="bottom_work_tab_user_education_close_button" msgid="4224492243977802135">"Close"</string>
+    <string name="bottom_work_tab_user_education_closed" msgid="1098340939861869465">"Closed"</string>
+    <string name="remote_action_failed" msgid="1383965239183576790">"Failed: <xliff:g id="WHAT">%1$s</xliff:g>"</string>
 </resources>

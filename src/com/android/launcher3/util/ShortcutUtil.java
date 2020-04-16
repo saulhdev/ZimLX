@@ -23,7 +23,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.shortcuts.ShortcutKey;
 
 public class ShortcutUtil {
-
     /**
      * Returns true when we should show shortcut menu for the item.
      */

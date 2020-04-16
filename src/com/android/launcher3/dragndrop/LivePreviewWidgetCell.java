@@ -32,15 +32,31 @@ public class LivePreviewWidgetCell extends WidgetCell {
         super(context, attrs, defStyle);
     }
 
+    public void setPreview(RemoteViews view) {
+        mPreview = view;
+    }
+
+    @Override
+    public void ensurePreview() {
+        if (mPreview != null && mActiveRequest == null) {
+            Bitmap preview = generateFromRemoteViews(
+                    mActivity, mPreview, mItem.widgetInfo, mPresetPreviewSize, new int[1]);
+            if (preview != null) {
+                applyPreview(preview);
+                return;
+            }
+        }
+        super.ensurePreview();
+    }
+
     /**
      * Generates a bitmap by inflating {@param views}.
-     *
      * @see com.android.launcher3.WidgetPreviewLoader#generateWidgetPreview
-     * <p>
+     *
      * TODO: Consider moving this to the background thread.
      */
     public static Bitmap generateFromRemoteViews(BaseActivity activity, RemoteViews views,
-                                                 LauncherAppWidgetProviderInfo info, int previewSize, int[] preScaledWidthOut) {
+            LauncherAppWidgetProviderInfo info, int previewSize, int[] preScaledWidthOut) {
 
         DeviceProfile dp = activity.getDeviceProfile();
         int viewWidth = dp.cellWidthPx * info.spanX;
@@ -78,22 +94,5 @@ public class LivePreviewWidgetCell extends WidgetCell {
         v.draw(c);
         c.setBitmap(null);
         return preview;
-    }
-
-    public void setPreview(RemoteViews view) {
-        mPreview = view;
-    }
-
-    @Override
-    public void ensurePreview() {
-        if (mPreview != null && mActiveRequest == null) {
-            Bitmap preview = generateFromRemoteViews(
-                    mActivity, mPreview, mItem.widgetInfo, mPresetPreviewSize, new int[1]);
-            if (preview != null) {
-                applyPreview(preview);
-                return;
-            }
-        }
-        super.ensurePreview();
     }
 }

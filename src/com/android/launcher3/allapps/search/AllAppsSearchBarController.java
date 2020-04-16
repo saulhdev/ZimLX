@@ -15,7 +15,6 @@
  */
 package com.android.launcher3.allapps.search;
 
-import android.content.Context;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -23,18 +22,17 @@ import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 import android.widget.TextView.OnEditorActionListener;
 
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 
 import java.util.ArrayList;
-import java.util.List;
 
 /**
  * An interface to a search box that AllApps can command.
@@ -111,17 +109,11 @@ public class AllAppsSearchBarController
         // Skip if the query is empty
         String query = v.getText().toString();
         if (query.isEmpty()) {
-            ((InputMethodManager) mLauncher.getSystemService(Context.INPUT_METHOD_SERVICE))
-                    .hideSoftInputFromWindow(v.getWindowToken(), 0);
             return false;
         }
-
-        if (mCb.onSubmitSearch()) {
-            return true;
-        }
-
         return mLauncher.startActivitySafely(v,
-                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null);
+                PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null,
+                AppLaunchTracker.CONTAINER_SEARCH);
     }
 
     @Override
@@ -174,22 +166,13 @@ public class AllAppsSearchBarController
          * Called when the search is complete.
          *
          * @param apps sorted list of matching components or null if in case of failure.
-         * @param suggestions relevancy sorted list of matching suggestions or null
          */
-        void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions);
-
+        void onSearchResult(String query, ArrayList<ComponentKey> apps);
 
         /**
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
-
-        /**
-         * Called when the user presses enter/search on their keyboard
-         *
-         * @return whether the event was handled
-         */
-        boolean onSubmitSearch();
     }
 
 }

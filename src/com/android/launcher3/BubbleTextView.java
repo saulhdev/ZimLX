@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -25,11 +27,9 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
 import android.util.Property;
@@ -41,33 +41,20 @@ import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.widget.TextView;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.Launcher.OnResumeCallback;
 import com.android.launcher3.accessibility.LauncherAccessibilityDelegate;
-import com.android.launcher3.badge.BadgeInfo;
-import com.android.launcher3.badge.BadgeRenderer;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.graphics.IconPalette;
 import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.graphics.PreloadIconDrawable;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconCache.IconLoadRequest;
 import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
-
-import org.zimmob.zimlx.ZimLauncher;
-import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.ZimUtilsKt;
-import org.zimmob.zimlx.gestures.BlankGestureHandler;
-import org.zimmob.zimlx.gestures.GestureController;
-import org.zimmob.zimlx.gestures.GestureHandler;
-import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
-import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.text.NumberFormat;
 
@@ -76,14 +63,15 @@ import java.text.NumberFormat;
  * because we want to make the bubble taller than the text and TextView's clip is
  * too aggressive.
  */
-public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback, IconLabelDotView {
+public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
+        IconLabelDotView {
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
-    private static final int DISPLAY_DRAWER_FOLDER = 5;
 
-    private static final int[] STATE_PRESSED = new int[]{android.R.attr.state_pressed};
+    private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
+
 
     private static final Property<BubbleTextView, Float> DOT_SCALE_PROPERTY
             = new Property<BubbleTextView, Float>(Float.TYPE, "dotScale") {
@@ -95,20 +83,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         @Override
         public void set(BubbleTextView bubbleTextView, Float value) {
             bubbleTextView.mDotParams.scale = value;
-            bubbleTextView.invalidate();
-        }
-    };
-
-    private static final Property<BubbleTextView, Float> BADGE_SCALE_PROPERTY
-            = new Property<BubbleTextView, Float>(Float.TYPE, "badgeScale") {
-        @Override
-        public Float get(BubbleTextView bubbleTextView) {
-            return bubbleTextView.mBadgeScale;
-        }
-
-        @Override
-        public void set(BubbleTextView bubbleTextView, Float value) {
-            bubbleTextView.mBadgeScale = value;
             bubbleTextView.invalidate();
         }
     };
@@ -126,7 +100,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
     };
 
-    private final BaseDraggingActivity mActivity;
+    private final ActivityContext mActivity;
     private Drawable mIcon;
     private final boolean mCenterVertically;
 
@@ -135,7 +109,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final float mSlop;
 
     private final boolean mLayoutHorizontal;
-    private int mIconSize;
+    private final int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
@@ -152,15 +126,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private Animator mDotScaleAnim;
     private boolean mForceHideDot;
 
-
-    private BadgeInfo mBadgeInfo;
-    private BadgeRenderer mBadgeRenderer;
-    private int mBadgeColor;
-    private float mBadgeScale;
-    private boolean mForceHideBadge;
-    private Point mTempSpaceForBadgeOffset = new Point();
-    private Rect mTempIconBounds = new Rect();
-
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mStayPressed;
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -170,9 +135,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     private IconLoadRequest mIconLoadRequest;
 
-    private GestureHandler mSwipeUpHandler;
-
-    private boolean mHideText;
     public BubbleTextView(Context context) {
         this(context, null, 0);
     }
@@ -183,18 +145,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
-
-        if (mActivity == null) {
-            mLayoutHorizontal = false;
-            mIconSize = 0;
-            mCenterVertically = true;
-            mLongPressHelper = null;
-            mStylusEventHelper = null;
-            mSlop = 0;
-            return;
-        }
-        DeviceProfile grid = mActivity.getDeviceProfile();
+        mActivity = ActivityContext.lookupContext(context);
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -202,40 +153,25 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mLayoutHorizontal = a.getBoolean(R.styleable.BubbleTextView_layoutHorizontal, false);
 
         int display = a.getInteger(R.styleable.BubbleTextView_iconDisplay, DISPLAY_WORKSPACE);
-        int defaultIconSize = grid.iconSizePx;
-        ZimPreferences prefs = Utilities.getZimPrefs(context);
+        final int defaultIconSize;
         if (display == DISPLAY_WORKSPACE) {
-            mHideText = prefs.getHideAppLabels();
+            DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
-            int lines = prefs.getHomeLabelRows();
-            setLineCount(lines);
+            defaultIconSize = grid.iconSizePx;
         } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = prefs.getHideAllAppsAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
+            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
-            int lines = prefs.getDrawerLabelRows();
-            setLineCount(lines);
         } else if (display == DISPLAY_FOLDER) {
-            mHideText = prefs.getHideAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.folderChildTextSizePx);
+            DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
-            int lines = prefs.getHomeLabelRows();
-            setLineCount(lines);
-        } else if (display == DISPLAY_DRAWER_FOLDER) {
-            mHideText = prefs.getHideAllAppsAppLabels();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                    isTextHidden() ? 0 : grid.allAppsFolderChildTextSizePx);
-            setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
-            defaultIconSize = grid.allAppsFolderChildIconSizePx;
-            int lines = prefs.getDrawerLabelRows();
-            setLineCount(lines);
+        } else {
+            defaultIconSize = mActivity.getDeviceProfile().iconSizePx;
         }
-
         mCenterVertically = a.getBoolean(R.styleable.BubbleTextView_centerVertically, false);
 
         mIconSize = a.getDimensionPixelSize(R.styleable.BubbleTextView_iconSizeOverride,
@@ -250,14 +186,6 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         setEllipsize(TruncateAt.END);
         setAccessibilityDelegate(mActivity.getAccessibilityDelegate());
         setTextAlpha(1f);
-    }
-
-    public void setLineCount(int lines) {
-        setMaxLines(lines);
-        setSingleLine(lines == 1);
-        setEllipsize(TextUtils.TruncateAt.END);
-        // This shouldn't even be needed, what is going on?!
-        setLines(lines);
     }
 
     @Override
@@ -353,60 +281,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
 
         setIcon(iconDrawable);
-        if (!isTextHidden())
-            setText(getTitle(info));
+        setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
                     : info.contentDescription);
-        }
-    }
-
-    public void applyIcon(ItemInfoWithIcon info) {
-        FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext()).newIcon(info);
-        mBadgeColor = IconPalette.getMutedColor(getContext(), info.iconColor, 0.54f);
-
-        setIcon(iconDrawable);
-    }
-
-    public void applyIcon(BitmapInfo info) {
-        FastBitmapDrawable iconDrawable = new FastBitmapDrawable(info);
-        mBadgeColor = IconPalette.getMutedColor(getContext(), info.color, 0.54f);
-
-        setIcon(iconDrawable);
-    }
-
-    public void applyFromShortcutInfo(WorkspaceItemInfo info) {
-        applyFromShortcutInfo(info, false);
-    }
-
-    public void applyFromShortcutInfo(WorkspaceItemInfo info, boolean promiseStateChanged) {
-        applyIconAndLabel(info);
-        applySwipeUpAction(info);
-        setTag(info);
-        if (promiseStateChanged || (info.hasPromiseIconUi())) {
-            applyPromiseState(promiseStateChanged);
-        }
-
-        applyDotState(info, false /* animate */);
-    }
-
-    private void applySwipeUpAction(WorkspaceItemInfo info) {
-        GestureHandler handler = GestureController.Companion.createGestureHandler(
-                getContext(), info.swipeUpAction, new BlankGestureHandler(getContext(), null));
-        if (handler instanceof BlankGestureHandler) {
-            mSwipeUpHandler = null;
-        } else {
-            mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
-        }
-    }
-
-    private CharSequence getTitle(ItemInfo info) {
-        CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
-        if (customInfoProvider != null) {
-            return customInfoProvider.getTitle(info);
-        } else {
-            return info.title;
         }
     }
 
@@ -433,9 +312,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         return drawableState;
     }
 
-    /**
-     * Returns the icon for this view.
-     */
+    /** Returns the icon for this view. */
     public Drawable getIcon() {
         return mIcon;
     }
@@ -469,19 +346,20 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
                 }
                 break;
         }
-
-        Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
-        if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
-            ((ZimLauncher) launcher).getGestureController()
-                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
-        }
-
         return result;
     }
 
-    public void setStayPressed(boolean stayPressed) {
+    void setStayPressed(boolean stayPressed) {
         mStayPressed = stayPressed;
         refreshDrawableState();
+    }
+
+    @Override
+    public void onVisibilityAggregated(boolean isVisible) {
+        super.onVisibilityAggregated(isVisible);
+        if (mIcon != null) {
+            mIcon.setVisible(isVisible, false);
+        }
     }
 
     @Override
@@ -554,10 +432,14 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     }
 
     public void getIconBounds(Rect outBounds) {
-        int top = getPaddingTop();
-        int left = (getWidth() - mIconSize) / 2;
-        int right = left + mIconSize;
-        int bottom = top + mIconSize;
+        getIconBounds(this, outBounds, mIconSize);
+    }
+
+    public static void getIconBounds(View iconView, Rect outBounds, int iconSize) {
+        int top = iconView.getPaddingTop();
+        int left = (iconView.getWidth() - iconSize) / 2;
+        int right = left + iconSize;
+        int bottom = top + iconSize;
         outBounds.set(left, top, right, bottom);
     }
 
@@ -611,8 +493,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             // Special case to prevent text shadows in high contrast mode
             return Color.TRANSPARENT;
         }
-        return ColorUtils.setAlphaComponent(
-                mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
+        return setColorAlphaBound(mTextColor, Math.round(Color.alpha(mTextColor) * mTextAlpha));
     }
 
     /**
@@ -717,13 +598,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             applyCompoundDrawables(icon);
         }
         mIcon = icon;
+        if (mIcon != null) {
+            mIcon.setVisible(getWindowVisibility() == VISIBLE && isShown(), false);
+        }
     }
 
-    public void clearIcon() {
-        mIcon = null;
-        setCompoundDrawables(null, null, null, null);
-    }
-
+    @Override
     public void setIconVisible(boolean visible) {
         mIsIconVisible = visible;
         Drawable icon = visible ? mIcon : new ColorDrawable(Color.TRANSPARENT);
@@ -766,7 +646,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             if (info instanceof AppInfo) {
                 applyFromApplicationInfo((AppInfo) info);
             } else if (info instanceof WorkspaceItemInfo) {
-                applyFromShortcutInfo((WorkspaceItemInfo) info);
+                applyFromWorkspaceItem((WorkspaceItemInfo) info);
                 mActivity.invalidateParent(info);
             } else if (info instanceof PackageItemInfo) {
                 applyFromPackageItemInfo((PackageItemInfo) info);
@@ -795,18 +675,5 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
-    }
-
-    public void setIconSize(int iconSize) {
-        mIconSize = iconSize;
-        setIcon(mIcon);
-    }
-
-    protected boolean isTextHidden() {
-        return mHideText;
-    }
-
-    public int getBadgeColor() {
-        return mBadgeColor;
     }
 }

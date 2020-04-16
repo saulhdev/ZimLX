@@ -63,16 +63,16 @@ class FolderPreviewItemAnim {
      * @param onCompleteRunnable runnable to execute upon animation completion
      */
     FolderPreviewItemAnim(PreviewItemManager itemManager,
-                          PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
-                          int duration, final Runnable onCompleteRunnable) {
+            PreviewItemDrawingParams params, int index0, int items0, int index1, int items1,
+            int duration, final Runnable onCompleteRunnable) {
         mItemManager = itemManager;
         mParams = params;
 
         mItemManager.computePreviewItemDrawingParams(index1, items1, sTmpParams);
-        finalState = new float[]{sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
+        finalState = new float[] {sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
 
         mItemManager.computePreviewItemDrawingParams(index0, items0, sTmpParams);
-        float[] startState = new float[]{sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
+        float[] startState = new float[] {sTmpParams.scale, sTmpParams.transX, sTmpParams.transY};
 
         mAnimator = ObjectAnimator.ofObject(this, PARAMS, new FloatArrayEvaluator(),
                 startState, finalState);

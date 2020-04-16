@@ -16,10 +16,8 @@
 
 package com.android.launcher3.shortcuts;
 
-import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
 import android.content.pm.ShortcutInfo;
@@ -30,9 +28,6 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
-
-import com.android.launcher3.Utilities;
-import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -72,12 +67,12 @@ public class DeepShortcutManager {
 
     /**
      * Queries for the shortcuts with the package name and provided ids.
-     * <p>
+     *
      * This method is intended to get the full details for shortcuts when they are added or updated,
      * because we only get "key" fields in onShortcutsChanged().
      */
     public List<ShortcutInfo> queryForFullDetails(String packageName,
-                                                  List<String> shortcutIds, UserHandle user) {
+            List<String> shortcutIds, UserHandle user) {
         return query(FLAG_GET_ALL, packageName, null, shortcutIds, user);
     }
 
@@ -86,7 +81,7 @@ public class DeepShortcutManager {
      * to be displayed in the shortcuts container on long press.
      */
     public List<ShortcutInfo> queryForShortcutsContainer(@Nullable ComponentName activity,
-                                                         UserHandle user) {
+            UserHandle user) {
         if (activity == null) return Collections.EMPTY_LIST;
         return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, null, user);
@@ -105,7 +100,7 @@ public class DeepShortcutManager {
         try {
             mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
             mWasLastCallSuccess = true;
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.w(TAG, "Failed to unpin shortcut", e);
             mWasLastCallSuccess = false;
         }
@@ -124,38 +119,21 @@ public class DeepShortcutManager {
         try {
             mLauncherApps.pinShortcuts(packageName, pinnedIds, user);
             mWasLastCallSuccess = true;
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.w(TAG, "Failed to pin shortcut", e);
             mWasLastCallSuccess = false;
         }
     }
 
     public void startShortcut(String packageName, String id, Rect sourceBounds,
-                              Bundle startActivityOptions, UserHandle user) {
+          Bundle startActivityOptions, UserHandle user) {
         try {
             mLauncherApps.startShortcut(packageName, id, sourceBounds,
                     startActivityOptions, user);
             mWasLastCallSuccess = true;
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.e(TAG, "Failed to start shortcut", e);
             mWasLastCallSuccess = false;
-        }
-    }
-
-    @TargetApi(25)
-    public void startShortcut(String packageName, String id, Intent intent,
-                              Bundle startActivityOptions, UserHandle user) {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            try {
-                mLauncherApps.startShortcut(packageName, id, intent.getSourceBounds(),
-                        startActivityOptions, user);
-                mWasLastCallSuccess = true;
-            } catch (SecurityException | IllegalStateException e) {
-                Log.e(TAG, "Failed to start shortcut", e);
-                mWasLastCallSuccess = false;
-            }
-        } else {
-            //mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
         }
     }
 
@@ -164,50 +142,29 @@ public class DeepShortcutManager {
             Drawable icon = mLauncherApps.getShortcutIconDrawable(shortcutInfo, density);
             mWasLastCallSuccess = true;
             return icon;
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.e(TAG, "Failed to get shortcut icon", e);
             mWasLastCallSuccess = false;
         }
         return null;
     }
 
-    @TargetApi(25)
-    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
-        if (Utilities.ATLEAST_NOUGAT_MR1) {
-            try {
-                Drawable icon = mLauncherApps.getShortcutIconDrawable(
-                        shortcutInfo.getShortcutInfo(), density);
-                mWasLastCallSuccess = true;
-                return icon;
-            } catch (SecurityException | IllegalStateException e) {
-                Log.e(TAG, "Failed to get shortcut icon", e);
-                mWasLastCallSuccess = false;
-            }
-        } else {
-            return DeepShortcutManagerBackport.getShortcutIconDrawable(shortcutInfo, density);
-        }
-        return null;
-    }
-
     /**
      * Returns the id's of pinned shortcuts associated with the given package and user.
-     * <p>
+     *
      * If packageName is null, returns all pinned shortcuts regardless of package.
      */
     public List<ShortcutInfo> queryForPinnedShortcuts(String packageName, UserHandle user) {
         return queryForPinnedShortcuts(packageName, null, user);
     }
 
-    public List<ShortcutInfo> queryForPinnedShortcuts(String packageName, List<String> shortcutIds, UserHandle user) {
+    public List<ShortcutInfo> queryForPinnedShortcuts(String packageName,
+            List<String> shortcutIds, UserHandle user) {
         return query(ShortcutQuery.FLAG_MATCH_PINNED, packageName, null, shortcutIds, user);
     }
 
     public List<ShortcutInfo> queryForAllShortcuts(UserHandle user) {
         return query(FLAG_GET_ALL, null, null, null, user);
-    }
-
-    public List<ShortcutInfo> queryForComponent(ComponentKey key) {
-        return query(FLAG_GET_ALL, key.componentName.getPackageName(), key.componentName, null, key.user);
     }
 
     private List<String> extractIds(List<ShortcutInfo> shortcuts) {
@@ -221,11 +178,11 @@ public class DeepShortcutManager {
     /**
      * Query the system server for all the shortcuts matching the given parameters.
      * If packageName == null, we query for all shortcuts with the passed flags, regardless of app.
-     * <p>
+     *
      * TODO: Use the cache to optimize this so we don't make an RPC every time.
      */
     private List<ShortcutInfo> query(int flags, String packageName,
-                                     ComponentName activity, List<String> shortcutIds, UserHandle user) {
+            ComponentName activity, List<String> shortcutIds, UserHandle user) {
         ShortcutQuery q = new ShortcutQuery();
         q.setQueryFlags(flags);
         if (packageName != null) {
@@ -237,7 +194,7 @@ public class DeepShortcutManager {
         try {
             shortcutInfos = mLauncherApps.getShortcuts(q, user);
             mWasLastCallSuccess = true;
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.e(TAG, "Failed to query for shortcuts", e);
             mWasLastCallSuccess = false;
         }
@@ -250,7 +207,7 @@ public class DeepShortcutManager {
     public boolean hasHostPermission() {
         try {
             return mLauncherApps.hasShortcutHostPermission();
-        } catch (SecurityException | IllegalStateException e) {
+        } catch (SecurityException|IllegalStateException e) {
             Log.e(TAG, "Failed to make shortcut manager call", e);
         }
         return false;

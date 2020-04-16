@@ -24,9 +24,6 @@ import android.os.Process;
 import android.os.UserHandle;
 import android.util.Log;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.icons.IconCache;
@@ -37,6 +34,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
 
 /**
  * Stores the list of all applications for the all apps view.
@@ -46,9 +46,7 @@ public class AllAppsList {
 
     public static final int DEFAULT_APPLICATIONS_NUMBER = 42;
 
-    /**
-     * The list off all apps.
-     */
+    /** The list off all apps. */
     public final ArrayList<AppInfo> data = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
     /** The list of apps that have been added since the last notify() call. */
     public ArrayList<AppInfo> added = new ArrayList<>(DEFAULT_APPLICATIONS_NUMBER);
@@ -76,7 +74,7 @@ public class AllAppsList {
      * If the app is already in the list, doesn't add it.
      */
     public void add(AppInfo info, LauncherActivityInfo activityInfo) {
-        if (!mAppFilter.shouldShowApp(info.componentName, info.user)) {
+        if (!mAppFilter.shouldShowApp(info.componentName)) {
             return;
         }
         if (findAppInfo(info.componentName, info.user) != null) {
@@ -91,7 +89,7 @@ public class AllAppsList {
     public void addPromiseApp(Context context,
                               PackageInstallerCompat.PackageInstallInfo installInfo) {
         ApplicationInfo applicationInfo = LauncherAppsCompat.getInstance(context)
-                .getApplicationInfo(installInfo.packageName, 0, Process.myUserHandle());
+                .getApplicationInfo(installInfo.packageName, 0, installInfo.user);
         // only if not yet installed
         if (applicationInfo == null) {
             PromiseAppInfo info = new PromiseAppInfo(installInfo);
@@ -128,7 +126,8 @@ public class AllAppsList {
      */
     public void addPackage(Context context, String packageName, UserHandle user) {
         final LauncherAppsCompat launcherApps = LauncherAppsCompat.getInstance(context);
-        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName, user);
+        final List<LauncherActivityInfo> matches = launcherApps.getActivityList(packageName,
+                user);
 
         for (LauncherActivityInfo info : matches) {
             add(new AppInfo(context, info, user), info);
@@ -164,7 +163,7 @@ public class AllAppsList {
     }
 
     public void updateIconsAndLabels(HashSet<String> packages, UserHandle user,
-                                     ArrayList<AppInfo> outUpdates) {
+            ArrayList<AppInfo> outUpdates) {
         for (AppInfo info : data) {
             if (info.user.equals(user) && packages.contains(info.componentName.getPackageName())) {
                 mIconCache.updateTitleAndIcon(info);
@@ -188,7 +187,7 @@ public class AllAppsList {
                 if (user.equals(applicationInfo.user)
                         && packageName.equals(applicationInfo.componentName.getPackageName())) {
                     if (!findActivity(matches, applicationInfo.componentName)) {
-                        Log.w(TAG, "Shortcut will be removed due to app component name change.");
+                        Log.w(TAG, "Changing shortcut target due to app component name change.");
                         removed.add(applicationInfo);
                         data.remove(i);
                     }
@@ -220,32 +219,12 @@ public class AllAppsList {
         }
     }
 
-    /**
-     * Add and remove icons for this package, depending on visibility.
-     */
-    public void reloadPackages(Context context, UserHandle user) {
-        for (final LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
-            AppInfo applicationInfo = findAppInfo(info.getComponentName(), user);
-            if (applicationInfo == null) {
-                add(new AppInfo(context, info, user), info);
-            }
-        }
-
-        for (int i = data.size() - 1; i >= 0; i--) {
-            final AppInfo applicationInfo = data.get(i);
-            if (user.equals(applicationInfo.user) && !mAppFilter.shouldShowApp(applicationInfo.componentName, applicationInfo.user)) {
-                removed.add(applicationInfo);
-                data.remove(i);
-            }
-        }
-    }
-
 
     /**
      * Returns whether <em>apps</em> contains <em>component</em>.
      */
     private static boolean findActivity(List<LauncherActivityInfo> apps,
-                                        ComponentName component) {
+            ComponentName component) {
         for (LauncherActivityInfo info : apps) {
             if (info.getComponentName().equals(component)) {
                 return true;
@@ -259,9 +238,8 @@ public class AllAppsList {
      *
      * @return the corresponding AppInfo or null
      */
-    private @Nullable
-    AppInfo findAppInfo(@NonNull ComponentName componentName,
-                        @NonNull UserHandle user) {
+    private @Nullable AppInfo findAppInfo(@NonNull ComponentName componentName,
+                                          @NonNull UserHandle user) {
         for (AppInfo info: data) {
             if (componentName.equals(info.componentName) && user.equals(info.user)) {
                 return info;

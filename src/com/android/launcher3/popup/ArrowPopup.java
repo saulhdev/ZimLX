@@ -16,6 +16,8 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -52,8 +54,6 @@ import com.android.launcher3.views.BaseDragLayer;
 
 import java.util.ArrayList;
 import java.util.Collections;
-
-import static com.android.launcher3.anim.Interpolators.ACCEL_DEACCEL;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -135,8 +135,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     /**
      * Called when all view inflation and reordering in complete.
      */
-    protected void onInflationComplete(boolean isReversed) {
-    }
+    protected void onInflationComplete(boolean isReversed) { }
 
     /**
      * Shows the popup at the desired location, optionally reversing the children.
@@ -356,7 +355,7 @@ public abstract class ArrowPopup extends AbstractFloatingView {
 
         final AnimatorSet openAnim = new AnimatorSet();
         final Resources res = getResources();
-        final long revealDuration = res.getInteger(R.integer.config_popupOpenCloseDuration);
+        final long revealDuration = (long) res.getInteger(R.integer.config_popupOpenCloseDuration);
         final long arrowDuration = res.getInteger(R.integer.config_popupArrowOpenCloseDuration);
         final TimeInterpolator revealInterpolator = ACCEL_DEACCEL;
 
@@ -456,13 +455,12 @@ public abstract class ArrowPopup extends AbstractFloatingView {
     /**
      * Called when creating the close transition allowing subclass can add additional animations.
      */
-    protected void onCreateCloseAnimation(AnimatorSet anim) {
-    }
+    protected void onCreateCloseAnimation(AnimatorSet anim) { }
 
     private RoundedRectRevealOutlineProvider createOpenCloseOutlineProvider() {
         Resources res = getResources();
         int arrowCenterX = res.getDimensionPixelSize(mIsLeftAligned ^ mIsRtl ?
-                R.dimen.popup_arrow_horizontal_center_start :
+                R.dimen.popup_arrow_horizontal_center_start:
                 R.dimen.popup_arrow_horizontal_center_end);
         int halfArrowWidth = res.getDimensionPixelSize(R.dimen.popup_arrow_width) / 2;
         float arrowCornerRadius = res.getDimension(R.dimen.popup_arrow_corner_radius);

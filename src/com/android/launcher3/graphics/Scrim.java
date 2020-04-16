@@ -16,14 +16,14 @@
 
 package com.android.launcher3.graphics;
 
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.graphics.Canvas;
 import android.util.Property;
 import android.view.View;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-
-import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 /**
  * Contains general scrim properties such as wallpaper-extracted color that subclasses can use.

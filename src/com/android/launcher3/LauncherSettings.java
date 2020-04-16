@@ -86,10 +86,6 @@ public class LauncherSettings {
          */
         public static final String ICON = "icon";
 
-        public static final String CUSTOM_ICON = "customIcon";
-
-        public static final String CUSTOM_ICON_ENTRY = "customIconEntry";
-
         public static final String TABLE_NAME = "favorites";
 
         /**
@@ -129,31 +125,21 @@ public class LauncherSettings {
 
         static final String containerToString(int container) {
             switch (container) {
-                case CONTAINER_DESKTOP:
-                    return "desktop";
-                case CONTAINER_HOTSEAT:
-                    return "hotseat";
-                default:
-                    return String.valueOf(container);
+                case CONTAINER_DESKTOP: return "desktop";
+                case CONTAINER_HOTSEAT: return "hotseat";
+                default: return String.valueOf(container);
             }
         }
 
         static final String itemTypeToString(int type) {
-            switch (type) {
-                case ITEM_TYPE_APPLICATION:
-                    return "APP";
-                case ITEM_TYPE_SHORTCUT:
-                    return "SHORTCUT";
-                case ITEM_TYPE_FOLDER:
-                    return "FOLDER";
-                case ITEM_TYPE_APPWIDGET:
-                    return "WIDGET";
-                case ITEM_TYPE_CUSTOM_APPWIDGET:
-                    return "CUSTOMWIDGET";
-                case ITEM_TYPE_DEEP_SHORTCUT:
-                    return "DEEPSHORTCUT";
-                default:
-                    return String.valueOf(type);
+            switch(type) {
+                case ITEM_TYPE_APPLICATION: return "APP";
+                case ITEM_TYPE_SHORTCUT: return "SHORTCUT";
+                case ITEM_TYPE_FOLDER: return "FOLDER";
+                case ITEM_TYPE_APPWIDGET: return "WIDGET";
+                case ITEM_TYPE_CUSTOM_APPWIDGET: return "CUSTOMWIDGET";
+                case ITEM_TYPE_DEEP_SHORTCUT: return "DEEPSHORTCUT";
+                default: return String.valueOf(type);
             }
         }
 
@@ -249,16 +235,12 @@ public class LauncherSettings {
          */
         public static final String OPTIONS = "options";
 
-        public static final String TITLE_ALIAS = "titleAlias";
-
-        public static final String SWIPE_UP_ACTION = "swipeUpAction";
-
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             addTableToDb(db, myProfileId, optional, TABLE_NAME);
         }
 
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional,
-                                        String tableName) {
+                String tableName) {
             String ifNotExists = optional ? " IF NOT EXISTS " : "";
             db.execSQL("CREATE TABLE " + ifNotExists + tableName + " (" +
                     "_id INTEGER PRIMARY KEY," +
@@ -275,10 +257,6 @@ public class LauncherSettings {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
-                    "customIcon BLOB," +
-                    "customIconEntry TEXT," +
-                    "titleAlias TEXT," +
-                    "swipeUpAction TEXT," +
                     "appWidgetProvider TEXT," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
@@ -320,39 +298,5 @@ public class LauncherSettings {
         public static Bundle call(ContentResolver cr, String method) {
             return cr.call(CONTENT_URI, method, null, null);
         }
-    }
-
-
-    /**
-     * Columns required on table staht will be subject to backup and restore.
-     */
-    public interface ChangeLogColumns extends BaseColumns {
-        /**
-         * The time of the last update to this row.
-         * <P>Type: INTEGER</P>
-         */
-        String MODIFIED = "modified";
-    }
-
-    /**
-     * Workspace Screens.
-     * <p>
-     * Tracks the order of workspace screens.
-     */
-    public static final class WorkspaceScreens implements ChangeLogColumns {
-
-        public static final String TABLE_NAME = "workspaceScreens";
-
-        /**
-         * The content:// style URL for this table
-         */
-        public static final Uri CONTENT_URI = Uri.parse("content://" +
-                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
-
-        /**
-         * The rank of this screen -- ie. how it is ordered relative to the other screens.
-         * <P>Type: INTEGER</P>
-         */
-        public static final String SCREEN_RANK = "screenRank";
     }
 }

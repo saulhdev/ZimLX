@@ -32,6 +32,7 @@ import android.stats.launcher.nano.LauncherTarget;
 import android.view.View;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.StatsLogManager;
 import com.android.launcher3.logging.StatsLogUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
@@ -59,8 +60,8 @@ public class StatsLogCompatManager extends StatsLogManager {
         ext.srcTarget = new LauncherTarget[SUPPORTED_TARGET_DEPTH];
         int srcState = mStateProvider.getCurrentState();
         fillInLauncherExtension(v, ext);
-        StatsLogCompat.write(LAUNCH_APP, srcState, BACKGROUND /* dstState */,
-                MessageNano.toByteArray(ext), true);
+        if (Utilities.ATLEAST_Q)
+            StatsLogCompat.write(LAUNCH_APP, srcState, BACKGROUND /* dstState */,  MessageNano.toByteArray(ext), true);
     }
 
     @Override

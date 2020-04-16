@@ -28,18 +28,18 @@ public class CellAndSpan {
     public CellAndSpan() {
     }
 
-    public CellAndSpan(int cellX, int cellY, int spanX, int spanY) {
-        this.cellX = cellX;
-        this.cellY = cellY;
-        this.spanX = spanX;
-        this.spanY = spanY;
-    }
-
     public void copyFrom(CellAndSpan copy) {
         cellX = copy.cellX;
         cellY = copy.cellY;
         spanX = copy.spanX;
         spanY = copy.spanY;
+    }
+
+    public CellAndSpan(int cellX, int cellY, int spanX, int spanY) {
+        this.cellX = cellX;
+        this.cellY = cellY;
+        this.spanX = spanX;
+        this.spanY = spanY;
     }
 
     public String toString() {

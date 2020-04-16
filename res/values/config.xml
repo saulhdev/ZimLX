@@ -1,6 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Miscellaneous -->
+<!-- Miscellaneous -->
     <bool name="config_largeHeap">false</bool>
     <bool name="is_tablet">false</bool>
     <bool name="is_large_tablet">false</bool>
@@ -19,37 +18,23 @@
     <!-- String representing the intent to delete a package.-->
     <string name="delete_package_intent" translatable="false">#Intent;action=android.intent.action.DELETE;launchFlags=0x10800000;end</string>
 
-    <!-- DragController -->
-    <item name="drag_event_parity" type="id" />
+    <!-- String representing the fragment class for settings activity.-->
+    <string name="settings_fragment_name" translatable="false">com.android.launcher3.settings.SettingsActivity$LauncherSettingsFragment</string>
 
-    <!-- AllApps & Launcher transitions -->
-    <!-- The alpha of the AppsCustomize bg in spring loaded mode -->
-    <integer name="config_workspaceScrimAlpha">30</integer>
-    <integer name="config_allAppsTransitionTime">100</integer>
-    <integer name="config_overviewTransitionTime">250</integer>
+<!-- DragController -->
+    <item type="id" name="drag_event_parity" />
 
+<!-- AllApps & Launcher transitions -->
     <!-- Out of 100, the percent to shrink the workspace during spring loaded mode. -->
     <integer name="config_workspaceSpringLoadShrinkPercentage">90</integer>
-    <!-- Out of 100, the percent to shrink the workspace during overview mode. -->
-    <integer name="config_workspaceOverviewShrinkPercentage">70</integer>
-
-    <!-- Fade/zoom in/out duration & scale in a Launcher overlay transition.
-         Note: This should be less than the config_overlayTransitionTime as they happen together. -->
-    <integer name="config_overlayRevealTime">220</integer>
-    <integer name="config_overlaySlideRevealTime">320</integer>
-    <integer name="config_overlayTransitionTime">300</integer>
-    <integer name="config_overlayItemsAlphaStagger">60</integer>
-
-    <!-- This constant stores the ratio of the all apps button drawable which
-         is used for internal (baked-in) padding -->
-    <integer name="config_allAppsButtonPaddingPercent">17</integer>
 
     <!-- The duration of the animation from search hint to text entry -->
+    <integer name="config_searchHintAnimationDuration">50</integer>
 
     <!-- View tag key used to store SpringAnimation data. -->
-    <item name="spring_animation_tag" type="id" />
+    <item type="id" name="spring_animation_tag" />
 
-    <!-- Workspace -->
+<!-- Workspace -->
     <!-- The duration (in ms) of the fade animation on the object outlines, used when
          we are dragging objects around on the home screen. -->
     <integer name="config_dragOutlineFadeTime">900</integer>
@@ -63,9 +48,7 @@
     <integer name="config_dropAnimMaxDuration">500</integer>
 
     <!-- The duration of the UserFolder opening and closing animation -->
-    <integer name="config_folderExpandDuration">120</integer>
     <integer name="config_materialFolderExpandDuration">200</integer>
-    <integer name="config_materialFolderExpandStagger">60</integer>
     <integer name="config_folderDelay">30</integer>
 
     <!-- The distance at which the animation should take the max duration -->
@@ -74,45 +57,48 @@
     <!-- The duration of the caret animation -->
     <integer name="config_caretAnimationDuration">200</integer>
 
-    <!-- Hotseat -->
+<!-- Hotseat -->
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
-    <!-- Name of a subclass of com.android.launcher3.AppFilter used to
-         filter the activities shown in the launcher. Can be empty. -->
-    <string name="app_filter_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppFilter</string>
+    <!-- Various classes overriden by projects/build flavors. -->
+    <string name="app_filter_class" translatable="false"></string>
     <string name="icon_provider_class" translatable="false"></string>
-    <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
-    <string name="user_event_dispatcher_class" translatable="false">com.google.android.apps.nexuslauncher.CustomAppPredictor</string>
-    <string name="custom_shortcut_class" translatable="false">com.google.android.apps.nexuslauncher.CustomEditShortcut</string>
-    <string name="overview_callbacks_class" translatable="false">org.zimmob.zimlx.ZimOverviewCallbacks</string>
+    <string name="drawable_factory_class" translatable="false"></string>
+    <string name="user_event_dispatcher_class" translatable="false"></string>
     <string name="stats_log_manager_class" translatable="false"></string>
-    <string name="system_shortcut_factory_class" translatable="false"></string>
-    <string name="color_extraction_impl_class" translatable="false"></string>
+    <string name="app_transition_manager_class" translatable="false"></string>
     <string name="instant_app_resolver_class" translatable="false"></string>
-    <string name="launcher_activity_logic_class" translatable="false"></string>
+    <string name="main_process_initializer_class" translatable="false"></string>
+    <string name="system_shortcut_factory_class" translatable="false"></string>
     <string name="app_launch_tracker_class" translatable="false"></string>
+    <string name="test_information_handler_class" translatable="false"></string>
+    <string name="launcher_activity_logic_class" translatable="false"></string>
+    <string name="color_extraction_impl_class" translatable="false"></string>
 
     <!-- Package name of the default wallpaper picker. -->
-    <string name="wallpaper_picker_package" translatable="false">com.google.android.apps.wallpaper</string>
+    <string name="wallpaper_picker_package" translatable="false"></string>
+
     <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
     <string name="shortcutinfo_badgepkg_whitelist" translatable="false"></string>
 
     <!-- View ID to use for QSB widget -->
-    <item name="qsb_widget" type="id" />
+    <item type="id" name="qsb_widget" />
 
     <!-- View ID used by cell layout to jail its content -->
-    <item name="cell_layout_jail_id" type="id" />
+    <item type="id" name="cell_layout_jail_id" />
 
-    <!-- View ID used by PreviewImageView to cache its instance -->
-    <item name="preview_image_id" type="id" />
+    <!-- View IDs to store item highlight information -->
+    <item type="id" name="view_unhighlight_background" />
+
+    <!-- Menu id for feature flags -->
+    <item type="id" name="menu_apply_flags" />
 
     <!-- Popup items -->
     <integer name="config_popupOpenCloseDuration">150</integer>
     <integer name="config_popupArrowOpenCloseDuration">40</integer>
     <integer name="config_removeNotificationViewDuration">300</integer>
 
-    <!-- Accessibility actions -->
-    <item type="id" name="action_info" />
+<!-- Accessibility actions -->
     <item type="id" name="action_remove" />
     <item type="id" name="action_uninstall" />
     <item type="id" name="action_reconfigure" />
@@ -123,45 +109,14 @@
     <item type="id" name="action_move_screen_forwards" />
     <item type="id" name="action_resize" />
     <item type="id" name="action_deep_shortcuts" />
-    <item type="id" name="action_shortcuts_and_notifications" />
+    <item type="id" name="action_shortcuts_and_notifications"/>
     <item type="id" name="action_dismiss_notification" />
-    <item name="action_customize" type="id" />
+    <item type="id" name="action_remote_action_shortcut" />
 
-    <!-- QSB IDs. DO not change -->
+<!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
-    <item type="id" name="search_container_hotseat" />
     <item type="id" name="search_container_all_apps" />
 
-    <!-- View ID to use for blocked area on the first screen -->
-    <item type="id" name="workspace_blocked_row" />
-
-    <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
-    <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
-
-    <!-- Name of an app transition manager class. -->
-    <string name="app_transition_manager_class" translatable="false"></string>
-    <item name="workspace_page_container" type="id" />
-    <!-- Tag id used for view scrim -->
-    <item type="id" name="view_scrim" />
-    <!-- Name of a main process initializer class. -->
-    <string name="main_process_initializer_class" translatable="false"></string>
-
-    <!-- Wether smartspace (at a glance) should be enabled per default -->
-    <bool name="config_enable_smartspace">true</bool>
-
-
-    <!-- Wether or not blur is enabled per default -->
-    <bool name="config_default_enable_blur">false</bool>
-    <string name="config_default_search_provider" translatable="false">org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider</string>
-
-    <!-- The default icon packs to use -->
-    <!-- (Deprecated) The default icon pack to use; empty = system icons -->
-    <string name="config_default_icon_pack" translatable="false" />
-
-    <string-array name="config_default_icon_packs">
-        <item>@string/config_default_icon_pack</item>
-    </string-array>
-
-    <!-- Out of 100, the percent to shrink the workspace during options mode. -->
-    <integer name="config_workspaceOptionsShrinkPercentage">70</integer>
+<!-- Recents -->
+    <item type="id" name="overview_panel"/>
 </resources>

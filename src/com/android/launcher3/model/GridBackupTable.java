@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.model;
 
+import static com.android.launcher3.LauncherSettings.Favorites.BACKUP_TABLE_NAME;
+import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -26,10 +30,6 @@ import android.util.Log;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.LauncherSettings.Settings;
 import com.android.launcher3.compat.UserManagerCompat;
-
-import static com.android.launcher3.LauncherSettings.Favorites.BACKUP_TABLE_NAME;
-import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
-import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 /**
  * Helper class to backup and restore Favorites table into a separate table
@@ -57,7 +57,7 @@ public class GridBackupTable {
     private int mRestoredGridY;
 
     public GridBackupTable(Context context, SQLiteDatabase db,
-                           int hotseatSize, int gridX, int gridY) {
+            int hotseatSize, int gridX, int gridY) {
         mContext = context;
         mDb = db;
 
@@ -112,7 +112,7 @@ public class GridBackupTable {
     }
 
     private boolean loadDbProperties() {
-        try (Cursor c = mDb.query(BACKUP_TABLE_NAME, new String[]{
+        try (Cursor c = mDb.query(BACKUP_TABLE_NAME, new String[] {
                         KEY_DB_VERSION,     // 0
                         KEY_GRID_X_SIZE,    // 1
                         KEY_GRID_Y_SIZE,    // 2

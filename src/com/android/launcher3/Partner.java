@@ -33,9 +33,7 @@ public class Partner {
 
     static final String TAG = "Launcher.Partner";
 
-    /**
-     * Marker action used to discover partner
-     */
+    /** Marker action used to discover partner */
     private static final String
             ACTION_PARTNER_CUSTOMIZATION = "com.android.launcher3.action.PARTNER_CUSTOMIZATION";
 

@@ -17,6 +17,12 @@
 
 package com.android.launcher3.dragndrop;
 
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.getMode;
+import static android.view.View.MeasureSpec.getSize;
+
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.TimeInterpolator;
@@ -58,11 +64,6 @@ import com.android.launcher3.views.Transposable;
 
 import java.util.ArrayList;
 
-import static android.view.View.MeasureSpec.EXACTLY;
-import static android.view.View.MeasureSpec.getMode;
-import static android.view.View.MeasureSpec.getSize;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
-
 /**
  * A ViewGroup that coordinates dragging across its descendants
  */
@@ -76,18 +77,14 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     public static final int ANIMATION_END_DISAPPEAR = 0;
     public static final int ANIMATION_END_REMAIN_VISIBLE = 2;
 
-    @Thunk
-    DragController mDragController;
+    @Thunk DragController mDragController;
 
     // Variables relating to animation of views after drop
     private ValueAnimator mDropAnim = null;
     private final TimeInterpolator mCubicEaseOutInterpolator = Interpolators.DEACCEL_1_5;
-    @Thunk
-    DragView mDropView = null;
-    @Thunk
-    int mAnchorViewInitialScrollX = 0;
-    @Thunk
-    View mAnchorView = null;
+    @Thunk DragView mDropView = null;
+    @Thunk int mAnchorViewInitialScrollX = 0;
+    @Thunk View mAnchorView = null;
 
     private boolean mHoverPointClosesFolder = false;
 
@@ -240,8 +237,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     public void animateViewIntoPosition(DragView dragView, final int[] pos, float alpha,
-                                        float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
-                                        int duration) {
+            float scaleX, float scaleY, int animationEndStyle, Runnable onFinishRunnable,
+            int duration) {
         Rect r = new Rect();
         getViewRectRelativeToSelf(dragView, r);
         final int fromX = r.left;
@@ -256,15 +253,15 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     public void animateViewIntoPosition(DragView dragView, final View child, int duration,
-                                        View anchorView) {
+            View anchorView) {
         ShortcutAndWidgetContainer parentChildren = (ShortcutAndWidgetContainer) child.getParent();
-        CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
+        CellLayout.LayoutParams lp =  (CellLayout.LayoutParams) child.getLayoutParams();
         parentChildren.measureChild(child);
 
         Rect r = new Rect();
         getViewRectRelativeToSelf(dragView, r);
 
-        float[] coord = new float[2];
+        float coord[] = new float[2];
         float childScale = child.getScaleX();
         coord[0] = lp.x + (child.getMeasuredWidth() * (1 - childScale) / 2);
         coord[1] = lp.y + (child.getMeasuredHeight() * (1 - childScale) / 2);
@@ -290,7 +287,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
             toY += Math.round(toScale * tv.getPaddingTop());
             toY -= dragView.getMeasuredHeight() * (1 - toScale) / 2;
             if (dragView.getDragVisualizeOffset() != null) {
-                toY -= Math.round(toScale * dragView.getDragVisualizeOffset().y);
+                toY -=  Math.round(toScale * dragView.getDragVisualizeOffset().y);
             }
 
             toX -= (dragView.getMeasuredWidth() - Math.round(scale * child.getMeasuredWidth())) / 2;
@@ -316,9 +313,9 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     public void animateViewIntoPosition(final DragView view, final int fromX, final int fromY,
-                                        final int toX, final int toY, float finalAlpha, float initScaleX, float initScaleY,
-                                        float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
-                                        int animationEndStyle, int duration, View anchorView) {
+            final int toX, final int toY, float finalAlpha, float initScaleX, float initScaleY,
+            float finalScaleX, float finalScaleY, Runnable onCompleteRunnable,
+            int animationEndStyle, int duration, View anchorView) {
         Rect from = new Rect(fromX, fromY, fromX +
                 view.getMeasuredWidth(), fromY + view.getMeasuredHeight());
         Rect to = new Rect(toX, toY, toX + view.getMeasuredWidth(), toY + view.getMeasuredHeight());
@@ -349,10 +346,10 @@ public class DragLayer extends BaseDragLayer<Launcher> {
      *        only used for the X dimension for the case of the workspace.
      */
     public void animateView(final DragView view, final Rect from, final Rect to,
-                            final float finalAlpha, final float initScaleX, final float initScaleY,
-                            final float finalScaleX, final float finalScaleY, int duration,
-                            final Interpolator motionInterpolator, final Interpolator alphaInterpolator,
-                            final Runnable onCompleteRunnable, final int animationEndStyle, View anchorView) {
+            final float finalAlpha, final float initScaleX, final float initScaleY,
+            final float finalScaleX, final float finalScaleY, int duration,
+            final Interpolator motionInterpolator, final Interpolator alphaInterpolator,
+            final Runnable onCompleteRunnable, final int animationEndStyle, View anchorView) {
 
         // Calculate the duration of the animation based on the object's distance
         final float dist = (float) Math.hypot(to.left - from.left, to.top - from.top);
@@ -402,7 +399,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                 int y = (int) (fromTop + Math.round(((to.top - fromTop) * motionPercent)));
 
                 int anchorAdjust = mAnchorView == null ? 0 : (int) (mAnchorView.getScaleX() *
-                        (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
+                    (mAnchorViewInitialScrollX - mAnchorView.getScrollX()));
 
                 int xPos = x - mDropView.getScrollX() + anchorAdjust;
                 int yPos = y - mDropView.getScrollY();
@@ -419,8 +416,8 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     }
 
     public void animateView(final DragView view, AnimatorUpdateListener updateCb, int duration,
-                            TimeInterpolator interpolator, final Runnable onCompleteRunnable,
-                            final int animationEndStyle, View anchorView) {
+            TimeInterpolator interpolator, final Runnable onCompleteRunnable,
+            final int animationEndStyle, View anchorView) {
         // Clean up the previous animations
         if (mDropAnim != null) mDropAnim.cancel();
 
@@ -447,11 +444,11 @@ public class DragLayer extends BaseDragLayer<Launcher> {
                     onCompleteRunnable.run();
                 }
                 switch (animationEndStyle) {
-                    case ANIMATION_END_DISAPPEAR:
-                        clearAnimatedView();
-                        break;
-                    case ANIMATION_END_REMAIN_VISIBLE:
-                        break;
+                case ANIMATION_END_DISAPPEAR:
+                    clearAnimatedView();
+                    break;
+                case ANIMATION_END_REMAIN_VISIBLE:
+                    break;
                 }
                 mDropAnim = null;
             }
@@ -536,7 +533,7 @@ public class DragLayer extends BaseDragLayer<Launcher> {
     protected void dispatchDraw(Canvas canvas) {
         // Draw the background below children.
         mWorkspaceScrim.draw(canvas);
-        //mOverviewScrim.updateCurrentScrimmedView(this);
+        mOverviewScrim.updateCurrentScrimmedView(this);
         mFocusIndicatorHelper.draw(canvas);
         super.dispatchDraw(canvas);
     }

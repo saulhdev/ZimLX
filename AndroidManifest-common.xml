@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 **
 ** Copyright 2016, The Android Open Source Project
@@ -16,8 +17,10 @@
 ** limitations under the License.
 */
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
+
     <!--
     The manifest defines the common entries that should be present in any derivative of Launcher3.
     The components should generally not require any changes.
@@ -28,10 +31,10 @@
     -->
     <permission
         android:name="com.android.launcher.permission.INSTALL_SHORTCUT"
-        android:description="@string/permdesc_install_shortcut"
-        android:label="@string/permlab_install_shortcut"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
-        android:protectionLevel="dangerous" />
+        android:protectionLevel="dangerous"
+        android:label="@string/permlab_install_shortcut"
+        android:description="@string/permdesc_install_shortcut" />
 
     <uses-permission android:name="android.permission.CALL_PHONE" />
     <uses-permission android:name="android.permission.SET_WALLPAPER" />
@@ -41,6 +44,7 @@
     <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.REQUEST_DELETE_PACKAGES" />
     <uses-permission android:name="android.permission.READ_DEVICE_CONFIG" />
+
 
     <!--
     Permissions required for read/write access to the workspace data. These permission name
@@ -52,92 +56,77 @@
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_read_settings"
-        android:description="@string/permdesc_read_settings" />
+        android:description="@string/permdesc_read_settings"/>
     <permission
         android:name="${packageName}.permission.WRITE_SETTINGS"
         android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
         android:protectionLevel="signatureOrSystem"
         android:label="@string/permlab_write_settings"
-        android:description="@string/permdesc_write_settings" />
+        android:description="@string/permdesc_write_settings"/>
 
     <uses-permission android:name="${packageName}.permission.READ_SETTINGS" />
     <uses-permission android:name="${packageName}.permission.WRITE_SETTINGS" />
 
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
-        android:fullBackupContent="@xml/backupscheme"
         android:fullBackupOnly="true"
+        android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true">
+        android:supportsRtl="true" >
 
         <!-- Intent received used to install shortcuts from other applications -->
         <receiver
             android:name="com.android.launcher3.InstallShortcutReceiver"
-            android:enabled="@bool/enable_install_shortcut_api"
-            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT">
+            android:permission="com.android.launcher.permission.INSTALL_SHORTCUT"
+            android:enabled="@bool/enable_install_shortcut_api" >
             <intent-filter>
                 <action android:name="com.android.launcher.action.INSTALL_SHORTCUT" />
             </intent-filter>
         </receiver>
 
         <!-- Intent received when a session is committed -->
-        <receiver android:name="com.android.launcher3.SessionCommitReceiver">
+        <receiver
+            android:name="com.android.launcher3.SessionCommitReceiver" >
             <intent-filter>
                 <action android:name="android.content.pm.action.SESSION_COMMITTED" />
             </intent-filter>
         </receiver>
 
         <!-- Intent received used to initialize a restored widget -->
-        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver">
+        <receiver android:name="com.android.launcher3.AppWidgetsRestoredReceiver" >
             <intent-filter>
-                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED" />
+                <action android:name="android.appwidget.action.APPWIDGET_HOST_RESTORED"/>
             </intent-filter>
         </receiver>
-        <!--
-      The content provider for exposing various launcher grid options.
-      TODO: Add proper permissions
-      -->
-        <provider
-            android:name="com.android.launcher3.graphics.GridOptionsProvider"
-            android:authorities="${packageName}.grid_control"
-            android:enabled="false"
-            android:exported="true" />
 
         <service
             android:name="com.android.launcher3.uioverrides.dynamicui.WallpaperManagerCompatVL$ColorExtractionService"
             android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:process=":wallpaper_chooser" />
-        <service
-            android:name="com.android.launcher3.compat.WallpaperManagerCompatVL$ColorExtractionService"
-            android:exported="false"
-            android:permission="android.permission.BIND_JOB_SERVICE"
-            android:process=":wallpaper_chooser" />
+            android:process=":wallpaper_chooser"
+            android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <service
             android:name="com.android.launcher3.notification.NotificationListener"
-            android:label="@string/icon_badging_service_title"
-            android:enabled="@bool/notification_badging_enabled"
+            android:label="@string/notification_dots_service_title"
+            android:enabled="@bool/notification_dots_enabled"
             android:permission="android.permission.BIND_NOTIFICATION_LISTENER_SERVICE">
             <intent-filter>
                 <action android:name="android.service.notification.NotificationListenerService" />
             </intent-filter>
         </service>
 
-        <meta-data
-            android:name="android.nfc.disable_beam_default"
-            android:value="true" />
+        <meta-data android:name="android.nfc.disable_beam_default"
+                       android:value="true" />
 
-        <activity
-            android:name="com.android.launcher3.dragndrop.AddItemActivity"
-            android:autoRemoveFromRecents="true"
+        <activity android:name="com.android.launcher3.dragndrop.AddItemActivity"
+            android:theme="@style/AppItemActivityTheme"
             android:excludeFromRecents="true"
-            android:label="@string/action_add_to_workspace"
-            android:theme="@android:style/Theme.DeviceDefault.Light.Dialog.Alert">
+            android:autoRemoveFromRecents="true"
+            android:label="@string/action_add_to_workspace" >
             <intent-filter>
                 <action android:name="android.content.pm.action.CONFIRM_PIN_SHORTCUT" />
                 <action android:name="android.content.pm.action.CONFIRM_PIN_APPWIDGET" />
@@ -151,11 +140,12 @@
         <meta-data
             android:name="com.android.launcher3.launcher_dump_provider"
             android:value="com.android.launcher3.LauncherProvider" />
+
         <!--
-                The settings provider contains Home's data, like the workspace favorites. The permissions
-                should be changed to what is defined above. The authorities should also be changed to
-                represent the package name.
-                -->
+        The settings provider contains Home's data, like the workspace favorites. The permissions
+        should be changed to what is defined above. The authorities should also be changed to
+        represent the package name.
+        -->
         <provider
             android:name="com.android.launcher3.LauncherProvider"
             android:authorities="${packageName}.settings"
@@ -172,5 +162,27 @@
             android:authorities="${packageName}.grid_control"
             android:enabled="false"
             android:exported="true" />
+
+        <!--
+        The settings activity. To extend point settings_fragment_name to appropriate fragment class
+        -->
+        <activity
+            android:name="com.android.launcher3.settings.SettingsActivity"
+            android:label="@string/settings_button_text"
+            android:theme="@android:style/Theme.DeviceDefault.Settings"
+            android:autoRemoveFromRecents="true">
+            <intent-filter>
+                <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <provider
+            android:name="com.android.launcher3.testing.TestInformationProvider"
+            android:authorities="${packageName}.TestInfo"
+            android:readPermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:writePermission="android.permission.WRITE_SECURE_SETTINGS"
+            android:exported="true"
+            android:enabled="false" />
     </application>
 </manifest>

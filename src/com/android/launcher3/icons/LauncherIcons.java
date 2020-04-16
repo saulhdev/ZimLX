@@ -24,8 +24,6 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -38,6 +36,8 @@ import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.util.Themes;
 
 import java.util.function.Supplier;
+
+import androidx.annotation.Nullable;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class
@@ -88,7 +88,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     private LauncherIcons next;
 
     private LauncherIcons(Context context, int fillResIconDpi, int iconBitmapSize, int poolId,
-                          boolean shapeDetection) {
+            boolean shapeDetection) {
         super(context, fillResIconDpi, iconBitmapSize, shapeDetection);
         mPoolId = poolId;
     }
@@ -125,7 +125,7 @@ public class LauncherIcons extends BaseIconFactory implements AutoCloseable {
     }
 
     public BitmapInfo createShortcutIcon(ShortcutInfo shortcutInfo,
-                                         boolean badged, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
+            boolean badged, @Nullable Supplier<ItemInfoWithIcon> fallbackIconProvider) {
         Drawable unbadgedDrawable = DeepShortcutManager.getInstance(mContext)
                 .getShortcutIconDrawable(shortcutInfo, mFillResIconDpi);
         IconCache cache = LauncherAppState.getInstance(mContext).getIconCache();

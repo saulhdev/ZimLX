@@ -32,5 +32,6 @@ public class WidgetsRowViewHolder extends ViewHolder {
 
         cellContainer = v.findViewById(R.id.widgets_cell_list);
         title = v.findViewById(R.id.section);
+        title.setAccessibilityDelegate(null);
     }
 }

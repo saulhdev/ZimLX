@@ -16,14 +16,15 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Log;
-
-import androidx.annotation.IntDef;
 
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorPlaybackController;
@@ -39,8 +40,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.util.ArrayList;
 
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
+import androidx.annotation.IntDef;
 
 /**
  * TODO: figure out what kind of tests we can write for this
@@ -98,8 +98,7 @@ public class LauncherStateManager {
             ATOMIC_OVERVIEW_PEEK_COMPONENT,
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface AnimationComponents {
-    }
+    public @interface AnimationComponents {}
     public static final int NON_ATOMIC_COMPONENT = 1 << 0;
     public static final int ATOMIC_OVERVIEW_SCALE_COMPONENT = 1 << 1;
     public static final int ATOMIC_OVERVIEW_PEEK_COMPONENT = 1 << 2;
@@ -227,7 +226,7 @@ public class LauncherStateManager {
     }
 
     private void goToState(LauncherState state, boolean animated, long delay,
-                           final Runnable onCompleteRunnable) {
+            final Runnable onCompleteRunnable) {
         if (TestProtocol.sDebugTracing) {
             Log.d(TestProtocol.ALL_APPS_UPON_RECENTS, "goToState: " +
                     state.getClass().getSimpleName() +
@@ -290,7 +289,7 @@ public class LauncherStateManager {
     }
 
     private void goToStateAnimated(LauncherState state, LauncherState fromState,
-                                   Runnable onCompleteRunnable) {
+            Runnable onCompleteRunnable) {
         // Since state NORMAL can be reached from multiple states, just assume that the
         // transition plays in reverse and use the same duration as previous state.
         mConfig.duration = state == NORMAL ? fromState.transitionDuration : state.transitionDuration;
@@ -308,12 +307,12 @@ public class LauncherStateManager {
      * - Setting some start values (e.g. scale) for views that are hidden but about to be shown.
      */
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
-                                          AnimatorSetBuilder builder) {
+            AnimatorSetBuilder builder) {
         toState.prepareForAtomicAnimation(mLauncher, fromState, builder);
     }
 
     public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,
-                                             AnimatorSetBuilder builder, @AnimationComponents int atomicComponent, long duration) {
+            AnimatorSetBuilder builder, @AnimationComponents int atomicComponent, long duration) {
         prepareForAtomicAnimation(fromState, toState, builder);
         AnimationConfig config = new AnimationConfig();
         config.animComponents = atomicComponent;
@@ -367,8 +366,8 @@ public class LauncherStateManager {
     }
 
     public AnimatorPlaybackController createAnimationToNewWorkspace(LauncherState state,
-                                                                    AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
-                                                                    @AnimationComponents int animComponents) {
+            AnimatorSetBuilder builder, long duration, Runnable onCancelRunnable,
+            @AnimationComponents int animComponents) {
         mConfig.reset();
         mConfig.userControlled = true;
         mConfig.animComponents = animComponents;
@@ -380,7 +379,7 @@ public class LauncherStateManager {
     }
 
     protected AnimatorSet createAnimationToNewWorkspaceInternal(final LauncherState state,
-                                                                AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
+            AnimatorSetBuilder builder, final Runnable onCompleteRunnable) {
 
         for (StateHandler handler : getStateHandlers()) {
             handler.setStateWithAnimation(state, builder, mConfig);
@@ -603,8 +602,7 @@ public class LauncherStateManager {
         public long duration;
         public boolean userControlled;
         public AnimatorPlaybackController playbackController;
-        public @AnimationComponents
-        int animComponents = ANIM_ALL;
+        public @AnimationComponents int animComponents = ANIM_ALL;
         private PropertySetter mPropertySetter;
 
         private AnimatorSet mCurrentAnimation;
@@ -632,7 +630,7 @@ public class LauncherStateManager {
 
             mCurrentAnimation = null;
             playbackController = null;
-            mChangeId++;
+            mChangeId ++;
         }
 
         public PropertySetter getPropertySetter(AnimatorSetBuilder builder) {
@@ -683,7 +681,7 @@ public class LauncherStateManager {
          * Sets the UI to {@param state} by animating any changes.
          */
         void setStateWithAnimation(LauncherState toState,
-                                   AnimatorSetBuilder builder, AnimationConfig config);
+                AnimatorSetBuilder builder, AnimationConfig config);
     }
 
     public interface StateListener {

@@ -42,8 +42,6 @@ public interface SearchUiManager {
      */
     void preDispatchKeyEvent(KeyEvent keyEvent);
 
-    void startSearch();
-
     /**
      * Returns the vertical shift for the all-apps view, so that it aligns with the hotseat.
      */
@@ -52,5 +50,6 @@ public interface SearchUiManager {
     /**
      * Called as part of state transition to update the content UI
      */
-    void setContentVisibility(int visibleElements, PropertySetter setter, Interpolator interpolator);
+    void setContentVisibility(int visibleElements, PropertySetter setter,
+            Interpolator interpolator);
 }

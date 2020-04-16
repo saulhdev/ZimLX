@@ -16,26 +16,24 @@
 
 package com.android.quickstep;
 
+import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
+
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
 import android.content.Context;
 import android.os.Build;
 import android.os.Process;
 import android.util.SparseBooleanArray;
-
 import com.android.launcher3.MainThreadExecutor;
 import com.android.launcher3.Utilities;
 import com.android.systemui.shared.recents.model.Task;
 import com.android.systemui.shared.system.ActivityManagerWrapper;
 import com.android.systemui.shared.system.KeyguardManagerCompat;
 import com.android.systemui.shared.system.TaskStackChangeListener;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
-
-import static com.android.quickstep.TouchInteractionService.BACKGROUND_EXECUTOR;
 
 /**
  * Manages the recent task list from the system, caching it as necessary.
@@ -171,13 +169,13 @@ public class RecentTasksList extends TaskStackChangeListener {
             ActivityManager.RecentTaskInfo rawTask = rawTasks.get(i);
             Task.TaskKey taskKey = new Task.TaskKey(rawTask);
             Task task;
-            /*if (!loadKeysOnly) {
+            if (!loadKeysOnly) {
                 boolean isLocked = tmpLockedUsers.get(taskKey.userId);
-                task = Task.from(taskKey, rawTask, isLocked);
+                //task = Task.from(taskKey, rawTask, isLocked);
+                task = new Task(taskKey);
             } else {
                 task = new Task(taskKey);
-            }*/
-            task = new Task(taskKey);
+            }
             allTasks.add(task);
         }
 

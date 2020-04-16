@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2008 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2008 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,17 +14,17 @@
      limitations under the License.
 -->
 
-<com.android.launcher3.folder.FolderIcon xmlns:android="http://schemas.android.com/apk/res/android"
+<com.android.launcher3.folder.FolderIcon
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:focusable="true"
-    android:orientation="vertical">
-
+    android:orientation="vertical"
+    android:focusable="true" >
     <com.android.launcher3.views.DoubleShadowBubbleTextView
-        android:id="@+id/folder_icon_name"
         style="@style/BaseIcon.Workspace"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:id="@+id/folder_icon_name"
+        android:focusable="false"
         android:layout_gravity="top"
-        android:focusable="false" />
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 </com.android.launcher3.folder.FolderIcon>

@@ -22,8 +22,8 @@ import android.view.View.AccessibilityDelegate;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.graphics.RotationMode;
+import com.android.launcher3.dot.DotInfo;
 
 /**
  * An interface to be used along with a context for various activities in Launcher. This allows a
@@ -42,11 +42,9 @@ public interface ActivityContext {
     /**
      * For items with tree hierarchy, notifies the activity to invalidate the parent when a root
      * is invalidated
-     *
      * @param info info associated with a root node.
      */
-    default void invalidateParent(ItemInfo info) {
-    }
+    default void invalidateParent(ItemInfo info) { }
 
     default AccessibilityDelegate getAccessibilityDelegate() {
         return null;

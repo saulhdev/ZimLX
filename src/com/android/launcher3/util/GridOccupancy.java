@@ -9,9 +9,10 @@ import com.android.launcher3.ItemInfo;
  */
 public class GridOccupancy {
 
-    public final boolean[][] cells;
     private final int mCountX;
     private final int mCountY;
+
+    public final boolean[][] cells;
 
     public GridOccupancy(int countX, int countY) {
         mCountX = countX;
@@ -23,8 +24,9 @@ public class GridOccupancy {
      * Find the first vacant cell, if there is one.
      *
      * @param vacantOut Holds the x and y coordinate of the vacant cell
-     * @param spanX     Horizontal cell span.
-     * @param spanY     Vertical cell span.
+     * @param spanX Horizontal cell span.
+     * @param spanY Vertical cell span.
+     *
      * @return true if a vacant cell was found
      */
     public boolean findVacantCell(int[] vacantOut, int spanX, int spanY) {

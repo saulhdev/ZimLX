@@ -99,7 +99,7 @@ public class FirstScreenBroadcast {
      * @param firstScreenItems List of items on the first screen.
      */
     private void sendBroadcastToInstaller(Context context, String installerPackageName,
-                                          List<String> packages, List<ItemInfo> firstScreenItems) {
+            List<String> packages, List<ItemInfo> firstScreenItems) {
         Set<String> folderItems = new HashSet<>();
         Set<String> workspaceItems = new HashSet<>();
         Set<String> hotseatItems = new HashSet<>();
@@ -155,7 +155,7 @@ public class FirstScreenBroadcast {
             if (widgetInfo.providerName != null) {
                 packageName = widgetInfo.providerName.getPackageName();
             }
-        } else if (info.getTargetComponent() != null) {
+        } else if (info.getTargetComponent() != null){
             packageName = info.getTargetComponent().getPackageName();
         }
         return packageName;

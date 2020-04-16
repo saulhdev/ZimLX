@@ -21,7 +21,6 @@ import android.os.Bundle;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 /**
  * LauncherCallbacks is an interface used to extend the Launcher activity. It includes many hooks
@@ -45,11 +44,10 @@ public interface LauncherCallbacks {
     void onSaveInstanceState(Bundle outState);
     void onActivityResult(int requestCode, int resultCode, Intent data);
     void onRequestPermissionsResult(int requestCode, String[] permissions,
-                                    int[] grantResults);
+            int[] grantResults);
     void onAttachedToWindow();
     void onDetachedFromWindow();
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
-
     void onHomeIntent(boolean internalStateHandled);
     boolean handleBackPressed();
     void onTrimMemory(int level);
@@ -57,25 +55,16 @@ public interface LauncherCallbacks {
     /**
      * Called when the launcher state changed
      */
-    default void onStateChanged() {
-    }
+    default void onStateChanged() { }
 
     /*
      * Extension points for providing custom behavior on certain user interactions.
      */
     void onLauncherProviderChange();
-    void bindAllApplications(ArrayList<AppInfo> apps);
 
     /**
      * Starts a search with {@param initialQuery}. Return false if search was not started.
      */
     boolean startSearch(
             String initialQuery, boolean selectInitialQuery, Bundle appSearchData);
-
-    /*
-     * Extensions points for adding / replacing some other aspects of the Launcher experience.
-     */
-    boolean hasSettings();
-
-    //List<ComponentKeyMapper> getPredictedApps();
 }

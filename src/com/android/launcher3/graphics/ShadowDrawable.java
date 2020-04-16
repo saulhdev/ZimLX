@@ -17,7 +17,6 @@
 package com.android.launcher3.graphics;
 
 import android.annotation.TargetApi;
-import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
 import android.graphics.Bitmap;
@@ -33,15 +32,12 @@ import android.os.Build;
 import android.util.AttributeSet;
 
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
+import com.android.launcher3.icons.BitmapRenderer;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.zimmob.zimlx.ZimUtilsKt;
 
 import java.io.IOException;
-
-import androidx.core.content.ContextCompat;
 
 /**
  * A drawable which adds shadow around a child drawable.
@@ -113,7 +109,7 @@ public class ShadowDrawable extends Drawable {
 
     @Override
     public void applyTheme(Resources.Theme t) {
-        TypedArray ta = t.obtainStyledAttributes(new int[]{R.attr.isWorkspaceDarkText});
+        TypedArray ta = t.obtainStyledAttributes(new int[] {R.attr.isWorkspaceDarkText});
         boolean isDark = ta.getBoolean(0, false);
         ta.recycle();
         if (mState.mIsDark != isDark) {
@@ -150,35 +146,15 @@ public class ShadowDrawable extends Drawable {
             d.draw(canvas);
         }
 
-        if (Utilities.ATLEAST_OREO) {
+        if (BitmapRenderer.USE_HARDWARE_BITMAP) {
             bitmap = bitmap.copy(Bitmap.Config.HARDWARE, false);
         }
         mState.mLastDrawnBitmap = bitmap;
     }
 
-    public static ShadowDrawable wrap(Context context, Drawable d, int shadowColorRes,
-                                      float elevationDps, int darkTintColorRes) {
-        ShadowDrawable sd = new ShadowDrawable();
-        sd.setChild(d);
-        sd.mState.mShadowColor = ContextCompat.getColor(context, shadowColorRes);
-        sd.mState.mShadowSize = (int) ZimUtilsKt.dpToPx(elevationDps);
-        sd.mState.mDarkTintColor = ContextCompat.getColor(context, darkTintColorRes);
-        sd.mState.mIntrinsicHeight = d.getIntrinsicHeight() + 2 * sd.mState.mShadowSize;
-        sd.mState.mIntrinsicWidth = d.getIntrinsicWidth() + 2 * sd.mState.mShadowSize;
-        sd.mState.mChangingConfigurations = d.getChangingConfigurations();
-
-        sd.mState.mChildState = d.getConstantState();
-        return sd;
-    }
-
-    public Drawable setChild(Drawable newDrawable) {
-        return (new ShadowDrawableState(mState, newDrawable)).newDrawable();
-    }
-
-
     @Override
     public void inflate(Resources r, XmlPullParser parser, AttributeSet attrs,
-                        Resources.Theme theme) throws XmlPullParserException, IOException {
+            Resources.Theme theme) throws XmlPullParserException, IOException {
         super.inflate(r, parser, attrs, theme);
 
         final TypedArray a = theme == null
@@ -219,24 +195,6 @@ public class ShadowDrawable extends Drawable {
         boolean mIsDark;
         Bitmap mLastDrawnBitmap;
         ConstantState mChildState;
-
-        private ShadowDrawableState() {
-
-        }
-
-        private ShadowDrawableState(ShadowDrawableState oldState, Drawable newDrawable) {
-            mChangingConfigurations = newDrawable.getChangingConfigurations();
-            mIntrinsicWidth = newDrawable.getIntrinsicWidth() + 2 * oldState.mShadowSize;
-            mIntrinsicHeight = newDrawable.getIntrinsicHeight() + 2 * oldState.mShadowSize;
-
-            mShadowColor = oldState.mShadowColor;
-            mShadowSize = oldState.mShadowSize;
-            mDarkTintColor = oldState.mDarkTintColor;
-
-            mIsDark = oldState.mIsDark;
-            mLastDrawnBitmap = null;
-            mChildState = newDrawable.getConstantState();
-        }
 
         @Override
         public Drawable newDrawable() {

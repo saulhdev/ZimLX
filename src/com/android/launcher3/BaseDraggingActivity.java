@@ -18,9 +18,8 @@ package com.android.launcher3;
 
 import android.app.ActivityOptions;
 import android.content.ActivityNotFoundException;
-import android.content.Context;
-import android.content.ContextWrapper;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.os.Process;
@@ -31,18 +30,16 @@ import android.view.ActionMode;
 import android.view.View;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.uioverrides.DisplayRotationListener;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.views.BaseDragLayer;
+import com.android.launcher3.util.Themes;
 
-import org.zimmob.zimlx.theme.ThemeOverride;
+import androidx.annotation.Nullable;
 
 /**
  * Extension of BaseActivity allowing support for drag-n-drop
@@ -51,10 +48,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
         implements WallpaperColorInfo.OnChangeListener {
 
     private static final String TAG = "BaseDraggingActivity";
-
-    // The Intent extra that defines whether to ignore the launch animation
-    public static final String INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION =
-            "com.android.launcher3.intent.extra.shortcut.INGORE_LAUNCH_ANIMATION";
 
     // When starting an action mode, setting this tag will cause the action mode to be cancelled
     // automatically when user interacts with the launcher.
@@ -65,7 +58,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     private OnStartCallback mOnStartCallback;
 
-    private int mThemeRes = R.style.LauncherTheme;
+    private int mThemeRes = R.style.AppTheme;
 
     private DisplayRotationListener mRotationListener;
 
@@ -75,30 +68,30 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
         mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
 
-        // Register theme override
-        ThemeOverride themeOverride = new ThemeOverride(getLauncherThemeSet(), this);
-        themeOverride.applyTheme(this);
-    }
-
-    @NonNull
-    protected ThemeOverride.ThemeSet getLauncherThemeSet() {
-        return new ThemeOverride.Launcher();
+        // Update theme
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+        wallpaperColorInfo.addOnChangeListener(this);
+        int themeRes = Themes.getActivityThemeRes(this);
+        if (themeRes != mThemeRes) {
+            mThemeRes = themeRes;
+            setTheme(themeRes);
+        }
     }
 
     @Override
     public void onExtractedColorsChanged(WallpaperColorInfo wallpaperColorInfo) {
-        if (mThemeRes != getThemeRes(wallpaperColorInfo)) {
-            recreate();
-        }
+        updateTheme();
     }
 
-    protected int getThemeRes(WallpaperColorInfo wallpaperColorInfo) {
-        if (wallpaperColorInfo.isDark()) {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.LauncherTheme_DarkText : R.style.LauncherTheme_Dark;
-        } else {
-            return wallpaperColorInfo.supportsDarkText() ?
-                    R.style.LauncherTheme_Dark_DarkText : R.style.LauncherTheme;
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        updateTheme();
+    }
+
+    private void updateTheme() {
+        if (mThemeRes != Themes.getActivityThemeRes(this)) {
+            recreate();
         }
     }
 
@@ -114,6 +107,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         mCurrentActionMode = null;
     }
 
+    @Override
     public boolean finishAutoCancelActionMode() {
         if (mCurrentActionMode != null && AUTO_CANCEL_ACTION_MODE == mCurrentActionMode.getTag()) {
             mCurrentActionMode.finish();
@@ -122,20 +116,9 @@ public abstract class BaseDraggingActivity extends BaseActivity
         return false;
     }
 
-    public abstract BaseDragLayer getDragLayer();
-
     public abstract <T extends View> T getOverviewPanel();
 
     public abstract View getRootView();
-
-    public abstract void invalidateParent(ItemInfo info);
-
-    public static BaseDraggingActivity fromContext(Context context) {
-        if (context instanceof BaseDraggingActivity) {
-            return (BaseDraggingActivity) context;
-        }
-        return ((BaseDraggingActivity) ((ContextWrapper) context).getBaseContext());
-    }
 
     public Rect getViewBounds(View v) {
         int[] pos = new int[2];
@@ -150,54 +133,8 @@ public abstract class BaseDraggingActivity extends BaseActivity
 
     public abstract ActivityOptions getActivityLaunchOptions(View v);
 
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
-            Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
-            return false;
-        }
-
-        // Only launch using the new animation if the shortcut has not opted out (this is a
-        // private contract between launcher and may be ignored in the future).
-        boolean useLaunchAnimation = (v != null) &&
-                !intent.hasExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION);
-        Bundle optsBundle = useLaunchAnimation
-                ? getActivityLaunchOptionsAsBundle(v)
-                : null;
-
-        UserHandle user = item == null ? null : item.user;
-
-        // Prepare intent
-        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        if (v != null) {
-            intent.setSourceBounds(getViewBounds(v));
-        }
-        try {
-            boolean isShortcut = Utilities.ATLEAST_MARSHMALLOW
-                    && (item instanceof WorkspaceItemInfo)
-                    && (item.itemType == Favorites.ITEM_TYPE_SHORTCUT
-                    || item.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT)
-                    && !((WorkspaceItemInfo) item).isPromise();
-            if (isShortcut) {
-                // Shortcuts need some special checks due to legacy reasons.
-                startShortcutIntentSafely(intent, optsBundle, item);
-            } else if (user == null || user.equals(Process.myUserHandle())) {
-                // Could be launching some bookkeeping activity
-                startActivity(intent, optsBundle);
-            } else {
-                LauncherAppsCompat.getInstance(this).startActivityForProfile(
-                        intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
-            }
-            getUserEventDispatcher().logAppLaunch(v, intent);
-            return true;
-        } catch (ActivityNotFoundException | SecurityException e) {
-            Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
-            Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
-        }
-        return false;
-    }
-
     public boolean startActivitySafely(View v, Intent intent, @Nullable ItemInfo item,
-                                       @Nullable String sourceContainer) {
+            @Nullable String sourceContainer) {
         if (mIsSafeModeEnabled && !Utilities.isSystemApp(this, intent)) {
             Toast.makeText(this, R.string.safemode_shortcut_error, Toast.LENGTH_SHORT).show();
             return false;
@@ -231,9 +168,10 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         sourceContainer);
             }
             getUserEventDispatcher().logAppLaunch(v, intent);
-            getStatsLogManager().logAppLaunch(v, intent);
+            if(Utilities.ATLEAST_Q)
+                getStatsLogManager().logAppLaunch(v, intent);
             return true;
-        } catch (NullPointerException | ActivityNotFoundException | SecurityException e) {
+        } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
             Log.e(TAG, "Unable to launch. tag=" + item + " intent=" + intent, e);
         }
@@ -241,7 +179,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     }
 
     private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,
-                                           @Nullable String sourceContainer) {
+            @Nullable String sourceContainer) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
             try {
@@ -258,36 +196,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
                             packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                     AppLaunchTracker.INSTANCE.get(this).onStartShortcut(packageName, id, info.user,
                             sourceContainer);
-                } else {
-                    // Could be launching some bookkeeping activity
-                    startActivity(intent, optsBundle);
-                }
-            } finally {
-                StrictMode.setVmPolicy(oldPolicy);
-            }
-        } catch (SecurityException e) {
-            if (!onErrorStartingShortcut(intent, info)) {
-                throw e;
-            }
-        }
-    }
-
-
-    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info) {
-        try {
-            StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
-            try {
-                // Temporarily disable deathPenalty on all default checks. For eg, shortcuts
-                // containing file Uri's would cause a crash as penaltyDeathOnFileUriExposure
-                // is enabled by default on NYC.
-                StrictMode.setVmPolicy(new StrictMode.VmPolicy.Builder().detectAll()
-                        .penaltyLog().build());
-
-                if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT) {
-                    String id = ((WorkspaceItemInfo) info).getDeepShortcutId();
-                    String packageName = intent.getPackage();
-                    DeepShortcutManager.getInstance(this).startShortcut(
-                            packageName, id, intent.getSourceBounds(), optsBundle, info.user);
                 } else {
                     // Could be launching some bookkeeping activity
                     startActivity(intent, optsBundle);
@@ -321,7 +229,6 @@ public abstract class BaseDraggingActivity extends BaseActivity
         super.onDestroy();
         WallpaperColorInfo.getInstance(this).removeOnChangeListener(this);
         mRotationListener.disable();
-
     }
 
     public <T extends BaseDraggingActivity> void setOnStartCallback(OnStartCallback<T> callback) {

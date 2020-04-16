@@ -20,10 +20,10 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.util.FloatProperty;
 
+import com.android.launcher3.util.DefaultDisplay;
+
 import androidx.annotation.FloatRange;
 import androidx.dynamicanimation.animation.SpringForce;
-
-import com.android.launcher3.util.DefaultDisplay;
 
 /**
  * Utility class to build an object animator which follows the same path as a spring animation for
@@ -47,12 +47,12 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
 
     /**
      * The spring equation is given as
-     * x = e^(-beta*t/2) * (a cos(gamma * t) + b sin(gamma * t)
-     * v = e^(-beta*t/2) * ((2 * a * gamma + beta * b) * sin(gamma * t)
-     * + (a * beta - 2 * b * gamma) * cos(gamma * t)) / 2
-     * <p>
-     * a = x(0)
-     * b = beta * x(0) / (2 * gamma) + v(0) / gamma
+     *   x = e^(-beta*t/2) * (a cos(gamma * t) + b sin(gamma * t)
+     *   v = e^(-beta*t/2) * ((2 * a * gamma + beta * b) * sin(gamma * t)
+     *                  + (a * beta - 2 * b * gamma) * cos(gamma * t)) / 2
+     *
+     *   a = x(0)
+     *   b = beta * x(0) / (2 * gamma) + v(0) / gamma
      */
     private double beta;
     private double gamma;
@@ -148,7 +148,7 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
         // All the calculations assume the stable position to be 0, shift the values accordingly.
         beta = 2 * mDampingRatio * naturalFreq;
         gamma = dampedFreq;
-        a = mStartValue - mEndValue;
+        a =  mStartValue - mEndValue;
         b = beta * a / (2 * gamma) + mVelocity / gamma;
 
         va = a * beta / 2 - b * gamma;
@@ -211,7 +211,7 @@ public class SpringAnimationBuilder<T> extends FloatProperty<T> {
     }
 
     private double exponentialComponent(double t) {
-        return Math.pow(Math.E, -beta * t / 2);
+        return Math.pow(Math.E, - beta * t / 2);
     }
 
     private double cosSinX(double t) {

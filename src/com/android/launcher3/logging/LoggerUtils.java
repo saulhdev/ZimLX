@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.logging;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.NAVBAR;
+
 import android.util.ArrayMap;
 import android.util.SparseArray;
 import android.view.View;
@@ -74,16 +76,21 @@ public class LoggerUtils {
                 if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING) {
                     str += " direction=" + getFieldName(action.dir, Action.Direction.class);
                 }
-                return str;
+                break;
             case Action.Type.COMMAND:
-                return getFieldName(action.command, Action.Command.class);
-            default:
-                return getFieldName(action.type, Action.Type.class);
+                str += getFieldName(action.command, Action.Command.class);
+                break;
+            default: return getFieldName(action.type, Action.Type.class);
         }
+        if (action.touch == Action.Touch.SWIPE || action.touch == Action.Touch.FLING ||
+                (action.command == Action.Command.BACK && action.dir != Action.Direction.NONE)) {
+            str += " direction=" + getFieldName(action.dir, Action.Direction.class);
+        }
+        return str;
     }
 
     public static String getTargetStr(Target t) {
-        if (t == null) {
+        if (t == null){
             return "";
         }
         String str = "";
@@ -97,7 +104,8 @@ public class LoggerUtils {
             case Target.Type.CONTAINER:
                 str = getFieldName(t.containerType, ContainerType.class);
                 if (t.containerType == ContainerType.WORKSPACE ||
-                        t.containerType == ContainerType.HOTSEAT) {
+                        t.containerType == ContainerType.HOTSEAT ||
+                        t.containerType == NAVBAR) {
                     str += " id=" + t.pageIndex;
                 } else if (t.containerType == ContainerType.FOLDER) {
                     str += " grid(" + t.gridX + "," + t.gridY + ")";
@@ -105,6 +113,10 @@ public class LoggerUtils {
                 break;
             default:
                 str += "UNKNOWN TARGET TYPE";
+        }
+
+        if (t.spanX != 1 || t.spanY != 1) {
+            str += " span(" + t.spanX + "," + t.spanY + ")";
         }
 
         if (t.tipType != TipType.DEFAULT_NONE) {
@@ -132,6 +144,10 @@ public class LoggerUtils {
                     + "), pageIdx=" + t.pageIndex;
 
         }
+        if (t.searchQueryLength != 0) {
+            typeStr += ", searchQueryLength=" + t.searchQueryLength;
+        }
+
         if (t.itemType == ItemType.TASK) {
             typeStr += ", pageIdx=" + t.pageIndex;
         }
@@ -144,14 +160,8 @@ public class LoggerUtils {
         return t;
     }
 
-    public static Target newItemTarget(View v) {
-        return (v.getTag() instanceof ItemInfo)
-                ? newItemTarget((ItemInfo) v.getTag(), null)
-                : newTarget(Target.Type.ITEM);
-    }
-
     public static Target newItemTarget(View v, InstantAppResolver instantAppResolver) {
-        return (v.getTag() instanceof ItemInfo)
+        return (v != null) && (v.getTag() instanceof ItemInfo)
                 ? newItemTarget((ItemInfo) v.getTag(), instantAppResolver)
                 : newTarget(Target.Type.ITEM);
     }
@@ -162,7 +172,7 @@ public class LoggerUtils {
         switch (info.itemType) {
             case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
                 t.itemType = (instantAppResolver != null && info instanceof AppInfo
-                        && instantAppResolver.isInstantApp(((AppInfo) info)))
+                        && instantAppResolver.isInstantApp(((AppInfo) info)) )
                         ? ItemType.WEB_APP
                         : ItemType.APP_ICON;
                 t.predictedRank = -100; // Never assigned

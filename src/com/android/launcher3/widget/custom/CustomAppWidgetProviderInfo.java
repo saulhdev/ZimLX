@@ -33,20 +33,11 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         implements Parcelable {
 
     public final int providerId;
-    public final boolean noPadding;
-    public int customizeTitle;
-    public int customizeScreen;
-    public boolean customizeHasPreview;
 
-    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf,
-                                          int providerId, boolean noPadding) {
+    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf, int providerId) {
         super(parcel);
         if (readSelf) {
             this.providerId = parcel.readInt();
-            this.noPadding = parcel.readByte() != 0;
-            this.customizeTitle = parcel.readInt();
-            this.customizeScreen = parcel.readInt();
-            this.customizeHasPreview = parcel.readByte() != 0;
 
             provider = new ComponentName(parcel.readString(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
@@ -62,13 +53,11 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
             minSpanY = parcel.readInt();
         } else {
             this.providerId = providerId;
-            this.noPadding = noPadding;
         }
     }
 
     @Override
-    public void initSpans(Context context) {
-    }
+    public void initSpans(Context context) { }
 
     @Override
     public String getLabel(PackageManager packageManager) {
@@ -103,8 +92,9 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
 
         @Override
         public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
-            return new CustomAppWidgetProviderInfo(parcel, true, 0, false);
+            return new CustomAppWidgetProviderInfo(parcel, true, 0);
         }
+
         @Override
         public CustomAppWidgetProviderInfo[] newArray(int size) {
             return new CustomAppWidgetProviderInfo[size];

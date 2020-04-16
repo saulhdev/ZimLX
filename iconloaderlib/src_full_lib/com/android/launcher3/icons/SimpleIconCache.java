@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.icons;
 
+import static android.content.Intent.ACTION_MANAGED_PROFILE_ADDED;
+import static android.content.Intent.ACTION_MANAGED_PROFILE_REMOVED;
+
 import android.annotation.TargetApi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -30,9 +33,6 @@ import android.os.UserManager;
 import android.util.SparseLongArray;
 
 import com.android.launcher3.icons.cache.BaseIconCache;
-
-import static android.content.Intent.ACTION_MANAGED_PROFILE_ADDED;
-import static android.content.Intent.ACTION_MANAGED_PROFILE_REMOVED;
 
 /**
  * Wrapper class to provide access to {@link BaseIconFactory} and also to provide pool of this class

@@ -15,14 +15,14 @@
  */
 package com.android.launcher3;
 
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+
 import android.animation.ValueAnimator;
 import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.util.Log;
 import android.view.View;
 import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewTreeObserver.OnDrawListener;
-
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 /*
  *  This is a helper class that listens to updates from the corresponding animation.
@@ -52,7 +52,7 @@ public class FirstFrameAnimatorHelper implements OnDrawListener, OnAttachStateCh
 
     @Override
     public void onDraw() {
-        mGlobalFrameCount++;
+        mGlobalFrameCount ++;
     }
 
     @Override

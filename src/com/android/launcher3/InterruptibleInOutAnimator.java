@@ -21,6 +21,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
 import android.util.Property;
+import android.view.View;
 
 import com.android.launcher3.util.Thunk;
 
@@ -62,8 +63,7 @@ public class InterruptibleInOutAnimator {
     private static final int OUT = 2;
 
     // TODO: This isn't really necessary, but is here to help diagnose a bug in the drag viz
-    @Thunk
-    int mDirection = STOPPED;
+    @Thunk int mDirection = STOPPED;
 
     public InterruptibleInOutAnimator(long duration, float fromValue, float toValue) {
         mAnimator = ObjectAnimator.ofFloat(this, VALUE, fromValue, toValue).setDuration(duration);

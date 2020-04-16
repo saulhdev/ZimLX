@@ -16,6 +16,8 @@
 
 package com.android.launcher3.accessibility;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.view.View;
 import android.view.accessibility.AccessibilityNodeInfo;
 import android.view.accessibility.AccessibilityNodeInfo.AccessibilityAction;
@@ -30,8 +32,6 @@ import com.android.launcher3.notification.NotificationMainView;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
 import java.util.ArrayList;
-
-import static com.android.launcher3.LauncherState.NORMAL;
 
 /**
  * Extension of {@link LauncherAccessibilityDelegate} with actions specific to shortcuts in

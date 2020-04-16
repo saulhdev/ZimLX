@@ -19,13 +19,13 @@ package com.android.launcher3.compat;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
 
-import androidx.annotation.Nullable;
-
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.Collections;
 import java.util.List;
+
+import androidx.annotation.Nullable;
 
 class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
 
@@ -40,9 +40,6 @@ class AppWidgetManagerCompatVO extends AppWidgetManagerCompatVL {
         }
         if (packageUser == null) {
             return super.getAllProviders(null);
-        }
-        if (isBlacklisted(packageUser.mPackageName)) {
-            return Collections.emptyList();
         }
         return mAppWidgetManager.getInstalledProvidersForPackage(packageUser.mPackageName,
                 packageUser.mUser);

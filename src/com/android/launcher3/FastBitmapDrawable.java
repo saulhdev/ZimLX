@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+
 import android.animation.ObjectAnimator;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -33,8 +36,6 @@ import android.util.Property;
 import android.util.SparseArray;
 
 import com.android.launcher3.icons.BitmapInfo;
-
-import static com.android.launcher3.anim.Interpolators.ACCEL;
 
 public class FastBitmapDrawable extends Drawable {
 
@@ -102,14 +103,19 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     protected FastBitmapDrawable(Bitmap b, int iconColor) {
+        this(b, iconColor, false);
+    }
+
+    protected FastBitmapDrawable(Bitmap b, int iconColor, boolean isDisabled) {
         mBitmap = b;
         mIconColor = iconColor;
         setFilterBitmap(true);
+        setIsDisabled(isDisabled);
     }
 
     @Override
-    public void draw(Canvas canvas) {
-        if (mScaleAnimation != null) {
+    public final void draw(Canvas canvas) {
+        if (mScale != 1f) {
             int count = canvas.save();
             Rect bounds = getBounds();
             canvas.scale(mScale, mScale, bounds.exactCenterX(), bounds.exactCenterY());
@@ -136,8 +142,11 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
-        mAlpha = alpha;
-        mPaint.setAlpha(alpha);
+        if (mAlpha != alpha) {
+            mAlpha = alpha;
+            mPaint.setAlpha(alpha);
+            invalidateSelf();
+        }
     }
 
     @Override
@@ -221,8 +230,15 @@ public class FastBitmapDrawable extends Drawable {
                 mScaleAnimation.setInterpolator(ACCEL);
                 mScaleAnimation.start();
             } else {
-                mScale = 1f;
-                invalidateSelf();
+                if (isVisible()) {
+                    mScaleAnimation = ObjectAnimator.ofFloat(this, SCALE, 1f);
+                    mScaleAnimation.setDuration(CLICK_FEEDBACK_DURATION);
+                    mScaleAnimation.setInterpolator(DEACCEL);
+                    mScaleAnimation.start();
+                } else {
+                    mScale = 1f;
+                    invalidateSelf();
+                }
             }
             return true;
         }
@@ -239,6 +255,10 @@ public class FastBitmapDrawable extends Drawable {
             mIsDisabled = isDisabled;
             invalidateDesaturationAndBrightness();
         }
+    }
+
+    protected boolean isDisabled() {
+        return mIsDisabled;
     }
 
     /**
@@ -330,21 +350,23 @@ public class FastBitmapDrawable extends Drawable {
 
     @Override
     public ConstantState getConstantState() {
-        return new MyConstantState(mBitmap, mIconColor);
+        return new MyConstantState(mBitmap, mIconColor, mIsDisabled);
     }
 
     protected static class MyConstantState extends ConstantState {
         protected final Bitmap mBitmap;
         protected final int mIconColor;
+        protected final boolean mIsDisabled;
 
-        public MyConstantState(Bitmap bitmap, int color) {
+        public MyConstantState(Bitmap bitmap, int color, boolean isDisabled) {
             mBitmap = bitmap;
             mIconColor = color;
+            mIsDisabled = isDisabled;
         }
 
         @Override
         public Drawable newDrawable() {
-            return new FastBitmapDrawable(mBitmap, mIconColor);
+            return new FastBitmapDrawable(mBitmap, mIconColor, mIsDisabled);
         }
 
         @Override

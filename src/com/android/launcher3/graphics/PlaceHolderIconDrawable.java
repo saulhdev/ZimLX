@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.graphics;
 
+import static androidx.core.graphics.ColorUtils.compositeColors;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -26,8 +28,6 @@ import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.Themes;
-
-import static androidx.core.graphics.ColorUtils.compositeColors;
 
 /**
  * Subclass which draws a placeholder icon when the actual icon is not yet loaded

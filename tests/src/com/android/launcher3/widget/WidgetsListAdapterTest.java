@@ -15,23 +15,24 @@
  */
 package com.android.launcher3.widget;
 
+import static org.mockito.Matchers.eq;
+import static org.mockito.Matchers.isNull;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.Context;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.view.LayoutInflater;
-
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.test.InstrumentationRegistry;
 import androidx.test.filters.SmallTest;
 import androidx.test.runner.AndroidJUnit4;
+import android.view.LayoutInflater;
 
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.LauncherAppWidgetProviderInfo;
 import com.android.launcher3.WidgetPreviewLoader;
-import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.util.MultiHashMap;
@@ -45,28 +46,18 @@ import org.mockito.MockitoAnnotations;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.ArgumentMatchers.isNull;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import androidx.recyclerview.widget.RecyclerView;
 
 @SmallTest
 @RunWith(AndroidJUnit4.class)
 public class WidgetsListAdapterTest {
 
-    private final String TAG = "WidgetsListAdapterTest";
-
-    @Mock
-    private LayoutInflater mMockLayoutInflater;
-    @Mock
-    private WidgetPreviewLoader mMockWidgetCache;
-    @Mock
-    private RecyclerView.AdapterDataObserver mListener;
-    @Mock
-    private IconCache mIconCache;
+    @Mock private LayoutInflater mMockLayoutInflater;
+    @Mock private WidgetPreviewLoader mMockWidgetCache;
+    @Mock private RecyclerView.AdapterDataObserver mListener;
+    @Mock private IconCache mIconCache;
 
     private WidgetsListAdapter mAdapter;
-    private AlphabeticIndexCompat mIndexCompat;
     private InvariantDeviceProfile mTestProfile;
     private Context mContext;
 
@@ -79,7 +70,6 @@ public class WidgetsListAdapterTest {
         mTestProfile.numColumns = 5;
         mAdapter = new WidgetsListAdapter(mContext, mMockLayoutInflater, mMockWidgetCache,
                 mIconCache, null, null);
-
         mAdapter.registerAdapterDataObserver(mListener);
     }
 
@@ -114,12 +104,12 @@ public class WidgetsListAdapterTest {
     }
 
     @Test
-    public void testNotifyItemChanged_widgetItemInfoDiff() {
+    public void testNotifyItemChanged_widgetItemInfoDiff() throws Exception {
         // TODO: same package name but item number changed
     }
 
     @Test
-    public void testNotifyItemInsertedRemoved_hodgepodge() {
+    public void testNotifyItemInsertedRemoved_hodgepodge() throws Exception {
         // TODO: insert and remove combined.          curMap
         // newMap [A, C, D]                           [A, B, E]
         // B - C < 0, removed B from index 1          [A, E]
@@ -138,11 +128,10 @@ public class WidgetsListAdapterTest {
         if (num <= 0) return result;
 
         MultiHashMap<PackageItemInfo, WidgetItem> newMap = new MultiHashMap();
-        PackageManager pm = mContext.getPackageManager();
         AppWidgetManagerCompat widgetManager = AppWidgetManagerCompat.getInstance(mContext);
         for (AppWidgetProviderInfo widgetInfo : widgetManager.getAllProviders(null)) {
             WidgetItem wi = new WidgetItem(LauncherAppWidgetProviderInfo
-                    .fromProviderInfo(mContext, widgetInfo), pm, mTestProfile);
+                    .fromProviderInfo(mContext, widgetInfo), mTestProfile, mIconCache);
 
             PackageItemInfo pInfo = new PackageItemInfo(wi.componentName.getPackageName());
             pInfo.title = pInfo.packageName;

@@ -16,9 +16,23 @@
 
 package com.android.launcher3.uioverrides;
 
+import static android.app.Activity.RESULT_CANCELED;
+
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
+
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
+import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -26,8 +40,6 @@ import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 import android.util.Base64;
-
-import androidx.core.app.Person;
 
 import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.Launcher;
@@ -50,18 +62,6 @@ import com.android.systemui.shared.system.ActivityCompat;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.zip.Deflater;
-
-import static android.app.Activity.RESULT_CANCELED;
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
 public class UiFactory extends RecentsUiFactory {
 
@@ -247,8 +247,8 @@ public class UiFactory extends RecentsUiFactory {
         return new ScaleAndTranslation(1.1f, 0f, 0f);
     }
 
-    public static Person[] getPersons(ShortcutInfo si) {
-        Person[] persons = null;//si.getPersons();
-        return persons == null ? Utilities.EMPTY_PERSON_ARRAY : persons;
+    public static String[] getPersons(ShortcutInfo si) {
+        String[] persons = null;//si.getPersons();
+        return  Utilities.EMPTY_PERSON_ARRAY;
     }
 }

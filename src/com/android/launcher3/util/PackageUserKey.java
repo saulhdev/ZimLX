@@ -6,12 +6,11 @@ import android.service.notification.StatusBarNotification;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.shortcuts.DeepShortcutManager;
 
 import java.util.Arrays;
 
-/**
- * Creates a hash key based on package name and user.
- */
+/** Creates a hash key based on package name and user. */
 public class PackageUserKey {
 
     public String mPackageName;
@@ -35,7 +34,7 @@ public class PackageUserKey {
     public void update(String packageName, UserHandle user) {
         mPackageName = packageName;
         mUser = user;
-        mHashCode = Arrays.hashCode(new Object[]{packageName, user});
+        mHashCode = Arrays.hashCode(new Object[] {packageName, user});
     }
 
     /**
@@ -50,12 +49,6 @@ public class PackageUserKey {
         }
         return false;
     }
-
-    public boolean updateFromNotification(StatusBarNotification sbn) {
-        update(sbn.getPackageName(), sbn.getUser());
-        return true;
-    }
-
 
     @Override
     public int hashCode() {

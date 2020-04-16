@@ -17,9 +17,11 @@
 package com.android.launcher3.uioverrides;
 
 import android.app.Activity;
+import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.pm.ShortcutInfo;
 import android.os.Bundle;
 import android.os.CancellationSignal;
 
@@ -27,6 +29,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherState.ScaleAndTranslation;
 import com.android.launcher3.LauncherStateManager.StateHandler;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.util.TouchController;
 
@@ -35,7 +38,7 @@ import java.io.PrintWriter;
 public class UiFactory {
 
     public static TouchController[] createTouchControllers(Launcher launcher) {
-        return new TouchController[]{
+        return new TouchController[] {
                 launcher.getDragController(), new AllAppsSwipeController(launcher)};
     }
 
@@ -44,41 +47,32 @@ public class UiFactory {
     }
 
     public static StateHandler[] getStateHandler(Launcher launcher) {
-        return new StateHandler[]{
-                launcher.getAllAppsController(), launcher.getWorkspace()};
+        return new StateHandler[] {
+                launcher.getAllAppsController(), launcher.getWorkspace() };
     }
 
-    public static void resetOverview(Launcher launcher) {
-    }
+    public static void resetOverview(Launcher launcher) { }
 
-    public static void onLauncherStateOrFocusChanged(Launcher launcher) {
-    }
+    public static void onLauncherStateOrFocusChanged(Launcher launcher) { }
 
-    public static void onCreate(Launcher launcher) {
-    }
+    public static void onCreate(Launcher launcher) { }
 
-    public static void onStart(Launcher launcher) {
-    }
+    public static void onStart(Launcher launcher) { }
 
-    public static void onEnterAnimationComplete(Context context) {
-    }
+    public static void onEnterAnimationComplete(Context context) {}
 
-    public static void onLauncherStateOrResumeChanged(Launcher launcher) {
-    }
+    public static void onLauncherStateOrResumeChanged(Launcher launcher) { }
 
-    public static void onTrimMemory(Launcher launcher, int level) {
-    }
+    public static void onTrimMemory(Launcher launcher, int level) { }
 
     public static void useFadeOutAnimationForLauncherStart(Launcher launcher,
-                                                           CancellationSignal cancellationSignal) {
-    }
+            CancellationSignal cancellationSignal) { }
 
     public static boolean dumpActivity(Activity activity, PrintWriter writer) {
         return false;
     }
 
-    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) {
-    }
+    public static void setBackButtonAlpha(Launcher launcher, float alpha, boolean animate) { }
 
 
     public static ScaleAndTranslation getOverviewScaleAndTranslationForNormalState(Launcher l) {
@@ -90,24 +84,21 @@ public class UiFactory {
     }
 
     public static boolean startIntentSenderForResult(Activity activity, IntentSender intent,
-                                                     int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
-                                                     Bundle options) {
+            int requestCode, Intent fillInIntent, int flagsMask, int flagsValues, int extraFlags,
+            Bundle options) {
         return false;
     }
 
     public static boolean startActivityForResult(Activity activity, Intent intent, int requestCode,
-                                                 Bundle options) {
+            Bundle options) {
         return false;
     }
 
-    public static void resetPendingActivityResults(Launcher launcher, int requestCode) {
-    }
+    public static void resetPendingActivityResults(Launcher launcher, int requestCode) { }
 
-    public static void clearSwipeSharedState(boolean finishAnimation) {
-    }
+    public static void clearSwipeSharedState(boolean finishAnimation) {}
 
-    /*
     public static Person[] getPersons(ShortcutInfo si) {
         return Utilities.EMPTY_PERSON_ARRAY;
-    }*/
+    }
 }

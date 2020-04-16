@@ -16,14 +16,13 @@
 
 package com.android.launcher3.config;
 
+import android.content.Context;
+
 /**
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
-    public static final boolean FORCE_FEED_BRIDGE = false;
-    public static final boolean FEATURE_SETTINGS_SEARCH = false;
-    public static final boolean REFLECTION_FORCE_OVERVIEW_MODE = true;
-
     private FeatureFlags() {
+        // Prevent instantiation
     }
 }

@@ -34,8 +34,6 @@ public final class TestProtocol {
     public static final int QUICK_SWITCH_STATE_ORDINAL = 4;
     public static final int ALL_APPS_STATE_ORDINAL = 5;
     public static final int BACKGROUND_APP_STATE_ORDINAL = 6;
-    public static final int FAST_OVERVIEW_STATE_ORDINAL = 7;
-    public static final int OPTIONS_STATE_ORDINAL = 8;
 
     public static String stateOrdinalToString(int ordinal) {
         switch (ordinal) {
@@ -53,10 +51,6 @@ public final class TestProtocol {
                 return "AllApps";
             case BACKGROUND_APP_STATE_ORDINAL:
                 return "Background";
-            case FAST_OVERVIEW_STATE_ORDINAL:
-                return "FastOverview";
-            case OPTIONS_STATE_ORDINAL:
-                return "Options";
             default:
                 return null;
         }

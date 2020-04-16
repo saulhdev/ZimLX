@@ -24,6 +24,7 @@ import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.RectF;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.MotionEvent;
@@ -36,9 +37,11 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.android.launcher3.BaseRecyclerView;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.graphics.FastScrollThumbDrawable;
 import com.android.launcher3.util.Themes;
+
+import java.util.Collections;
+import java.util.List;
 
 /**
  * The track and scrollbar that shows when you scroll the list.
@@ -66,13 +69,14 @@ public class RecyclerViewFastScroller extends View {
     private final static int SCROLL_BAR_VIS_DURATION = 150;
     private static final float FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR = 0.75f;
 
+    private static final List<Rect> SYSTEM_GESTURE_EXCLUSION_RECT =
+            Collections.singletonList(new Rect());
+
     private final int mMinWidth;
     private final int mMaxWidth;
     private final int mThumbPadding;
 
-    /**
-     * Keeps the last known scrolling delta/velocity along y-axis.
-     */
+    /** Keeps the last known scrolling delta/velocity along y-axis. */
     private int mDy = 0;
     private final float mDeltaThreshold;
 
@@ -84,6 +88,8 @@ public class RecyclerViewFastScroller extends View {
 
     private final Paint mThumbPaint;
     protected final int mThumbHeight;
+    private final RectF mThumbBounds = new RectF();
+    private final Point mThumbDrawOffset = new Point();
 
     private final Paint mTrackPaint;
 
@@ -127,7 +133,7 @@ public class RecyclerViewFastScroller extends View {
 
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        mThumbPaint.setColor(Utilities.getZimPrefs(context).getAccentColor());
+        mThumbPaint.setColor(Themes.getColorAccent(context));
         mThumbPaint.setStyle(Paint.Style.FILL);
 
         Resources res = getResources();
@@ -178,6 +184,7 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY == y) {
             return;
         }
+        updatePopupY((int) y);
         mThumbOffsetY = y;
         invalidate();
     }
@@ -227,8 +234,7 @@ public class RecyclerViewFastScroller extends View {
                 }
                 if (isNearThumb(x, y)) {
                     mTouchOffsetY = mDownY - mThumbOffsetY;
-                } else if (FeatureFlags.LAUNCHER3_DIRECT_SCROLL
-                        && mRv.supportsFastScrolling()
+                } else if (mRv.supportsFastScrolling()
                         && isNearScrollBar(mDownX)) {
                     calcTouchOffsetAndPrepToFastScroll(mDownY, mLastY);
                     updateFastScrollSectionNameAndThumbOffset(mLastY, y);
@@ -285,7 +291,6 @@ public class RecyclerViewFastScroller extends View {
             mPopupView.setText(sectionName);
         }
         animatePopupVisibility(!sectionName.isEmpty());
-        updatePopupY(lastY);
         mLastTouchY = boundedY;
         setThumbOffsetY((int) mLastTouchY);
     }
@@ -296,18 +301,29 @@ public class RecyclerViewFastScroller extends View {
         }
         int saveCount = canvas.save();
         canvas.translate(getWidth() / 2, mRv.getScrollBarTop());
+        mThumbDrawOffset.set(getWidth() / 2, mRv.getScrollBarTop());
         // Draw the track
         float halfW = mWidth / 2;
         canvas.drawRoundRect(-halfW, 0, halfW, mRv.getScrollbarTrackHeight(),
                 mWidth, mWidth, mTrackPaint);
 
         canvas.translate(0, mThumbOffsetY);
+        mThumbDrawOffset.y += mThumbOffsetY;
         halfW += mThumbPadding;
-        float r = mWidth + mThumbPadding + mThumbPadding;
-        canvas.drawRoundRect(-halfW, 0, halfW, mThumbHeight, r, r, mThumbPaint);
+        float r = getScrollThumbRadius();
+        mThumbBounds.set(-halfW, 0, halfW, mThumbHeight);
+        canvas.drawRoundRect(mThumbBounds, r, r, mThumbPaint);
+        if (Utilities.ATLEAST_Q) {
+            mThumbBounds.roundOut(SYSTEM_GESTURE_EXCLUSION_RECT.get(0));
+            SYSTEM_GESTURE_EXCLUSION_RECT.get(0).offset(mThumbDrawOffset.x, mThumbDrawOffset.y);
+            setSystemGestureExclusionRects(SYSTEM_GESTURE_EXCLUSION_RECT);
+        }
         canvas.restoreToCount(saveCount);
     }
 
+    private float getScrollThumbRadius() {
+        return mWidth + mThumbPadding + mThumbPadding;
+    }
 
     /**
      * Animates the width of the scrollbar.
@@ -356,17 +372,16 @@ public class RecyclerViewFastScroller extends View {
     }
 
     private void updatePopupY(int lastTouchY) {
+        if (!mPopupVisible) {
+            return;
+        }
         int height = mPopupView.getHeight();
-        float top = lastTouchY - (FAST_SCROLL_OVERLAY_Y_OFFSET_FACTOR * height)
-                + mRv.getScrollBarTop();
-        top = Utilities.boundToRange(top,
-                mMaxWidth, mRv.getScrollbarTrackHeight() - mMaxWidth - height);
+        // Aligns the rounded corner of the pop up with the top of the thumb.
+        float top = mRv.getScrollBarTop() + lastTouchY + (getScrollThumbRadius() / 2f)
+                - (height / 2f);
+        top = Utilities.boundToRange(top, 0,
+                getTop() + mRv.getScrollBarTop() + mRv.getScrollbarTrackHeight() - height);
         mPopupView.setTranslationY(top);
-    }
-
-    public void setColor(int color) {
-        mThumbPaint.setColor(color);
-        //mPopupView.setTextColor(foregroundColor);
     }
 
     public boolean isHitInParent(float x, float y, Point outOffset) {

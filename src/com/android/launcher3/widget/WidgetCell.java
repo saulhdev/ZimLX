@@ -26,6 +26,7 @@ import android.view.View;
 import android.view.View.OnLayoutChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewPropertyAnimator;
+import android.view.accessibility.AccessibilityNodeInfo;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -54,9 +55,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     private static final int FADE_IN_DURATION_MS = 90;
 
-    /**
-     * Widget cell width is calculated by multiplying this factor to grid cell width.
-     */
+    /** Widget cell width is calculated by multiplying this factor to grid cell width. */
     private static final float WIDTH_SCALE = 2.6f;
 
     /** Widget preview width is calculated by multiplying this factor to the widget cell width. */
@@ -112,9 +111,9 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     protected void onFinishInflate() {
         super.onFinishInflate();
 
-        mWidgetImage = findViewById(R.id.widget_preview);
-        mWidgetName = findViewById(R.id.widget_name);
-        mWidgetDims = findViewById(R.id.widget_dims);
+        mWidgetImage = (WidgetImageView) findViewById(R.id.widget_preview);
+        mWidgetName = ((TextView) findViewById(R.id.widget_name));
+        mWidgetDims = ((TextView) findViewById(R.id.widget_dims));
     }
 
     /**
@@ -203,7 +202,7 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
 
     @Override
     public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft,
-                               int oldTop, int oldRight, int oldBottom) {
+            int oldTop, int oldRight, int oldBottom) {
         removeOnLayoutChangeListener(this);
         ensurePreview();
     }
@@ -237,5 +236,11 @@ public class WidgetCell extends LinearLayout implements OnLayoutChangeListener {
     @Override
     public CharSequence getAccessibilityClassName() {
         return WidgetCell.class.getName();
+    }
+
+    @Override
+    public void onInitializeAccessibilityNodeInfo(AccessibilityNodeInfo info) {
+        super.onInitializeAccessibilityNodeInfo(info);
+        info.removeAction(AccessibilityNodeInfo.AccessibilityAction.ACTION_CLICK);
     }
 }

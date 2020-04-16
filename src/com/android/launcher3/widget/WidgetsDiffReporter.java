@@ -18,14 +18,14 @@ package com.android.launcher3.widget;
 
 import android.util.Log;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.widget.WidgetsListAdapter.WidgetListRowEntryComparator;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 /**
  * Do diff on widget's tray list items and call the {@link RecyclerView.Adapter}
@@ -44,7 +44,7 @@ public class WidgetsDiffReporter {
     }
 
     public void process(ArrayList<WidgetListRowEntry> currentEntries,
-                        ArrayList<WidgetListRowEntry> newEntries, WidgetListRowEntryComparator comparator) {
+            ArrayList<WidgetListRowEntry> newEntries, WidgetListRowEntryComparator comparator) {
         if (DEBUG) {
             Log.d(TAG, "process oldEntries#=" + currentEntries.size()
                     + " newEntries#=" + newEntries.size());
@@ -74,8 +74,8 @@ public class WidgetsDiffReporter {
             int diff = comparePackageName(orgRowEntry, newRowEntry, comparator);
             if (DEBUG) {
                 Log.d(TAG, String.format("diff=%d orgRowEntry (%s) newRowEntry (%s)",
-                        diff, orgRowEntry != null ? orgRowEntry.toString() : null,
-                        newRowEntry != null ? newRowEntry.toString() : null));
+                        diff, orgRowEntry != null? orgRowEntry.toString() : null,
+                        newRowEntry != null? newRowEntry.toString() : null));
             }
             int index = -1;
             if (diff < 0) {
@@ -88,7 +88,7 @@ public class WidgetsDiffReporter {
                 currentEntries.remove(index);
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
             } else if (diff > 0) {
-                index = orgRowEntry != null ? currentEntries.indexOf(orgRowEntry) :
+                index = orgRowEntry != null? currentEntries.indexOf(orgRowEntry):
                         currentEntries.size();
                 currentEntries.add(index, newRowEntry);
                 if (DEBUG) {
@@ -115,7 +115,7 @@ public class WidgetsDiffReporter {
                 orgRowEntry = orgIter.hasNext() ? orgIter.next() : null;
                 newRowEntry = newIter.hasNext() ? newIter.next() : null;
             }
-        } while (orgRowEntry != null || newRowEntry != null);
+        } while(orgRowEntry != null || newRowEntry != null);
     }
 
     /**
@@ -123,7 +123,7 @@ public class WidgetsDiffReporter {
      * Also handle null row pointers.
      */
     private int comparePackageName(WidgetListRowEntry curRow, WidgetListRowEntry newRow,
-                                   WidgetListRowEntryComparator comparator) {
+            WidgetListRowEntryComparator comparator) {
         if (curRow == null && newRow == null) {
             throw new IllegalStateException("Cannot compare PackageItemInfo if both rows are null.");
         }

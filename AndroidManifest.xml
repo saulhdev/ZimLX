@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 **
 ** Copyright 2008, The Android Open Source Project
@@ -16,19 +17,12 @@
 ** limitations under the License.
 */
 -->
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.android.launcher3">
     <!--
     Manifest entries specific to Launcher3. This is merged with AndroidManifest-common.xml.
     Refer comments around specific entries on how to extend individual components.
-    -->
-
-
-    <!--
-    Permissions required for read/write access to the workspace data. These permission name
-    should not conflict with that defined in other apps, as such an app should embed its package
-    name in the permissions. eq com.mypackage.permission.READ_SETTINGS
     -->
 
     <application
@@ -36,35 +30,34 @@
         android:fullBackupOnly="true"
         android:fullBackupContent="@xml/backupscheme"
         android:hardwareAccelerated="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/ic_launcher_home"
         android:label="@string/derived_app_name"
+        android:theme="@style/AppTheme"
         android:largeHeap="@bool/config_largeHeap"
         android:restoreAnyVersion="true"
-        android:supportsRtl="true"
-        tools:replace="android:icon,android:label">
+        android:supportsRtl="true" >
 
         <!--
         Main launcher activity. When extending only change the name, and keep all the
         attributes and intent filters the same
         -->
         <activity
-            android:name="org.zimmob.zimlx.ZimLauncher"
-            android:clearTaskOnLaunch="true"
-            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
-            android:enabled="true"
-            android:excludeFromRecents="true"
+            android:name="com.android.launcher3.Launcher"
             android:launchMode="singleTask"
+            android:clearTaskOnLaunch="true"
+            android:stateNotNeeded="true"
+            android:windowSoftInputMode="adjustPan"
+            android:screenOrientation="unspecified"
+            android:configChanges="keyboard|keyboardHidden|mcc|mnc|navigation|orientation|screenSize|screenLayout|smallestScreenSize"
             android:resizeableActivity="true"
             android:resumeWhilePausing="true"
-            android:screenOrientation="nosensor"
-            android:stateNotNeeded="true"
             android:taskAffinity=""
-            android:windowSoftInputMode="adjustPan">
+            android:enabled="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.HOME" />
                 <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.MONKEY" />
+                <category android:name="android.intent.category.MONKEY"/>
                 <category android:name="android.intent.category.LAUNCHER_APP" />
             </intent-filter>
             <meta-data
@@ -72,22 +65,5 @@
                 android:value="${packageName}.grid_control" />
         </activity>
 
-        <!--
-        The settings provider contains Home's data, like the workspace favorites. The permissions
-        should be changed to what is defined above. The authorities should also be changed to
-        represent the package name.
-        -->
-        <!--
-       The settings provider contains Home's data, like the workspace favorites. The permissions
-       should be changed to what is defined above. The authorities should also be changed to
-       represent the package name.
-       -->
-        <provider
-            android:name="com.android.launcher3.LauncherProvider"
-            android:authorities="${applicationId}.settings"
-            android:exported="true"
-            android:writePermission="${applicationId}.permission.WRITE_SETTINGS"
-            android:readPermission="${applicationId}.permission.READ_SETTINGS" />
     </application>
-
 </manifest>

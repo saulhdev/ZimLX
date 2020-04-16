@@ -21,22 +21,15 @@ import android.view.ViewGroup;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.PromiseAppInfo;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 
-import org.zimmob.zimlx.util.DbHelper;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.WeakHashMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -44,16 +37,18 @@ import java.util.function.Predicate;
  */
 public class AllAppsStore {
 
+    // Defer updates flag used to defer all apps updates to the next draw.
+    public static final int DEFER_UPDATES_NEXT_DRAW = 1 << 0;
+    // Defer updates flag used to defer all apps updates by a test's request.
+    public static final int DEFER_UPDATES_TEST = 1 << 1;
+
     private PackageUserKey mTempKey = new PackageUserKey(null, null);
     private final HashMap<ComponentKey, AppInfo> mComponentToAppMap = new HashMap<>();
     private final List<OnUpdateListener> mUpdateListeners = new ArrayList<>();
     private final ArrayList<ViewGroup> mIconContainers = new ArrayList<>();
-    private final Set<FolderIcon> mFolderIcons = Collections.newSetFromMap(new WeakHashMap<>());
 
-    private boolean mDeferUpdates = false;
+    private int mDeferUpdatesFlags = 0;
     private boolean mUpdatePending = false;
-
-    private AllAppsGridAdapter mAdapter;
 
     public Collection<AppInfo> getApps() {
         return mComponentToAppMap.values();
@@ -71,15 +66,24 @@ public class AllAppsStore {
         return mComponentToAppMap.get(key);
     }
 
-    public void setDeferUpdates(boolean deferUpdates) {
-        if (mDeferUpdates != deferUpdates) {
-            mDeferUpdates = deferUpdates;
+    public void enableDeferUpdates(int flag) {
+        mDeferUpdatesFlags |= flag;
+    }
 
-            if (!mDeferUpdates && mUpdatePending) {
-                notifyUpdate();
-                mUpdatePending = false;
-            }
+    public void disableDeferUpdates(int flag) {
+        mDeferUpdatesFlags &= ~flag;
+        if (mDeferUpdatesFlags == 0 && mUpdatePending) {
+            notifyUpdate();
+            mUpdatePending = false;
         }
+    }
+
+    public void disableDeferUpdatesSilently(int flag) {
+        mDeferUpdatesFlags &= ~flag;
+    }
+
+    public int getDeferUpdatesFlags() {
+        return mDeferUpdatesFlags;
     }
 
     /**
@@ -93,28 +97,18 @@ public class AllAppsStore {
     }
 
     /**
-     * Sets the adapter to notify when this dataset changes.
-     */
-    public void setAdapter(AllAppsGridAdapter adapter) {
-        mAdapter = adapter;
-    }
-
-
-    /**
      * Removes some apps from the list.
      */
     public void removeApps(List<AppInfo> apps) {
-        DbHelper db = new DbHelper(Launcher.mContext);
         for (AppInfo app : apps) {
             mComponentToAppMap.remove(app.toComponentKey());
-            db.deleteApp(app.componentName.getPackageName());
         }
-        db.close();
         notifyUpdate();
     }
 
+
     private void notifyUpdate() {
-        if (mDeferUpdates) {
+        if (mDeferUpdatesFlags != 0) {
             mUpdatePending = true;
             return;
         }
@@ -142,10 +136,6 @@ public class AllAppsStore {
         mIconContainers.remove(container);
     }
 
-    public void registerFolderIcon(FolderIcon folderIcon) {
-        mFolderIcons.add(folderIcon);
-    }
-
     public void updateNotificationDots(Predicate<PackageUserKey> updatedDots) {
         updateAllIcons((child) -> {
             if (child.getTag() instanceof ItemInfo) {
@@ -155,23 +145,6 @@ public class AllAppsStore {
                 }
             }
         });
-
-        Set<FolderIcon> foldersToUpdate = new HashSet<>();
-        for (FolderIcon folderIcon : mFolderIcons) {
-            folderIcon.getFolder().iterateOverItems((info, view) -> {
-                if (mTempKey.updateFromItemInfo(info) && updatedDots.toString().contains(mTempKey.mPackageName)) {
-                    if (view instanceof BubbleTextView) {
-                        ((BubbleTextView) view).applyDotState(info, true);
-                    }
-                    foldersToUpdate.add(folderIcon);
-                }
-                return false;
-            });
-        }
-
-        for (FolderIcon folderIcon : foldersToUpdate) {
-            folderIcon.updateIconDots(updatedDots, mTempKey);
-        }
     }
 
     public void updatePromiseAppProgress(PromiseAppInfo app) {
@@ -182,7 +155,7 @@ public class AllAppsStore {
         });
     }
 
-    private void updateAllIcons(IconAction action) {
+    private void updateAllIcons(Consumer<BubbleTextView> action) {
         for (int i = mIconContainers.size() - 1; i >= 0; i--) {
             ViewGroup parent = mIconContainers.get(i);
             int childCount = parent.getChildCount();
@@ -190,7 +163,7 @@ public class AllAppsStore {
             for (int j = 0; j < childCount; j++) {
                 View child = parent.getChildAt(j);
                 if (child instanceof BubbleTextView) {
-                    action.apply((BubbleTextView) child);
+                    action.accept((BubbleTextView) child);
                 }
             }
         }
@@ -198,9 +171,5 @@ public class AllAppsStore {
 
     public interface OnUpdateListener {
         void onAppsUpdated();
-    }
-
-    public interface IconAction {
-        void apply(BubbleTextView icon);
     }
 }

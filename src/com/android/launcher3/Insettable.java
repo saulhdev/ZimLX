@@ -17,7 +17,6 @@
 package com.android.launcher3;
 
 import android.graphics.Rect;
-import android.view.View;
 
 /**
  * Allows the implementing {@link View} to not draw underneath system bars.

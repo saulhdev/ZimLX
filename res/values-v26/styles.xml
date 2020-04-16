@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 * Copyright (C) 2017 The Android Open Source Project
 *
@@ -17,26 +18,13 @@
 -->
 <resources>
     <!-- Theme for the widget container. -->
-    <style name="WidgetContainerTheme" parent="@android:style/Theme.Material.Settings">
+    <style name="WidgetContainerTheme" parent="@android:style/Theme.DeviceDefault.Settings">
+        <item name="android:colorPrimaryDark">#E8EAED</item>
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
-
     <style name="WidgetContainerTheme.Dark" parent="AppTheme.Dark">
         <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
         <item name="android:colorPrimaryDark">#616161</item> <!-- Gray 700 -->
-        <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
-    <style name="WidgetContainerTheme.Black" parent="AppTheme.Black">
-        <item name="android:colorEdgeEffect">?android:attr/textColorSecondary</item>
-        <item name="android:colorPrimaryDark">#000000</item>
-        <item name="bottomSheetNavBarColor">#00000000</item>
-    </style>
-
-    <style name="SettingsTheme.V2" parent="SettingsTheme.Base">
-        <item name="android:navigationBarColor">@android:color/transparent</item>
-    </style>
 </resources>
-

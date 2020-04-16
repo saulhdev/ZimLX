@@ -1,5 +1,10 @@
 package com.android.launcher3.icons;
 
+import static android.graphics.Paint.DITHER_FLAG;
+import static android.graphics.Paint.FILTER_BITMAP_FLAG;
+
+import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
+
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -17,12 +22,7 @@ import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Process;
 import android.os.UserHandle;
-
 import androidx.annotation.NonNull;
-
-import static android.graphics.Paint.DITHER_FLAG;
-import static android.graphics.Paint.FILTER_BITMAP_FLAG;
-import static com.android.launcher3.icons.ShadowGenerator.BLUR_FACTOR;
 
 /**
  * This class will be moved to androidx library. There shouldn't be any dependency outside
@@ -257,7 +257,7 @@ public class BaseIconFactory implements AutoCloseable {
         badge.draw(target);
     }
 
-    public Bitmap createIconBitmap(Drawable icon, float scale) {
+    private Bitmap createIconBitmap(Drawable icon, float scale) {
         return createIconBitmap(icon, scale, mIconBitmapSize);
     }
 

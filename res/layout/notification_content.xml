@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2017 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2017 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,8 +14,8 @@
      limitations under the License.
 -->
 
-<merge xmlns:android="http://schemas.android.com/apk/res/android"
-    android:background="?attr/popupColorPrimary"
+<merge
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -25,7 +26,6 @@
         android:layout_height="@dimen/notification_header_height"
         android:paddingEnd="@dimen/notification_padding_end"
         android:paddingStart="@dimen/notification_padding_start">
-
         <TextView
             android:id="@+id/notification_text"
             android:layout_width="wrap_content"
@@ -35,7 +35,6 @@
             android:text="@string/notifications_header"
             android:textColor="?android:attr/textColorPrimary"
             android:textSize="@dimen/notification_header_text_size" />
-
         <TextView
             android:id="@+id/notification_count"
             android:layout_width="@dimen/notification_icon_size"
@@ -52,7 +51,8 @@
         android:id="@+id/main_view"
         android:layout_width="match_parent"
         android:layout_height="@dimen/notification_main_height"
-        android:focusable="true">
+        android:background="@drawable/bg_notification_content"
+        android:focusable="true" >
 
         <LinearLayout
             android:id="@+id/text_and_background"
@@ -64,7 +64,6 @@
             android:paddingBottom="14dp"
             android:paddingEnd="@dimen/notification_main_text_padding_end"
             android:paddingStart="@dimen/notification_padding_start">
-
             <TextView
                 android:id="@+id/title"
                 android:layout_width="match_parent"
@@ -121,7 +120,7 @@
             android:clipToPadding="false"
             android:gravity="end|center_vertical"
             android:orientation="horizontal"
-            android:padding="@dimen/notification_footer_icon_row_padding" />
+            android:padding="@dimen/notification_footer_icon_row_padding"/>
 
         <View
             android:id="@+id/overflow"

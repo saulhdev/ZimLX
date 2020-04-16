@@ -16,6 +16,8 @@
 
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+
 import android.content.Context;
 import android.graphics.Path;
 import android.view.animation.AccelerateDecelerateInterpolator;
@@ -27,8 +29,6 @@ import android.view.animation.OvershootInterpolator;
 import android.view.animation.PathInterpolator;
 
 import com.android.launcher3.Utilities;
-
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 
 /**
@@ -54,7 +54,7 @@ public class Interpolators {
     public static final Interpolator FAST_OUT_SLOW_IN = new PathInterpolator(0.4f, 0f, 0.2f, 1f);
 
     public static final Interpolator AGGRESSIVE_EASE = new PathInterpolator(0.2f, 0f, 0f, 1f);
-    public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f, 0, 0.4f, 1);
+    public static final Interpolator AGGRESSIVE_EASE_IN_OUT = new PathInterpolator(0.6f,0, 0.4f, 1);
 
     public static final Interpolator EXAGGERATED_EASE;
 
@@ -112,7 +112,7 @@ public class Interpolators {
         @Override
         public float getInterpolation(float t) {
             t -= 1.0f;
-            return t * t * t * t * t + 1;
+            return t*t*t*t*t + 1;
         }
     };
 
@@ -120,7 +120,7 @@ public class Interpolators {
         @Override
         public float getInterpolation(float t) {
             t -= 1.0f;
-            return t * t * t + 1;
+            return t*t*t + 1;
         }
     };
 
@@ -143,7 +143,7 @@ public class Interpolators {
      * That is, we set the interpolation to 0 until lowerBound and reach 1 by upperBound.
      */
     public static Interpolator clampToProgress(Interpolator interpolator, float lowerBound,
-                                               float upperBound) {
+            float upperBound) {
         if (upperBound <= lowerBound) {
             throw new IllegalArgumentException(String.format(
                     "lowerBound (%f) must be less than upperBound (%f)", lowerBound, upperBound));
@@ -165,7 +165,7 @@ public class Interpolators {
      * such as to take over a user-controlled animation when they let go.
      */
     public static Interpolator mapToProgress(Interpolator interpolator, float lowerBound,
-                                             float upperBound) {
+            float upperBound) {
         return t -> Utilities.mapRange(interpolator.getInterpolation(t), lowerBound, upperBound);
     }
 
@@ -189,7 +189,7 @@ public class Interpolators {
          * @param totalDistancePx The distance against which progress is calculated.
          */
         public OvershootParams(float startProgress, float overshootPastProgress,
-                               float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
+                float endProgress, float velocityPxPerMs, int totalDistancePx, Context context) {
             velocityPxPerMs = Math.abs(velocityPxPerMs);
             start = startProgress;
             int startPx = (int) (start * totalDistancePx);
@@ -198,7 +198,7 @@ public class Interpolators {
                     getSingleFrameMs(context) / totalDistancePx / 2;
             overshootBy = Utilities.boundToRange(overshootBy, 0.02f, 0.15f);
             end = overshootPastProgress + overshootBy;
-            int endPx = (int) (end * totalDistancePx);
+            int endPx = (int) (end  * totalDistancePx);
             int overshootDistance = endPx - startPx;
             // Calculate deceleration necessary to reach overshoot distance.
             // Formula: velocityFinal^2 = velocityInitial^2 + 2 * acceleration * distance

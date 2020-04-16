@@ -20,6 +20,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.View;
@@ -42,6 +43,10 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
     private static final int MARGIN_DP = 20;
 
     private final String mAction = this.getClass().getName();
+
+    private LinearLayout mView;
+    private int mMargin;
+
     private final BroadcastReceiver mCommandReceiver = new BroadcastReceiver() {
 
         @Override
@@ -49,13 +54,6 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
             handleCommand(intent);
         }
     };
-    private LinearLayout mView;
-    private int mMargin;
-
-    public static Intent getCommandIntent(Class<?> clazz, String method) {
-        return new Intent(clazz.getName() + SUFFIX_COMMAND)
-                .putExtra(EXTRA_METHOD, method);
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +64,7 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         mView = new LinearLayout(this);
         mView.setPadding(mMargin, mMargin, mMargin, mMargin);
         mView.setOrientation(LinearLayout.VERTICAL);
+        mView.setBackgroundColor(Color.BLUE);
         setContentView(mView);
 
         registerReceiver(mCommandReceiver, new IntentFilter(mAction + SUFFIX_COMMAND));
@@ -120,5 +119,10 @@ public class BaseTestingActivity extends Activity implements View.OnClickListene
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Intent getCommandIntent(Class<?> clazz, String method) {
+        return new Intent(clazz.getName() + SUFFIX_COMMAND)
+                .putExtra(EXTRA_METHOD, method);
     }
 }

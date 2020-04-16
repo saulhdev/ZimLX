@@ -16,6 +16,8 @@
 
 package com.android.launcher3.provider;
 
+import static com.android.launcher3.Utilities.getDevicePrefs;
+
 import android.content.ContentProviderOperation;
 import android.content.ContentValues;
 import android.content.Context;
@@ -52,8 +54,6 @@ import com.android.launcher3.util.IntSparseArrayMap;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
-
-import static com.android.launcher3.Utilities.getDevicePrefs;
 
 /**
  * Utility class to import data from another Launcher which is based on Launcher3 schema.
@@ -108,7 +108,7 @@ public class ImportDataTask {
             try (Cursor c = mContext.getContentResolver().query(mOtherFavoritesUri, null,
                     // get items on the first row of the first screen (min screen id)
                     "profileId = ? AND container = -100 AND cellY = 0 AND screen = " +
-                            "(SELECT MIN(screen) FROM favorites WHERE container = -100)",
+                    "(SELECT MIN(screen) FROM favorites WHERE container = -100)",
                     new String[]{profileId},
                     null)) {
                 // First row of first screen is not empty
@@ -174,7 +174,8 @@ public class ImportDataTask {
                     case Favorites.CONTAINER_DESKTOP: {
                         if (screen < Workspace.FIRST_SCREEN_ID) {
                             FileLog.d(TAG, String.format(
-                                    "Skipping item %d, type %d not on a valid screen %d", id, type, screen));
+                                    "Skipping item %d, type %d not on a valid screen %d",
+                                    id, type, screen));
                             continue;
                         }
                         if (firstScreenId == null) {
@@ -228,7 +229,7 @@ public class ImportDataTask {
                             values.put(Favorites.ICON_PACKAGE, c.getString(iconPackageIndex));
                             values.put(Favorites.ICON_RESOURCE, c.getString(iconResourceIndex));
                         }
-                        values.put(Favorites.ICON, c.getBlob(iconIndex));
+                        values.put(Favorites.ICON,  c.getBlob(iconIndex));
                         values.put(Favorites.INTENT, intent.toUri(0));
                         values.put(Favorites.RANK, c.getInt(rankIndex));
 
@@ -302,12 +303,11 @@ public class ImportDataTask {
 
     private static String getPackage(Intent intent) {
         return intent.getComponent() != null ? intent.getComponent().getPackageName()
-                : intent.getPackage();
+            : intent.getPackage();
     }
 
     /**
      * Performs data import if possible.
-     *
      * @return true on successful data import, false if it was not available
      * @throws Exception if the import failed
      */

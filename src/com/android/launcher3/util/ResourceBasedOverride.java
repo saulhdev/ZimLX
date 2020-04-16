@@ -46,7 +46,7 @@ public interface ResourceBasedOverride {
 
             try {
                 return clazz.newInstance();
-            } catch (InstantiationException | IllegalAccessException e) {
+            } catch (InstantiationException|IllegalAccessException e) {
                 throw new RuntimeException(e);
             }
         }

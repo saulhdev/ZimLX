@@ -10,14 +10,14 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.util.Log;
 
-import androidx.annotation.WorkerThread;
-
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.model.LoaderTask;
 import com.android.launcher3.provider.RestoreDbTask;
 import com.android.launcher3.util.ContentWriter;
+
+import androidx.annotation.WorkerThread;
 
 import static android.os.Process.myUserHandle;
 
@@ -87,15 +87,15 @@ public class AppWidgetsRestoredReceiver extends BroadcastReceiver {
             String oldWidgetId = Integer.toString(oldWidgetIds[i]);
             int result = new ContentWriter(context, new ContentWriter.CommitParams(
                     "appWidgetId=? and (restored & 1) = 1 and profileId=?",
-                    new String[]{oldWidgetId, Long.toString(mainProfileId)}))
+                    new String[] { oldWidgetId, Long.toString(mainProfileId) }))
                     .put(LauncherSettings.Favorites.APPWIDGET_ID, newWidgetIds[i])
                     .put(LauncherSettings.Favorites.RESTORED, state)
                     .commit();
 
             if (result == 0) {
                 Cursor cursor = cr.query(Favorites.CONTENT_URI,
-                        new String[]{Favorites.APPWIDGET_ID},
-                        "appWidgetId=?", new String[]{oldWidgetId}, null);
+                        new String[] {Favorites.APPWIDGET_ID},
+                        "appWidgetId=?", new String[] { oldWidgetId }, null);
                 try {
                     if (!cursor.moveToFirst()) {
                         // The widget no long exists.

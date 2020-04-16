@@ -33,12 +33,12 @@ import android.view.View.OnClickListener;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.icons.IconCache;
-import com.android.launcher3.icons.IconCache.ItemInfoUpdateReceiver;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.util.Themes;
@@ -64,7 +64,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
     private Layout mSetupTextLayout;
 
     public PendingAppWidgetHostView(Context context, LauncherAppWidgetInfo info,
-                                    IconCache cache, boolean disabledForSafeMode) {
+            IconCache cache, boolean disabledForSafeMode) {
         super(new ContextThemeWrapper(context, R.style.WidgetContainerTheme));
 
         mInfo = info;
@@ -93,7 +93,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
 
     @Override
     public void updateAppWidgetSize(Bundle newOptions, int minWidth, int minHeight, int maxWidth,
-                                    int maxHeight) {
+            int maxHeight) {
         // No-op
     }
 
@@ -161,7 +161,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
         Color.colorToHSV(dominantColor, hsv);
         hsv[1] = Math.min(hsv[1], MIN_SATUNATION);
         hsv[2] = 1;
-        mSettingIconDrawable.setColorFilter(Color.HSVToColor(hsv), PorterDuff.Mode.SRC_IN);
+        mSettingIconDrawable.setColorFilter(Color.HSVToColor(hsv),  PorterDuff.Mode.SRC_IN);
     }
 
     @Override
@@ -219,7 +219,7 @@ public class PendingAppWidgetHostView extends LauncherAppWidgetHostView
             mRect.set(0, 0, size, size);
             mRect.offsetTo((getWidth() - mRect.width()) / 2, (getHeight() - mRect.height()) / 2);
             mCenterDrawable.setBounds(mRect);
-        } else {
+        } else  {
             float iconSize = Math.max(0, Math.min(availableWidth, availableHeight));
 
             // Use twice the setting size factor, as the setting is drawn at a corner and the

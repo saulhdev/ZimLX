@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.allapps;
 
+import static android.view.View.MeasureSpec.UNSPECIFIED;
+
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Canvas;
@@ -32,15 +34,14 @@ import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.logging.UserEventDispatcher.LogContainerProvider;
+import com.android.launcher3.allapps.AllAppsGridAdapter.AppsGridLayoutManager;
+import com.android.launcher3.compat.AccessibilityManagerCompat;
+import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 
 import java.util.List;
-
-import static android.view.View.MeasureSpec.UNSPECIFIED;
 
 /**
  * A RecyclerView with custom fast scroll support for the all apps view.
@@ -49,7 +50,7 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
     private AlphabeticalAppsList mApps;
     private AllAppsFastScrollHelper mFastScrollHelper;
-    private int mNumAppsPerRow;
+    private final int mNumAppsPerRow;
 
     // The specific view heights that we use to calculate scroll
     private SparseIntArray mViewHeights = new SparseIntArray();
@@ -71,12 +72,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         this(context, attrs, defStyleAttr, 0);
     }
 
-    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public AllAppsRecyclerView(Context context, AttributeSet attrs, int defStyleAttr,
+            int defStyleRes) {
         super(context, attrs, defStyleAttr);
         Resources res = getResources();
         mEmptySearchBackgroundTopOffset = res.getDimensionPixelSize(
                 R.dimen.all_apps_empty_search_bg_top_offset);
-        mNumAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
+        mNumAppsPerRow = LauncherAppState.getIDP(context).numColumns;
     }
 
     /**
@@ -102,7 +104,6 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
 
         mViewHeights.clear();
         mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_ICON, grid.allAppsCellHeightPx);
-        mViewHeights.put(AllAppsGridAdapter.VIEW_TYPE_FOLDER, grid.allAppsCellHeightPx);
     }
 
     /**
@@ -112,6 +113,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         // Ensure we reattach the scrollbar if it was previously detached while fast-scrolling
         if (mScrollbar != null) {
             mScrollbar.reattachThumbToScroll();
+        }
+        if (getLayoutManager() instanceof AppsGridLayoutManager) {
+            AppsGridLayoutManager layoutManager = (AppsGridLayoutManager) getLayoutManager();
+            if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0) {
+                // We are at the top, so don't scrollToPosition (would cause unnecessary relayout).
+                return;
+            }
         }
         scrollToPosition(0);
     }
@@ -146,15 +154,13 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
         }
     }
 
-
     public void onSearchResultsChanged() {
         // Always scroll the view to the top so the user can see the changed results
         scrollToTop();
 
         if (mApps.hasNoFilteredResults()) {
             if (mEmptySearchBackground == null) {
-                mEmptySearchBackground = DrawableFactory.INSTANCE.get(getContext())
-                        .getAllAppsBackground(getContext());
+                mEmptySearchBackground = new AllAppsBackgroundDrawable(getContext());
                 mEmptySearchBackground.setAlpha(0);
                 mEmptySearchBackground.setCallback(this);
                 updateEmptySearchBackgroundBounds();
@@ -420,9 +426,5 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     @Override
     public boolean hasOverlappingRendering() {
         return false;
-    }
-
-    public void setScrollbarColor(int color) {
-        mScrollbar.setColor(color);
     }
 }

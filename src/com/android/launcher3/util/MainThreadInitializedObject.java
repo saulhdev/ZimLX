@@ -44,7 +44,7 @@ public class MainThreadInitializedObject<T> {
             } else {
                 try {
                     return new MainThreadExecutor().submit(() -> get(context)).get();
-                } catch (InterruptedException | ExecutionException e) {
+                } catch (InterruptedException|ExecutionException e) {
                     throw new RuntimeException(e);
                 }
             }

@@ -31,7 +31,7 @@ public class WidgetItem extends ComponentKey implements Comparable<WidgetItem> {
     public final int spanX, spanY;
 
     public WidgetItem(LauncherAppWidgetProviderInfo info,
-                      InvariantDeviceProfile idp, IconCache iconCache) {
+            InvariantDeviceProfile idp, IconCache iconCache) {
         super(info.provider, info.getProfile());
 
         label = iconCache.getTitleNoCache(info);

@@ -30,7 +30,7 @@ public class ClippedFolderIconLayoutRule {
     }
 
     public PreviewItemDrawingParams computePreviewItemDrawingParams(int index, int curNumItems,
-                                                                    PreviewItemDrawingParams params) {
+            PreviewItemDrawingParams params) {
         float totalScale = scaleForItem(curNumItems);
         float transX;
         float transY;
@@ -123,7 +123,7 @@ public class ClippedFolderIconLayoutRule {
         // of the icon, and to be based from the top / left of the preview area. The y component
         // is inverted to match the coordinate system.
         result[0] = mAvailableSpace / 2 + (float) (radius * Math.cos(theta) / 2) - halfIconSize;
-        result[1] = mAvailableSpace / 2 + (float) (-radius * Math.sin(theta) / 2) - halfIconSize;
+        result[1] = mAvailableSpace / 2 + (float) (- radius * Math.sin(theta) / 2) - halfIconSize;
 
     }
 

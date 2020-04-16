@@ -59,7 +59,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     private int mCurrentScroll;
     private int mTotalScroll;
     private Paint mLinePaint;
-    private int mLineHeight;
+    private final int mLineHeight;
 
     private static final Property<WorkspacePageIndicator, Integer> PAINT_ALPHA
             = new Property<WorkspacePageIndicator, Integer>(Integer.class, "paint_alpha") {
@@ -121,18 +121,11 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
         mLinePaint.setAlpha(0);
 
         mLauncher = Launcher.getLauncher(context);
-        updateLineHeight();
         mLineHeight = res.getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
 
         boolean darkText = WallpaperColorInfo.getInstance(context).supportsDarkText();
         mActiveAlpha = darkText ? BLACK_ALPHA : WHITE_ALPHA;
         mLinePaint.setColor(darkText ? Color.BLACK : Color.WHITE);
-    }
-
-    public void updateLineHeight() {
-        boolean show = Utilities.getZimPrefs(getContext()).getDockShowPageIndicator();
-        mLineHeight = !show ? 0 : getResources()
-                .getDimensionPixelSize(R.dimen.dynamic_grid_page_indicator_line_height);
     }
 
     @Override
@@ -179,8 +172,7 @@ public class WorkspacePageIndicator extends View implements Insettable, PageIndi
     }
 
     @Override
-    public void setActiveMarker(int activePage) {
-    }
+    public void setActiveMarker(int activePage) { }
 
     @Override
     public void setMarkersCount(int numMarkers) {

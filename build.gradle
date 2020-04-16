@@ -1,38 +1,16 @@
-import java.text.SimpleDateFormat
-
 buildscript {
     ext.kotlin_version = '1.3.61'
-    ext.version_library_butterknife = "10.1.0"
     ext.version_plugin_kotlin = "1.3.31"
     ext.enable_plugin_kotlin = true
-
-    ext.getGitHash = { ->
-        try {
-            def stdout = new ByteArrayOutputStream()
-            exec {
-                commandLine 'git', 'rev-parse', 'HEAD'
-                standardOutput = stdout
-            }
-            return stdout.toString().trim()
-        } catch (Exception ignored) {
-            return 'unknown'
-        }
-    }
-
-    tasks.matching { task -> task.name.matches('.*generate.*Resources') }.all {
-        task -> task.dependsOn copyRepoFiles
-    }
-
     repositories {
+        mavenCentral()
         google()
         jcenter()
-        mavenCentral()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.2'
-        classpath 'com.google.protobuf:protobuf-gradle-plugin:0.8.9'
+        classpath GRADLE_CLASS_PATH
+        classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-
     }
 }
 
@@ -40,74 +18,67 @@ final String FRAMEWORK_PREBUILTS_DIR = "prebuilts"
 
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.protobuf'
-
 if (enable_plugin_kotlin) {
     apply plugin: 'kotlin-android'
     apply plugin: 'kotlin-android-extensions'
     apply plugin: 'kotlin-kapt'
 }
-
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
-    Properties localProps = new Properties()
-    File localPropsFile = project.rootProject.file('local.properties')
-    if (localPropsFile.exists()) {
-        localProps.load(localPropsFile.newDataInputStream())
-    }
+    buildToolsVersion BUILD_TOOLS_VERSION
+
     def name = "0.7.1"
-    def code = 3017
+    def code = 3018
+
     defaultConfig {
         minSdkVersion 25
-        targetSdkVersion 29
-
-        buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
-        buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
-        buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
+        targetSdkVersion 28
 
         applicationId "org.zimmob.zimlx"
         versionName name
         versionCode code
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables.useSupportLibrary = true
-
-        multiDexEnabled true
     }
-
-
     buildTypes {
         debug {
             minifyEnabled false
         }
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            debuggable true
-            //signingConfig signingConfigs
-        }
     }
-    flavorDimensions "default", "custom", "recents"
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    // The flavor dimensions for build variants (e.g. aospWithQuickstep, aospWithoutQuickstep)
+    // See: https://developer.android.com/studio/build/build-variants#flavor-dimensions
+    flavorDimensions "app", "custom", "recents"
+
     productFlavors {
         aosp {
-            dimension "default"
+            dimension "app"
             applicationId 'org.zimmob.zimlx'
             testApplicationId 'com.android.launcher3.tests'
         }
+
         l3go {
-            dimension "default"
+            dimension "app"
             applicationId 'com.android.launcher3'
             testApplicationId 'com.android.launcher3.tests'
-        }
-        withoutQuickstep {
-            dimension "recents"
-            applicationId 'org.zimmob.zimlx'
         }
 
         withQuickstep {
             dimension "recents"
-            applicationId 'org.zimmob.zimlx'
-            testApplicationId 'com.android.launcher3.tests'
+        }
+
+        withQuickstepIconRecents {
+            dimension "recents"
+        }
+
+        withoutQuickstep {
+            dimension "recents"
         }
         zim {
             dimension "custom"
@@ -115,40 +86,47 @@ android {
             proguardFile 'proguard-android-optimize.txt'
         }
     }
-    lintOptions {
-        disable 'MissingTranslation'
-        disable 'ExtraTranslation'
-        abortOnError false
-        checkReleaseBuilds false
+
+    // Disable release builds for now
+    android.variantFilter { variant ->
+        if (variant.buildType.name.endsWith('release')) {
+            variant.setIgnore(true)
+        }
+
+        // Icon recents is Go only
+        if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {
+            variant.setIgnore(true)
+        }
     }
 
     sourceSets {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_plugins']
-            aidl.srcDirs = ['src']
-            assets.srcDirs = ['assets']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
                 srcDir 'proto_overrides/'
-                srcDir 'proto_pixel/'
             }
         }
+
         debug {
             manifest.srcFile "AndroidManifest.xml"
         }
-        release {
-            manifest.srcFile "AndroidManifest.xml"
-        }
+
         androidTest {
             res.srcDirs = ['tests/res']
-            java.srcDirs = ['tests/src', "src_ui_overrides"]
+            java.srcDirs = ['tests/src', 'tests/tapl']
             manifest.srcFile "tests/AndroidManifest-common.xml"
         }
 
+        androidTestDebug {
+            manifest.srcFile "tests/AndroidManifest.xml"
+        }
+
         aosp {
-            java.srcDirs = ['src_flags', "src_shortcuts_overrides"]
+            java.srcDirs = ['src_flags', 'src_shortcuts_overrides']
+            manifest.srcFile "AndroidManifest.xml"
         }
 
         l3go {
@@ -156,6 +134,7 @@ android {
             java.srcDirs = ['go/src']
             manifest.srcFile "go/AndroidManifest.xml"
         }
+
         withoutQuickstep {
             java.srcDirs = ['src_ui_overrides']
         }
@@ -166,103 +145,73 @@ android {
             manifest.srcFile "quickstep/AndroidManifest.xml"
         }
 
+        withQuickstepIconRecents {
+            res.srcDirs = ['quickstep/res', 'go/quickstep/res']
+            java.srcDirs = ['quickstep/src', 'go/quickstep/src']
+            manifest.srcFile "quickstep/AndroidManifest.xml"
+        }
         zim {
             res.srcDirs = ['ZimLX/res']
             java.srcDirs = ['ZimLX/src']
             manifest.srcFile "ZimLX/AndroidManifest.xml"
         }
     }
-
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
             options.compilerArgs.add("-Xbootclasspath/p:${FRAMEWORK_PREBUILTS_DIR}/libs/framework.jar")
         }
     }
-
-    kotlinOptions {
-        jvmTarget = '1.8'
-    }
-
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-}
-
-afterEvaluate {
-    android.applicationVariants.all { variant ->
-        variant.resValue 'string', 'application_id', variant.applicationId
-    }
 }
 
 repositories {
+    //maven { url "../../../prebuilts/fullsdk-darwin/extras/android/m2repository" }
+    //maven { url "../../../prebuilts/fullsdk-linux/extras/android/m2repository" }
+    //mavenCentral()
     google()
     jcenter()
     maven { url 'https://jitpack.io' }
-    mavenCentral()
 }
-
 final String SUPPORT_LIBS_VERSION = '1.0.0'
 dependencies {
-    implementation 'com.android.support:appcompat-v7:29.0.0'
-    implementation 'com.android.support:preference-v7:29.0.0'
-    implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
-    implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
-    implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
-    //implementation 'com.google.protobuf.nano:protobuf-javanano:3.0.0-alpha-7'
-    implementation 'com.github.florent37:fiftyshadesof:1.0.0'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation 'com.afollestad.material-dialogs:core:2.0.3'
-    implementation 'com.balysv:material-ripple:1.0.2'
-    implementation 'cat.ereza:customactivityoncrash:2.2.0'
-    implementation 'com.jaredrummler:colorpicker:1.1.0'
-    implementation 'com.github.LawnchairLauncher:hoko-lite:0e21db9ae5'
-    implementation 'com.luckycatlabs:SunriseSunsetCalculator:1.2'
-    implementation 'com.squareup.okhttp3:okhttp:4.0.0-RC1'
-    implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
-    implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
-    implementation 'me.xdrop:fuzzywuzzy:1.2.0'
+    implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
+    implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
     implementation project(':IconLoader')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
     // Recents lib dependency
     withQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_shared.jar')
+    //withQuickstepImplementation project(':systemui-shared')
+
+    // Recents lib dependency for Go
+    withQuickstepIconRecentsImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'sysui_shared.jar')
 
     // Required for AOSP to compile. This is already included in the sysui_shared.jar
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
-    // Tools
-    implementation "com.jakewharton:butterknife:${version_library_butterknife}"
+    implementation 'com.android.support:appcompat-v7:29.0.0'
+    implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
+    implementation 'cat.ereza:customactivityoncrash:2.2.0'
+
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     if (enable_plugin_kotlin) {
         implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$version_plugin_kotlin"
     }
-    // Processors
-    def anpros = ["com.jakewharton:butterknife-compiler:${version_library_butterknife}"]
-    for (anpro in anpros) {
-        if (enable_plugin_kotlin) {
-            kapt anpro
-        } else {
-            annotationProcessor anpro
-        }
-    }
+
+    testImplementation 'junit:junit:4.12'
     androidTestImplementation 'org.mockito:mockito-core:2.7.22'
-    androidTestImplementation 'androidx.test:core:1.1.0'
-    androidTestImplementation 'androidx.test:runner:1.1.1'
-    androidTestImplementation 'androidx.test:rules:1.1.1'
-    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
+    androidTestImplementation 'com.google.dexmaker:dexmaker:1.2'
+    androidTestImplementation 'com.google.dexmaker:dexmaker-mockito:1.2'
+    androidTestImplementation 'com.android.support.test:runner:1.1.1'
+    androidTestImplementation 'com.android.support.test:rules:1.1.1'
+    androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2'
+    androidTestImplementation "androidx.annotation:annotation:${ANDROID_X_VERSION}"
 }
 
 protobuf {
     // Configure the protoc executable
     protoc {
-        artifact = 'com.google.protobuf:protoc:3.0.0'
+        artifact = 'com.google.protobuf:protoc:3.0.0-alpha-3'
 
         generateProtoTasks {
             all().each { task ->
@@ -272,44 +221,10 @@ protobuf {
                         option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
-                        option "java_package=search.proto|com.google.android.apps.nexuslauncher.search.nano"
-                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
                         option "enum_style=java"
                     }
                 }
             }
         }
     }
-}
-
-final String[] ROOT_TO_RAW_COPY_FILES = ["README.md", "CHANGELOG.md", "CONTRIBUTORS.md", "LICENSE.txt", "LICENSE.md", "LICENSE"]
-task copyRepoFiles(type: Copy) {
-    from rootProject.files(ROOT_TO_RAW_COPY_FILES)
-    into "res/raw"
-    rename { String fileName -> fileName.replace(fileName, fileName.toLowerCase()) }
-}
-
-@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
-// Returns used android languages as a buildConfig array: {'de', 'it', ..}"
-static String findAndroidLocales() {
-    Set<String> langs = new HashSet<>()
-    new File('.').eachFileRecurse(groovy.io.FileType.DIRECTORIES) {
-        final foldername = it.name
-        if (foldername.startsWith('values-') && !it.canonicalPath.contains("build" + File.separator + "intermediates")) {
-            new File(it.toString()).eachFileRecurse(groovy.io.FileType.FILES) {
-                if (it.name.toLowerCase().endsWith(".xml") && it.getCanonicalFile().getText('UTF-8').contains("<string")) {
-                    langs.add(foldername.replace("values-", ""))
-                }
-            }
-        }
-    }
-    return '{' + langs.collect { "\"${it}\"" }.join(",") + '}'
-}
-
-@SuppressWarnings(["UnnecessaryQualifiedReference", "SpellCheckingInspection", "GroovyUnusedDeclaration"])
-// Returns the build date in a RFC3339 compatible format. TZ is always converted to UTC
-static String getBuildDate() {
-    final SimpleDateFormat RFC3339_LIKE = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm'Z'")
-    RFC3339_LIKE.setTimeZone(TimeZone.getTimeZone("UTC"))
-    return RFC3339_LIKE.format(new Date())
 }

@@ -29,19 +29,10 @@ import com.android.launcher3.widget.WidgetAddFlowHandler;
  */
 public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
-    public static final Parcelable.Creator<PendingRequestArgs> CREATOR =
-            new Parcelable.Creator<PendingRequestArgs>() {
-                public PendingRequestArgs createFromParcel(Parcel source) {
-                    return new PendingRequestArgs(source);
-                }
-
-                public PendingRequestArgs[] newArray(int size) {
-                    return new PendingRequestArgs[size];
-                }
-            };
     private static final int TYPE_NONE = 0;
     private static final int TYPE_INTENT = 1;
     private static final int TYPE_APP_WIDGET = 2;
+
     private final int mArg1;
     private final int mObjectType;
     private final Parcelable mObject;
@@ -66,21 +57,7 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
 
         mArg1 = parcel.readInt();
         mObjectType = parcel.readInt();
-        mObject = parcel.readParcelable(null);
-    }
-
-    public static PendingRequestArgs forWidgetInfo(
-            int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
-        PendingRequestArgs args =
-                new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
-        args.copyFrom(info);
-        return args;
-    }
-
-    public static PendingRequestArgs forIntent(int requestCode, Intent intent, ItemInfo info) {
-        PendingRequestArgs args = new PendingRequestArgs(requestCode, TYPE_INTENT, intent);
-        args.copyFrom(info);
-        return args;
+        mObject = parcel.readParcelable(getClass().getClassLoader());
     }
 
     @Override
@@ -115,4 +92,29 @@ public class PendingRequestArgs extends ItemInfo implements Parcelable {
     public int getRequestCode() {
         return mObjectType == TYPE_INTENT ? mArg1 : 0;
     }
+
+    public static PendingRequestArgs forWidgetInfo(
+            int appWidgetId, WidgetAddFlowHandler widgetHandler, ItemInfo info) {
+        PendingRequestArgs args =
+                new PendingRequestArgs(appWidgetId, TYPE_APP_WIDGET, widgetHandler);
+        args.copyFrom(info);
+        return args;
+    }
+
+    public static PendingRequestArgs forIntent(int requestCode, Intent intent, ItemInfo info) {
+        PendingRequestArgs args = new PendingRequestArgs(requestCode, TYPE_INTENT, intent);
+        args.copyFrom(info);
+        return args;
+    }
+
+    public static final Parcelable.Creator<PendingRequestArgs> CREATOR =
+            new Parcelable.Creator<PendingRequestArgs>() {
+                public PendingRequestArgs createFromParcel(Parcel source) {
+                    return new PendingRequestArgs(source);
+                }
+
+                public PendingRequestArgs[] newArray(int size) {
+                    return new PendingRequestArgs[size];
+                }
+            };
 }

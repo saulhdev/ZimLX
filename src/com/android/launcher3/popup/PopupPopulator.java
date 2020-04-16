@@ -22,9 +22,6 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
-
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.WorkspaceItemInfo;
@@ -41,6 +38,9 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
  * this class determines which items appear in the container, and in what order.
@@ -48,8 +48,7 @@ import java.util.List;
 public class PopupPopulator {
 
     public static final int MAX_SHORTCUTS = 4;
-    @VisibleForTesting
-    static final int NUM_DYNAMIC = 2;
+    @VisibleForTesting static final int NUM_DYNAMIC = 2;
     public static final int MAX_SHORTCUTS_IF_NOTIFICATIONS = 2;
 
     /**
@@ -124,9 +123,9 @@ public class PopupPopulator {
     }
 
     public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
-                                                final Handler uiHandler, final PopupContainerWithArrow container,
-                                                final List<DeepShortcutView> shortcutViews,
-                                                final List<NotificationKeyData> notificationKeys) {
+            final Handler uiHandler, final PopupContainerWithArrow container,
+            final List<DeepShortcutView> shortcutViews,
+            final List<NotificationKeyData> notificationKeys) {
         final ComponentName activity = originalInfo.getTargetComponent();
         final UserHandle user = originalInfo.user;
         return () -> {

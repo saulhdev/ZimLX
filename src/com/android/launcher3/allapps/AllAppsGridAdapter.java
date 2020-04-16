@@ -24,33 +24,26 @@ import android.view.View;
 import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
-import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.BubbleTextView;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
+import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
+import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.model.AppLaunchTracker;
+import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.touch.ItemLongClickListener;
+import com.android.launcher3.util.PackageManagerHelper;
+
+import java.util.List;
 
 import androidx.core.view.accessibility.AccessibilityEventCompat;
 import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.launcher3.AppInfo;
-import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.Launcher;
-import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
-import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
-import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.folder.FolderIcon;
-import com.android.launcher3.touch.ItemClickHandler;
-import com.android.launcher3.touch.ItemLongClickListener;
-import com.android.launcher3.util.PackageManagerHelper;
-
-import org.zimmob.zimlx.globalsearch.SearchProvider;
-import org.zimmob.zimlx.globalsearch.SearchProviderController;
-import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
-
-import java.util.List;
 
 /**
  * The grid view adapter of all the apps.
@@ -73,14 +66,10 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public static final int VIEW_TYPE_ALL_APPS_DIVIDER = 1 << 4;
     public static final int VIEW_TYPE_WORK_TAB_FOOTER = 1 << 5;
 
-    // Drawer folders
-    public static final int VIEW_TYPE_FOLDER = 1 << 6;
-    // Web search suggestions
-    public static final int VIEW_TYPE_SEARCH_SUGGESTION = 1 << 7;
-
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
-    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_FOLDER;
+    public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON;
+
 
     public interface BindViewCallback {
         void onBindView(ViewHolder holder);
@@ -122,14 +111,14 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
         @Override
         public int getRowCountForAccessibility(RecyclerView.Recycler recycler,
-                                               RecyclerView.State state) {
+                RecyclerView.State state) {
             return super.getRowCountForAccessibility(recycler, state) -
                     getRowsNotForAccessibility(mApps.getAdapterItems().size() - 1);
         }
 
         @Override
         public void onInitializeAccessibilityNodeInfoForItem(RecyclerView.Recycler recycler,
-                                                             RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
+                RecyclerView.State state, View host, AccessibilityNodeInfoCompat info) {
             super.onInitializeAccessibilityNodeInfoForItem(recycler, state, host, info);
 
             ViewGroup.LayoutParams lp = host.getLayoutParams();
@@ -191,7 +180,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     private final GridLayoutManager mGridLayoutMgr;
     private final GridSpanSizer mGridSizer;
 
-    private int mAppsPerRow;
+    private final int mAppsPerRow;
 
     private BindViewCallback mBindViewCallback;
     private OnFocusChangeListener mIconFocusListener;
@@ -211,8 +200,7 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         mGridLayoutMgr.setSpanSizeLookup(mGridSizer);
         mLayoutInflater = LayoutInflater.from(launcher);
 
-        //mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
-        mAppsPerRow = mLauncher.getDeviceProfile().inv.numColsDrawer;
+        mAppsPerRow = mLauncher.getDeviceProfile().inv.numColumns;
         mGridLayoutMgr.setSpanCount(mAppsPerRow);
     }
 
@@ -260,7 +248,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         switch (viewType) {
             case VIEW_TYPE_ICON:
-                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(R.layout.all_apps_icon, parent, false);
+                BubbleTextView icon = (BubbleTextView) mLayoutInflater.inflate(
+                        R.layout.all_apps_icon, parent, false);
                 icon.setOnClickListener(ItemClickHandler.INSTANCE);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 icon.setLongPressTimeoutFactor(1f);
@@ -269,35 +258,21 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 // Ensure the all apps icon height matches the workspace icons in portrait mode.
                 icon.getLayoutParams().height = mLauncher.getDeviceProfile().allAppsCellHeightPx;
                 return new ViewHolder(icon);
-
             case VIEW_TYPE_EMPTY_SEARCH:
                 return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_empty_search,
                         parent, false));
-
             case VIEW_TYPE_SEARCH_MARKET:
                 View searchMarketView = mLayoutInflater.inflate(R.layout.all_apps_search_market,
                         parent, false);
-                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(v, mMarketSearchIntent, null));
+                searchMarketView.setOnClickListener(v -> mLauncher.startActivitySafely(
+                        v, mMarketSearchIntent, null, AppLaunchTracker.CONTAINER_SEARCH));
                 return new ViewHolder(searchMarketView);
-
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 return new ViewHolder(mLayoutInflater.inflate(
                         R.layout.all_apps_divider, parent, false));
-
             case VIEW_TYPE_WORK_TAB_FOOTER:
                 View footer = mLayoutInflater.inflate(R.layout.work_tab_footer, parent, false);
                 return new ViewHolder(footer);
-            case VIEW_TYPE_FOLDER:
-                FrameLayout layout = new FrameLayout(mLauncher);
-
-                ViewGroup.MarginLayoutParams lp = new ViewGroup.MarginLayoutParams(
-                        ViewGroup.LayoutParams.MATCH_PARENT,
-                        mLauncher.getDeviceProfile().allAppsCellHeightPx);
-                layout.setLayoutParams(lp);
-                return new ViewHolder(layout);
-            case VIEW_TYPE_SEARCH_SUGGESTION:
-                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_suggestion, parent, false));
-
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -312,7 +287,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                 icon.reset();
                 icon.applyFromApplicationInfo(info);
                 break;
-
             case VIEW_TYPE_EMPTY_SEARCH:
                 TextView emptyViewText = (TextView) holder.itemView;
                 emptyViewText.setText(mEmptySearchMessage);
@@ -327,7 +301,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                     searchView.setVisibility(View.GONE);
                 }
                 break;
-
             case VIEW_TYPE_ALL_APPS_DIVIDER:
                 // nothing to do
                 break;
@@ -339,30 +312,6 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         managedByLabel.getContext()).isAnyProfileQuietModeEnabled();
                 managedByLabel.setText(anyProfileQuietModeEnabled
                         ? R.string.work_mode_off_label : R.string.work_mode_on_label);
-                break;
-            case VIEW_TYPE_FOLDER:
-                ViewGroup container = (ViewGroup) holder.itemView;
-                FolderIcon folderIcon = mApps.getAdapterItems().get(position)
-                        .folderItem.getFolderIcon(mLauncher, container);
-
-                container.removeAllViews();
-                container.addView(folderIcon);
-
-                break;
-            case VIEW_TYPE_SEARCH_SUGGESTION:
-                int color = getDrawerTextColor();
-                ViewGroup group = (ViewGroup) holder.itemView;
-                TextView textView = group.findViewById(R.id.suggestion);
-                String suggestion = mApps.getAdapterItems().get(position).suggestion;
-                textView.setText(suggestion);
-                textView.setTextColor(color);
-                ((ImageView) group.findViewById(android.R.id.icon)).getDrawable().setTint(color);
-                group.setOnClickListener(v -> {
-                    SearchProvider provider = getSearchProvider();
-                    if (provider instanceof WebSearchProvider) {
-                        ((WebSearchProvider) provider).openResults(suggestion);
-                    }
-                });
                 break;
         }
         if (mBindViewCallback != null) {
@@ -387,12 +336,4 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
-    public int getDrawerTextColor() {
-        return Utilities.getZimPrefs(mLauncher).getAllAppsColor();
-    }
-
-
-    private SearchProvider getSearchProvider() {
-        return SearchProviderController.Companion.getInstance(mLauncher).getSearchProvider();
-    }
 }

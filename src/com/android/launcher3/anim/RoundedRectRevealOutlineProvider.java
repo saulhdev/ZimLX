@@ -33,7 +33,7 @@ public class RoundedRectRevealOutlineProvider extends RevealOutlineAnimation {
     private final Rect mEndRect;
 
     public RoundedRectRevealOutlineProvider(float startRadius, float endRadius, Rect startRect,
-                                            Rect endRect) {
+            Rect endRect) {
         mStartRadius = startRadius;
         mEndRadius = endRadius;
         mStartRect = startRect;

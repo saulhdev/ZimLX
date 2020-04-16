@@ -18,16 +18,19 @@ package com.android.launcher3.compat;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.os.Process;
 import android.os.UserHandle;
 
-import androidx.annotation.NonNull;
-
-import com.android.launcher3.util.PackageUserKey;
-
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+
+import androidx.annotation.NonNull;
+
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.PackageUserKey;
 
 public abstract class PackageInstallerCompat {
 
@@ -52,8 +55,7 @@ public abstract class PackageInstallerCompat {
     }
 
     public static UserHandle getUserHandle(SessionInfo info) {
-        //return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
-        return Process.myUserHandle();
+        return Utilities.ATLEAST_Q ? info.getUser() : Process.myUserHandle();
     }
 
     /**

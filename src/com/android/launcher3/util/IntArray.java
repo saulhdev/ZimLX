@@ -30,7 +30,7 @@ public class IntArray implements Cloneable {
     /* package private */ int[] mValues;
     /* package private */ int mSize;
 
-    private IntArray(int[] array, int size) {
+    private  IntArray(int[] array, int size) {
         mValues = array;
         mSize = size;
     }
@@ -239,7 +239,7 @@ public class IntArray implements Cloneable {
      */
     public String toConcatString() {
         StringBuilder b = new StringBuilder();
-        for (int i = 0; i < mSize; i++) {
+        for (int i = 0; i < mSize ; i++) {
             if (i > 0) {
                 b.append(", ");
             }
@@ -251,7 +251,7 @@ public class IntArray implements Cloneable {
     /**
      * Throws {@link ArrayIndexOutOfBoundsException} if the index is out of bounds.
      *
-     * @param len   length of the array. Must be non-negative
+     * @param len length of the array. Must be non-negative
      * @param index the index to check
      * @throws ArrayIndexOutOfBoundsException if the {@code index} is out of bounds of the array
      */

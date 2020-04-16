@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2015 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2015 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -12,17 +13,18 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/search_market_text"
     android:layout_width="match_parent"
     android:layout_height="48dp"
-    android:background="?android:selectableItemBackground"
-    android:focusable="true"
-    android:fontFamily="sans-serif-medium"
     android:gravity="center"
     android:paddingLeft="@dimen/dynamic_grid_edge_margin"
     android:paddingRight="@dimen/dynamic_grid_edge_margin"
+    android:fontFamily="sans-serif-medium"
+    android:textSize="14sp"
+    android:textColor="?android:attr/colorAccent"
     android:text="@string/all_apps_search_market_message"
     android:textAllCaps="true"
-    android:textColor="?android:attr/colorAccent"
-    android:textSize="14sp" />
+    android:focusable="true"
+    android:background="?android:selectableItemBackground" />

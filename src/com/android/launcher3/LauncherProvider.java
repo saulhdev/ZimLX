@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
+import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
+
 import android.annotation.TargetApi;
 import android.app.backup.BackupManager;
 import android.appwidget.AppWidgetHost;
@@ -30,9 +33,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.OperationApplicationException;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ProviderInfo;
 import android.content.res.Resources;
 import android.database.Cursor;
+import android.database.DatabaseUtils;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteQueryBuilder;
@@ -45,6 +50,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.Process;
 import android.os.UserHandle;
+import android.os.UserManager;
 import android.provider.BaseColumns;
 import android.provider.Settings;
 import android.text.TextUtils;
@@ -53,7 +59,6 @@ import android.util.Xml;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
 import com.android.launcher3.LauncherSettings.Favorites;
-import com.android.launcher3.LauncherSettings.WorkspaceScreens;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.logging.FileLog;
@@ -72,18 +77,14 @@ import org.xmlpull.v1.XmlPullParser;
 
 import java.io.File;
 import java.io.FileDescriptor;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Locale;
-
-import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
-import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
 public class LauncherProvider extends ContentProvider {
     private static final String TAG = "LauncherProvider";
@@ -170,7 +171,7 @@ public class LauncherProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+            String[] selectionArgs, String sortOrder) {
         createDbIfNotExists();
 
         SqlArguments args = new SqlArguments(uri, selection, selectionArgs);
@@ -184,9 +185,8 @@ public class LauncherProvider extends ContentProvider {
         return result;
     }
 
-    @Thunk
-    static int dbInsertAndCheck(DatabaseHelper helper,
-                                SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
+    @Thunk static int dbInsertAndCheck(DatabaseHelper helper,
+            SQLiteDatabase db, String table, String nullColumnHack, ContentValues values) {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
@@ -251,7 +251,7 @@ public class LauncherProvider extends ContentProvider {
                     AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
                     int appWidgetId = widgetHost.allocateAppWidgetId();
                     values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-                    if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
+                    if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
                         widgetHost.deleteAppWidgetId(appWidgetId);
                         return false;
                     }
@@ -363,7 +363,7 @@ public class LauncherProvider extends ContentProvider {
                 clearFlagEmptyDbCreated();
                 return null;
             }
-            case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED: {
+            case LauncherSettings.Settings.METHOD_WAS_EMPTY_DB_CREATED : {
                 Bundle result = new Bundle();
                 result.putBoolean(LauncherSettings.Settings.EXTRA_VALUE,
                         Utilities.getPrefs(getContext()).getBoolean(EMPTY_DATABASE_CREATED, false));
@@ -422,9 +422,9 @@ public class LauncherProvider extends ContentProvider {
             // Select folders whose id do not match any container value.
             String selection = LauncherSettings.Favorites.ITEM_TYPE + " = "
                     + LauncherSettings.Favorites.ITEM_TYPE_FOLDER + " AND "
-                    + LauncherSettings.Favorites._ID + " NOT IN (SELECT " +
-                    LauncherSettings.Favorites.CONTAINER + " FROM "
-                    + Favorites.TABLE_NAME + ")";
+                    + LauncherSettings.Favorites._ID +  " NOT IN (SELECT " +
+                            LauncherSettings.Favorites.CONTAINER + " FROM "
+                                + Favorites.TABLE_NAME + ")";
 
             IntArray folderIds = LauncherDbUtils.queryIntArray(db, Favorites.TABLE_NAME,
                     Favorites._ID, selection, null, null);
@@ -447,8 +447,7 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
-    @Thunk
-    static void addModifiedTime(ContentValues values) {
+    @Thunk static void addModifiedTime(ContentValues values) {
         values.put(LauncherSettings.Favorites.MODIFIED, System.currentTimeMillis());
     }
 
@@ -472,7 +471,7 @@ public class LauncherProvider extends ContentProvider {
             AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
             AutoInstallsLayout loader = createWorkspaceLoaderFromAppRestriction(widgetHost);
             if (loader == null) {
-                loader = AutoInstallsLayout.get(getContext(), widgetHost, mOpenHelper);
+                loader = AutoInstallsLayout.get(getContext(),widgetHost, mOpenHelper);
             }
             if (loader == null) {
                 final Partner partner = Partner.get(getContext().getPackageManager());
@@ -545,7 +544,7 @@ public class LauncherProvider extends ContentProvider {
                     ctx.getPackageManager().getResourcesForApplication(pi.applicationInfo),
                     () -> parser, AutoInstallsLayout.TAG_WORKSPACE);
         } catch (Exception e) {
-            Log.e(TAG, "Error getting layout stream from: " + authority, e);
+            Log.e(TAG, "Error getting layout stream from: " + authority , e);
             return null;
         }
     }
@@ -619,7 +618,7 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = 0;
 
             addFavoritesTable(db, false);
-            addWorkspacesTable(db, false);
+
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
             onEmptyDbCreated();
@@ -659,46 +658,6 @@ public class LauncherProvider extends ContentProvider {
             Favorites.addTableToDb(db, getDefaultUserSerial(), optional);
         }
 
-        private void addWorkspacesTable(SQLiteDatabase db, boolean optional) {
-            String ifNotExists = optional ? " IF NOT EXISTS " : "";
-            db.execSQL("CREATE TABLE " + ifNotExists + WorkspaceScreens.TABLE_NAME + " (" +
-                    WorkspaceScreens._ID + " INTEGER PRIMARY KEY," +
-                    WorkspaceScreens.SCREEN_RANK + " INTEGER," +
-                    LauncherSettings.ChangeLogColumns.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
-                    ");");
-        }
-
-        private void removeOrphanedItems(SQLiteDatabase db) {
-            // Delete items directly on the workspace who's screen id doesn't exist
-            //  "DELETE FROM favorites WHERE screen NOT IN (SELECT _id FROM workspaceScreens)
-            //   AND container = -100"
-            String removeOrphanedDesktopItems = "DELETE FROM " + Favorites.TABLE_NAME +
-                    " WHERE " +
-                    LauncherSettings.Favorites.SCREEN + " NOT IN (SELECT " +
-                    WorkspaceScreens._ID + " FROM " + WorkspaceScreens.TABLE_NAME + ")" +
-                    " AND " +
-                    LauncherSettings.Favorites.CONTAINER + " = " +
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP;
-            db.execSQL(removeOrphanedDesktopItems);
-
-            // Delete items contained in folders which no longer exist (after above statement)
-            //  "DELETE FROM favorites  WHERE container <> -100 AND container <> -101 AND container
-            //   NOT IN (SELECT _id FROM favorites WHERE itemType = 2)"
-            String removeOrphanedFolderItems = "DELETE FROM " + Favorites.TABLE_NAME +
-                    " WHERE " +
-                    LauncherSettings.Favorites.CONTAINER + " <> " +
-                    LauncherSettings.Favorites.CONTAINER_DESKTOP +
-                    " AND "
-                    + LauncherSettings.Favorites.CONTAINER + " <> " +
-                    LauncherSettings.Favorites.CONTAINER_HOTSEAT +
-                    " AND "
-                    + LauncherSettings.Favorites.CONTAINER + " NOT IN (SELECT " +
-                    LauncherSettings.Favorites._ID + " FROM " + Favorites.TABLE_NAME +
-                    " WHERE " + LauncherSettings.Favorites.ITEM_TYPE + " = " +
-                    LauncherSettings.Favorites.ITEM_TYPE_FOLDER + ")";
-            db.execSQL(removeOrphanedFolderItems);
-        }
-
         @Override
         public void onOpen(SQLiteDatabase db) {
             super.onOpen(db);
@@ -735,20 +694,12 @@ public class LauncherProvider extends ContentProvider {
                 // The version cannot be lower that 12, as Launcher3 never supported a lower
                 // version of the DB.
                 case 12:
-                    mMaxScreenId = 0;
-                    addWorkspacesTable(db, false);
+                    // No-op
                 case 13: {
                     try (SQLiteTransaction t = new SQLiteTransaction(db)) {
                         // Insert new column for holding widget provider name
                         db.execSQL("ALTER TABLE favorites " +
                                 "ADD COLUMN appWidgetProvider TEXT;");
-
-                        // Insert new column for holding update timestamp
-                        db.execSQL("ALTER TABLE favorites " +
-                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
-                        db.execSQL("ALTER TABLE workspaceScreens " +
-                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
-
                         t.commit();
                     } catch (SQLException ex) {
                         Log.e(TAG, ex.getMessage(), ex);
@@ -774,7 +725,6 @@ public class LauncherProvider extends ContentProvider {
                     // No-op
                 case 18:
                     // No-op
-                    removeOrphanedItems(db);
                 case 19: {
                     // Add userId column
                     if (!addIntegerColumn(db, Favorites.PROFILE_ID, getDefaultUserSerial())) {
@@ -788,9 +738,6 @@ public class LauncherProvider extends ContentProvider {
                     }
                 case 21:
                     // No-op
-                    if (!recreateWorkspaceTable(db)) {
-                        break;
-                    }
                 case 22: {
                     if (!addIntegerColumn(db, Favorites.OPTIONS, 0)) {
                         // Old version remains, which means we wipe old data
@@ -835,15 +782,6 @@ public class LauncherProvider extends ContentProvider {
                 case 28:
                     // DB Upgraded successfully
                     return;
-
-                case 29:
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
-                case 30:
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON_ENTRY + " TEXT;");
-                case 31:
-                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.SWIPE_UP_ACTION + " TEXT;");
-                    return;
             }
 
             // DB was not upgraded
@@ -869,7 +807,7 @@ public class LauncherProvider extends ContentProvider {
         public void createEmptyDB(SQLiteDatabase db) {
             try (SQLiteTransaction t = new SQLiteTransaction(db)) {
                 dropTable(db, Favorites.TABLE_NAME);
-                dropTable(db, WorkspaceScreens.TABLE_NAME);
+                dropTable(db, "workspaceScreens");
                 onCreate(db);
                 t.commit();
             }
@@ -911,12 +849,11 @@ public class LauncherProvider extends ContentProvider {
          * Replaces all shortcuts of type {@link Favorites#ITEM_TYPE_SHORTCUT} which have a valid
          * launcher activity target with {@link Favorites#ITEM_TYPE_APPLICATION}.
          */
-        @Thunk
-        void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
+        @Thunk void convertShortcutsToLauncherActivities(SQLiteDatabase db) {
             try (SQLiteTransaction t = new SQLiteTransaction(db);
                  // Only consider the primary user as other users can't have a shortcut.
                  Cursor c = db.query(Favorites.TABLE_NAME,
-                         new String[]{Favorites._ID, Favorites.INTENT},
+                         new String[] { Favorites._ID, Favorites.INTENT},
                          "itemType=" + Favorites.ITEM_TYPE_SHORTCUT +
                                  " AND profileId=" + getDefaultUserSerial(),
                          null, null, null, null);
@@ -950,45 +887,7 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
-        /**
-         * Recreates workspace table and migrates data to the new table.
-         */
-        public boolean recreateWorkspaceTable(SQLiteDatabase db) {
-            try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-                final ArrayList<Integer> sortedIDs;
-
-                try (Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
-                        new String[]{LauncherSettings.WorkspaceScreens._ID},
-                        null, null, null, null,
-                        LauncherSettings.WorkspaceScreens.SCREEN_RANK)) {
-                    // Use LinkedHashSet so that ordering is preserved
-                    sortedIDs = new ArrayList<>(
-                            LauncherDbUtils.iterateCursor(c, 0, new LinkedHashSet<Integer>()));
-                }
-                db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
-                addWorkspacesTable(db, false);
-
-                // Add all screen ids back
-                int total = sortedIDs.size();
-                for (int i = 0; i < total; i++) {
-                    ContentValues values = new ContentValues();
-                    values.put(LauncherSettings.WorkspaceScreens._ID, sortedIDs.get(i));
-                    values.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
-                    addModifiedTime(values);
-                    db.insertOrThrow(WorkspaceScreens.TABLE_NAME, null, values);
-                }
-                t.commit();
-                mMaxScreenId = sortedIDs.isEmpty() ? 0 : Collections.max(sortedIDs);
-            } catch (SQLException ex) {
-                // Old version remains, which means we wipe old data
-                Log.e(TAG, ex.getMessage(), ex);
-                return false;
-            }
-            return true;
-        }
-
-        @Thunk
-        boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
+        @Thunk boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
             try (SQLiteTransaction t = new SQLiteTransaction(db)) {
                 if (addRankColumn) {
                     // Insert new column for holding rank
@@ -997,14 +896,14 @@ public class LauncherProvider extends ContentProvider {
 
                 // Get a map for folder ID to folder width
                 Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
-                                + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
-                                + " GROUP BY container;",
-                        new String[]{Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
+                        + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
+                        + " GROUP BY container;",
+                        new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
 
                 while (c.moveToNext()) {
                     db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
-                                    + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
-                            new Object[]{c.getLong(1) + 1, c.getLong(0)});
+                            + "container=? AND cellX IS NOT NULL AND cellY IS NOT NULL;",
+                            new Object[] {c.getLong(1) + 1, c.getLong(0)});
                 }
 
                 c.close();
@@ -1059,14 +958,13 @@ public class LauncherProvider extends ContentProvider {
             Integer screen = values.getAsInteger(Favorites.SCREEN);
             Integer container = values.getAsInteger(Favorites.CONTAINER);
             if (screen != null && container != null
-                    && container == Favorites.CONTAINER_DESKTOP) {
+                    && container.intValue() == Favorites.CONTAINER_DESKTOP) {
                 mMaxScreenId = Math.max(screen, mMaxScreenId);
             }
         }
 
         private int initializeMaxItemId(SQLiteDatabase db) {
-            //return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID, Favorites.TABLE_NAME);
-            return getMaxId(db, WorkspaceScreens.TABLE_NAME);
+            return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID, Favorites.TABLE_NAME);
         }
 
         // Generates a new ID to use for an workspace screen in your database. This method
@@ -1083,16 +981,12 @@ public class LauncherProvider extends ContentProvider {
         }
 
         private int initializeMaxScreenId(SQLiteDatabase db) {
-            /*return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d",
+            return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s WHERE %3$s = %4$d",
                     Favorites.SCREEN, Favorites.TABLE_NAME, Favorites.CONTAINER,
                     Favorites.CONTAINER_DESKTOP);
-            */
-
-            return getMaxId(db, WorkspaceScreens.TABLE_NAME);
         }
 
-        @Thunk
-        int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
+        @Thunk int loadFavorites(SQLiteDatabase db, AutoInstallsLayout loader) {
             // TODO: Use multiple loaders with fall-back and transaction.
             int count = loader.loadLayout(db, new IntArray());
 
@@ -1106,8 +1000,7 @@ public class LauncherProvider extends ContentProvider {
     /**
      * @return the max _id in the provided table.
      */
-    /*@Thunk
-    static int getMaxId(SQLiteDatabase db, String query, Object... args) {
+    @Thunk static int getMaxId(SQLiteDatabase db, String query, Object... args) {
         int max = (int) DatabaseUtils.longForQuery(db,
                 String.format(Locale.ENGLISH, query, args),
                 null);
@@ -1115,30 +1008,7 @@ public class LauncherProvider extends ContentProvider {
             throw new RuntimeException("Error: could not query max id");
         }
         return max;
-    }*/
-
-    /**
-     * @return the max _id in the provided table.
-     */
-    @Thunk
-    static int getMaxId(SQLiteDatabase db, String table) {
-        Cursor c = db.rawQuery("SELECT MAX(_id) FROM " + table, null);
-        // get the result
-        int id = -1;
-        if (c != null && c.moveToNext()) {
-            id = c.getInt(0);
-        }
-        if (c != null) {
-            c.close();
-        }
-
-        if (id == -1) {
-            throw new RuntimeException("Error: could not query max id in " + table);
-        }
-
-        return id;
     }
-
 
     static class SqlArguments {
         public final String table;

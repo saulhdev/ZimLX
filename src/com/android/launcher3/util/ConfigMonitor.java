@@ -91,12 +91,10 @@ public class ConfigMonitor extends BroadcastReceiver implements DisplayListener 
     }
 
     @Override
-    public void onDisplayAdded(int displayId) {
-    }
+    public void onDisplayAdded(int displayId) { }
 
     @Override
-    public void onDisplayRemoved(int displayId) {
-    }
+    public void onDisplayRemoved(int displayId) { }
 
     @Override
     public void onDisplayChanged(int displayId) {

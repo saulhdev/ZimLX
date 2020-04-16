@@ -64,8 +64,7 @@ public class ShiftedBitmapDrawable extends Drawable {
     }
 
     @Override
-    public void setAlpha(int i) {
-    }
+    public void setAlpha(int i) { }
 
     @Override
     public void setColorFilter(ColorFilter colorFilter) {

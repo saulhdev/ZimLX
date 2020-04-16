@@ -45,11 +45,31 @@ public class DbDowngradeHelper {
 
     private static final String KEY_VERSION = "version";
     private static final String KEY_DOWNGRADE_TO = "downgrade_to_";
-    public final int version;
+
     private final SparseArray<String[]> mStatements = new SparseArray<>();
+    public final int version;
 
     private DbDowngradeHelper(int version) {
         this.version = version;
+    }
+
+    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+        ArrayList<String> allCommands = new ArrayList<>();
+
+        for (int i = oldVersion - 1; i >= newVersion; i--) {
+            String[] commands = mStatements.get(i);
+            if (commands == null) {
+                throw new SQLiteException("Downgrade path not supported to version " + i);
+            }
+            Collections.addAll(allCommands, commands);
+        }
+
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            for (String sql : allCommands) {
+                db.execSQL(sql);
+            }
+            t.commit();
+        }
     }
 
     public static DbDowngradeHelper parse(File file) throws JSONException, IOException {
@@ -79,29 +99,10 @@ public class DbDowngradeHelper {
 
         // Write the updated schema
         try (FileOutputStream fos = new FileOutputStream(schemaFile);
-             InputStream in = context.getResources().openRawResource(R.raw.downgrade_schema)) {
+            InputStream in = context.getResources().openRawResource(R.raw.downgrade_schema)) {
             IOUtils.copy(in, fos);
         } catch (IOException e) {
             Log.e(TAG, "Error writing schema file", e);
-        }
-    }
-
-    public void onDowngrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        ArrayList<String> allCommands = new ArrayList<>();
-
-        for (int i = oldVersion - 1; i >= newVersion; i--) {
-            String[] commands = mStatements.get(i);
-            if (commands == null) {
-                throw new SQLiteException("Downgrade path not supported to version " + i);
-            }
-            Collections.addAll(allCommands, commands);
-        }
-
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            for (String sql : allCommands) {
-                db.execSQL(sql);
-            }
-            t.commit();
         }
     }
 }

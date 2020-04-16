@@ -16,6 +16,10 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.AbstractFloatingView.TYPE_DISCOVERY_BOUNCE;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.ValueAnimator;
 import android.content.ComponentName;
 import android.content.res.Resources;
@@ -23,12 +27,14 @@ import android.graphics.Bitmap;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.DragEvent;
 import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
 
+import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.DragSource;
 import com.android.launcher3.DropTarget;
 import com.android.launcher3.ItemInfo;
@@ -36,6 +42,7 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.accessibility.DragViewStateAnnouncer;
+import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.util.TouchController;
@@ -43,17 +50,13 @@ import com.android.launcher3.util.UiThreadHelper;
 
 import java.util.ArrayList;
 
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
-import static com.android.launcher3.LauncherState.NORMAL;
-
 /**
  * Class for initiating a drag within a view or across multiple views.
  */
 public class DragController implements DragDriver.EventListener, TouchController {
     private static final boolean PROFILE_DRAWING_DURING_DRAG = false;
 
-    @Thunk
-    Launcher mLauncher;
+    @Thunk Launcher mLauncher;
     private FlingToDeleteHelper mFlingToDeleteHelper;
 
     // temporaries to avoid gc thrash
@@ -66,9 +69,7 @@ public class DragController implements DragDriver.EventListener, TouchController
      */
     private DragDriver mDragDriver = null;
 
-    /**
-     * Options controlling the drag behavior.
-     */
+    /** Options controlling the drag behavior. */
     private DragOptions mOptions;
 
     /** X coordinate of the down event. */
@@ -90,14 +91,11 @@ public class DragController implements DragDriver.EventListener, TouchController
 
     private DropTarget mLastDropTarget;
 
-    @Thunk
-    int[] mLastTouch = new int[2];
-    @Thunk
-    long mLastTouchUpTime = -1;
-    @Thunk
-    int mDistanceSinceScroll = 0;
+    @Thunk int mLastTouch[] = new int[2];
+    @Thunk long mLastTouchUpTime = -1;
+    @Thunk int mDistanceSinceScroll = 0;
 
-    private int[] mTmpPoint = new int[2];
+    private int mTmpPoint[] = new int[2];
     private Rect mDragLayerRect = new Rect();
 
     private boolean mIsInPreDrag;
@@ -110,7 +108,7 @@ public class DragController implements DragDriver.EventListener, TouchController
          * A drag has begun
          *
          * @param dragObject The object being dragged
-         * @param options    Options used to start the drag
+         * @param options Options used to start the drag
          */
         void onDragStart(DropTarget.DragObject dragObject, DragOptions options);
 
@@ -144,14 +142,15 @@ public class DragController implements DragDriver.EventListener, TouchController
      *          Makes dragging feel more precise, e.g. you can clip out a transparent border
      */
     public DragView startDrag(Bitmap b, int dragLayerX, int dragLayerY,
-                              DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
-                              float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
+            DragSource source, ItemInfo dragInfo, Point dragOffset, Rect dragRegion,
+            float initialDragViewScale, float dragViewScaleOnDrop, DragOptions options) {
         if (PROFILE_DRAWING_DURING_DRAG) {
             android.os.Debug.startMethodTracing("Launcher");
         }
 
         // Hide soft keyboard, if visible
         UiThreadHelper.hideKeyboardAsync(mLauncher, mWindowToken);
+        AbstractFloatingView.closeOpenViews(mLauncher, false, TYPE_DISCOVERY_BOUNCE);
 
         mOptions = options;
         if (mOptions.systemDndStartPoint != null) {
@@ -321,7 +320,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     public void animateDragViewToOriginalPosition(final Runnable onComplete,
-                                                  final View originalIcon, int duration) {
+            final View originalIcon, int duration) {
         Runnable onCompleteRunnable = new Runnable() {
             @Override
             public void run() {
@@ -399,7 +398,7 @@ public class DragController implements DragDriver.EventListener, TouchController
     @Override
     public void onDriverDragEnd(float x, float y) {
         DropTarget dropTarget;
-        Runnable flingAnimation = mFlingToDeleteHelper.getFlingAnimation(mDragObject);
+        Runnable flingAnimation = mFlingToDeleteHelper.getFlingAnimation(mDragObject, mOptions);
         if (flingAnimation != null) {
             dropTarget = mFlingToDeleteHelper.getDropTarget();
         } else {
@@ -580,6 +579,9 @@ public class DragController implements DragDriver.EventListener, TouchController
     }
 
     private void drop(DropTarget dropTarget, Runnable flingAnimation) {
+        if (TestProtocol.sDebugTracing) {
+            Log.d(TestProtocol.NO_DRAG_TO_WORKSPACE, "DragController.drop");
+        }
         final int[] coordinates = mCoordinatesTemp;
         mDragObject.x = coordinates[0];
         mDragObject.y = coordinates[1];
@@ -681,5 +683,4 @@ public class DragController implements DragDriver.EventListener, TouchController
     public void removeDropTarget(DropTarget target) {
         mDropTargets.remove(target);
     }
-
 }

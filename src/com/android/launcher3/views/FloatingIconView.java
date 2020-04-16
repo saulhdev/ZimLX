@@ -15,6 +15,14 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
+import static com.android.launcher3.Utilities.getBadge;
+import static com.android.launcher3.Utilities.getFullDrawable;
+import static com.android.launcher3.Utilities.mapToRange;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
@@ -42,13 +50,6 @@ import android.view.ViewOutlineProvider;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
 import android.widget.ImageView;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.UiThread;
-import androidx.annotation.WorkerThread;
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
-
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.InsettableFrameLayout.LayoutParams;
 import com.android.launcher3.ItemInfo;
@@ -65,26 +66,24 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.popup.SystemShortcut;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 
-import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
-import static com.android.launcher3.Utilities.getBadge;
-import static com.android.launcher3.Utilities.getFullDrawable;
-import static com.android.launcher3.Utilities.mapToRange;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
+import androidx.annotation.Nullable;
+import androidx.annotation.UiThread;
+import androidx.annotation.WorkerThread;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 /**
  * A view that is created to look like another view with the purpose of creating fluid animations.
  */
-@TargetApi(Build.VERSION_CODES.P)
+@TargetApi(Build.VERSION_CODES.Q)
 public class FloatingIconView extends View implements
         Animator.AnimatorListener, ClipPathView, OnGlobalLayoutListener {
 
     private static final String TAG = FloatingIconView.class.getSimpleName();
 
     // Manages loading the icon on a worker thread
-    private static @Nullable
-    IconLoadResult sIconLoadResult;
+    private static @Nullable IconLoadResult sIconLoadResult;
 
     public static final float SHAPE_PROGRESS_DURATION = 0.10f;
     private static final int FADE_DURATION_MS = 200;
@@ -138,12 +137,9 @@ public class FloatingIconView extends View implements
 
     private IconLoadResult mIconLoadResult;
 
-    private @Nullable
-    Drawable mBadge;
-    private @Nullable
-    Drawable mForeground;
-    private @Nullable
-    Drawable mBackground;
+    private @Nullable Drawable mBadge;
+    private @Nullable Drawable mForeground;
+    private @Nullable Drawable mBackground;
     private float mRotation;
     private ValueAnimator mRevealAnimator;
     private final Rect mStartRevealRect = new Rect();
@@ -184,8 +180,8 @@ public class FloatingIconView extends View implements
 
         mFgSpringX = new SpringAnimation(this, mFgTransXProperty)
                 .setSpring(new SpringForce()
-                        .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
-                        .setStiffness(SpringForce.STIFFNESS_LOW));
+                .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
+                .setStiffness(SpringForce.STIFFNESS_LOW));
         mFgSpringY = new SpringAnimation(this, mFgTransYProperty)
                 .setSpring(new SpringForce()
                         .setDampingRatio(SpringForce.DAMPING_RATIO_LOW_BOUNCY)
@@ -209,14 +205,13 @@ public class FloatingIconView extends View implements
 
     /**
      * Positions this view to match the size and location of {@param rect}.
-     *
-     * @param alpha              The alpha to set this view.
-     * @param progress           A value from [0, 1] that represents the animation progress.
+     * @param alpha The alpha to set this view.
+     * @param progress A value from [0, 1] that represents the animation progress.
      * @param shapeProgressStart The progress value at which to start the shape reveal.
-     * @param cornerRadius       The corner radius of {@param rect}.
+     * @param cornerRadius The corner radius of {@param rect}.
      */
     public void update(RectF rect, float alpha, float progress, float shapeProgressStart,
-                       float cornerRadius, boolean isOpening) {
+            float cornerRadius, boolean isOpening) {
         setAlpha(alpha);
 
         LayoutParams lp = (LayoutParams) getLayoutParams();
@@ -316,7 +311,7 @@ public class FloatingIconView extends View implements
     /**
      * Sets the size and position of this view to match {@param v}.
      *
-     * @param v           The view to copy
+     * @param v The view to copy
      * @param positionOut Rect that will hold the size and position of v.
      */
     private void matchPositionOf(Launcher launcher, View v, boolean isOpening, RectF positionOut) {
@@ -353,7 +348,7 @@ public class FloatingIconView extends View implements
      * - For BubbleTextView, we return the icon bounds.
      */
     private static float getLocationBoundsForView(Launcher launcher, View v, boolean isOpening,
-                                                  RectF outRect) {
+            RectF outRect) {
         boolean ignoreTransform = !isOpening;
         if (v instanceof DeepShortcutView) {
             v = ((DeepShortcutView) v).getBubbleText();
@@ -375,9 +370,9 @@ public class FloatingIconView extends View implements
             iconBounds.set(0, 0, v.getWidth(), v.getHeight());
         }
 
-        float[] points = new float[]{iconBounds.left, iconBounds.top, iconBounds.right,
+        float[] points = new float[] {iconBounds.left, iconBounds.top, iconBounds.right,
                 iconBounds.bottom};
-        float[] rotation = new float[]{0};
+        float[] rotation = new float[] {0};
         Utilities.getDescendantCoordRelativeToAncestor(v, launcher.getDragLayer(), points,
                 false, ignoreTransform, rotation);
         outRect.set(
@@ -395,13 +390,13 @@ public class FloatingIconView extends View implements
      * initialized.
      *
      * @param originalView The View that the FloatingIconView will replace.
-     * @param info         ItemInfo of the originalView
-     * @param pos          The position of the view.
+     * @param info ItemInfo of the originalView
+     * @param pos The position of the view.
      */
     @WorkerThread
     @SuppressWarnings("WrongThread")
     private static void getIconResult(Launcher l, View originalView, ItemInfo info, RectF pos,
-                                      IconLoadResult iconLoadResult) {
+            IconLoadResult iconLoadResult) {
         Drawable drawable = null;
         Drawable badge = null;
         boolean supportsAdaptiveIcons = ADAPTIVE_ICON_WINDOW_ANIM.get()
@@ -457,13 +452,13 @@ public class FloatingIconView extends View implements
      * Sets the drawables of the {@param originalView} onto this view.
      *
      * @param originalView The View that the FloatingIconView will replace.
-     * @param drawable     The drawable of the original view.
-     * @param badge        The badge of the original view.
-     * @param iconOffset   The amount of offset needed to match this view with the original view.
+     * @param drawable The drawable of the original view.
+     * @param badge The badge of the original view.
+     * @param iconOffset The amount of offset needed to match this view with the original view.
      */
     @UiThread
     private void setIcon(View originalView, @Nullable Drawable drawable, @Nullable Drawable badge,
-                         int iconOffset) {
+            int iconOffset) {
         mBadge = badge;
 
         mIsAdaptiveIcon = drawable instanceof AdaptiveIconDrawable;
@@ -698,12 +693,10 @@ public class FloatingIconView extends View implements
     }
 
     @Override
-    public void onAnimationCancel(Animator animator) {
-    }
+    public void onAnimationCancel(Animator animator) {}
 
     @Override
-    public void onAnimationRepeat(Animator animator) {
-    }
+    public void onAnimationRepeat(Animator animator) {}
 
     @Override
     public void onGlobalLayout() {
@@ -741,15 +734,14 @@ public class FloatingIconView extends View implements
 
     /**
      * Creates a floating icon view for {@param originalView}.
-     *
      * @param originalView The view to copy
      * @param hideOriginal If true, it will hide {@param originalView} while this view is visible.
      *                     Else, we will not draw anything in this view.
-     * @param positionOut  Rect that will hold the size and position of v.
-     * @param isOpening    True if this view replaces the icon for app open animation.
+     * @param positionOut Rect that will hold the size and position of v.
+     * @param isOpening True if this view replaces the icon for app open animation.
      */
     public static FloatingIconView getFloatingIconView(Launcher launcher, View originalView,
-                                                       boolean hideOriginal, RectF positionOut, boolean isOpening) {
+            boolean hideOriginal, RectF positionOut, boolean isOpening) {
         final DragLayer dragLayer = launcher.getDragLayer();
         ViewGroup parent = (ViewGroup) dragLayer.getParent();
         FloatingIconView view = launcher.getViewCache().getView(R.layout.floating_icon_view,

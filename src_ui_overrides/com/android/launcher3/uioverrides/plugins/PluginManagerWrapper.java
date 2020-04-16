@@ -17,14 +17,14 @@ package com.android.launcher3.uioverrides.plugins;
 import android.content.ComponentName;
 import android.content.Context;
 
-import androidx.preference.PreferenceDataStore;
-
 import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.systemui.plugins.Plugin;
 import com.android.systemui.plugins.PluginListener;
 
 import java.util.Collections;
 import java.util.Set;
+
+import androidx.preference.PreferenceDataStore;
 
 public class PluginManagerWrapper {
 
@@ -41,19 +41,17 @@ public class PluginManagerWrapper {
     }
 
     public void addPluginListener(PluginListener<? extends Plugin> listener, Class<?> pluginClass,
-                                  boolean allowMultiple) {
+            boolean allowMultiple) {
     }
 
-    public void removePluginListener(PluginListener<? extends Plugin> listener) {
-    }
+    public void removePluginListener(PluginListener<? extends Plugin> listener) { }
 
     public Set<String> getPluginActions() {
         return Collections.emptySet();
     }
 
     public PreferenceDataStore getPluginEnabler() {
-        return new PreferenceDataStore() {
-        };
+        return new PreferenceDataStore() { };
     }
 
     public static String pluginEnabledKey(ComponentName cn) {

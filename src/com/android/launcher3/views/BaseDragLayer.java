@@ -16,9 +16,18 @@
 
 package com.android.launcher3.views;
 
+import static android.view.MotionEvent.ACTION_CANCEL;
+import static android.view.MotionEvent.ACTION_DOWN;
+import static android.view.MotionEvent.ACTION_UP;
+
+import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
+
+import android.annotation.TargetApi;
 import android.content.Context;
+import android.graphics.Insets;
 import android.graphics.Rect;
 import android.graphics.RectF;
+import android.os.Build;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
@@ -26,6 +35,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.view.WindowInsets;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
 
@@ -39,11 +49,6 @@ import com.android.launcher3.util.TouchController;
 
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
-import static android.view.MotionEvent.ACTION_CANCEL;
-import static android.view.MotionEvent.ACTION_DOWN;
-import static android.view.MotionEvent.ACTION_UP;
-import static com.android.launcher3.util.DefaultDisplay.getSingleFrameMs;
 
 /**
  * A viewgroup with utility methods for drag-n-drop and touch interception
@@ -124,7 +129,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      * view's bounds.
      */
     public boolean isEventOverView(View view, MotionEvent ev, View evView) {
-        int[] xy = new int[]{(int) ev.getX(), (int) ev.getY()};
+        int[] xy = new int[] {(int) ev.getX(), (int) ev.getY()};
         getDescendantCoordRelativeToSelf(evView, xy);
         getDescendantRectRelativeToSelf(view, mHitRect);
         return mHitRect.contains(xy[0], xy[1]);
@@ -166,7 +171,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             // not active
             mActiveController = findControllerToHandleTouch(ev);
 
-            return mActiveController != null;
+            if (mActiveController != null) return true;
         }
         return false;
     }
@@ -363,7 +368,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
      *         assumption fails, we will need to return a pair of scale factors.
      */
     public float getDescendantCoordRelativeToSelf(View descendant, float[] coord,
-                                                  boolean includeRootScroll) {
+            boolean includeRootScroll) {
         return Utilities.getDescendantCoordRelativeToAncestor(descendant, this,
                 coord, includeRootScroll);
     }
@@ -465,7 +470,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
             writer.println(prefix + "\tactiveController: " + mActiveController);
             mActiveController.dump(prefix + "\t", writer);
         }
-        writer.println(prefix + "\tdragLayerAlpha : " + mMultiValueAlpha);
+        writer.println(prefix + "\tdragLayerAlpha : " + mMultiValueAlpha );
     }
 
     public static class LayoutParams extends InsettableFrameLayout.LayoutParams {
@@ -500,7 +505,7 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
         }
     }
 
-    /*@Override
+    @Override
     @TargetApi(Build.VERSION_CODES.Q)
     public WindowInsets dispatchApplyWindowInsets(WindowInsets insets) {
         if (Utilities.ATLEAST_Q) {
@@ -509,5 +514,5 @@ public abstract class BaseDragLayer<T extends Context & ActivityContext>
                     gestureInsets.right, gestureInsets.bottom);
         }
         return super.dispatchApplyWindowInsets(insets);
-    }*/
+    }
 }

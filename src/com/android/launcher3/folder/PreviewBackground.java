@@ -16,6 +16,9 @@
 
 package com.android.launcher3.folder;
 
+import static com.android.launcher3.graphics.IconShape.getShape;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -36,16 +39,10 @@ import android.graphics.Shader;
 import android.util.Property;
 import android.view.View;
 
-import androidx.core.graphics.ColorUtils;
-
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
-import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.views.ActivityContext;
-
-import static com.android.launcher3.graphics.IconShape.getShape;
-import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -99,16 +96,6 @@ public class PreviewBackground {
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
 
-    private boolean isInDrawer;
-
-    public PreviewBackground() {
-        this(false);
-    }
-
-    public PreviewBackground(boolean inDrawer) {
-        isInDrawer = inDrawer;
-    }
-
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
             new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
                 @Override
@@ -160,8 +147,8 @@ public class PreviewBackground {
         float shadowRadius = radius + mStrokeWidth;
         int shadowColor = Color.argb(SHADOW_OPACITY, 0, 0, 0);
         mShadowShader = new RadialGradient(0, 0, 1,
-                new int[]{shadowColor, Color.TRANSPARENT},
-                new float[]{radius / shadowRadius, 1},
+                new int[] {shadowColor, Color.TRANSPARENT},
+                new float[] {radius / shadowRadius, 1},
                 Shader.TileMode.CLAMP);
 
         invalidate();
@@ -216,20 +203,18 @@ public class PreviewBackground {
 
     public int getBgColor() {
         int alpha = (int) Math.min(MAX_BG_OPACITY, BG_OPACITY * mColorMultiplier);
-        return ColorUtils.setAlphaComponent(mBgColor, alpha);
+        return setColorAlphaBound(mBgColor, alpha);
     }
 
-    public void setStartOpacity(float opacity) {
-        mColorMultiplier = opacity;
+    public int getDotColor() {
+        return mDotColor;
     }
 
     public void drawBackground(Canvas canvas) {
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(getBgColor());
 
-        //FolderShape.sInstance.drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
-        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
-
+        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
         drawShadow(canvas);
     }
 
@@ -264,7 +249,7 @@ public class PreviewBackground {
         mPaint.setShader(null);
         if (canvas.isHardwareAccelerated()) {
             mPaint.setXfermode(mShadowPorterDuffXfermode);
-            IconShape.getShape().drawShape(canvas, offsetX, offsetY, getScaledRadius(), mPaint);
+            getShape().drawShape(canvas, offsetX, offsetY, radius, mPaint);
             mPaint.setXfermode(null);
         }
 
@@ -319,14 +304,14 @@ public class PreviewBackground {
 
         mPaint.setStyle(Paint.Style.FILL);
         mPaint.setColor(Color.argb(160, 245, 245, 245));
-        IconShape.getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
+        getShape().drawShape(canvas, getOffsetX(), getOffsetY(), getScaledRadius(), mPaint);
 
         mScale = originalScale;
     }
 
     public Path getClipPath() {
         mPath.reset();
-        IconShape.getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
+        getShape().addToPath(mPath, getOffsetX(), getOffsetY(), getScaledRadius());
         return mPath;
     }
 
@@ -400,22 +385,19 @@ public class PreviewBackground {
         mScaleAnimator.start();
     }
 
-    public void animateToAccept(final CellLayout cl, final int cellX, final int cellY) {
-        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
-        animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER, onStart, null);
+    public void animateToAccept(CellLayout cl, int cellX, int cellY) {
+        animateScale(ACCEPT_SCALE_FACTOR, ACCEPT_COLOR_MULTIPLIER,
+                () -> delegateDrawing(cl, cellX, cellY), null);
     }
 
     public void animateToRest() {
         // This can be called multiple times -- we need to make sure the drawing delegate
         // is saved and restored at the beginning of the animation, since cancelling the
         // existing animation can clear the delgate.
-        final CellLayout cl = mDrawingDelegate;
-        final int cellX = delegateCellX;
-        final int cellY = delegateCellY;
-
-        Runnable onStart = () -> delegateDrawing(cl, cellX, cellY);
-        Runnable onEnd = () -> clearDrawingDelegate();
-        animateScale(1f, 1f, onStart, onEnd);
+        CellLayout cl = mDrawingDelegate;
+        int cellX = delegateCellX;
+        int cellY = delegateCellY;
+        animateScale(1f, 1f, () -> delegateDrawing(cl, cellX, cellY), this::clearDrawingDelegate);
     }
 
     public int getBackgroundAlpha() {

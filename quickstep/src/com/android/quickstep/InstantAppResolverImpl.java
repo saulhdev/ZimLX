@@ -41,8 +41,7 @@ public class InstantAppResolverImpl extends InstantAppResolver {
 
     @Override
     public boolean isInstantApp(ApplicationInfo info) {
-        //return info.isInstantApp();
-        return false;
+        return info.isInstantApp();
     }
 
     @Override

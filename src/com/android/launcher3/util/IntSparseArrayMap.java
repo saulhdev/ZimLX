@@ -43,8 +43,7 @@ public class IntSparseArrayMap<E> extends SparseArray<E> implements Iterable<E> 
         return new ValueIterator();
     }
 
-    @Thunk
-    class ValueIterator implements Iterator<E> {
+    @Thunk class ValueIterator implements Iterator<E> {
 
         private int mNextIndex = 0;
 
@@ -55,7 +54,7 @@ public class IntSparseArrayMap<E> extends SparseArray<E> implements Iterable<E> 
 
         @Override
         public E next() {
-            return valueAt(mNextIndex++);
+            return valueAt(mNextIndex ++);
         }
 
         @Override

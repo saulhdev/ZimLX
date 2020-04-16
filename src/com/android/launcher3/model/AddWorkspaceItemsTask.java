@@ -32,8 +32,8 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.LauncherModel.CallbackTask;
 import com.android.launcher3.LauncherModel.Callbacks;
 import com.android.launcher3.LauncherSettings;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.util.GridOccupancy;
@@ -65,7 +65,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
         final ArrayList<ItemInfo> addedItemsFinal = new ArrayList<>();
         final IntArray addedWorkspaceScreensFinal = new IntArray();
 
-        synchronized (dataModel) {
+        synchronized(dataModel) {
             IntArray workspaceScreens = dataModel.collectWorkspaceScreens();
 
             List<ItemInfo> filteredItems = new ArrayList<>();
@@ -233,8 +233,8 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
      * Find a position on the screen for the given size or adds a new screen.
      * @return screenId and the coordinates for the item in an int array of size 3.
      */
-    protected int[] findSpaceForItem(LauncherAppState app, BgDataModel dataModel,
-                                     IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal, int spanX, int spanY) {
+    protected int[] findSpaceForItem( LauncherAppState app, BgDataModel dataModel,
+            IntArray workspaceScreens, IntArray addedWorkspaceScreensFinal, int spanX, int spanY) {
         LongSparseArray<ArrayList<ItemInfo>> screenItems = new LongSparseArray<>();
 
         // Use sBgItemsIdMap as all the items are already loaded.
@@ -294,7 +294,7 @@ public class AddWorkspaceItemsTask extends BaseModelUpdateTask {
                 throw new RuntimeException("Can't find space to add the item");
             }
         }
-        return new int[]{screenId, cordinates[0], cordinates[1]};
+        return new int[] {screenId, cordinates[0], cordinates[1]};
     }
 
     private boolean findNextAvailableIconSpaceInScreen(

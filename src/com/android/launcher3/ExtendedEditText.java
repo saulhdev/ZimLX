@@ -39,7 +39,7 @@ public class ExtendedEditText extends EditText {
      * Implemented by listeners of the back key.
      */
     public interface OnBackKeyListener {
-        boolean onBackKey();
+        public boolean onBackKey();
     }
 
     private OnBackKeyListener mBackKeyListener;
@@ -85,9 +85,12 @@ public class ExtendedEditText extends EditText {
         super.onLayout(changed, left, top, right, bottom);
         if (mShowImeAfterFirstLayout) {
             // soft input only shows one frame after the layout of the EditText happens,
-            post(() -> {
-                showSoftInput();
-                mShowImeAfterFirstLayout = false;
+            post(new Runnable() {
+                @Override
+                public void run() {
+                    showSoftInput();
+                    mShowImeAfterFirstLayout = false;
+                }
             });
         }
     }
@@ -103,7 +106,7 @@ public class ExtendedEditText extends EditText {
     private boolean showSoftInput() {
         return requestFocus() &&
                 ((InputMethodManager) getContext().getSystemService(Context.INPUT_METHOD_SERVICE))
-                        .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
+                    .showSoftInput(this, InputMethodManager.SHOW_IMPLICIT);
     }
 
     public void dispatchBackKey() {

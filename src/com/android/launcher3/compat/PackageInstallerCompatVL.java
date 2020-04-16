@@ -27,17 +27,18 @@ import android.os.UserHandle;
 import android.text.TextUtils;
 import android.util.SparseArray;
 
-import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherModel;
 import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherModel;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSet;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -48,15 +49,13 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     private static final boolean DEBUG = false;
 
-    @Thunk
-    final SparseArray<PackageUserKey> mActiveSessions = new SparseArray<>();
+    @Thunk final SparseArray<PackageUserKey> mActiveSessions = new SparseArray<>();
 
-    @Thunk
-    final PackageInstaller mInstaller;
+    @Thunk final PackageInstaller mInstaller;
     private final IconCache mCache;
     private final Handler mWorker;
     private final Context mAppContext;
-    private final HashMap<String, Boolean> mSessionVerifiedMap = new HashMap<>();
+    private final HashMap<String,Boolean> mSessionVerifiedMap = new HashMap<>();
     private final LauncherAppsCompat mLauncherApps;
     private final IntSet mPromiseIconIds;
 
@@ -108,9 +107,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
     public SessionInfo getActiveSessionInfo(UserHandle user, String pkg) {
         for (SessionInfo info : getAllVerifiedSessions()) {
             boolean match = pkg.equals(info.getAppPackageName());
-            /*if (Utilities.ATLEAST_Q && !user.equals(getUserHandle(info))) {
+            if (Utilities.ATLEAST_Q && !user.equals(getUserHandle(info))) {
                 match = false;
-            }*/
+            }
             if (match) {
                 return info;
             }
@@ -118,8 +117,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         return null;
     }
 
-    @Thunk
-    void addSessionInfoToCache(SessionInfo info, UserHandle user) {
+    @Thunk void addSessionInfoToCache(SessionInfo info, UserHandle user) {
         String packageName = info.getAppPackageName();
         if (packageName != null) {
             mCache.cachePackageInstallInfo(packageName, user, info.getAppIcon(),
@@ -132,8 +130,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         mInstaller.unregisterSessionCallback(mCallback);
     }
 
-    @Thunk
-    void sendUpdate(PackageInstallInfo info) {
+    @Thunk void sendUpdate(PackageInstallInfo info) {
         LauncherAppState app = LauncherAppState.getInstanceNoCreate();
         if (app != null) {
             app.getModel().setPackageState(info);
@@ -157,7 +154,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
                 && !TextUtils.isEmpty(sessionInfo.getAppLabel())
                 && !mPromiseIconIds.contains(sessionInfo.getSessionId())
                 && mLauncherApps.getApplicationInfo(sessionInfo.getAppPackageName(), 0,
-                getUserHandle(sessionInfo)) == null) {
+                        getUserHandle(sessionInfo)) == null) {
             SessionCommitReceiver.queuePromiseAppIconAddition(mAppContext, sessionInfo);
             mPromiseIconIds.add(sessionInfo.getSessionId());
             updatePromiseIconPrefs();
@@ -213,8 +210,7 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
         }
 
         @Override
-        public void onActiveChanged(int sessionId, boolean active) {
-        }
+        public void onActiveChanged(int sessionId, boolean active) { }
 
         @Override
         public void onBadgingChanged(int sessionId) {
@@ -260,11 +256,9 @@ public class PackageInstallerCompatVL extends PackageInstallerCompat {
 
     @Override
     public List<SessionInfo> getAllVerifiedSessions() {
-  /*      List<SessionInfo> list = new ArrayList<>(Utilities.ATLEAST_Q
+        List<SessionInfo> list = new ArrayList<>(Utilities.ATLEAST_Q
                 ? mLauncherApps.getAllPackageInstallerSessions()
                 : mInstaller.getAllSessions());
-*/
-        List<SessionInfo> list = mInstaller.getAllSessions();
         Iterator<SessionInfo> it = list.iterator();
         while (it.hasNext()) {
             if (verify(it.next()) == null) {

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2009 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -13,79 +14,84 @@
      limitations under the License.
 -->
 
-<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto">
+<favorites xmlns:launcher="http://schemas.android.com/apk/res-auto/com.android.launcher3">
 
-    <custom-appwidget
-        launcher:providerId="1"
+    <!-- Hotseat (We use the screen as the position of the item in the hotseat) -->
+    <!-- Dialer, Messaging, [Maps/Music], Browser, Camera -->
+    <resolve
+        launcher:container="-101"
         launcher:screen="0"
         launcher:x="0"
-        launcher:y="0"
-        launcher:spanX="5"
-        launcher:spanY="1" />
+        launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.DIAL;end" />
+        <favorite launcher:uri="tel:123" />
+        <favorite launcher:uri="#Intent;action=android.intent.action.CALL_BUTTON;end" />
+    </resolve>
 
-    <!-- Hotseat -->
-    <include launcher:workspace="@xml/dw_hotseat_5" />
-    <!-- Google Folder -->
-    <folder
-        launcher:screen="0"
-        launcher:title="@string/google_title"
-        launcher:x="0"
-        launcher:y="5">
-        <favorite
-            launcher:className="com.google.android.googlequicksearchbox.SearchActivity"
-            launcher:packageName="com.google.android.googlequicksearchbox" />
-        <favorite
-            launcher:className="com.google.android.apps.chrome.Main"
-            launcher:packageName="com.android.chrome" />
-        <favorite
-            launcher:className="com.google.android.gm.ConversationListActivityGmail"
-            launcher:packageName="com.google.android.gm" />
-        <favorite
-            launcher:className="com.google.android.maps.MapsActivity"
-            launcher:packageName="com.google.android.apps.maps" />
-        <favorite
-            launcher:className="com.google.android.youtube.app.honeycomb.Shell$HomeActivity"
-            launcher:packageName="com.google.android.youtube" />
-        <favorite
-            launcher:className="com.google.android.apps.docs.app.NewMainProxyActivity"
-            launcher:packageName="com.google.android.apps.docs" />
-        <favorite
-            launcher:className="com.google.android.talk.SigningInActivity"
-            launcher:packageName="com.google.android.talk" />
-        <favorite
-            launcher:className="com.google.android.apps.photos.home.HomeActivity"
-            launcher:packageName="com.google.android.apps.photos" />
-        <favorite
-            launcher:className="com.google.android.apps.wallet.entrypoint.WalletRootActivity"
-            launcher:packageName="com.google.android.apps.walletnfcrel" />
-        <favorite
-            launcher:className="com.android.calendar.AllInOneActivity"
-            launcher:packageName="com.google.android.calendar" />
-        <favorite
-            launcher:className="com.google.android.apps.plus.phone.HomeActivity"
-            launcher:packageName="com.google.android.apps.plus" />
-    </folder>
-
-    <!-- Play Folder -->
-    <folder
-        launcher:screen="0"
-        launcher:title="@string/play_folder_title"
+    <resolve
+        launcher:container="-101"
+        launcher:screen="1"
         launcher:x="1"
-        launcher:y="4">
+        launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MESSAGING;end" />
+        <favorite launcher:uri="sms:" />
+        <favorite launcher:uri="smsto:" />
+        <favorite launcher:uri="mms:" />
+        <favorite launcher:uri="mmsto:" />
+    </resolve>
+
+    <resolve
+        launcher:container="-101"
+        launcher:screen="2"
+        launcher:x="2"
+        launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MAPS;end" />
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MUSIC;end" />
+    </resolve>
+
+    <resolve
+        launcher:container="-101"
+        launcher:screen="3"
+        launcher:x="3"
+        launcher:y="0" >
         <favorite
-            launcher:className="com.android.music.activitymanagement.TopLevelActivity"
-            launcher:packageName="com.google.android.music" />
-        <favorite
-            launcher:className="com.google.android.youtube.videos.EntryPoint"
-            launcher:packageName="com.google.android.videos" />
-        <favorite
-            launcher:className="com.google.android.gms.games.ui.destination.main.MainActivity"
-            launcher:packageName="com.google.android.play.games" />
-        <favorite
-            launcher:className="com.google.android.apps.books.app.BooksActivity"
-            launcher:packageName="com.google.android.apps.books" />
-        <favorite
-            launcher:className="com.google.apps.dots.android.app.activity.CurrentsStartActivity"
-            launcher:packageName="com.google.android.apps.magazines" />
-    </folder>
+            launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_BROWSER;end" />
+        <favorite launcher:uri="http://www.example.com/" />
+    </resolve>
+
+    <resolve
+        launcher:container="-101"
+        launcher:screen="4"
+        launcher:x="4"
+        launcher:y="0" >
+        <favorite launcher:uri="#Intent;action=android.media.action.STILL_IMAGE_CAMERA;end" />
+        <favorite launcher:uri="#Intent;action=android.intent.action.CAMERA_BUTTON;end" />
+    </resolve>
+
+    <!-- Bottom row -->
+    <resolve
+        launcher:screen="0"
+        launcher:x="0"
+        launcher:y="-1" >
+	    <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_EMAIL;end" />
+	    <favorite launcher:uri="mailto:" />
+
+    </resolve>
+
+    <resolve
+        launcher:screen="0"
+        launcher:x="1"
+        launcher:y="-1" >
+	    <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_GALLERY;end" />
+	    <favorite launcher:uri="#Intent;type=images/*;end" />
+
+    </resolve>
+
+    <resolve
+        launcher:screen="0"
+        launcher:x="4"
+        launcher:y="-1" >
+        <favorite launcher:uri="#Intent;action=android.intent.action.MAIN;category=android.intent.category.APP_MARKET;end" />
+        <favorite launcher:uri="market://details?id=com.android.launcher" />
+    </resolve>
 </favorites>

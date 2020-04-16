@@ -39,23 +39,38 @@ public class TouchEventGenerator {
      * Id of the fake device generating the events.
      */
     private static final int DEVICE_ID = 2104;
-    private final Listener mListener;
+
     /**
      * The fingers currently present on the emulated touch screen.
      */
     private Map<Integer, Point> mFingers;
+
     /**
      * Initial event time for the current sequence.
      */
     private long mInitialTime;
+
     /**
      * Time of the last generated event.
      */
     private long mLastEventTime;
+
     /**
      * Time of the next event.
      */
     private long mTime;
+
+    /**
+     * Receives the generated events.
+     */
+    public interface Listener {
+
+        /**
+         * Called when an event was generated.
+         */
+        void onTouchEvent(MotionEvent event);
+    }
+    private final Listener mListener;
 
     public TouchEventGenerator(Listener listener) {
         mListener = listener;
@@ -256,16 +271,5 @@ public class TouchEventGenerator {
         mInitialTime = 0L;
         mLastEventTime = -1L;
         mTime = 0L;
-    }
-
-    /**
-     * Receives the generated events.
-     */
-    public interface Listener {
-
-        /**
-         * Called when an event was generated.
-         */
-        void onTouchEvent(MotionEvent event);
     }
 }

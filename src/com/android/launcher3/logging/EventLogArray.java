@@ -121,9 +121,7 @@ public class EventLogArray {
         return entry != null && entry.type == type && entry.event.equals(event);
     }
 
-    /**
-     * A single event entry.
-     */
+    /** A single event entry. */
     private static class EventEntry {
 
         private int type;

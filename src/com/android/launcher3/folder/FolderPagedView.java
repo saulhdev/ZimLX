@@ -38,9 +38,9 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace.ItemOperator;
-import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.keyboard.ViewGroupFocusHelper;
 import com.android.launcher3.pageindicators.PageIndicatorDots;
@@ -71,8 +71,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     private final LayoutInflater mInflater;
     private final ViewGroupFocusHelper mFocusIndicatorHelper;
 
-    @Thunk
-    final ArrayMap<View, Runnable> mPendingAnimations = new ArrayMap<>();
+    @Thunk final ArrayMap<View, Runnable> mPendingAnimations = new ArrayMap<>();
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private final int mMaxCountX;
@@ -117,7 +116,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * maintaining the restrictions of {@link #mMaxCountX} &amp; {@link #mMaxCountY}.
      */
     public static void calculateGridSize(int count, int countX, int countY, int maxCountX,
-                                         int maxCountY, int maxItemsPerPage, int[] out) {
+            int maxCountY, int maxItemsPerPage, int[] out) {
         boolean done;
         int gridCountX = countX;
         int gridCountY = countY;
@@ -226,16 +225,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) view.getLayoutParams();
         lp.cellX = item.cellX;
         lp.cellY = item.cellY;
-        getPageAt(pageNo).addViewToCellLayout(
-                view, -1, mFolder.mLauncher.getViewIdForItem(item), lp, true);
+        getPageAt(pageNo).addViewToCellLayout(view, -1, item.getViewId(), lp, true);
     }
 
     @SuppressLint("InflateParams")
     public View createNewView(WorkspaceItemInfo item) {
-        int layout = mFolder.isInAppDrawer() ? R.layout.all_apps_folder_application
-                : R.layout.folder_application;
-        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(layout, null, false);
-        textView.applyFromShortcutInfo(item);
+        final BubbleTextView textView = (BubbleTextView) mInflater.inflate(
+                R.layout.folder_application, null, false);
+        textView.applyFromWorkspaceItem(item);
         textView.setHapticFeedbackEnabled(false);
         textView.setOnClickListener(ItemClickHandler.INSTANCE);
         textView.setOnLongClickListener(mFolder);
@@ -258,11 +255,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     private CellLayout createAndAddNewPage() {
         DeviceProfile grid = Launcher.getLauncher(getContext()).getDeviceProfile();
         CellLayout page = (CellLayout) mInflater.inflate(R.layout.folder_page, this, false);
-        if (mFolder.isInAppDrawer()) {
-            page.setCellDimensions(grid.allAppsFolderCellWidthPx, grid.allAppsFolderCellHeightPx);
-        } else {
-            page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
-        }
+        page.setCellDimensions(grid.folderCellWidthPx, grid.folderCellHeightPx);
         page.getShortcutsAndWidgets().setMotionEventSplittingEnabled(false);
         page.setInvertIfRtl(true);
         page.setGridSize(mGridCountX, mGridCountY);
@@ -279,13 +272,13 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
     public void setFixedSize(int width, int height) {
         width -= (getPaddingLeft() + getPaddingRight());
         height -= (getPaddingTop() + getPaddingBottom());
-        for (int i = getChildCount() - 1; i >= 0; i--) {
+        for (int i = getChildCount() - 1; i >= 0; i --) {
             ((CellLayout) getChildAt(i)).setFixedSize(width, height);
         }
     }
 
     public void removeItem(View v) {
-        for (int i = getChildCount() - 1; i >= 0; i--) {
+        for (int i = getChildCount() - 1; i >= 0; i --) {
             getPageAt(i).removeView(v);
         }
     }
@@ -328,6 +321,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
 
         FolderIconPreviewVerifier verifier = new FolderIconPreviewVerifier(
                 Launcher.getLauncher(getContext()).getDeviceProfile().inv);
+        verifier.setFolderInfo(mFolder.getInfo());
         rank = 0;
         for (int i = 0; i < itemCount; i++) {
             View v = list.size() > i ? list.get(i) : null;
@@ -357,15 +351,14 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 }
                 lp.cellX = info.cellX;
                 lp.cellY = info.cellY;
-                currentPage.addViewToCellLayout(
-                        v, -1, mFolder.mLauncher.getViewIdForItem(info), lp, true);
+                currentPage.addViewToCellLayout(v, -1, info.getViewId(), lp, true);
 
                 if (verifier.isItemInPreview(rank) && v instanceof BubbleTextView) {
                     ((BubbleTextView) v).verifyHighRes();
                 }
             }
 
-            rank++;
+            rank ++;
             position++;
         }
 
@@ -393,8 +386,8 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                 (getPageAt(0).getDesiredWidth() + getPaddingLeft() + getPaddingRight()) : 0;
     }
 
-    public int getDesiredHeight() {
-        return getPageCount() > 0 ?
+    public int getDesiredHeight()  {
+        return  getPageCount() > 0 ?
                 (getPageAt(0).getDesiredHeight() + getPaddingTop() + getPaddingBottom()) : 0;
     }
 
@@ -452,7 +445,7 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
      * @return the view for which the operator returned true.
      */
     public View iterateOverItems(ItemOperator op) {
-        for (int k = 0; k < getChildCount(); k++) {
+        for (int k = 0 ; k < getChildCount(); k++) {
             CellLayout page = getPageAt(k);
             for (int j = 0; j < page.getCountY(); j++) {
                 for (int i = 0; i < page.getCountX(); i++) {
@@ -655,10 +648,10 @@ public class FolderPagedView extends PagedView<PageIndicatorDots> {
                         }
                     };
                     v.animate()
-                            .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
-                            .setDuration(REORDER_ANIMATION_DURATION)
-                            .setStartDelay(0)
-                            .withEndAction(endAction);
+                        .translationXBy((direction > 0 ^ mIsRtl) ? -v.getWidth() : v.getWidth())
+                        .setDuration(REORDER_ANIMATION_DURATION)
+                        .setStartDelay(0)
+                        .withEndAction(endAction);
                     mPendingAnimations.put(v, endAction);
                 }
             }

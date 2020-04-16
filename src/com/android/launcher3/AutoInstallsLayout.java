@@ -59,9 +59,7 @@ public class AutoInstallsLayout {
     private static final String TAG = "AutoInstalls";
     private static final boolean LOGD = false;
 
-    /**
-     * Marker action used to discover a package which defines launcher customization
-     */
+    /** Marker action used to discover a package which defines launcher customization */
     static final String ACTION_LAUNCHER_CUSTOMIZATION =
             "android.autoinstalls.config.action.PLAY_AUTO_INSTALL";
 
@@ -73,7 +71,7 @@ public class AutoInstallsLayout {
     private static final String LAYOUT_RES = "default_layout";
 
     static AutoInstallsLayout get(Context context, AppWidgetHost appWidgetHost,
-                                  LayoutParserCallback callback) {
+            LayoutParserCallback callback) {
         Pair<String, Resources> customizationApkInfo = Utilities.findSystemApk(
                 ACTION_LAUNCHER_CUSTOMIZATION, context.getPackageManager());
         if (customizationApkInfo == null) {
@@ -85,7 +83,7 @@ public class AutoInstallsLayout {
 
         // Try with grid size and hotseat count
         String layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES_WITH_HOSTEAT,
-                grid.numColumns, grid.numRows, grid.numHotseatIcons);
+            grid.numColumns, grid.numRows, grid.numHotseatIcons);
         int layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
 
         // Try with only grid size
@@ -93,7 +91,7 @@ public class AutoInstallsLayout {
             Log.d(TAG, "Formatted layout: " + layoutName
                     + " not found. Trying layout without hosteat");
             layoutName = String.format(Locale.ENGLISH, FORMATTED_LAYOUT_RES,
-                    grid.numColumns, grid.numRows);
+                grid.numColumns, grid.numRows);
             layoutId = targetRes.getIdentifier(layoutName, "xml", pkg);
         }
 
@@ -149,10 +147,8 @@ public class AutoInstallsLayout {
     private static final String HOTSEAT_CONTAINER_NAME =
             Favorites.containerToString(Favorites.CONTAINER_HOTSEAT);
 
-    @Thunk
-    final Context mContext;
-    @Thunk
-    final AppWidgetHost mAppWidgetHost;
+    @Thunk final Context mContext;
+    @Thunk final AppWidgetHost mAppWidgetHost;
     protected final LayoutParserCallback mCallback;
 
     protected final PackageManager mPackageManager;
@@ -164,21 +160,20 @@ public class AutoInstallsLayout {
     private final int mColumnCount;
 
     private final int[] mTemp = new int[2];
-    @Thunk
-    final ContentValues mValues;
+    @Thunk final ContentValues mValues;
     protected final String mRootTag;
 
     protected SQLiteDatabase mDb;
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-                              LayoutParserCallback callback, Resources res,
-                              int layoutId, String rootTag) {
+            LayoutParserCallback callback, Resources res,
+            int layoutId, String rootTag) {
         this(context, appWidgetHost, callback, res, () -> res.getXml(layoutId), rootTag);
     }
 
     public AutoInstallsLayout(Context context, AppWidgetHost appWidgetHost,
-                              LayoutParserCallback callback, Resources res,
-                              Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
+            LayoutParserCallback callback, Resources res,
+            Supplier<XmlPullParser> initialLayoutSupplier, String rootTag) {
         mContext = context;
         mAppWidgetHost = appWidgetHost;
         mCallback = callback;
@@ -203,7 +198,7 @@ public class AutoInstallsLayout {
         try {
             return parseLayout(mInitialLayoutSupplier.get(), screenIds);
         } catch (Exception e) {
-            Log.e(TAG, "Error parsing layoutError parsing layout: ", e);
+            Log.e(TAG, "Error parsing layout: ", e);
             return -1;
         }
     }
@@ -249,7 +244,7 @@ public class AutoInstallsLayout {
      */
     protected int parseAndAddNode(
             XmlPullParser parser, ArrayMap<String, TagParser> tagParserMap, IntArray screenIds)
-            throws XmlPullParserException, IOException {
+        throws XmlPullParserException, IOException {
 
         if (TAG_INCLUDE.equals(parser.getName())) {
             final int resId = getAttributeResourceValue(parser, ATTR_WORKSPACE, 0);
@@ -352,15 +347,15 @@ public class AutoInstallsLayout {
                         info = mPackageManager.getActivityInfo(cn, 0);
                     } catch (PackageManager.NameNotFoundException nnfe) {
                         String[] packages = mPackageManager.currentToCanonicalPackageNames(
-                                new String[]{packageName });
+                                new String[] { packageName });
                         cn = new ComponentName(packages[0], className);
                         info = mPackageManager.getActivityInfo(cn, 0);
                     }
                     final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                            .addCategory(Intent.CATEGORY_LAUNCHER)
-                            .setComponent(cn)
-                            .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        .addCategory(Intent.CATEGORY_LAUNCHER)
+                        .setComponent(cn)
+                        .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                                Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
 
                     return addShortcut(info.loadLabel(mPackageManager).toString(),
                             intent, Favorites.ITEM_TYPE_APPLICATION);
@@ -398,10 +393,10 @@ public class AutoInstallsLayout {
 
             mValues.put(Favorites.RESTORED, WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON);
             final Intent intent = new Intent(Intent.ACTION_MAIN, null)
-                    .addCategory(Intent.CATEGORY_LAUNCHER)
-                    .setComponent(new ComponentName(packageName, className))
-                    .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                            Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                .addCategory(Intent.CATEGORY_LAUNCHER)
+                .setComponent(new ComponentName(packageName, className))
+                .setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
+                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mContext.getString(R.string.package_state_unknown), intent,
                     Favorites.ITEM_TYPE_APPLICATION);
         }
@@ -449,7 +444,7 @@ public class AutoInstallsLayout {
             mValues.put(Favorites.ICON_RESOURCE, mIconRes.getResourceName(iconId));
 
             intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK |
-                    Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
+                        Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
             return addShortcut(mSourceRes.getString(titleResId),
                     intent, Favorites.ITEM_TYPE_SHORTCUT);
         }
@@ -628,7 +623,7 @@ public class AutoInstallsLayout {
             throws XmlPullParserException, IOException {
         int type;
         while ((type = parser.next()) != XmlPullParser.START_TAG
-                && type != XmlPullParser.END_DOCUMENT) ;
+                && type != XmlPullParser.END_DOCUMENT);
 
         if (type != XmlPullParser.START_TAG) {
             throw new XmlPullParserException("No start tag found");
@@ -668,7 +663,7 @@ public class AutoInstallsLayout {
      * first before falling back to anonymous attribute.
      */
     protected static int getAttributeResourceValue(XmlPullParser parser, String attribute,
-                                                   int defaultValue) {
+            int defaultValue) {
         AttributeSet attrs = Xml.asAttributeSet(parser);
         int value = attrs.getAttributeResourceValue(
                 "http://schemas.android.com/apk/res-auto/com.android.launcher3", attribute,
@@ -685,8 +680,7 @@ public class AutoInstallsLayout {
         int insertAndCheck(SQLiteDatabase db, ContentValues values);
     }
 
-    @Thunk
-    static void copyInteger(ContentValues from, ContentValues to, String key) {
+    @Thunk static void copyInteger(ContentValues from, ContentValues to, String key) {
         to.put(key, from.getAsInteger(key));
     }
 }

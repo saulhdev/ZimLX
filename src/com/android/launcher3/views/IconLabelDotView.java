@@ -20,6 +20,5 @@ package com.android.launcher3.views;
  */
 public interface IconLabelDotView {
     void setIconVisible(boolean visible);
-
     void setForceHideDot(boolean hide);
 }

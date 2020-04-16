@@ -112,7 +112,7 @@ public class LauncherRecentsView extends RecentsView<Launcher> implements StateL
      */
     @Override
     public AnimatorSet createAdjacentPageAnimForTaskLaunch(TaskView tv,
-                                                           ClipAnimationHelper helper) {
+            ClipAnimationHelper helper) {
         AnimatorSet anim = super.createAdjacentPageAnimForTaskLaunch(tv, helper);
 
         if (!SysUINavigationMode.getMode(mActivity).hasGestures) {

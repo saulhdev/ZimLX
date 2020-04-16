@@ -22,10 +22,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import com.android.launcher3.compat.AccessibilityManagerCompat;
 import com.android.launcher3.views.RecyclerViewFastScroller;
+
+import androidx.recyclerview.widget.RecyclerView;
 
 
 /**
@@ -35,7 +35,7 @@ import com.android.launcher3.views.RecyclerViewFastScroller;
  *   <li> Enable fast scroller.
  * </ul>
  */
-public abstract class BaseRecyclerView extends RecyclerView {
+public abstract class BaseRecyclerView extends RecyclerView  {
 
     protected RecyclerViewFastScroller mScrollbar;
 
@@ -102,7 +102,7 @@ public abstract class BaseRecyclerView extends RecyclerView {
      * @param scrollY the current scroll y
      */
     protected void synchronizeScrollBarThumbOffsetToViewScroll(int scrollY,
-                                                               int availableScrollHeight) {
+            int availableScrollHeight) {
         // Only show the scrollbar if there is height to be scrolled
         if (availableScrollHeight <= 0) {
             mScrollbar.setThumbOffsetY(-1);
@@ -135,7 +135,10 @@ public abstract class BaseRecyclerView extends RecyclerView {
 
         // IF scroller is at the very top OR there is no scroll bar because there is probably not
         // enough items to scroll, THEN it's okay for the container to be pulled down.
-        return getCurrentScrollY() == 0;
+        if (getCurrentScrollY() == 0) {
+            return true;
+        }
+        return false;
     }
 
     /**

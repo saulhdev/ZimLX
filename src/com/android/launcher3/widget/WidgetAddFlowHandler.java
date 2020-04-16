@@ -31,16 +31,6 @@ import com.android.launcher3.util.PendingRequestArgs;
  */
 public class WidgetAddFlowHandler implements Parcelable {
 
-    public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
-            new Parcelable.Creator<WidgetAddFlowHandler>() {
-                public WidgetAddFlowHandler createFromParcel(Parcel source) {
-                    return new WidgetAddFlowHandler(source);
-                }
-
-                public WidgetAddFlowHandler[] newArray(int size) {
-                    return new WidgetAddFlowHandler[size];
-                }
-            };
     private final AppWidgetProviderInfo mProviderInfo;
 
     public WidgetAddFlowHandler(AppWidgetProviderInfo providerInfo) {
@@ -71,17 +61,16 @@ public class WidgetAddFlowHandler implements Parcelable {
      * @see #startConfigActivity(Launcher, int, ItemInfo, int)
      */
     public boolean startConfigActivity(Launcher launcher, LauncherAppWidgetInfo info,
-                                       int requestCode) {
+            int requestCode) {
         return startConfigActivity(launcher, info.appWidgetId, info, requestCode);
     }
 
     /**
      * Starts the widget configuration flow if needed.
-     *
      * @return true if the configuration flow was started, false otherwise.
      */
     public boolean startConfigActivity(Launcher launcher, int appWidgetId, ItemInfo info,
-                                       int requestCode) {
+            int requestCode) {
         if (!needsConfigure()) {
             return false;
         }
@@ -97,4 +86,15 @@ public class WidgetAddFlowHandler implements Parcelable {
     public LauncherAppWidgetProviderInfo getProviderInfo(Context context) {
         return LauncherAppWidgetProviderInfo.fromProviderInfo(context, mProviderInfo);
     }
+
+    public static final Parcelable.Creator<WidgetAddFlowHandler> CREATOR =
+            new Parcelable.Creator<WidgetAddFlowHandler>() {
+                public WidgetAddFlowHandler createFromParcel(Parcel source) {
+                    return new WidgetAddFlowHandler(source);
+                }
+
+                public WidgetAddFlowHandler[] newArray(int size) {
+                    return new WidgetAddFlowHandler[size];
+                }
+            };
 }

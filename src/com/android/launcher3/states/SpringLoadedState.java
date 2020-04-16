@@ -15,23 +15,22 @@
  */
 package com.android.launcher3.states;
 
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
+import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
+
 import android.graphics.Rect;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.InstallShortcutReceiver;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-
-import org.zimmob.zimlx.states.HomeState;
-
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
-import static com.android.launcher3.states.RotationHelper.REQUEST_LOCK;
 
 /**
  * Definition for spring loaded state used during drag and drop.
  */
-public class SpringLoadedState extends HomeState {
+public class SpringLoadedState extends LauncherState {
 
     private static final int STATE_FLAGS = FLAG_MULTI_PAGE |
             FLAG_DISABLE_ACCESSIBILITY | FLAG_DISABLE_RESTORE | FLAG_WORKSPACE_ICONS_CAN_BE_DRAGGED |
@@ -74,6 +73,11 @@ public class SpringLoadedState extends HomeState {
     }
 
     @Override
+    public ScaleAndTranslation getHotseatScaleAndTranslation(Launcher launcher) {
+        return new ScaleAndTranslation(1, 0, 0);
+    }
+
+    @Override
     public void onStateEnabled(Launcher launcher) {
         Workspace ws = launcher.getWorkspace();
         ws.showPageIndicatorAtCurrentScroll();
@@ -88,11 +92,6 @@ public class SpringLoadedState extends HomeState {
     @Override
     public float getWorkspaceScrimAlpha(Launcher launcher) {
         return 0.3f;
-    }
-
-    @Override
-    public float getWorkspaceBlurAlpha(Launcher launcher) {
-        return 1f;
     }
 
     @Override

@@ -1,15 +1,15 @@
 package com.android.launcher3.logging;
 
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.DEFAULT_CONTAINERTYPE;
+
 import android.view.View;
 import android.view.ViewParent;
-
-import androidx.annotation.Nullable;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType.DEFAULT_CONTAINERTYPE;
+import androidx.annotation.Nullable;
 
 
 public class StatsLogUtils {
@@ -29,7 +29,7 @@ public class StatsLogUtils {
 
     /**
      * Implemented by containers to provide a container source for a given child.
-     * <p>
+     *
      * Currently,
      */
     public interface LogContainerProvider {

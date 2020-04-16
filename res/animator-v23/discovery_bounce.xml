@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /*
 ** Copyright 2017, The Android Open Source Project
 **
@@ -25,15 +26,15 @@
             android:fraction="0"
             android:value="1f" />
         <keyframe
-            android:fraction="0.346"
+            android:fraction="0.246"
             android:value="1f" />
         <keyframe
             android:fraction=".423"
-            android:interpolator="@anim/disco_bounce"
-            android:value="0.9438f" />
+            android:interpolator="@interpolator/disco_bounce"
+            android:value="0.9738f" />
         <keyframe
-            android:fraction="0.654"
-            android:interpolator="@anim/disco_bounce"
+            android:fraction="0.754"
+            android:interpolator="@interpolator/disco_bounce"
             android:value="1f" />
         <keyframe
             android:fraction="1"

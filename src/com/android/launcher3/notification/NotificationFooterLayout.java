@@ -149,7 +149,7 @@ public class NotificationFooterLayout extends FrameLayout {
     }
 
     public void animateFirstNotificationTo(Rect toBounds,
-                                           final IconAnimationEndListener callback) {
+            final IconAnimationEndListener callback) {
         AnimatorSet animation = new AnimatorSet();
         final View firstNotification = mIconRow.getChildAt(mIconRow.getChildCount() - 1);
 

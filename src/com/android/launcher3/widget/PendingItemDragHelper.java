@@ -68,7 +68,7 @@ public class PendingItemDragHelper extends DragPreviewProvider {
      * @param screenPos Position of {@link WidgetImageView} on the screen
      */
     public void startDrag(Rect previewBounds, int previewBitmapWidth, int previewViewWidth,
-                          Point screenPos, DragSource source, DragOptions options) {
+            Point screenPos, DragSource source, DragOptions options) {
         final Launcher launcher = Launcher.getLauncher(mView.getContext());
         LauncherAppState app = LauncherAppState.getInstance(launcher);
 

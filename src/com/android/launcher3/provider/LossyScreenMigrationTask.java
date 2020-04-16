@@ -18,6 +18,7 @@ package com.android.launcher3.provider;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 
@@ -81,7 +82,7 @@ public class LossyScreenMigrationTask extends GridSizeMigrationTask {
                 tempValues.clear();
                 update.addToContentValues(tempValues);
                 mDb.update(Favorites.TABLE_NAME, tempValues, "_id = ?",
-                        new String[]{Integer.toString(update.id)});
+                        new String[] {Integer.toString(update.id)});
             }
         }
 

@@ -37,8 +37,8 @@ public class FlingSpringAnim {
     private float mTargetPosition;
 
     public <K> FlingSpringAnim(K object, FloatPropertyCompat<K> property, float startPosition,
-                               float targetPosition, float startVelocity, float minVisChange, float minValue,
-                               float maxValue, float springVelocityFactor, OnAnimationEndListener onEndListener) {
+            float targetPosition, float startVelocity, float minVisChange, float minValue,
+            float maxValue, float springVelocityFactor, OnAnimationEndListener onEndListener) {
         mFlingAnim = new FlingAnimation(object, property)
                 .setFriction(FLING_FRICTION)
                 // Have the spring pull towards the target if we've slowed down too much before

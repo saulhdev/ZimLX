@@ -24,7 +24,6 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
-import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
@@ -44,7 +43,6 @@ import com.android.launcher3.LauncherAppWidgetInfo;
 import com.android.launcher3.PendingAddItemInfo;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompat;
 
@@ -78,33 +76,6 @@ public class PackageManagerHelper {
         return info != null && (info.flags & ApplicationInfo.FLAG_EXTERNAL_STORAGE) != 0;
     }
 
-    public static boolean isAppEnabled(PackageManager pm, String packageName, int flags) {
-        try {
-            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
-            return info != null && info.enabled;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-    public static boolean isAppInstalled(PackageManager pm, String packageName, int flags) {
-        try {
-            ApplicationInfo info = pm.getApplicationInfo(packageName, flags);
-            return info != null;
-        } catch (PackageManager.NameNotFoundException e) {
-            return false;
-        }
-    }
-
-    public String getPackageVersion(final String packageName) {
-        try {
-            PackageInfo info = mPm.getPackageInfo(packageName, 0);
-            return info.versionName;
-        } catch (PackageManager.NameNotFoundException ignored) {
-        }
-        return "";
-    }
-
     /**
      * Returns whether the target app is suspended for a given user as per
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
@@ -129,14 +100,7 @@ public class PackageManagerHelper {
      * {@link android.app.admin.DevicePolicyManager#isPackageSuspended}.
      */
     public static boolean isAppSuspended(ApplicationInfo info) {
-        // The value of FLAG_SUSPENDED was reused by a hidden constant
-        // ApplicationInfo.FLAG_PRIVILEGED prior to N, so only check for suspended flag on N
-        // or later.
-        if (Utilities.ATLEAST_NOUGAT) {
-            return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
-        } else {
-            return false;
-        }
+        return (info.flags & ApplicationInfo.FLAG_SUSPENDED) != 0;
     }
 
     /**
@@ -160,14 +124,9 @@ public class PackageManagerHelper {
         }
 
         // Source does not have sufficient permissions.
-        if (mPm.checkPermission(target.activityInfo.permission, srcPackage) !=
+        if(mPm.checkPermission(target.activityInfo.permission, srcPackage) !=
                 PackageManager.PERMISSION_GRANTED) {
             return false;
-        }
-
-        if (!Utilities.ATLEAST_MARSHMALLOW) {
-            // These checks are sufficient for below M devices.
-            return true;
         }
 
         // On M and above also check AppOpsManager for compatibility mode permissions.
@@ -181,8 +140,7 @@ public class PackageManagerHelper {
 
         try {
             return mPm.getApplicationInfo(srcPackage, 0).targetSdkVersion >= Build.VERSION_CODES.M;
-        } catch (NameNotFoundException e) {
-        }
+        } catch (NameNotFoundException e) { }
 
         return false;
     }
@@ -214,6 +172,11 @@ public class PackageManagerHelper {
         }
     }
 
+    public static Intent getStyleWallpapersIntent(Context context) {
+        return new Intent(Intent.ACTION_SET_WALLPAPER).setComponent(
+                new ComponentName(context.getString(R.string.wallpaper_picker_package),
+                "com.android.customization.picker.CustomizationPickerActivity"));
+    }
 
     /**
      * Starts the details activity for {@code info}

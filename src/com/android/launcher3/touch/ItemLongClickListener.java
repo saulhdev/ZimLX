@@ -15,6 +15,12 @@
  */
 package com.android.launcher3.touch;
 
+import static android.view.View.INVISIBLE;
+import static android.view.View.VISIBLE;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.view.View;
 import android.view.View.OnLongClickListener;
 
@@ -26,12 +32,6 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragOptions;
 import com.android.launcher3.folder.Folder;
-
-import static android.view.View.INVISIBLE;
-import static android.view.View.VISIBLE;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
 
 /**
  * Class to handle long-clicks on workspace items and start drag as a result.
@@ -56,7 +56,7 @@ public class ItemLongClickListener {
     }
 
     public static void beginDrag(View v, Launcher launcher, ItemInfo info,
-                                 DragOptions dragOptions) {
+            DragOptions dragOptions) {
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {
@@ -110,6 +110,8 @@ public class ItemLongClickListener {
         // that is subsequently removed from the workspace in startBinding().
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
-        return !launcher.getDragController().isDragging();
+        if (launcher.getDragController().isDragging()) return false;
+
+        return true;
     }
 }

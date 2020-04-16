@@ -16,17 +16,6 @@
 
 package com.android.launcher3;
 
-import android.view.View;
-import android.view.animation.Interpolator;
-
-import com.android.launcher3.LauncherState.PageAlphaProvider;
-import com.android.launcher3.LauncherState.ScaleAndTranslation;
-import com.android.launcher3.LauncherStateManager.AnimationConfig;
-import com.android.launcher3.anim.AnimatorSetBuilder;
-import com.android.launcher3.anim.PropertySetter;
-import com.android.launcher3.dragndrop.DragLayer;
-import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
-
 import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -40,6 +29,17 @@ import static com.android.launcher3.anim.Interpolators.ZOOM_OUT;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SCRIM_PROGRESS;
 import static com.android.launcher3.graphics.WorkspaceAndHotseatScrim.SYSUI_PROGRESS;
+
+import android.view.View;
+import android.view.animation.Interpolator;
+
+import com.android.launcher3.LauncherState.PageAlphaProvider;
+import com.android.launcher3.LauncherState.ScaleAndTranslation;
+import com.android.launcher3.LauncherStateManager.AnimationConfig;
+import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.dragndrop.DragLayer;
+import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -62,7 +62,7 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     public void setStateWithAnimation(LauncherState toState, AnimatorSetBuilder builder,
-                                      AnimationConfig config) {
+            AnimationConfig config) {
         setWorkspaceProperty(toState, config.getPropertySetter(builder), builder, config);
     }
 
@@ -74,7 +74,7 @@ public class WorkspaceStateTransitionAnimation {
      * Starts a transition animation for the workspace.
      */
     private void setWorkspaceProperty(LauncherState state, PropertySetter propertySetter,
-                                      AnimatorSetBuilder builder, AnimationConfig config) {
+            AnimatorSetBuilder builder, AnimationConfig config) {
         ScaleAndTranslation scaleAndTranslation = state.getWorkspaceScaleAndTranslation(mLauncher);
         ScaleAndTranslation hotseatScaleAndTranslation = state.getHotseatScaleAndTranslation(
                 mLauncher);
@@ -99,7 +99,7 @@ public class WorkspaceStateTransitionAnimation {
                 // Set the hotseat's pivot point to match the workspace's, so that it scales together.
                 DragLayer dragLayer = mLauncher.getDragLayer();
                 float[] workspacePivot =
-                        new float[]{mWorkspace.getPivotX(), mWorkspace.getPivotY()};
+                        new float[]{ mWorkspace.getPivotX(), mWorkspace.getPivotY() };
                 dragLayer.getDescendantCoordRelativeToSelf(mWorkspace, workspacePivot);
                 dragLayer.mapCoordInSelfToDescendant(hotseat, workspacePivot);
                 hotseat.setPivotX(workspacePivot[0]);
@@ -153,8 +153,8 @@ public class WorkspaceStateTransitionAnimation {
     }
 
     private void applyChildState(LauncherState state, CellLayout cl, int childIndex,
-                                 PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
-                                 AnimatorSetBuilder builder, AnimationConfig config) {
+            PageAlphaProvider pageAlphaProvider, PropertySetter propertySetter,
+            AnimatorSetBuilder builder, AnimationConfig config) {
         float pageAlpha = pageAlphaProvider.getPageAlpha(childIndex);
         int drawableAlpha = Math.round(pageAlpha * (state.hasWorkspacePageBackground ? 255 : 0));
 

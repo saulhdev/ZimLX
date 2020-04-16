@@ -16,6 +16,15 @@
 
 package com.android.launcher3.popup;
 
+import static com.android.launcher3.Utilities.squaredHypot;
+import static com.android.launcher3.Utilities.squaredTouchSlop;
+import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
+import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
+import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
+
 import android.animation.AnimatorSet;
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
@@ -66,15 +75,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
-
-import static com.android.launcher3.Utilities.squaredHypot;
-import static com.android.launcher3.Utilities.squaredTouchSlop;
-import static com.android.launcher3.notification.NotificationMainView.NOTIFICATION_ITEM_INFO;
-import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS;
-import static com.android.launcher3.popup.PopupPopulator.MAX_SHORTCUTS_IF_NOTIFICATIONS;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.ItemType;
-import static com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 
 /**
  * A container for shortcuts to deep links and notifications associated with an app.
@@ -245,7 +245,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
 
     @TargetApi(Build.VERSION_CODES.P)
     protected void populateAndShow(final BubbleTextView originalIcon, int shortcutCount,
-                                   final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
+            final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
         mNumNotifications = notificationKeys.size();
         mOriginalIcon = originalIcon;
 
@@ -520,8 +520,7 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
     }
 
     @Override
-    public void onDropCompleted(View target, DragObject d, boolean success) {
-    }
+    public void onDropCompleted(View target, DragObject d, boolean success) {  }
 
     @Override
     public void onDragStart(DropTarget.DragObject dragObject, DragOptions options) {

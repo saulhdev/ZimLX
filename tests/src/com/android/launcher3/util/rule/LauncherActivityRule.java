@@ -18,8 +18,9 @@ package com.android.launcher3.util.rule;
 import android.app.Activity;
 import android.app.Application;
 import android.app.Application.ActivityLifecycleCallbacks;
-import android.content.Intent;
 import android.os.Bundle;
+
+import androidx.test.InstrumentationRegistry;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.Workspace.ItemOperator;
@@ -30,21 +31,12 @@ import org.junit.runners.model.Statement;
 
 import java.util.concurrent.Callable;
 
-import androidx.test.InstrumentationRegistry;
-
 /**
  * Test rule to get the current Launcher activity.
  */
 public class LauncherActivityRule implements TestRule {
 
     private Launcher mActivity;
-
-    public static Intent getHomeIntent() {
-        return new Intent(Intent.ACTION_MAIN)
-                .addCategory(Intent.CATEGORY_HOME)
-                .setPackage(InstrumentationRegistry.getTargetContext().getPackageName())
-                .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-    }
 
     @Override
     public Statement apply(Statement base, Description description) {
@@ -56,29 +48,13 @@ public class LauncherActivityRule implements TestRule {
     }
 
     public Callable<Boolean> itemExists(final ItemOperator op) {
-        return new Callable<Boolean>() {
-
-            @Override
-            public Boolean call() {
-                Launcher launcher = getActivity();
-                if (launcher == null) {
-                    return false;
-                }
-                return launcher.getWorkspace().getFirstMatch(op) != null;
+        return () -> {
+            Launcher launcher = getActivity();
+            if (launcher == null) {
+                return false;
             }
+            return launcher.getWorkspace().getFirstMatch(op) != null;
         };
-    }
-
-    /**
-     * Starts the launcher activity in the target package.
-     */
-    public void startLauncher() {
-        InstrumentationRegistry.getInstrumentation().startActivitySync(getHomeIntent());
-    }
-
-    public void returnToHome() {
-        InstrumentationRegistry.getTargetContext().startActivity(getHomeIntent());
-        InstrumentationRegistry.getInstrumentation().waitForIdleSync();
     }
 
     private class MyStatement extends Statement implements ActivityLifecycleCallbacks {
@@ -90,14 +66,12 @@ public class LauncherActivityRule implements TestRule {
         }
 
         @Override
-        public void evaluate() {
+        public void evaluate() throws Throwable {
             Application app = (Application)
                     InstrumentationRegistry.getTargetContext().getApplicationContext();
             app.registerActivityLifecycleCallbacks(this);
             try {
                 mBase.evaluate();
-            } catch (Throwable throwable) {
-                throwable.printStackTrace();
             } finally {
                 app.unregisterActivityLifecycleCallbacks(this);
             }
@@ -112,6 +86,9 @@ public class LauncherActivityRule implements TestRule {
 
         @Override
         public void onActivityStarted(Activity activity) {
+            if (activity instanceof Launcher) {
+                mActivity.getRotationHelper().forceAllowRotationForTesting(true);
+            }
         }
 
         @Override

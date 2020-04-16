@@ -2,7 +2,7 @@ apply plugin: 'com.android.library'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion '28.0.3'
+    buildToolsVersion BUILD_TOOLS_VERSION
     publishNonDefault true
 
     defaultConfig {
@@ -33,14 +33,12 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
-
 repositories {
     google()
     jcenter()
     maven { url 'https://jitpack.io' }
     mavenCentral()
 }
-
 dependencies {
-    implementation "androidx.core:core:1.0.0"
+    implementation "androidx.core:core:${ANDROID_X_VERSION}"
 }

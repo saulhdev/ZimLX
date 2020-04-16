@@ -161,16 +161,15 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
 
     public void onGestureAnimationStart(RunningTaskInfo runningTaskInfo) {
         mRunningTaskInfo = runningTaskInfo;
-        //onGestureAnimationStart(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
-        onGestureAnimationStart( -1 );
+        onGestureAnimationStart(runningTaskInfo == null ? -1 : runningTaskInfo.taskId);
     }
 
     @Override
     public void setCurrentTask(int runningTaskId) {
         super.setCurrentTask(runningTaskId);
-        /*if (mRunningTaskInfo != null && mRunningTaskInfo.taskId != runningTaskId) {
+        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId != runningTaskId) {
             mRunningTaskInfo = null;
-        }*/
+        }
     }
 
     @Override
@@ -178,7 +177,7 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
         // When quick-switching on 3p-launcher, we add a "dummy" tile corresponding to Launcher
         // as well. This tile is never shown as we have setCurrentTaskHidden, but allows use to
         // track the index of the next task appropriately, as it we are switching on any other app.
-        /*if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
+        if (mRunningTaskInfo != null && mRunningTaskInfo.taskId == mRunningTaskId) {
             // Check if the task list has running task
             boolean found = false;
             for (Task t : tasks) {
@@ -190,10 +189,10 @@ public class FallbackRecentsView extends RecentsView<RecentsActivity> {
             if (!found) {
                 ArrayList<Task> newList = new ArrayList<>(tasks.size() + 1);
                 newList.addAll(tasks);
-                newList.add(Task.from(new TaskKey(mRunningTaskInfo), mRunningTaskInfo, false));
+                //newList.add(Task.from(new TaskKey(mRunningTaskInfo), mRunningTaskInfo, false));
                 tasks = newList;
             }
-        }*/
+        }
         super.applyLoadPlan(tasks);
     }
 }

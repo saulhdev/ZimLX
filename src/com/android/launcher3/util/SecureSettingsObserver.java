@@ -27,9 +27,7 @@ import android.provider.Settings;
  */
 public class SecureSettingsObserver extends ContentObserver {
 
-    /**
-     * Hidden field Settings.Secure.NOTIFICATION_BADGING
-     */
+    /** Hidden field Settings.Secure.NOTIFICATION_BADGING */
     public static final String NOTIFICATION_BADGING = "notification_badging";
 
     private final ContentResolver mResolver;
@@ -38,7 +36,7 @@ public class SecureSettingsObserver extends ContentObserver {
     private final OnChangeListener mOnChangeListener;
 
     public SecureSettingsObserver(ContentResolver resolver, OnChangeListener listener,
-                                  String keySetting, int defaultValue) {
+            String keySetting, int defaultValue) {
         super(new Handler());
 
         mResolver = resolver;
@@ -77,7 +75,7 @@ public class SecureSettingsObserver extends ContentObserver {
     }
 
     public static SecureSettingsObserver newNotificationSettingsObserver(Context context,
-                                                                         OnChangeListener listener) {
+            OnChangeListener listener) {
         return new SecureSettingsObserver(
                 context.getContentResolver(), listener, NOTIFICATION_BADGING, 1);
     }

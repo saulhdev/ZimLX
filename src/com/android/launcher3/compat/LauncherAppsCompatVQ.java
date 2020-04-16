@@ -18,6 +18,10 @@ package com.android.launcher3.compat;
 
 import android.annotation.TargetApi;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageInstaller;
+
+import java.util.List;
 
 @TargetApi(29)
 public class LauncherAppsCompatVQ extends LauncherAppsCompatVO {
@@ -26,7 +30,7 @@ public class LauncherAppsCompatVQ extends LauncherAppsCompatVO {
         super(context);
     }
 
-    /*public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
+    public List<PackageInstaller.SessionInfo> getAllPackageInstallerSessions() {
         return mLauncherApps.getAllPackageInstallerSessions();
-    }*/
+    }
 }

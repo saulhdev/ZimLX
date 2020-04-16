@@ -20,9 +20,9 @@ import android.content.Intent;
 import android.view.View;
 
 import com.android.launcher3.R;
-import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ResourceBasedOverride;
+import com.android.launcher3.logging.StatsLogUtils.LogStateProvider;
 
 /**
  * Handles the user event logging in Q.
@@ -30,7 +30,6 @@ import com.android.launcher3.util.ResourceBasedOverride;
 public class StatsLogManager implements ResourceBasedOverride {
 
     protected LogStateProvider mStateProvider;
-
     public static StatsLogManager newInstance(Context context, LogStateProvider stateProvider) {
         StatsLogManager mgr = Overrides.getObject(StatsLogManager.class,
                 context.getApplicationContext(), R.string.stats_log_manager_class);
@@ -39,18 +38,9 @@ public class StatsLogManager implements ResourceBasedOverride {
         return mgr;
     }
 
-    public void logAppLaunch(View v, Intent intent) {
-    }
-
-    public void logTaskLaunch(View v, ComponentKey key) {
-    }
-
-    public void logTaskDismiss(View v, ComponentKey key) {
-    }
-
-    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) {
-    }
-
-    public void verify() {
-    }     // TODO: should move into robo tests
+    public void logAppLaunch(View v, Intent intent) { }
+    public void logTaskLaunch(View v, ComponentKey key) { }
+    public void logTaskDismiss(View v, ComponentKey key) { }
+    public void logSwipeOnContainer(boolean isSwipingToLeft, int pageId) { }
+    public void verify() {}     // TODO: should move into robo tests
 }

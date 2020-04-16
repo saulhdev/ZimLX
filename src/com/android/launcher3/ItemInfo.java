@@ -22,6 +22,8 @@ import android.content.Intent;
 import android.os.Process;
 import android.os.UserHandle;
 
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.util.ContentWriter;
 
 /**
@@ -134,6 +136,7 @@ public class ItemInfo {
         return null;
     }
 
+    @Nullable
     public ComponentName getTargetComponent() {
         Intent intent = getIntent();
         if (intent != null) {
@@ -186,7 +189,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString(container)
+                + " container=" + LauncherSettings.Favorites.containerToString((int)container)
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
                 + " span(" + spanX + "," + spanY + ")"
@@ -210,4 +213,5 @@ public class ItemInfo {
         // with any other views.
         return id;
     }
+
 }

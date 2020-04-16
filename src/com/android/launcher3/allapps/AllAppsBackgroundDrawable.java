@@ -37,10 +37,65 @@ import com.android.launcher3.util.Themes;
  */
 public class AllAppsBackgroundDrawable extends Drawable {
 
+    /**
+     * A helper class to position and orient a drawable to be drawn.
+     */
+    protected static class TransformedImageDrawable {
+        private Drawable mImage;
+        private float mXPercent;
+        private float mYPercent;
+        private int mGravity;
+        private int mAlpha;
+
+        /**
+         * @param gravity If one of the Gravity center values, the x and y offset will take the width
+         *                and height of the image into account to center the image to the offset.
+         */
+        public TransformedImageDrawable(Context context, int resourceId, float xPct, float yPct,
+                int gravity) {
+            mImage = context.getDrawable(resourceId);
+            mXPercent = xPct;
+            mYPercent = yPct;
+            mGravity = gravity;
+        }
+
+        public void setAlpha(int alpha) {
+            mImage.setAlpha(alpha);
+            mAlpha = alpha;
+        }
+
+        public int getAlpha() {
+            return mAlpha;
+        }
+
+        public void updateBounds(Rect bounds) {
+            int width = mImage.getIntrinsicWidth();
+            int height = mImage.getIntrinsicHeight();
+            int left = bounds.left + (int) (mXPercent * bounds.width());
+            int top = bounds.top + (int) (mYPercent * bounds.height());
+            if ((mGravity & Gravity.CENTER_HORIZONTAL) == Gravity.CENTER_HORIZONTAL) {
+                left -= (width / 2);
+            }
+            if ((mGravity & Gravity.CENTER_VERTICAL) == Gravity.CENTER_VERTICAL) {
+                top -= (height / 2);
+            }
+            mImage.setBounds(left, top, left + width, top + height);
+        }
+
+        public void draw(Canvas canvas) {
+            mImage.draw(canvas);
+        }
+
+        public Rect getBounds() {
+            return mImage.getBounds();
+        }
+    }
+
     protected final TransformedImageDrawable mHand;
     protected final TransformedImageDrawable[] mIcons;
     private final int mWidth;
     private final int mHeight;
+
     private ObjectAnimator mBackgroundAnim;
 
     public AllAppsBackgroundDrawable(Context context) {
@@ -119,17 +174,17 @@ public class AllAppsBackgroundDrawable extends Drawable {
     }
 
     @Override
-    public int getAlpha() {
-        return mHand.getAlpha();
-    }
-
-    @Override
     public void setAlpha(int alpha) {
         mHand.setAlpha(alpha);
         for (int i = 0; i < mIcons.length; i++) {
             mIcons[i].setAlpha(alpha);
         }
         invalidateSelf();
+    }
+
+    @Override
+    public int getAlpha() {
+        return mHand.getAlpha();
     }
 
     @Override
@@ -147,59 +202,5 @@ public class AllAppsBackgroundDrawable extends Drawable {
             animator.cancel();
         }
         return null;
-    }
-
-    /**
-     * A helper class to position and orient a drawable to be drawn.
-     */
-    protected static class TransformedImageDrawable {
-        private Drawable mImage;
-        private float mXPercent;
-        private float mYPercent;
-        private int mGravity;
-        private int mAlpha;
-
-        /**
-         * @param gravity If one of the Gravity center values, the x and y offset will take the width
-         *                and height of the image into account to center the image to the offset.
-         */
-        public TransformedImageDrawable(Context context, int resourceId, float xPct, float yPct,
-                                        int gravity) {
-            mImage = context.getDrawable(resourceId);
-            mXPercent = xPct;
-            mYPercent = yPct;
-            mGravity = gravity;
-        }
-
-        public int getAlpha() {
-            return mAlpha;
-        }
-
-        public void setAlpha(int alpha) {
-            mImage.setAlpha(alpha);
-            mAlpha = alpha;
-        }
-
-        public void updateBounds(Rect bounds) {
-            int width = mImage.getIntrinsicWidth();
-            int height = mImage.getIntrinsicHeight();
-            int left = bounds.left + (int) (mXPercent * bounds.width());
-            int top = bounds.top + (int) (mYPercent * bounds.height());
-            if ((mGravity & Gravity.CENTER_HORIZONTAL) == Gravity.CENTER_HORIZONTAL) {
-                left -= (width / 2);
-            }
-            if ((mGravity & Gravity.CENTER_VERTICAL) == Gravity.CENTER_VERTICAL) {
-                top -= (height / 2);
-            }
-            mImage.setBounds(left, top, left + width, top + height);
-        }
-
-        public void draw(Canvas canvas) {
-            mImage.draw(canvas);
-        }
-
-        public Rect getBounds() {
-            return mImage.getBounds();
-        }
     }
 }

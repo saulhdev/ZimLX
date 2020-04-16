@@ -10,18 +10,40 @@ import android.view.ViewConfiguration;
  */
 public class StylusEventHelper {
 
-    private final float mSlop;
+    /**
+     * Implement this interface to receive callbacks for a stylus button press and release.
+     */
+    public interface StylusButtonListener {
+        /**
+         * Called when the stylus button is pressed.
+         *
+         * @param event The MotionEvent that the button press occurred for.
+         * @return Whether the event was handled.
+         */
+        public boolean onPressed(MotionEvent event);
+
+        /**
+         * Called when the stylus button is released after a button press. This is also called if
+         * the event is canceled or the stylus is lifted off the screen.
+         *
+         * @param event The MotionEvent the button release occurred for.
+         * @return Whether the event was handled.
+         */
+        public boolean onReleased(MotionEvent event);
+    }
+
     private boolean mIsButtonPressed;
     private View mView;
     private StylusButtonListener mListener;
+    private final float mSlop;
 
     /**
      * Constructs a helper for listening to stylus button presses and releases. Ensure that {
-     * {@link #onMotionEvent(MotionEvent)} and  are called on
+     * {@link #onMotionEvent(MotionEvent)} and {@link #onGenericMotionEvent(MotionEvent)} are called on
      * the helper to correctly identify stylus events.
      *
      * @param listener The listener to call for stylus events.
-     * @param view     Optional view associated with the touch events.
+     * @param view Optional view associated with the touch events.
      */
     public StylusEventHelper(StylusButtonListener listener, View view) {
         mListener = listener;
@@ -31,19 +53,6 @@ public class StylusEventHelper {
         } else {
             mSlop = ViewConfiguration.getTouchSlop();
         }
-    }
-
-    /**
-     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
-     * pressed.
-     *
-     * @param event The event to check.
-     * @return Whether a stylus button press occurred.
-     */
-    private static boolean isStylusButtonPressed(MotionEvent event) {
-        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
-                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
-                == MotionEvent.BUTTON_SECONDARY);
     }
 
     public boolean onMotionEvent(MotionEvent event) {
@@ -86,24 +95,15 @@ public class StylusEventHelper {
     }
 
     /**
-     * Implement this interface to receive callbacks for a stylus button press and release.
+     * Identifies if the provided {@link MotionEvent} is a stylus with the primary stylus button
+     * pressed.
+     *
+     * @param event The event to check.
+     * @return Whether a stylus button press occurred.
      */
-    public interface StylusButtonListener {
-        /**
-         * Called when the stylus button is pressed.
-         *
-         * @param event The MotionEvent that the button press occurred for.
-         * @return Whether the event was handled.
-         */
-        boolean onPressed(MotionEvent event);
-
-        /**
-         * Called when the stylus button is released after a button press. This is also called if
-         * the event is canceled or the stylus is lifted off the screen.
-         *
-         * @param event The MotionEvent the button release occurred for.
-         * @return Whether the event was handled.
-         */
-        boolean onReleased(MotionEvent event);
+    private static boolean isStylusButtonPressed(MotionEvent event) {
+        return event.getToolType(0) == MotionEvent.TOOL_TYPE_STYLUS
+                && ((event.getButtonState() & MotionEvent.BUTTON_SECONDARY)
+                        == MotionEvent.BUTTON_SECONDARY);
     }
 }

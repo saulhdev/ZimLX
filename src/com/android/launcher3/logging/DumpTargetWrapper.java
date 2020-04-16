@@ -51,38 +51,6 @@ public class DumpTargetWrapper {
         node = newItemTarget(info);
     }
 
-    public static String getDumpTargetStr(DumpTarget t) {
-        if (t == null) {
-            return "";
-        }
-        switch (t.type) {
-            case LauncherDumpProto.DumpTarget.Type.ITEM:
-                return getItemStr(t);
-            case LauncherDumpProto.DumpTarget.Type.CONTAINER:
-                String str = LoggerUtils.getFieldName(t.containerType, ContainerType.class);
-                if (t.containerType == ContainerType.WORKSPACE) {
-                    str += " id=" + t.pageId;
-                } else if (t.containerType == ContainerType.FOLDER) {
-                    str += " grid(" + t.gridX + "," + t.gridY + ")";
-                }
-                return str;
-            default:
-                return "UNKNOWN TARGET TYPE";
-        }
-    }
-
-    private static String getItemStr(DumpTarget t) {
-        String typeStr = LoggerUtils.getFieldName(t.itemType, ItemType.class);
-        if (!TextUtils.isEmpty(t.packageName)) {
-            typeStr += ", package=" + t.packageName;
-        }
-        if (!TextUtils.isEmpty(t.component)) {
-            typeStr += ", component=" + t.component;
-        }
-        return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
-                + "), pageIdx=" + t.pageId + " user=" + t.userType;
-    }
-
     public DumpTarget getDumpTarget() {
         return node;
     }
@@ -95,14 +63,13 @@ public class DumpTargetWrapper {
         ArrayList<DumpTarget> list = new ArrayList<>();
         list.add(node);
         if (!children.isEmpty()) {
-            for (DumpTargetWrapper t : children) {
+            for(DumpTargetWrapper t: children) {
                 list.addAll(t.getFlattenedList());
             }
             list.add(node); // add a delimiter empty object
         }
         return list;
     }
-
     public DumpTarget newItemTarget(ItemInfo info) {
         DumpTarget dt = new DumpTarget();
         dt.type = DumpTarget.Type.ITEM;
@@ -132,10 +99,42 @@ public class DumpTargetWrapper {
         return dt;
     }
 
+    public static String getDumpTargetStr(DumpTarget t) {
+        if (t == null){
+            return "";
+        }
+        switch (t.type) {
+            case LauncherDumpProto.DumpTarget.Type.ITEM:
+                return getItemStr(t);
+            case LauncherDumpProto.DumpTarget.Type.CONTAINER:
+                String str = LoggerUtils.getFieldName(t.containerType, ContainerType.class);
+                if (t.containerType == ContainerType.WORKSPACE) {
+                    str += " id=" + t.pageId;
+                } else if (t.containerType == ContainerType.FOLDER) {
+                    str += " grid(" + t.gridX + "," + t.gridY+ ")";
+                }
+                return str;
+            default:
+                return "UNKNOWN TARGET TYPE";
+        }
+    }
+
+    private static String getItemStr(DumpTarget t) {
+        String typeStr = LoggerUtils.getFieldName(t.itemType, ItemType.class);
+        if (!TextUtils.isEmpty(t.packageName)) {
+            typeStr += ", package=" + t.packageName;
+        }
+        if (!TextUtils.isEmpty(t.component)) {
+            typeStr += ", component=" + t.component;
+        }
+        return typeStr + ", grid(" + t.gridX + "," + t.gridY + "), span(" + t.spanX + "," + t.spanY
+                + "), pageIdx=" + t.pageId + " user=" + t.userType;
+    }
+
     public DumpTarget writeToDumpTarget(ItemInfo info) {
-        node.component = info.getTargetComponent() == null ? "" :
+        node.component = info.getTargetComponent() == null? "":
                 info.getTargetComponent().flattenToString();
-        node.packageName = info.getTargetComponent() == null ? "" :
+        node.packageName = info.getTargetComponent() == null? "":
                 info.getTargetComponent().getPackageName();
         if (info instanceof LauncherAppWidgetInfo) {
             node.component = ((LauncherAppWidgetInfo) info).providerName.flattenToString();
@@ -146,7 +145,7 @@ public class DumpTargetWrapper {
         node.gridY = info.cellY;
         node.spanX = info.spanX;
         node.spanY = info.spanY;
-        node.userType = (info.user.equals(Process.myUserHandle())) ? UserType.DEFAULT : UserType.WORK;
+        node.userType = (info.user.equals(Process.myUserHandle()))? UserType.DEFAULT : UserType.WORK;
         return node;
     }
 }

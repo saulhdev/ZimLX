@@ -45,7 +45,7 @@ public class ShortcutsChangedTask extends BaseModelUpdateTask {
     private final boolean mUpdateIdMap;
 
     public ShortcutsChangedTask(String packageName, List<ShortcutInfo> shortcuts,
-                                UserHandle user, boolean updateIdMap) {
+            UserHandle user, boolean updateIdMap) {
         mPackageName = packageName;
         mShortcuts = shortcuts;
         mUser = user;

@@ -22,6 +22,7 @@ import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.pm.ApplicationInfo;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
@@ -104,7 +105,7 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     }
 
     private static void queueAppIconAddition(Context context, String packageName,
-                                             CharSequence label, Bitmap icon, UserHandle user) {
+            CharSequence label, Bitmap icon, UserHandle user) {
         Intent data = new Intent();
         data.putExtra(Intent.EXTRA_SHORTCUT_INTENT, new Intent().setComponent(
                 new ComponentName(packageName, "")).setPackage(packageName));

@@ -101,8 +101,8 @@ public interface ItemInfoMatcher {
     }
 
     static ItemInfoMatcher ofShortcutKeys(HashSet<ShortcutKey> keys) {
-        return (info, cn) -> info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
-                keys.contains(ShortcutKey.fromItemInfo(info));
+        return  (info, cn) -> info.itemType == Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
+                        keys.contains(ShortcutKey.fromItemInfo(info));
     }
 
     static ItemInfoMatcher ofItemIds(IntSparseArrayMap<Boolean> ids, Boolean matchDefault) {

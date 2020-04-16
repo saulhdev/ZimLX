@@ -16,6 +16,8 @@
 
 package com.android.launcher3;
 
+import static android.view.MotionEvent.ACTION_DOWN;
+
 import android.app.WallpaperManager;
 import android.content.Context;
 import android.graphics.Rect;
@@ -24,23 +26,17 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.CellLayout.ContainerType;
+import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
-import org.jetbrains.annotations.NotNull;
-import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.util.ZimFlags;
-
-import static android.view.MotionEvent.ACTION_DOWN;
-
-public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferences.OnPreferenceChangeListener {
+public class ShortcutAndWidgetContainer extends ViewGroup {
     static final String TAG = "ShortcutAndWidgetContainer";
 
     // These are temporary variables to prevent having to allocate a new object just to
     // return an (x, y) value from helper functions. Do NOT use them to maintain other state.
     private final int[] mTmpCellXY = new int[2];
 
-    @ContainerType
-    private final int mContainerType;
+    @ContainerType private final int mContainerType;
     private final WallpaperManager mWallpaperManager;
 
     private int mCellWidth;
@@ -48,37 +44,16 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
     private int mCountX;
 
-    private Launcher mLauncher;
+    private ActivityContext mActivity;
     private boolean mInvertIfRtl = false;
-
-    private ZimPreferences mPrefs;
 
     public ShortcutAndWidgetContainer(Context context, @ContainerType int containerType) {
         super(context);
-        mLauncher = Launcher.getLauncher(context);
+        mActivity = ActivityContext.lookupContext(context);
         mWallpaperManager = WallpaperManager.getInstance(context);
         mContainerType = containerType;
-        mPrefs = Utilities.getZimPrefs(context);
     }
 
-    @Override
-    protected void onAttachedToWindow() {
-        super.onAttachedToWindow();
-        mPrefs.addOnPreferenceChangeListener(ZimFlags.DESKTOP_OVERLAP_WIDGET, this);
-    }
-
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
-        setClipChildren(!prefs.getAllowOverlap());
-        setClipToPadding(!prefs.getAllowOverlap());
-        setClipToOutline(!prefs.getAllowOverlap());
-    }
-
-    @Override
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        mPrefs.removeOnPreferenceChangeListener(ZimFlags.DESKTOP_OVERLAP_WIDGET, this);
-    }
     public void setCellDimensions(int cellWidth, int cellHeight, int countX, int countY) {
         mCellWidth = cellWidth;
         mCellHeight = cellHeight;
@@ -104,7 +79,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
         int count = getChildCount();
 
         int widthSpecSize = MeasureSpec.getSize(widthMeasureSpec);
-        int heightSpecSize = MeasureSpec.getSize(heightMeasureSpec);
+        int heightSpecSize =  MeasureSpec.getSize(heightMeasureSpec);
         setMeasuredDimension(widthSpecSize, heightSpecSize);
 
         for (int i = 0; i < count; i++) {
@@ -118,7 +93,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
     public void setupLp(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
         if (child instanceof LauncherAppWidgetHostView) {
-            DeviceProfile profile = mLauncher.getDeviceProfile();
+            DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
                     profile.appWidgetScale.x, profile.appWidgetScale.y);
         } else {
@@ -133,12 +108,12 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
 
     public int getCellContentHeight() {
         return Math.min(getMeasuredHeight(),
-                mLauncher.getDeviceProfile().getCellHeight(mContainerType));
+                mActivity.getWallpaperDeviceProfile().getCellHeight(mContainerType));
     }
 
     public void measureChild(View child) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) child.getLayoutParams();
-        final DeviceProfile profile = mLauncher.getDeviceProfile();
+        final DeviceProfile profile = mActivity.getWallpaperDeviceProfile();
 
         if (child instanceof LauncherAppWidgetHostView) {
             lp.setup(mCellWidth, mCellHeight, invertLayoutHorizontally(), mCountX,
@@ -175,7 +150,7 @@ public class ShortcutAndWidgetContainer extends ViewGroup implements ZimPreferen
                     LauncherAppWidgetHostView lahv = (LauncherAppWidgetHostView) child;
 
                     // Scale and center the widget to fit within its cells.
-                    DeviceProfile profile = mLauncher.getDeviceProfile();
+                    DeviceProfile profile = mActivity.getDeviceProfile();
                     float scaleX = profile.appWidgetScale.x;
                     float scaleY = profile.appWidgetScale.y;
 

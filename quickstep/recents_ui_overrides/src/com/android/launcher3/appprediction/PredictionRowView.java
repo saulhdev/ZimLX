@@ -54,7 +54,6 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.keyboard.FocusIndicatorHelper;
 import com.android.launcher3.keyboard.FocusIndicatorHelper.SimpleFocusIndicatorHelper;
 import com.android.launcher3.logging.StatsLogUtils.LogContainerProvider;
-import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.model.AppLaunchTracker;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.touch.ItemLongClickListener;
@@ -68,7 +67,7 @@ import java.util.List;
 
 @TargetApi(Build.VERSION_CODES.P)
 public class PredictionRowView extends LinearLayout implements
-        UserEventDispatcher.LogContainerProvider, OnDeviceProfileChangeListener, FloatingHeaderRow {
+        LogContainerProvider, OnDeviceProfileChangeListener, FloatingHeaderRow {
 
     private static final String TAG = "PredictionRowView";
 

@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2011 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2011 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -15,7 +16,6 @@
 
 <resources>
     <!-- All Apps -->
-    <dimen name="all_apps_button_scale_down">8dp</dimen>
     <dimen name="all_apps_empty_search_message_top_offset">64dp</dimen>
     <dimen name="all_apps_empty_search_bg_top_offset">180dp</dimen>
 

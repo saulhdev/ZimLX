@@ -58,12 +58,10 @@ public class DefaultDisplay implements DisplayListener {
     }
 
     @Override
-    public final void onDisplayAdded(int displayId) {
-    }
+    public final void onDisplayAdded(int displayId) {  }
 
     @Override
-    public final void onDisplayRemoved(int displayId) {
-    }
+    public final void onDisplayRemoved(int displayId) { }
 
     @Override
     public final void onDisplayChanged(int displayId) {

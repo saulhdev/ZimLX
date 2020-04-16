@@ -16,6 +16,11 @@
 
 package com.android.launcher3.graphics;
 
+import static android.view.View.VISIBLE;
+
+import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+
 import android.graphics.Rect;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,20 +28,14 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import static android.view.View.VISIBLE;
-import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-
 /**
  * View scrim which draws behind overview (recent apps).
  */
 public class OverviewScrim extends Scrim {
 
-    private @NonNull
-    View mStableScrimmedView;
+    private @NonNull View mStableScrimmedView;
     // Might be higher up if mStableScrimmedView is invisible.
-    private @Nullable
-    View mCurrentScrimmedView;
+    private @Nullable View mCurrentScrimmedView;
 
     public OverviewScrim(View view) {
         super(view);

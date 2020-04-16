@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /* Copyright 2017, The Android Open Source Project
 **
 ** Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,17 +17,7 @@
 -->
 
 <resources>
-    <bool name="notification_badging_enabled">false</bool>
+    <bool name="notification_dots_enabled">false</bool>
 
     <bool name="enable_install_shortcut_api">true</bool>
-    <!-- Wether or not adaptive icons should be generated for legacy icons -->
-    <bool name="config_enable_legacy_treatment">true</bool>
-    <!-- If set to true lawnchair will generate colorized background for legacy masked icons -->
-    <bool name="config_enable_colorized_legacy_treatment">true</bool>
-    <!-- Wether or not new adaptive icons should be generated for adaptive icons with purely white background -->
-    <bool name="config_enable_white_only_treatment">false</bool>
-    <!-- Wether the status bar should be hidden on the home screen -->
-    <bool name="config_hide_statusbar">false</bool>
-
-    <bool name="notification_dots_enabled">true</bool>
 </resources>

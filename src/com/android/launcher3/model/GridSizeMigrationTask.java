@@ -1,5 +1,9 @@
 package com.android.launcher3.model;
 
+import static com.android.launcher3.LauncherSettings.Settings.EXTRA_VALUE;
+import static com.android.launcher3.Utilities.getPointString;
+import static com.android.launcher3.Utilities.parsePoint;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -12,8 +16,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Point;
 import android.util.Log;
 import android.util.SparseArray;
-
-import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.InvariantDeviceProfile;
 import com.android.launcher3.ItemInfo;
@@ -32,14 +34,14 @@ import com.android.launcher3.provider.LauncherDbUtils.SQLiteTransaction;
 import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
+import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.function.Consumer;
 
-import static com.android.launcher3.LauncherSettings.Settings.EXTRA_VALUE;
-import static com.android.launcher3.Utilities.getPointString;
-import static com.android.launcher3.Utilities.parsePoint;
+import androidx.annotation.VisibleForTesting;
 
 /**
  * This class takes care of shrinking the workspace (by maximum of one row and one column), as a
@@ -67,7 +69,7 @@ public class GridSizeMigrationTask {
     protected final IntArray mEntryToRemove = new IntArray();
     protected final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
 
-    public final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
+    private final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
     private final HashSet<String> mValidPackages;
 
     private final int mSrcX, mSrcY;
@@ -78,7 +80,7 @@ public class GridSizeMigrationTask {
     private final int mDestHotseatSize;
 
     protected GridSizeMigrationTask(Context context, SQLiteDatabase db,
-                                    HashSet<String> validPackages, Point sourceSize, Point targetSize) {
+            HashSet<String> validPackages, Point sourceSize, Point targetSize) {
         mContext = context;
         mDb = db;
         mValidPackages = validPackages;
@@ -97,7 +99,7 @@ public class GridSizeMigrationTask {
     }
 
     protected GridSizeMigrationTask(Context context, SQLiteDatabase db,
-                                    HashSet<String> validPackages, int srcHotseatSize, int destHotseatSize) {
+            HashSet<String> validPackages, int srcHotseatSize, int destHotseatSize) {
         mContext = context;
         mDb = db;
         mValidPackages = validPackages;
@@ -116,7 +118,7 @@ public class GridSizeMigrationTask {
      *
      * @return true if any DB operation was commited.
      */
-    public boolean applyOperations() throws Exception {
+    private boolean applyOperations() throws Exception {
         // Update items
         int updateCount = mUpdateOperations.size();
         for (int i = 0; i < updateCount; i++) {
@@ -367,7 +369,7 @@ public class GridSizeMigrationTask {
      * with the overall item movement.
      */
     private ArrayList<DbEntry> tryRemove(int col, int row, int startY,
-                                         ArrayList<DbEntry> items, float[] outLoss) {
+            ArrayList<DbEntry> items, float[] outLoss) {
         GridOccupancy occupied = new GridOccupancy(mTrgX, mTrgY);
         occupied.markCells(0, 0, mTrgX, startY, true);
 
@@ -379,13 +381,13 @@ public class GridSizeMigrationTask {
 
         for (DbEntry item : items) {
             if ((item.cellX <= col && (item.spanX + item.cellX) > col)
-                    || (item.cellY <= row && (item.spanY + item.cellY) > row)) {
+                || (item.cellY <= row && (item.spanY + item.cellY) > row)) {
                 removedItems.add(item);
-                if (item.cellX >= col) item.cellX--;
-                if (item.cellY >= row) item.cellY--;
+                if (item.cellX >= col) item.cellX --;
+                if (item.cellY >= row) item.cellY --;
             } else {
-                if (item.cellX > col) item.cellX--;
-                if (item.cellY > row) item.cellY--;
+                if (item.cellX > col) item.cellX --;
+                if (item.cellY > row) item.cellY --;
                 finalItems.add(item);
                 occupied.markCells(item, true);
             }
@@ -421,7 +423,7 @@ public class GridSizeMigrationTask {
         }
 
         public OptimalPlacementSolution(GridOccupancy occupied, ArrayList<DbEntry> itemsToPlace,
-                                        int startY, boolean ignoreMove) {
+                int startY, boolean ignoreMove) {
             this.occupied = occupied;
             this.itemsToPlace = itemsToPlace;
             this.ignoreMove = ignoreMove;
@@ -444,7 +446,7 @@ public class GridSizeMigrationTask {
          * @param itemsPlaced all the items already placed upto this point
          */
         public void find(int index, float weightLoss, float moveCost,
-                         ArrayList<DbEntry> itemsPlaced) {
+                ArrayList<DbEntry> itemsPlaced) {
             if ((weightLoss >= lowestWeightLoss) ||
                     ((weightLoss == lowestWeightLoss) && (moveCost >= lowestMoveCost))) {
                 // Abort, as we already have a better solution.
@@ -481,11 +483,11 @@ public class GridSizeMigrationTask {
                         float newMoveCost = moveCost;
                         if (x != myX) {
                             me.cellX = x;
-                            newMoveCost++;
+                            newMoveCost ++;
                         }
                         if (y != myY) {
                             me.cellY = y;
-                            newMoveCost++;
+                            newMoveCost ++;
                         }
                         if (ignoreMove) {
                             newMoveCost = moveCost;
@@ -500,35 +502,35 @@ public class GridSizeMigrationTask {
 
                         // Try resizing horizontally
                         if (myW > me.minSpanX && occupied.isRegionVacant(x, y, myW - 1, myH)) {
-                            me.spanX--;
+                            me.spanX --;
                             occupied.markCells(me, true);
                             // 1 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 1, itemsIncludingMe);
                             occupied.markCells(me, false);
-                            me.spanX++;
+                            me.spanX ++;
                         }
 
                         // Try resizing vertically
                         if (myH > me.minSpanY && occupied.isRegionVacant(x, y, myW, myH - 1)) {
-                            me.spanY--;
+                            me.spanY --;
                             occupied.markCells(me, true);
                             // 1 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 1, itemsIncludingMe);
                             occupied.markCells(me, false);
-                            me.spanY++;
+                            me.spanY ++;
                         }
 
                         // Try resizing horizontally & vertically
                         if (myH > me.minSpanY && myW > me.minSpanX &&
                                 occupied.isRegionVacant(x, y, myW - 1, myH - 1)) {
-                            me.spanX--;
-                            me.spanY--;
+                            me.spanX --;
+                            me.spanY --;
                             occupied.markCells(me, true);
                             // 2 extra move cost
                             find(index + 1, weightLoss, newMoveCost + 2, itemsIncludingMe);
                             occupied.markCells(me, false);
-                            me.spanX++;
-                            me.spanY++;
+                            me.spanX ++;
+                            me.spanY ++;
                         }
                         me.cellX = myX;
                         me.cellY = myY;
@@ -565,11 +567,11 @@ public class GridSizeMigrationTask {
                     float newMoveCost = moveCost;
                     if (newX != myX) {
                         me.cellX = newX;
-                        newMoveCost++;
+                        newMoveCost ++;
                     }
                     if (newY != myY) {
                         me.cellY = newY;
-                        newMoveCost++;
+                        newMoveCost ++;
                     }
                     if (ignoreMove) {
                         newMoveCost = moveCost;
@@ -602,7 +604,7 @@ public class GridSizeMigrationTask {
     }
 
     private ArrayList<DbEntry> loadHotseatEntries() {
-        Cursor c = queryWorkspace(
+        Cursor c =  queryWorkspace(
                 new String[]{
                         Favorites._ID,                  // 0
                         Favorites.ITEM_TYPE,            // 1
@@ -1012,7 +1014,7 @@ public class GridSizeMigrationTask {
         private final SQLiteDatabase mDb;
 
         public MultiStepMigrationTask(HashSet<String> validPackages, Context context,
-                                      SQLiteDatabase db) {
+                SQLiteDatabase db) {
             mValidPackages = validPackages;
             mContext = context;
             mDb = db;

@@ -1,5 +1,13 @@
 package com.android.launcher3;
 
+import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
+import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
+import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
+
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.ComponentName;
@@ -25,25 +33,13 @@ import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
-
-import org.zimmob.zimlx.settings.ui.SettingsActivity;
 
 import java.net.URISyntaxException;
 
-import static android.appwidget.AppWidgetManager.INVALID_APPWIDGET_ID;
-import static android.appwidget.AppWidgetProviderInfo.WIDGET_FEATURE_RECONFIGURABLE;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_MASK;
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
-import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.CUSTOMIZE;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
-import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
-
 /**
  * Drop target which provides a secondary option for an item.
- * For app targets: shows as uninstall
- * For configurable widgets: shows as setup
+ *    For app targets: shows as uninstall
+ *    For configurable widgets: shows as setup
  */
 public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmListener {
 
@@ -55,7 +51,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
     private final Alarm mCacheExpireAlarm;
 
     protected int mCurrentAccessibilityAction = -1;
-
     public SecondaryDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
@@ -83,10 +78,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             mHoverColor = getResources().getColor(R.color.uninstall_target_hover_tint);
             setDrawable(R.drawable.ic_uninstall_shadow);
             updateText(R.string.uninstall_drop_target_label);
-        } else if (action == CUSTOMIZE) {
-            mHoverColor = Themes.getColorAccent(getContext());
-            setDrawable(R.drawable.ic_smartspace_preferences);
-            updateText(R.string.customize);
         } else {
             mHoverColor = Themes.getColorAccent(getContext());
             setDrawable(R.drawable.ic_setup_shadow);
@@ -122,9 +113,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (view instanceof AppWidgetHostView) {
             if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
                 setupUi(RECONFIGURE);
-                return true;
-            } else if (getWidgetCustomizeIntent(view) != null) {
-                setupUi(CUSTOMIZE);
                 return true;
             }
             return false;
@@ -198,7 +186,6 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         }
     }
 
-
     private View getViewUnderDrag(ItemInfo info) {
         if (info instanceof LauncherAppWidgetInfo && info.container == CONTAINER_DESKTOP &&
                 mLauncher.getWorkspace().getDragInfo() != null) {
@@ -220,28 +207,11 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (widgetInfo == null || widgetInfo.configure == null) {
             return INVALID_APPWIDGET_ID;
         }
-        if ((LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(), widgetInfo)
+        if ( (LauncherAppWidgetProviderInfo.fromProviderInfo(getContext(), widgetInfo)
                 .getWidgetFeatures() & WIDGET_FEATURE_RECONFIGURABLE) == 0) {
             return INVALID_APPWIDGET_ID;
         }
         return hostView.getAppWidgetId();
-    }
-
-    private Intent getWidgetCustomizeIntent(View view) {
-        if (!(view instanceof AppWidgetHostView)) {
-            return null;
-        }
-        AppWidgetHostView hostView = (AppWidgetHostView) view;
-        AppWidgetProviderInfo widgetInfo = hostView.getAppWidgetInfo();
-        if (widgetInfo instanceof CustomAppWidgetProviderInfo) {
-            CustomAppWidgetProviderInfo customInfo = (CustomAppWidgetProviderInfo) widgetInfo;
-            Context context = getContext();
-            return new Intent(context, SettingsActivity.class)
-                    .putExtra(SettingsActivity.SubSettingsFragment.TITLE, context.getString(customInfo.customizeTitle))
-                    .putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, customInfo.customizeScreen)
-                    .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, customInfo.customizeHasPreview);
-        }
-        return null;
     }
 
     /**
@@ -255,16 +225,8 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
                 mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId, -1);
             }
             return null;
-        } else if (mCurrentAccessibilityAction == CUSTOMIZE) {
-            Intent customizeIntent = getWidgetCustomizeIntent(view);
-            if (customizeIntent != null) {
-                Launcher launcher = Launcher.getLauncher(view.getContext());
-                launcher.startActivitySafely(view, customizeIntent, null);
-            }
-            return null;
         }
         // else: mCurrentAccessibilityAction == UNINSTALL
-
 
         ComponentName cn = getUninstallTarget(info);
         if (cn == null) {
@@ -309,13 +271,13 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
 
         @Override
         public void onDropCompleted(View target, DragObject d,
-                                    boolean success) {
+                boolean success) {
             mDragObject = d;
         }
 
         @Override
         public void fillInLogContainerData(View v, ItemInfo info, Target target,
-                                           Target targetParent) {
+                Target targetParent) {
             mOriginal.fillInLogContainerData(v, info, target, targetParent);
         }
 

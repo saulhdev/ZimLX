@@ -41,11 +41,6 @@ public class AppInfo extends ItemInfoWithIcon {
 
     public ComponentName componentName;
 
-    /**
-     * {@see ShortcutInfo#isDisabled}
-     */
-    public int isDisabled = WorkspaceItemInfo.DEFAULT;
-
     public AppInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
     }
@@ -62,22 +57,12 @@ public class AppInfo extends ItemInfoWithIcon {
         this(info, user, UserManagerCompat.getInstance(context).isQuietModeEnabled(user));
     }
 
-    @Override
-    public boolean isDisabled() {
-        return isDisabled != 0;
-    }
-
     public AppInfo(LauncherActivityInfo info, UserHandle user, boolean quietModeEnabled) {
         this.componentName = info.getComponentName();
         this.container = ItemInfo.NO_ID;
         this.user = user;
         intent = makeLaunchIntent(info);
-        if (PackageManagerHelper.isAppSuspended(info.getApplicationInfo())) {
-            isDisabled |= WorkspaceItemInfo.FLAG_DISABLED_SUSPENDED;
-        }
-        if (quietModeEnabled) {
-            isDisabled |= WorkspaceItemInfo.FLAG_DISABLED_QUIET_USER;
-        }
+
         if (quietModeEnabled) {
             runtimeStatusFlags |= FLAG_DISABLED_QUIET_USER;
         }
@@ -89,16 +74,11 @@ public class AppInfo extends ItemInfoWithIcon {
         componentName = info.componentName;
         title = Utilities.trim(info.title);
         intent = new Intent(info.intent);
-        isDisabled = info.isDisabled;
     }
 
     @Override
     protected String dumpProperties() {
         return super.dumpProperties() + " componentName=" + componentName;
-    }
-
-    public WorkspaceItemInfo makeShortcut() {
-        return new WorkspaceItemInfo(this);
     }
 
     public WorkspaceItemInfo makeWorkspaceItem() {

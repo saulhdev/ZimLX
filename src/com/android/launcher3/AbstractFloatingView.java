@@ -16,6 +16,13 @@
 
 package com.android.launcher3;
 
+import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
+import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
+
+import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
+import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
+
 import android.animation.Animator;
 import android.annotation.SuppressLint;
 import android.content.Context;
@@ -37,12 +44,6 @@ import com.android.launcher3.views.BaseDragLayer;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import static android.view.accessibility.AccessibilityEvent.TYPE_VIEW_FOCUSED;
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED;
-import static android.view.accessibility.AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.isAccessibilityEnabled;
-import static com.android.launcher3.compat.AccessibilityManagerCompat.sendCustomAccessibilityEvent;
-
 /**
  * Base class for a View which shows a floating UI on top of the launcher UI.
  */
@@ -60,13 +61,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
             TYPE_LISTENER,
 
             TYPE_TASK_MENU,
-            TYPE_OPTIONS_POPUP,
-
-            TYPE_SETTINGS_SHEET
+            TYPE_OPTIONS_POPUP
     })
     @Retention(RetentionPolicy.SOURCE)
-    public @interface FloatingViewType {
-    }
+    public @interface FloatingViewType {}
     public static final int TYPE_FOLDER = 1 << 0;
     public static final int TYPE_ACTION_POPUP = 1 << 1;
     public static final int TYPE_WIDGETS_BOTTOM_SHEET = 1 << 2;
@@ -81,13 +79,10 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     public static final int TYPE_TASK_MENU = 1 << 9;
     public static final int TYPE_OPTIONS_POPUP = 1 << 10;
 
-    // Custom popups
-    public static final int TYPE_SETTINGS_SHEET = 1 << 12;
-
     public static final int TYPE_ALL = TYPE_FOLDER | TYPE_ACTION_POPUP
             | TYPE_WIDGETS_BOTTOM_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_WIDGETS_FULL_SHEET
             | TYPE_ON_BOARD_POPUP | TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU
-            | TYPE_OPTIONS_POPUP | TYPE_SETTINGS_SHEET | TYPE_SNACKBAR | TYPE_LISTENER;
+            | TYPE_OPTIONS_POPUP | TYPE_SNACKBAR | TYPE_LISTENER;
 
     // Type of popups which should be kept open during launcher rebind
     public static final int TYPE_REBIND_SAFE = TYPE_WIDGETS_FULL_SHEET
@@ -102,7 +97,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     // These view all have particular operation associated with swipe down interaction.
     public static final int TYPE_STATUS_BAR_SWIPE_DOWN_DISALLOW = TYPE_WIDGETS_BOTTOM_SHEET |
             TYPE_WIDGETS_FULL_SHEET | TYPE_WIDGET_RESIZE_FRAME | TYPE_ON_BOARD_POPUP |
-            TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU;
+            TYPE_DISCOVERY_BOUNCE | TYPE_TASK_MENU ;
 
     protected boolean mIsOpen;
 
@@ -137,11 +132,9 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
 
     /**
      * Creates a user-controlled animation to hint that the view will be closed if completed.
-     *
      * @param distanceToMove The max distance that elements should move from their starting point.
      */
-    public @Nullable
-    Animator createHintCloseAnim(float distanceToMove) {
+    public @Nullable Animator createHintCloseAnim(float distanceToMove) {
         return null;
     }
 
@@ -207,7 +200,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static void closeOpenContainer(ActivityContext activity,
-                                          @FloatingViewType int type) {
+            @FloatingViewType int type) {
         AbstractFloatingView view = getOpenView(activity, type);
         if (view != null) {
             view.close(true);
@@ -215,7 +208,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static void closeOpenViews(ActivityContext activity, boolean animate,
-                                      @FloatingViewType int type) {
+            @FloatingViewType int type) {
         BaseDragLayer dragLayer = activity.getDragLayer();
         // Iterate in reverse order. AbstractFloatingView is added later to the dragLayer,
         // and will be one of the last views.
@@ -255,7 +248,7 @@ public abstract class AbstractFloatingView extends LinearLayout implements Touch
     }
 
     public static AbstractFloatingView getTopOpenViewWithType(ActivityContext activity,
-                                                              @FloatingViewType int type) {
+            @FloatingViewType int type) {
         return getOpenView(activity, type);
     }
 }

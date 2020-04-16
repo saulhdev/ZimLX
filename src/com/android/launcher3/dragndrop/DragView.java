@@ -16,6 +16,8 @@
 
 package com.android.launcher3.dragndrop;
 
+import static com.android.launcher3.Utilities.getBadge;
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
@@ -39,12 +41,7 @@ import android.os.Handler;
 import android.os.Looper;
 import android.view.View;
 
-import androidx.dynamicanimation.animation.FloatPropertyCompat;
-import androidx.dynamicanimation.animation.SpringAnimation;
-import androidx.dynamicanimation.animation.SpringForce;
-
 import com.android.launcher3.FastBitmapDrawable;
-import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
@@ -53,6 +50,7 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.FirstFrameAnimatorHelper;
 import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.util.Themes;
@@ -60,7 +58,9 @@ import com.android.launcher3.util.Thunk;
 
 import java.util.Arrays;
 
-import static com.android.launcher3.Utilities.getBadge;
+import androidx.dynamicanimation.animation.FloatPropertyCompat;
+import androidx.dynamicanimation.animation.SpringAnimation;
+import androidx.dynamicanimation.animation.SpringForce;
 
 public class DragView extends View implements LauncherStateManager.StateListener {
     private static final ColorMatrix sTempMatrix1 = new ColorMatrix();
@@ -69,14 +69,10 @@ public class DragView extends View implements LauncherStateManager.StateListener
     public static final int COLOR_CHANGE_DURATION = 120;
     public static final int VIEW_ZOOM_DURATION = 150;
 
-    @Thunk
-    static float sDragAlpha = 1f;
-
     private boolean mDrawBitmap = true;
     private Bitmap mBitmap;
     private Bitmap mCrossFadeBitmap;
-    @Thunk
-    Paint mPaint;
+    @Thunk Paint mPaint;
     private final int mBlurSizeOutline;
     private final int mRegistrationX;
     private final int mRegistrationY;
@@ -88,13 +84,10 @@ public class DragView extends View implements LauncherStateManager.StateListener
     private Rect mDragRegion = null;
     private final Launcher mLauncher;
     private final DragLayer mDragLayer;
-    @Thunk
-    final DragController mDragController;
-
+    @Thunk final DragController mDragController;
     final FirstFrameAnimatorHelper mFirstFrameAnimatorHelper;
     private boolean mHasDrawn = false;
-    @Thunk
-    float mCrossFadeProgress = 0f;
+    @Thunk float mCrossFadeProgress = 0f;
     private boolean mAnimationCancelled = false;
 
     ValueAnimator mAnim;
@@ -102,8 +95,7 @@ public class DragView extends View implements LauncherStateManager.StateListener
     // size.  This is ignored for non-icons.
     private float mIntrinsicIconScale = 1f;
 
-    @Thunk
-    float[] mCurrentFilter;
+    @Thunk float[] mCurrentFilter;
     private ValueAnimator mFilterAnimator;
 
     private int mLastTouchX;
@@ -145,20 +137,12 @@ public class DragView extends View implements LauncherStateManager.StateListener
         // Animate the view into the correct position
         mAnim = ValueAnimator.ofFloat(0f, 1f);
         mAnim.setDuration(VIEW_ZOOM_DURATION);
-        mAnim.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                final float value = (Float) animation.getAnimatedValue();
-
-                setScaleX(initialScale + (value * (scale - initialScale)));
-                setScaleY(initialScale + (value * (scale - initialScale)));
-                if (sDragAlpha != 1f) {
-                    setAlpha(sDragAlpha * value + (1f - value));
-                }
-
-                if (getParent() == null) {
-                    animation.cancel();
-                }
+        mAnim.addUpdateListener(animation -> {
+            final float value = (Float) animation.getAnimatedValue();
+            setScaleX(initialScale + (value * (scale - initialScale)));
+            setScaleY(initialScale + (value * (scale - initialScale)));
+            if (!isAttachedToWindow()) {
+                animation.cancel();
             }
         });
 
@@ -203,8 +187,7 @@ public class DragView extends View implements LauncherStateManager.StateListener
     }
 
     @Override
-    public void onStateTransitionStart(LauncherState toState) {
-    }
+    public void onStateTransitionStart(LauncherState toState) { }
 
     @Override
     public void onStateTransitionComplete(LauncherState finalState) {
@@ -306,8 +289,7 @@ public class DragView extends View implements LauncherStateManager.StateListener
                         }
                     });
                 }
-            }
-        });
+            }});
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -347,9 +329,7 @@ public class DragView extends View implements LauncherStateManager.StateListener
         setMeasuredDimension(mBitmap.getWidth(), mBitmap.getHeight());
     }
 
-    /**
-     * Sets the scale of the view over the normal workspace icon size.
-     */
+    /** Sets the scale of the view over the normal workspace icon size. */
     public void setIntrinsicIconScaleFactor(float scale) {
         mIntrinsicIconScale = scale;
     }
@@ -436,12 +416,9 @@ public class DragView extends View implements LauncherStateManager.StateListener
         ValueAnimator va = ValueAnimator.ofFloat(0f, 1f);
         va.setDuration(duration);
         va.setInterpolator(Interpolators.DEACCEL_1_5);
-        va.addUpdateListener(new AnimatorUpdateListener() {
-            @Override
-            public void onAnimationUpdate(ValueAnimator animation) {
-                mCrossFadeProgress = animation.getAnimatedFraction();
-                invalidate();
-            }
+        va.addUpdateListener(a -> {
+            mCrossFadeProgress = a.getAnimatedFraction();
+            invalidate();
         });
         va.start();
     }
@@ -630,26 +607,6 @@ public class DragView extends View implements LauncherStateManager.StateListener
 
         public void animateToPos(float value) {
             mSpring.animateToFinalPosition(Utilities.boundToRange(value, -mDelta, mDelta));
-        }
-    }
-
-    private static class FixedSizeEmptyDrawable extends ColorDrawable {
-
-        private final int mSize;
-
-        public FixedSizeEmptyDrawable(int size) {
-            super(Color.TRANSPARENT);
-            mSize = size;
-        }
-
-        @Override
-        public int getIntrinsicHeight() {
-            return mSize;
-        }
-
-        @Override
-        public int getIntrinsicWidth() {
-            return mSize;
         }
     }
 }

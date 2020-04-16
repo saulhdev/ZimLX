@@ -33,18 +33,18 @@ import java.util.concurrent.Future;
 /**
  * Exposes various launcher grid options and allows the caller to change them.
  * APIs:
- * /list_options: List the various available grip options, has following columns
- * name: name of the grid
- * rows: number of rows in the grid
- * cols: number of columns in the grid
- * preview_count: number of previews available for this grid option. The preview uri
- * looks like /preview/<grid-name>/<preview index starting with 0>
- * is_default: true if this grid is currently active
- * <p>
- * /preview: Opens a file stream for the grid preview
- * <p>
- * /default_grid: Call update to set the current grid, with values
- * name: name of the grid to apply
+ *      /list_options: List the various available grip options, has following columns
+ *          name: name of the grid
+ *          rows: number of rows in the grid
+ *          cols: number of columns in the grid
+ *          preview_count: number of previews available for this grid option. The preview uri
+ *                         looks like /preview/<grid-name>/<preview index starting with 0>
+ *          is_default: true if this grid is currently active
+ *
+ *     /preview: Opens a file stream for the grid preview
+ *
+ *     /default_grid: Call update to set the current grid, with values
+ *          name: name of the grid to apply
  */
 public class GridOptionsProvider extends ContentProvider {
 
@@ -66,7 +66,7 @@ public class GridOptionsProvider extends ContentProvider {
             new PipeDataWriter<Future<Bitmap>>() {
                 @Override
                 public void writeDataToPipe(ParcelFileDescriptor output, Uri uri, String s,
-                                            Bundle bundle, Future<Bitmap> bitmap) {
+                        Bundle bundle, Future<Bitmap> bitmap) {
                     try (AutoCloseOutputStream os = new AutoCloseOutputStream(output)) {
                         bitmap.get().compress(Bitmap.CompressFormat.PNG, 100, os);
                     } catch (Exception e) {
@@ -82,11 +82,11 @@ public class GridOptionsProvider extends ContentProvider {
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection,
-                        String[] selectionArgs, String sortOrder) {
+            String[] selectionArgs, String sortOrder) {
         if (!KEY_LIST_OPTIONS.equals(uri.getPath())) {
             return null;
         }
-        MatrixCursor cursor = new MatrixCursor(new String[]{
+        MatrixCursor cursor = new MatrixCursor(new String[] {
                 KEY_NAME, KEY_ROWS, KEY_COLS, KEY_PREVIEW_COUNT, KEY_IS_DEFAULT});
         InvariantDeviceProfile idp = InvariantDeviceProfile.INSTANCE.get(getContext());
         for (GridOption gridOption : parseAllGridOptions()) {

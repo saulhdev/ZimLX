@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!--
+<?xml version="1.0" encoding="utf-8"?>
+<!--
 /* //device/apps/common/assets/res/any/colors.xml
 **
 ** Copyright 2008, The Android Open Source Project
@@ -16,11 +17,11 @@
 ** limitations under the License.
 */
 -->
-<resources xmlns:tools="http://schemas.android.com/tools">
+<resources>
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
-    <color name="uninstall_target_hover_tint">#EB3F0B</color>
+    <color name="uninstall_target_hover_tint">#FFF0592B</color>
 
     <color name="focused_background">#80c6c5c5</color>
 
@@ -31,65 +32,9 @@
 
     <!-- Popup container -->
     <color name="notification_icon_default_color">#757575</color> <!-- Gray 600 -->
-    <color name="badge_color">@android:color/transparent</color>
-    <color name="folder_badge_color">#FFFFFF</color>
 
-    <!-- Pixel Blue -->
-    <color name="legacy_icon_background">#FFFFFF</color>
     <color name="icon_background">#E0E0E0</color> <!-- Gray 300 -->
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
-
-    <!-- Backports -->
-    <color name="textColorPrimary">#ffffffff</color>
-    <color name="textColorSecondary">#ffffffff</color>
-    <color name="textColorPrimaryInverse">#de000000</color>
-    <color name="textColorSecondaryInverse">#8a000000</color>
-
-    <color name="all_apps_navbar_color">#28000000</color>
-    <color name="qsb_icon_shadow_color" tools:ignore="MissingDefaultResource">#20000000</color>
-    <color name="qsb_dark_icon_tint">#ff757575</color>
-    <color name="colorPrimary">#fff5f5f5</color>
-    <color name="colorPrimaryDark">#ffe0e0e0</color>
-    <color name="folderBackground">#ffe0e0e0</color>
-    <color name="colorAccent">#EC4310</color>
-    <color name="colorAccentDark">#ff8AB4f8</color>
-    <color name="white">#ffffff</color>
-
-    <!-- NOTIFICATION -->
-    <color name="notification_background">#EB0854</color>
-    <color name="transparentish">#B0101010</color>
-
-    <!-- Pixel 1 -->
-    <color name="qsb_connector">#fff2f2f2</color>
-    <color name="qsb_background">#ffffffff</color>
-    <color name="qsb_connector_gradient_end_color">#66ffffff</color>
-
-    <color name="settings_background_dark">#ff303030</color>
-    <color name="settings_background_dark_2dp">#ff252628</color>
-    <color name="settings_background_dark_8dp">#ff303133</color>
-
-
-    <color name="settings_background_black">#ff000000</color>
-    <color name="settings_background_black_2dp">#ff121212</color>
-    <color name="settings_background_black_8dp">#ff1e1e1e</color>
-
-    <color name="lollipopStatusBar">#61000000</color>
-
-    <color name="all_apps_label_text">#61000000</color>
-    <color name="all_apps_label_text_dark">#61ffffff</color>
-    <color name="qsb_background_hotseat_default">#99fafafa</color>
-    <color name="qsb_background_hotseat_white">#ccffffff</color>
-    <color name="qsb_background_hotseat_dark">#cc333333</color>
-    <color name="qsb_background_drawer_default">#FFFFFF</color>
-    <color name="qsb_background_drawer_dark">#525252</color>
-    <color name="qsb_background_drawer_dark_bar">#f9333333</color>
-    <!-- <color name="qsb_background_drawer_black">#ee000000</color> -->
-    <color name="qsb_drawer_text_color_normal">#ff212121</color>
-    <color name="qsb_drawer_text_color_dark">#ffe0e0e0</color>
-    <color name="all_apps_prediction_row_separator">#3c000000</color>
-    <color name="all_apps_prediction_row_separator_dark">#3cffffff</color>
-    <color name="dismiss_target_hover_tint">#ffea4335</color>
-    <color name="bugNotificationColor">#ff4caf50</color>
 </resources>

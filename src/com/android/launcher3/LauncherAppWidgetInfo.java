@@ -122,9 +122,7 @@ public class LauncherAppWidgetInfo extends ItemInfo {
         restoreStatus = RESTORE_COMPLETED;
     }
 
-    /**
-     * Used for testing
-     **/
+    /** Used for testing **/
     public LauncherAppWidgetInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET;
     }

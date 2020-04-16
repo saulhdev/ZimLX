@@ -16,15 +16,16 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
+
+import static java.lang.annotation.RetentionPolicy.SOURCE;
+
 import android.app.Activity;
 import android.content.Context;
 import android.content.ContextWrapper;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.view.ContextThemeWrapper;
-import android.view.View.AccessibilityDelegate;
-
-import androidx.annotation.IntDef;
 
 import com.android.launcher3.DeviceProfile.OnDeviceProfileChangeListener;
 import com.android.launcher3.logging.StatsLogManager;
@@ -43,8 +44,7 @@ import java.io.PrintWriter;
 import java.lang.annotation.Retention;
 import java.util.ArrayList;
 
-import static com.android.launcher3.util.SystemUiController.UI_STATE_OVERVIEW;
-import static java.lang.annotation.RetentionPolicy.SOURCE;
+import androidx.annotation.IntDef;
 
 public abstract class BaseActivity extends Activity
         implements UserEventDelegate, LogStateProvider, ActivityContext {
@@ -70,14 +70,13 @@ public abstract class BaseActivity extends Activity
             flag = true,
             value = {INVISIBLE_BY_STATE_HANDLER, INVISIBLE_BY_APP_TRANSITIONS,
                     INVISIBLE_BY_PENDING_FLAGS, PENDING_INVISIBLE_BY_WALLPAPER_ANIMATION})
-    public @interface InvisibilityFlags {
-    }
+    public @interface InvisibilityFlags{}
 
     private final ArrayList<OnDeviceProfileChangeListener> mDPChangeListeners = new ArrayList<>();
     private final ArrayList<MultiWindowModeChangedListener> mMultiWindowModeChangedListeners =
             new ArrayList<>();
 
-    public DeviceProfile mDeviceProfile;
+    protected DeviceProfile mDeviceProfile;
     protected UserEventDispatcher mUserEventDispatcher;
     protected StatsLogManager mStatsLogManager;
     protected SystemUiController mSystemUiController;
@@ -87,7 +86,6 @@ public abstract class BaseActivity extends Activity
     /**
      * State flag indicating if the user is active or the actitvity when to background as a result
      * of user action.
-     *
      * @see #isUserActive()
      */
     private static final int ACTIVITY_STATE_USER_ACTIVE = 1 << 2;
@@ -96,33 +94,27 @@ public abstract class BaseActivity extends Activity
     @IntDef(
             flag = true,
             value = {ACTIVITY_STATE_STARTED, ACTIVITY_STATE_RESUMED, ACTIVITY_STATE_USER_ACTIVE})
-    public @interface ActivityFlags {
-    }
+    public @interface ActivityFlags{}
 
     @ActivityFlags
     private int mActivityFlags;
 
     // When the recents animation is running, the visibility of the Launcher is managed by the
     // animation
-    @InvisibilityFlags
-    private int mForceInvisible;
+    @InvisibilityFlags private int mForceInvisible;
+
     private final ViewCache mViewCache = new ViewCache();
 
     public ViewCache getViewCache() {
         return mViewCache;
     }
 
+    @Override
     public DeviceProfile getDeviceProfile() {
         return mDeviceProfile;
     }
 
-    public int getCurrentState() {
-        return StatsLogUtils.LAUNCHER_STATE_BACKGROUND;
-    }
-
-    public AccessibilityDelegate getAccessibilityDelegate() {
-        return null;
-    }
+    public int getCurrentState() { return StatsLogUtils.LAUNCHER_STATE_BACKGROUND; }
 
     public void modifyUserEvent(LauncherLogProto.LauncherEvent event) {}
 
@@ -133,26 +125,11 @@ public abstract class BaseActivity extends Activity
         return mStatsLogManager;
     }
 
-
     public final UserEventDispatcher getUserEventDispatcher() {
         if (mUserEventDispatcher == null) {
-            mUserEventDispatcher = UserEventDispatcher.newInstance(this, mDeviceProfile, this);
+            mUserEventDispatcher = UserEventDispatcher.newInstance(this, this);
         }
         return mUserEventDispatcher;
-    }
-
-    public boolean isInMultiWindowModeCompat() {
-        return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
-    }
-
-    public static <T extends BaseActivity> T fromContext(Context context) {
-        if (context instanceof BaseActivity) {
-            return (T) context;
-        } else if (context instanceof ContextThemeWrapper) {
-            return fromContext(((ContextWrapper) context).getBaseContext());
-        } else {
-            throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");
-        }
     }
 
     public SystemUiController getSystemUiController() {
@@ -198,6 +175,10 @@ public abstract class BaseActivity extends Activity
         mActivityFlags &= ~ACTIVITY_STATE_STARTED & ~ACTIVITY_STATE_USER_ACTIVE;
         mForceInvisible = 0;
         super.onStop();
+
+        // Reset the overridden sysui flags used for the task-swipe launch animation, this is a
+        // catch all for if we do not get resumed (and therefore not paused below)
+        getSystemUiController().updateUiState(UI_STATE_OVERVIEW, 0);
     }
 
     @Override
@@ -252,7 +233,7 @@ public abstract class BaseActivity extends Activity
     /**
      * Used to set the override visibility state, used only to handle the transition home with the
      * recents animation.
-     *
+     * @see QuickstepAppTransitionManagerImpl#getWallpaperOpenRunner()
      */
     public void addForceInvisibleFlag(@InvisibilityFlags int flag) {
         mForceInvisible |= flag;
@@ -290,5 +271,15 @@ public abstract class BaseActivity extends Activity
         writer.println(" mSystemUiController: " + mSystemUiController);
         writer.println(" mActivityFlags: " + mActivityFlags);
         writer.println(" mForceInvisible: " + mForceInvisible);
+    }
+
+    public static <T extends BaseActivity> T fromContext(Context context) {
+        if (context instanceof BaseActivity) {
+            return (T) context;
+        } else if (context instanceof ContextThemeWrapper) {
+            return fromContext(((ContextWrapper) context).getBaseContext());
+        } else {
+            throw new IllegalArgumentException("Cannot find BaseActivity in parent tree");
+        }
     }
 }

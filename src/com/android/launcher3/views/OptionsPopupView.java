@@ -15,9 +15,11 @@
  */
 package com.android.launcher3.views;
 
+import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_FLAVOR;
+import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
+
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.text.TextUtils;
@@ -29,22 +31,22 @@ import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.Launcher;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.popup.ArrowPopup;
 import com.android.launcher3.shortcuts.DeepShortcutView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
-import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.android.launcher3.BaseDraggingActivity.INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION;
-import static com.android.launcher3.Utilities.EXTRA_WALLPAPER_OFFSET;
 
 /**
  * Popup shown on long pressing an empty space in launcher
@@ -97,7 +99,7 @@ public class OptionsPopupView extends ArrowPopup
         if (ev.getAction() != MotionEvent.ACTION_DOWN) {
             return false;
         }
-        if (mLauncher.getDragLayer().isEventOverView(this, ev)) {
+        if (getPopupContainer().isEventOverView(this, ev)) {
             return false;
         }
         close(true);
@@ -136,14 +138,9 @@ public class OptionsPopupView extends ArrowPopup
         popup.reorderAndShow(popup.getChildCount());
     }
 
-    public static void show(Launcher launcher, float x, float y, List<OptionItem> items) {
-        float halfSize = launcher.getResources().getDimension(R.dimen.options_menu_thumb_size) / 2;
-        if (x < 0 || y < 0) {
-            x = launcher.getDragLayer().getWidth() / 2;
-            y = launcher.getDragLayer().getHeight() / 2;
-        }
-        RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
-        show(launcher, target, items);
+    @VisibleForTesting
+    public static ArrowPopup getOptionsPopup(Launcher launcher) {
+        return launcher.findViewById(R.id.deep_shortcuts_container);
     }
 
     public static void showDefaultOptions(Launcher launcher, float x, float y) {
@@ -155,12 +152,16 @@ public class OptionsPopupView extends ArrowPopup
         RectF target = new RectF(x - halfSize, y - halfSize, x + halfSize, y + halfSize);
 
         ArrayList<OptionItem> options = new ArrayList<>();
-        options.add(new OptionItem(R.string.wallpaper_button_text, R.drawable.ic_wallpaper,
+        int resString = Utilities.existsStyleWallpapers(launcher) ?
+                R.string.styles_wallpaper_button_text : R.string.wallpaper_button_text;
+        int resDrawable = Utilities.existsStyleWallpapers(launcher) ?
+                R.drawable.ic_palette : R.drawable.ic_wallpaper;
+        options.add(new OptionItem(resString, resDrawable,
                 ControlType.WALLPAPER_BUTTON, OptionsPopupView::startWallpaperPicker));
-        options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
-                ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
-        options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, -1,
-                OptionsPopupView::startOrganizer));
+        if (!FeatureFlags.GO_DISABLE_WIDGETS) {
+            options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
+                    ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
+        }
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
                 ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
@@ -168,16 +169,17 @@ public class OptionsPopupView extends ArrowPopup
     }
 
     public static boolean onWidgetsClicked(View view) {
-        return openWidgets(Launcher.getLauncher(view.getContext()));
+        return openWidgets(Launcher.getLauncher(view.getContext())) != null;
     }
 
-    public static boolean openWidgets(Launcher launcher) {
+    /** Returns WidgetsFullSheet that was opened, or null if nothing was opened. */
+    @Nullable
+    public static WidgetsFullSheet openWidgets(Launcher launcher) {
         if (launcher.getPackageManager().isSafeMode()) {
             Toast.makeText(launcher, R.string.safemode_widget_error, Toast.LENGTH_SHORT).show();
-            return false;
+            return null;
         } else {
-            WidgetsFullSheet.show(launcher, true /* animated */);
-            return true;
+            return WidgetsFullSheet.show(launcher, true /* animated */);
         }
     }
 
@@ -186,12 +188,6 @@ public class OptionsPopupView extends ArrowPopup
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
-        return true;
-    }
-
-    public static boolean startOrganizer(View view) {
-        Launcher launcher = Launcher.getLauncher(view.getContext());
-        launcher.getStateManager().goToState(LauncherState.OPTIONS, true);
         return true;
     }
 
@@ -206,21 +202,19 @@ public class OptionsPopupView extends ArrowPopup
             return false;
         }
         Intent intent = new Intent(Intent.ACTION_SET_WALLPAPER)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
                 .putExtra(EXTRA_WALLPAPER_OFFSET,
                         launcher.getWorkspace().getWallpaperOffsetForCenterPage());
-        intent.addFlags(
-                Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-
-        String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
-        PackageManager pm = v.getContext().getPackageManager();
-        if (!TextUtils.isEmpty(pickerPackage) && PackageManagerHelper
-                .isAppEnabled(pm, pickerPackage, 0)) {
-            intent.setPackage(pickerPackage);
+        if (!Utilities.existsStyleWallpapers(launcher)) {
+            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "wallpaper_only");
         } else {
-            // If there is no target package, use the default intent chooser animation
-            intent.putExtra(INTENT_EXTRA_IGNORE_LAUNCH_ANIMATION, true);
+            intent.putExtra(EXTRA_WALLPAPER_FLAVOR, "focus_wallpaper");
         }
-        return launcher.startActivitySafely(v, intent, null);
+        String pickerPackage = launcher.getString(R.string.wallpaper_picker_package);
+        if (!TextUtils.isEmpty(pickerPackage)) {
+            intent.setPackage(pickerPackage);
+        }
+        return launcher.startActivitySafely(v, intent, null, null);
     }
 
     public static class OptionItem {
@@ -231,7 +225,7 @@ public class OptionsPopupView extends ArrowPopup
         private final OnLongClickListener mClickListener;
 
         public OptionItem(int labelRes, int iconRes, int controlTypeForLog,
-                          OnLongClickListener clickListener) {
+                OnLongClickListener clickListener) {
             mLabelRes = labelRes;
             mIconRes = iconRes;
             mControlTypeForLog = controlTypeForLog;

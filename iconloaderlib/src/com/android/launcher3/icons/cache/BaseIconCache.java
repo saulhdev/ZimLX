@@ -15,6 +15,10 @@
  */
 package com.android.launcher3.icons.cache;
 
+import static com.android.launcher3.icons.BaseIconFactory.getFullResDefaultActivityIcon;
+import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
+import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
+
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -56,10 +60,6 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
-
-import static com.android.launcher3.icons.BaseIconFactory.getFullResDefaultActivityIcon;
-import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
-import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 public abstract class BaseIconCache {
 

@@ -16,6 +16,11 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_LEFT;
+import static com.android.launcher3.ButtonDropTarget.TOOLTIP_RIGHT;
+import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
+
 import android.animation.TimeInterpolator;
 import android.content.Context;
 import android.graphics.Rect;
@@ -30,11 +35,6 @@ import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragController.DragListener;
 import com.android.launcher3.dragndrop.DragOptions;
-
-import static com.android.launcher3.ButtonDropTarget.TOOLTIP_DEFAULT;
-import static com.android.launcher3.ButtonDropTarget.TOOLTIP_LEFT;
-import static com.android.launcher3.ButtonDropTarget.TOOLTIP_RIGHT;
-import static com.android.launcher3.anim.AlphaUpdateListener.updateVisibility;
 
 /*
  * The top bar containing various drop targets: Delete/App Info/Uninstall.
@@ -104,7 +104,7 @@ public class DropTargetBar extends FrameLayout
                         / (2 * (grid.inv.numColumns + 1)))
                         + grid.edgeMarginPx;
             } else {
-                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.defaultWidgetPadding.right;
+                gap = grid.desiredWorkspaceLeftRightMarginPx - grid.inv.defaultWidgetPadding.right;
             }
             lp.width = grid.availableWidthPx - 2 * gap;
 
@@ -204,7 +204,7 @@ public class DropTargetBar extends FrameLayout
         return visibleCount;
     }
 
-    private void animateToVisibility(boolean isVisible) {
+    public void animateToVisibility(boolean isVisible) {
         if (mVisible != isVisible) {
             mVisible = isVisible;
 

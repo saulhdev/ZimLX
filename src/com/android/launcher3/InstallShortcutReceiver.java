@@ -19,6 +19,7 @@ package com.android.launcher3;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.BroadcastReceiver;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -161,7 +162,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
     };
 
     public static void removeFromInstallQueue(Context context, HashSet<String> packageNames,
-                                              UserHandle user) {
+            UserHandle user) {
         if (packageNames.isEmpty()) {
             return;
         }
@@ -313,8 +314,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
      * Ensures that we have a valid, non-null name.  If the provided name is null, we will return
      * the application name instead.
      */
-    @Thunk
-    static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
+    @Thunk static CharSequence ensureValidName(Context context, Intent intent, CharSequence name) {
         if (name == null) {
             try {
                 PackageManager pm = context.getPackageManager();
@@ -459,14 +459,14 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 String name = ensureValidName(mContext, launchIntent, label).toString();
                 Bitmap icon = data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON);
                 Intent.ShortcutIconResource iconResource =
-                        data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
+                    data.getParcelableExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE);
 
                 // Only encode the parameters which are supported by the API.
                 JSONStringer json = new JSONStringer()
-                        .object()
-                        .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
-                        .key(NAME_KEY).value(name)
-                        .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
+                    .object()
+                    .key(LAUNCH_INTENT_KEY).value(launchIntent.toUri(0))
+                    .key(NAME_KEY).value(name)
+                    .key(APP_SHORTCUT_TYPE_KEY).value(isActivity);
                 if (icon != null) {
                     byte[] iconByteArray = GraphicsUtils.flattenBitmap(icon);
                     json = json.key(ICON_KEY).value(
@@ -573,7 +573,7 @@ public class InstallShortcutReceiver extends BroadcastReceiver {
                 data.putExtra(Intent.EXTRA_SHORTCUT_ICON, b);
             } else if (iconResourceName != null && !iconResourceName.isEmpty()) {
                 Intent.ShortcutIconResource iconResource =
-                        new Intent.ShortcutIconResource();
+                    new Intent.ShortcutIconResource();
                 iconResource.resourceName = iconResourceName;
                 iconResource.packageName = iconResourcePackageName;
                 data.putExtra(Intent.EXTRA_SHORTCUT_ICON_RESOURCE, iconResource);

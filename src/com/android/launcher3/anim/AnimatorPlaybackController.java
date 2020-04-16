@@ -15,6 +15,9 @@
  */
 package com.android.launcher3.anim;
 
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
@@ -23,17 +26,14 @@ import android.animation.TimeInterpolator;
 import android.animation.ValueAnimator;
 import android.util.Log;
 
-import androidx.dynamicanimation.animation.DynamicAnimation;
-import androidx.dynamicanimation.animation.SpringAnimation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-import static com.android.launcher3.config.FeatureFlags.QUICKSTEP_SPRINGS;
+import androidx.dynamicanimation.animation.DynamicAnimation;
+import androidx.dynamicanimation.animation.SpringAnimation;
 
 /**
  * Helper class to control the playback of an {@link AnimatorSet}, with custom interpolators
@@ -58,7 +58,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
      * to float (animation-fraction * total duration) to int conversion.
      */
     public static AnimatorPlaybackController wrap(AnimatorSet anim, long duration,
-                                                  Runnable onCancelRunnable) {
+            Runnable onCancelRunnable) {
 
         /**
          * TODO: use {@link AnimatorSet#setCurrentPlayTime(long)} once b/68382377 is fixed.
@@ -85,7 +85,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
     private boolean mSkipToEnd = false;
 
     protected AnimatorPlaybackController(AnimatorSet anim, long duration,
-                                         Runnable onCancelRunnable) {
+            Runnable onCancelRunnable) {
         mAnim = anim;
         mDuration = duration;
         mOnCancelRunnable = onCancelRunnable;
@@ -303,7 +303,7 @@ public abstract class AnimatorPlaybackController implements ValueAnimator.Animat
         private final ValueAnimator[] mChildAnimations;
 
         private AnimatorPlaybackControllerVL(AnimatorSet anim, long duration,
-                                             Runnable onCancelRunnable) {
+                Runnable onCancelRunnable) {
             super(anim, duration, onCancelRunnable);
 
             // Build animation list

@@ -16,11 +16,11 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
+
 import android.graphics.Bitmap;
 
 import com.android.launcher3.icons.BitmapInfo;
-
-import static com.android.launcher3.icons.BitmapInfo.LOW_RES_ICON;
 
 /**
  * Represents an ItemInfo which also holds an icon.
@@ -100,8 +100,7 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
      */
     public int runtimeStatusFlags = 0;
 
-    protected ItemInfoWithIcon() {
-    }
+    protected ItemInfoWithIcon() { }
 
     protected ItemInfoWithIcon(ItemInfoWithIcon info) {
         super(info);

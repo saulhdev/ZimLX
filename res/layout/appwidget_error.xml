@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8"?><!-- Copyright (C) 2009 The Android Open Source Project
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (C) 2009 The Android Open Source Project
 
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
@@ -16,11 +17,12 @@
 <TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/round_rect_primary"
-    android:elevation="2dp"
     android:gravity="center"
+    android:elevation="2dp"
     android:padding="4dp"
-    android:text="@string/gadget_error_text"
+    android:theme="@style/WidgetContainerTheme"
+    android:background="@drawable/round_rect_primary"
     android:textAppearance="?android:attr/textAppearanceMediumInverse"
     android:textColor="?android:attr/textColorSecondary"
-    android:theme="@style/WidgetContainerTheme" />
+    android:text="@string/gadget_error_text"
+    />

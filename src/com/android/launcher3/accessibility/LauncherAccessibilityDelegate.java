@@ -1,5 +1,9 @@
 package com.android.launcher3.accessibility;
 
+import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
+
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.app.AlertDialog;
 import android.appwidget.AppWidgetProviderInfo;
 import android.content.DialogInterface;
@@ -44,9 +48,6 @@ import com.android.launcher3.widget.LauncherAppWidgetHostView;
 
 import java.util.ArrayList;
 
-import static android.view.accessibility.AccessibilityNodeInfo.ACTION_LONG_CLICK;
-import static com.android.launcher3.LauncherState.NORMAL;
-
 public class LauncherAccessibilityDelegate extends AccessibilityDelegate implements DragListener {
 
     private static final String TAG = "LauncherAccessibilityDelegate";
@@ -54,7 +55,6 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     public static final int REMOVE = R.id.action_remove;
     public static final int UNINSTALL = R.id.action_uninstall;
     public static final int RECONFIGURE = R.id.action_reconfigure;
-    public static final int CUSTOMIZE = R.id.action_customize;
     protected static final int ADD_TO_WORKSPACE = R.id.action_add_to_workspace;
     protected static final int MOVE = R.id.action_move;
     protected static final int MOVE_TO_WORKSPACE = R.id.action_move_to_workspace;
@@ -75,8 +75,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
     }
 
     protected final SparseArray<AccessibilityAction> mActions = new SparseArray<>();
-    @Thunk
-    final Launcher mLauncher;
+    @Thunk final Launcher mLauncher;
 
     private DragInfo mDragInfo = null;
 
@@ -96,7 +95,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         mActions.put(MOVE_TO_WORKSPACE, new AccessibilityAction(MOVE_TO_WORKSPACE,
                 launcher.getText(R.string.action_move_to_workspace)));
         mActions.put(RESIZE, new AccessibilityAction(RESIZE,
-                launcher.getText(R.string.action_resize)));
+                        launcher.getText(R.string.action_resize)));
         mActions.put(DEEP_SHORTCUTS, new AccessibilityAction(DEEP_SHORTCUTS,
                 launcher.getText(R.string.action_deep_shortcut)));
         mActions.put(SHORTCUTS_AND_NOTIFICATIONS, new AccessibilityAction(DEEP_SHORTCUTS,
@@ -236,16 +235,16 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             }
 
             new AlertDialog.Builder(mLauncher)
-                    .setTitle(R.string.action_resize)
-                    .setItems(labels, new DialogInterface.OnClickListener() {
+                .setTitle(R.string.action_resize)
+                .setItems(labels, new DialogInterface.OnClickListener() {
 
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            performResizeAction(actions.get(which), host, info);
-                            dialog.dismiss();
-                        }
-                    })
-                    .show();
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        performResizeAction(actions.get(which), host, info);
+                        dialog.dismiss();
+                    }
+                })
+                .show();
             return true;
         } else if (action == DEEP_SHORTCUTS) {
             return PopupContainerWithArrow.showForIcon((BubbleTextView) host) != null;
@@ -294,8 +293,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         return actions;
     }
 
-    @Thunk
-    void performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
+    @Thunk void performResizeAction(int action, View host, LauncherAppWidgetInfo info) {
         CellLayout.LayoutParams lp = (CellLayout.LayoutParams) host.getLayoutParams();
         CellLayout layout = (CellLayout) host.getParent().getParent();
         layout.markCellsAsUnoccupiedForView(host);
@@ -304,24 +302,24 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
             if (((host.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL)
                     && layout.isRegionVacant(info.cellX - 1, info.cellY, 1, info.spanY))
                     || !layout.isRegionVacant(info.cellX + info.spanX, info.cellY, 1, info.spanY)) {
-                lp.cellX--;
-                info.cellX--;
+                lp.cellX --;
+                info.cellX --;
             }
-            lp.cellHSpan++;
-            info.spanX++;
+            lp.cellHSpan ++;
+            info.spanX ++;
         } else if (action == R.string.action_decrease_width) {
-            lp.cellHSpan--;
-            info.spanX--;
+            lp.cellHSpan --;
+            info.spanX --;
         } else if (action == R.string.action_increase_height) {
             if (!layout.isRegionVacant(info.cellX, info.cellY + info.spanY, info.spanX, 1)) {
-                lp.cellY--;
-                info.cellY--;
+                lp.cellY --;
+                info.cellY --;
             }
-            lp.cellVSpan++;
-            info.spanY++;
+            lp.cellVSpan ++;
+            info.spanY ++;
         } else if (action == R.string.action_decrease_height) {
-            lp.cellVSpan--;
-            info.spanY--;
+            lp.cellVSpan --;
+            info.spanY --;
         }
 
         layout.markCellsAsOccupiedForView(host);
@@ -334,13 +332,11 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
         announceConfirmation(mLauncher.getString(R.string.widget_resized, info.spanX, info.spanY));
     }
 
-    @Thunk
-    void announceConfirmation(int resId) {
+    @Thunk void announceConfirmation(int resId) {
         announceConfirmation(mLauncher.getResources().getString(resId));
     }
 
-    @Thunk
-    void announceConfirmation(String confirmation) {
+    @Thunk void announceConfirmation(String confirmation) {
         mLauncher.getDragLayer().announceForAccessibility(confirmation);
 
     }
@@ -359,7 +355,7 @@ public class LauncherAccessibilityDelegate extends AccessibilityDelegate impleme
      * as the actual drop location otherwise the views center is used.
      */
     public void handleAccessibleDrop(View clickedTarget, Rect dropLocation,
-                                     String confirmation) {
+            String confirmation) {
         if (!isInAccessibleDrag()) return;
 
         int[] loc = new int[2];

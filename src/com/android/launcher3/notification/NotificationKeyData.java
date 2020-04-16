@@ -42,7 +42,7 @@ public class NotificationKeyData {
     public int count;
 
     private NotificationKeyData(String notificationKey, String shortcutId, int count,
-                                String[] personKeysFromNotification) {
+            String[] personKeysFromNotification) {
         this.notificationKey = notificationKey;
         this.shortcutId = shortcutId;
         this.count = Math.max(1, count);

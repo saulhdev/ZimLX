@@ -15,6 +15,8 @@
  */
 package com.android.launcher3.touch;
 
+import static android.view.MotionEvent.INVALID_POINTER_ID;
+
 import android.content.Context;
 import android.graphics.PointF;
 import android.util.Log;
@@ -22,12 +24,11 @@ import android.view.MotionEvent;
 import android.view.VelocityTracker;
 import android.view.ViewConfiguration;
 
+import com.android.launcher3.Utilities;
+import com.android.launcher3.testing.TestProtocol;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.VisibleForTesting;
-
-import com.android.launcher3.Utilities;
-
-import static android.view.MotionEvent.INVALID_POINTER_ID;
 
 /**
  * One dimensional scroll/drag/swipe gesture detector.
@@ -67,7 +68,7 @@ public class SwipeDetector {
     public static abstract class Direction {
 
         abstract float getDisplacement(MotionEvent ev, int pointerIndex, PointF refPoint,
-                                       boolean isRtl);
+                boolean isRtl);
 
         /**
          * Distance in pixels a touch can wander before we think the user is scrolling.
@@ -239,7 +240,7 @@ public class SwipeDetector {
 
     @VisibleForTesting
     protected SwipeDetector(@NonNull ViewConfiguration config, @NonNull Listener l,
-                            @NonNull Direction dir, boolean isRtl) {
+            @NonNull Direction dir, boolean isRtl) {
         mListener = l;
         mDir = dir;
         mIsRtl = isRtl;
@@ -264,8 +265,11 @@ public class SwipeDetector {
         }
 
         // Check if the client is interested in scroll in current direction.
-        return ((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDir.isNegative(mDisplacement)) ||
-                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDir.isPositive(mDisplacement));
+        if (((mScrollConditions & DIRECTION_NEGATIVE) > 0 && mDir.isNegative(mDisplacement)) ||
+                ((mScrollConditions & DIRECTION_POSITIVE) > 0 && mDir.isPositive(mDisplacement))) {
+            return true;
+        }
+        return false;
     }
 
     public boolean onTouchEvent(MotionEvent ev) {

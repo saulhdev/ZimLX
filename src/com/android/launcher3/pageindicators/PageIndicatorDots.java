@@ -178,7 +178,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
     }
 
     public void playEntryAnimation() {
-        int count = mEntryAnimationRadiusFactors.length;
+        int count  = mEntryAnimationRadiusFactors.length;
         if (count == 0) {
             mEntryAnimationRadiusFactors = null;
             invalidate();
@@ -232,7 +232,7 @@ public class PageIndicatorDots extends View implements PageIndicator {
         // Add extra spacing of mDotRadius on all sides so than entry animation could be run.
         int width = MeasureSpec.getMode(widthMeasureSpec) == MeasureSpec.EXACTLY ?
                 MeasureSpec.getSize(widthMeasureSpec) : (int) ((mNumPages * 3 + 2) * mDotRadius);
-        int height = MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
+        int height= MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.EXACTLY ?
                 MeasureSpec.getSize(heightMeasureSpec) : (int) (4 * mDotRadius);
         setMeasuredDimension(width, height);
     }

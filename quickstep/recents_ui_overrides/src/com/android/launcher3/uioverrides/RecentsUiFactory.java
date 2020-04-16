@@ -16,6 +16,10 @@
 
 package com.android.launcher3.uioverrides;
 
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
+
 import android.content.Context;
 import android.graphics.Rect;
 import android.view.Gravity;
@@ -33,8 +37,8 @@ import com.android.launcher3.uioverrides.touchcontrollers.LandscapeEdgeSwipeCont
 import com.android.launcher3.uioverrides.touchcontrollers.NavBarToHomeTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.OverviewToAllAppsTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.PortraitStatesTouchController;
-import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.StatusBarTouchController;
+import com.android.launcher3.uioverrides.touchcontrollers.QuickSwitchTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TaskViewTouchController;
 import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchTouchController;
 import com.android.launcher3.util.TouchController;
@@ -47,10 +51,6 @@ import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
 import java.util.ArrayList;
-
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.SysUINavigationMode.Mode.NO_BUTTON;
 
 /**
  * Provides recents-related {@link UiFactory} logic and classes.
@@ -65,6 +65,7 @@ public abstract class RecentsUiFactory {
             e.printStackTrace();
         }
     };
+
 
     public static RotationMode ROTATION_LANDSCAPE = new RotationMode(-90) {
         @Override

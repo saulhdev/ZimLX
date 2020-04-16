@@ -16,6 +16,9 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
+
 import android.content.ComponentName;
 import android.content.ContentProviderClient;
 import android.content.Context;
@@ -35,18 +38,13 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
 
-import static com.android.launcher3.InvariantDeviceProfile.CHANGE_FLAG_ICON_PARAMS;
-import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
-
 public class LauncherAppState {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    // We do not need any synchronization for this variable as its only written on UI thread.
     private static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
             new MainThreadInitializedObject<>(LauncherAppState::new);
-
 
     private final Context mContext;
     private final LauncherModel mModel;
@@ -54,8 +52,6 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SecureSettingsObserver mNotificationDotsObserver;
-
-    private Launcher mLauncher;
 
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
@@ -103,7 +99,7 @@ public class LauncherAppState {
         mContext.registerReceiver(mModel, filter);
         UserManagerCompat.getInstance(mContext).enableAndResetCache();
         mInvariantDeviceProfile.addOnChangeListener(this::onIdpChanged);
-        new Handler().post(() -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
+        new Handler().post( () -> mInvariantDeviceProfile.verifyConfigChangedInBackground(context));
 
         if (!mContext.getResources().getBoolean(R.bool.notification_dots_enabled)) {
             mNotificationDotsObserver = null;
@@ -151,14 +147,9 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
-        mLauncher = launcher;
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         return mModel;
-    }
-
-    public Launcher getLauncher() {
-        return mLauncher;
     }
 
     public IconCache getIconCache() {
@@ -177,15 +168,11 @@ public class LauncherAppState {
         return mInvariantDeviceProfile;
     }
 
-    public void reloadIconCache() {
-        mModel.forceReloadOnNextLaunch();
-    }
-
     /**
      * Shorthand for {@link #getInvariantDeviceProfile()}
      */
     public static InvariantDeviceProfile getIDP(Context context) {
-        return LauncherAppState.getInstance(context).getInvariantDeviceProfile();
+        return InvariantDeviceProfile.INSTANCE.get(context);
     }
 
     private static LauncherProvider getLocalProvider(Context context) {

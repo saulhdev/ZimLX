@@ -27,8 +27,8 @@ import android.widget.FrameLayout;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 
 /**
@@ -93,11 +93,9 @@ public class DeepShortcutView extends FrameLayout {
         return sTempPoint;
     }
 
-    /**
-     * package private
-     **/
+    /** package private **/
     public void applyShortcutInfo(WorkspaceItemInfo info, ShortcutInfo detail,
-                                  PopupContainerWithArrow container) {
+            PopupContainerWithArrow container) {
         mInfo = info;
         mDetail = detail;
         mBubbleText.applyFromWorkspaceItem(info);

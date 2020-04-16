@@ -16,14 +16,13 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
+
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
-import android.app.Activity;
 import android.app.ActivityManager;
-import android.app.AlarmManager;
-import android.app.PendingIntent;
+import android.app.Person;
 import android.app.WallpaperManager;
-import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -36,7 +35,6 @@ import android.content.pm.PackageManager;
 import android.content.pm.PackageManager.NameNotFoundException;
 import android.content.pm.ResolveInfo;
 import android.content.pm.ShortcutInfo;
-import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
@@ -50,7 +48,6 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -58,7 +55,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
-import android.os.UserHandle;
+import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -67,15 +64,10 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.util.Pair;
 import android.util.TypedValue;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.view.Window;
 import android.view.animation.Interpolator;
-import android.widget.Toast;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.Person;
-import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -87,24 +79,15 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
+import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
-import org.zimmob.zimlx.ZimAppKt;
-import org.zimmob.zimlx.ZimLauncher;
-import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.backup.RestoreBackupActivity;
-import org.zimmob.zimlx.iconpack.IconPackManager;
-
-import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.StringTokenizer;
@@ -115,58 +98,64 @@ import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
-
 /**
  * Various utilities shared amongst the Launcher's classes.
  */
 public final class Utilities {
-    public static final String[] EMPTY_STRING_ARRAY = new String[0];
-    public static final Person[] EMPTY_PERSON_ARRAY = new Person[0];
 
-    public static final boolean ATLEAST_Q =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+    private static final String TAG = "Launcher.Utilities";
+
+    private static final Pattern sTrimPattern =
+            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
+
+    private static final int[] sLoc0 = new int[2];
+    private static final int[] sLoc1 = new int[2];
+    private static final Matrix sMatrix = new Matrix();
+    private static final Matrix sInverseMatrix = new Matrix();
+
+    public static final String[] EMPTY_STRING_ARRAY = new String[0];
+    public static final String[] EMPTY_PERSON_ARRAY = new String[0];
+
+    public static final boolean ATLEAST_Q = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q;
+
     public static final boolean ATLEAST_P =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.P;
+
     public static final boolean ATLEAST_OREO_MR1 =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1;
+
     public static final boolean ATLEAST_OREO =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
-    public static final boolean ATLEAST_NOUGAT_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1;
     public static final boolean ATLEAST_NOUGAT =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-    public static final boolean ATLEAST_MARSHMALLOW =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
-    public static final boolean ATLEAST_LOLLIPOP_MR1 =
-            Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1;
-
-
-    //public static boolean HIDDEN_APIS_ALLOWED = !ATLEAST_P || HiddenApiCompat.tryAccess();
 
     public static final int SINGLE_FRAME_MS = 16;
+
     /**
-     * Set on a motion event dispatched from the nav bar. See .
+     * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
      */
     public static final int EDGE_NAV_BAR = 1 << 8;
+
+    public static final int COLOR_EXTRACTION_JOB_ID = 1;
+    public static final int WALLPAPER_COMPAT_JOB_ID = 2;
+
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
      */
-    public static final boolean IS_DEBUG_DEVICE = Build.TYPE.toLowerCase().contains("debug");
+    public static final boolean IS_DEBUG_DEVICE =
+            Build.TYPE.toLowerCase(Locale.ROOT).contains("debug") ||
+            Build.TYPE.toLowerCase(Locale.ROOT).equals("eng");
+
+    public static boolean isDevelopersOptionsEnabled(Context context) {
+        return Settings.Global.getInt(context.getApplicationContext().getContentResolver(),
+                        Settings.Global.DEVELOPMENT_SETTINGS_ENABLED, 0) != 0;
+    }
+
     // An intent extra to indicate the horizontal scroll of the wallpaper.
     public static final String EXTRA_WALLPAPER_OFFSET = "com.android.launcher3.WALLPAPER_OFFSET";
-    public static final int COLOR_EXTRACTION_JOB_ID = 1;
-    public static final int WALLPAPER_COMPAT_JOB_ID = 2;
-    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
-    private static final String TAG = "Launcher.Utilities";
-    private static final Pattern sTrimPattern =
-            Pattern.compile("^[\\s|\\p{javaSpaceChar}]*(.*)[\\s|\\p{javaSpaceChar}]*$");
-    private static final int[] sLoc0 = new int[2];
-    private static final int[] sLoc1 = new int[2];
-    private static final float[] sPoint = new float[2];
-    private static final Matrix sMatrix = new Matrix();
-    private static final Matrix sInverseMatrix = new Matrix();
+    public static final String EXTRA_WALLPAPER_FLAVOR = "com.android.launcher3.WALLPAPER_FLAVOR";
+
     // These values are same as that in {@link AsyncTask}.
     private static final int CPU_COUNT = Runtime.getRuntime().availableProcessors();
     private static final int CORE_POOL_SIZE = CPU_COUNT + 1;
@@ -177,10 +166,10 @@ public final class Utilities {
      */
     public static final Executor THREAD_POOL_EXECUTOR = new ThreadPoolExecutor(
             CORE_POOL_SIZE, MAXIMUM_POOL_SIZE, KEEP_ALIVE,
-            TimeUnit.SECONDS, new LinkedBlockingQueue<Runnable>());
+            TimeUnit.SECONDS, new LinkedBlockingQueue<>());
 
     public static boolean IS_RUNNING_IN_TEST_HARNESS =
-            ActivityManager.isRunningInTestHarness();
+                    ActivityManager.isRunningInTestHarness();
 
     public static void enableRunningInTestHarnessForTests() {
         IS_RUNNING_IN_TEST_HARNESS = true;
@@ -190,25 +179,10 @@ public final class Utilities {
         return Log.isLoggable(propertyName, Log.VERBOSE);
     }
 
-    public static boolean isAllowRotationPrefEnabled(Context context) {
-        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
-                getAllowRotationDefaultValue(context));
-    }
-
-    public static boolean getAllowRotationDefaultValue(Context context) {
-        if (ATLEAST_NOUGAT) {
-            // If the device was scaled, used the original dimensions to determine if rotation
-            // is allowed of not.
-            Resources res = context.getResources();
-            int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
-                    * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
-            return originalSmallestWidth >= 600;
-        }
-        return false;
-    }
-
-    public static <T> T notNullOrDefault(T value, T defValue) {
-        return (value == null) ? defValue : value;
+    public static boolean existsStyleWallpapers(Context context) {
+        ResolveInfo ri = context.getPackageManager().resolveActivity(
+                PackageManagerHelper.getStyleWallpapersIntent(context), 0);
+        return ri != null;
     }
 
     /**
@@ -234,21 +208,21 @@ public final class Utilities {
      * Given a coordinate relative to the descendant, find the coordinate in a parent view's
      * coordinates.
      *
-     * @param descendant        The descendant to which the passed coordinate is relative.
-     * @param ancestor          The root view to make the coordinates relative to.
-     * @param coord             The coordinate that we want mapped.
+     * @param descendant The descendant to which the passed coordinate is relative.
+     * @param ancestor The root view to make the coordinates relative to.
+     * @param coord The coordinate that we want mapped.
      * @param includeRootScroll Whether or not to account for the scroll of the descendant:
-     *                          sometimes this is relevant as in a child's coordinates within the descendant.
-     * @param ignoreTransform   If true, view transform is ignored
-     * @param outRotation       If not null, and {@param ignoreTransform} is true, this is set to the
-     *                          overall rotation of the view in degrees.
+     *          sometimes this is relevant as in a child's coordinates within the descendant.
+     * @param ignoreTransform If true, view transform is ignored
+     * @param outRotation If not null, and {@param ignoreTransform} is true, this is set to the
+     *                   overall rotation of the view in degrees.
      * @return The factor by which this descendant is scaled relative to this DragLayer. Caution
-     * this scale factor is assumed to be equal in X and Y, and so if at any point this
-     * assumption fails, we will need to return a pair of scale factors.
+     *         this scale factor is assumed to be equal in X and Y, and so if at any point this
+     *         assumption fails, we will need to return a pair of scale factors.
      */
     public static float getDescendantCoordRelativeToAncestor(View descendant, View ancestor,
-                                                             float[] coord, boolean includeRootScroll, boolean ignoreTransform,
-                                                             float[] outRotation) {
+            float[] coord, boolean includeRootScroll, boolean ignoreTransform,
+            float[] outRotation) {
         float scale = 1.0f;
         View v = descendant;
         while(v != ancestor && v != null) {
@@ -281,6 +255,7 @@ public final class Utilities {
         return scale;
     }
 
+
     /**
      * Inverse of {@link #getDescendantCoordRelativeToAncestor(View, View, float[], boolean)}.
      */
@@ -302,9 +277,9 @@ public final class Utilities {
      * Sets {@param out} to be same as {@param in} by rounding individual values
      */
     public static void roundArray(float[] in, int[] out) {
-        for (int i = 0; i < in.length; i++) {
-            out[i] = Math.round(in[i]);
-        }
+       for (int i = 0; i < in.length; i++) {
+           out[i] = Math.round(in[i]);
+       }
     }
 
     public static void offsetPoints(float[] points, float offsetX, float offsetY) {
@@ -333,7 +308,7 @@ public final class Utilities {
         sLoc0[1] += (v0.getMeasuredHeight() * v0.getScaleY()) / 2;
         sLoc1[0] += (v1.getMeasuredWidth() * v1.getScaleX()) / 2;
         sLoc1[1] += (v1.getMeasuredHeight() * v1.getScaleY()) / 2;
-        return new int[]{sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
+        return new int[] {sLoc1[0] - sLoc0[0], sLoc1[1] - sLoc0[1]};
     }
 
     public static void scaleRectFAboutCenter(RectF r, float scale) {
@@ -342,7 +317,7 @@ public final class Utilities {
             float cy = r.centerY();
             r.offset(-cx, -cy);
             r.left = r.left * scale;
-            r.top = r.top * scale;
+            r.top = r.top * scale ;
             r.right = r.right * scale;
             r.bottom = r.bottom * scale;
             r.offset(cx, cy);
@@ -354,14 +329,25 @@ public final class Utilities {
             int cx = r.centerX();
             int cy = r.centerY();
             r.offset(-cx, -cy);
+            scaleRect(r, scale);
+            r.offset(cx, cy);
+        }
+    }
 
+    public static void scaleRect(Rect r, float scale) {
+        if (scale != 1.0f) {
             r.left = (int) (r.left * scale + 0.5f);
             r.top = (int) (r.top * scale + 0.5f);
             r.right = (int) (r.right * scale + 0.5f);
             r.bottom = (int) (r.bottom * scale + 0.5f);
-
-            r.offset(cx, cy);
         }
+    }
+
+    public static void insetRect(Rect r, Rect insets) {
+        r.left = Math.min(r.right, r.left + insets.left);
+        r.top = Math.min(r.bottom, r.top + insets.top);
+        r.right = Math.max(r.left, r.right - insets.right);
+        r.bottom = Math.max(r.top, r.bottom - insets.bottom);
     }
 
     public static float shrinkRect(Rect r, float scaleX, float scaleY) {
@@ -378,6 +364,32 @@ public final class Utilities {
         return scale;
     }
 
+    /**
+     * Maps t from one range to another range.
+     * @param t The value to map.
+     * @param fromMin The lower bound of the range that t is being mapped from.
+     * @param fromMax The upper bound of the range that t is being mapped from.
+     * @param toMin The lower bound of the range that t is being mapped to.
+     * @param toMax The upper bound of the range that t is being mapped to.
+     * @return The mapped value of t.
+     */
+    public static float mapToRange(float t, float fromMin, float fromMax, float toMin, float toMax,
+            Interpolator interpolator) {
+        if (fromMin == fromMax || toMin == toMax) {
+            Log.e(TAG, "mapToRange: range has 0 length");
+            return toMin;
+        }
+        float progress = getProgress(t, fromMin, fromMax);
+        return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
+    }
+
+    public static float getProgress(float current, float min, float max) {
+        return Math.abs(current - min) / Math.abs(max - min);
+    }
+
+    public static float mapRange(float value, float min, float max) {
+        return min + (value * (max - min));
+    }
 
     public static boolean isSystemApp(Context context, Intent intent) {
         PackageManager pm = context.getPackageManager();
@@ -427,25 +439,6 @@ public final class Utilities {
     }
 
     /**
-     * Compresses the bitmap to a byte array for serialization.
-     */
-    public static byte[] flattenBitmap(Bitmap bitmap) {
-        // Try go guesstimate how much space the icon will take when serialized
-        // to avoid unnecessary allocations/copies during the write.
-        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
-        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
-        try {
-            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
-            out.flush();
-            out.close();
-            return out.toByteArray();
-        } catch (IOException e) {
-            Log.w(TAG, "Could not write bitmap");
-            return null;
-        }
-    }
-
-    /**
      * Trims the string, removing all whitespace at the beginning and end of the string.
      * Non-breaking whitespaces are also removed.
      */
@@ -469,12 +462,23 @@ public final class Utilities {
         return (int) Math.ceil(fm.bottom - fm.top);
     }
 
-    public static int calculateTextHeight(float textSizePx, boolean twoLines) {
-        Paint p = new Paint();
-        p.setTextSize(textSizePx);
-        Paint.FontMetrics fm = p.getFontMetrics();
-        int result = (int) Math.ceil(fm.bottom - fm.top);
-        return twoLines ? result * 2 : result;
+    /**
+     * Convenience println with multiple args.
+     */
+    public static void println(String key, Object... args) {
+        StringBuilder b = new StringBuilder();
+        b.append(key);
+        b.append(": ");
+        boolean isFirstArgument = true;
+        for (Object arg : args) {
+            if (isFirstArgument) {
+                isFirstArgument = false;
+            } else {
+                b.append(", ");
+            }
+            b.append(arg);
+        }
+        System.out.println(b.toString());
     }
 
     public static boolean isRtl(Resources res) {
@@ -503,18 +507,13 @@ public final class Utilities {
         return false;
     }
 
-    public static float dpiFromPx(int size, DisplayMetrics metrics) {
+    public static float dpiFromPx(int size, DisplayMetrics metrics){
         float densityRatio = (float) metrics.densityDpi / DisplayMetrics.DENSITY_DEFAULT;
         return (size / densityRatio);
     }
 
-    public static int pxFromDp(float size, DisplayMetrics metrics) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
-                size, metrics));
-    }
-
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 
@@ -562,11 +561,11 @@ public final class Utilities {
     public static long boundToRange(long value, long lowerBound, long upperBound) {
         return Math.max(lowerBound, Math.min(value, upperBound));
     }
+
     /**
      * Wraps a message with a TTS span, so that a different message is spoken than
      * what is getting displayed.
-     *
-     * @param msg    original message
+     * @param msg original message
      * @param ttsMsg message to be spoken
      */
     public static CharSequence wrapForTts(CharSequence msg, String ttsMsg) {
@@ -577,14 +576,22 @@ public final class Utilities {
     }
 
     /**
-     * Replacement for Long.compare() which was added in API level 19.
+     * Prefixes a text with the provided icon
      */
-    public static int longCompare(long lhs, long rhs) {
-        return lhs < rhs ? -1 : (lhs == rhs ? 0 : 1);
+    public static CharSequence prefixTextWithIcon(Context context, int iconRes, CharSequence msg) {
+        // Update the hint to contain the icon.
+        // Prefix the original hint with two spaces. The first space gets replaced by the icon
+        // using span. The second space is used for a singe space character between the hint
+        // and the icon.
+        SpannableString spanned = new SpannableString("  " + msg);
+        spanned.setSpan(new TintedDrawableSpan(context, iconRes),
+                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
+        return spanned;
     }
 
     public static SharedPreferences getPrefs(Context context) {
-        return getZimPrefs(context).getSharedPrefs();
+        return context.getSharedPreferences(
+                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
@@ -598,30 +605,8 @@ public final class Utilities {
                 : !context.getSystemService(PowerManager.class).isPowerSaveMode();
     }
 
-    public static SharedPreferences getReflectionPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
-    }
-
-    public static boolean isPowerSaverPreventingAnimation(Context context) {
-        if (ATLEAST_P) {
-            // Battery saver mode no longer prevents animations.
-            return false;
-        }
-        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
-        return powerManager.isPowerSaveMode();
-    }
-
     public static boolean isWallpaperAllowed(Context context) {
-        if (ATLEAST_NOUGAT) {
-            try {
-                WallpaperManager wm = context.getSystemService(WallpaperManager.class);
-                return (Boolean) wm.getClass().getDeclaredMethod("isSetWallpaperAllowed")
-                        .invoke(wm);
-            } catch (Exception e) {
-            }
-        }
-        return true;
+        return context.getSystemService(WallpaperManager.class).isSetWallpaperAllowed();
     }
 
     public static void closeSilently(Closeable c) {
@@ -636,221 +621,9 @@ public final class Utilities {
         }
     }
 
-    /**
-     * Returns whether the collection is null or empty.
-     */
-    public static boolean isEmpty(Collection c) {
-        return c == null || c.isEmpty();
-    }
-
     public static boolean isBinderSizeError(Exception e) {
         return e.getCause() instanceof TransactionTooLargeException
                 || e.getCause() instanceof DeadObjectException;
-    }
-
-    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
-        String className = context.getString(resId);
-        if (!TextUtils.isEmpty(className)) {
-            try {
-                Class<?> cls = Class.forName(className);
-                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
-            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
-                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
-                Log.e(TAG, "Bad overriden class", e);
-            }
-        }
-
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * Returns a HashSet with a single element. We use this instead of Collections.singleton()
-     * because HashSet ensures all operations, such as remove, are supported.
-     */
-    public static <T> HashSet<T> singletonHashSet(T elem) {
-        HashSet<T> hashSet = new HashSet<>(1);
-        hashSet.add(elem);
-        return hashSet;
-    }
-
-    public static ZimPreferences getZimPrefs(Context context) {
-        return ZimPreferences.Companion.getInstance(context);
-    }
-
-    private static List<Runnable> onStart = new ArrayList<>();
-
-    /**
-     * ATTENTION: Only ever call this from within LawnchairLauncher.kt
-     */
-    public /* private */ static void onLauncherStart() {
-        Log.d(TAG, "onLauncherStart: " + onStart.size());
-        for (Runnable r : onStart)
-            r.run();
-        onStart.clear();
-    }
-
-
-    /**
-     * Cues a runnable to be executed after binding all launcher elements the next time
-     */
-    public static void cueAfterNextStart(Runnable runnable) {
-        Log.d(TAG, "cueAfterNextStart: " + runnable);
-        onStart.add(runnable);
-    }
-
-    public static void goToHome(Context context, Runnable onStart) {
-        cueAfterNextStart(onStart);
-        goToHome(context);
-    }
-
-    public static void goToHome(Context context) {
-        PackageManager pm = context.getPackageManager();
-
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        ComponentName componentName = intent.resolveActivity(pm);
-        if (!context.getPackageName().equals(componentName.getPackageName())) {
-            intent = pm.getLaunchIntentForPackage(context.getPackageName());
-        }
-        context.startActivity(intent);
-    }
-
-    public static void restartLauncher(Context context) {
-        PackageManager pm = context.getPackageManager();
-
-        Intent intent = new Intent(Intent.ACTION_MAIN);
-        intent.addCategory(Intent.CATEGORY_HOME);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        ComponentName componentName = intent.resolveActivity(pm);
-        if (!context.getPackageName().equals(componentName.getPackageName())) {
-            intent = pm.getLaunchIntentForPackage(context.getPackageName());
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        }
-
-        restartLauncher(context, intent);
-    }
-
-    public static void restartLauncher(Context context, Intent intent) {
-        context.startActivity(intent);
-
-        // Create a pending intent so the application is restarted after System.exit(0) was called.
-        // We use an AlarmManager to call this intent in 100ms
-        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
-        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
-
-        // Kill the application
-        killLauncher();
-    }
-
-    public static void killLauncher() {
-        System.exit(0);
-    }
-
-    public static void checkRestoreSuccess(Context context) {
-        ZimPreferences prefs = Utilities.getZimPrefs(context);
-        if (prefs.getRestoreSuccess()) {
-            prefs.setRestoreSuccess(false);
-            context.startActivity(new Intent(context, RestoreBackupActivity.class)
-                    .putExtra(RestoreBackupActivity.EXTRA_SUCCESS, true));
-        }
-    }
-
-    public static Bitmap drawableToBitmap(Drawable drawable) {
-        if (drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            return null;
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    public static Bitmap drawableToBitmap(Drawable drawable, boolean forceCreate) {
-        if (!forceCreate && drawable instanceof BitmapDrawable) {
-            return ((BitmapDrawable) drawable).getBitmap();
-        }
-
-        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
-            return null;
-        }
-
-        Bitmap bitmap = Bitmap.createBitmap(
-                drawable.getIntrinsicWidth(),
-                drawable.getIntrinsicHeight(),
-                Bitmap.Config.ARGB_8888);
-
-        Canvas canvas = new Canvas(bitmap);
-        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
-        drawable.draw(canvas);
-        return bitmap;
-    }
-
-    public static void setLightUi(Window window) {
-        int flags = window.getDecorView().getSystemUiVisibility();
-        if (ATLEAST_MARSHMALLOW)
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
-        if (ATLEAST_OREO)
-            flags |= View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR;
-        flags |= View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN;
-        flags |= View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION;
-        flags |= View.SYSTEM_UI_FLAG_LAYOUT_STABLE;
-        window.getDecorView().setSystemUiVisibility(flags);
-    }
-
-    public static boolean hasStoragePermission(Context context) {
-        return hasPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
-    }
-
-    public static boolean hasPermission(Context context, String permission) {
-        return ContextCompat.checkSelfPermission(context, permission)
-                == PackageManager.PERMISSION_GRANTED;
-    }
-
-    public static void requestStoragePermission(Activity activity) {
-        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
-    }
-
-    public static void setupPirateLocale(Activity activity) {
-        Locale locale = new Locale("pir");
-        Locale.setDefault(locale);
-        Configuration config = new Configuration();
-        config.locale = locale;
-        Resources baseResources = activity.getBaseContext().getResources();
-        baseResources.updateConfiguration(config, baseResources.getDisplayMetrics());
-    }
-
-    public static int setFlag(int flags, int flag, boolean value) {
-        if (value) {
-            return flags | flag;
-        } else {
-            return flags & ~flag;
-        }
-    }
-
-    public static String upperCaseFirstLetter(String str) {
-        if (TextUtils.isEmpty(str)) {
-            return str;
-        }
-        return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
-    }
-
-    public static UserHandle myUserHandle() {
-        return android.os.Process.myUserHandle();
     }
 
     /**
@@ -880,24 +653,18 @@ public final class Utilities {
     public static void unregisterReceiverSafely(Context context, BroadcastReceiver receiver) {
         try {
             context.unregisterReceiver(receiver);
-        } catch (IllegalArgumentException e) {
-        }
+        } catch (IllegalArgumentException e) {}
     }
-
 
     /**
      * Returns the full drawable for {@param info}.
-     *
      * @param outObj this is set to the internal data associated with {@param info},
      *               eg {@link LauncherActivityInfo} or {@link ShortcutInfo}.
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
-                                           boolean flattenDrawable, Object[] outObj) {
-        IconPackManager.CustomIconEntry customIconEntry = (info instanceof WorkspaceItemInfo) ?
-                ((WorkspaceItemInfo) info).customIconEntry : null;
-
+            boolean flattenDrawable, Object[] outObj) {
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION || customIconEntry != null) {
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
@@ -996,173 +763,48 @@ public final class Utilities {
         return slop * slop;
     }
 
-    public static Boolean isEmui() {
-        return !TextUtils.isEmpty(getSystemProperty("ro.build.version.emui", ""));
+    /*CUSTOM*/
+    public static Bitmap drawableToBitmap(Drawable drawable) {
+        if (drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
     }
 
-    public static Boolean isOnePlusStock() {
-        return !TextUtils.isEmpty(getSystemProperty("ro.oxygen.version", "")) || !TextUtils
-                .isEmpty(getSystemProperty("ro.hydrogen.version", ""));
-    }
-
-    /**
-     * @param bitmap                the Bitmap to be scaled
-     * @param threshold             the maxium dimension (either width or height) of the scaled bitmap
-     * @param isNecessaryToKeepOrig is it necessary to keep the original bitmap? If not recycle the original bitmap to prevent memory leak.
-     *                              <p>
-     *                              Credit: https://gist.github.com/vxhviet/873d142b41217739a1302d337b7285ba
-     */
-    public static Bitmap getScaledDownBitmap(Bitmap bitmap, int threshold, boolean isNecessaryToKeepOrig) {
-        if (bitmap == null) return null;
-
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
-        int newWidth = width;
-        int newHeight = height;
-
-        if (width > height && width > threshold) {
-            newWidth = threshold;
-            newHeight = (int) (height * (float) newWidth / width);
-        }
-
-        if (width > height && width <= threshold) {
-            //the bitmap is already smaller than our required dimension, no need to resize it
-            return bitmap;
-        }
-
-        if (width < height && height > threshold) {
-            newHeight = threshold;
-            newWidth = (int) (width * (float) newHeight / height);
-        }
-
-        if (width < height && height <= threshold) {
-            //the bitmap is already smaller than our required dimension, no need to resize it
-            return bitmap;
-        }
-
-        if (width == height && width > threshold) {
-            newWidth = threshold;
-            newHeight = newWidth;
-        }
-
-        if (width == height && width <= threshold) {
-            //the bitmap is already smaller than our required dimension, no need to resize it
-            return bitmap;
-        }
-
-        return getResizedBitmap(bitmap, newWidth, newHeight, isNecessaryToKeepOrig);
-    }
-
-    private static Bitmap getResizedBitmap(Bitmap bm, int newWidth, int newHeight, boolean isNecessaryToKeepOrig) {
-        int width = bm.getWidth();
-        int height = bm.getHeight();
-        float scaleWidth = ((float) newWidth) / width;
-        float scaleHeight = ((float) newHeight) / height;
-        // CREATE A MATRIX FOR THE MANIPULATION
-        Matrix matrix = new Matrix();
-        // RESIZE THE BIT MAP
-        matrix.postScale(scaleWidth, scaleHeight);
-
-        // "RECREATE" THE NEW BITMAP
-        Bitmap resizedBitmap = Bitmap.createBitmap(bm, 0, 0, width, height, matrix, false);
-        if (!isNecessaryToKeepOrig) {
-            bm.recycle();
-        }
-        return resizedBitmap;
-    }
-
-    public static boolean isRecentsEnabled() {
-        LauncherAppState las = LauncherAppState.getInstanceNoCreate();
-        if (las != null) {
-            Context context = las.getContext();
-            return ZimAppKt.getZimApp(context).getRecentsEnabled();
-        }
-        return false;
-    }
-
-    public static void openURLinBrowser(Context context, String url) {
-        openURLinBrowser(context, url, null, null);
-    }
-
-    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
-        try {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-            intent.setSourceBounds(sourceBounds);
-            if (options == null) {
-                context.startActivity(intent);
-            } else {
-                context.startActivity(intent, options);
+    public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
+        String className = context.getString(resId);
+        if (!TextUtils.isEmpty(className)) {
+            try {
+                Class<?> cls = Class.forName(className);
+                return (T) cls.getDeclaredConstructor(Context.class).newInstance(context);
+            } catch (ClassNotFoundException | InstantiationException | IllegalAccessException
+                    | ClassCastException | NoSuchMethodException | InvocationTargetException e) {
+                Log.e(TAG, "Bad overriden class", e);
             }
-        } catch (ActivityNotFoundException exc) {
-            // Believe me, this actually happens.
-            Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
         }
-    }
 
-    /**
-     * Maps t from one range to another range.
-     *
-     * @param t       The value to map.
-     * @param fromMin The lower bound of the range that t is being mapped from.
-     * @param fromMax The upper bound of the range that t is being mapped from.
-     * @param toMin   The lower bound of the range that t is being mapped to.
-     * @param toMax   The upper bound of the range that t is being mapped to.
-     * @return The mapped value of t.
-     */
-    public static float mapToRange(float t, float fromMin, float fromMax,
-                                   float toMin, float toMax, Interpolator interpolator) {
-        if (fromMin == fromMax || toMin == toMax) {
-            Log.e(TAG, "mapToRange: range has 0 length");
-            return toMin;
-        }
-        float progress = Math.abs(t - fromMin) / Math.abs(fromMax - fromMin);
-        return mapRange(interpolator.getInterpolation(progress), toMin, toMax);
-    }
-
-    public static float getProgress(float current, float min, float max) {
-        return Math.abs(current - min) / Math.abs(max - min);
-    }
-
-    public static float mapRange(float value, float min, float max) {
-        return min + (value * (max - min));
-    }
-
-    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
         try {
-            return Integer.parseInt(identifier.substring(1));
-        } catch (NumberFormatException e) {
-            return res.getIdentifier(identifier.substring(1), null, packageName);
+            return clazz.newInstance();
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new RuntimeException(e);
         }
     }
 
-    public static int resolveAttributeData(Context context, int attr) {
-        TypedValue typedValue = new TypedValue();
-        context.getTheme().resolveAttribute(attr, typedValue, true);
-        return typedValue.data;
-    }
+    /*END CUSTOM*/
 
-    public static int getUserId() {
-        return UserHandle.myUserId();
-    }
-
-    public static boolean hasWriteSecureSettingsPermission(Context context) {
-        return ContextCompat.checkSelfPermission(context,
-                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
-    }
-
-    /**
-     * Prefixes a text with the provided icon
-     */
-    public static CharSequence prefixTextWithIcon(Context context, int iconRes, CharSequence msg) {
-        // Update the hint to contain the icon.
-        // Prefix the original hint with two spaces. The first space gets replaced by the icon
-        // using span. The second space is used for a singe space character between the hint
-        // and the icon.
-        SpannableString spanned = new SpannableString("  " + msg);
-        spanned.setSpan(new TintedDrawableSpan(context, iconRes),
-                0, 1, Spannable.SPAN_EXCLUSIVE_INCLUSIVE);
-        return spanned;
-    }
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
 

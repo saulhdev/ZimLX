@@ -16,6 +16,10 @@
 
 package com.android.launcher3;
 
+import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
+
+import static com.android.launcher3.LauncherState.NORMAL;
+
 import android.animation.AnimatorSet;
 import android.animation.FloatArrayEvaluator;
 import android.animation.ObjectAnimator;
@@ -29,6 +33,7 @@ import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.text.TextUtils;
 import android.util.AttributeSet;
+import android.util.Property;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -45,14 +50,25 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.Thunk;
 
-import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
-import static com.android.launcher3.LauncherState.NORMAL;
-
 /**
  * Implements a DropTarget.
  */
 public abstract class ButtonDropTarget extends TextView
         implements DropTarget, DragController.DragListener, OnClickListener {
+
+    private static final Property<ButtonDropTarget, Integer> TEXT_COLOR =
+            new Property<ButtonDropTarget, Integer>(Integer.TYPE, "textColor") {
+
+                @Override
+                public Integer get(ButtonDropTarget target) {
+                    return target.getTextColor();
+                }
+
+                @Override
+                public void set(ButtonDropTarget target, Integer value) {
+                    target.setTextColor(value);
+                }
+            };
 
     private static final int[] sTempCords = new int[2];
     private static final int DRAG_VIEW_DROP_DURATION = 285;
@@ -66,17 +82,11 @@ public abstract class ButtonDropTarget extends TextView
     private int mBottomDragPadding;
     protected DropTargetBar mDropTargetBar;
 
-    /**
-     * Whether this drop target is active for the current drag
-     */
+    /** Whether this drop target is active for the current drag */
     protected boolean mActive;
-    /**
-     * Whether an accessible drag is in progress
-     */
+    /** Whether an accessible drag is in progress */
     private boolean mAccessibleDrag;
-    /**
-     * An item must be dragged at least this many pixels before this drop target is enabled.
-     */
+    /** An item must be dragged at least this many pixels before this drop target is enabled. */
     private final int mDragDistanceThreshold;
 
     /** The paint applied to the drag view on hover */
@@ -91,8 +101,7 @@ public abstract class ButtonDropTarget extends TextView
     private int mToolTipLocation;
 
     private AnimatorSet mCurrentColorAnim;
-    @Thunk
-    ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
+    @Thunk ColorMatrix mSrcFilter, mDstFilter, mCurrentFilter;
 
     public ButtonDropTarget(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
@@ -160,7 +169,7 @@ public abstract class ButtonDropTarget extends TextView
                 y = -getMeasuredHeight();
                 message.measure(MeasureSpec.UNSPECIFIED, MeasureSpec.UNSPECIFIED);
                 if (mToolTipLocation == TOOLTIP_LEFT) {
-                    x = -getMeasuredWidth() - message.getMeasuredWidth() / 2;
+                    x = - getMeasuredWidth() - message.getMeasuredWidth() / 2;
                 } else {
                     x = getMeasuredWidth() / 2 + message.getMeasuredWidth() / 2;
                 }
@@ -212,7 +221,7 @@ public abstract class ButtonDropTarget extends TextView
         });
 
         mCurrentColorAnim.play(anim1);
-        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, "textColor", targetColor));
+        mCurrentColorAnim.play(ObjectAnimator.ofArgb(this, TEXT_COLOR, targetColor));
         mCurrentColorAnim.start();
     }
 
@@ -270,6 +279,10 @@ public abstract class ButtonDropTarget extends TextView
      */
     @Override
     public void onDrop(final DragObject d, final DragOptions options) {
+        if (options.isFlingToDelete) {
+            // FlingAnimation handles the animation and then calls completeDrop().
+            return;
+        }
         final DragLayer dragLayer = mLauncher.getDragLayer();
         final Rect from = new Rect();
         dragLayer.getViewRectRelativeToSelf(d.dragView, from);
@@ -293,8 +306,7 @@ public abstract class ButtonDropTarget extends TextView
     public abstract int getAccessibilityAction();
 
     @Override
-    public void prepareAccessibilityDrop() {
-    }
+    public void prepareAccessibilityDrop() { }
 
     public abstract void onAccessibilityDrop(View view, ItemInfo item);
 
