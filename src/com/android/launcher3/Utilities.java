@@ -21,7 +21,8 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.ActivityManager;
-import android.app.Person;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.app.WallpaperManager;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
@@ -83,6 +84,8 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -128,7 +131,8 @@ public final class Utilities {
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
     public static final boolean ATLEAST_NOUGAT =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.N;
-
+    public static final boolean ATLEAST_MARSHMALLOW =
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     public static final int SINGLE_FRAME_MS = 16;
 
     /**
@@ -800,6 +804,50 @@ public final class Utilities {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    public static ZimPreferences getZimPrefs(Context context) {
+        return ZimPreferences.getInstance(context);
+    }
+
+    public static void restartLauncher(Context context) {
+        PackageManager pm = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        ComponentName componentName = intent.resolveActivity(pm);
+        if (!context.getPackageName().equals(componentName.getPackageName())) {
+            intent = pm.getLaunchIntentForPackage(context.getPackageName());
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        }
+
+        restartLauncher(context, intent);
+    }
+
+    public static void restartLauncher(Context context, Intent intent) {
+        context.startActivity(intent);
+
+        // Create a pending intent so the application is restarted after System.exit(0) was called.
+        // We use an AlarmManager to call this intent in 100ms
+        PendingIntent mPendingIntent = PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        AlarmManager mgr = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 100, mPendingIntent);
+
+        // Kill the application
+        killLauncher();
+    }
+
+    public static void killLauncher() {
+        System.exit(0);
+    }
+
+    public static int setFlag(int flags, int flag, boolean value) {
+        if (value) {
+            return flags | flag;
+        } else {
+            return flags & ~flag;
         }
     }
 

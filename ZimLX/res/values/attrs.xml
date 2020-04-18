@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?><!--
+/* Zim Launcher
+**
+** Licensed under the Apache License, Version 2.0 (the "License");
+** you may not use this file except in compliance with the License.
+** You may obtain a copy of the License at
+**
+**     http://www.apache.org/licenses/LICENSE-2.0
+**
+** Unless required by applicable law or agreed to in writing, software
+** distributed under the License is distributed on an "AS IS" BASIS,
+** WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+** See the License for the specific language governing permissions and
+** limitations under the License.
+*/
+-->
+
+<resources xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Lawnchair -->
+    <declare-styleable name="SubPreference">
+        <attr name="content" format="reference" />
+        <attr name="longClickContent" format="reference" />
+        <attr name="hasPreview" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="ControlledPreference">
+        <attr name="searchTitle" format="string" />
+        <attr name="controllerClass" format="string" />
+    </declare-styleable>
+
+    <!-- Custom -->
+    <attr name="bottomSheetNavBarColor" format="color" />
+    <attr name="useLightSystemBars" format="boolean" />
+    <attr name="settingsSearchBackground" format="color" />
+    <attr name="settingsBackground" format="color" />
+    <attr name="settingsPopupBackground" format="color" />
+    <attr name="bottomSheetScrimColor" format="color" />
+    <attr name="qsbEdgeRadius" format="dimension" />
+
+    <declare-styleable name="CustomFont">
+        <attr name="android:textAppearance" />
+        <attr name="customFontType" format="enum">
+            <enum name="title" value="0" />
+            <enum name="preferenceTitle" value="1" />
+            <enum name="button" value="2" />
+            <enum name="categoryTitle" value="3" />
+            <enum name="dialogTitle" value="4" />
+            <enum name="settingsTab" value="5" />
+            <enum name="text" value="6" />
+            <enum name="settingsTileTitle" value="7" />
+            <enum name="smartspaceText" value="8" />
+            <enum name="baseIcon" value="9" />
+            <enum name="workspaceIcon" value="10" />
+            <enum name="allAppsIcon" value="11" />
+            <enum name="folderIcon" value="12" />
+            <enum name="actionView" value="13" />
+            <enum name="deepShortcut" value="14" />
+            <enum name="systemShortcut" value="15" />
+            <enum name="taskOption" value="16" />
+            <enum name="drawerTab" value="17" />
+        </attr>
+    </declare-styleable>
+
+    <!-- Pixel -->
+    <attr name="gIcon" format="reference" />
+    <attr name="micIcon" format="reference" />
+
+</resources>

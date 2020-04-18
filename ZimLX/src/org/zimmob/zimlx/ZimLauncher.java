@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2015 The Android Open Source Project
+ * Copyright (C) 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package org.zimmob.zimlx;
 
-package com.android.launcher3.config;
+import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 
-import android.content.Context;
+public class ZimLauncher extends Launcher {
+    private boolean paused = false;
+    private boolean sRestart = false;
 
-/**
- * Defines a set of flags used to control various launcher behaviors
- */
-public final class FeatureFlags extends BaseFlags {
+    public boolean shouldRecreate() {
+        return !sRestart;
+    }
 
-    public static final boolean FEATURE_SETTINGS_SEARCH = false;
-
-    private FeatureFlags() {
-        // Prevent instantiation
+    public void scheduleRestart() {
+        if (paused) {
+            sRestart = true;
+        } else {
+            Utilities.restartLauncher(this);
+        }
     }
 }

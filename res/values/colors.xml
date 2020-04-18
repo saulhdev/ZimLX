@@ -17,7 +17,7 @@
 ** limitations under the License.
 */
 -->
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- The color tints to apply to the text and drag view when hovering
          over the delete target or the info target -->
     <color name="delete_target_hover_tint">#FFC1C1C1</color>
@@ -37,4 +37,32 @@
 
     <color name="all_apps_bg_hand_fill">#E5E5E5</color>
     <color name="all_apps_bg_hand_fill_dark">#9AA0A6</color>
+
+
+    <!-- Backports -->
+    <color name="textColorPrimary">#ffffffff</color>
+    <color name="textColorSecondary">#ffffffff</color>
+    <color name="textColorPrimaryInverse">#de000000</color>
+    <color name="textColorSecondaryInverse">#8a000000</color>
+
+    <!-- Zim Launcher Custom Colors -->
+    <color name="colorPrimary">#0788EF</color>
+    <color name="colorPrimaryDark">#ffe0e0e0</color>
+    <color name="colorAccent">#E80142</color>
+    <color name="colorAccentDark">#ff8AB4f8</color>
+    <color name="white">#FFFFFF</color>
+    <color name="all_apps_navbar_color">#28000000</color>
+    <color name="qsb_icon_shadow_color" tools:ignore="MissingDefaultResource">#20000000</color>
+    <color name="qsb_dark_icon_tint">#ff757575</color>
+    <color name="folderBackground">#ffe0e0e0</color>
+    <color name="lollipopStatusBar">#61000000</color>
+
+    <color name="settings_background_dark">#ff303030</color>
+    <color name="settings_background_dark_2dp">#ff252628</color>
+    <color name="settings_background_dark_8dp">#ff303133</color>
+
+    <color name="settings_background_black">#ff000000</color>
+    <color name="settings_background_black_2dp">#ff121212</color>
+    <color name="settings_background_black_8dp">#ff1e1e1e</color>
+
 </resources>

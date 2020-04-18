@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- Application name -->
+    <string name="derived_app_name" translatable="false">Zim Launcher</string>
+
+    <!-- Dialogs -->
+    <string name="on">On</string>
+    <string name="off">Off</string>
+    <string name="wallpaper_pick">Pick Wallpaper</string>
+    <string name="dialog__backup_app_settings__error">Something went wrong.</string>
+
+    <!-- PREFERENCES GENERAL  -->
+    <string name="pref_category__interfaces">Interfaces</string>
+    <string name="pref_category__inputs">Gestures and Search</string>
+    <string name="pref_category__others">Others</string>
+
+
+    <!-- Minibar -->
+    <string name="minibar">Minibar</string>
+    <string name="minibar_0">Change the minibar layout.</string>
+    <string name="minibar_1">Set the desktop wallpaper.</string>
+    <string name="minibar_4">Shortcut to device settings.</string>
+    <string name="minibar_5">Shortcut to OpenLauncher settings.</string>
+    <string name="minibar_7">Display all available volume sliders.</string>
+    <string name="minibar_8">Open the app drawer.</string>
+    <string name="minibar_10">Mobile network settings.</string>
+    <string name="minibar_11">Applications Manager</string>
+    <string name="pref_title__minibar">@string/minibar</string>
+    <string name="title__minibar_background_color">Minibar Color</string>
+
+    <!-- developer -->
+    <string name="restart_zim_pref_title">Restart Launcher</string>
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+
+    <string name="icon_badging_desc_on">On</string>
+    <string name="icon_badging_desc_off">Off</string>
+    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
+
+    <string name="search_menu">Find settings</string>
+
+</resources>

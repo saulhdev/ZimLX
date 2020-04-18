@@ -75,6 +75,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.OvershootInterpolator;
+import android.widget.FrameLayout;
 import android.widget.Toast;
 
 import com.android.launcher3.DropTarget.DragObject;
@@ -156,8 +157,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.function.Predicate;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
+import androidx.drawerlayout.widget.DrawerLayout;
 
 /**
  * Default launcher application.
@@ -236,7 +239,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     // Main container view for the all apps screen.
     @Thunk AllAppsContainerView mAppsView;
-    AllAppsTransitionController mAllAppsController;
+    public AllAppsTransitionController mAllAppsController;
 
     // Scrim view for the all apps and overview state.
     @Thunk ScrimView mScrimView;
@@ -286,7 +289,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     private DeviceProfile mStableDeviceProfile;
     private RotationMode mRotationMode = RotationMode.NORMAL;
-
+    public static Context mContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
@@ -308,7 +311,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
-
+        mContext = this;
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
@@ -558,6 +561,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mAppWidgetHost != null) {
             mAppWidgetHost.startListening();
         }
+    }
+
+    @NonNull
+    public final DrawerLayout getDrawerLayout() {
+        return findViewById(R.id.drawer_layout);
     }
 
     private LauncherCallbacks mLauncherCallbacks;
@@ -1308,7 +1316,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public LauncherRootView getRootView() {
-        return (LauncherRootView) mLauncherView;
+        //return (LauncherRootView) mLauncherView;
+        return (LauncherRootView) mLauncherView.findViewById(R.id.launcher);
     }
 
     @Override
@@ -1732,6 +1741,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     @Override
     public void onBackPressed() {
+        DrawerLayout dl = findViewById(R.id.drawer_layout);
+        FrameLayout sl = findViewById(R.id.dlview);
+        if (dl.isDrawerOpen(sl)) {
+            ((DrawerLayout) findViewById(R.id.drawer_layout)).closeDrawers();
+            return;
+        }
         if (finishAutoCancelActionMode()) {
             return;
         }

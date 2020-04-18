@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="dashboard_tile_image_size">38dp</dimen>
+    <dimen name="notification_elevation">2dp</dimen>
+    <!-- App Widget resize frame -->
+    <dimen name="default_widget_padding">8dp</dimen>
+    <dimen name="search_bar_margin">16dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
+    <dimen name="search_bar_text_size">16dp</dimen>
+
+    <dimen name="dialog_corner_radius">8dp</dimen>
+    <dimen name="large_title_height">84dp</dimen>
+    <dimen name="large_title_horizontal_padding">70dp</dimen>
+    <dimen name="large_title_vertical_padding">24dp</dimen>
+
+    <!-- Dashboard tile image margin start / end -->
+    <dimen name="dashboard_tile_image_margin_start">16dp</dimen>
+    <dimen name="dashboard_tile_image_margin_end">20dp</dimen>
+    <dimen name="margin_normal">16dp</dimen>
+    <dimen name="snackbar_content_height">32dp</dimen>
+    <dimen name="snackbar_max_text_size">14sp</dimen>
+    <dimen name="snackbar_elevation">3dp</dimen>
+    <dimen name="snackbar_padding">8dp</dimen>
+    <dimen name="snackbar_height">48dp</dimen>
+    <dimen name="snackbar_max_margin_left_right">72dp</dimen>
+    <dimen name="snackbar_min_margin_left_right">6dp</dimen>
+    <dimen name="snackbar_margin_bottom">30dp</dimen>
+    <dimen name="snackbar_min_text_size">12sp</dimen>
+    <dimen name="button_corner_radius">4dp</dimen>
+    <dimen name="dialog_horizontal_padding">24dp</dimen>
+    <dimen name="shelf_surface_radius">16dp</dimen>
+    <!-- same as vertical_drag_handle_size -->
+    <dimen name="shelf_surface_offset">18dp</dimen>
+
+    <dimen name="dashboard_tile_minimum_height">72dp</dimen>
+</resources>

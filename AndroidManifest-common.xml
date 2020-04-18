@@ -108,7 +108,11 @@
             android:exported="false"
             android:process=":wallpaper_chooser"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
+        <service
+            android:name="com.android.launcher3.compat.WallpaperManagerCompatVL$ColorExtractionService"
+            android:exported="false"
+            android:permission="android.permission.BIND_JOB_SERVICE"
+            android:process=":wallpaper_chooser" />
         <service
             android:name="com.android.launcher3.notification.NotificationListener"
             android:label="@string/notification_dots_service_title"

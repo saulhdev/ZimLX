@@ -20,6 +20,7 @@ import static android.app.WallpaperManager.FLAG_SYSTEM;
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.graphics.ColorExtractor.findDominantColorByHue;
 
+import android.Manifest;
 import android.app.WallpaperInfo;
 import android.app.WallpaperManager;
 import android.app.job.JobInfo;
@@ -47,6 +48,7 @@ import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
 import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Utilities;
@@ -254,6 +256,16 @@ public class WallpaperManagerCompat {
                 drawable = info.loadThumbnail(getPackageManager());
             } else {
                 if (Utilities.ATLEAST_NOUGAT) {
+                    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                        // TODO: Consider calling
+                        //    ActivityCompat#requestPermissions
+                        // here to request the missing permissions, and then overriding
+                        //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+                        //                                          int[] grantResults)
+                        // to handle the case where the user grants the permission. See the documentation
+                        // for ActivityCompat#requestPermissions for more details.
+                        return;
+                    }
                     try (ParcelFileDescriptor fd = wm.getWallpaperFile(FLAG_SYSTEM)) {
                         BitmapRegionDecoder decoder = BitmapRegionDecoder
                                 .newInstance(fd.getFileDescriptor(), false);
