@@ -22,20 +22,20 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentActivity;
 import androidx.fragment.app.FragmentManager;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
@@ -49,17 +49,20 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
-import com.android.launcher3.graphics.GridOptionsProvider;
 import com.android.launcher3.notification.NotificationListener;
 
+import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.preferences.ButtonPreference;
+import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.util.SettingsObserver;
+import org.zimmob.zimlx.util.ZimUtilsKt;
+import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
 
-public class SettingsActivity extends FragmentActivity
-        implements PreferenceFragment.OnPreferenceStartFragmentCallback, PreferenceFragment.OnPreferenceStartScreenCallback,
-        SharedPreferences.OnSharedPreferenceChangeListener{
+public class SettingsActivity extends SettingsBaseActivity
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, PreferenceFragment.OnPreferenceDisplayDialogCallback,
+        FragmentManager.OnBackStackChangedListener {
 
     private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
@@ -67,6 +70,9 @@ public class SettingsActivity extends FragmentActivity
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
     /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
     private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
+
+    public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
+    private final static String BRIDGE_TAG = "tag_bridge";
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
     public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
@@ -78,18 +84,23 @@ public class SettingsActivity extends FragmentActivity
     public final static String EXTRA_TITLE = "title";
     public final static String EXTRA_FRAGMENT = "fragment";
     public final static String EXTRA_FRAGMENT_ARGS = "fragmentArgs";
+    private boolean isSubSettings;
+    protected boolean forceSubSettings = false;
 
+    private boolean hasPreview = false;
+    public static String defaultHome = "";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        savedInstanceState = getRelaunchInstanceState(savedInstanceState);
+
+        String fragmentName = getIntent().getStringExtra(EXTRA_FRAGMENT);
+        int content = getIntent().getIntExtra(SubSettingsFragment.CONTENT_RES_ID, 0);
+        isSubSettings = content != 0 || fragmentName != null || forceSubSettings;
+        hasPreview = getIntent().getBooleanExtra(SubSettingsFragment.HAS_PREVIEW, false);
+
         super.onCreate(savedInstanceState);
 
         if (savedInstanceState == null) {
-            Bundle args = new Bundle();
-            String prefKey = getIntent().getStringExtra(EXTRA_FRAGMENT_ARG_KEY);
-            if (!TextUtils.isEmpty(prefKey)) {
-                args.putString(EXTRA_FRAGMENT_ARG_KEY, prefKey);
-            }
-
             Fragment f = createLaunchFragment(getIntent());
 
             // Display the fragment as the main content.
@@ -97,29 +108,67 @@ public class SettingsActivity extends FragmentActivity
                     .replace(android.R.id.content, f)
                     .commit();
         }
-        Utilities.getPrefs(getApplicationContext()).registerOnSharedPreferenceChangeListener(this);
+        getSupportFragmentManager().addOnBackStackChangedListener(this);
+
+        updateUpButton();
+
+        if (hasPreview) {
+            overrideOpenAnim();
+        }
+
+        Utilities.getDevicePrefs(this).edit().putBoolean(OnboardingProvider.PREF_HAS_OPENED_SETTINGS, true).apply();
+        defaultHome = resolveDefaultHome();
     }
-    @Override
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (GRID_OPTIONS_PREFERENCE_KEY.equals(key)) {
 
-            final ComponentName cn = new ComponentName(getApplicationContext(),
-                    GridOptionsProvider.class);
-            Context c = getApplicationContext();
-            int oldValue = c.getPackageManager().getComponentEnabledSetting(cn);
-            int newValue;
-            if (Utilities.getPrefs(c).getBoolean(GRID_OPTIONS_PREFERENCE_KEY, false)) {
-                newValue = PackageManager.COMPONENT_ENABLED_STATE_ENABLED;
-            } else {
-                newValue = PackageManager.COMPONENT_ENABLED_STATE_DISABLED;
-            }
-
-            if (oldValue != newValue) {
-                c.getPackageManager().setComponentEnabledSetting(cn, newValue,
-                        PackageManager.DONT_KILL_APP);
-            }
+    private String resolveDefaultHome() {
+        Intent homeIntent = new Intent(Intent.ACTION_MAIN)
+                .addCategory(Intent.CATEGORY_HOME);
+        ResolveInfo info = getPackageManager()
+                .resolveActivity(homeIntent, PackageManager.MATCH_DEFAULT_ONLY);
+        if (info != null && info.activityInfo != null) {
+            return info.activityInfo.packageName;
+        } else {
+            return null;
         }
     }
+
+    @Override
+    public boolean onPreferenceStartFragment(PreferenceFragmentCompat caller, Preference preference) {
+        Fragment fragment;
+        if (preference instanceof SubPreference) {
+            ((SubPreference) preference).start(this);
+            return true;
+        } else {
+            fragment = Fragment.instantiate(this, preference.getFragment(), preference.getExtras());
+        }
+        if (fragment instanceof DialogFragment) {
+            ((DialogFragment) fragment).show(getSupportFragmentManager(), preference.getKey());
+        } else {
+            startFragment(this, preference.getFragment(), preference.getExtras(), preference.getTitle());
+        }
+        return true;
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+
+        if (hasPreview) {
+            overrideCloseAnim();
+        }
+    }
+
+    private void updateUpButton() {
+        updateUpButton(isSubSettings || getSupportFragmentManager().getBackStackEntryCount() != 0);
+    }
+
+    private void updateUpButton(boolean enabled) {
+        if (getSupportActionBar() == null) {
+            return;
+        }
+        getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
+    }
+
 
     private boolean startFragment(String fragment, Bundle args, String key) {
         if (Utilities.ATLEAST_P && getSupportFragmentManager().isStateSaved()) {
@@ -156,18 +205,19 @@ public class SettingsActivity extends FragmentActivity
     }
 
     @Override
-    public boolean onPreferenceStartFragment(
-            PreferenceFragment preferenceFragment, Preference pref) {
-        return startFragment(pref.getFragment(), pref.getExtras(), pref.getKey());
+    public void onBackStackChanged() {
+        updateUpButton();
     }
 
     @Override
-    public boolean onPreferenceStartScreen(PreferenceFragment caller, PreferenceScreen pref) {
-        Bundle args = new Bundle();
-        args.putString(PreferenceFragment.ARG_PREFERENCE_ROOT, pref.getKey());
-        return startFragment(getString(R.string.settings_fragment_name), args, pref.getKey());
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragment caller, Preference pref) {
+        if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
+            InstallFragment fragment = new InstallFragment();
+            fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
+            return true;
+        }
+        return false;
     }
-
 
     public abstract static class BaseFragment extends PreferenceFragmentCompat {
 
@@ -219,6 +269,7 @@ public class SettingsActivity extends FragmentActivity
             if (savedInstanceState != null) {
                 mPreferenceHighlighted = savedInstanceState.getBoolean(SAVE_HIGHLIGHTED_KEY);
             }
+
         }
 
         public void highlightPreferenceIfNeeded() {
@@ -235,6 +286,9 @@ public class SettingsActivity extends FragmentActivity
                                                  Bundle savedInstanceState) {
             RecyclerView recyclerView = (RecyclerView) inflater
                     .inflate(getRecyclerViewLayoutRes(), parent, false);
+            if (recyclerView instanceof SpringRecyclerView) {
+                ((SpringRecyclerView) recyclerView).setShouldTranslateSelf(false);
+            }
             recyclerView.setLayoutManager(onCreateLayoutManager());
             recyclerView.setAccessibilityDelegateCompat(
                     new PreferenceRecyclerViewAccessibilityDelegate(recyclerView));
@@ -422,6 +476,15 @@ public class SettingsActivity extends FragmentActivity
             getActivity().setTitle(getArguments().getString(TITLE));
         }
 
+        public static SubSettingsFragment newInstance(SubPreference preference) {
+            SubSettingsFragment fragment = new SubSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, (String) preference.getTitle());
+            b.putInt(CONTENT_RES_ID, preference.getContent());
+            fragment.setArguments(b);
+            return fragment;
+        }
+
         public static SubSettingsFragment newInstance(Intent intent) {
             SubSettingsFragment fragment = new SubSettingsFragment();
             Bundle b = new Bundle(2);
@@ -572,5 +635,49 @@ public class SettingsActivity extends FragmentActivity
             return true;
         }
     }
+
+    public static class InstallFragment extends DialogFragment {
+
+        @Override
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.bridge_missing_title)
+                    .setMessage(R.string.bridge_missing_message)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
+    }
+
+    public static void startFragment(Context context, String fragment, int title) {
+        startFragment(context, fragment, null, context.getString(title));
+    }
+
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args) {
+        startFragment(context, fragment, args, null);
+    }
+
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args,
+                                     @Nullable CharSequence title) {
+        context.startActivity(createFragmentIntent(context, fragment, args, title));
+    }
+
+    @NotNull
+    private static Intent createFragmentIntent(Context context, String fragment,
+                                               @Nullable Bundle args, @Nullable CharSequence title) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.putExtra(EXTRA_FRAGMENT, fragment);
+        intent.putExtra(EXTRA_FRAGMENT_ARGS, args);
+        if (title != null) {
+            intent.putExtra(EXTRA_TITLE, title);
+        }
+        return intent;
+    }
+
 
 }
