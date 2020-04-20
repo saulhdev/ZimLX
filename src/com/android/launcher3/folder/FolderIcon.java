@@ -108,6 +108,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     private Alarm mOpenAlarm = new Alarm();
 
+    public boolean isCustomIcon = false;
     private boolean mForceHideDot;
     @ViewDebug.ExportedProperty(category = "launcher", deepExport = true)
     private FolderDotInfo mDotInfo = new FolderDotInfo();

@@ -25,11 +25,9 @@
             android:autoRemoveFromRecents="true"
             android:label="@string/derived_app_name"
             android:name="org.zimmob.zimlx.settings.SettingsActivity"
-            android:taskAffinity="${applicationId}.tasks.SETTINGS"
             android:theme="@style/SettingsTheme.V2">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
-
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>

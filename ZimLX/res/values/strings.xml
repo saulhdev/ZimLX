@@ -14,6 +14,59 @@
     <string name="pref_category__inputs">Gestures and Search</string>
     <string name="pref_category__others">Others</string>
 
+    <string name="pref_title__desktop">Desktop</string>
+    <string name="pref_title__dock">Dock</string>
+    <string name="pref_title__app_drawer">App drawer</string>
+    <string name="pref_title__theme">Theme</string>
+    <string name="pref_title__notifications">Gestures and Notifications</string>
+    <string name="pref_title__developer">Developer options</string>
+    <string name="pref_title__gestures">Gestures</string>
+    <string name="pref_title__advanced">Advanced</string>
+    <string name="pref_title__behavior">Behavior</string>
+    <string name="pref_title__smartspace">Home Widget</string>
+    <string name="pref_title__search">Search</string>
+
+    <string name="pref_summary__app_drawer">Customize your app drawer</string>
+    <string name="pref_summary__dock">Customize your dock</string>
+    <string name="pref_summary__desktop">Customize your desktop</string>
+    <string name="pref_summary__theme">Theme different elements</string>
+    <string name="pref_summary__notifications">Notifications and Gestures</string>
+    <string name="pref_summary__developer">Restart the app if it is needed</string>
+    <string name="pref_summary__advanced">Language and backup</string>
+    <string name="pref_summary__about">More information about Zim Launcher</string>
+    <string name="pref_summary__inputs">Configure gestures</string>
+    <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
+    <string name="pref_summary__smartspace">Date, time and search bar</string>
+    <string name="pref_summary__search">Search Engine</string>
+
+    <string name="pref_title__language">Language</string>
+    <string name="pref_title__folder_badge_count">Show folder badge Count</string>
+
+    <string name="pref_title__predictive_apps_num">Predicted apps number</string>
+    <string name="pref_title__label_two_lines">Icon labels use two lines</string>
+    <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
+
+    <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
+
+    <string name="pref_summary__language">Change language of this app</string>
+    <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
+
+    <!-- PREFERENCES DESKTOP -->
+    <string name="general_pref_title">Desktop</string>
+    <string name="title__desktop_indicator_style">Indicator Style</string>
+    <string name="desktop_indicator_mode_normal">Normal</string>
+    <string name="desktop_indicator_mode_arrow">Arrow</string>
+    <string name="desktop_indicator_mode_lines">Line</string>
+    <string name="title__desktop_icon_scale">Icon scale</string>
+    <string name="title__desktop_overlap">Overlap Placement</string>
+    <string name="title__desktop_smartspace">Show Smart space widget</string>
+    <string name="title__desktop_lock">Lock Desktop</string>
+    <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
+    <string name="title_use_pill_qsb">Use pill style search bar</string>
+    <string name="show_top_shadow_pref_title">Top shadow</string>
+    <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
+    <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
+    <string name="full_width_width_widgets_pref_title">Full width widgets</string>
 
     <!-- Minibar -->
     <string name="minibar">Minibar</string>
@@ -28,7 +81,15 @@
     <string name="pref_title__minibar">@string/minibar</string>
     <string name="title__minibar_background_color">Minibar Color</string>
 
-    <!-- developer -->
+    <!-- PREFERENCES NOTIFICATIONS  -->
+    <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
+    <string name="icon_badging_title">Enable Notifications</string>
+    <string name="pref_category__notifications">Notifications</string>
+    <string name="pref_category__gestures">Gestures</string>
+    <string name="pref_title__notification_background_color">Notification Background Color</string>
+    <string name="pref_title__notification_count">Show Notification Count</string>
+
+    <!-- DEVELOPER -->
     <string name="restart_zim_pref_title">Restart Launcher</string>
     <string name="developer_options_title">Developer options</string>
     <string name="developer_options_enabled">Developer options enabled</string>
@@ -36,7 +97,408 @@
     <string name="icon_badging_desc_on">On</string>
     <string name="icon_badging_desc_off">Off</string>
     <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
+    <string name="blur_wallpaper_failed">Something went wrong</string>
+    <string name="blur_oom">Something went wrong</string>
+    <string name="advanced_settings">More %s settings</string>
 
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+
+    <!-- PREFERENCES APP DRAWER  -->
+    <string name="cat__app_icons">Icons</string>
+    <string name="cat__app_search">Search Bar</string>
+    <string name="cat__app_misc">Miscellanea</string>
+    <string name="cat__app_layout">Layout and Appearance</string>
+    <string name="title__app_spring">Spring effect</string>
+    <string name="title__app_search">Show Search Bar</string>
+    <string name="title__app_search_global">Global search in app drawer</string>
+    <string name="title__app_search_hidden">Search hidden Apps</string>
+    <string name="title__app_icon_scale">Icon scale</string>
+    <string name="title__app_all_apps_opacity">Drawer opacity</string>
+    <string name="title__layout_mode">Display Layout</string>
+    <string name="title__layout_vertical">Vertical Grid</string>
+    <string name="title__layout_horizontal">Horizontal Grid</string>
+    <string name="title__layout_alphabetical">Alphabetical Grid</string>
+    <string name="title__sort_mode">App Sort</string>
+    <string name="title__sort_alphabetical_az">Alphabetical AZ</string>
+    <string name="title__sort_alphabetical_za">Alphabetical ZA</string>
+    <string name="title__sort_last_installed">Last Installed</string>
+    <string name="title__sort_most_used">Most Used</string>
+    <string name="title__sort_by_color">By Color</string>
+    <string name="summary__app_search_show">Show or hide search bar</string>
+    <string name="summary__app_search_global">Display global search instead of app search</string>
+    <string name="summary__app_search_hidden">Display hidden apps</string>
+    <string name="summary__sort_mode">Choose the sort mode</string>
+
+    <string name="pref_drawer_columns">Number of columns</string>
+    <string name="pref_prediction_count">Number of suggestions</string>
+    <string name="separate_work_apps_pref_title">Second tab for work apps</string>
+    <string name="all_apps_label_pref_title">Show "All Apps" label</string>
+    <string name="title_app_suggestions">Display app suggestions</string>
+    <string name="summary_app_suggestions">At the top of your All Apps list</string>
+    <string name="summary_app_suggestions_lawnstep">In recent apps screen and app drawer</string>
+    <string name="title_disable_suggestions_prompt">Turn off app suggestions?</string>
+    <string name="msg_disable_suggestions_prompt">"Suggestions won't appear at the top of your apps list, and the usage data used to create them will be permanently erased."</string>
+    <string name="label_turn_off_suggestions">TURN OFF</string>
+
+    <string name="pref_appcategorization_enable_title">Categorize Apps</string>
+    <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
+    <string name="pref_appcategorization_style_text">Style</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
+    <string name="pref_app_groups_create">Create</string>
+    <string name="pref_appcategorization_folders_title">Folders</string>
+    <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
+    <string name="pref_appcategorization_tabs_title">Tabs</string>
+    <string name="pref_appcategorization_tabs_summary">Swipe between groups.</string>
+    <string name="default_folder_name">New folder</string>
+    <string name="drawer_folders">Folders</string>
+    <string name="drawer_tabs">Tabs</string>
+    <string name="add_new_tab">Add</string>
+    <string name="rename_tab">Rename</string>
+    <string name="title_app_suggestions_in_search">App suggestions</string>
+
+    <!-- PREFERENCES THEME -->
+    <string name="pref_cat__theme_icons">Icons</string>
+    <string name="pref_cat__theme_style">Style</string>
+    <string name="title__theme_adaptive_icons">Adaptive Icons</string>
+    <string name="title__theme_force_adaptive_icons">Force adaptive Icons</string>
+    <string name="title__theme_colored_icons">Background Icons</string>
+    <string name="title__theme_primary_color">Primary Color</string>
+    <string name="title__theme_accent_color">Accent Color</string>
+    <string name="title__theme_color">Theme Color</string>
+    <string name="title__theme_icon_pack">Icon pack</string>
+    <string name="title__theme_icon_shape">Change icon shape</string>
+    <string name="title__theme_dark_theme">Force dark theme</string>
+    <string name="title__theme_folder_shape">Folder Shape</string>
+    <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+
+    <string name="theme_material">Material</string>
+    <string name="theme_automatic">Automatic</string>
+    <string name="theme_default">Default</string>
+    <string name="transparent">Transparent</string>
+
+    <string name="theme_auto">Follow wallpaper</string>
+    <string name="theme_auto_night_mode">Follow system theme</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark_text">Light with dark text</string>
+    <string name="theme_with_dark_text">dark text</string>
+    <string name="theme_dark">Dark</string>
+    <string name="theme_dark_dark_text">Dark with dark text</string>
+    <string name="theme_black">Black</string>
+    <string name="theme_black_dark_text">Black with dark text</string>
+
+    <string name="theme_dark_theme_mode">Dark theme</string>
+    <string name="theme_dark_theme_mode_on">On</string>
+    <string name="theme_dark_theme_mode_off">Off</string>
+    <string name="theme_dark_theme_mode_follow_wallpaper">@string/theme_auto</string>
+    <string name="theme_dark_theme_mode_follow_system">@string/theme_auto_night_mode</string>
+    <string name="theme_dark_theme_mode_follow_daylight">Follow daylight</string>
+    <string name="theme_use_black">Use pure black</string>
+    <string name="theme_use_dark_text">Use dark text</string>
+
+    <string name="enabled_icon_packs">Enabled</string>
+    <string name="icon_pack_default">System icons</string>
+    <string name="drag_to_disable_packs">Drag down to disable</string>
+    <string name="drag_to_enable_packs">Drag up to enable</string>
+    <string name="playstore_query_icon_pack">Icon pack</string>
+    <string name="get_more_icon_packs">Get more</string>
+    <string name="action_search">Search</string>
+    <string name="icon_pack_external_picker">Open external picker</string>
+    <string name="loading">Loading…</string>
+    <string name="icon_pack_applied_toast">%s applied</string>
+    <string name="pref_icon_pack">Icon pack</string>
+    <string name="pref_smartspace_widget_provider">Weather source</string>
+
+    <string name="adaptify_pack_title">Create adaptive icons for icon pack</string>
+    <string name="adaptify_pack_summary">Create adaptive icons for icons from icon packs</string>
+    <string name="pref_icon_pack_masking">Icon masking</string>
+    <string name="pref_icon_pack_masking_summary">Make unthemed icons match applied icon pack</string>
+    <string name="color_theme_based">Follow theme</string>
+    <string name="icon_shape_top_left">Top left</string>
+    <string name="icon_shape_top_right">Top right</string>
+    <string name="icon_shape_bottom_left">Bottom left</string>
+    <string name="icon_shape_bottom_right">Bottom right</string>
+    <string name="icon_shape_corner_round">Round</string>
+    <string name="icon_shape_corner_squircle">Squircle</string>
+    <string name="icon_shape_corner_cut">Cut</string>
+    <string name="icon_shape_rounded_square">Rounded square</string>
+    <string name="icon_scale_pref_title">Icon size</string>
+    <string name="pref_icon_popup_menu">Popup menu items</string>
+    <string name="pref_legacy_treatment_title">Create adaptive icons</string>
+    <string name="pref_legacy_treatment_summary">Automatic adaptive icons for all apps</string>
+    <string name="pref_legacy_colored_backgrounds_summary">Coloured backgrounds for generated adaptive icons</string>
+    <string name="pref_white_only_treatment">Replace white backgrounds</string>
+    <string name="pref_white_only_treatment_summary">Coloured backgrounds for all adaptive icons</string>
+    <string name="pref_legacy_colored_backgrounds">Coloured backgrounds</string>
+    <string name="state_loading">Applying…</string>
+    <string name="icon_shape_override_label_location">on Home screen</string>
+    <string name="icon_pack">Icon pack</string>
+
+    <!-- PREFERENCES DOCK  -->
+    <string name="title__hotseat_hide_gradient">Hide gradient</string>
+    <string name="title__hotseat_hide_button">Hide dock button</string>
+    <string name="title__hotseat_two_row">Two row dock</string>
+    <string name="title__hotseat_num_icons">Number of icons in dock</string>
+    <string name="title__hotseat_custom_opacity">Dock opacity</string>
+    <string name="title__hotseat_uses_custom_opacity">Custom dock opacity</string>
+    <string name="title__hotseat_show_arrow">Show arrow</string>
+    <string name="title__hotseat_hide">Hide Dock</string>
+    <string name="title__dock_style">Dock style</string>
+    <string name="title__dock_fill">Background</string>
+    <string name="title__dock_shadow">Shadow</string>
+    <string name="title__dock_radius">Corner rounding</string>
+    <string name="title__dock_custom_opacity">Opacity</string>
+    <string name="title__dock_scale">Dock scale</string>
+    <string name="title__dock_color">Dock Background</string>
+    <string name="transparent_hotseat_pref_title">Transparent dock</string>
+    <string name="hotseat_show_page_indicator">Show page indicator</string>
+    <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
+    <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
+    <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
+    <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
+
+    <string name="dock_colored_google">Coloured icons</string>
+    <string name="hotseat_show_arrow">Arrow</string>
+    <string name="dock_style_pref_title">Dock style</string>
+
+    <string name="opacity">Opacity</string>
+
+    <string name="dock_style_default">Default</string>
+    <string name="dock_style_p">Rounded</string>
+    <string name="dock_style_o">Gradient</string>
+    <string name="dock_style_n">Flat</string>
+    <string name="dock_style_transparent">Transparent</string>
+    <string name="dock_style_hidden">Hidden</string>
+    <string name="dock_style_custom">Custom</string>
+    <string name="dock_search_bar">Dock search bar</string>
+    <string name="automatic_short">Auto</string>
+    <string name="dock_shadow">Shadow</string>
+    <string name="dock_fill">Enable Background</string>
+
+    <string name="radius">Corner rounding</string>
+    <string name="gradient">Gradient</string>
+    <!-- PREFERENCES GESTURES -->
+    <string name="gestures_none">None</string>
+    <string name="gestures_open_drawer">Open App drawer</string>
+    <string name="gestures_launch_app">Launch app</string>
+    <string name="gestures_search">Open search</string>
+    <string name="gestures_global_search">Open global search</string>
+    <string name="title__gesture_swipe_down">Swipe down</string>
+    <string name="title__gesture_swipe_up">Swipe Upwards</string>
+    <string name="action_open_notifications_class" translatable="false">org.zimmob.zimlx.gestures.handlers.NotificationsOpenGestureHandler</string>
+    <string name="action_open_drawer_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenDrawerGestureHandler</string>
+    <string name="action_open_overview_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenOverviewGestureHandler</string>
+    <string name="action_do_nothing_class" translatable="false">org.zimmob.zimlx.gestures.BlankGestureHandler</string>
+    <string name="action_switch_apps_class" translatable="false">org.zimmob.zimlx.gestures.SwitchAppsGestureHandler</string>
+    <string name="gesture_press_home">Home button</string>
+    <string name="gesture_press_back">Back button</string>
+    <string name="gesture_double_tap">Double tap</string>
+    <string name="gesture_long_press">Tap &amp; hold</string>
+    <string name="gesture_swipe_down">Swipe down</string>
+    <string name="gesture_swipe_up">Swipe up</string>
+    <string name="gesture_dock_swipe_up">Swipe up on dock</string>
+
+    <string name="action_open_drawer">Open app drawer</string>
+    <string name="action_last_task">Open last app</string>
+    <string name="action_open_widgets">Open widget drawer</string>
+    <string name="action_open_settings">Open launcher settings</string>
+    <string name="action_open_overview">Open home screen pop-up</string>
+
+    <string name="action_global_search">Open global search</string>
+    <string name="action_app_search">Open app search</string>
+    <string name="action_overlay">Open Google feed</string>
+    <string name="action_assistant">Open assistant</string>
+
+    <string name="action_open_notifications">Open notifications</string>
+    <string name="action_close_notifications">Close notifications</string>
+    <string name="action_sleep_timeout">Sleep (using timeout)</string>
+    <string name="action_open_app">Open app</string>
+
+    <string name="action_open_app_with_target">Open %s</string>
+    <string name="action_open_app_select_app">Pick app</string>
+    <string name="action_none">Do nothing</string>
+
+    <string name="action_voice_search">Voice search</string>
+    <string name="failed">Something went wrong</string>
+    <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
+    <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
+
+    <string name="app_gesture_failed_toast">Something went wrong</string>
+    <string name="action_sleep">Sleep</string>
+
+    <!-- SMARTSPACE -->
+    <string name="title__behavior_widget_provider">Weather source</string>
+    <string name="title__behavior_weather_units">Temperature unit</string>
+    <string name="category__behavior_weather">Weather</string>
+
+    <string name="smartspace_time_24_h">24-hour format</string>
+    <string name="smartspace_provider_error">Something went wrong</string>
+    <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
+    <string name="smartspace_provider_bridge">Rootless Pixel Bridge</string>
+    <string name="smartspace_time">Show time</string>
+    <string name="smartspace_date">Show time and date</string>
+    <string name="smartspace_preferences">Preferences</string>
+    <string name="smartspace_hours_mins">%1$s %2$s</string>
+    <string name="weather_provider_disabled">Disabled</string>
+    <string name="weather_provider_widget">Google app</string>
+    <string name="weather_provider_pe">PixelExperience</string>
+    <string name="weather_provider_oneplus_weather">OnePlus Weather</string>
+    <string name="weather_provider_testing">Debug</string>
+
+    <string name="units_metric">Celsius</string>
+    <string name="units_imperial">Fahrenheit</string>
+    <string name="units_kelvin">Kelvin</string>
+    <string name="units_rakine">Rankine</string>
+    <string name="units_newton">Newton</string>
+    <string name="units_delisle">Delisle</string>
+    <string name="units_reaumur">Réaumur</string>
+    <string name="units_romer">Rømer</string>
+
+    <string name="week_day_format">%1$s, %2$s</string>
+    <string name="error_no_browser">No activity found to handle URLs</string>
+    <string name="home_widget">Home widget</string>
+    <string name="pref_category_searchbar">Search Bar</string>
+    <string name="icu_abbrev_wday_month_day_no_year">EEEEMMMd</string>
+    <string name="icu_abbrev_time">HH:mm</string>
+    <string name="icu_abbrev_time_12h">hh:mm aa</string>
+    <string name="icu_abbrev_date"> dd MMMM</string>
+    <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
+
+    <string name="in_smartspace">In \"At a Glance\" widget</string>
+    <string name="title_show_google_app">Display %1$s</string>
+    <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
+    <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
+    <string name="pref_smartspace_time_above">Show large clock</string>
+    <string name="pref_smartspace_time_above_summary">Show the clock above the widget</string>
+
+    <string name="smartspace_setup_text">Tap to set-up</string>
+    <string name="smartspace_preferences_in_settings">At a Glance</string>
+    <string name="smartspace_preferences_in_settings_desc">Date, time, weather source</string>
+
+    <string name="event_provider_now_playing">Now playing</string>
+    <string name="battery_status">Battery status</string>
+    <string name="battery_charging">Battery charging</string>
+    <string name="battery_full">Battery full</string>
+    <string name="battery_low">Battery low</string>
+    <string name="pref_smartspace_event_providers">Events sources</string>
+    <string name="event_provider_unread_notifications">Unread notifications</string>
+    <string name="event_provider_missing_notification_access">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on app notifications for <xliff:g example="My App" id="name">%2$s</xliff:g></string>
+    <string name="event_provider_missing_notification_dots">To use <xliff:g example="My Provider" id="providerName">%1$s</xliff:g>, turn on notification dots</string>
+    <string name="personality_provider">Contextual messages</string>
+    <string-array name="greetings_morning">
+        <item>Good morning!</item>
+        <item>What a beautiful day!</item>
+        <item>Have you looked outside yet?</item>
+        <item>Have a great day!</item>
+    </string-array>
+    <string-array name="greetings_evening">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+        <item>How was your day?</item>
+        <item>What did you do today?</item>
+    </string-array>
+
+    <string-array name="greetings_night">
+        <item>Good night!</item>
+        <item>Sleep well!</item>
+        <item>See you tomorrow!</item>
+        <item>Sweet dreams!</item>
+        <item>Don\'t stay up too long</item>
+    </string-array>
+
+    <string name="weather_icons_default">Default</string>
+    <string name="button_organize_screens">Organize screens</string>
+    <string name="tab_bottom_sheet_save">Save</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
+    <string name="tab_color">Tab color</string>
+    <string name="selected_count">%1$d selected</string>
+    <string name="google_app">Google app</string>
+
+    <!-- SEARCH AND FOLDER-->
+    <string name="pref_title__folder">Search Engine and Folder</string>
+    <string name="pref_summary__folder">Show search Engine and Folder settings</string>
+    <string name="title__folder_background">Folder Background</string>
+
+    <string name="pref_show_assistant_summary">Display voice search button if supported</string>
+    <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
+    <string name="pref_show_assistant_title">Voice search button</string>
+    <string name="bubble_searchbar">Dual bubble search bar</string>
+    <string name="app_drawer_pref_title">App drawer</string>
+    <string name="title_all_apps_search">Drawer search bar</string>
+    <string name="title_all_apps_google_search">Global search</string>
+    <string name="summary_all_apps_google_search">Find web results and apps</string>
+    <string name="title_search_hidden_apps">Find hidden apps</string>
+    <string name="summary_search_hidden_apps">Show hidden apps in results</string>
+    <string name="pref_search_bar_radius">Search bar corner rounding</string>
+    <string name="background_color">Background color</string>
+
+    <string name="title__folder_google_color">Google Icon Color</string>
+    <string name="title_folder_circle">Circle</string>
+    <string name="title_folder_circle_bg">Circle Shadow</string>
+    <string name="title_folder_square">Square</string>
+    <string name="title_folder_square_bg">Square Shadow</string>
+
+    <string name="search_provider_yandex">Yandex</string>
+    <string name="search_provider_ddg">DuckDuckGo</string>
+    <string name="search_provider_bing">Bing</string>
+    <string name="search_provider_baidu">Baidu</string>
+    <string name="search_no_results">Nothing found</string>
     <string name="search_menu">Find settings</string>
+    <string name="search_provider_s_finder">S Finder</string>
+    <string name="search_pref_title">Search</string>
+    <string name="pref_global_search_provider">Search engine</string>
+    <string name="searchbar_appearance_title">Search Options</string>
+    <string name="google">Google</string>
+    <string name="search_provider_google_go">Google Go</string>
+    <string name="search_provider_firefox">Firefox</string>
+    <string name="search_provider_appsearch">App search</string>
+    <string name="search_provider_search_lite">Search Lite</string>
+    <string name="search_provider_cool_search">Cool Search</string>
+    <string name="icon_shape_override_label">Icon Shape Override</string>
+    <string name="search_provider_edge">Edge</string>
+    <string name="search_provider_qwant">Qwant</string>
+    <string name="special_greeting" translatable="false">Hi Jane! Lots of love from the team.</string>
+    <string name="web_search_google">Google (web)</string>
+    <string name="web_search_ddg">DuckDuckGo (web)</string>
+    <string name="web_search_startpage">Startpage.com (web)</string>
+    <string name="web_search_bing">Bing (web)</string>
+    <string name="web_search_qwant">Qwant (web)</string>
+    <string name="web_search_ecosia">Ecosia (web)</string>
+    <string name="web_search_yandex">Yandex (web)</string>
+    <string name="web_search_naver">Naver (web)</string>
+    <string name="web_search_baidu">Baidu (web)</string>
+    <string name="web_search_yahoo">Yahoo (web)</string>
+    <string name="label_search">Search</string>
+    <string name="label_voice_search">Voice search</string>
 
+    <string name="zen_mode_enabled">Do not disturb is enabled</string>
+    <string name="permission_iplocate">Allow access to coarse, network based location?</string>
+    <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>
+    <string name="open_image_picker">Open image picker</string>
+    <string name="import_icon">Import icon</string>
+    <string name="import_as_adaptive">As adaptive icon</string>
+    <string name="search">Search</string>
+
+    <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
+    <string name="icon_shape_system_default">Use system default</string>
+    <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
+    <string name="icon_shape_square">Square</string>
+    <!-- Option to change the shape of the home screen icons to a squircle. This represents the name of the shape somewhere between a circle and a square. [CHAR LIMIT=50] -->
+    <string name="icon_shape_squircle">Squircle</string>
+    <!-- Option to change the shape of the home screen icons to a circle. [CHAR LIMIT=50] -->
+    <string name="icon_shape_circle">Circle</string>
+    <!-- Option to change the shape of the home screen icons to a teardrop. This represents the name of the shape similar to a circle with with the bottom right corner pushed out like a square [CHAR LIMIT=50] -->
+    <string name="icon_shape_teardrop">Teardrop</string>
+    <!-- Option to change the shape of the home screen icons to a cylinder. [CHAR LIMIT=50] -->
+    <string name="icon_shape_cylinder">Cylinder</string>
+
+    <string name="change_default_home">Set as home screen</string>
 </resources>

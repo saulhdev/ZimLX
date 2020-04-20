@@ -16,6 +16,7 @@
 package org.zimmob.zimlx.settings;
 
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -27,42 +28,65 @@ import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.text.TextUtils;
+import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
+import androidx.preference.EditTextPreference;
+import androidx.preference.ListPreference;
 import androidx.preference.Preference;
 import androidx.preference.PreferenceFragment;
 import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.settings.PreferenceHighlighter;
 
 import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.FakeLauncherKt;
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.gestures.ui.GesturePreference;
+import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
+import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
+import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.preferences.ButtonPreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
+import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.SettingsObserver;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
 
+import static androidx.fragment.app.FragmentManager.*;
+import static androidx.preference.PreferenceFragment.*;
+
 public class SettingsActivity extends SettingsBaseActivity
-        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, PreferenceFragment.OnPreferenceDisplayDialogCallback,
-        FragmentManager.OnBackStackChangedListener {
+        implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
+        OnBackStackChangedListener, View.OnClickListener {
 
     private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
@@ -100,12 +124,14 @@ public class SettingsActivity extends SettingsBaseActivity
 
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_settings);
+
         if (savedInstanceState == null) {
-            Fragment f = createLaunchFragment(getIntent());
+            Fragment fragment = createLaunchFragment(getIntent());
 
             // Display the fragment as the main content.
             getSupportFragmentManager().beginTransaction()
-                    .replace(android.R.id.content, f)
+                    .replace(R.id.content, fragment)
                     .commit();
         }
         getSupportFragmentManager().addOnBackStackChangedListener(this);
@@ -129,6 +155,20 @@ public class SettingsActivity extends SettingsBaseActivity
             return info.activityInfo.packageName;
         } else {
             return null;
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+    }
+
+    @NotNull
+    @Override
+    protected ThemeOverride.ThemeSet getThemeSet() {
+        if (hasPreview) {
+            return new ThemeOverride.SettingsTransparent();
+        } else {
+            return super.getThemeSet();
         }
     }
 
@@ -169,24 +209,18 @@ public class SettingsActivity extends SettingsBaseActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(enabled);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
 
-    private boolean startFragment(String fragment, Bundle args, String key) {
-        if (Utilities.ATLEAST_P && getSupportFragmentManager().isStateSaved()) {
-            // Sometimes onClick can come after onPause because of being posted on the handler.
-            // Skip starting new fragments in that case.
-            return false;
-        }
-        Fragment f = Fragment.instantiate(this, fragment, args);
-        if (f instanceof DialogFragment) {
-            ((DialogFragment) f).show(getSupportFragmentManager(), key);
-        } else {
-            getSupportFragmentManager()
-                    .beginTransaction()
-                    .replace(android.R.id.content, f)
-                    .addToBackStack(key)
-                    .commit();
-        }
-        return true;
+    @Override
+    public void onBackStackChanged() {
+        updateUpButton();
     }
 
     protected Fragment createLaunchFragment(Intent intent) {
@@ -202,11 +236,6 @@ public class SettingsActivity extends SettingsBaseActivity
         return content != 0
                 ? SubSettingsFragment.newInstance(getIntent())
                 : new LauncherSettingsFragment();
-    }
-
-    @Override
-    public void onBackStackChanged() {
-        updateUpButton();
     }
 
     @Override
@@ -226,6 +255,7 @@ public class SettingsActivity extends SettingsBaseActivity
         private HighlightablePreferenceGroupAdapter mAdapter;
         private boolean mPreferenceHighlighted = false;
 
+        private String mHighLightKey;
         private RecyclerView.Adapter mCurrentRootAdapter;
         private boolean mIsDataSetObserverRegistered = false;
         private AdapterDataObserver mDataSetObserver =
@@ -269,7 +299,6 @@ public class SettingsActivity extends SettingsBaseActivity
             if (savedInstanceState != null) {
                 mPreferenceHighlighted = savedInstanceState.getBoolean(SAVE_HIGHLIGHTED_KEY);
             }
-
         }
 
         public void highlightPreferenceIfNeeded() {
@@ -339,10 +368,32 @@ public class SettingsActivity extends SettingsBaseActivity
         public void onResume() {
             super.onResume();
             highlightPreferenceIfNeeded();
-
+            if (isAdded() && !mPreferenceHighlighted) {
+                PreferenceHighlighter highlighter = createHighlighter();
+                if (highlighter != null) {
+                    getView().postDelayed(highlighter, DELAY_HIGHLIGHT_DURATION_MILLIS);
+                    mPreferenceHighlighted = true;
+                }
+            }
             dispatchOnResume(getPreferenceScreen());
+
         }
 
+        private PreferenceHighlighter createHighlighter() {
+            if (TextUtils.isEmpty(mHighLightKey)) {
+                return null;
+            }
+
+            PreferenceScreen screen = getPreferenceScreen();
+            if (screen == null) {
+                return null;
+            }
+
+            RecyclerView list = getListView();
+            PreferenceGroup.PreferencePositionCallback callback = (PreferenceGroup.PreferencePositionCallback) list.getAdapter();
+            int position = callback.getPreferenceAdapterPosition(mHighLightKey);
+            return position >= 0 ? new PreferenceHighlighter(list, position) : null;
+        }
         public void dispatchOnResume(PreferenceGroup group) {
             int count = group.getPreferenceCount();
             for (int i = 0; i < count; i++) {
@@ -389,11 +440,24 @@ public class SettingsActivity extends SettingsBaseActivity
         void onPreferencesAdded(PreferenceGroup group) {
             for (int i = 0; i < group.getPreferenceCount(); i++) {
                 Preference preference = group.getPreference(i);
+
+                if (preference instanceof ControlledPreference) {
+                    PreferenceController controller = ((ControlledPreference) preference)
+                            .getController();
+                    if (controller != null) {
+                        if (!controller.onPreferenceAdded(preference)) {
+                            i--;
+                            continue;
+                        }
+                    }
+                }
+
                 if (preference instanceof PreferenceGroup) {
                     onPreferencesAdded((PreferenceGroup) preference);
                 }
 
             }
+
         }
     }
 
@@ -429,6 +493,39 @@ public class SettingsActivity extends SettingsBaseActivity
         }
 
         @Override
+        public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+            inflater.inflate(R.menu.menu_settings, menu);
+            if (!BuildConfig.APPLICATION_ID.equals(defaultHome)) {
+                inflater.inflate(R.menu.menu_change_default_home, menu);
+            }
+        }
+
+        @Override
+        public boolean onOptionsItemSelected(MenuItem item) {
+            switch (item.getItemId()) {
+                case R.id.action_change_default_home:
+                    FakeLauncherKt.changeDefaultHome(getContext());
+                    break;
+                case R.id.action_restart_zim:
+                    Utilities.killLauncher();
+                    break;
+                case R.id.action_dev_options:
+                    Intent intent = new Intent(getContext(), SettingsActivity.class);
+                    intent.putExtra(SettingsActivity.SubSettingsFragment.TITLE,
+                            getString(R.string.developer_options_title));
+                    intent.putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID,
+                            R.xml.zim_preferences_dev_options);
+                    intent.putExtra(SettingsBaseActivity.EXTRA_FROM_SETTINGS, true);
+                    startActivity(intent);
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        @Override
         public boolean onPreferenceTreeClick(Preference preference) {
             return super.onPreferenceTreeClick(preference);
         }
@@ -456,6 +553,7 @@ public class SettingsActivity extends SettingsBaseActivity
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             int preference = getContent();
             ContentResolver resolver = mContext.getContentResolver();
+
             switch (preference) {
                 case R.xml.zim_preferences_desktop:
                     break;
@@ -472,8 +570,66 @@ public class SettingsActivity extends SettingsBaseActivity
             return getArguments().getInt(CONTENT_RES_ID);
         }
 
+        @Override
+        public void onResume() {
+            super.onResume();
+            setActivityTitle();
+        }
+
         protected void setActivityTitle() {
             getActivity().setTitle(getArguments().getString(TITLE));
+        }
+
+        @Override
+        public void onDestroy() {
+            if (mRotationLockObserver != null) {
+                mRotationLockObserver.unregister();
+                mRotationLockObserver = null;
+            }
+            super.onDestroy();
+        }
+
+        @Override
+        public void onDisplayPreferenceDialog(Preference preference) {
+            final DialogFragment f;
+            /*if (preference instanceof GridSizePreference) {
+                f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof SingleDimensionGridSizePreference) {
+                f = SingleDimensionGridSizeDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
+            } else*/
+            if (preference instanceof GesturePreference) {
+                f = SelectGestureHandlerFragment.Companion
+                        .newInstance((GesturePreference) preference);
+            } else if (preference instanceof SearchProviderPreference) {
+                f = SelectSearchProviderFragment.Companion
+                        .newInstance((SearchProviderPreference) preference);
+            }
+                /*else if (preference instanceof PreferenceDialogPreference) {
+                f = PreferenceScreenDialogFragment.Companion
+                        .newInstance((PreferenceDialogPreference) preference);
+            } else if (preference instanceof IconShapePreference) {
+                f = ((IconShapePreference) preference).createDialogFragment();
+            } else if (preference instanceof ListPreference) {
+                Log.d("success", "onDisplayPreferenceDialog: yay");
+                f = ThemedListPreferenceDialogFragment.Companion.newInstance(preference.getKey());
+            } else if (preference instanceof EditTextPreference) {
+                f = ThemedEditTextPreferenceDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
+            } else if (preference instanceof AbstractMultiSelectListPreference) {
+                f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
+                        .newInstance(preference.getKey());
+            } else if (preference instanceof SmartspaceEventProvidersPreference) {
+                f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
+            }
+                */
+            else {
+                super.onDisplayPreferenceDialog(preference);
+                return;
+            }
+            f.setTargetFragment(this, 0);
+            //f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+            f.show(getFragmentManager(), preference.getKey());
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {
@@ -514,15 +670,32 @@ public class SettingsActivity extends SettingsBaseActivity
             return false;
         }
 
-
         protected int getRecyclerViewLayoutRes() {
             return R.layout.preference_insettable_recyclerview;
         }
-
     }
 
-    public static class NotificationAccessConfirmation
-            extends DialogFragment implements DialogInterface.OnClickListener {
+    public static class DialogSettingsFragment extends SubSettingsFragment {
+        @Override
+        protected void setActivityTitle() {
+        }
+
+        @Override
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_dialog_recyclerview;
+        }
+
+        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
+            DialogSettingsFragment fragment = new DialogSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, title);
+            b.putInt(CONTENT_RES_ID, content);
+            fragment.setArguments(b);
+            return fragment;
+        }
+    }
+
+    public static class NotificationAccessConfirmation extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -579,8 +752,7 @@ public class SettingsActivity extends SettingsBaseActivity
      * Content observer which listens for system badging setting changes, and updates the launcher
      * badging setting subtext accordingly.
      */
-    private static class IconBadgingObserver extends SettingsObserver.Secure
-            implements Preference.OnPreferenceClickListener {
+    private static class IconBadgingObserver extends SettingsObserver.Secure implements Preference.OnPreferenceClickListener {
 
         private final ButtonPreference mBadgingPref;
         private final ContentResolver mResolver;
@@ -662,8 +834,7 @@ public class SettingsActivity extends SettingsBaseActivity
         startFragment(context, fragment, args, null);
     }
 
-    public static void startFragment(Context context, String fragment, @Nullable Bundle args,
-                                     @Nullable CharSequence title) {
+    public static void startFragment(Context context, String fragment, @Nullable Bundle args, @Nullable CharSequence title) {
         context.startActivity(createFragmentIntent(context, fragment, args, title));
     }
 
@@ -678,6 +849,4 @@ public class SettingsActivity extends SettingsBaseActivity
         }
         return intent;
     }
-
-
 }

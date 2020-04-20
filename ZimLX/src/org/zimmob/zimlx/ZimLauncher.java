@@ -15,13 +15,72 @@
  */
 package org.zimmob.zimlx;
 
+import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+
+import com.android.launcher3.AppInfo;
+import com.android.launcher3.FolderInfo;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.util.ComponentKey;
+
+import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.gestures.GestureController;
+import org.zimmob.zimlx.iconpack.EditIconActivity;
+import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.override.CustomInfoProvider;
+import org.zimmob.zimlx.views.OptionsPanel;
+
+import java.util.Objects;
+
+import kotlin.Unit;
+import kotlin.jvm.functions.Function0;
 
 public class ZimLauncher extends Launcher {
+    public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
+    public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
+    public static final int CODE_EDIT_ICON = 100;
+    public static Drawable currentEditIcon = null;
+    public static ItemInfo currentEditInfo = null;
+    private ZimPreferences mZimPrefs;
     private boolean paused = false;
     private boolean sRestart = false;
+    private GestureController gestureController;
+    private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
+    private OptionsPanel optionView;
+    private View dummyView;
 
+    public static ZimLauncher getLauncher(Context context) {
+        if (context instanceof ZimLauncher) {
+            return (ZimLauncher) context;
+        } else {
+            return (ZimLauncher) LauncherAppState.getInstance(context).getLauncher();
+        }
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
+            Utilities.requestStoragePermission(this);
+        }
+        gestureController = new GestureController(this);
+        super.onCreate(savedInstanceState);
+        mContext = this;
+        mZimPrefs = Utilities.getZimPrefs(mContext);
+        mZimPrefs.registerCallback(prefCallback);
+        dummyView = findViewById(R.id.dummy_view);
+    }
     public boolean shouldRecreate() {
         return !sRestart;
     }
@@ -32,5 +91,89 @@ public class ZimLauncher extends Launcher {
         } else {
             Utilities.restartLauncher(this);
         }
+    }
+
+    public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
+        ComponentKey component;
+
+        if (itemInfo instanceof AppInfo) {
+            component = ((AppInfo) itemInfo).toComponentKey();
+            currentEditIcon = Objects.requireNonNull(IconPackManager.Companion.getInstance(this).getEntryForComponent(component)).getDrawable();
+        } else if (itemInfo instanceof WorkspaceItemInfo) {
+            component = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
+            currentEditIcon = new BitmapDrawable(mContext.getResources(), ((WorkspaceItemInfo) itemInfo).iconBitmap);
+        } else if (itemInfo instanceof FolderInfo) {
+            component = ((FolderInfo) itemInfo).toComponentKey();
+            currentEditIcon = ((FolderInfo) itemInfo).getDefaultIcon(this);
+        } else {
+            component = null;
+            currentEditIcon = null;
+        }
+
+        currentEditInfo = itemInfo;
+        boolean folderInfo = itemInfo instanceof FolderInfo;
+        Intent intent = EditIconActivity
+                .Companion
+                .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
+        int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+        BlankActivity.Companion
+                .startActivityForResult(this, intent, CODE_EDIT_ICON, flags, (resultCode, data) -> {
+                    handleEditIconResult(resultCode, data);
+                    return null;
+                });
+
+    }
+
+    private void handleEditIconResult(int resultCode, @NotNull Bundle data) {
+        if (resultCode == Activity.RESULT_OK) {
+            if (currentEditInfo == null) {
+                return;
+            }
+            ItemInfo itemInfo = currentEditInfo;
+            String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
+            IconPackManager.CustomIconEntry customIconEntry = IconPackManager.CustomIconEntry.Companion.fromNullableString(entryString);
+
+            Objects.requireNonNull(CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
+        }
+    }
+
+    @Override
+    public int getCurrentState() {
+        return 0;
+    }
+
+    @Override
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+        return super.startActivitySafely(v, intent, item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    public OptionsPanel getOptionsView() {
+        return optionView = findViewById(R.id.options_view);
+    }
+
+    public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
+        int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
+        int halfSize = size / 2;
+        prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
+    }
+
+    public void prepareDummyView(int left, int top, int right, int bottom, @NotNull Function0<Unit> callback) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) dummyView.getLayoutParams();
+        lp.leftMargin = left;
+        lp.topMargin = top;
+        lp.height = bottom - top;
+        lp.width = right - left;
+        dummyView.setLayoutParams(lp);
+        dummyView.requestLayout();
+        dummyView.post(callback::invoke);
+    }
+
+    public GestureController getGestureController() {
+        return gestureController;
     }
 }

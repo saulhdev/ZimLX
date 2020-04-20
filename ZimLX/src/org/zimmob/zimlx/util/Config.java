@@ -16,6 +16,9 @@
 package org.zimmob.zimlx.util;
 
 import android.content.Context;
+import android.util.TypedValue;
+
+import com.android.launcher3.R;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -25,6 +28,9 @@ import java.util.Set;
 
 public class Config {
     private static final String TAG = "Config";
+
+    public static final String THEME_ICON_SHAPE = "pref_iconShape";
+
     //APP DRAWER SORT MODE
     public static final int SORT_AZ = 0;
     public static final int SORT_ZA = 1;
@@ -52,5 +58,37 @@ public class Config {
             }
             return sInstance;
         }
+    }
+
+    public float getDefaultBlurStrength() {
+        TypedValue typedValue = new TypedValue();
+        context.getResources().getValue(R.dimen.config_default_blur_strength, typedValue, true);
+        return typedValue.getFloat();
+    }
+
+    public boolean defaultEnableBlur() {
+        return context.getResources().getBoolean(R.bool.config_default_enable_blur);
+    }
+
+    public String getDefaultSearchProvider() {
+        return context.getResources().getString(R.string.config_default_search_provider);
+    }
+
+    public String[] getDefaultIconPacks() {
+        String[] iconPacks = context.getResources().getStringArray(R.array.config_default_icon_packs);
+
+        return iconPacks;
+    }
+
+    public boolean enableColorizedLegacyTreatment() {
+        return context.getResources().getBoolean(R.bool.config_enable_colorized_legacy_treatment);
+    }
+
+    public boolean enableWhiteOnlyTreatment() {
+        return context.getResources().getBoolean(R.bool.config_enable_white_only_treatment);
+    }
+
+    public boolean enableLegacyTreatment() {
+        return context.getResources().getBoolean(R.bool.config_enable_legacy_treatment);
     }
 }

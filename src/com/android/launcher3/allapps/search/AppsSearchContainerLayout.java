@@ -206,6 +206,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
+    public void startSearch() {
+    }
+
+    @Override
     public float getScrollRangeDelta(Rect insets) {
         if (mLauncher.getDeviceProfile().isVerticalBarLayout()) {
             return 0;

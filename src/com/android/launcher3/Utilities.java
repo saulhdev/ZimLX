@@ -20,10 +20,12 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
+import android.app.Activity;
 import android.app.ActivityManager;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.app.WallpaperManager;
+import android.content.ActivityNotFoundException;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
@@ -49,6 +51,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
@@ -56,6 +59,7 @@ import android.os.Handler;
 import android.os.Message;
 import android.os.PowerManager;
 import android.os.TransactionTooLargeException;
+import android.os.UserHandle;
 import android.provider.Settings;
 import android.text.Spannable;
 import android.text.SpannableString;
@@ -69,6 +73,10 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.animation.Interpolator;
+import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
@@ -84,12 +92,14 @@ import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -788,6 +798,26 @@ public final class Utilities {
         return bitmap;
     }
 
+    public static Bitmap drawableToBitmap(Drawable drawable, boolean forceCreate) {
+        if (!forceCreate && drawable instanceof BitmapDrawable) {
+            return ((BitmapDrawable) drawable).getBitmap();
+        }
+
+        if (drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            return null;
+        }
+
+        Bitmap bitmap = Bitmap.createBitmap(
+                drawable.getIntrinsicWidth(),
+                drawable.getIntrinsicHeight(),
+                Bitmap.Config.ARGB_8888);
+
+        Canvas canvas = new Canvas(bitmap);
+        drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        drawable.draw(canvas);
+        return bitmap;
+    }
+
     public static <T> T getOverrideObject(Class<T> clazz, Context context, int resId) {
         String className = context.getString(resId);
         if (!TextUtils.isEmpty(className)) {
@@ -808,7 +838,7 @@ public final class Utilities {
     }
 
     public static ZimPreferences getZimPrefs(Context context) {
-        return ZimPreferences.getInstance(context);
+        return ZimPreferences.Companion.getInstance(context);
     }
 
     public static void restartLauncher(Context context) {
@@ -848,6 +878,92 @@ public final class Utilities {
             return flags | flag;
         } else {
             return flags & ~flag;
+        }
+    }
+
+    public static int pxFromDp(float size, DisplayMetrics metrics) {
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP,
+                size, metrics));
+    }
+
+    public static void openURLinBrowser(Context context, String url) {
+        openURLinBrowser(context, url, null, null);
+    }
+
+    public static void openURLinBrowser(Context context, String url, Rect sourceBounds, Bundle options) {
+        try {
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+            intent.setSourceBounds(sourceBounds);
+            if (options == null) {
+                context.startActivity(intent);
+            } else {
+                context.startActivity(intent, options);
+            }
+        } catch (ActivityNotFoundException exc) {
+            // Believe me, this actually happens.
+            Toast.makeText(context, R.string.error_no_browser, Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    public static boolean hasPermission(Context context, String permission) {
+        return ContextCompat.checkSelfPermission(context, permission)
+                == PackageManager.PERMISSION_GRANTED;
+    }
+
+    public static boolean hasStoragePermission(Context context) {
+        return hasPermission(context, android.Manifest.permission.READ_EXTERNAL_STORAGE);
+    }
+
+    public static void requestStoragePermission(Activity activity) {
+        ActivityCompat.requestPermissions(activity, new String[]{android.Manifest.permission.READ_EXTERNAL_STORAGE}, ZimLauncher.REQUEST_PERMISSION_STORAGE_ACCESS);
+    }
+
+    public static UserHandle myUserHandle() {
+        return android.os.Process.myUserHandle();
+    }
+
+    private static List<Runnable> onStart = new ArrayList<>();
+
+    /**
+     * ATTENTION: Only ever call this from within LawnchairLauncher.kt
+     */
+    public /* private */ static void onLauncherStart() {
+        Log.d(TAG, "onLauncherStart: " + onStart.size());
+        for (Runnable r : onStart)
+            r.run();
+        onStart.clear();
+    }
+
+    /**
+     * Cues a runnable to be executed after binding all launcher elements the next time
+     */
+    public static void cueAfterNextStart(Runnable runnable) {
+        Log.d(TAG, "cueAfterNextStart: " + runnable);
+        onStart.add(runnable);
+    }
+
+    public static void goToHome(Context context, Runnable onStart) {
+        cueAfterNextStart(onStart);
+        goToHome(context);
+    }
+
+    public static void goToHome(Context context) {
+        PackageManager pm = context.getPackageManager();
+
+        Intent intent = new Intent(Intent.ACTION_MAIN);
+        intent.addCategory(Intent.CATEGORY_HOME);
+        ComponentName componentName = intent.resolveActivity(pm);
+        if (!context.getPackageName().equals(componentName.getPackageName())) {
+            intent = pm.getLaunchIntentForPackage(context.getPackageName());
+        }
+        context.startActivity(intent);
+    }
+
+    public static int parseResourceIdentifier(Resources res, String identifier, String packageName) {
+        try {
+            return Integer.parseInt(identifier.substring(1));
+        } catch (NumberFormatException e) {
+            return res.getIdentifier(identifier.substring(1), null, packageName);
         }
     }
 

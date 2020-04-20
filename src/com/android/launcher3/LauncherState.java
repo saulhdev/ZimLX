@@ -32,6 +32,7 @@ import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.testing.TestProtocol.ALL_APPS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.BACKGROUND_APP_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.NORMAL_STATE_ORDINAL;
+import static com.android.launcher3.testing.TestProtocol.OPTIONS_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_PEEK_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.OVERVIEW_STATE_ORDINAL;
 import static com.android.launcher3.testing.TestProtocol.QUICK_SWITCH_STATE_ORDINAL;
@@ -47,6 +48,8 @@ import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.uioverrides.states.AllAppsState;
 import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
+
+import org.zimmob.zimlx.states.OptionsState;
 
 import java.util.Arrays;
 
@@ -70,6 +73,8 @@ public class LauncherState {
     public static final int VERTICAL_SWIPE_INDICATOR = 1 << 5;
     public static final int RECENTS_CLEAR_ALL_BUTTON = 1 << 6;
 
+    public static final int OPTIONS_VIEW = 1 << 7;
+
     protected static final int FLAG_MULTI_PAGE = 1 << 0;
     protected static final int FLAG_DISABLE_ACCESSIBILITY = 1 << 1;
     protected static final int FLAG_DISABLE_RESTORE = 1 << 2;
@@ -89,7 +94,7 @@ public class LauncherState {
                 }
             };
 
-    private static final LauncherState[] sAllStates = new LauncherState[7];
+    private static final LauncherState[] sAllStates = new LauncherState[9];
 
     /**
      * TODO: Create a separate class for NORMAL state.
@@ -113,7 +118,7 @@ public class LauncherState {
             OverviewState.newSwitchState(QUICK_SWITCH_STATE_ORDINAL);
     public static final LauncherState BACKGROUND_APP =
             OverviewState.newBackgroundState(BACKGROUND_APP_STATE_ORDINAL);
-
+    public static final LauncherState OPTIONS = new OptionsState(OPTIONS_STATE_ORDINAL);
     public final int ordinal;
 
     /**
@@ -237,6 +242,10 @@ public class LauncherState {
      */
     public float getVerticalProgress(Launcher launcher) {
         return 1f;
+    }
+
+    public float getScrimProgress(Launcher launcher) {
+        return getVerticalProgress(launcher);
     }
 
     public float getWorkspaceScrimAlpha(Launcher launcher) {

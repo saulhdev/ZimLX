@@ -16,8 +16,12 @@
 
 package org.zimmob.zimlx.settings
 
+import android.R.id
+import android.annotation.SuppressLint
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -28,17 +32,36 @@ import androidx.appcompat.widget.Toolbar
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
+import com.android.launcher3.util.IntArray
+import org.zimmob.zimlx.ZimLayoutInflater
+import org.zimmob.zimlx.theme.ThemeManager
+import org.zimmob.zimlx.theme.ThemeOverride
 import org.zimmob.zimlx.util.getBooleanAttr
+import org.zimmob.zimlx.util.launcherAppState
 
-open class SettingsBaseActivity : AppCompatActivity() {
+
+@SuppressLint("Registered")
+open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableActivity {
     val dragLayer by lazy { SettingsDragLayer(this, null) }
     val decorLayout by lazy { DecorLayout(this, window) }
 
+    protected open val themeSet: ThemeOverride.ThemeSet get() = ThemeOverride.Settings()
+    private lateinit var themeOverride: ThemeOverride
+    private var currentTheme = 0
     private var paused = false
+
+    private val customLayoutInflater by lazy {
+        ZimLayoutInflater(super.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater, this)
+    }
 
     private val fromSettings by lazy { intent.getBooleanExtra(EXTRA_FROM_SETTINGS, false) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        (layoutInflater as ZimLayoutInflater).installFactory(delegate)
+        themeOverride = ThemeOverride(themeSet, this)
+        themeOverride.applyTheme(this)
+        currentTheme = themeOverride.getTheme(this)
+
         super.onCreate(savedInstanceState ?: intent.getBundleExtra("state"))
         dragLayer.addView(decorLayout, InsettableFrameLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
@@ -49,8 +72,12 @@ open class SettingsBaseActivity : AppCompatActivity() {
         toolbar.setBackgroundColor(prefs.primaryColor)
         toolbar.setTitleTextColor(resources.getColor(R.color.white))
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24px)
-
         setSupportActionBar(toolbar)
+
+        /*
+        layoutInflater.inflate(R.layout.toolbar, findViewById<View>(id.content) as ViewGroup)
+        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
+        setSupportActionBar(toolbar)*/
 
         var flags = window.decorView.systemUiVisibility
         if (Utilities.ATLEAST_MARSHMALLOW) {
@@ -64,9 +91,7 @@ open class SettingsBaseActivity : AppCompatActivity() {
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
         flags = flags or View.SYSTEM_UI_FLAG_LAYOUT_STABLE
         window.decorView.systemUiVisibility = flags
-
         window.statusBarColor = dark(Utilities.getZimPrefs(applicationContext).primaryColor)
-
     }
 
     fun dark(color: Int): Int {
@@ -130,6 +155,7 @@ open class SettingsBaseActivity : AppCompatActivity() {
     fun getContentFrame(): ViewGroup {
         return decorLayout.findViewById(android.R.id.content)
     }
+
     override fun onResume() {
         super.onResume()
         paused = false
@@ -140,9 +166,38 @@ open class SettingsBaseActivity : AppCompatActivity() {
         paused = true
     }
 
+    protected open fun createRelaunchIntent(): Intent {
+        val state = Bundle()
+        onSaveInstanceState(state)
+        return intent.putExtra("state", state)
+    }
+
     protected fun getRelaunchInstanceState(savedInstanceState: Bundle?): Bundle? {
         return savedInstanceState ?: intent.getBundleExtra("state")
     }
+
+    override fun onThemeChanged() {
+        if (currentTheme == themeOverride.getTheme(this)) return
+        if (paused) {
+            recreate()
+        } else {
+            finish()
+            startActivity(createRelaunchIntent(), ActivityOptions.makeCustomAnimation(
+                    this, android.R.anim.fade_in, android.R.anim.fade_out).toBundle())
+        }
+    }
+
+    override fun getSystemService(name: String): Any? {
+        if (name == Context.LAYOUT_INFLATER_SERVICE) {
+            return customLayoutInflater
+        }
+        return super.getSystemService(name)
+    }
+
+    /*override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        launcherAppState.launcher?.onRequestPermissionsResult(requestCode, permissions, grantResults)
+    }*/
 
     companion object {
 

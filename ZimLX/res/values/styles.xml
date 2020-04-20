@@ -18,7 +18,7 @@
   -->
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Launcher theme -->
-    <style name="ZBaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
+    <style name="BaseLauncherTheme" parent="@android:style/Theme.Material.Light.NoActionBar">
         <item name="android:windowBackground">@android:color/transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowShowWallpaper">true</item>
@@ -30,10 +30,10 @@
         </item>
     </style>
 
-    <style name="BaseLauncherThemeWithCustomAttrs" parent="@style/ZBaseLauncherTheme">
-        <item name="allAppsScrimColor">#CCFFFFFF</item>
+    <style name="LauncherTheme" parent="@style/BaseLauncherTheme">
+        <item name="allAppsScrimColor">#EAFFFFFF</item>
         <item name="allAppsInterimScrimAlpha">46</item>
-        <item name="allAppsNavBarScrimColor">@color/all_apps_navbar_color</item>
+        <item name="allAppsNavBarScrimColor">#66FFFFFF</item>
         <item name="popupColorPrimary">#FFF</item>
         <item name="popupColorSecondary">#F5F5F5</item> <!-- Gray 100 -->
         <item name="popupColorTertiary">#E0E0E0</item> <!-- Gray 300 -->
@@ -45,21 +45,18 @@
         <item name="workspaceKeyShadowColor">#44000000</item>
         <item name="workspaceStatusBarScrim">@drawable/workspace_bg</item>
         <item name="widgetsTheme">@style/WidgetContainerTheme</item>
+        <item name="folderDotColor">?android:attr/colorPrimary</item>
+        <item name="folderFillColor">#CDFFFFFF</item>
+        <item name="folderIconBorderColor">?android:attr/colorPrimary</item>
+        <item name="folderTextColor">#FF212121</item>
+        <item name="loadingIconColor">#CCFFFFFF</item>
 
-        <!-- Backports -->
-        <item name="android:textColorPrimary">@color/primary_text_material_light</item>
-        <item name="android:textColorSecondary">@color/secondary_text_material_light</item>
-        <item name="android:textColorPrimaryInverse">?android:attr/textColorPrimary</item>
-        <item name="android:textColorSecondaryInverse">?android:attr/textColorSecondary</item>
-
-        <item name="android:colorPrimary">@color/colorPrimary</item>
-        <item name="android:colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="android:colorAccent">@color/colorAccent</item>
-        <item name="android:alertDialogTheme">@style/SettingsTheme.V2.Dialog</item>
-
+        <item name="android:windowTranslucentStatus">false</item>
+        <item name="android:windowTranslucentNavigation">false</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <item name="android:statusBarColor">#00000000</item>
+        <item name="android:navigationBarColor">#00000000</item>
     </style>
-
-    <style name="LauncherTheme" parent="@style/BaseLauncherThemeWithCustomAttrs"></style>
 
     <style name="LauncherTheme.DarkText" parent="@style/LauncherTheme">
         <item name="workspaceTextColor">#FF212121</item>

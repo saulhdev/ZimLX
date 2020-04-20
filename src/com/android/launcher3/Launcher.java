@@ -162,6 +162,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import org.zimmob.zimlx.ZimLauncher;
+
 /**
  * Default launcher application.
  */
@@ -1379,6 +1381,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         boolean internalStateHandled = InternalStateHandler
                 .handleNewIntent(this, intent, isStarted());
 
+        boolean handled = false;
         if (isActionMain) {
             if (!internalStateHandled) {
                 // In all these cases, only animate if we're already on home
@@ -1388,15 +1391,23 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                     // Only change state, if not already the same. This prevents cancelling any
                     // animations running as part of resume
                     mStateManager.goToState(NORMAL);
+                    handled = true;
                 }
 
                 // Reset the apps view
                 if (!alreadyOnHome) {
                     mAppsView.reset(isStarted() /* animate */);
+                    handled = true;
                 }
 
                 if (shouldMoveToDefaultScreen && !mWorkspace.isHandlingTouch()) {
+                    if (mWorkspace.getCurrentPage() != 0) {
+                        handled = true;
+                    }
                     mWorkspace.post(mWorkspace::moveToDefaultScreen);
+                }
+                if (!handled && this instanceof ZimLauncher) {
+                    ((ZimLauncher) this).getGestureController().onPressHome();
                 }
             }
 
@@ -1827,6 +1838,20 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 event.srcTarget[2].containerType = ContainerType.TASKSWITCHER;
             }
         }
+    }
+
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+        boolean success = super.startActivitySafely(v, intent, item);
+        if (success && v instanceof BubbleTextView) {
+            // This is set to the view that launched the activity that navigated the user away
+            // from launcher. Since there is no callback for when the activity has finished
+            // launching, enable the press state and keep this reference to reset the press
+            // state when we return to launcher.
+            BubbleTextView btv = (BubbleTextView) v;
+            btv.setStayPressed(true);
+            addOnResumeCallback(btv);
+        }
+        return success;
     }
 
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item,

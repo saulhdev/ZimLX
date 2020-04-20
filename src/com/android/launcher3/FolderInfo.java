@@ -16,10 +16,24 @@
 
 package com.android.launcher3;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.widget.FrameLayout;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+
+import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.model.ModelWriter;
+import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
+
+import org.zimmob.zimlx.folder.FirstItemProvider;
 
 import java.util.ArrayList;
 
@@ -44,8 +58,11 @@ public class FolderInfo extends ItemInfo {
      * The multi-page animation has run for this folder
      */
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
-
+    public static final int FLAG_COVER_MODE = 0x00000008;
     public int options;
+    public String swipeUpAction;
+
+    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
 
     /**
      * The apps and shortcuts
@@ -126,6 +143,51 @@ public class FolderInfo extends ItemInfo {
         for (int i = 0; i < listeners.size(); i++) {
             listeners.get(i).prepareAutoUpdate();
         }
+    }
+
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        //ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
+    }
+
+    public ComponentKey toComponentKey() {
+        return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
+    }
+
+    public Drawable getDefaultIcon(Launcher launcher) {
+        if (isCoverMode()) {
+            return new FastBitmapDrawable(getCoverInfo().iconBitmap);
+        } else {
+            return getFolderIcon(launcher);
+        }
+    }
+
+    public Drawable getFolderIcon(Launcher launcher) {
+        int iconSize = launcher.mDeviceProfile.iconSizePx;
+        FrameLayout dummy = new FrameLayout(launcher, null);
+        FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
+        icon.isCustomIcon = false;
+        //icon.getFolderBackground().setStartOpacity(1f);
+        Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
+            out.translate(iconSize / 2f, 0);
+            // TODO: make folder icons more visible in front of the bottom sheet
+            // out.drawColor(Color.RED);
+            icon.draw(out);
+        });
+        //icon.unbind();
+        return new BitmapDrawable(launcher.getResources(), b);
+    }
+
+    public boolean isCoverMode() {
+        return hasOption(FLAG_COVER_MODE);
+    }
+
+    public void setCoverMode(boolean enable, ModelWriter modelWriter) {
+        setOption(FLAG_COVER_MODE, enable, modelWriter);
+    }
+
+    public WorkspaceItemInfo getCoverInfo() {
+        return firstItemProvider.getFirstItem();
     }
 
     public interface FolderListener {

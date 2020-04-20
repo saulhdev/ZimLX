@@ -16,8 +16,10 @@
 
 package com.android.launcher3.shortcuts;
 
+import android.annotation.TargetApi;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.LauncherApps;
 import android.content.pm.LauncherApps.ShortcutQuery;
 import android.content.pm.ShortcutInfo;
@@ -28,6 +30,9 @@ import android.os.UserHandle;
 import android.util.Log;
 
 import androidx.annotation.Nullable;
+
+import com.android.launcher3.Utilities;
+import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,6 +142,24 @@ public class DeepShortcutManager {
         }
     }
 
+    @TargetApi(25)
+    public void startShortcut(String packageName, String id, Intent intent,
+                              Bundle startActivityOptions, UserHandle user) {
+        if (Utilities.ATLEAST_NOUGAT) {
+            try {
+                mLauncherApps.startShortcut(packageName, id, intent.getSourceBounds(),
+                        startActivityOptions, user);
+                mWasLastCallSuccess = true;
+            } catch (SecurityException | IllegalStateException e) {
+                Log.e(TAG, "Failed to start shortcut", e);
+                mWasLastCallSuccess = false;
+            }
+        } else {
+            //mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
+        }
+    }
+
+
     public Drawable getShortcutIconDrawable(ShortcutInfo shortcutInfo, int density) {
         try {
             Drawable icon = mLauncherApps.getShortcutIconDrawable(shortcutInfo, density);
@@ -149,6 +172,23 @@ public class DeepShortcutManager {
         return null;
     }
 
+    @TargetApi(25)
+    public Drawable getShortcutIconDrawable(ShortcutInfoCompat shortcutInfo, int density) {
+        if (Utilities.ATLEAST_NOUGAT) {
+            try {
+                Drawable icon = mLauncherApps.getShortcutIconDrawable(
+                        shortcutInfo.getShortcutInfo(), density);
+                mWasLastCallSuccess = true;
+                return icon;
+            } catch (SecurityException | IllegalStateException e) {
+                Log.e(TAG, "Failed to get shortcut icon", e);
+                mWasLastCallSuccess = false;
+            }
+        } else {
+            return DeepShortcutManagerBackport.getShortcutIconDrawable(shortcutInfo, density);
+        }
+        return null;
+    }
     /**
      * Returns the id's of pinned shortcuts associated with the given package and user.
      *
@@ -165,6 +205,10 @@ public class DeepShortcutManager {
 
     public List<ShortcutInfo> queryForAllShortcuts(UserHandle user) {
         return query(FLAG_GET_ALL, null, null, null, user);
+    }
+
+    public List<ShortcutInfo> queryForComponent(ComponentKey key) {
+        return query(FLAG_GET_ALL, key.componentName.getPackageName(), key.componentName, null, key.user);
     }
 
     private List<String> extractIds(List<ShortcutInfo> shortcuts) {

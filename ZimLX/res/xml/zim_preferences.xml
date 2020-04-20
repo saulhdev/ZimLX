@@ -4,8 +4,65 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__interfaces">
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_desktop"
+            android:summary="@string/pref_summary__desktop"
+            android:title="@string/pref_title__desktop"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_desktop" />
+
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_dock"
+            android:summary="@string/pref_summary__dock"
+            android:title="@string/pref_title__dock"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_dock" />
+
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_apps_24dp"
+            android:summary="@string/pref_summary__app_drawer"
+            android:title="@string/pref_title__app_drawer"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_app_drawer" />
+
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_style"
+            android:summary="@string/pref_summary__theme"
+            android:title="@string/pref_title__theme"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_theme" />
+
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_behavior"
+            android:summary="@string/pref_summary__smartspace"
+            android:title="@string/pref_title__smartspace"
+            android:layout="@layout/home_preference"
+            app:hasPreview="true"
+            app:content="@xml/zim_preferences_smartspace" />
 
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__inputs">
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_folder_outline"
+            android:summary="@string/pref_summary__folder"
+            android:title="@string/pref_title__folder"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_folder" />
 
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_gesture"
+            android:summary="@string/pref_summary__notifications"
+            android:title="@string/pref_title__notifications"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_notification" />
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__others">
 
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_more_horiz"
+            android:summary="@string/pref_summary__advanced"
+            android:title="@string/pref_title__advanced"
+            android:layout="@layout/home_preference"
+            app:content="@xml/zim_preferences_advanced" />
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

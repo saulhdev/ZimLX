@@ -36,6 +36,11 @@
         android:clipToPadding="false"
         android:importantForAccessibility="no">
 
+        <View
+            android:id="@+id/dummy_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp" />
+
         <!-- The workspace contains 5 screens of cells -->
         <!-- DO NOT CHANGE THE ID -->
         <com.android.launcher3.Workspace
@@ -78,6 +83,10 @@
             layout="@layout/all_apps"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
+
+        <include
+            android:id="@+id/options_view"
+            layout="@layout/options_view" />
 
     </com.android.launcher3.dragndrop.DragLayer>
 

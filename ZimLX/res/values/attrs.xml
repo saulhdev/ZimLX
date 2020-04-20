@@ -64,5 +64,14 @@
     <!-- Pixel -->
     <attr name="gIcon" format="reference" />
     <attr name="micIcon" format="reference" />
+    <declare-styleable name="GesturePreference">
+        <attr name="gestureClass" format="string" />
+    </declare-styleable>
+    <declare-styleable name="PreferenceDialogPreference">
+        <attr name="content" />
+    </declare-styleable>
 
+    <declare-styleable name="ThemeFlagSwitchPreference">
+        <attr name="switchFlag" format="integer" />
+    </declare-styleable>
 </resources>

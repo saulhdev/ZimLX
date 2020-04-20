@@ -93,11 +93,19 @@ public class LauncherModel extends BroadcastReceiver
 
     @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     private static final Looper mWorkerLooper;
+    @Thunk
+    static final HandlerThread sIconPackThread = new HandlerThread("launcher-icon-pack");
+    @Thunk
+    static final HandlerThread sIconPackUiThread = new HandlerThread("launcher-icon-pack-ui");
     static {
         sWorkerThread.start();
         mWorkerLooper = sWorkerThread.getLooper();
+        sIconPackThread.start();
+        sIconPackUiThread.start();
     }
     @Thunk static final Handler sWorker = new Handler(mWorkerLooper);
+    @Thunk
+    static final Handler sIconPack = new Handler(sIconPackThread.getLooper());
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -331,6 +339,14 @@ public class LauncherModel extends BroadcastReceiver
             l.reload();
         }
     }
+
+    public void forceReloadOnNextLaunch() {
+        synchronized (this.mLock) {
+            stopLoader();
+            mModelLoaded = false;
+        }
+    }
+
 
     public void forceReload() {
         forceReload(-1);
@@ -613,7 +629,29 @@ public class LauncherModel extends BroadcastReceiver
         return mWorkerLooper;
     }
 
+    /**
+     * @return the looper for the ui worker thread which can be used to start background tasksfor ui.
+     */
+    public static Looper getUiWorkerLooper() {
+        return sWorkerThread.getLooper();
+    }
+
+
     public static void setWorkerPriority(final int priority) {
         Process.setThreadPriority(sWorkerThread.getThreadId(), priority);
+    }
+
+    /**
+     * @return the looper for the icon pack thread which can be used to load icon packs.
+     */
+    public static Looper getIconPackLooper() {
+        return sIconPackThread.getLooper();
+    }
+
+    /**
+     * @return the looper for the icon pack ui thread which can be used to load icon pickers.
+     */
+    public static Looper getIconPackUiLooper() {
+        return sIconPackUiThread.getLooper();
     }
 }

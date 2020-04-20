@@ -28,7 +28,7 @@ class BlurWallpaperFilter(private val context: Context) : WallpaperFilter {
     private var blurRadius = 25
 
     override fun applyPrefs(prefs: ZimPreferences) {
-        blurRadius = prefs.blurRadius().toInt() / BlurWallpaperProvider.DOWNSAMPLE_FACTOR
+        blurRadius = prefs.blurRadius.toInt() / BlurWallpaperProvider.DOWNSAMPLE_FACTOR
         blurRadius = Math.max(1, Math.min(blurRadius, 25))
     }
 

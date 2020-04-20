@@ -34,6 +34,7 @@ import androidx.annotation.NonNull;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.IconProvider;
 import com.android.launcher3.InvariantDeviceProfile;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherModel;
@@ -50,6 +51,8 @@ import com.android.launcher3.icons.cache.HandlerRunnable;
 import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
+
+import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.util.function.Supplier;
 
@@ -236,6 +239,11 @@ public class IconCache extends BaseIconCache {
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
     }
 
+    public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
+        if (mIconProvider instanceof ZimIconProvider)
+            return ((ZimIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
+        return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+    }
     @Override
     protected String getIconSystemState(String packageName) {
         return mIconProvider.getSystemStateForPackage(mSystemState, packageName)

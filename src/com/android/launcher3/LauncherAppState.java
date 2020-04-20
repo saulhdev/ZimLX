@@ -52,7 +52,7 @@ public class LauncherAppState {
     private final WidgetPreviewLoader mWidgetCache;
     private final InvariantDeviceProfile mInvariantDeviceProfile;
     private final SecureSettingsObserver mNotificationDotsObserver;
-
+    private Launcher mLauncher;
     public static LauncherAppState getInstance(final Context context) {
         return INSTANCE.get(context);
     }
@@ -147,9 +147,14 @@ public class LauncherAppState {
     }
 
     LauncherModel setLauncher(Launcher launcher) {
+        mLauncher = launcher;
         getLocalProvider(mContext).setLauncherProviderChangeListener(launcher);
         mModel.initialize(launcher);
         return mModel;
+    }
+
+    public Launcher getLauncher() {
+        return mLauncher;
     }
 
     public IconCache getIconCache() {
@@ -163,6 +168,11 @@ public class LauncherAppState {
     public WidgetPreviewLoader getWidgetCache() {
         return mWidgetCache;
     }
+
+    public void reloadIconCache() {
+        mModel.forceReloadOnNextLaunch();
+    }
+
 
     public InvariantDeviceProfile getInvariantDeviceProfile() {
         return mInvariantDeviceProfile;

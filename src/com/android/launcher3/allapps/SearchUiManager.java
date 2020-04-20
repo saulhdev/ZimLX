@@ -52,4 +52,6 @@ public interface SearchUiManager {
      */
     void setContentVisibility(int visibleElements, PropertySetter setter,
             Interpolator interpolator);
+
+    void startSearch();
 }

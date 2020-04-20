@@ -24,16 +24,21 @@ import androidx.preference.PreferenceCategory;
 import androidx.preference.PreferenceViewHolder;
 
 import com.android.launcher3.Utilities;
-
-import java.util.jar.Attributes;
-
 public class ZimPreferenceCategory extends PreferenceCategory {
     private Context mContext;
-    public ZimPreferenceCategory(Context context, AttributeSet attrs) {
-        super(context);
-        mContext = context;
+
+    public ZimPreferenceCategory(Context context) {
+        this(context, null, 0);
     }
 
+    public ZimPreferenceCategory(Context context, AttributeSet attrs) {
+        this(context, attrs, 0);
+    }
+
+    public ZimPreferenceCategory(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        mContext = context;
+    }
     @Override
     public void onBindViewHolder(PreferenceViewHolder holder){
         super.onBindViewHolder(holder);
