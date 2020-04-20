@@ -25,6 +25,7 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.RippleDrawable
 import android.os.Handler
 import android.os.Looper
 import android.service.notification.StatusBarNotification
@@ -33,10 +34,15 @@ import android.util.Property
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.CheckedTextView
+import android.widget.RadioButton
+import android.widget.Switch
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.ColorUtils
+import androidx.core.graphics.drawable.DrawableCompat
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
@@ -46,6 +52,7 @@ import com.android.launcher3.MainThreadExecutor
 import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.Themes
 import org.json.JSONArray
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
@@ -447,4 +454,39 @@ inline fun ViewGroup.forEachChildReversedIndexed(action: (View, Int) -> Unit) {
 
 inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
     forEachChildReversedIndexed { view, _ -> action(view) }
+}
+
+fun Switch.applyColor(color: Int) {
+    val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
+    val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
+    val switchThumbNormal = context.resources.getColor(androidx.preference.R.color.switch_thumb_normal_material_light)
+    val switchThumbDisabled = context.resources.getColor(androidx.preference.R.color.switch_thumb_disabled_material_light)
+    val thstateList = ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_checked),
+            intArrayOf()),
+            intArrayOf(
+                    switchThumbDisabled,
+                    color,
+                    switchThumbNormal))
+    val trstateList = ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf(android.R.attr.state_checked),
+            intArrayOf()),
+            intArrayOf(
+                    ColorUtils.setAlphaComponent(colorForeground, alphaDisabled),
+                    color,
+                    colorForeground))
+    DrawableCompat.setTintList(thumbDrawable, thstateList)
+    DrawableCompat.setTintList(trackDrawable, trstateList)
+}
+
+fun Button.applyColor(color: Int) {
+    val rippleColor = ColorStateList.valueOf(ColorUtils.setAlphaComponent(color, 31))
+    (background as RippleDrawable).setColor(rippleColor)
+    DrawableCompat.setTint(background, color)
+    val tintList = ColorStateList.valueOf(color)
+    if (this is RadioButton) {
+        buttonTintList = tintList
+    }
 }

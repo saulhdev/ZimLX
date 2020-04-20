@@ -31,7 +31,9 @@ import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.icons.IconNormalizer;
 
-public class DeviceProfile {
+import org.zimmob.zimlx.ZimPreferences;
+
+public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener {
 
     public final InvariantDeviceProfile inv;
 
@@ -66,7 +68,7 @@ public class DeviceProfile {
 
     // Workspace
     public final int desiredWorkspaceLeftRightMarginPx;
-    public final int cellLayoutPaddingLeftRightPx;
+    public int cellLayoutPaddingLeftRightPx;
     public final int cellLayoutBottomPaddingPx;
     public final int edgeMarginPx;
     public float workspaceSpringLoadShrinkFactor;
@@ -130,11 +132,11 @@ public class DeviceProfile {
 
     // Notification dots
     public DotRenderer mDotRenderer;
-
+    public Context mContext;
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
-            Point minSize, Point maxSize,
-            int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
-
+                         Point minSize, Point maxSize,
+                         int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
+        mContext = context;
         this.inv = inv;
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
@@ -208,7 +210,7 @@ public class DeviceProfile {
         hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
-                        + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
@@ -232,6 +234,20 @@ public class DeviceProfile {
         // This is done last, after iconSizePx is calculated above.
         mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
+        Utilities.getZimPrefs(context)
+                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets",
+                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
+    }
+
+    @Override
+    public void onValueChanged(String key, ZimPreferences prefs, boolean force) {
+        Resources res = mContext.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
+
+        boolean fullWidthWidgets = Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets();
+
+        cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
     }
 
     public DeviceProfile copy(Context context) {
@@ -469,10 +485,12 @@ public class DeviceProfile {
                 padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
+                int horizontalPadding = Utilities.getZimPrefs(mContext)
+                        .getAllowFullWidthWidgets() ? 0 : desiredWorkspaceLeftRightMarginPx;
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(desiredWorkspaceLeftRightMarginPx,
+                padding.set(horizontalPadding,
                         edgeMarginPx,
-                        desiredWorkspaceLeftRightMarginPx,
+                        horizontalPadding,
                         paddingBottom);
             }
         }

@@ -4,4 +4,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_fullWidthWidgets"
+        android:persistent="true"
+        android:summary="@string/full_width_widgets_pref_summary"
+        android:title="@string/full_width_width_widgets_pref_title"
+        app:iconSpaceReserved="false" />
 </androidx.preference.PreferenceScreen>

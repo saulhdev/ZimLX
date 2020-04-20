@@ -92,6 +92,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
     }
 
+    val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
+
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
 
