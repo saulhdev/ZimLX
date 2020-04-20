@@ -67,7 +67,8 @@
     <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
     <string name="full_width_width_widgets_pref_title">Full width widgets</string>
-
+    <string name="grid_size_height">Height</string>
+    <string name="grid_size_width">Width</string>
     <!-- Minibar -->
     <string name="minibar">Minibar</string>
     <string name="minibar_0">Change the minibar layout.</string>
@@ -81,6 +82,22 @@
     <string name="pref_title__minibar">@string/minibar</string>
     <string name="title__minibar_background_color">Minibar Color</string>
 
+    <!-- TABS -->
+    <string name="tab_bottom_sheet_save">Save</string>
+    <string name="tab_hide_from_main">Hide from main tab</string>
+    <string name="tab_color">Tab color</string>
+    <string name="tab_manage_apps">Manage apps</string>
+    <string name="delete">Delete</string>
+    <string name="none">None</string>
+    <string name="undo">Undo</string>
+    <string name="name">Name</string>
+    <string name="apps_label">Apps</string>
+    <string name="custom">Custom</string>
+    <string name="default_tab_name">New tab</string>
+    <string name="show_in_tabs">Tabs</string>
+    <string name="tabs_manage">Manage</string>
+    <string name="dismiss_drop_target_label">"Don\’t show"</string>
+
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
     <string name="icon_badging_title">Enable Notifications</string>
@@ -88,26 +105,6 @@
     <string name="pref_category__gestures">Gestures</string>
     <string name="pref_title__notification_background_color">Notification Background Color</string>
     <string name="pref_title__notification_count">Show Notification Count</string>
-
-    <!-- DEVELOPER -->
-    <string name="restart_zim_pref_title">Restart Launcher</string>
-    <string name="developer_options_title">Developer options</string>
-    <string name="developer_options_enabled">Developer options enabled</string>
-
-    <string name="icon_badging_desc_on">On</string>
-    <string name="icon_badging_desc_off">Off</string>
-    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
-    <string name="blur_wallpaper_failed">Something went wrong</string>
-    <string name="blur_oom">Something went wrong</string>
-    <string name="advanced_settings">More %s settings</string>
-
-    <string name="bridge_missing_title">Lawnfeed</string>
-    <string name="bridge_missing_message">Install or update Lawnfeed</string>
-
-    <string name="onbording">Onboarding</string>
-    <string name="onbording_settings_title">Set-up %s</string>
-    <string name="onbording_settings_summary">Long press your home screen</string>
-    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
 
     <!-- PREFERENCES APP DRAWER  -->
     <string name="cat__app_icons">Icons</string>
@@ -267,7 +264,6 @@
     <string name="dock_style_pref_title">Dock style</string>
 
     <string name="opacity">Opacity</string>
-
     <string name="dock_style_default">Default</string>
     <string name="dock_style_p">Rounded</string>
     <string name="dock_style_o">Gradient</string>
@@ -282,6 +278,7 @@
 
     <string name="radius">Corner rounding</string>
     <string name="gradient">Gradient</string>
+
     <!-- PREFERENCES GESTURES -->
     <string name="gestures_none">None</string>
     <string name="gestures_open_drawer">Open App drawer</string>
@@ -416,9 +413,6 @@
 
     <string name="weather_icons_default">Default</string>
     <string name="button_organize_screens">Organize screens</string>
-    <string name="tab_bottom_sheet_save">Save</string>
-    <string name="tab_hide_from_main">Hide from main tab</string>
-    <string name="tab_color">Tab color</string>
     <string name="selected_count">%1$d selected</string>
     <string name="google_app">Google app</string>
 
@@ -486,6 +480,27 @@
     <string name="import_icon">Import icon</string>
     <string name="import_as_adaptive">As adaptive icon</string>
     <string name="search">Search</string>
+
+    <!-- DEVELOPER -->
+    <string name="restart_zim_pref_title">Restart Launcher</string>
+    <string name="developer_options_title">Developer options</string>
+    <string name="developer_options_enabled">Developer options enabled</string>
+
+    <string name="icon_badging_desc_on">On</string>
+    <string name="icon_badging_desc_off">Off</string>
+    <string name="allow_rotation_blocked_desc">Current Display setting doesn\'t permit rotation</string>
+    <string name="blur_wallpaper_failed">Something went wrong</string>
+    <string name="blur_oom">Something went wrong</string>
+    <string name="advanced_settings">More %s settings</string>
+
+    <string name="bridge_missing_title">Lawnfeed</string>
+    <string name="bridge_missing_message">Install or update Lawnfeed</string>
+
+    <string name="onbording">Onboarding</string>
+    <string name="onbording_settings_title">Set-up %s</string>
+    <string name="onbording_settings_summary">Long press your home screen</string>
+    <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+
 
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>

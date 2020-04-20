@@ -31,6 +31,7 @@ import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
+import org.zimmob.zimlx.settings.GridSize2D
 import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.util.Config
@@ -93,6 +94,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
     }
 
+    private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
+    val gridSize by gridSizeDelegate
+
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
 
     /* --DOCK-- */
@@ -118,7 +122,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.enableColorizedLegacyTreatment(), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment(), reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", zimConfig.enableLegacyTreatment(), reloadIcons)
-
     var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     /* --SMARTSPACE-- */
@@ -331,6 +334,25 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     inline fun withChangeCallback(
             crossinline callback: (ZimPreferencesChangeCallback) -> Unit): () -> Unit {
         return { onChangeCallback?.let { callback(it) } }
+    }
+
+    inner class ResettableLazy<out T : Any>(private val create: () -> T) {
+
+        private var initialized = false
+        private var currentValue: T? = null
+
+        operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+            if (!initialized) {
+                currentValue = create()
+                initialized = true
+            }
+            return currentValue!!
+        }
+
+        fun resetValue() {
+            initialized = false
+            currentValue = null
+        }
     }
 
     override fun onSharedPreferenceChanged(sharedPreferences: SharedPreferences?, key: String?) {

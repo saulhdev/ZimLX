@@ -412,6 +412,14 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         });
     }
 
+    protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
+        if (isDark) {
+            setTheme(R.style.LauncherTheme_Dark);
+        } else if (supportsDarkText) {
+            setTheme(R.style.LauncherTheme_DarkText);
+        }
+    }
+
     @Override
     public void onEnterAnimationComplete() {
         super.onEnterAnimationComplete();

@@ -68,11 +68,16 @@ import com.android.launcher3.settings.PreferenceHighlighter;
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
+import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
+import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.preferences.ButtonPreference;
+import org.zimmob.zimlx.preferences.GridSizePreference;
+import org.zimmob.zimlx.preferences.IconShapePreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.SettingsObserver;
@@ -597,15 +602,14 @@ public class SettingsActivity extends SettingsBaseActivity
             } else if (preference instanceof SingleDimensionGridSizePreference) {
                 f = SingleDimensionGridSizeDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-            } else*/
+            } else */
             if (preference instanceof GesturePreference) {
                 f = SelectGestureHandlerFragment.Companion
                         .newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {
                 f = SelectSearchProviderFragment.Companion
                         .newInstance((SearchProviderPreference) preference);
-            }
-                /*else if (preference instanceof PreferenceDialogPreference) {
+            } else if (preference instanceof PreferenceDialogPreference) {
                 f = PreferenceScreenDialogFragment.Companion
                         .newInstance((PreferenceDialogPreference) preference);
             } else if (preference instanceof IconShapePreference) {
@@ -619,17 +623,16 @@ public class SettingsActivity extends SettingsBaseActivity
             } else if (preference instanceof AbstractMultiSelectListPreference) {
                 f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-            } else if (preference instanceof SmartspaceEventProvidersPreference) {
-                f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
-            }
-                */
+            } //else if (preference instanceof SmartspaceEventProvidersPreference) {
+            //  f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
+            //}
             else {
                 super.onDisplayPreferenceDialog(preference);
                 return;
             }
             f.setTargetFragment(this, 0);
-            //f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
-            f.show(getFragmentManager(), preference.getKey());
+            f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
+            //f.show(getFragmentManager(), preference.getKey());
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {

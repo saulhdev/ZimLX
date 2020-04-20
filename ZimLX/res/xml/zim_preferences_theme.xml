@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__notifications">
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_cat__theme_icons"></org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_cat__theme_style">
+        <org.zimmob.zimlx.theme.ui.ThemePreference
+            android:key="pref_launcherTheme"
+            android:title="@string/pref_title__theme"
+            app:content="@xml/zim_preferences_theme_dialog"
+            app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+
 </androidx.preference.PreferenceScreen>

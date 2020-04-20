@@ -48,6 +48,7 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.xmlpull.v1.XmlPullParser
+import java.lang.reflect.Field
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -85,6 +86,14 @@ fun Context.getColorAttr(attr: Int): Int {
     ta.recycle()
     return colorAccent
 }
+
+fun Context.getThemeAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val theme = ta.getResourceId(0, 0)
+    ta.recycle()
+    return theme
+}
+
 
 val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
@@ -328,6 +337,20 @@ fun String.asNonEmpty(): String? {
 fun ComponentKey.getLauncherActivityInfo(context: Context): LauncherActivityInfo? {
     return LauncherAppsCompat.getInstance(context).getActivityList(componentName.packageName, user)
             .firstOrNull { it.componentName == componentName }
+}
+
+@Suppress("UNCHECKED_CAST")
+class JavaField<T>(private val targetObject: Any, fieldName: String, targetClass: Class<*> = targetObject::class.java) {
+
+    private val field: Field = targetClass.getDeclaredField(fieldName).apply { isAccessible = true }
+
+    operator fun getValue(thisRef: Any?, property: KProperty<*>): T {
+        return field.get(targetObject) as T
+    }
+
+    operator fun setValue(thisRef: Any?, property: KProperty<*>, value: T) {
+        field.set(targetObject, value)
+    }
 }
 
 private val MAX_UNICODE = '\uFFFF'

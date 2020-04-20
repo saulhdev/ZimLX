@@ -31,7 +31,20 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name="org.zimmob.zimlx.BlankActivity"
+            android:theme="@style/Theme.Transparent" />
+        <activity
+            android:name="org.zimmob.zimlx.FakeLauncher"
+            android:enabled="false">
 
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
 
         <service
             android:name="com.android.launcher3.uioverrides.WallpaperManagerCompat$ColorExtractionService"
