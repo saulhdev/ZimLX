@@ -25,6 +25,8 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 
+import androidx.core.app.ActivityCompat;
+
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
@@ -36,10 +38,12 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 
 import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.iconpack.EditIconActivity;
 import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.override.CustomInfoProvider;
+import org.zimmob.zimlx.sensors.BrightnessManager;
 import org.zimmob.zimlx.views.OptionsPanel;
 
 import java.util.Objects;
@@ -47,7 +51,7 @@ import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class ZimLauncher extends Launcher {
+public class ZimLauncher extends Launcher implements ZimPreferences.OnPreferenceChangeListener {
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public static final int CODE_EDIT_ICON = 100;
@@ -81,6 +85,107 @@ public class ZimLauncher extends Launcher {
         mZimPrefs.registerCallback(prefCallback);
         dummyView = findViewById(R.id.dummy_view);
     }
+
+    @Override
+    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
+        return super.startActivitySafely(v, intent, item);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        restartIfPending();
+        BrightnessManager.Companion.getInstance(this).startListening();
+        paused = false;
+    }
+
+    public void onPause() {
+        super.onPause();
+        BrightnessManager.Companion.getInstance(this).stopListening();
+        paused = true;
+    }
+
+    public void restartIfPending() {
+        if (sRestart) {
+            ZimAppKt.getZimApp(mContext).restart(false);
+        }
+    }
+
+    @Override
+    public void onRestart() {
+        super.onRestart();
+        Utilities.onLauncherStart();
+    }
+
+    public void onDestroy() {
+        super.onDestroy();
+        Utilities.getZimPrefs(this).unregisterCallback();
+
+        if (sRestart) {
+            sRestart = false;
+            ZimPreferences.Companion.destroyInstance();
+        }
+    }
+
+
+    public OptionsPanel getOptionsView() {
+        return optionView = findViewById(R.id.options_view);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == REQUEST_PERMISSION_STORAGE_ACCESS) {
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.READ_EXTERNAL_STORAGE)) {
+                new androidx.appcompat.app.AlertDialog.Builder(this)
+                        .setTitle(R.string.title_storage_permission_required)
+                        .setMessage(R.string.content_storage_permission_required)
+                        .setCancelable(false)
+                        .setNegativeButton(android.R.string.no, null)
+                        .setPositiveButton(android.R.string.yes, (dialog, which) -> Utilities.requestStoragePermission(this))
+                        .show();
+            }
+        }
+        if (requestCode == REQUEST_PERMISSION_LOCATION_ACCESS) {
+            ZimAppKt.getZimApp(this).getSmartspace().updateWeatherData();
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    public void onRotationChanged() {
+        BlurWallpaperProvider.Companion.getInstance(this).updateAsync();
+    }
+
+    public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
+        int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
+        int halfSize = size / 2;
+        prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
+    }
+
+    public void prepareDummyView(int left, int top, int right, int bottom, @NotNull Function0<Unit> callback) {
+        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) dummyView.getLayoutParams();
+        lp.leftMargin = left;
+        lp.topMargin = top;
+        lp.height = bottom - top;
+        lp.width = right - left;
+        dummyView.setLayoutParams(lp);
+        dummyView.requestLayout();
+        dummyView.post(callback::invoke);
+    }
+
+    public GestureController getGestureController() {
+        return gestureController;
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+    }
+
     public boolean shouldRecreate() {
         return !sRestart;
     }
@@ -89,7 +194,7 @@ public class ZimLauncher extends Launcher {
         if (paused) {
             sRestart = true;
         } else {
-            Utilities.restartLauncher(this);
+            Utilities.restartLauncher(mContext);
         }
     }
 
@@ -140,40 +245,5 @@ public class ZimLauncher extends Launcher {
     @Override
     public int getCurrentState() {
         return 0;
-    }
-
-    @Override
-    public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        return super.startActivitySafely(v, intent, item);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-    }
-
-    public OptionsPanel getOptionsView() {
-        return optionView = findViewById(R.id.options_view);
-    }
-
-    public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
-        int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
-        int halfSize = size / 2;
-        prepareDummyView(left - halfSize, top - halfSize, left + halfSize, top + halfSize, callback);
-    }
-
-    public void prepareDummyView(int left, int top, int right, int bottom, @NotNull Function0<Unit> callback) {
-        ViewGroup.MarginLayoutParams lp = (ViewGroup.MarginLayoutParams) dummyView.getLayoutParams();
-        lp.leftMargin = left;
-        lp.topMargin = top;
-        lp.height = bottom - top;
-        lp.width = right - left;
-        dummyView.setLayoutParams(lp);
-        dummyView.requestLayout();
-        dummyView.post(callback::invoke);
-    }
-
-    public GestureController getGestureController() {
-        return gestureController;
     }
 }

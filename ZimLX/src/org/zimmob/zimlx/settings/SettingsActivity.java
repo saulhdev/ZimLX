@@ -16,7 +16,6 @@
 package org.zimmob.zimlx.settings;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -30,7 +29,6 @@ import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -42,7 +40,6 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.XmlRes;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.DialogFragment;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
@@ -64,10 +61,11 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.settings.PreferenceHighlighter;
+import com.jaredrummler.android.colorpicker.ColorPickerDialog;
+import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
-import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
 import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
@@ -76,7 +74,7 @@ import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.preferences.ButtonPreference;
-import org.zimmob.zimlx.preferences.GridSizePreference;
+import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.IconShapePreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
@@ -86,8 +84,8 @@ import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
 
-import static androidx.fragment.app.FragmentManager.*;
-import static androidx.preference.PreferenceFragment.*;
+import static androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
+import static androidx.preference.PreferenceFragment.OnPreferenceDisplayDialogCallback;
 
 public class SettingsActivity extends SettingsBaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
@@ -539,13 +537,13 @@ public class SettingsActivity extends SettingsBaseActivity
         protected int getRecyclerViewLayoutRes() {
             return R.layout.preference_dialog_recyclerview;
         }
-
     }
 
     public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener{
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
         public static final String HAS_PREVIEW = "has_preview";
+
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
         private Context mContext;
@@ -560,7 +558,8 @@ public class SettingsActivity extends SettingsBaseActivity
             ContentResolver resolver = mContext.getContentResolver();
 
             switch (preference) {
-                case R.xml.zim_preferences_desktop:
+                case R.xml.zim_preferences_dev_options:
+                    findPreference("kill").setOnPreferenceClickListener(this);
                     break;
             }
         }
@@ -632,7 +631,6 @@ public class SettingsActivity extends SettingsBaseActivity
             }
             f.setTargetFragment(this, 0);
             f.show(getFragmentManager(), "android.support.v7.preference.PreferenceFragment.DIALOG");
-            //f.show(getFragmentManager(), preference.getKey());
         }
 
         public static SubSettingsFragment newInstance(SubPreference preference) {
@@ -669,7 +667,36 @@ public class SettingsActivity extends SettingsBaseActivity
 
         @Override
         public boolean onPreferenceClick(Preference preference) {
+            switch (preference.getKey()) {
+                case "kill":
+                    Utilities.killLauncher();
+                    break;
+            }
+            return false;
+        }
 
+        @Override
+        public boolean onPreferenceTreeClick(Preference preference) {
+            if (preference.getKey() != null) {
+                switch (preference.getKey()) {
+                    default:
+                        if (preference instanceof ColorPreferenceCompat) {
+                            ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
+                            dialog.setColorPickerDialogListener(new ColorPickerDialogListener() {
+                                public void onColorSelected(int dialogId, int color) {
+                                    ((ColorPreferenceCompat) preference).saveValue(color);
+                                }
+
+                                public void onDialogDismissed(int dialogId) {
+                                }
+                            });
+                            dialog.show((getActivity()).getSupportFragmentManager(), "color-picker-dialog");
+                        } else if (preference.getFragment() != null) {
+                            Log.d("Settings", "Opening Fragment: " + preference.getFragment());
+                            SettingsActivity.startFragment(getContext(), preference.getFragment(), null, preference.getTitle());
+                        }
+                }
+            }
             return false;
         }
 

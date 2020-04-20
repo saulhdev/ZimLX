@@ -13,7 +13,6 @@
  *
  *
  */
-
 package org.zimmob.zimlx
 
 import android.annotation.SuppressLint
@@ -47,7 +46,6 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 import kotlin.math.roundToInt
 import kotlin.reflect.KProperty
-
 
 class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenceChangeListener {
     private val TAG = "ZimPreferences"

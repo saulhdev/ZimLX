@@ -47,7 +47,7 @@
 
     <!-- Zim Launcher Custom Colors -->
     <color name="colorPrimary">#0788EF</color>
-    <color name="colorPrimaryDark">#ffe0e0e0</color>
+    <color name="colorPrimaryDark">#03419F</color>
     <color name="colorAccent">#E80142</color>
     <color name="colorAccentDark">#ff8AB4f8</color>
     <color name="white">#FFFFFF</color>

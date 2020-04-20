@@ -516,4 +516,7 @@
     <string name="icon_shape_cylinder">Cylinder</string>
 
     <string name="change_default_home">Set as home screen</string>
+    <string name="title_storage_permission_required">Storage Access Needed</string>
+    <string name="content_storage_permission_required">To set a wallpaper, grant the Storage permission.</string>
+
 </resources>

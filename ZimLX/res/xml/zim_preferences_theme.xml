@@ -9,6 +9,29 @@
             android:title="@string/pref_title__theme"
             app:content="@xml/zim_preferences_theme_dialog"
             app:iconSpaceReserved="false" />
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimary"
+            android:key="pref_key__primary_color"
+            android:title="@string/title__theme_primary_color"
+            app:cpv_dialogTitle="@string/title__theme_primary_color"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorAccent"
+            android:key="pref_key__accent_color"
+            android:title="@string/title__theme_accent_color"
+            app:cpv_dialogTitle="@string/title__theme_accent_color"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimaryDark"
+            android:key="pref_key__minibar_color"
+            android:title="@string/title__minibar_background_color"
+            app:cpv_dialogTitle="@string/title__minibar_background_color"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
