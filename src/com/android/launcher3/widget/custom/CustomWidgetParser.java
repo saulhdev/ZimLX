@@ -124,7 +124,7 @@ public class CustomWidgetParser {
 
     private static CustomAppWidgetProviderInfo newInfo(TypedArray a, Parcel parcel, Context context) {
         int providerId = a.getInt(R.styleable.CustomAppWidgetProviderInfo_providerId, 0);
-        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false, providerId);
+        CustomAppWidgetProviderInfo info = new CustomAppWidgetProviderInfo(parcel, false, providerId, false);
         info.provider = new ComponentName(context.getPackageName(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
         info.label = a.getString(R.styleable.CustomAppWidgetProviderInfo_android_label);

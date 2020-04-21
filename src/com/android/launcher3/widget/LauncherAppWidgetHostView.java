@@ -46,6 +46,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BaseDragLayer.TouchCompleteListener;
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
 
 /**
  * {@inheritDoc}
@@ -111,6 +112,18 @@ public class LauncherAppWidgetHostView extends NavigableAppWidgetHostView
         }
         view.performLongClick();
         return true;
+    }
+
+    @Override
+    public void setAppWidget(int appWidgetId, AppWidgetProviderInfo info) {
+        super.setAppWidget(appWidgetId, info);
+        if (info != null && Utilities.getZimPrefs(getContext()).getAllowFullWidthWidgets()) {
+            setPadding(0, 0, 0, 0);
+        } else if (info instanceof CustomAppWidgetProviderInfo) {
+            if (((CustomAppWidgetProviderInfo) info).noPadding) {
+                setPadding(0, 0, 0, 0);
+            }
+        }
     }
 
     @Override

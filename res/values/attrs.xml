@@ -155,6 +155,7 @@
     <declare-styleable name="CustomAppWidgetProviderInfo">
         <attr name="providerId" format="integer" />
 
+        <attr name="noPadding" format="boolean" />
         <attr name="android:label" />
         <attr name="android:initialLayout" />
         <attr name="android:icon" />

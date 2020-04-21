@@ -33,28 +33,23 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         implements Parcelable {
 
     public final int providerId;
+    public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR
+            = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
 
-    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf, int providerId) {
-        super(parcel);
-        if (readSelf) {
-            this.providerId = parcel.readInt();
-
-            provider = new ComponentName(parcel.readString(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
-
-            label = parcel.readString();
-            initialLayout = parcel.readInt();
-            icon = parcel.readInt();
-            previewImage = parcel.readInt();
-
-            resizeMode = parcel.readInt();
-            spanX = parcel.readInt();
-            spanY = parcel.readInt();
-            minSpanX = parcel.readInt();
-            minSpanY = parcel.readInt();
-        } else {
-            this.providerId = providerId;
+        @Override
+        public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
+            return new CustomAppWidgetProviderInfo(parcel, true, 0, false);
         }
-    }
+
+        @Override
+        public CustomAppWidgetProviderInfo[] newArray(int size) {
+            return new CustomAppWidgetProviderInfo[size];
+        }
+    };
+    public final boolean noPadding;
+    public int customizeTitle;
+    public int customizeScreen;
+    public boolean customizeHasPreview;
 
     @Override
     public void initSpans(Context context) { }
@@ -87,17 +82,31 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         out.writeInt(minSpanY);
     }
 
-    public static final Parcelable.Creator<CustomAppWidgetProviderInfo> CREATOR
-            = new Parcelable.Creator<CustomAppWidgetProviderInfo>() {
+    protected CustomAppWidgetProviderInfo(Parcel parcel, boolean readSelf,
+                                          int providerId, boolean noPadding) {
+        super(parcel);
+        if (readSelf) {
+            this.providerId = parcel.readInt();
+            this.noPadding = parcel.readByte() != 0;
+            this.customizeTitle = parcel.readInt();
+            this.customizeScreen = parcel.readInt();
+            this.customizeHasPreview = parcel.readByte() != 0;
 
-        @Override
-        public CustomAppWidgetProviderInfo createFromParcel(Parcel parcel) {
-            return new CustomAppWidgetProviderInfo(parcel, true, 0);
-        }
+            provider = new ComponentName(parcel.readString(), CLS_CUSTOM_WIDGET_PREFIX + providerId);
 
-        @Override
-        public CustomAppWidgetProviderInfo[] newArray(int size) {
-            return new CustomAppWidgetProviderInfo[size];
+            label = parcel.readString();
+            initialLayout = parcel.readInt();
+            icon = parcel.readInt();
+            previewImage = parcel.readInt();
+
+            resizeMode = parcel.readInt();
+            spanX = parcel.readInt();
+            spanY = parcel.readInt();
+            minSpanX = parcel.readInt();
+            minSpanY = parcel.readInt();
+        } else {
+            this.providerId = providerId;
+            this.noPadding = noPadding;
         }
-    };
+    }
 }

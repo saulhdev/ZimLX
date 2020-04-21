@@ -17,8 +17,8 @@
 
 <androidx.preference.internal.PreferenceImageView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/icon"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
+    android:layout_width="48dp"
+    android:layout_height="48dp"
     android:maxWidth="48dp"
     android:scaleType="fitCenter"
     android:maxHeight="48dp" />

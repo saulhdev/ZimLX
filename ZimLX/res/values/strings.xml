@@ -518,5 +518,6 @@
     <string name="change_default_home">Set as home screen</string>
     <string name="title_storage_permission_required">Storage Access Needed</string>
     <string name="content_storage_permission_required">To set a wallpaper, grant the Storage permission.</string>
+    <string name="search_breadcrumb_connector" translatable="false"><xliff:g name="first_item">%1$s</xliff:g> > <xliff:g name="second_item">%2$s</xliff:g></string>
 
 </resources>

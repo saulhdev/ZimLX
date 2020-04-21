@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_cat__theme_icons"></org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_cat__theme_icons">
+        <org.zimmob.zimlx.preferences.IconPackPreference
+            android:defaultValue="@string/config_default_icon_pack"
+            android:key="pref_icon_packs"
+            android:persistent="true"
+            android:title="@string/title__theme_icon_pack"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_cat__theme_style">
         <org.zimmob.zimlx.theme.ui.ThemePreference
