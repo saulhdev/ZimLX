@@ -4,4 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
+    <ListPreference
+        android:defaultValue="0"
+        android:disableDependentsState="false"
+        android:entries="@array/entries__sort_mode"
+        android:entryValues="@array/values__zero_to_four"
+        android:key="pref_key__sort_mode"
+        android:persistent="true"
+        android:summary="%s"
+        android:title="@string/title__sort_mode"
+        app:iconSpaceReserved="false" />/>
+
 </androidx.preference.PreferenceScreen>

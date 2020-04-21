@@ -60,6 +60,8 @@ import com.android.launcher3.views.FloatingIconView;
 import com.android.launcher3.widget.PendingAppWidgetHostView;
 import com.android.launcher3.widget.WidgetAddFlowHandler;
 
+import org.zimmob.zimlx.util.Config;
+
 /**
  * Class for handling clicks on workspace and all-apps items
  */
@@ -94,6 +96,9 @@ public class ItemClickHandler {
         } else if (tag instanceof AppInfo) {
             startAppShortcutOrInfoActivity(v, (AppInfo) tag, launcher,
                     sourceContainer == null ? CONTAINER_ALL_APPS: sourceContainer);
+            if (Utilities.getZimPrefs(Launcher.mContext).getSortMode() == Config.SORT_MOST_USED) {
+                Utilities.getZimPrefs(Launcher.mContext).updateSortApps();
+            }
         } else if (tag instanceof LauncherAppWidgetInfo) {
             if (v instanceof PendingAppWidgetHostView) {
                 onClickPendingWidget((PendingAppWidgetHostView) v, launcher);

@@ -99,6 +99,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
 
+    /* --APP DRAWER-- */
+    val sortMode by IntPref("pref_key__sort_mode", Config.SORT_AZ, reloadApps);
+
+
+    var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
+    var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
+
+
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
@@ -144,6 +152,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
+
+    //Notification
+    val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
+    val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
+    val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true, recreate)
 
     /* --DEV-- */
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
