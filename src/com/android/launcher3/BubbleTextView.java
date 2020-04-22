@@ -56,6 +56,8 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.IconLabelDotView;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.text.NumberFormat;
 
 /**
@@ -278,8 +280,12 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private void applyIconAndLabel(ItemInfoWithIcon info) {
         FastBitmapDrawable iconDrawable = DrawableFactory.INSTANCE.get(getContext())
                 .newIcon(getContext(), info);
-        mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
-
+        ZimPreferences prefs = Utilities.getZimPrefs(getContext());
+        if (prefs.getNotificationCount()) {
+            mDotParams.color = prefs.getNotificationBackground();
+        } else {
+            mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
+        }
         setIcon(iconDrawable);
         setText(info.title);
         if (info.contentDescription != null) {
@@ -408,6 +414,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             final int scrollX = getScrollX();
             final int scrollY = getScrollY();
             canvas.translate(scrollX, scrollY);
+            if (mDotInfo != null) {
+                ZimPreferences prefs = Utilities.getZimPrefs(getContext());
+                mDotParams.count = mDotInfo.getNotificationCount();
+                mDotParams.notificationKeys = mDotInfo.getNotificationKeys().size();
+                mDotParams.showCount = prefs.getNotificationCount();
+                if (prefs.getNotificationCount()) {
+                    mDotParams.color = prefs.getNotificationBackground();
+                }
+            }
             mDotRenderer.draw(canvas, mDotParams);
             canvas.translate(-scrollX, -scrollY);
         }
