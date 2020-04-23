@@ -20,6 +20,7 @@ package org.zimmob.zimlx.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
@@ -69,7 +70,7 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         return getUriEntry(entry)?.drawable ?: super.getIcon(entry, iconDpi)
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         throw NotImplementedError()
     }
 
@@ -123,7 +124,7 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         }
 
         override fun toCustomEntry(): IconPackManager.CustomIconEntry {
-            return IconPackManager.CustomIconEntry("lawnchairUriPack", "$uri|$adaptive")
+            return IconPackManager.CustomIconEntry("zimUriPack", "$uri|$adaptive")
         }
 
         companion object {

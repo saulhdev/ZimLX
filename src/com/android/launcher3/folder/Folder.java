@@ -1512,4 +1512,12 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             super.draw(canvas);
         }
     }
+
+    public static String getDefaultFolderName() {
+        return sDefaultFolderName;
+    }
+
+    public boolean isInAppDrawer() {
+        return mInfo.container == ItemInfo.NO_ID;
+    }
 }

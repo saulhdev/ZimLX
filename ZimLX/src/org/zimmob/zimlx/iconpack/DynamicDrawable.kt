@@ -30,6 +30,7 @@ import com.android.launcher3.FastBitmapDrawable
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
+import org.zimmob.zimlx.clock.CustomClock
 import org.zimmob.zimlx.util.get
 import java.io.IOException
 
@@ -40,8 +41,8 @@ class DynamicDrawable {
         fun getIcon(context: Context, drawable: Drawable, metadata: Metadata, iconDpi: Int): Drawable {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                //Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
-                //        metadata.clockMetadata!!.metadata, iconDpi)
+                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
+                        metadata.clockMetadata!!.metadata, iconDpi)
                 else -> drawable
             }
         }
@@ -49,7 +50,7 @@ class DynamicDrawable {
         fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata, drawableFactory: ZimDrawableFactory, iconDpi: Int): FastBitmapDrawable? {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                // Type.CLOCK -> drawableFactory.customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
+                Type.CLOCK -> drawableFactory.customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
                 else -> null
             }
         }
@@ -87,7 +88,7 @@ class DynamicDrawable {
     class Metadata(val xml: String, val packageName: String) {
         internal var type: Type? = null
         internal var items: List<DynamicDrawable.Item>? = null
-        //internal var clockMetadata: ClockMetadata? = null
+        internal var clockMetadata: ClockMetadata? = null
         internal var loaded: Boolean = false
 
         internal fun load(context: Context, iconDpi: Int) {
@@ -114,13 +115,13 @@ class DynamicDrawable {
                 }
                 when (type) {
                     Type.CLOCK -> {
-                        //loadClock(context, iconDpi)
+                        loadClock(context, iconDpi)
                     }
                 }
                 loaded = true
             }
         }
-        /*
+
         private fun loadClock(context: Context, iconDpi: Int) {
             Log.d(TAG, "loadClock")
             val drawables: MutableList<Drawable> = ArrayList()
@@ -165,7 +166,7 @@ class DynamicDrawable {
                     )
             )
         }
-        */
+
     }
 
     internal class Item(val type: String, val key: String) {
@@ -212,7 +213,7 @@ class DynamicDrawable {
                                   val shadowLayerRadius: Int?, val shadowLayerColor: String?,
                                   val shadowLayerAlpha: String?, val enabled: Boolean = true)
 
-    //internal class ClockMetadata(val drawable: Drawable, val metadata: CustomClock.Metadata)
+    internal class ClockMetadata(val drawable: Drawable, val metadata: CustomClock.Metadata)
 
     internal enum class Type {
         CALENDAR, CLOCK, WEATHER

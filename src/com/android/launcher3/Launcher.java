@@ -292,6 +292,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private DeviceProfile mStableDeviceProfile;
     private RotationMode mRotationMode = RotationMode.NORMAL;
     public static Context mContext;
+    public static boolean showFolderNotificationCount;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
@@ -341,6 +343,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mPopupDataProvider = new PopupDataProvider(this);
 
         mAppTransitionManager = LauncherAppTransitionManager.newInstance(this);
+
+
+        showFolderNotificationCount = Utilities.getZimPrefs(this).getFolderBadgeCount();
+
 
         boolean internalStateHandled = InternalStateHandler.handleCreate(this, getIntent());
         if (internalStateHandled) {

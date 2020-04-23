@@ -242,7 +242,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     @Override
     public void onValueChanged(String key, ZimPreferences prefs, boolean force) {
         Resources res = mContext.getResources();
-        DisplayMetrics dm = res.getDisplayMetrics();
 
         boolean fullWidthWidgets = Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets();
 

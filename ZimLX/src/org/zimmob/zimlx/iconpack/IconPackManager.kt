@@ -24,6 +24,7 @@ import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
 import android.content.pm.ResolveInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Handler
@@ -119,7 +120,7 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, iconProvider)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         packList.iterator().forEach { pack ->
             pack.getIcon(shortcutInfo, iconDpi)?.let { return it }
         }

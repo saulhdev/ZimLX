@@ -94,7 +94,10 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -678,7 +681,11 @@ public final class Utilities {
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
             boolean flattenDrawable, Object[] outObj) {
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
-        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
+        final IconProvider iconProvider = IconProvider.INSTANCE.get(launcher);
+        IconPackManager.CustomIconEntry customIconEntry = (info instanceof WorkspaceItemInfo) ?
+                ((WorkspaceItemInfo) info).customIconEntry : null;
+
+        if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION || customIconEntry != null) {
             LauncherActivityInfo activityInfo = LauncherAppsCompat.getInstance(launcher)
                     .resolveActivity(info.getIntent(), info.user);
             outObj[0] = activityInfo;
@@ -699,8 +706,12 @@ public final class Utilities {
                 return null;
             } else {
                 outObj[0] = si.get(0);
-                return sm.getShortcutIconDrawable(si.get(0),
-                        appState.getInvariantDeviceProfile().fillResIconDpi);
+                int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
+                if (iconProvider instanceof ZimIconProvider) {
+                    return ((ZimIconProvider) iconProvider).getIcon(si.get(0), iconDpi);
+                }
+
+                return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
@@ -964,6 +975,25 @@ public final class Utilities {
             return Integer.parseInt(identifier.substring(1));
         } catch (NumberFormatException e) {
             return res.getIdentifier(identifier.substring(1), null, packageName);
+        }
+    }
+
+    /**
+     * Compresses the bitmap to a byte array for serialization.
+     */
+    public static byte[] flattenBitmap(Bitmap bitmap) {
+        // Try go guesstimate how much space the icon will take when serialized
+        // to avoid unnecessary allocations/copies during the write.
+        int size = bitmap.getWidth() * bitmap.getHeight() * 4;
+        ByteArrayOutputStream out = new ByteArrayOutputStream(size);
+        try {
+            bitmap.compress(Bitmap.CompressFormat.PNG, 100, out);
+            out.flush();
+            out.close();
+            return out.toByteArray();
+        } catch (IOException e) {
+            Log.w(TAG, "Could not write bitmap");
+            return null;
         }
     }
 

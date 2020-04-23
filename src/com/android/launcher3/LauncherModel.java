@@ -91,8 +91,10 @@ public class LauncherModel extends BroadcastReceiver
     LoaderTask mLoaderTask;
     @Thunk boolean mIsLoaderTaskRunning;
 
-    @Thunk static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     private static final Looper mWorkerLooper;
+
+    @Thunk
+    static final HandlerThread sWorkerThread = new HandlerThread("launcher-loader");
     @Thunk
     static final HandlerThread sIconPackThread = new HandlerThread("launcher-icon-pack");
     @Thunk
@@ -255,6 +257,9 @@ public class LauncherModel extends BroadcastReceiver
         enqueueModelUpdateTask(new PackageUpdatedTask(op, user, packages));
     }
 
+    public void onPackagesReload(UserHandle user) {
+        enqueueModelUpdateTask(new PackageUpdatedTask(PackageUpdatedTask.OP_RELOAD, user));
+    }
     @Override
     public void onPackageAdded(String packageName, UserHandle user) {
         int op = PackageUpdatedTask.OP_ADD;
@@ -628,6 +633,7 @@ public class LauncherModel extends BroadcastReceiver
     public static Looper getWorkerLooper() {
         return mWorkerLooper;
     }
+
 
     /**
      * @return the looper for the ui worker thread which can be used to start background tasksfor ui.

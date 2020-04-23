@@ -64,5 +64,12 @@
             android:title="@string/pref_title__advanced"
             android:layout="@layout/home_preference"
             app:content="@xml/zim_preferences_advanced" />
+
+        <org.zimmob.zimlx.settings.SubPreference
+            android:icon="@drawable/ic_information"
+            android:layout="@layout/home_preference"
+            android:summary="@string/pref_summary__about"
+            android:title="@string/about"
+            app:content="@xml/zim_preferences_about" />
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

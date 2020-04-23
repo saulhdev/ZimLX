@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Zim Launcher
+ * 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@
 
 package org.zimmob.zimlx.settings
 
-import android.R.id
 import android.annotation.SuppressLint
 import android.app.ActivityOptions
 import android.content.Context
@@ -32,13 +31,10 @@ import androidx.appcompat.widget.Toolbar
 import com.android.launcher3.InsettableFrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
-import com.android.launcher3.util.IntArray
 import org.zimmob.zimlx.ZimLayoutInflater
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.theme.ThemeOverride
 import org.zimmob.zimlx.util.getBooleanAttr
-import org.zimmob.zimlx.util.launcherAppState
-
 
 @SuppressLint("Registered")
 open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableActivity {

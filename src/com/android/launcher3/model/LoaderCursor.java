@@ -23,8 +23,10 @@ import android.content.Intent;
 import android.content.Intent.ShortcutIconResource;
 import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageManager;
+import android.content.pm.ShortcutInfo;
 import android.database.Cursor;
 import android.database.CursorWrapper;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.UserHandle;
 import android.provider.BaseColumns;
@@ -51,6 +53,8 @@ import com.android.launcher3.util.GridOccupancy;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.IntSparseArrayMap;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.net.URISyntaxException;
 import java.security.InvalidParameterException;
 
@@ -75,6 +79,7 @@ public class LoaderCursor extends CursorWrapper {
     private final int iconPackageIndex;
     private final int iconResourceIndex;
     private final int iconIndex;
+    private final int customIconIndex;
     public final int titleIndex;
 
     private final int idIndex;
@@ -95,6 +100,8 @@ public class LoaderCursor extends CursorWrapper {
     public int itemType;
     public int restoreFlag;
 
+    private final ZimPreferences prefs;
+
     public LoaderCursor(Cursor c, LauncherAppState app) {
         super(c);
         mContext = app.getContext();
@@ -104,6 +111,7 @@ public class LoaderCursor extends CursorWrapper {
 
         // Init column indices
         iconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON);
+        customIconIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.CUSTOM_ICON);
         iconPackageIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_PACKAGE);
         iconResourceIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.ICON_RESOURCE);
         titleIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.TITLE);
@@ -117,6 +125,7 @@ public class LoaderCursor extends CursorWrapper {
         profileIdIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.PROFILE_ID);
         restoredIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.RESTORED);
         intentIndex = getColumnIndexOrThrow(LauncherSettings.Favorites.INTENT);
+        prefs = Utilities.getZimPrefs(mContext);
     }
 
     @Override
@@ -197,6 +206,21 @@ public class LoaderCursor extends CursorWrapper {
         } catch (Exception e) {
             Log.e(TAG, "Failed to decode byte array for info " + info, e);
             return false;
+        }
+    }
+
+    public Bitmap loadCustomIcon(WorkspaceItemInfo info) {
+        byte[] data = getBlob(customIconIndex);
+        try {
+            if (data != null) {
+                return LauncherIcons.obtain(mContext).createIconBitmap(
+                        BitmapFactory.decodeByteArray(data, 0, data.length)).icon;
+            } else {
+                return null;
+            }
+        } catch (Exception e) {
+            Log.e(TAG, "Failed to load custom icon for info " + info, e);
+            return null;
         }
     }
 
@@ -457,7 +481,7 @@ public class LoaderCursor extends CursorWrapper {
                     + " into cell (" + containerIndex + "-" + item.screenId + ":"
                     + item.cellX + "," + item.cellX + "," + item.spanX + "," + item.spanY
                     + ") already occupied");
-            return false;
+            return prefs.getAllowOverlap();
         }
     }
 }

@@ -235,6 +235,8 @@
     <string name="state_loading">Applying…</string>
     <string name="icon_shape_override_label_location">on Home screen</string>
     <string name="icon_pack">Icon pack</string>
+    <string name="reset_custom_icons">Reset custom icons</string>
+    <string name="reset_custom_icons_confirmation">Revert to default icons from this Icon Pack? This can’t be undone.</string>
 
     <!-- PREFERENCES DOCK  -->
     <string name="title__hotseat_hide_gradient">Hide gradient</string>
@@ -501,6 +503,8 @@
     <string name="onbording_settings_summary">Long press your home screen</string>
     <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
 
+    <!-- PREFERENCES ABOUT-->
+    <string name="about">About</string>
 
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
@@ -519,5 +523,38 @@
     <string name="title_storage_permission_required">Storage Access Needed</string>
     <string name="content_storage_permission_required">To set a wallpaper, grant the Storage permission.</string>
     <string name="search_breadcrumb_connector" translatable="false"><xliff:g name="first_item">%1$s</xliff:g> > <xliff:g name="second_item">%2$s</xliff:g></string>
+
+    <plurals name="tab_apps_count">
+        <item quantity="one">%1$d App</item>
+        <item quantity="other">%1$d Apps</item>
+    </plurals>
+    <plurals name="hidden_apps_count">
+        <item quantity="other">%1$d Hidden</item>
+    </plurals>
+    <string name="hide_apps">Hidden App Shortcuts</string>
+    <string name="pref_appcategorization_flowerpot_title">App Category</string>
+
+    <string name="category_business_and_productivity">Business &amp; Productivity</string>
+    <string name="category_communication">Communication</string>
+    <string name="category_entertainment">Entertainment</string>
+    <string name="category_food_and_drink">Food &amp; Drink</string>
+    <string name="category_game">Games</string>
+    <string name="category_health_and_fitness">Health &amp; Fitness</string>
+    <string name="category_knowledge_and_reference">Knowledge &amp; Reference</string>
+    <string name="category_lifestyle">Shopping &amp; Lifestyle</string>
+    <string name="category_music">Music</string>
+    <string name="category_news">News</string>
+    <string name="category_personalization">Personalization</string>
+    <string name="category_photography">Photography</string>
+    <string name="category_tools">Utility</string>
+    <string name="category_travel_and_navigation">Travel &amp; Navigation</string>
+
+    <string name="select_tab_type">New Tab</string>
+
+    <string name="tab_type_smart">Automatic</string>
+    <string name="pref_appcategorization_flowerpot_summary">Pick shortcuts automatically.</string>
+
+    <string name="tab_type_custom">Custom</string>
+    <string name="tab_type_custom_desc">Pick shortcuts manually.</string>
 
 </resources>

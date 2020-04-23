@@ -20,6 +20,7 @@ import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
@@ -42,6 +43,8 @@ import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LooperExecutor;
+
+import org.zimmob.zimlx.iconpack.IconPackManager;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -203,6 +206,29 @@ public class ModelWriter {
                         .put(Favorites.SPANX, item.spanX)
                         .put(Favorites.SPANY, item.spanY)
                         .put(Favorites.SCREEN, item.screenId)));
+    }
+
+    public static void modifyItemInDatabase(Context context, final ItemInfo item, String alias,
+                                            String swipeUpAction, boolean badgeVisible,
+                                            IconPackManager.CustomIconEntry iconEntry, Bitmap icon,
+                                            boolean updateIcon, boolean reload) {
+        final ContentWriter writer = new ContentWriter(context);
+        writer.put(Favorites.TITLE_ALIAS, alias);
+        writer.put(Favorites.SWIPE_UP_ACTION, swipeUpAction);
+        writer.put(Favorites.BADGE_VISIBLE, badgeVisible ? 1 : 0);
+        if (updateIcon) {
+            writer.put(Favorites.CUSTOM_ICON, icon != null ? Utilities.flattenBitmap(icon) : null);
+            writer.put(Favorites.CUSTOM_ICON_ENTRY, iconEntry != null ? iconEntry.toString() : null);
+        }
+
+        if (reload) {
+            LauncherAppState.getInstance(context).getLauncher().getModelWriter().executeUpdateItem(item, writer);
+            LauncherAppState.getInstance(context).getModel().forceReload();
+        }
+    }
+
+    private void executeUpdateItem(ItemInfo item, ContentWriter writer) {
+        mWorkerExecutor.execute(new UpdateItemRunnable(item, () -> writer));
     }
 
     /**

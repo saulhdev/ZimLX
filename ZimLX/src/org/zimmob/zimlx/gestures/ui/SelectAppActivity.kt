@@ -62,7 +62,7 @@ class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callb
         setResult(Activity.RESULT_OK, Intent().apply {
             putExtra("type", "shortcut")
             putExtra("appName", shortcut.label)
-            putExtra("intent", shortcut.info.makeIntent().toUri(0))
+            putExtra("intent", shortcut.info.intent!!.toUri(0))
             putExtra("user", shortcut.info.userHandle)
             putExtra("packageName", shortcut.info.`package`)
             putExtra("id", shortcut.info.id)

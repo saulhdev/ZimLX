@@ -35,6 +35,7 @@ import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.systemui.plugins.AllAppsRow;
@@ -133,14 +134,16 @@ public class FloatingHeaderView extends LinearLayout implements
     @Override
     protected void onAttachedToWindow() {
         super.onAttachedToWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(this,
-                AllAppsRow.class, true /* allowMultiple */);
+        if (Utilities.ATLEAST_Q) {
+            PluginManagerWrapper.INSTANCE.get(getContext()).addPluginListener(this, AllAppsRow.class, true /* allowMultiple */);
+        }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
+        if (Utilities.ATLEAST_Q)
+            PluginManagerWrapper.INSTANCE.get(getContext()).removePluginListener(this);
     }
 
     private void recreateAllRowsArray() {

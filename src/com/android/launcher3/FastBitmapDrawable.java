@@ -114,7 +114,7 @@ public class FastBitmapDrawable extends Drawable {
     }
 
     @Override
-    public final void draw(Canvas canvas) {
+    public void draw(Canvas canvas) {
         if (mScale != 1f) {
             int count = canvas.save();
             Rect bounds = getBounds();

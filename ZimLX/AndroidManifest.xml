@@ -46,6 +46,18 @@
             </intent-filter>
         </activity>
 
+        <!-- Apply directly from iconpack -->
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.ApplyIconPackActivity"
+            android:theme="@style/SettingsTheme.V2.Transparent">
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.APPLY_ICONS" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
         <service
             android:name="com.android.launcher3.uioverrides.WallpaperManagerCompat$ColorExtractionService"
             android:exported="false"

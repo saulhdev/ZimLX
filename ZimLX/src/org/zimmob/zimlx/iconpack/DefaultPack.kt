@@ -21,6 +21,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.pm.ShortcutInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
@@ -34,12 +35,13 @@ import com.android.launcher3.util.ComponentKey
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
+import org.zimmob.zimlx.clock.DynamicClock
 import org.zimmob.zimlx.util.getLauncherActivityInfo
 import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
-    //val dynamicClockDrawer by lazy { DynamicClock(context) }
+    val dynamicClockDrawer by lazy { DynamicClock(context) }
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
@@ -58,13 +60,13 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model
-        /*UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
+        UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
             model.onPackageChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
             val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, user)
             if (!shortcuts.isEmpty()) {
                 model.updatePinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, shortcuts, user)
             }
-        }*/
+        }
     }
 
     override fun loadPack() {
@@ -109,7 +111,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val component = key.componentName
         val packageName = component.packageName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        if (iconProvider == null) {//|| (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
+        if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
@@ -120,7 +122,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
@@ -139,9 +141,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             } else {
                 itemInfo.targetComponent
             }
-            /*if (DynamicClock.DESK_CLOCK == component) {
+            if (DynamicClock.DESK_CLOCK == component) {
                 return dynamicClockDrawer.drawIcon(icon)
-            }*/
+            }
         }
 
         return FastBitmapDrawable(icon)

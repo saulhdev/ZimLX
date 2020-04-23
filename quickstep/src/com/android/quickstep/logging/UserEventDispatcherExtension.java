@@ -25,6 +25,7 @@ import static com.android.systemui.shared.system.LauncherEventUtil.DISMISS;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_QUICK_SCRUB_ONBOARDING_TIP;
 import static com.android.systemui.shared.system.LauncherEventUtil.RECENTS_SWIPE_UP_ONBOARDING_TIP;
 
+import com.android.launcher3.Utilities;
 import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.system.MetricsLoggerCompat;
@@ -45,8 +46,11 @@ public class UserEventDispatcherExtension extends UserEventDispatcher {
     public void logStateChangeAction(int action, int dir, int downX, int downY,
                                      int srcChildTargetType, int srcParentContainerType,
                                      int dstContainerType, int pageIndex) {
-        new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
-                dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
+
+        if (Utilities.ATLEAST_Q) {
+            new MetricsLoggerCompat().visibility(MetricsLoggerCompat.OVERVIEW_ACTIVITY,
+                    dstContainerType == LauncherLogProto.ContainerType.TASKSWITCHER);
+        }
         super.logStateChangeAction(action, dir, downX, downY, srcChildTargetType,
                 srcParentContainerType, dstContainerType, pageIndex);
     }

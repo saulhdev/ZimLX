@@ -19,6 +19,7 @@ package org.zimmob.zimlx.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import com.android.launcher3.FastBitmapDrawable
@@ -80,8 +81,8 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          iconProvider: ZimIconProvider?): Drawable?
 
-    abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
-
+    //abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
+    abstract fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable?
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: ZimDrawableFactory): FastBitmapDrawable?

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Zim Launcher
+ * 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Handler;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -31,9 +32,11 @@ import androidx.preference.Preference;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.LooperExecutor;
 
 import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;
@@ -191,7 +194,7 @@ public class IconShapeOverride {
                 }
 
                 new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-                        new OverrideApplyHandler(mContext, newValue));
+                        new OverrideApplyHandler(mContext, newValue, new Handler()));
             }
             return false;
         }
@@ -201,10 +204,12 @@ public class IconShapeOverride {
 
         private final Context mContext;
         private final String mValue;
+        private final Handler mHandler;
 
-        private OverrideApplyHandler(Context context, String value) {
+        private OverrideApplyHandler(Context context, String value, Handler handler) {
             mContext = context;
             mValue = value;
+            mHandler = handler;
         }
 
         @SuppressLint("ApplySharedPref")
@@ -213,11 +218,14 @@ public class IconShapeOverride {
             // Synchronously write the preference.
             getDevicePrefs(mContext).edit().putString("pref_iconShape", mValue).commit();
             // Clear the icon cache.
-            LauncherAppState.getInstance(mContext).getIconCache().clear();
+            //LauncherAppState.getInstance(mContext).getIconCache().clear();
+            LauncherAppState.getInstance(mContext).reloadIconCache();
 
-            // Schedule restart
-            ((ZimLauncher) LauncherAppState.getInstanceNoCreate().getLauncher())
-                    .scheduleRestart();
+            mHandler.post(() -> {
+                AdaptiveIconCompat.resetMask();
+                IconShape.init(mContext);
+                Utilities.getZimPrefs(mContext).getRecreate().invoke();
+            });
         }
     }
 }

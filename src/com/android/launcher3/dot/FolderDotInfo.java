@@ -18,6 +18,7 @@ package com.android.launcher3.dot;
 
 import android.view.ViewDebug;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 
 /**
@@ -50,7 +51,13 @@ public class FolderDotInfo extends DotInfo {
 
     @Override
     public int getNotificationCount() {
-        return mNumNotifications;
+        boolean showBadgeCount = Launcher.showFolderNotificationCount;
+        if (showBadgeCount) {
+            return mNumNotifications;
+        } else {
+            // This forces the folder badge to always show up as a dot.
+            return 0;
+        }
     }
 
     @ViewDebug.ExportedProperty(category = "launcher")

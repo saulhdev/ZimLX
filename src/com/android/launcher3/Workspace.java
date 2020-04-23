@@ -1694,8 +1694,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             float scale = mLauncher.getDragLayer().getDescendantRectRelativeToSelf(v, folderLocation);
             target.removeView(v);
 
-            FolderIcon fi =
-                mLauncher.addFolder(target, container, screenId, targetCell[0], targetCell[1]);
+            FolderIcon fi = mLauncher.addFolder(target, container, screenId, targetCell[0], targetCell[1]);
             destInfo.cellX = -1;
             destInfo.cellY = -1;
             sourceInfo.cellX = -1;
@@ -2557,8 +2556,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                         cellLayout, mTargetCell);
                 float distance = cellLayout.getDistanceFromCell(mDragViewVisualCenter[0],
                         mDragViewVisualCenter[1], mTargetCell);
-                if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance,
-                        true, d.dragView)) {
+                if (createUserFolderIfNecessary(view, container, cellLayout, mTargetCell, distance, true, d.dragView)) {
                     return;
                 }
                 if (addToExistingFolderIfNecessary(view, cellLayout, mTargetCell, distance, d,

@@ -780,7 +780,14 @@ public class LauncherProvider extends ContentProvider {
                     dropTable(db, "workspaceScreens");
                 }
                 case 28:
-                    // DB Upgraded successfully
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.TITLE_ALIAS + " TEXT;");
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON + " BLOB;");
+                case 29:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.CUSTOM_ICON_ENTRY + " TEXT;");
+                case 30:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.SWIPE_UP_ACTION + " TEXT;");
+                case 31:
+                    db.execSQL("ALTER TABLE " + Favorites.TABLE_NAME + " ADD COLUMN " + Favorites.BADGE_VISIBLE + " INTEGER NOT NULL DEFAULT 0;");
                     return;
             }
 

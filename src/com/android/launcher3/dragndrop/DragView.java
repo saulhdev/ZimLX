@@ -42,6 +42,7 @@ import android.os.Looper;
 import android.view.View;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherModel;
@@ -207,6 +208,9 @@ public class DragView extends View implements LauncherStateManager.StateListener
         if (info.itemType != LauncherSettings.Favorites.ITEM_TYPE_APPLICATION &&
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT &&
                 info.itemType != LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            return;
+        }
+        if (info instanceof FolderInfo && ((FolderInfo) info).usingCustomIcon(mLauncher)) {
             return;
         }
         // Load the adaptive icon on a background thread and add the view in ui thread.

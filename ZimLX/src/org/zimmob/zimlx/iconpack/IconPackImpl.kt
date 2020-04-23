@@ -22,6 +22,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.pm.ShortcutInfo
 import android.content.res.Resources
 import android.content.res.XmlResourceParser
 import android.graphics.Bitmap
@@ -32,6 +33,7 @@ import android.widget.Toast
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.logging.FileLog.e
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
@@ -39,6 +41,8 @@ import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
+import org.zimmob.zimlx.clock.CustomClock
+import org.zimmob.zimlx.util.CustomIconUtils
 import org.zimmob.zimlx.util.get
 import org.zimmob.zimlx.util.toTitleCase
 import java.io.IOException
@@ -49,7 +53,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     private val packComponents: MutableMap<ComponentName, Entry> = HashMap()
     private val packCalendars: MutableMap<ComponentName, String> = HashMap()
-    //private val packClocks: MutableMap<Int, CustomClock.Metadata> = HashMap()
+    private val packClocks: MutableMap<Int, CustomClock.Metadata> = HashMap()
     private val packDynamicDrawables: MutableMap<Int, DynamicDrawable.Metadata> = HashMap()
     private var packMask: IconMask = IconMask()
     private val defaultPack = DefaultPack(context)
@@ -74,7 +78,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             packCalendars.keys.forEach {
                 val pkg = it.packageName
                 if (!apps.getActivityList(pkg, user).isEmpty()) {
-                    //CustomIconUtils.reloadIcon(shortcutManager, model, user, pkg)
+                    CustomIconUtils.reloadIcon(shortcutManager, model, user, pkg)
                 }
             }
         }
@@ -117,7 +121,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             if (drawableName != null) {
                                 val drawableId = getDrawableId(drawableName)
                                 if (parseXml is XmlResourceParser && drawableId != 0) {
-                                    /*packClocks[drawableId] = CustomClock.Metadata(
+                                    packClocks[drawableId] = CustomClock.Metadata(
                                             parseXml.getAttributeIntValue(null, "hourLayerIndex", -1),
                                             parseXml.getAttributeIntValue(null, "minuteLayerIndex", -1),
                                             parseXml.getAttributeIntValue(null, "secondLayerIndex", -1),
@@ -125,7 +129,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                                             parseXml.getAttributeIntValue(null, "defaultMinute", 0),
                                             parseXml.getAttributeIntValue(null, "defaultSecond", 0))
 
-                                     */
+
                                 }
                             }
                         }
@@ -218,10 +222,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         if (drawableId != 0) {
             try {
                 var drawable = packResources.getDrawable(drawableId)
-                /*if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
+                if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
-                } else*/
-                if (packDynamicDrawables.containsKey(drawableId)) {
+                } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
@@ -230,7 +233,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
-                //e("Can't get drawable for name ${entry.icon} ($drawableId)", ex)
+                //e("Can't get drawable for name ${entry.icon} ($drawableId)", ex.message)
             }
         }
         return null
@@ -255,10 +258,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 var drawable = AdaptiveIconCompat.wrap(
                         packResources.getDrawableForDensity(drawableId, iconDpi)
                                 ?: packResources.getDrawable(drawableId))
-                /*if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
+                if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
                     drawable = CustomClock.getClock(context, drawable, packClocks[drawableId], iconDpi)
-                } else*/
-                if (packDynamicDrawables.containsKey(drawableId)) {
+                } else if (packDynamicDrawables.containsKey(drawableId)) {
                     drawable = DynamicDrawable.getIcon(context, drawable, packDynamicDrawables[drawableId]!!, iconDpi)
                 }
                 if (prefs.adaptifyIconPacks) {
@@ -286,7 +288,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         return null
     }
 
-    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         if (prefs.iconPackMasking && packMask.hasMask) {
@@ -317,11 +319,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 packComponents.containsKey(component) -> packComponents[component]!!.drawableId
                 else -> 0
             }
-            /*if (packClocks.containsKey(drawableId)) {
+            if (packClocks.containsKey(drawableId)) {
                 val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
                 return drawableFactory.customClockDrawer.drawIcon(icon, drawable, packClocks[drawableId])
-            } else
-            */if (packDynamicDrawables.containsKey(drawableId)) {
+            } else if (packDynamicDrawables.containsKey(drawableId)) {
 
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
                 val icn = DynamicDrawable.drawIcon(context, icon, packDynamicDrawables[drawableId]!!,

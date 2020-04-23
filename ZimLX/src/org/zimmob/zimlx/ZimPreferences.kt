@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Zim Launcher
+ * 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,9 +28,11 @@ import org.json.JSONObject
 import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
+import org.zimmob.zimlx.groups.AppGroupsManager
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize2D
+import org.zimmob.zimlx.settings.SettingsActivity
 import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.theme.ThemeManager
 import org.zimmob.zimlx.util.Config
@@ -51,7 +53,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val TAG = "ZimPreferences"
     private val onChangeMap: MutableMap<String, () -> Unit> = HashMap()
     private val onChangeListeners: MutableMap<String, MutableSet<OnPreferenceChangeListener>> = HashMap()
-    var onChangeCallback: ZimPreferencesChangeCallback? = null
+    private var onChangeCallback: ZimPreferencesChangeCallback? = null
     val sharedPrefs = migratePrefs()
     private fun migratePrefs(): SharedPreferences {
         val dir = context.cacheDir.parent
@@ -65,7 +67,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     val doNothing = { }
-    private val recreate = { recreate() }
+    val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
     private val restart = { restart() }
@@ -91,20 +93,24 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     fun setDashEnable(enable: Boolean) {
         sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
     }
-
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
-
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
-
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
+    val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
 
     /* --APP DRAWER-- */
-    val sortMode by IntPref("pref_key__sort_mode", Config.SORT_AZ, reloadApps);
-
+    fun getSortMode(): Int {
+        val sort: String = sharedPrefs.getString("pref_key__sort_mode", "0")!!
+        recreate
+        return sort.toInt()
+    }
 
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
+    val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
+    val appGroupsManager by lazy { AppGroupsManager(this) }
+    val drawerTabs get() = appGroupsManager.drawerTabs
 
 
     /* --DOCK-- */
@@ -301,6 +307,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         onChangeListeners[key]?.remove(listener)
     }
 
+    fun getOnChangeCallback() = onChangeCallback
+
     fun recreate() {
         onChangeCallback?.recreate()
     }
@@ -346,7 +354,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     inline fun withChangeCallback(
             crossinline callback: (ZimPreferencesChangeCallback) -> Unit): () -> Unit {
-        return { onChangeCallback?.let { callback(it) } }
+        return { getOnChangeCallback()?.let { callback(it) } }
     }
 
     inner class ResettableLazy<out T : Any>(private val create: () -> T) {
@@ -514,6 +522,33 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
         override fun onSetValue(value: Int) {
             edit { putInt(getKey(), value) }
+        }
+    }
+
+    inline fun <reified T : Enum<T>> EnumPref(key: String, defaultValue: T,
+                                              noinline onChange: () -> Unit = doNothing): PrefDelegate<T> {
+        return IntBasedPref(key, defaultValue, onChange, { value ->
+            enumValues<T>().firstOrNull { item -> item.ordinal == value } ?: defaultValue
+        }, { it.ordinal }, { })
+    }
+
+    open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
+                                           private val fromInt: (Int) -> T,
+                                           private val toInt: (T) -> Int,
+                                           private val dispose: (T) -> Unit) :
+            PrefDelegate<T>(key, defaultValue, onChange) {
+        override fun onGetValue(): T {
+            return if (sharedPrefs.contains(key)) {
+                fromInt(sharedPrefs.getInt(getKey(), toInt(defaultValue)))
+            } else defaultValue
+        }
+
+        override fun onSetValue(value: T) {
+            edit { putInt(getKey(), toInt(value)) }
+        }
+
+        override fun disposeOldValue(oldValue: T) {
+            dispose(oldValue)
         }
     }
 

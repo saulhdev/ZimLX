@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Zim Launcher
+ * 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ import android.content.res.ColorStateList
 import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Handler
@@ -34,10 +35,7 @@ import android.util.Property
 import android.util.TypedValue
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckedTextView
-import android.widget.RadioButton
-import android.widget.Switch
+import android.widget.*
 import androidx.annotation.ColorInt
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
@@ -46,14 +44,17 @@ import androidx.core.graphics.drawable.DrawableCompat
 import androidx.dynamicanimation.animation.FloatPropertyCompat
 import androidx.preference.Preference
 import androidx.preference.PreferenceGroup
-import com.android.launcher3.LauncherAppState
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.MainThreadExecutor
-import com.android.launcher3.Utilities
+import androidx.viewpager.widget.PagerAdapter
+import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
+import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.android.launcher3.util.LooperExecutor
+import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
 import org.json.JSONArray
+import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import java.lang.reflect.Field
 import java.util.*
@@ -62,6 +63,7 @@ import java.util.concurrent.ExecutionException
 import kotlin.collections.ArrayList
 import kotlin.math.ceil
 import kotlin.math.roundToInt
+import kotlin.random.Random
 import kotlin.reflect.KMutableProperty0
 import kotlin.reflect.KProperty
 
@@ -70,37 +72,6 @@ val Context.launcherAppState get() = LauncherAppState.getInstance(this)
 val Context.hasStoragePermission
     get() = PackageManager.PERMISSION_GRANTED == ContextCompat.checkSelfPermission(
             this, android.Manifest.permission.READ_EXTERNAL_STORAGE)
-
-
-fun Context.getBooleanAttr(attr: Int): Boolean {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    val value = ta.getBoolean(0, false)
-    ta.recycle()
-    return value
-}
-
-fun Context.getDimenAttr(attr: Int): Int {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    val size = ta.getDimensionPixelSize(0, 0)
-    ta.recycle()
-    return size
-}
-
-@ColorInt
-fun Context.getColorAttr(attr: Int): Int {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    @ColorInt val colorAccent = ta.getColor(0, 0)
-    ta.recycle()
-    return colorAccent
-}
-
-fun Context.getThemeAttr(attr: Int): Int {
-    val ta = obtainStyledAttributes(intArrayOf(attr))
-    val theme = ta.getResourceId(0, 0)
-    ta.recycle()
-    return theme
-}
-
 
 val mainHandler by lazy { Handler(Looper.getMainLooper()) }
 val uiWorkerHandler by lazy { Handler(LauncherModel.getUiWorkerLooper()) }
@@ -257,6 +228,17 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
     }
 }
 
+fun <T, U : Comparable<U>> comparing(extractKey: (T) -> U): Comparator<T> {
+    return Comparator { o1, o2 -> extractKey(o1).compareTo(extractKey(o2)) }
+}
+
+fun <T, U : Comparable<U>> Comparator<T>.then(extractKey: (T) -> U): Comparator<T> {
+    return kotlin.Comparator { o1, o2 ->
+        val res = compare(o1, o2)
+        if (res != 0) res else extractKey(o1).compareTo(extractKey(o2))
+    }
+}
+
 fun String.toTitleCase(): String = splitToSequence(" ").map { it.capitalize() }.joinToString(" ")
 
 inline fun <T> listWhileNotNull(generator: () -> T?): List<T> = mutableListOf<T>().apply {
@@ -270,7 +252,31 @@ fun Context.checkLocationAccess(): Boolean {
             Utilities.hasPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION)
 }
 
+@ColorInt
+fun Context.getColorAccent(): Int {
+    return getColorAttr(android.R.attr.colorAccent)
+}
+
 fun Context.getIcon(): Drawable = packageManager.getApplicationIcon(applicationInfo)
+
+class ViewPagerAdapter(private val pages: List<Pair<String, View>>) : PagerAdapter() {
+
+    override fun instantiateItem(container: ViewGroup, position: Int): Any {
+        val view = pages[position].second
+        container.addView(view)
+        return view
+    }
+
+    override fun destroyItem(container: ViewGroup, position: Int, obj: Any) {
+        container.removeView(obj as View)
+    }
+
+    override fun getCount() = pages.size
+
+    override fun isViewFromObject(view: View, obj: Any) = (view === obj)
+
+    override fun getPageTitle(position: Int) = pages[position].first
+}
 
 fun dpToPx(size: Float): Float {
     return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, size, Resources.getSystem().displayMetrics)
@@ -287,6 +293,88 @@ fun <T> JSONArray.toArrayList(): ArrayList<T> {
         arrayList.add(get(i) as T)
     }
     return arrayList
+}
+
+fun Context.createDisabledColor(color: Int): ColorStateList {
+    return ColorStateList(arrayOf(
+            intArrayOf(-android.R.attr.state_enabled),
+            intArrayOf()),
+            intArrayOf(
+                    getDisabled(getColorAttr(android.R.attr.colorForeground)),
+                    color))
+}
+
+@ColorInt
+fun Context.getDisabled(inputColor: Int): Int {
+    return applyAlphaAttr(android.R.attr.disabledAlpha, inputColor)
+}
+
+@ColorInt
+fun Context.applyAlphaAttr(attr: Int, inputColor: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val alpha = ta.getFloat(0, 0f)
+    ta.recycle()
+    return applyAlpha(alpha, inputColor)
+}
+
+@ColorInt
+fun applyAlpha(a: Float, inputColor: Int): Int {
+    var alpha = a
+    alpha *= Color.alpha(inputColor)
+    return Color.argb(alpha.toInt(), Color.red(inputColor), Color.green(inputColor),
+            Color.blue(inputColor))
+}
+
+
+@ColorInt
+fun Context.getColorAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    @ColorInt val colorAccent = ta.getColor(0, 0)
+    ta.recycle()
+    return colorAccent
+}
+
+fun Context.getThemeAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val theme = ta.getResourceId(0, 0)
+    ta.recycle()
+    return theme
+}
+
+fun Context.getDrawableAttr(attr: Int): Drawable? {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val drawable = ta.getDrawable(0)
+    ta.recycle()
+    return drawable
+}
+
+fun Context.getDrawableAttrNullable(attr: Int): Drawable? {
+    return try {
+        getDrawableAttr(attr)
+    } catch (e: Resources.NotFoundException) {
+        null
+    }
+}
+
+fun Context.getDimenAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val size = ta.getDimensionPixelSize(0, 0)
+    ta.recycle()
+    return size
+}
+
+fun Context.getBooleanAttr(attr: Int): Boolean {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getBoolean(0, false)
+    ta.recycle()
+    return value
+}
+
+fun Context.getIntAttr(attr: Int): Int {
+    val ta = obtainStyledAttributes(intArrayOf(attr))
+    val value = ta.getInt(0, 0)
+    ta.recycle()
+    return value
 }
 
 inline infix fun Int.hasFlag(flag: Int) = (this and flag) != 0
@@ -456,6 +544,27 @@ inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
     forEachChildReversedIndexed { view, _ -> action(view) }
 }
 
+fun Context.getLauncherOrNull(): Launcher? {
+    return try {
+        Launcher.getLauncher(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
+
+fun ImageView.tintDrawable(color: Int) {
+    val drawable = drawable.mutate()
+    drawable.setTint(color)
+    setImageDrawable(drawable)
+}
+
+fun JSONObject.getNullable(key: String): Any? {
+    return opt(key)
+}
+
+val Long.Companion.random get() = Random.nextLong()
+
+fun JSONObject.asMap() = JSONMap(this)
 fun Switch.applyColor(color: Int) {
     val colorForeground = Themes.getAttrColor(context, android.R.attr.colorForeground)
     val alphaDisabled = Themes.getAlpha(context, android.R.attr.disabledAlpha)
@@ -488,5 +597,32 @@ fun Button.applyColor(color: Int) {
     val tintList = ColorStateList.valueOf(color)
     if (this is RadioButton) {
         buttonTintList = tintList
+    }
+}
+
+fun reloadIconsFromComponents(context: Context, components: Collection<ComponentKey>) {
+    reloadIcons(context, components.map { PackageUserKey(it.componentName.packageName, it.user) })
+}
+
+fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
+    LooperExecutor(LauncherModel.getIconPackLooper()).execute {
+        val userManagerCompat = UserManagerCompat.getInstance(context)
+        val las = LauncherAppState.getInstance(context)
+        val model = las.model
+        val launcher = las.launcher
+
+        for (user in userManagerCompat.userProfiles) {
+            model.onPackagesReload(user)
+        }
+
+        val shortcutManager = DeepShortcutManager.getInstance(context)
+        packages.forEach {
+            CustomIconUtils.reloadIcon(shortcutManager, model, it.mUser, it.mPackageName)
+        }
+        if (launcher != null) {
+            runOnMainThread {
+                //(launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
+            }
+        }
     }
 }

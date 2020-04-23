@@ -86,6 +86,10 @@ public class LauncherSettings {
          */
         public static final String ICON = "icon";
 
+        public static final String CUSTOM_ICON = "customIcon";
+
+        public static final String CUSTOM_ICON_ENTRY = "customIconEntry";
+
         public static final String TABLE_NAME = "favorites";
 
         /**
@@ -234,6 +238,11 @@ public class LauncherSettings {
          * <p>Type: INTEGER</p>
          */
         public static final String OPTIONS = "options";
+        public static final String TITLE_ALIAS = "titleAlias";
+
+        public static final String SWIPE_UP_ACTION = "swipeUpAction";
+
+        public static final String BADGE_VISIBLE = "badgeVisible";
 
         public static void addTableToDb(SQLiteDatabase db, long myProfileId, boolean optional) {
             addTableToDb(db, myProfileId, optional, TABLE_NAME);
@@ -257,7 +266,12 @@ public class LauncherSettings {
                     "iconPackage TEXT," +
                     "iconResource TEXT," +
                     "icon BLOB," +
+                    "customIcon BLOB," +
+                    "customIconEntry TEXT," +
+                    "titleAlias TEXT," +
+                    "swipeUpAction TEXT," +
                     "appWidgetProvider TEXT," +
+                    "badgeVisible INTEGER NOT NULL DEFAULT 0," +
                     "modified INTEGER NOT NULL DEFAULT 0," +
                     "restored INTEGER NOT NULL DEFAULT 0," +
                     "profileId INTEGER DEFAULT " + myProfileId + "," +

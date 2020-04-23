@@ -170,6 +170,7 @@
         <!--
         The settings activity. To extend point settings_fragment_name to appropriate fragment class
         -->
+        <!--
         <activity
             android:name="com.android.launcher3.settings.SettingsActivity"
             android:label="@string/settings_button_text"
@@ -179,7 +180,7 @@
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-        </activity>
+        </activity>  -->
 
         <provider
             android:name="com.android.launcher3.testing.TestInformationProvider"

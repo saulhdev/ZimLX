@@ -21,6 +21,7 @@ import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.content.res.ColorStateList
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -172,7 +173,7 @@ open class AppsAdapterWithShortcuts(
         }
 
         private fun loadShortcuts(): List<ShortcutItem> {
-            val shortcuts = shortcutManager.queryForComponent(key) as? List<ShortcutInfoCompat>
+            val shortcuts = shortcutManager.queryForComponent(key) as? List<ShortcutInfo>
                     ?: emptyList()
             return shortcuts.map { ShortcutItem(it) }
         }
@@ -180,7 +181,7 @@ open class AppsAdapterWithShortcuts(
         fun clone(context: Context, expanded: Boolean) = AppItem(context, info).also { it.expanded = expanded }
     }
 
-    inner class ShortcutItem(val info: com.android.launcher3.shortcuts.ShortcutInfoCompat) : Item {
+    inner class ShortcutItem(val info: ShortcutInfo) : Item {
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
         // TODO: debug why wrong icons are loaded from the provider at times

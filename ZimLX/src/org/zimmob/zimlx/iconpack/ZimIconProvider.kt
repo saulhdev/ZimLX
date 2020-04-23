@@ -19,6 +19,7 @@ package org.zimmob.zimlx.iconpack
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.graphics.drawable.AdaptiveIconDrawable
 import android.graphics.drawable.Drawable
 import com.android.launcher3.IconProvider
@@ -39,7 +40,10 @@ class ZimIconProvider(context: Context) : IconProvider() {
         return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
-    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+    /*fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
+        return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
+    }*/
+    fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
     }
 
@@ -48,7 +52,7 @@ class ZimIconProvider(context: Context) : IconProvider() {
     }
 
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {
-        if (Utilities.ATLEAST_OREO && this is AdaptiveIconDrawable) {
+        if (Utilities.ATLEAST_Q && this is AdaptiveIconDrawable) {
             error("unwrapped AdaptiveIconDrawable for ${
             if (info is LauncherActivityInfo) info.componentName else info
             }")

@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Zim Launcher
+ * 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -57,15 +57,24 @@ import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
 
 import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
+import com.android.launcher3.settings.NotificationDotsPreference;
 import com.android.launcher3.settings.PreferenceHighlighter;
+import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.ContentWriter;
+import com.android.launcher3.util.SecureSettingsObserver;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.ZimPreferencesChangeCallback;
 import org.zimmob.zimlx.colors.ThemedEditTextPreferenceDialogFragmentCompat;
 import org.zimmob.zimlx.colors.ThemedListPreferenceDialogFragment;
 import org.zimmob.zimlx.colors.ThemedMultiSelectListPreferenceDialogFragmentCompat;
@@ -83,9 +92,11 @@ import org.zimmob.zimlx.util.ZimUtilsKt;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
 import java.util.Objects;
+import java.util.Set;
 
 import static androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
 import static androidx.preference.PreferenceFragment.OnPreferenceDisplayDialogCallback;
+import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 public class SettingsActivity extends SettingsBaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
@@ -95,8 +106,9 @@ public class SettingsActivity extends SettingsBaseActivity
     private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
 
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
-    /** Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS */
-    private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
+    public static final String NOTIFICATION_BADGING = "notification_badging";
+    public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
+    public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
 
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     private final static String BRIDGE_TAG = "tag_bridge";
@@ -107,6 +119,10 @@ public class SettingsActivity extends SettingsBaseActivity
     public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
     public static final String GRID_OPTIONS_PREFERENCE_KEY = "pref_grid_options";
+    /**
+     * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
+     */
+    private static final String NOTIFICATION_ENABLED_LISTENERS = "enabled_notification_listeners";
 
     public final static String EXTRA_TITLE = "title";
     public final static String EXTRA_FRAGMENT = "fragment";
@@ -116,6 +132,7 @@ public class SettingsActivity extends SettingsBaseActivity
 
     private boolean hasPreview = false;
     public static String defaultHome = "";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         savedInstanceState = getRelaunchInstanceState(savedInstanceState);
@@ -256,9 +273,9 @@ public class SettingsActivity extends SettingsBaseActivity
         private static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
 
         private HighlightablePreferenceGroupAdapter mAdapter;
-        private boolean mPreferenceHighlighted = false;
+        public boolean mPreferenceHighlighted = false;
 
-        private String mHighLightKey;
+        public String mHighLightKey;
         private RecyclerView.Adapter mCurrentRootAdapter;
         private boolean mIsDataSetObserverRegistered = false;
         private AdapterDataObserver mDataSetObserver =
@@ -397,6 +414,7 @@ public class SettingsActivity extends SettingsBaseActivity
             int position = callback.getPreferenceAdapterPosition(mHighLightKey);
             return position >= 0 ? new PreferenceHighlighter(list, position) : null;
         }
+
         public void dispatchOnResume(PreferenceGroup group) {
             int count = group.getPreferenceCount();
             for (int i = 0; i < count; i++) {
@@ -469,7 +487,7 @@ public class SettingsActivity extends SettingsBaseActivity
      */
     public static class LauncherSettingsFragment extends BaseFragment {
         private boolean mShowDevOptions;
-
+        private SecureSettingsObserver mNotificationDotsObserver;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -539,7 +557,7 @@ public class SettingsActivity extends SettingsBaseActivity
         }
     }
 
-    public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener{
+    public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
         public static final String HAS_PREVIEW = "has_preview";
@@ -558,6 +576,26 @@ public class SettingsActivity extends SettingsBaseActivity
             ContentResolver resolver = mContext.getContentResolver();
 
             switch (preference) {
+                case R.xml.zim_preferences_theme:
+                    Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
+                    resetIconsPreference.setOnPreferenceClickListener(pref -> {
+                        new SettingsActivity.ResetIconsConfirmation()
+                                .show(getFragmentManager(), "reset_icons");
+                        return true;
+                    });
+
+                    break;
+
+                case R.xml.zim_preferences_notification:
+                    if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
+                        ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(NOTIFICATION_DOTS_PREFERENCE_KEY);
+                        // Listen to system notification badge settings while this UI is active.
+                        mIconBadgingObserver = new IconBadgingObserver(
+                                iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
+                        mIconBadgingObserver.register(NOTIFICATION_BADGING, NOTIFICATION_ENABLED_LISTENERS);
+                    }
+
+                    break;
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;
@@ -671,6 +709,15 @@ public class SettingsActivity extends SettingsBaseActivity
                 case "kill":
                     Utilities.killLauncher();
                     break;
+                case "crashLauncher":
+                    throw new RuntimeException("Triggered from developer options");
+
+                case "appInfo":
+                    ComponentName componentName = new ComponentName(getActivity(),
+                            ZimLauncher.class);
+                    LauncherAppsCompat.getInstance(getContext())
+                            .showAppDetailsForProfile(componentName, android.os.Process.myUserHandle(), null, null);
+                    break;
             }
             return false;
         }
@@ -754,6 +801,54 @@ public class SettingsActivity extends SettingsBaseActivity
             getActivity().startActivity(intent);
         }
     }
+
+    public static class ResetIconsConfirmation
+            extends DialogFragment implements DialogInterface.OnClickListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Context context = getActivity();
+            return new AlertDialog.Builder(context)
+                    .setTitle(R.string.reset_custom_icons)
+                    .setMessage(R.string.reset_custom_icons_confirmation)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(android.R.string.ok, this)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            Context context = getContext();
+
+            // Clear custom app icons
+            ZimPreferences prefs = Utilities.getZimPrefs(context);
+            Set<ComponentKey> toUpdateSet = prefs.getCustomAppIcon().toMap().keySet();
+            prefs.beginBlockingEdit();
+            prefs.getCustomAppIcon().clear();
+            prefs.endBlockingEdit();
+
+            // Clear custom shortcut icons
+            ContentWriter writer = new ContentWriter(context, new ContentWriter.CommitParams(null, null));
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON, (byte[]) null);
+            writer.put(LauncherSettings.Favorites.CUSTOM_ICON_ENTRY, (String) null);
+            writer.commit();
+
+            // Reload changes
+            ZimUtilsKt.reloadIconsFromComponents(context, toUpdateSet);
+            ZimPreferencesChangeCallback prefsCallback = prefs.getOnChangeCallback();
+            if (prefsCallback != null) {
+                prefsCallback.reloadAll();
+            }
+        }
+    }
+
+
 
     /**
      * Content observer which listens for system auto-rotate setting changes, and enables/disables

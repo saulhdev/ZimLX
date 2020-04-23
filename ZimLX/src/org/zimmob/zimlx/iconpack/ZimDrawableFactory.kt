@@ -21,11 +21,15 @@ import android.content.Context
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
 import com.android.launcher3.WorkspaceItemInfo
+import org.zimmob.zimlx.DynamicDrawableFactory
+import org.zimmob.zimlx.clock.CustomClock
 
-class ZimDrawableFactory(context: Context) {
+class ZimDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
 
     private val iconPackManager = IconPackManager.getInstance(context)
-    fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
+    val customClockDrawer by lazy { CustomClock(context) }
+
+    override fun newIcon(info: ItemInfoWithIcon): FastBitmapDrawable {
         return iconPackManager.newIcon((info as? WorkspaceItemInfo)?.customIcon ?: info.iconBitmap,
                 info, this).also { it.setIsDisabled(info.isDisabled) }
     }

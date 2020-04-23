@@ -18,22 +18,30 @@ package com.android.launcher3;
 
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Process;
+import android.text.TextUtils;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.folder.Folder;
 import com.android.launcher3.folder.FolderIcon;
+import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.folder.FirstItemProvider;
+import org.zimmob.zimlx.iconpack.IconPack;
+import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.util.ArrayList;
 
@@ -145,10 +153,7 @@ public class FolderInfo extends ItemInfo {
         }
     }
 
-    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
-        swipeUpAction = action;
-        //ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, null, null, false, true);
-    }
+    private Drawable cached;
 
     public ComponentKey toComponentKey() {
         return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
@@ -178,6 +183,23 @@ public class FolderInfo extends ItemInfo {
         return new BitmapDrawable(launcher.getResources(), b);
     }
 
+    private String cachedIcon;
+
+    public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
+        swipeUpAction = action;
+        ModelWriter.modifyItemInDatabase(context, this, null, swipeUpAction, false, null, null, false, true);
+    }
+
+    public boolean useIconMode(Context context) {
+        return isCoverMode() || hasCustomIcon(context);
+    }
+
+    public boolean usingCustomIcon(Context context) {
+        if (isCoverMode()) return false;
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
     public boolean isCoverMode() {
         return hasOption(FLAG_COVER_MODE);
     }
@@ -186,16 +208,35 @@ public class FolderInfo extends ItemInfo {
         setOption(FLAG_COVER_MODE, enable, modelWriter);
     }
 
+    private boolean hasCustomIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        return getIconInternal(launcher) != null;
+    }
+
+    public void clearCustomIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        if (infoProvider != null) {
+            infoProvider.setIcon(this, null);
+        }
+    }
+
     public WorkspaceItemInfo getCoverInfo() {
         return firstItemProvider.getFirstItem();
     }
 
-    public interface FolderListener {
-        public void onAdd(WorkspaceItemInfo item, int rank);
-        public void onRemove(WorkspaceItemInfo item);
-        public void onTitleChanged(CharSequence title);
-        public void onItemsChanged(boolean animate);
-        public void prepareAutoUpdate();
+    public CharSequence getIconTitle() {
+        if (!TextUtils.equals(Folder.getDefaultFolderName(), title)) {
+            return title;
+        } else if (isCoverMode()) {
+            WorkspaceItemInfo info = getCoverInfo();
+            if (info.customTitle != null) {
+                return info.customTitle;
+            }
+            return info.title;
+        } else {
+            return Folder.getDefaultFolderName();
+        }
     }
 
     public boolean hasOption(int optionFlag) {
@@ -216,6 +257,62 @@ public class FolderInfo extends ItemInfo {
         }
         if (writer != null && oldOptions != options) {
             writer.updateItemInDatabase(this);
+        }
+    }
+
+    /**
+     * DO NOT USE OUTSIDE CUSTOMINFOPROVIDER
+     */
+    public void onIconChanged() {
+        for (FolderListener listener : listeners) {
+            listener.onIconChanged();
+        }
+    }
+
+    public Drawable getIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        Drawable icn = getIconInternal(launcher);
+        if (icn != null) {
+            return icn;
+        }
+        if (isCoverMode()) {
+            return DrawableFactory.INSTANCE.get(context).newIcon(context, getCoverInfo());
+        }
+        return getFolderIcon(launcher);
+    }
+
+    private Drawable getIconInternal(Launcher launcher) {
+        CustomInfoProvider<FolderInfo> infoProvider = CustomInfoProvider.Companion.forItem(launcher, this);
+        IconPackManager.CustomIconEntry entry = infoProvider == null ? null : infoProvider.getIcon(this);
+        if (entry != null && entry.getIcon() != null) {
+            if (!entry.getIcon().equals(cachedIcon)) {
+                IconPack pack = IconPackManager.Companion.getInstance(launcher)
+                        .getIconPack(entry.getPackPackageName(), false, true);
+                if (pack != null) {
+                    cached = pack.getIcon(entry, launcher.mDeviceProfile.inv.fillResIconDpi);
+                    cachedIcon = entry.getIcon();
+                }
+            }
+            if (cached != null) {
+                return cached.mutate();
+            }
+        }
+        return null;
+    }
+
+    public interface FolderListener {
+        void onAdd(WorkspaceItemInfo item, int rank);
+
+        void onRemove(WorkspaceItemInfo item);
+
+        void onTitleChanged(CharSequence title);
+
+        void onItemsChanged(boolean animate);
+
+        void prepareAutoUpdate();
+
+        default void onIconChanged() {
+            // do nothing
         }
     }
 }

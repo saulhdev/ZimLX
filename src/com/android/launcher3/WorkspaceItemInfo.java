@@ -29,6 +29,7 @@ import androidx.annotation.Nullable;
 
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.icons.IconCache;
+import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.uioverrides.UiFactory;
 import com.android.launcher3.util.ContentWriter;
@@ -111,6 +112,8 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     public Bitmap customIcon;
 
     public IconPackManager.CustomIconEntry customIconEntry;
+
+    private boolean badgeVisible = true;
 
     public WorkspaceItemInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
@@ -236,21 +239,21 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     private void updateDatabase(Context context, boolean updateIcon, boolean reload) {
-
-        //if (updateIcon)
-        //ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-        //        , customIconEntry, customIcon, true, reload);
-        //else
-        //ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
-        //        , null, null, false, reload);
+        if (updateIcon)
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
+                    , badgeVisible, customIconEntry, customIcon, true, reload);
+        else
+            ModelWriter.modifyItemInDatabase(context, this, (String) customTitle, swipeUpAction
+                    , badgeVisible, null, null, false, reload);
     }
 
-    public void onLoadCustomizations(String titleAlias, String swipeUpAction,
+    public void onLoadCustomizations(String titleAlias, String swipeUpAction, boolean badgeVisible,
                                      IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
         customTitle = titleAlias;
         customIconEntry = customIcon;
         this.customIcon = icon;
         this.swipeUpAction = swipeUpAction;
+        this.badgeVisible = badgeVisible;
     }
 
     public void setTitle(@NotNull Context context, @Nullable String title) {
@@ -270,6 +273,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
 
     public void setSwipeUpAction(@NonNull Context context, @Nullable String action) {
         swipeUpAction = action;
+        updateDatabase(context, false, true);
+    }
+
+    public void setBadgeVisible(@NonNull Context context, @NonNull Boolean visible) {
+        badgeVisible = visible;
         updateDatabase(context, false, true);
     }
 }

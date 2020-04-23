@@ -31,13 +31,13 @@
         <item>3</item>
     </string-array>
 
-    <integer-array name="values__zero_to_four">
+    <string-array name="values__zero_to_four" translatable="false">
         <item>0</item>
         <item>1</item>
         <item>2</item>
         <item>3</item>
         <item>4</item>
-    </integer-array>
+    </string-array>
     <string-array name="entries__layout_mode">
         <item>@string/title__layout_vertical</item>
         <item>@string/title__layout_horizontal</item>

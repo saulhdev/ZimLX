@@ -9,7 +9,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath GRADLE_CLASS_PATH
+        classpath 'com.android.tools.build:gradle:3.6.3'
         classpath PROTOBUF_CLASS_PATH
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
     }
@@ -29,7 +29,7 @@ android {
     buildToolsVersion BUILD_TOOLS_VERSION
 
     def name = "0.7.1"
-    def code = 3018
+    def code = 3019
 
     defaultConfig {
         minSdkVersion 25
