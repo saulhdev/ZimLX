@@ -33,9 +33,7 @@ import android.widget.Toast
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
-import com.android.launcher3.logging.FileLog.e
 import com.android.launcher3.shortcuts.DeepShortcutManager
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException

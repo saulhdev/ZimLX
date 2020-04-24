@@ -119,6 +119,11 @@ public class IconCache extends BaseIconCache {
         }
     }
 
+    public synchronized void removeAllIcons() {
+        Preconditions.assertWorkerThread();
+        mIconDb.delete(null, null);
+    }
+
     /**
      * Fetches high-res icon for the provided ItemInfo and updates the caller when done.
      * @return a request ID that can be used to cancel the request.

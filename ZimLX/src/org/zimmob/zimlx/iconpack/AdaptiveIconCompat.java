@@ -72,7 +72,7 @@ import java.lang.reflect.Method;
  * <li>The outer 18 dp on each of the 4 sides of the layers is reserved for use by the system UI
  * surfaces to create interesting visual effects, such as parallax or pulsing.</li>
  * </ul>
- * <p>
+ *
  * Such motion effect is achieved by internally setting the bounds of the foreground and
  * background layer as following:
  * <pre>
@@ -100,9 +100,9 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
      * All four sides of the layers are padded with extra inset so as to provide
      * extra content to reveal within the clip path when performing affine transformations on the
      * layers.
-     * <p>
+     *
      * Each layers will reserve 25% of it's width and height.
-     * <p>
+     *
      * As a result, the view port of the layers is smaller than their intrinsic width and height.
      */
     private static final float EXTRA_INSET_PERCENTAGE = 1 / 4f;
@@ -163,7 +163,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
      * Constructor used for xml inflation.
      */
     @RequiresApi(api = VERSION_CODES.O)
-    public AdaptiveIconCompat() {
+    public AdaptiveIconCompat() throws Exception {
         this((LayerState) null, null);
     }
 
@@ -232,7 +232,6 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
      * @param backgroundDrawable drawable that should be rendered in the background
      * @param foregroundDrawable drawable that should be rendered in the foreground
      */
-    @RequiresApi(api = VERSION_CODES.O)
     public AdaptiveIconCompat(Drawable backgroundDrawable,
                               Drawable foregroundDrawable) {
         this((LayerState) null, null);
@@ -354,30 +353,13 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         }
     }
 
-    /**
-     * Set the child layer bounds bigger than the view port size by {@link #DEFAULT_VIEW_PORT_SCALE}
-     */
-    private void updateLayerBoundsInternal(Rect bounds) {
-        int cX = bounds.width() / 2;
-        int cY = bounds.height() / 2;
-
-        for (int i = 0, count = LayerState.N_CHILDREN; i < count; i++) {
-            final ChildDrawable r = mLayerState.mChildren[i];
-            if (r == null) {
-                continue;
-            }
-            final Drawable d = r.mDrawable;
-            if (d == null) {
-                continue;
-            }
-
-            int insetWidth = (int) (bounds.width() / (DEFAULT_VIEW_PORT_SCALE * 2));
-            int insetHeight = (int) (bounds.height() / (DEFAULT_VIEW_PORT_SCALE * 2));
-            final Rect outRect = mTmpOutRect;
-            outRect.set(cX - insetWidth, cY - insetHeight, cX + insetWidth, cY + insetHeight);
-
-            d.setBounds(outRect);
+    protected static @NonNull
+    TypedArray obtainAttributes(@NonNull Resources res,
+                                @Nullable Theme theme, @NonNull AttributeSet set, @NonNull int[] attrs) {
+        if (theme == null) {
+            return res.obtainAttributes(set, attrs);
         }
+        return theme.obtainStyledAttributes(set, attrs, 0, 0);
     }
 
     private void updateMaskBoundsInternal(Rect b) {
@@ -404,29 +386,29 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         mLayersShader = null;
     }
 
-    @Override
-    public void draw(Canvas canvas) {
-        if (mLayersBitmap == null) {
-            return;
-        }
-        if (mLayersShader == null) {
-            mCanvas.setBitmap(mLayersBitmap);
-            mCanvas.drawColor(Color.BLACK);
-            for (int i = 0; i < LayerState.N_CHILDREN; i++) {
-                if (mLayerState.mChildren[i] == null) {
-                    continue;
-                }
-                final Drawable dr = mLayerState.mChildren[i].mDrawable;
-                if (dr != null) {
-                    dr.draw(mCanvas);
-                }
+    /**
+     * Set the child layer bounds bigger than the view port size by {@link #DEFAULT_VIEW_PORT_SCALE}
+     */
+    private void updateLayerBoundsInternal(Rect bounds) {
+        int cX = bounds.width() / 2;
+        int cY = bounds.height() / 2;
+
+        for (int i = 0, count = mLayerState.N_CHILDREN; i < count; i++) {
+            final ChildDrawable r = mLayerState.mChildren[i];
+            if (r == null) {
+                continue;
             }
-            mLayersShader = new BitmapShader(mLayersBitmap, TileMode.CLAMP, TileMode.CLAMP);
-            mPaint.setShader(mLayersShader);
-        }
-        if (mMaskBitmap != null) {
-            Rect bounds = getBounds();
-            canvas.drawBitmap(mMaskBitmap, bounds.left, bounds.top, mPaint);
+            final Drawable d = r.mDrawable;
+            if (d == null) {
+                continue;
+            }
+
+            int insetWidth = (int) (bounds.width() / (DEFAULT_VIEW_PORT_SCALE * 2));
+            int insetHeight = (int) (bounds.height() / (DEFAULT_VIEW_PORT_SCALE * 2));
+            final Rect outRect = mTmpOutRect;
+            outRect.set(cX - insetWidth, cY - insetHeight, cX + insetWidth, cY + insetHeight);
+
+            d.setBounds(outRect);
         }
     }
 
@@ -452,6 +434,32 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
+    public void draw(Canvas canvas) {
+        if (mLayersBitmap == null) {
+            return;
+        }
+        if (mLayersShader == null) {
+            mCanvas.setBitmap(mLayersBitmap);
+            mCanvas.drawColor(Color.BLACK);
+            for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
+                if (mLayerState.mChildren[i] == null) {
+                    continue;
+                }
+                final Drawable dr = mLayerState.mChildren[i].mDrawable;
+                if (dr != null) {
+                    dr.draw(mCanvas);
+                }
+            }
+            mLayersShader = new BitmapShader(mLayersBitmap, TileMode.CLAMP, TileMode.CLAMP);
+            mPaint.setShader(mLayersShader);
+        }
+        if (mMaskBitmap != null) {
+            Rect bounds = getBounds();
+            canvas.drawBitmap(mMaskBitmap, bounds.left, bounds.top, mPaint);
+        }
+    }
+
+    @Override
     public @Nullable
     Region getTransparentRegion() {
         if (mTransparentRegion.isEmpty()) {
@@ -461,68 +469,6 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             mMask.toggleInverseFillType();
         }
         return mTransparentRegion;
-    }
-
-    /**
-     * Inflates child layers using the specified parser.
-     */
-    private void inflateLayers(@NonNull Resources r, @NonNull XmlPullParser parser,
-                               @NonNull AttributeSet attrs, @Nullable Theme theme)
-            throws XmlPullParserException, IOException {
-        final LayerState state = mLayerState;
-
-        final int innerDepth = parser.getDepth() + 1;
-        int type;
-        int depth;
-        int childIndex = 0;
-        while ((type = parser.next()) != XmlPullParser.END_DOCUMENT
-                && ((depth = parser.getDepth()) >= innerDepth || type != XmlPullParser.END_TAG)) {
-            if (type != XmlPullParser.START_TAG) {
-                continue;
-            }
-
-            if (depth > innerDepth) {
-                continue;
-            }
-            String tagName = parser.getName();
-            switch (tagName) {
-                case "background":
-                    childIndex = BACKGROUND_ID;
-                    break;
-                case "foreground":
-                    childIndex = FOREGROUND_ID;
-                    break;
-                default:
-                    continue;
-            }
-
-            final ChildDrawable layer = new ChildDrawable(state.mDensity);
-            final TypedArray a = obtainAttributes(r, theme, attrs, new int[]{android.R.attr.drawable});
-            updateLayerFromTypedArray(layer, a);
-            a.recycle();
-
-            // If the layer doesn't have a drawable or unresolved theme
-            // attribute for a drawable, attempt to parse one from the child
-            // element. If multiple child elements exist, we'll only use the
-            // first one.
-            if (layer.mDrawable == null && (layer.mThemeAttrs == null)) {
-                while ((type = parser.next()) == XmlPullParser.TEXT) {
-                }
-                if (type != XmlPullParser.START_TAG) {
-                    throw new XmlPullParserException(parser.getPositionDescription()
-                            + ": <foreground> or <background> tag requires a 'drawable'"
-                            + "attribute or child tag defining a drawable");
-                }
-
-                // We found a child drawable. Take ownership.
-                layer.mDrawable = createFromXmlInnerForDensity(r, parser, attrs,
-                        mLayerState.mSrcDensityOverride, theme);
-                layer.mDrawable.setCallback(this);
-                state.mChildrenChangingConfigurations |=
-                        layer.mDrawable.getChangingConfigurations();
-            }
-            addLayer(childIndex, layer);
-        }
     }
 
     private static Drawable createFromXmlInnerForDensity(@NonNull Resources r,
@@ -632,10 +578,72 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return super.getChangingConfigurations() | mLayerState.getChangingConfigurations();
     }
 
+    /**
+     * Inflates child layers using the specified parser.
+     */
+    private void inflateLayers(@NonNull Resources r, @NonNull XmlPullParser parser,
+                               @NonNull AttributeSet attrs, @Nullable Theme theme)
+            throws XmlPullParserException, IOException {
+        final LayerState state = mLayerState;
+
+        final int innerDepth = parser.getDepth() + 1;
+        int type;
+        int depth;
+        int childIndex = 0;
+        while ((type = parser.next()) != XmlPullParser.END_DOCUMENT
+                && ((depth = parser.getDepth()) >= innerDepth || type != XmlPullParser.END_TAG)) {
+            if (type != XmlPullParser.START_TAG) {
+                continue;
+            }
+
+            if (depth > innerDepth) {
+                continue;
+            }
+            String tagName = parser.getName();
+            switch (tagName) {
+                case "background":
+                    childIndex = BACKGROUND_ID;
+                    break;
+                case "foreground":
+                    childIndex = FOREGROUND_ID;
+                    break;
+                default:
+                    continue;
+            }
+
+            final ChildDrawable layer = new ChildDrawable(state.mDensity);
+            final TypedArray a = obtainAttributes(r, theme, attrs, new int[]{android.R.attr.drawable});
+            updateLayerFromTypedArray(layer, a);
+            a.recycle();
+
+            // If the layer doesn't have a drawable or unresolved theme
+            // attribute for a drawable, attempt to parse one from the child
+            // element. If multiple child elements exist, we'll only use the
+            // first one.
+            if (layer.mDrawable == null && (layer.mThemeAttrs == null)) {
+                while ((type = parser.next()) == XmlPullParser.TEXT) {
+                }
+                if (type != XmlPullParser.START_TAG) {
+                    throw new XmlPullParserException(parser.getPositionDescription()
+                            + ": <foreground> or <background> tag requires a 'drawable'"
+                            + "attribute or child tag defining a drawable");
+                }
+
+                // We found a child drawable. Take ownership.
+                layer.mDrawable = createFromXmlInnerForDensity(r, parser, attrs,
+                        mLayerState.mSrcDensityOverride, theme);
+                layer.mDrawable.setCallback(this);
+                state.mChildrenChangingConfigurations |=
+                        layer.mDrawable.getChangingConfigurations();
+            }
+            addLayer(childIndex, layer);
+        }
+    }
+
     @Override
     public void setHotspot(float x, float y) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setHotspot(x, y);
@@ -644,9 +652,18 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
+    public void getHotspotBounds(Rect outRect) {
+        if (mHotspotBounds != null) {
+            outRect.set(mHotspotBounds);
+        } else {
+            super.getHotspotBounds(outRect);
+        }
+    }
+
+    @Override
     public void setHotspotBounds(int left, int top, int right, int bottom) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setHotspotBounds(left, top, right, bottom);
@@ -661,20 +678,11 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public void getHotspotBounds(Rect outRect) {
-        if (mHotspotBounds != null) {
-            outRect.set(mHotspotBounds);
-        } else {
-            super.getHotspotBounds(outRect);
-        }
-    }
-
-    @Override
     public boolean setVisible(boolean visible, boolean restart) {
         final boolean changed = super.setVisible(visible, restart);
         final ChildDrawable[] array = mLayerState.mChildren;
 
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setVisible(visible, restart);
@@ -685,9 +693,14 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
+    public void setAlpha(int alpha) {
+        mPaint.setAlpha(alpha);
+    }
+
+    @Override
     public void setDither(boolean dither) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setDither(dither);
@@ -696,14 +709,9 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public void setAlpha(int alpha) {
-        mPaint.setAlpha(alpha);
-    }
-
-    @Override
     public void setColorFilter(ColorFilter colorFilter) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setColorFilter(colorFilter);
@@ -714,23 +722,11 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     @Override
     public void setTintList(ColorStateList tint) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        final int N = LayerState.N_CHILDREN;
+        final int N = mLayerState.N_CHILDREN;
         for (int i = 0; i < N; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
                 dr.setTintList(tint);
-            }
-        }
-    }
-
-    @Override
-    public void setTintMode(Mode tintMode) {
-        final ChildDrawable[] array = mLayerState.mChildren;
-        final int N = LayerState.N_CHILDREN;
-        for (int i = 0; i < N; i++) {
-            final Drawable dr = array[i].mDrawable;
-            if (dr != null) {
-                dr.setTintMode(tintMode);
             }
         }
     }
@@ -748,14 +744,13 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public void setAutoMirrored(boolean mirrored) {
-        mLayerState.mAutoMirrored = mirrored;
-
+    public void setTintMode(Mode tintMode) {
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        final int N = mLayerState.N_CHILDREN;
+        for (int i = 0; i < N; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
-                dr.setAutoMirrored(mirrored);
+                dr.setTintMode(tintMode);
             }
         }
     }
@@ -766,12 +761,14 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
-    public void jumpToCurrentState() {
+    public void setAutoMirrored(boolean mirrored) {
+        mLayerState.mAutoMirrored = mirrored;
+
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null) {
-                dr.jumpToCurrentState();
+                dr.setAutoMirrored(mirrored);
             }
         }
     }
@@ -782,11 +779,22 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
     }
 
     @Override
+    public void jumpToCurrentState() {
+        final ChildDrawable[] array = mLayerState.mChildren;
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
+            final Drawable dr = array[i].mDrawable;
+            if (dr != null) {
+                dr.jumpToCurrentState();
+            }
+        }
+    }
+
+    @Override
     protected boolean onStateChange(int[] state) {
         boolean changed = false;
 
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null && dr.isStateful() && dr.setState(state)) {
                 changed = true;
@@ -805,7 +813,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         boolean changed = false;
 
         final ChildDrawable[] array = mLayerState.mChildren;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final Drawable dr = array[i].mDrawable;
             if (dr != null && dr.setLevel(level)) {
                 changed = true;
@@ -826,7 +834,7 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
 
     private int getMaxIntrinsicWidth() {
         int width = -1;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final ChildDrawable r = mLayerState.mChildren[i];
             if (r.mDrawable == null) {
                 continue;
@@ -844,9 +852,18 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return (int) (getMaxIntrinsicHeight() * DEFAULT_VIEW_PORT_SCALE);
     }
 
+    @Override
+    public ConstantState getConstantState() {
+        if (mLayerState.canConstantState()) {
+            mLayerState.mChangingConfigurations = getChangingConfigurations();
+            return mLayerState;
+        }
+        return null;
+    }
+
     private int getMaxIntrinsicHeight() {
         int height = -1;
-        for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+        for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
             final ChildDrawable r = mLayerState.mChildren[i];
             if (r.mDrawable == null) {
                 continue;
@@ -859,20 +876,15 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return height;
     }
 
-    @Override
-    public ConstantState getConstantState() {
-        if (mLayerState.canConstantState()) {
-            mLayerState.mChangingConfigurations = getChangingConfigurations();
-            return mLayerState;
-        }
-        return null;
+    public boolean isMaskValid() {
+        return sMask != null && mMaskId == sMask.hashCode();
     }
 
     @Override
     public Drawable mutate() {
         if (!mMutated && super.mutate() == this) {
             mLayerState = createConstantState(mLayerState, null);
-            for (int i = 0; i < LayerState.N_CHILDREN; i++) {
+            for (int i = 0; i < mLayerState.N_CHILDREN; i++) {
                 final Drawable dr = mLayerState.mChildren[i].mDrawable;
                 if (dr != null) {
                     dr.mutate();
@@ -881,19 +893,6 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             mMutated = true;
         }
         return this;
-    }
-
-    public boolean isMaskValid() {
-        return sMask != null && mMaskId == sMask.hashCode();
-    }
-
-    protected static @NonNull
-    TypedArray obtainAttributes(@NonNull Resources res,
-                                @Nullable Theme theme, @NonNull AttributeSet set, @NonNull int[] attrs) {
-        if (theme == null) {
-            return res.obtainAttributes(set, attrs);
-        }
-        return theme.obtainStyledAttributes(set, attrs, 0, 0);
     }
 
     static class ChildDrawable {
@@ -1021,13 +1020,11 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
             return false;
         }
 
-        @RequiresApi(api = VERSION_CODES.O)
         @Override
         public Drawable newDrawable() {
             return new AdaptiveIconCompat(this, null);
         }
 
-        @RequiresApi(api = VERSION_CODES.O)
         @Override
         public Drawable newDrawable(@Nullable Resources res) {
             return new AdaptiveIconCompat(this, res);

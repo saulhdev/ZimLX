@@ -35,14 +35,17 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
@@ -54,6 +57,7 @@ import com.android.launcher3.views.ClipPathView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
+import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -66,6 +70,7 @@ import androidx.annotation.Nullable;
  */
 public abstract class IconShape {
 
+    private static final String TAG = "IconShape";
     private static IconShape sInstance = new Circle();
     private static Path sShapePath;
     private static float sNormalizationScale = ICON_VISIBLE_AREA_FACTOR;
@@ -77,6 +82,17 @@ public abstract class IconShape {
     }
 
     public static Path getShapePath() {
+        if (Utilities.ATLEAST_OREO) {
+            try {
+                // Try to load the path from Mask Icon
+                Drawable icon = ZimIconProvider.getAdaptiveIconDrawableWrapper(Launcher.mContext);
+                icon.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
+                return (Path) icon.getClass().getMethod("getIconMask").invoke(icon);
+            } catch (Exception e) {
+                Log.e(TAG, "Error loading mask icon", e);
+            }
+        }
+
         if (sShapePath == null) {
             Path p = new Path();
             getShape().addToPath(p, 0, 0, DEFAULT_PATH_SIZE * 0.5f);

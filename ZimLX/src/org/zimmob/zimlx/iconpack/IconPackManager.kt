@@ -35,7 +35,6 @@ import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
-import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider

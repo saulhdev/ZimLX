@@ -10,7 +10,7 @@
             app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.IconMaskingPreference
-            android:defaultValue="true"
+            android:defaultValue="false"
             android:key="pref_iconPackMasking"
             android:persistent="true"
             android:summary="@string/pref_icon_pack_masking_summary"

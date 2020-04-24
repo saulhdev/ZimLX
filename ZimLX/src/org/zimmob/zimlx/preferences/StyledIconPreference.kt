@@ -24,7 +24,9 @@ import android.widget.ImageView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.launcher3.R
+import com.android.launcher3.Utilities
 import org.zimmob.zimlx.util.forEachIndexed
+import org.zimmob.zimlx.util.zimPrefs
 
 open class StyledIconPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {
 
@@ -44,6 +46,13 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
         parent?.forEachIndexed { i, pref ->
             if (pref.key == key) index = i
             if (pref is StyledIconPreference) count++
+        }
+        applyColor()
+    }
+
+    private fun applyColor() {
+        icon = icon?.mutate()?.apply {
+            setTint(context.zimPrefs.accentColor)
         }
     }
 }

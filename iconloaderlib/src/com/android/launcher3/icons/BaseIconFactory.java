@@ -49,8 +49,8 @@ public class BaseIconFactory implements AutoCloseable {
     private ShadowGenerator mShadowGenerator;
     private final boolean mShapeDetection;
 
-    private Drawable mWrapperIcon;
-    private int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
+    protected Drawable mWrapperIcon;
+    protected int mWrapperBackgroundColor = DEFAULT_WRAPPER_BACKGROUND;
 
     protected BaseIconFactory(Context context, int fillResIconDpi, int iconBitmapSize,
             boolean shapeDetection) {
