@@ -31,7 +31,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DbHelper extends SQLiteOpenHelper {
-    private static final String DATABASE_HOME = LauncherFiles.LAUNCHER_DB;
+    private static final String DATABASE_HOME = LauncherFiles.LAUNCHER_DB2;
     private static final String TABLE_APP_COUNT = "app_count";
     private static final String COLUMN_PACKAGE_NAME = "package_name";
     private static final String COLUMN_PACKAGE_COUNT = "package_count";
