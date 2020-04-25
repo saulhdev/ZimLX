@@ -3,5 +3,17 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
+    <Preference
+        android:key="kill"
+        android:summary="@string/restart_zim_pref_summary"
+        android:title="@string/restart_zim_pref_title"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_showDebugInfo"
+        android:persistent="true"
+        android:title="@string/show_debug_info_pref_title"
+        app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

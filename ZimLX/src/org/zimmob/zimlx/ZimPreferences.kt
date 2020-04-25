@@ -111,7 +111,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
     val appGroupsManager by lazy { AppGroupsManager(this) }
     val drawerTabs get() = appGroupsManager.drawerTabs
-
+    val showPredictions by BooleanPref("pref_show_predictions", false, recreate)
 
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)

@@ -24,12 +24,10 @@ import android.widget.ImageView
 import androidx.preference.Preference
 import androidx.preference.PreferenceViewHolder
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import org.zimmob.zimlx.util.forEachIndexed
 import org.zimmob.zimlx.util.zimPrefs
 
 open class StyledIconPreference(context: Context, attrs: AttributeSet) : Preference(context, attrs) {
-
     var count = 1
     var index = 0
 
@@ -54,5 +52,6 @@ open class StyledIconPreference(context: Context, attrs: AttributeSet) : Prefere
         icon = icon?.mutate()?.apply {
             setTint(context.zimPrefs.accentColor)
         }
+
     }
 }

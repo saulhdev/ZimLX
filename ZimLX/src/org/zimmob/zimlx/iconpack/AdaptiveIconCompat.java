@@ -48,6 +48,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 
+import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 
 import org.xmlpull.v1.XmlPullParser;
@@ -202,15 +203,22 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         }
     }
 
+    /**
+     * Constructor used to dynamically create this drawable.
+     *
+     * @param backgroundDrawable drawable that should be rendered in the background
+     * @param foregroundDrawable drawable that should be rendered in the foreground
+     */
     @RequiresApi(api = VERSION_CODES.O)
-    @SuppressLint("RestrictedApi")
-    private Path createMaskPath() {
-        try {
-            return IconShapeManager.getInstanceNoCreate().getIconShape().getMaskPath();
-        } catch (Exception e) {
-            Log.d(TAG, "Can't load icon mask", e);
+    public AdaptiveIconCompat(Drawable backgroundDrawable,
+                              Drawable foregroundDrawable) {
+        this((LayerState) null, null);
+        if (backgroundDrawable != null) {
+            addLayer(BACKGROUND_ID, createChildDrawable(backgroundDrawable));
         }
-        return new AdaptiveIconDrawable(null, null).getIconMask();
+        if (foregroundDrawable != null) {
+            addLayer(FOREGROUND_ID, createChildDrawable(foregroundDrawable));
+        }
     }
 
     private ChildDrawable createChildDrawable(Drawable drawable) {
@@ -226,21 +234,15 @@ public class AdaptiveIconCompat extends Drawable implements Drawable.Callback {
         return new LayerState(state, this, res);
     }
 
-    /**
-     * Constructor used to dynamically create this drawable.
-     *
-     * @param backgroundDrawable drawable that should be rendered in the background
-     * @param foregroundDrawable drawable that should be rendered in the foreground
-     */
-    public AdaptiveIconCompat(Drawable backgroundDrawable,
-                              Drawable foregroundDrawable) {
-        this((LayerState) null, null);
-        if (backgroundDrawable != null) {
-            addLayer(BACKGROUND_ID, createChildDrawable(backgroundDrawable));
+    @RequiresApi(api = VERSION_CODES.O)
+    @SuppressLint("RestrictedApi")
+    private Path createMaskPath() {
+        try {
+            return IconShapeManager.Companion.getInstance(Launcher.mContext).getIconShape().getMaskPath();
+        } catch (Exception e) {
+            Log.d(TAG, "Can't load icon mask", e);
         }
-        if (foregroundDrawable != null) {
-            addLayer(FOREGROUND_ID, createChildDrawable(foregroundDrawable));
-        }
+        return new AdaptiveIconDrawable(null, null).getIconMask();
     }
 
     /**

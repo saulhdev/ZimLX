@@ -68,17 +68,16 @@ public class FolderInfo extends ItemInfo {
     public static final int FLAG_MULTI_PAGE_ANIMATION = 0x00000004;
     public static final int FLAG_COVER_MODE = 0x00000008;
     public int options;
-    public String swipeUpAction;
-
-    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
 
     /**
      * The apps and shortcuts
      */
     public ArrayList<WorkspaceItemInfo> contents = new ArrayList<WorkspaceItemInfo>();
 
+    public String swipeUpAction;
     ArrayList<FolderListener> listeners = new ArrayList<FolderListener>();
 
+    private FirstItemProvider firstItemProvider = new FirstItemProvider(this);
     public FolderInfo() {
         itemType = LauncherSettings.Favorites.ITEM_TYPE_FOLDER;
         user = Process.myUserHandle();

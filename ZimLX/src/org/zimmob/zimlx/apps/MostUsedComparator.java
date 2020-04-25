@@ -41,12 +41,9 @@ public class MostUsedComparator implements Comparator<AppInfo> {
         for (int i = 0; i < mApps.size(); i++) {
             if (mApps.get(i).getPackageName().equals(app1.componentName.getPackageName())) {
                 item1 = mApps.get(i).getCount();
-                Log.e(TAG, "Sorting Apps 1 " + item1);
-
             }
             if (mApps.get(i).getPackageName().equals(app2.componentName.getPackageName())) {
                 item2 = mApps.get(i).getCount();
-                Log.e(TAG, "Sorting Apps 2 " + item2);
             }
         }
 

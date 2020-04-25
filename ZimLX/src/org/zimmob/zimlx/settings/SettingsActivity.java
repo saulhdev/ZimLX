@@ -476,9 +476,7 @@ public class SettingsActivity extends SettingsBaseActivity
                 if (preference instanceof PreferenceGroup) {
                     onPreferencesAdded((PreferenceGroup) preference);
                 }
-
             }
-
         }
     }
 
@@ -700,6 +698,15 @@ public class SettingsActivity extends SettingsBaseActivity
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
+            switch (preference.getKey()) {
+                case ENABLE_MINUS_ONE_PREF:
+                    FragmentManager fm = getFragmentManager();
+                    if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
+                        InstallFragment fragment = new InstallFragment();
+                        fragment.show(fm, BRIDGE_TAG);
+                    }
+                    break;
+            }
             return false;
         }
 

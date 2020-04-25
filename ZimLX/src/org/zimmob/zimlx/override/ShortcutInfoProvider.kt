@@ -21,6 +21,8 @@ import android.content.Context
 import android.content.pm.LauncherActivityInfo
 import android.os.Build
 import com.android.launcher3.LauncherAppState
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
+import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
 import com.android.launcher3.WorkspaceItemInfo
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.icons.LauncherIcons
@@ -74,6 +76,12 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
 
     override fun getSwipeUpAction(info: WorkspaceItemInfo): String? {
         return info.swipeUpAction
+    }
+
+    override fun supportsBadgeVisible(info: WorkspaceItemInfo) = when (info.itemType) {
+        ITEM_TYPE_SHORTCUT, ITEM_TYPE_DEEP_SHORTCUT -> true
+        // TODO if work badge is present
+        else -> false
     }
 
     private fun getLauncherActivityInfo(info: WorkspaceItemInfo): LauncherActivityInfo? {

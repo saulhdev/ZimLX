@@ -132,8 +132,6 @@
     <string name="summary__app_search_hidden">Display hidden apps</string>
     <string name="summary__sort_mode">Choose the sort mode</string>
 
-    <string name="pref_drawer_columns">Number of columns</string>
-    <string name="pref_prediction_count">Number of suggestions</string>
     <string name="separate_work_apps_pref_title">Second tab for work apps</string>
     <string name="all_apps_label_pref_title">Show "All Apps" label</string>
     <string name="title_app_suggestions">Display app suggestions</string>
@@ -146,7 +144,6 @@
     <string name="pref_appcategorization_enable_title">Categorize Apps</string>
     <string name="pref_appcategorization_enable_summary">Fix my messy drawer.</string>
     <string name="pref_appcategorization_style_text">Style</string>
-    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
     <string name="pref_app_groups_create">Create</string>
     <string name="pref_appcategorization_folders_title">Folders</string>
     <string name="pref_appcategorization_folders_summary">Tap to open pop-up.</string>
@@ -158,6 +155,20 @@
     <string name="add_new_tab">Add</string>
     <string name="rename_tab">Rename</string>
     <string name="title_app_suggestions_in_search">App suggestions</string>
+
+    <string name="app_drawer_pref_title">Drawer</string>
+    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
+
+    <string name="pref_category_theme">Style</string>
+
+    <string name="pref_drawer_columns">Column Count</string>
+    <string name="pref_prediction_count">Suggestion Count</string>
+    <string name="pref_drawer_padding">Row Height</string>
+
+    <string name="hide_apps">Hidden App Shortcuts</string>
+
+    <string name="categorization">Categories</string>
+    <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
 
     <!-- PREFERENCES THEME -->
     <string name="pref_cat__theme_icons">Icons</string>
@@ -427,7 +438,6 @@
     <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
     <string name="pref_show_assistant_title">Voice search button</string>
     <string name="bubble_searchbar">Dual bubble search bar</string>
-    <string name="app_drawer_pref_title">App drawer</string>
     <string name="title_all_apps_search">Drawer search bar</string>
     <string name="title_all_apps_google_search">Global search</string>
     <string name="summary_all_apps_google_search">Find web results and apps</string>
@@ -502,6 +512,16 @@
     <string name="onbording_settings_title">Set-up %s</string>
     <string name="onbording_settings_summary">Long press your home screen</string>
     <string name="onboarding_swipe_up">Swipe up to see all your apps</string>
+    <string name="restart_zim_pref_summary">Can be helpful if some settings are not properly applied</string>
+    <string name="show_debug_info_pref_title">Show debug info</string>
+    <string name="hide_apps_sum">Hide app from the app drawer</string>
+    <string name="debug_pref_title">Debug</string>
+    <string name="folder_cover_mode">Cover mode</string>
+    <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
+    <string name="hide_app_sum">Hide app from the app drawer</string>
+    <string name="hide_app">Hide app</string>
+    <string name="debug_component_name">Component name</string>
+    <string name="debug_component_name_copied">Copied</string>
 
     <!-- PREFERENCES ABOUT-->
     <string name="about">About</string>
@@ -531,7 +551,6 @@
     <plurals name="hidden_apps_count">
         <item quantity="other">%1$d Hidden</item>
     </plurals>
-    <string name="hide_apps">Hidden App Shortcuts</string>
     <string name="pref_appcategorization_flowerpot_title">App Category</string>
 
     <string name="category_business_and_productivity">Business &amp; Productivity</string>

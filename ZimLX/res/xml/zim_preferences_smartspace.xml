@@ -1,7 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__notifications">
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="true"
+        android:key="pref_enable_minus_one"
+        android:summary="@string/pref_show_google_now_summary"
+        android:title="@string/title_show_google_app"
+        app:controllerClass="org.zimmob.zimlx.controller.MinusOneController"
+        app:iconSpaceReserved="false" />
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

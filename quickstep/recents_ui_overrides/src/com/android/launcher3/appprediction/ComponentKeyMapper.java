@@ -26,7 +26,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 
-public class ComponentKeyMapper {
+public class ComponentKeyMapper<T> {
 
     protected final ComponentKey componentKey;
     private final Context mContext;

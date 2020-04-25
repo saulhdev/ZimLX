@@ -714,6 +714,10 @@ public final class Utilities {
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
+            FolderInfo folderInfo = (FolderInfo) info;
+            if (folderInfo.isCoverMode()) {
+                return getFullDrawable(launcher, folderInfo.getCoverInfo(), folderInfo.cellX, folderInfo.cellY, flattenDrawable, outObj);
+            }
             FolderAdaptiveIcon icon = FolderAdaptiveIcon.createFolderAdaptiveIcon(
                     launcher, info.id, new Point(width, height));
             if (icon == null) {

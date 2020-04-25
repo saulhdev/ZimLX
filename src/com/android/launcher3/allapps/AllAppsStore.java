@@ -21,9 +21,12 @@ import android.view.ViewGroup;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.ItemInfo;
+import com.android.launcher3.Launcher;
 import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
+
+import org.zimmob.zimlx.util.DbHelper;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -100,9 +103,12 @@ public class AllAppsStore {
      * Removes some apps from the list.
      */
     public void removeApps(List<AppInfo> apps) {
+        DbHelper db = new DbHelper(Launcher.mContext);
         for (AppInfo app : apps) {
             mComponentToAppMap.remove(app.toComponentKey());
+            db.deleteApp(app.componentName.getPackageName());
         }
+        db.close();
         notifyUpdate();
     }
 
