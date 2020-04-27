@@ -167,14 +167,12 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     }
 
     abstract class Holder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-
         open fun bind(item: Item) {
 
         }
     }
 
     class HeaderHolder(itemView: View) : Holder(itemView) {
-
         init {
             itemView.findViewById<TextView>(android.R.id.text1).setText(R.string.enabled_icon_packs)
         }
@@ -293,7 +291,6 @@ class IconPackAdapter(context: Context) : RecyclerView.Adapter<IconPackAdapter.H
     }
 
     companion object {
-
         const val TYPE_HEADER = 0
         const val TYPE_PACK = 1
         const val TYPE_DIVIDER = 2

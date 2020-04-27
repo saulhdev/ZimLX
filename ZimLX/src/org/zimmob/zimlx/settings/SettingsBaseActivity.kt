@@ -70,11 +70,6 @@ open class SettingsBaseActivity : AppCompatActivity(), ThemeManager.ThemeableAct
         toolbar.navigationIcon = resources.getDrawable(R.drawable.ic_arrow_back_white_24px)
         setSupportActionBar(toolbar)
 
-        /*
-        layoutInflater.inflate(R.layout.toolbar, findViewById<View>(id.content) as ViewGroup)
-        val toolbar = findViewById<View>(R.id.toolbar) as Toolbar
-        setSupportActionBar(toolbar)*/
-
         var flags = window.decorView.systemUiVisibility
         if (Utilities.ATLEAST_MARSHMALLOW) {
             val useLightBars = getBooleanAttr(R.attr.useLightSystemBars)

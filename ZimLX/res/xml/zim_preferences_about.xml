@@ -1,9 +1,48 @@
 <?xml version="1.0" encoding="utf-8"?>
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <org.zimmob.zimlx.preferences.HeaderPreference
+        android:iconSpaceReserved="false"
+        android:selectable="false" />
 
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:title="Settings">
-    <org.zimmob.zimlx.preferences.AboutPreference
-        android:title="@string/app_name"
-        app:iconSpaceReserved="false" />
+    <org.zimmob.zimlx.preferences.StyledIconPreference
+        android:icon="@drawable/ic_favorite_black_24dp"
+        android:key="pref_key__donate"
+        android:summary="@string/summary__about_donate"
+        android:title="@string/title__about_donate" />
+
+    <org.zimmob.zimlx.preferences.StyledIconPreference
+        android:icon="@drawable/ic_bug_report_black_24dp"
+        android:key="pref_key__bug_report"
+        android:summary="@string/summary__about_bug_report"
+        android:title="@string/title__about_bug_reports" />
+
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory
+        android:key="pref_key__project_team"
+        android:title="@string/title__about_project_team">
+
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/category__about_licenses">
+
+        <org.zimmob.zimlx.preferences.StyledIconPreference
+            android:icon="@drawable/ic_copyright_black_24dp"
+            android:key="pref_key__project_license"
+            android:title="@string/title__about_project_license" />
+
+        <org.zimmob.zimlx.preferences.StyledIconPreference
+            android:icon="@drawable/ic_copyright_black_24dp"
+            android:key="pref_key__open_source"
+            android:title="@string/title__about_open_source" />
+
+        <org.zimmob.zimlx.preferences.StyledIconPreference
+            android:icon="@drawable/ic_code_black_24dp"
+            android:key="pref_key__source_code"
+            android:summary="@string/summary__about_contribute_code"
+            android:title="@string/title__about_source_code" />
+
+        <org.zimmob.zimlx.preferences.StyledIconPreference
+            android:icon="@drawable/ic_code_black_24dp"
+            android:key="pref_key__copy_build_information"
+            android:title="@string/title__about_copy_build" />
+
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

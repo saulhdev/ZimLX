@@ -2,7 +2,8 @@
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
     <!-- Application name -->
     <string name="derived_app_name" translatable="false">Zim Launcher</string>
-
+    <string name="app_version">Version</string>
+    <string name="app_build">Build</string>
     <!-- Dialogs -->
     <string name="on">On</string>
     <string name="off">Off</string>
@@ -525,7 +526,21 @@
 
     <!-- PREFERENCES ABOUT-->
     <string name="about">About</string>
-
+    <string name="title__about_donate">Donate</string>
+    <string name="title__about_bug_reports">Report bugs</string>
+    <string name="title__about_project_license">Project License</string>
+    <string name="title__about_copy_build">Copy build information</string>
+    <string name="title__about_source_code">Source Code</string>
+    <string name="title__about_project_team">Project Team</string>
+    <string name="title__about_open_source">Open Source Libraries</string>
+    <string name="summary__about_donate">More information on donating or otherwise supporting this project</string>
+    <string name="summary__about_bug_report">Give feedback, report bugs or suggest improvements</string>
+    <string name="summary__about_contribute_code">Contribute code to the project. Everybody is welcome todo so, including newcomers</string>
+    <string name="category__about_licenses">License</string>
+    <string name="app_donate_url" translatable="false">https://paypal.me/saulhenriquez</string>
+    <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
+    <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
+    <string name="changelog">Changelog</string>
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
     <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->

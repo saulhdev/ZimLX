@@ -90,12 +90,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     /* --DESKTOP-- */
     val usePopupMenuView by BooleanPref("pref_desktopUsePopupMenuView", true, doNothing)
     val lockDesktop by BooleanPref("pref_lockDesktop", false, reloadAll)
-    fun setDashEnable(enable: Boolean) {
-        sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
-    }
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
+
+    val dashEnable by BooleanPref("pref_key__minibar_enable", true, recreate)
+    fun setDashEnable(enable: Boolean) {
+        sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
+    }
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
     val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
 

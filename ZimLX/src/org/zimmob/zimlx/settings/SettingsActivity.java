@@ -25,9 +25,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -35,6 +37,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -70,6 +73,8 @@ import com.android.launcher3.util.SecureSettingsObserver;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
+import net.gsantner.opoc.format.markdown.SimpleMarkdownParser;
+
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.FakeLauncherKt;
 import org.zimmob.zimlx.ZimLauncher;
@@ -85,12 +90,15 @@ import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.preferences.ButtonPreference;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.IconShapePreference;
+import org.zimmob.zimlx.preferences.StyledIconPreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
+import org.zimmob.zimlx.util.AboutUtils;
 import org.zimmob.zimlx.util.SettingsObserver;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 import org.zimmob.zimlx.views.SpringRecyclerView;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Set;
 
@@ -485,7 +493,6 @@ public class SettingsActivity extends SettingsBaseActivity
      */
     public static class LauncherSettingsFragment extends BaseFragment {
         private boolean mShowDevOptions;
-        private SecureSettingsObserver mNotificationDotsObserver;
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -571,7 +578,6 @@ public class SettingsActivity extends SettingsBaseActivity
             mContext = getActivity();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             int preference = getContent();
-            ContentResolver resolver = mContext.getContentResolver();
 
             switch (preference) {
                 case R.xml.zim_preferences_theme:
@@ -597,7 +603,49 @@ public class SettingsActivity extends SettingsBaseActivity
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;
+                case R.xml.zim_preferences_about:
+                    AboutUtils au = new AboutUtils(getContext());
+                    Preference appInfo = findPreference("pref_key__copy_build_information");
+                    au.getAppInfoSummary(appInfo);
+                    updateProjectTeam(au);
+                    break;
+
             }
+        }
+
+        public void updateProjectTeam(AboutUtils au) {
+            Preference pref;
+            if ((pref = findPreference("pref_key__project_team")) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
+                String[] data = (au.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
+
+                for (int i = 0; i + 2 < data.length; i += 4) {
+                    StyledIconPreference person = new StyledIconPreference(au.mContext);
+                    person.setTitle(data[i]);
+                    person.setSummary(data[i + 1]);
+                    person.setIcon(R.drawable.ic_person_black_24dp);
+                    try {
+                        Uri uri = Uri.parse(data[i + 2]);
+                        Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        person.setIntent(intent);
+                    } catch (Exception ignored) {
+                    }
+                    appendPreference(person, (PreferenceGroup) pref);
+                }
+
+            }
+        }
+
+        protected boolean appendPreference(Preference pref, @Nullable PreferenceGroup target) {
+            if (target == null) {
+                if ((target = getPreferenceScreen()) == null) {
+                    return false;
+                }
+            }
+            if (pref.getIcon() != null) {
+                pref.setIcon(pref.getIcon());
+            }
+            return target.addPreference(pref);
         }
 
         @Override
@@ -731,8 +779,47 @@ public class SettingsActivity extends SettingsBaseActivity
 
         @Override
         public boolean onPreferenceTreeClick(Preference preference) {
+            AboutUtils au = new AboutUtils(getContext());
             if (preference.getKey() != null) {
                 switch (preference.getKey()) {
+                    case "pref_key__donate":
+                        au.openWebBrowser(getString(R.string.app_donate_url));
+                        break;
+                    case "pref_key__bug_report":
+                        au.openWebBrowser(getString(R.string.app_bugreport_url));
+                        break;
+
+                    case "pref_key__project_license":
+                        try {
+                            au.showDialogWithHtmlTextView(R.string.category__about_licenses, new SimpleMarkdownParser().parse(
+                                    getResources().openRawResource(R.raw.license),
+                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "pref_key__open_source":
+                        try {
+                            au.showDialogWithHtmlTextView(R.string.title__about_open_source, new SimpleMarkdownParser().parse(
+                                    getResources().openRawResource(R.raw.opensource),
+                                    "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW).getHtml());
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                        break;
+                    case "pref_key__source_code":
+                        au.openWebBrowser(getString(R.string.app_source_code_url));
+                        break;
+                    case "pref_key__copy_build_information":
+                        au.setClipboard(preference.getSummary());
+                        SimpleMarkdownParser smp = new SimpleMarkdownParser();
+                        try {
+                            String html = smp.parse(getResources().openRawResource(R.raw.changelog), "", SimpleMarkdownParser.FILTER_ANDROID_TEXTVIEW, SimpleMarkdownParser.FILTER_CHANGELOG).getHtml();
+                            au.showDialogWithHtmlTextView(R.string.changelog, html);
+                        } catch (Exception ignored) {
+
+                        }
+                        break;
                     default:
                         if (preference instanceof ColorPreferenceCompat) {
                             ColorPickerDialog dialog = ((ColorPreferenceCompat) preference).getDialog();
@@ -855,8 +942,6 @@ public class SettingsActivity extends SettingsBaseActivity
         }
     }
 
-
-
     /**
      * Content observer which listens for system auto-rotate setting changes, and enables/disables
      * the launcher rotation setting accordingly.
@@ -878,7 +963,6 @@ public class SettingsActivity extends SettingsBaseActivity
                     ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
-
 
     /**
      * Content observer which listens for system badging setting changes, and updates the launcher

@@ -71,5 +71,6 @@
             android:summary="@string/pref_summary__about"
             android:title="@string/about"
             app:content="@xml/zim_preferences_about" />
+
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

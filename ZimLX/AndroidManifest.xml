@@ -31,6 +31,14 @@
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="org.zimmob.zimlx.settings.AboutActivity"
+            android:autoRemoveFromRecents="true"
+            android:label="@string/about"
+            android:parentActivityName="org.zimmob.zimlx.settings.SettingsActivity"
+            android:theme="@style/SettingsTheme.V2" />
+
         <activity
             android:name="org.zimmob.zimlx.BlankActivity"
             android:theme="@style/Theme.Transparent" />
