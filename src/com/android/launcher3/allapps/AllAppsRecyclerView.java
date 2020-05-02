@@ -427,4 +427,8 @@ public class AllAppsRecyclerView extends BaseRecyclerView implements LogContaine
     public boolean hasOverlappingRendering() {
         return false;
     }
+
+    public void setScrollbarColor(int color) {
+        mScrollbar.setColor(color);
+    }
 }

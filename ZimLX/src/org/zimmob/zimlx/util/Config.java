@@ -91,4 +91,8 @@ public class Config {
     public boolean enableLegacyTreatment() {
         return context.getResources().getBoolean(R.bool.config_enable_legacy_treatment);
     }
+
+    public boolean enableSmartspace() {
+        return context.getResources().getBoolean(R.bool.config_enable_smartspace);
+    }
 }

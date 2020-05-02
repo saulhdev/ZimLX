@@ -1,5 +1,5 @@
 /*
- * 2020 Zim Launcher
+ * Copyright (c) 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -124,8 +124,8 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         Utilities.getZimPrefs(context).setHiddenPredictionAppSet(hiddenApps);
     }
 
-    List<ComponentKeyMapper<AppInfo>> getPredictions() {
-        List<ComponentKeyMapper<AppInfo>> list = new ArrayList<>();
+    public List<ComponentKeyMapper> getPredictions() {
+        List<ComponentKeyMapper> list = new ArrayList<>();
         if (isPredictorEnabled()) {
             clearNonExistentPackages();
 
@@ -163,7 +163,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         super.logAppLaunch(v, intent);
         if (isPredictorEnabled() && recursiveIsDrawer(v)) {
             ComponentName componentInfo = intent.getComponent();
-            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo)) {
+            if (componentInfo != null && mAppFilter.shouldShowApp(componentInfo, Process.myUserHandle())) {
                 clearNonExistentPackages();
 
                 Set<String> predictionSet = getStringSetCopy();
@@ -305,7 +305,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             return mPredictor.isPredictorEnabled();
         }
 
-        public List<ComponentKeyMapper<AppInfo>> getPredictions() {
+        public List<ComponentKeyMapper> getPredictions() {
             return mPredictor.getPredictions();
         }
 

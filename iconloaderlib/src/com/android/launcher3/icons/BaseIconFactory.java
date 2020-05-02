@@ -257,7 +257,7 @@ public class BaseIconFactory implements AutoCloseable {
         badge.draw(target);
     }
 
-    private Bitmap createIconBitmap(Drawable icon, float scale) {
+    public Bitmap createIconBitmap(Drawable icon, float scale) {
         return createIconBitmap(icon, scale, mIconBitmapSize);
     }
 

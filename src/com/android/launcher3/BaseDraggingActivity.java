@@ -174,7 +174,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 LauncherAppsCompat.getInstance(this).startActivityForProfile(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
             }
-            getUserEventDispatcher().logAppLaunch(v, intent);
+            getUserEventDispatcher().logAppLaunch(v, intent, user);
             return true;
         } catch (ActivityNotFoundException | SecurityException e) {
             Toast.makeText(this, R.string.activity_not_found, Toast.LENGTH_SHORT).show();
@@ -217,7 +217,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                 AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), user,
                         sourceContainer);
             }
-            getUserEventDispatcher().logAppLaunch(v, intent);
+            getUserEventDispatcher().logAppLaunch(v, intent, user);
             if(Utilities.ATLEAST_Q)
                 getStatsLogManager().logAppLaunch(v, intent);
             return true;
@@ -257,8 +257,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
         }
     }
 
-    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info,
-            @Nullable String sourceContainer) {
+    private void startShortcutIntentSafely(Intent intent, Bundle optsBundle, ItemInfo info, @Nullable String sourceContainer) {
         try {
             StrictMode.VmPolicy oldPolicy = StrictMode.getVmPolicy();
             try {

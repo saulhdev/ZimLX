@@ -25,4 +25,7 @@
     <bool name="config_enable_white_only_treatment">false</bool>
     <!-- Wether or not adaptive icons should be generated for legacy icons -->
     <bool name="config_enable_legacy_treatment">true</bool>
+
+    <!-- Wether smartspace (at a glance) should be enabled per default -->
+    <bool name="config_enable_smartspace">true</bool>
 </resources>

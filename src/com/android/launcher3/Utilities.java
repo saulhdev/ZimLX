@@ -530,7 +530,7 @@ public final class Utilities {
     }
 
     public static int pxFromSp(float size, DisplayMetrics metrics) {
-        return (int) Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
+        return Math.round(TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP,
                 size, metrics));
     }
 
@@ -1001,6 +1001,10 @@ public final class Utilities {
         }
     }
 
+    public static SharedPreferences getReflectionPrefs(Context context) {
+        return context.getSharedPreferences(
+                LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
+    }
     /*END CUSTOM*/
 
 

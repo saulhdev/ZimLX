@@ -1,5 +1,5 @@
 /*
- * 2020 Zim Launcher
+ * Copyright (c) 2020 Zim Launcher
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  *
  */
 
-package org.zimmob.zimlx.apps;
+package org.zimmob.zimlx.predictions;
 
 import android.content.ComponentName;
 import android.content.Context;

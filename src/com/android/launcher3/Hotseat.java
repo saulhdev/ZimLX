@@ -37,6 +37,8 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
 
+    private CellLayout mContent;
+
     public Hotseat(Context context) {
         this(context, null);
     }
@@ -49,6 +51,9 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         super(context, attrs, defStyle);
     }
 
+    public CellLayout getLayout() {
+        return mContent;
+    }
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
         return mHasVerticalHotseat ? 0 : rank;

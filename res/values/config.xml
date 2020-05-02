@@ -61,7 +61,7 @@
     <bool name="hotseat_transpose_layout_with_orientation">true</bool>
 
     <!-- Various classes overriden by projects/build flavors. -->
-    <string name="app_filter_class" translatable="false"></string>
+    <string name="app_filter_class" translatable="false">org.zimmob.zimlx.allapps.CustomAppFilter</string>
     <string name="icon_provider_class" translatable="false">org.zimmob.zimlx.iconpack.ZimIconProvider</string>
     <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
     <string name="user_event_dispatcher_class" translatable="false"></string>

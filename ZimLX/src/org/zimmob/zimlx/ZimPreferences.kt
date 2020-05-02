@@ -22,6 +22,7 @@ import android.content.SharedPreferences
 import android.os.Looper
 import android.text.TextUtils
 import com.android.launcher3.*
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import org.json.JSONArray
 import org.json.JSONObject
@@ -29,16 +30,14 @@ import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.groups.AppGroupsManager
+import org.zimmob.zimlx.groups.DrawerTabs
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize2D
 import org.zimmob.zimlx.settings.SettingsActivity
 import org.zimmob.zimlx.smartspace.*
 import org.zimmob.zimlx.theme.ThemeManager
-import org.zimmob.zimlx.util.Config
-import org.zimmob.zimlx.util.dpToPx
-import org.zimmob.zimlx.util.pxToDp
-import org.zimmob.zimlx.util.runOnMainThread
+import org.zimmob.zimlx.util.*
 import java.io.File
 import java.util.*
 import java.util.concurrent.Callable
@@ -108,17 +107,27 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         return sort.toInt()
     }
 
+    val showPredictions by BooleanPref("pref_show_predictions", false, recreate)
+
+    /*val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
+        val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
+        header?.updateShowAllAppsLabel()
+    }*/
+    val currentTabsModel
+        get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
+    val drawerTabs get() = appGroupsManager.drawerTabs
+    val appGroupsManager by lazy { AppGroupsManager(this) }
+    val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
+    val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
-    val separateWorkApps by BooleanPref("pref_separateWorkApps", true, recreate)
-    val appGroupsManager by lazy { AppGroupsManager(this) }
-    val drawerTabs get() = appGroupsManager.drawerTabs
-    val showPredictions by BooleanPref("pref_show_predictions", false, recreate)
+
 
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
+    val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -138,13 +147,22 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.enableColorizedLegacyTreatment(), reloadIcons)
     val enableWhiteOnlyTreatment by BooleanPref("pref_enableWhiteOnlyTreatment", zimConfig.enableWhiteOnlyTreatment(), reloadIcons)
     val enableLegacyTreatment by BooleanPref("pref_enableLegacyTreatment", zimConfig.enableLegacyTreatment(), reloadIcons)
-    var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     /* --SMARTSPACE-- */
+    val enableSmartspace by BooleanPref("pref_smartspace", zimConfig.enableSmartspace())
+    val smartspaceTime by BooleanPref("pref_smartspace_time", false, refreshGrid)
+    val smartspaceTimeAbove by BooleanPref("pref_smartspace_time_above", false, refreshGrid)
+    val smartspaceTime24H by BooleanPref("pref_smartspace_time_24_h", false, refreshGrid)
+    val smartspaceDate by BooleanPref("pref_smartspace_date", true, refreshGrid)
     var smartspaceWidgetId by IntPref("smartspace_widget_id", -1, doNothing)
-    var weatherProvider by StringPref("pref_smartspace_widget_provider", SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    var weatherProvider by StringPref("pref_smartspace_widget_provider",
+            SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
     var eventProvider by StringPref("pref_smartspace_event_provider",
             SmartspaceDataWidget::class.java.name, ::updateSmartspaceProvider)
+    val weatherUnit by StringBasedPref("pref_weather_units", Temperature.Unit.Celsius, ::updateSmartspaceProvider,
+            Temperature.Companion::unitFromString, Temperature.Companion::unitToString) { }
+    var usePillQsb by BooleanPref("pref_use_pill_qsb", false, recreate)
+    var weatherIconPack by StringPref("pref_weatherIcons", "", updateWeatherData)
 
     var eventProviders = StringListPref("pref_smartspace_event_providers",
             ::updateSmartspaceProvider, listOf(eventProvider,
@@ -160,6 +178,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
+    var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
@@ -170,6 +189,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
+    val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)
+    val enablePhysics get() = !lowPerformanceMode
+
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
         override fun unflattenKey(key: String) = ComponentKey(ComponentName(context, key), Utilities.myUserHandle())

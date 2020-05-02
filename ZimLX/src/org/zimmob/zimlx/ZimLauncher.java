@@ -51,7 +51,7 @@ import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class ZimLauncher extends Launcher implements ZimPreferences.OnPreferenceChangeListener {
+public class ZimLauncher extends Launcher {
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public static final int CODE_EDIT_ICON = 100;
@@ -78,8 +78,10 @@ public class ZimLauncher extends Launcher implements ZimPreferences.OnPreference
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
         }
-        gestureController = new GestureController(this);
         super.onCreate(savedInstanceState);
+
+        IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
+        gestureController = new GestureController(this);
         mContext = this;
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
@@ -180,10 +182,6 @@ public class ZimLauncher extends Launcher implements ZimPreferences.OnPreference
 
     public GestureController getGestureController() {
         return gestureController;
-    }
-
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
     }
 
     public boolean shouldRecreate() {

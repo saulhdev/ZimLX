@@ -14,7 +14,7 @@
  *
  */
 
-package org.zimmob.zimlx.apps;
+package org.zimmob.zimlx.allapps;
 
 import android.util.Log;
 

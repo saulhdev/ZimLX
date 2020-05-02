@@ -3,6 +3,7 @@
     <!-- Wether or not blur is enabled per default -->
     <bool name="config_default_enable_blur">false</bool>
     <string name="config_default_search_provider" translatable="false">org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider</string>
+    <string name="user_event_dispatcher_class" translatable="false">org.zimmob.zimlx.predictions.CustomAppPredictor</string>
     <!-- Tag id used for view scrim -->
     <item type="id" name="view_scrim" />
     <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->

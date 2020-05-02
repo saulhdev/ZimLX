@@ -54,6 +54,8 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
+import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.AdapterDataObserver;
@@ -116,7 +118,10 @@ public class SettingsActivity extends SettingsBaseActivity
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
     public static final String NOTIFICATION_BADGING = "notification_badging";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
+    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
+
+    public final static String FEED_THEME_PREF = "pref_feedTheme";
 
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     private final static String BRIDGE_TAG = "tag_bridge";
@@ -580,6 +585,9 @@ public class SettingsActivity extends SettingsBaseActivity
             int preference = getContent();
 
             switch (preference) {
+                case R.xml.zim_preferences_app_drawer:
+                    //findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                    break;
                 case R.xml.zim_preferences_theme:
                     Preference resetIconsPreference = findPreference("pref_resetCustomIcons");
                     resetIconsPreference.setOnPreferenceClickListener(pref -> {
@@ -747,6 +755,16 @@ public class SettingsActivity extends SettingsBaseActivity
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
             switch (preference.getKey()) {
+                case SHOW_PREDICTIONS_PREF:
+                    if ((boolean) newValue) {
+                        //ReflectionClient.getInstance(getContext()).setEnabled(true);
+                        return true;
+                    }
+                    SuggestionConfirmationFragment confirmationFragment = new SuggestionConfirmationFragment();
+                    confirmationFragment.setTargetFragment(this, 0);
+                    confirmationFragment.show(getFragmentManager(), preference.getKey());
+                    break;
+
                 case ENABLE_MINUS_ONE_PREF:
                     FragmentManager fm = getFragmentManager();
                     if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
@@ -961,6 +979,36 @@ public class SettingsActivity extends SettingsBaseActivity
             mRotationPref.setEnabled(enabled);
             mRotationPref.setSummary(enabled
                     ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
+        }
+    }
+
+    public static class SuggestionConfirmationFragment extends DialogFragment implements
+            DialogInterface.OnClickListener {
+
+        public void onClick(final DialogInterface dialogInterface, final int n) {
+            if (getTargetFragment() instanceof PreferenceFragmentCompat) {
+                Preference preference = ((PreferenceFragmentCompat) getTargetFragment())
+                        .findPreference(SHOW_PREDICTIONS_PREF);
+                if (preference instanceof TwoStatePreference) {
+                    ((TwoStatePreference) preference).setChecked(false);
+                }
+            }
+            //ReflectionClient.getInstance(getContext()).setEnabled(false);
+        }
+
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.title_disable_suggestions_prompt)
+                    .setMessage(R.string.msg_disable_suggestions_prompt)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
+        }
+
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
     }
 

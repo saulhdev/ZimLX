@@ -4,6 +4,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
+    <!--
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_show_predictions"
+        android:summary="@string/summary_app_suggestions"
+        android:title="@string/title_app_suggestions"
+        app:controllerClass="org.zimmob.zimlx.settings.controller.AppSuggestionsController"
+        app:iconSpaceReserved="false" /> -->
+
     <ListPreference
         android:defaultValue="0"
         android:disableDependentsState="false"
@@ -13,6 +22,13 @@
         android:persistent="true"
         android:summary="%s"
         android:title="@string/title__sort_mode"
-        app:iconSpaceReserved="false" />/>
+        app:iconSpaceReserved="false" />
+
+    <androidx.preference.Preference
+        android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
+        android:key="pref_hiddenApps"
+        android:summary="@string/hide_apps_sum"
+        android:title="@string/hide_apps"
+        app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

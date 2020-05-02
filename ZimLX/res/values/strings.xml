@@ -167,6 +167,11 @@
     <string name="pref_drawer_padding">Row Height</string>
 
     <string name="hide_apps">Hidden App Shortcuts</string>
+    <string name="hidden_app">Hide apps</string>
+    <string name="hide_app_selected">&#160; hidden</string>
+    <string name="hide_app_reset">Reset</string>
+    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
+    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
 
     <string name="categorization">Categories</string>
     <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
@@ -541,6 +546,8 @@
     <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
     <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
     <string name="changelog">Changelog</string>
+
+
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
     <!-- Option to change the shape of the home screen icons to a square. [CHAR LIMIT=50] -->
@@ -591,4 +598,8 @@
     <string name="tab_type_custom">Custom</string>
     <string name="tab_type_custom_desc">Pick shortcuts manually.</string>
 
+    <string name="customize">Customize</string>
+    <string name="action_preferences">@string/customize</string>
+    <string name="default_live_wallpaper" translatable="false">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
+    <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
 </resources>

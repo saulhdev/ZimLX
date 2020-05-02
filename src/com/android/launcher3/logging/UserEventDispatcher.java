@@ -32,6 +32,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.SystemClock;
+import android.os.UserHandle;
 import android.util.Log;
 import android.view.View;
 
@@ -126,6 +127,20 @@ public class UserEventDispatcher implements ResourceBasedOverride {
 
     @Deprecated
     public void logAppLaunch(View v, Intent intent) {
+        LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
+                newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
+
+        if (fillInLogContainerData(event, v)) {
+            if (mDelegate != null) {
+                mDelegate.modifyUserEvent(event);
+            }
+            fillIntentInfo(event.srcTarget[0], intent);
+        }
+        dispatchUserEvent(event, intent);
+        mAppOrTaskLaunch = true;
+    }
+
+    public void logAppLaunch(View v, Intent intent, UserHandle user) {
         LauncherEvent event = newLauncherEvent(newTouchAction(Action.Touch.TAP),
                 newItemTarget(v, mInstantAppResolver), newTarget(Target.Type.CONTAINER));
 
@@ -325,6 +340,9 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         resetElapsedContainerMillis("state changed");
     }
 
+    public void updatePredictions() {
+        // do nothing
+    }
     public void logActionOnItem(int action, int dir, int itemType) {
         Target itemTarget = newTarget(Target.Type.ITEM);
         itemTarget.itemType = itemType;
@@ -456,4 +474,5 @@ public class UserEventDispatcher implements ResourceBasedOverride {
         }
         return result;
     }
+
 }

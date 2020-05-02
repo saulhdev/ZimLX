@@ -85,6 +85,7 @@ import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
+import com.android.launcher3.appprediction.ComponentKeyMapper;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
@@ -108,12 +109,11 @@ import com.android.launcher3.model.ModelWriter;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.popup.PopupContainerWithArrow;
 import com.android.launcher3.popup.PopupDataProvider;
-import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.states.InternalStateHandler;
 import com.android.launcher3.states.RotationHelper;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.touch.ItemClickHandler;
 import com.android.launcher3.uioverrides.UiFactory;
+import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
@@ -163,6 +163,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.predictions.CustomAppPredictor;
 
 /**
  * Default launcher application.
@@ -294,6 +295,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     public static Context mContext;
     public static boolean showFolderNotificationCount;
 
+    public Runnable mUpdatePredictionsIfResumed = () -> updatePredictions(true);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         RaceConditionTracker.onEvent(ON_CREATE_EVT, ENTER);
@@ -316,6 +318,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         super.onCreate(savedInstanceState);
         TraceHelper.partitionSection("Launcher-onCreate", "super call");
         mContext = this;
+
+        WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
+        wallpaperColorInfo.addOnChangeListener(this);
+        overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
+
         LauncherAppState app = LauncherAppState.getInstance(this);
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
@@ -416,6 +423,19 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 }
             }
         });
+
+        if (Utilities.getZimPrefs(this).getShowPredictions()) {
+            updatePredictions(true);
+        }
+    }
+
+    public void updatePredictions(boolean force) {
+        if (hasBeenResumed() || force) {
+            List<ComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
+            if (apps != null) {
+                // mAppsView.getFloatingHeaderView().setPredictedApps(apps);
+            }
+        }
     }
 
     protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
@@ -995,6 +1015,12 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (mLauncherCallbacks != null) {
             mLauncherCallbacks.onResume();
         }
+
+        /*Handler handler = getDragLayer().getHandler();
+        if (handler != null) {
+            handler.removeCallbacks(mUpdatePredictionsIfResumed);
+            Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
+        }*/
 
         TraceHelper.endSection("ON_RESUME");
         RaceConditionTracker.onEvent(ON_RESUME_EVT, EXIT);
@@ -1758,7 +1784,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
 
-
     @Override
     public boolean dispatchKeyEvent(KeyEvent event) {
         return (event.getKeyCode() == KeyEvent.KEYCODE_HOME) || super.dispatchKeyEvent(event);
@@ -2148,15 +2173,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             if (newItemsScreenId != currentScreenId) {
                 // We post the animation slightly delayed to prevent slowdowns
                 // when we are loading right after we return to launcher.
-                mWorkspace.postDelayed(new Runnable() {
-                    public void run() {
-                        if (mWorkspace != null) {
-                            AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
+                mWorkspace.postDelayed(() -> {
+                    if (mWorkspace != null) {
+                        AbstractFloatingView.closeAllOpenViews(Launcher.this, false);
 
-                            mWorkspace.snapToPage(newScreenIndex);
-                            mWorkspace.postDelayed(startBounceAnimRunnable,
-                                    NEW_APPS_ANIMATION_DELAY);
-                        }
+                        mWorkspace.snapToPage(newScreenIndex);
+                        mWorkspace.postDelayed(startBounceAnimRunnable,
+                                NEW_APPS_ANIMATION_DELAY);
                     }
                 }, NEW_APPS_PAGE_MOVE_DELAY);
             } else {
@@ -2401,6 +2424,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      */
     public void bindAllApplications(ArrayList<AppInfo> apps) {
         mAppsView.getAppsStore().setApps(apps);
+        getUserEventDispatcher().updatePredictions();
     }
 
     /**

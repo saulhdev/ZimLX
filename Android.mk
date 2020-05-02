@@ -107,6 +107,11 @@ LOCAL_REQUIRED_MODULES := privapp_whitelist_com.android.launcher3
 LOCAL_FULL_LIBS_MANIFEST_FILES := $(LOCAL_PATH)/AndroidManifest-common.xml
 
 LOCAL_JACK_COVERAGE_INCLUDE_FILTER := com.android.launcher3.*
+LOCAL_AIDL_INCLUDES := src/com/google/android/libraries/launcherclient
+
+LOCAL_SRC_FILES += \
+    src/com/google/android/libraries/launcherclient/ILauncherOverlayCallback.aidl \
+    src/com/google/android/libraries/launcherclient/ILauncherOverlay.aidl
 
 include $(BUILD_PACKAGE)
 

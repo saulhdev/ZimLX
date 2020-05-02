@@ -23,14 +23,13 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.AlphabeticIndexCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.testing.TestProtocol;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.apps.InstallTimeComparator;
-import org.zimmob.zimlx.apps.MostUsedComparator;
+import org.zimmob.zimlx.allapps.InstallTimeComparator;
+import org.zimmob.zimlx.allapps.MostUsedComparator;
 import org.zimmob.zimlx.model.AppCountInfo;
 import org.zimmob.zimlx.util.DbHelper;
 
@@ -153,7 +152,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     // The set of sections that we allow fast-scrolling to (includes non-merged sections)
     private final List<FastScrollSectionInfo> mFastScrollerSections = new ArrayList<>();
     // Is it the work profile app list.
-    private final boolean mIsWork;
+    private boolean mIsWork;
 
     // The of ordered component names as a result of a search query
     private ArrayList<ComponentKey> mSearchResults;
@@ -164,6 +163,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
+    private List<String> mSearchSuggestions;
 
     public AlphabeticalAppsList(Context context, AllAppsStore appsStore, boolean isWork) {
         mAllAppsStore = appsStore;
@@ -272,6 +272,9 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         return (mSearchResults != null) && mFilteredApps.isEmpty();
     }
 
+    public List<AppInfo> getFilteredApps() {
+        return mFilteredApps;
+    }
     /**
      * Sets the sorted list of filtered components.
      */
@@ -279,6 +282,16 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         if (mSearchResults != f) {
             boolean same = mSearchResults != null && mSearchResults.equals(f);
             mSearchResults = f;
+            onAppsUpdated();
+            return !same;
+        }
+        return false;
+    }
+
+    public boolean setSearchSuggestions(List<String> suggestions) {
+        if (mSearchSuggestions != suggestions) {
+            boolean same = mSearchSuggestions != null && mSearchSuggestions.equals(suggestions);
+            mSearchSuggestions = suggestions;
             onAppsUpdated();
             return !same;
         }
@@ -490,6 +503,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             mCachedSectionNames.put(title, sectionName);
         }
         return sectionName;
+    }
+
+    public void setIsWork(boolean isWork) {
+        mIsWork = isWork;
     }
 
 }

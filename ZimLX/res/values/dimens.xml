@@ -11,11 +11,6 @@
     <dimen name="all_apps_label_text_size">14sp</dimen>
 
     <dimen name="notification_elevation">2dp</dimen>
-    <!-- App Widget resize frame -->
-    <dimen name="default_widget_padding">8dp</dimen>
-    <dimen name="search_bar_margin">16dp</dimen>
-    <dimen name="search_bar_height">48dp</dimen>
-    <dimen name="search_bar_text_size">16dp</dimen>
 
     <dimen name="dialog_corner_radius">8dp</dimen>
     <dimen name="large_title_height">84dp</dimen>
@@ -55,6 +50,50 @@
     <dimen name="dashboard_padding_top">0dp</dimen>
     <dimen name="dashboard_padding_bottom">0dp</dimen>
 
+    <!-- App Widget resize frame -->
+    <dimen name="default_widget_padding">8dp</dimen>
+    <dimen name="search_bar_margin">16dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
+    <dimen name="search_bar_text_size">16dp</dimen>
+
+    <dimen name="dynamic_grid_hotseat_size">70dp</dimen>
+    <dimen name="v1_dynamic_grid_hotseat_top_padding">3dp</dimen>
+    <dimen name="v1_dynamic_grid_hotseat_bottom_padding">2dp</dimen>
+    <dimen name="v1_dynamic_grid_hotseat_size">80dp</dimen>
+    <dimen name="qsb_hotseat_bottom_margin_hw">12dp</dimen>
+    <dimen name="hotseat_qsb_bottom_margin">2dp</dimen>
+    <dimen name="hotseat_qsb_scroll_shadow_blur_radius">1.5dp</dimen>
+    <dimen name="hotseat_qsb_scroll_key_shadow_offset">2dp</dimen>
+    <dimen name="qsb_doodle_tap_target_logo_width">106dp</dimen>
+    <dimen name="qsb_mic_width">56dp</dimen>
+    <dimen name="qsb_text_spacing">20dp</dimen>
+    <dimen name="qsb_two_bubble_gap">8dp</dimen>
+    <dimen name="qsb_hint_text_size">13sp</dimen>
+    <dimen name="qsb_max_hint_length">130dp</dimen>
+    <dimen name="qsb_margin_top_adjusting">20dp</dimen>
+    <dimen name="qsb_widget_height">56dp</dimen>
+
+    <dimen name="action_view_compound_drawable_padding">5dp</dimen>
+
+    <!-- Pixel -->
+    <dimen name="smartspace_title_size">24dp</dimen>
+    <dimen name="smartspace_clock_above_size">40dp</dimen>
+    <dimen name="smartspace_title_min_size">14dp</dimen>
+    <dimen name="smartspace_horizontal_padding">56dp</dimen>
+    <dimen name="smartspace_title_sep_width">1dp</dimen>
+    <dimen name="smartspace_title_weather_icon_size">24dp</dimen>
+    <dimen name="qsb_shadow_margin">6dp</dimen>
+    <dimen name="qsb_overlap_margin">0dp</dimen>
+    <dimen name="qsb_button_height">56dp</dimen>
+    <dimen name="qsb_button_elevation">3dp</dimen>
+    <dimen name="qsb_touch_extension">20dp</dimen>
+    <dimen name="qsb_shadow_blur_radius">1dp</dimen>
+    <dimen name="qsb_key_shadow_offset">1dp</dimen>
+    <dimen name="qsb_connector_gradient_end_padding">20dp</dimen>
+    <dimen name="qsb_min_width_with_mic">124dp</dimen>
+    <dimen name="qsb_min_width_portrait">96dp</dimen>
+    <dimen name="smartspace_preview_height">100dp</dimen>
+    <dimen name="smartspace_preview_widget_margin">24dp</dimen>
     <dimen name="color_preview_height">60dp</dimen>
     <dimen name="color_preview_width">80dp</dimen>
     <dimen name="chroma_view_height">505dp</dimen>

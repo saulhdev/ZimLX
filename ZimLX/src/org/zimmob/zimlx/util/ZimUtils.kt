@@ -25,7 +25,9 @@ import android.content.res.Configuration
 import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.Color
+import android.graphics.RectF
 import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.RippleDrawable
 import android.os.Handler
 import android.os.Looper
@@ -53,9 +55,11 @@ import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import com.android.launcher3.util.PackageUserKey
 import com.android.launcher3.util.Themes
+import com.android.launcher3.views.OptionsPopupView
 import org.json.JSONArray
 import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
+import org.zimmob.zimlx.predictions.CustomAppPredictor
 import java.lang.reflect.Field
 import java.util.*
 import java.util.concurrent.Callable
@@ -237,6 +241,14 @@ fun Context.resourcesForApplication(packageName: String): Resources? {
     }
 }
 
+fun getTabRipple(context: Context, accent: Int): ColorStateList {
+    return ColorStateList(arrayOf(
+            intArrayOf(android.R.attr.state_selected),
+            intArrayOf()),
+            intArrayOf(
+                    ColorUtils.setAlphaComponent(accent, 31),
+                    context.getColorAttr(android.R.attr.colorControlHighlight)))
+}
 fun <T, U : Comparable<U>> comparing(extractKey: (T) -> U): Comparator<T> {
     return Comparator { o1, o2 -> extractKey(o1).compareTo(extractKey(o2)) }
 }
@@ -553,18 +565,29 @@ inline fun ViewGroup.forEachChildReversed(action: (View) -> Unit) {
     forEachChildReversedIndexed { view, _ -> action(view) }
 }
 
-fun Context.getLauncherOrNull(): Launcher? {
-    return try {
-        Launcher.getLauncher(this)
-    } catch (e: ClassCastException) {
-        null
-    }
-}
-
 fun ImageView.tintDrawable(color: Int) {
     val drawable = drawable.mutate()
     drawable.setTint(color)
     setImageDrawable(drawable)
+}
+
+fun View.runOnAttached(runnable: Runnable) {
+    if (isAttachedToWindow) {
+        runnable.run()
+    } else {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+
+            override fun onViewAttachedToWindow(v: View?) {
+                runnable.run()
+                removeOnAttachStateChangeListener(this)
+            }
+
+            override fun onViewDetachedFromWindow(v: View?) {
+                removeOnAttachStateChangeListener(this)
+            }
+        })
+
+    }
 }
 
 fun JSONObject.getNullable(key: String): Any? {
@@ -630,8 +653,46 @@ fun reloadIcons(context: Context, packages: Collection<PackageUserKey>) {
         }
         if (launcher != null) {
             runOnMainThread {
-                //(launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
+                (launcher.userEventDispatcher as CustomAppPredictor).uiManager.onPredictionsUpdated()
             }
         }
     }
+}
+
+
+fun Context.getLauncherOrNull(): Launcher? {
+    return try {
+        Launcher.getLauncher(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
+
+fun Context.getBaseDraggingActivityOrNull(): BaseDraggingActivity? {
+    return try {
+        BaseDraggingActivity.fromContext(this)
+    } catch (e: ClassCastException) {
+        null
+    }
+}
+
+fun createRipplePill(context: Context, color: Int, radius: Float): Drawable {
+    return RippleDrawable(
+            ContextCompat.getColorStateList(context, R.color.focused_background)!!,
+            createPill(color, radius),
+            createPill(color, radius)
+    )
+}
+
+fun createPill(color: Int, radius: Float): Drawable {
+    return GradientDrawable().apply {
+        shape = GradientDrawable.RECTANGLE
+        setColor(color)
+        cornerRadius = radius
+    }
+}
+
+fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.OptionItem) {
+    val launcher = Launcher.getLauncher(view.context)
+    OptionsPopupView.show(launcher, rect ?: RectF(launcher.getViewBounds(view)), items.toList())
 }

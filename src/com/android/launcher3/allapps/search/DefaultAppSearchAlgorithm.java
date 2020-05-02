@@ -15,10 +15,22 @@
  */
 package com.android.launcher3.allapps.search;
 
+import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.LauncherActivityInfo;
 import android.os.Handler;
+import android.os.UserHandle;
 
+import com.android.launcher3.AppFilter;
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.Utilities;
+import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.compat.UserManagerCompat;
+import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.ComponentKey;
+
+import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
 
 import java.text.Collator;
 import java.util.ArrayList;
@@ -29,6 +41,7 @@ import java.util.List;
  */
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
+    public final static String SEARCH_HIDDEN_APPS = "pref_search_hidden_apps";
     private final List<AppInfo> mApps;
     protected final Handler mResultHandler;
 
@@ -69,6 +82,38 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
             }
         }
         return result;
+    }
+
+    /*private List<String> getSuggestions(String query) {
+        SearchProvider provider = SearchProviderController.Companion
+                .getInstance(get).getSearchProvider();
+        if (provider instanceof WebSearchProvider) {
+            return ((WebSearchProvider) provider).getSuggestions(query);
+        }
+        return Collections.emptyList();
+    }*/
+
+    public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps, AppFilter filter) {
+        if (!Utilities.getPrefs(context).getBoolean(SEARCH_HIDDEN_APPS, false)) {
+            return defaultApps;
+        }
+        final List<AppInfo> apps = new ArrayList<>();
+        final IconCache iconCache = LauncherAppState.getInstance(context).getIconCache();
+        for (UserHandle user : UserManagerCompat.getInstance(context).getUserProfiles()) {
+            final List<ComponentName> duplicatePreventionCache = new ArrayList<>();
+            for (LauncherActivityInfo info : LauncherAppsCompat.getInstance(context).getActivityList(null, user)) {
+                if (!filter.shouldShowApp(info.getComponentName(), user)) {
+                    continue;
+                }
+                if (!duplicatePreventionCache.contains(info.getComponentName())) {
+                    duplicatePreventionCache.add(info.getComponentName());
+                    final AppInfo appInfo = new AppInfo(context, info, user);
+                    iconCache.getTitleAndIcon(appInfo, false);
+                    apps.add(appInfo);
+                }
+            }
+        }
+        return apps;
     }
 
     public static boolean matches(AppInfo info, String query, StringMatcher matcher) {

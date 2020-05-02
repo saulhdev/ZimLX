@@ -184,7 +184,7 @@ public class RecyclerViewFastScroller extends View {
         if (mThumbOffsetY == y) {
             return;
         }
-        updatePopupY((int) y);
+        updatePopupY(y);
         mThumbOffsetY = y;
         invalidate();
     }
@@ -384,6 +384,9 @@ public class RecyclerViewFastScroller extends View {
         mPopupView.setTranslationY(top);
     }
 
+    public void setColor(int color) {
+        mThumbPaint.setColor(color);
+    }
     public boolean isHitInParent(float x, float y, Point outOffset) {
         if (mThumbOffsetY < 0) {
             return false;
