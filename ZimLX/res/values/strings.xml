@@ -387,7 +387,7 @@
     <string name="icu_abbrev_time_date">HH:mm dd MMMM</string>
 
     <string name="in_smartspace">In \"At a Glance\" widget</string>
-    <string name="title_show_google_app">Display %1$s</string>
+    <string name="title_show_google_app">Show Google app</string>
     <string name="pref_show_google_now_summary">@string/msg_minus_one_on_left</string>
     <string name="msg_minus_one_on_left">To the left of the main Home screen</string>
     <string name="pref_smartspace_time_above">Show large clock</string>
@@ -603,4 +603,5 @@
     <string name="action_preferences">@string/customize</string>
     <string name="default_live_wallpaper" translatable="false">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
+
 </resources>

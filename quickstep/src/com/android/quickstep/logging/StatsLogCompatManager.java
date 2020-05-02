@@ -91,8 +91,9 @@ public class StatsLogCompatManager extends StatsLogManager {
         int srcState = mStateProvider.getCurrentState();
         fillInLauncherExtensionWithPageId(ext, pageId);
         int launcherAction = isSwipingToLeft ? Launcher.SWIPE_LEFT : Launcher.SWIPE_RIGHT;
-        StatsLogCompat.write(launcherAction, srcState, srcState,
-                MessageNano.toByteArray(ext), true);
+        if (Utilities.ATLEAST_Q) {
+            StatsLogCompat.write(launcherAction, srcState, srcState, MessageNano.toByteArray(ext), true);
+        }
     }
 
     public static boolean fillInLauncherExtension(View v, LauncherExtension extension) {

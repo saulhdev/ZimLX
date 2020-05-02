@@ -87,11 +87,13 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     protected final ActivityContext mActivity;
     @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mCellWidth;
+    @Thunk
+    public int mCellWidth;
     @ViewDebug.ExportedProperty(category = "launcher")
-    @Thunk int mCellHeight;
-    private int mFixedCellWidth;
-    private int mFixedCellHeight;
+    @Thunk
+    public int mCellHeight;
+    public int mFixedCellWidth;
+    public int mFixedCellHeight;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private int mCountX;
@@ -118,8 +120,8 @@ public class CellLayout extends ViewGroup implements Transposable {
     private final Drawable mBackground;
 
     // These values allow a fixed measurement to be set on the CellLayout.
-    private int mFixedWidth = -1;
-    private int mFixedHeight = -1;
+    public int mFixedWidth = -1;
+    public int mFixedHeight = -1;
 
     // If we're actively dragging something over this screen, mIsDragOverlapping is true
     private boolean mIsDragOverlapping = false;
@@ -349,11 +351,8 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (mUseTouchHelper ||
-                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev))) {
-            return true;
-        }
-        return false;
+        return mUseTouchHelper ||
+                (mInterceptTouchListener != null && mInterceptTouchListener.onTouch(this, ev));
     }
 
     public void enableHardwareLayer(boolean hasLayer) {
@@ -932,9 +931,7 @@ public class CellLayout extends ViewGroup implements Transposable {
                         lp.isLockedToGrid = true;
                         child.requestLayout();
                     }
-                    if (mReorderAnimators.containsKey(lp)) {
-                        mReorderAnimators.remove(lp);
-                    }
+                    mReorderAnimators.remove(lp);
                 }
                 public void onAnimationCancel(Animator animation) {
                     cancelled = true;
@@ -1230,7 +1227,7 @@ public class CellLayout extends ViewGroup implements Transposable {
      *         nearest the requested location.
      */
     private int[] findNearestArea(int cellX, int cellY, int spanX, int spanY, int[] direction,
-            boolean[][] occupied, boolean blockOccupied[][], int[] result) {
+                                  boolean[][] occupied, boolean[][] blockOccupied, int[] result) {
         // Keep track of best-scoring drop area
         final int[] bestXY = result != null ? result : new int[2];
         float bestDistance = Float.MAX_VALUE;
@@ -1808,7 +1805,7 @@ public class CellLayout extends ViewGroup implements Transposable {
 
         // We find the nearest cell into which we would place the dragged item, assuming there's
         // nothing in its way.
-        int result[] = new int[2];
+        int[] result = new int[2];
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 
         boolean success;
@@ -2278,7 +2275,7 @@ public class CellLayout extends ViewGroup implements Transposable {
     }
 
     int[] performReorder(int pixelX, int pixelY, int minSpanX, int minSpanY, int spanX, int spanY,
-            View dragView, int[] result, int resultSpan[], int mode) {
+                         View dragView, int[] result, int[] resultSpan, int mode) {
         // First we determine if things have moved enough to cause a different layout
         result = findNearestArea(pixelX, pixelY, spanX, spanY, result);
 

@@ -16,6 +16,7 @@
 package org.zimmob.zimlx.settings;
 
 import android.annotation.SuppressLint;
+import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -72,6 +73,8 @@ import com.android.launcher3.settings.PreferenceHighlighter;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SecureSettingsObserver;
+import com.aosp.launcher.AospLauncherCallbacks;
+import com.aosp.launcher.AospUtils;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -112,26 +115,16 @@ public class SettingsActivity extends SettingsBaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
         OnBackStackChangedListener, View.OnClickListener {
 
-    private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
-    private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
-
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
     public static final String NOTIFICATION_BADGING = "notification_badging";
     public final static String SHOW_PREDICTIONS_PREF = "pref_show_predictions";
-    public final static String SHOW_ACTIONS_PREF = "pref_show_suggested_actions";
     public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
-
-    public final static String FEED_THEME_PREF = "pref_feedTheme";
 
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
     private final static String BRIDGE_TAG = "tag_bridge";
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
-    public static final String EXTRA_SHOW_FRAGMENT_ARGS = ":settings:show_fragment_args";
     private static final int DELAY_HIGHLIGHT_DURATION_MILLIS = 600;
-    public static final String SAVE_HIGHLIGHTED_KEY = "android:preference_highlighted";
-
-    public static final String GRID_OPTIONS_PREFERENCE_KEY = "pref_grid_options";
     /**
      * Hidden field Settings.Secure.ENABLED_NOTIFICATION_LISTENERS
      */
@@ -493,11 +486,23 @@ public class SettingsActivity extends SettingsBaseActivity
         }
     }
 
+    @NotNull
+    private static Intent createFragmentIntent(Context context, String fragment, @Nullable Bundle args, @Nullable CharSequence title) {
+        Intent intent = new Intent(context, SettingsActivity.class);
+        intent.putExtra(EXTRA_FRAGMENT, fragment);
+        intent.putExtra(EXTRA_FRAGMENT_ARGS, args);
+        if (title != null) {
+            intent.putExtra(EXTRA_TITLE, title);
+        }
+        return intent;
+    }
+
     /**
      * This fragment shows the launcher preferences.
      */
     public static class LauncherSettingsFragment extends BaseFragment {
         private boolean mShowDevOptions;
+
         @Override
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
@@ -567,6 +572,56 @@ public class SettingsActivity extends SettingsBaseActivity
         }
     }
 
+    public static class DialogSettingsFragment extends SubSettingsFragment {
+        @Override
+        protected void setActivityTitle() {
+        }
+
+        @Override
+        protected int getRecyclerViewLayoutRes() {
+            return R.layout.preference_dialog_recyclerview;
+        }
+
+        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
+            DialogSettingsFragment fragment = new DialogSettingsFragment();
+            Bundle b = new Bundle(2);
+            b.putString(TITLE, title);
+            b.putInt(CONTENT_RES_ID, content);
+            fragment.setArguments(b);
+            return fragment;
+        }
+    }
+
+    public static class NotificationAccessConfirmation extends DialogFragment implements DialogInterface.OnClickListener {
+
+        @Override
+        public Dialog onCreateDialog(Bundle savedInstanceState) {
+            final Context context = getActivity();
+            String msg = context.getString(R.string.msg_missing_notification_access,
+                    context.getString(R.string.derived_app_name));
+            return new AlertDialog.Builder(context)
+                    .setTitle(R.string.title_missing_notification_access)
+                    .setMessage(msg)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.title_change_settings, this)
+                    .create();
+        }
+
+        @Override
+        public void onStart() {
+            super.onStart();
+        }
+
+        @Override
+        public void onClick(DialogInterface dialogInterface, int i) {
+            ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
+            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
+            getActivity().startActivity(intent);
+        }
+    }
+
     public static class SubSettingsFragment extends BaseFragment implements Preference.OnPreferenceChangeListener, Preference.OnPreferenceClickListener {
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
@@ -598,6 +653,9 @@ public class SettingsActivity extends SettingsBaseActivity
 
                     break;
 
+                case R.xml.zim_preferences_smartspace:
+                    AospUtils.hasPackageInstalled(getActivity(), AospLauncherCallbacks.SEARCH_PACKAGE);
+                    break;
                 case R.xml.zim_preferences_notification:
                     if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
                         ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(NOTIFICATION_DOTS_PREFERENCE_KEY);
@@ -621,7 +679,7 @@ public class SettingsActivity extends SettingsBaseActivity
             }
         }
 
-        public void updateProjectTeam(AboutUtils au) {
+        private void updateProjectTeam(AboutUtils au) {
             Preference pref;
             if ((pref = findPreference("pref_key__project_team")) != null && ((PreferenceGroup) pref).getPreferenceCount() == 0) {
                 String[] data = (au.readTextfileFromRawRes(R.raw.team, "", "").trim() + "\n\n").split("\n");
@@ -644,7 +702,7 @@ public class SettingsActivity extends SettingsBaseActivity
             }
         }
 
-        protected boolean appendPreference(Preference pref, @Nullable PreferenceGroup target) {
+        private boolean appendPreference(Preference pref, @Nullable PreferenceGroup target) {
             if (target == null) {
                 if ((target = getPreferenceScreen()) == null) {
                     return false;
@@ -864,58 +922,29 @@ public class SettingsActivity extends SettingsBaseActivity
         }
     }
 
-    public static class DialogSettingsFragment extends SubSettingsFragment {
-        @Override
-        protected void setActivityTitle() {
+    /**
+     * Content observer which listens for system auto-rotate setting changes, and enables/disables
+     * the launcher rotation setting accordingly.
+     */
+    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
+
+        private final Preference mRotationPref;
+
+        public SystemDisplayRotationLockObserver(
+                Preference rotationPref, ContentResolver resolver) {
+            super(resolver);
+            mRotationPref = rotationPref;
         }
 
         @Override
-        protected int getRecyclerViewLayoutRes() {
-            return R.layout.preference_dialog_recyclerview;
-        }
-
-        public static DialogSettingsFragment newInstance(String title, @XmlRes int content) {
-            DialogSettingsFragment fragment = new DialogSettingsFragment();
-            Bundle b = new Bundle(2);
-            b.putString(TITLE, title);
-            b.putInt(CONTENT_RES_ID, content);
-            fragment.setArguments(b);
-            return fragment;
+        public void onSettingChanged(boolean enabled) {
+            mRotationPref.setEnabled(enabled);
+            mRotationPref.setSummary(enabled
+                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
         }
     }
 
-    public static class NotificationAccessConfirmation extends DialogFragment implements DialogInterface.OnClickListener {
-
-        @Override
-        public Dialog onCreateDialog(Bundle savedInstanceState) {
-            final Context context = getActivity();
-            String msg = context.getString(R.string.msg_missing_notification_access,
-                    context.getString(R.string.derived_app_name));
-            return new AlertDialog.Builder(context)
-                    .setTitle(R.string.title_missing_notification_access)
-                    .setMessage(msg)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.title_change_settings, this)
-                    .create();
-        }
-
-        @Override
-        public void onStart() {
-            super.onStart();
-        }
-
-        @Override
-        public void onClick(DialogInterface dialogInterface, int i) {
-            ComponentName cn = new ComponentName(getActivity(), NotificationListener.class);
-            Intent intent = new Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                    .putExtra(":settings:fragment_args_key", cn.flattenToString());
-            getActivity().startActivity(intent);
-        }
-    }
-
-    public static class ResetIconsConfirmation
-            extends DialogFragment implements DialogInterface.OnClickListener {
+    public static class ResetIconsConfirmation extends DialogFragment implements DialogInterface.OnClickListener {
 
         @Override
         public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -957,58 +986,6 @@ public class SettingsActivity extends SettingsBaseActivity
             if (prefsCallback != null) {
                 prefsCallback.reloadAll();
             }
-        }
-    }
-
-    /**
-     * Content observer which listens for system auto-rotate setting changes, and enables/disables
-     * the launcher rotation setting accordingly.
-     */
-    private static class SystemDisplayRotationLockObserver extends SettingsObserver.System {
-
-        private final Preference mRotationPref;
-
-        public SystemDisplayRotationLockObserver(
-                Preference rotationPref, ContentResolver resolver) {
-            super(resolver);
-            mRotationPref = rotationPref;
-        }
-
-        @Override
-        public void onSettingChanged(boolean enabled) {
-            mRotationPref.setEnabled(enabled);
-            mRotationPref.setSummary(enabled
-                    ? R.string.allow_rotation_desc : R.string.allow_rotation_blocked_desc);
-        }
-    }
-
-    public static class SuggestionConfirmationFragment extends DialogFragment implements
-            DialogInterface.OnClickListener {
-
-        public void onClick(final DialogInterface dialogInterface, final int n) {
-            if (getTargetFragment() instanceof PreferenceFragmentCompat) {
-                Preference preference = ((PreferenceFragmentCompat) getTargetFragment())
-                        .findPreference(SHOW_PREDICTIONS_PREF);
-                if (preference instanceof TwoStatePreference) {
-                    ((TwoStatePreference) preference).setChecked(false);
-                }
-            }
-            //ReflectionClient.getInstance(getContext()).setEnabled(false);
-        }
-
-        public Dialog onCreateDialog(final Bundle bundle) {
-            return new AlertDialog.Builder(getActivity())
-                    .setTitle(R.string.title_disable_suggestions_prompt)
-                    .setMessage(R.string.msg_disable_suggestions_prompt)
-                    .setNegativeButton(android.R.string.cancel, null)
-                    .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
-        }
-
-
-        @Override
-        public void onStart() {
-            super.onStart();
-            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
         }
     }
 
@@ -1102,15 +1079,31 @@ public class SettingsActivity extends SettingsBaseActivity
         context.startActivity(createFragmentIntent(context, fragment, args, title));
     }
 
-    @NotNull
-    private static Intent createFragmentIntent(Context context, String fragment,
-                                               @Nullable Bundle args, @Nullable CharSequence title) {
-        Intent intent = new Intent(context, SettingsActivity.class);
-        intent.putExtra(EXTRA_FRAGMENT, fragment);
-        intent.putExtra(EXTRA_FRAGMENT_ARGS, args);
-        if (title != null) {
-            intent.putExtra(EXTRA_TITLE, title);
+    public static class SuggestionConfirmationFragment extends DialogFragment implements DialogInterface.OnClickListener {
+
+        public void onClick(final DialogInterface dialogInterface, final int n) {
+            if (getTargetFragment() instanceof PreferenceFragmentCompat) {
+                Preference preference = ((PreferenceFragmentCompat) getTargetFragment())
+                        .findPreference(SHOW_PREDICTIONS_PREF);
+                if (preference instanceof TwoStatePreference) {
+                    ((TwoStatePreference) preference).setChecked(false);
+                }
+            }
         }
-        return intent;
+
+        public Dialog onCreateDialog(final Bundle bundle) {
+            return new AlertDialog.Builder(getActivity())
+                    .setTitle(R.string.title_disable_suggestions_prompt)
+                    .setMessage(R.string.msg_disable_suggestions_prompt)
+                    .setNegativeButton(android.R.string.cancel, null)
+                    .setPositiveButton(R.string.label_turn_off_suggestions, this).create();
+        }
+
+
+        @Override
+        public void onStart() {
+            super.onStart();
+            ZimUtilsKt.applyAccent(((AlertDialog) getDialog()));
+        }
     }
 }

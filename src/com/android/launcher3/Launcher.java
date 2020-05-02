@@ -604,7 +604,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return findViewById(R.id.drawer_layout);
     }
 
-    private LauncherCallbacks mLauncherCallbacks;
+    public LauncherCallbacks mLauncherCallbacks;
 
     /**
      * Call this after onCreate to set or clear overlay.

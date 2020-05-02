@@ -30,6 +30,8 @@ import androidx.annotation.NonNull;
  */
 public class BaseIconFactory implements AutoCloseable {
 
+    public static final int CONFIG_HINT_NO_WRAP = 0x1000000;
+
     private static final String TAG = "BaseIconFactory";
     private static final int DEFAULT_WRAPPER_BACKGROUND = Color.WHITE;
     static final boolean ATLEAST_OREO = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O;
