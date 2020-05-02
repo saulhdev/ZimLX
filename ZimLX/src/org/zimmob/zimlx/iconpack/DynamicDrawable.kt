@@ -27,10 +27,11 @@ import android.graphics.drawable.RotateDrawable
 import android.util.Log
 import android.util.Xml
 import com.android.launcher3.FastBitmapDrawable
+import com.android.launcher3.ItemInfoWithIcon
+import com.aosp.launcher.icons.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
-import org.zimmob.zimlx.clock.CustomClock
 import org.zimmob.zimlx.util.get
 import java.io.IOException
 
@@ -41,13 +42,12 @@ class DynamicDrawable {
         fun getIcon(context: Context, drawable: Drawable, metadata: Metadata, iconDpi: Int): Drawable {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
-                        metadata.clockMetadata!!.metadata, iconDpi)
+                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
                 else -> drawable
             }
         }
 
-        fun drawIcon(context: Context, icon: Bitmap, metadata: Metadata, drawableFactory: ZimDrawableFactory, iconDpi: Int): FastBitmapDrawable? {
+        fun drawIcon(context: Context, icon: ItemInfoWithIcon, metadata: Metadata, drawableFactory: ZimDrawableFactory, iconDpi: Int): FastBitmapDrawable? {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
                 Type.CLOCK -> drawableFactory.customClockDrawer.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)

@@ -31,10 +31,7 @@ import android.os.Handler
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
-import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.ItemInfo
-import com.android.launcher3.LauncherModel
-import com.android.launcher3.Utilities
+import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
@@ -100,6 +97,7 @@ class IconPackManager(private val context: Context) {
         return getIconPackInternal(packProvider.name, put, load)!!
     }
 
+    @SuppressLint("WrongConstant")
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                 iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
                 iconProvider: ZimIconProvider?): Drawable {
@@ -126,7 +124,7 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(shortcutInfo, iconDpi)
     }
 
-    fun newIcon(icon: Bitmap, itemInfo: ItemInfo, drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
+    fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon, drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
                 ?: key?.let { appInfoProvider.getCustomIconEntry(it) }

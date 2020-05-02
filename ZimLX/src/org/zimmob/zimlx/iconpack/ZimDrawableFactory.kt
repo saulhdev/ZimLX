@@ -21,8 +21,8 @@ import android.content.Context
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
 import com.android.launcher3.WorkspaceItemInfo
+import com.aosp.launcher.icons.clock.CustomClock
 import org.zimmob.zimlx.DynamicDrawableFactory
-import org.zimmob.zimlx.clock.CustomClock
 
 class ZimDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
 

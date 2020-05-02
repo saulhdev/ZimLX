@@ -13,8 +13,8 @@ import com.aosp.launcher.icons.pack.IconPackManager;
 import com.aosp.launcher.icons.pack.IconResolver;
 
 class ThirdPartyIconUtils {
-    static Drawable getByKey(Context context, ComponentKey key, int iconDpi,
-                             IconResolver.DefaultDrawableProvider fallback) {
+    public static Drawable getByKey(Context context, ComponentKey key, int iconDpi,
+                                    IconResolver.DefaultDrawableProvider fallback) {
         IconResolver resolver = IconPackManager.get(context).resolve(key);
         Drawable icon = resolver == null
                 ? null

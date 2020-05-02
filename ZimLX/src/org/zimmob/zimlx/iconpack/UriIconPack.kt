@@ -30,6 +30,7 @@ import android.os.ParcelFileDescriptor
 import android.text.TextUtils
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfo
+import com.android.launcher3.ItemInfoWithIcon
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
@@ -86,7 +87,7 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
         return null
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: ZimDrawableFactory): FastBitmapDrawable? {
         return FastBitmapDrawable(icon)

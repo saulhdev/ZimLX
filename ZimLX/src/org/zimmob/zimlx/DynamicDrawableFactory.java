@@ -25,9 +25,7 @@ import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.DrawableFactory;
-import com.android.launcher3.icons.BitmapInfo;
-
-import org.zimmob.zimlx.clock.DynamicClock;
+import com.aosp.launcher.icons.clock.DynamicClock;
 
 public class DynamicDrawableFactory extends DrawableFactory {
     private final DynamicClock mDynamicClockDrawer;
@@ -42,18 +40,19 @@ public class DynamicDrawableFactory extends DrawableFactory {
         if (info == null || info.itemType != 0 ||
                 !DynamicClock.DESK_CLOCK.equals(info.getTargetComponent()) ||
                 !info.user.equals(Process.myUserHandle())) {
+            assert info != null;
             return super.newIcon(mContext, info);
         }
-        FastBitmapDrawable dVar = mDynamicClockDrawer.drawIcon(info.iconBitmap);
+        FastBitmapDrawable dVar = mDynamicClockDrawer.drawIcon(info);
         dVar.setIsDisabled(info.isDisabled());
         return dVar;
     }
 
-    public FastBitmapDrawable newIcon(BitmapInfo icon, ActivityInfo info) {
+    public FastBitmapDrawable newIcon(ItemInfoWithIcon icon, ActivityInfo info) {
         if (DynamicClock.DESK_CLOCK.getPackageName().equals(info.packageName) &&
                 (!Utilities.ATLEAST_NOUGAT || UserHandle.getUserHandleForUid(info.applicationInfo.uid).equals(Process.myUserHandle()))) {
-            return mDynamicClockDrawer.drawIcon(icon.icon);
+            return mDynamicClockDrawer.drawIcon(icon);
         }
-        return super.newIcon(icon, info);
+        return super.newIcon(mContext, icon);
     }
 }

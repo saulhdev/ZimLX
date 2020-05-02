@@ -37,8 +37,7 @@ import com.android.launcher3.LauncherModel;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-
-import org.zimmob.zimlx.clock.DynamicClock;
+import com.aosp.launcher.icons.clock.DynamicClock;
 
 import java.util.Calendar;
 import java.util.List;

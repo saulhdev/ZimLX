@@ -172,7 +172,7 @@ public class NotificationListener extends NotificationListenerService {
             // User turned off dots globally, so we unbound this service;
             // tell the listener that there are no notifications to remove dots.
             sNotificationsChangedListener.onNotificationFullRefresh(
-                    Collections.<StatusBarNotification>emptyList());
+                    Collections.emptyList());
         }
     }
 
@@ -216,7 +216,8 @@ public class NotificationListener extends NotificationListenerService {
     public void onListenerDisconnected() {
         super.onListenerDisconnected();
         sIsConnected = false;
-        mNotificationDotsObserver.unregister();
+        if (mNotificationDotsObserver != null)
+            mNotificationDotsObserver.unregister();
     }
 
     @Override
@@ -334,7 +335,7 @@ public class NotificationListener extends NotificationListenerService {
                 .getActiveNotifications(NotificationKeyData.extractKeysOnly(keys)
                         .toArray(new String[keys.size()]));
         return notifications == null
-                ? Collections.<StatusBarNotification>emptyList() : Arrays.asList(notifications);
+                ? Collections.emptyList() : Arrays.asList(notifications);
     }
 
     /**

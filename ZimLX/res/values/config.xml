@@ -2,12 +2,18 @@
 <resources>
     <!-- Wether or not blur is enabled per default -->
     <bool name="config_default_enable_blur">false</bool>
+
     <string name="config_default_search_provider" translatable="false">org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider</string>
     <string name="user_event_dispatcher_class" translatable="false">org.zimmob.zimlx.predictions.CustomAppPredictor</string>
+    <string name="app_filter_class" translatable="false">org.zimmob.zimlx.allapps.CustomAppFilter</string>
+    <string name="icon_provider_class" translatable="false">org.zimmob.zimlx.iconpack.ZimIconProvider</string>
+    <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
+
     <!-- Tag id used for view scrim -->
     <item type="id" name="view_scrim" />
     <!-- Whitelisted package to retrieve packagename for badge. Can be empty. -->
     <string name="shortcutinfocompat_badgepkg_whitelist" translatable="false"></string>
+
     <!-- The default icon packs to use -->
     <!-- (Deprecated) The default icon pack to use; empty = system icons -->
     <string name="config_default_icon_pack" translatable="false" />

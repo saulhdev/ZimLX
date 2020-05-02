@@ -27,29 +27,29 @@ import com.android.launcher3.ItemInfo
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.shortcuts.ShortcutInfoCompat
+import com.aosp.launcher.icons.RoundIconProvider
 
 class ZimIconProvider(context: Context) : IconProvider() {
-
     private val iconPackManager by lazy { IconPackManager.getInstance(context) }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this)
     }
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo, itemInfo: ItemInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, itemInfo, this)//.assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
     fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         val mIcon: ShortcutInfo = shortcutInfo as ShortcutInfo
-        return iconPackManager.getIcon(mIcon, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
+        return iconPackManager.getIcon(mIcon, iconDpi)//.assertNotAdaptiveIconDrawable(shortcutInfo)
     }
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
-        return iconPackManager.getIcon(shortcutInfo, iconDpi).assertNotAdaptiveIconDrawable(shortcutInfo)
+        return iconPackManager.getIcon(shortcutInfo, iconDpi)//.assertNotAdaptiveIconDrawable(shortcutInfo)
     }
 
     fun getDynamicIcon(launcherActivityInfo: LauncherActivityInfo?, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+        return super.getIcon(launcherActivityInfo, iconDpi, flattenDrawable)//.assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
     private fun <T> T.assertNotAdaptiveIconDrawable(info: Any?): T {

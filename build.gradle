@@ -45,6 +45,7 @@ android {
     def name = "0.7.1"
     def code = 3020
 
+
     defaultConfig {
         minSdkVersion 25
         targetSdkVersion 28
@@ -110,9 +111,9 @@ android {
 
     // Disable release builds for now
     android.variantFilter { variant ->
-        if (variant.buildType.name.endsWith('release')) {
+        /*if (variant.buildType.name.endsWith('release')) {
             variant.setIgnore(true)
-        }
+        }*/
 
         // Icon recents is Go only
         if (name.contains("WithQuickstepIconRecents") && !name.contains("l3go")) {

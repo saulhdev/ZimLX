@@ -31,10 +31,10 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.aosp.launcher.icons.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
-import org.zimmob.zimlx.clock.DynamicClock
 import org.zimmob.zimlx.util.getLauncherActivityInfo
 import java.io.IOException
 
@@ -118,7 +118,8 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
             return gen.result
         }
-        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
+        return originalIcon
+        //return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
@@ -129,7 +130,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return gen.result
     }
 
-    override fun newIcon(icon: Bitmap, itemInfo: ItemInfo,
+    override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
@@ -141,7 +142,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
                 itemInfo.targetComponent
             }
             if (DynamicClock.DESK_CLOCK == component) {
-                return dynamicClockDrawer.drawIcon(icon)
+                return dynamicClockDrawer.drawIcon(itemInfo)
             }
         }
 
