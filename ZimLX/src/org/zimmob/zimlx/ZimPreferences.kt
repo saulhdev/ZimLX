@@ -128,6 +128,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
+    val dockGradient by BooleanPref("pref_key__dock_gradient", false, restart)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)

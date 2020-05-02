@@ -125,7 +125,7 @@ public class ZimLauncher extends AospLauncher {
     @Override
     public void onRestart() {
         super.onRestart();
-        Utilities.onLauncherStart();
+        //Utilities.onLauncherStart();
     }
 
     public void onDestroy() {

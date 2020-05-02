@@ -48,13 +48,14 @@ import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.widget.WidgetsBottomSheet;
+
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.allapps.CustomAppFilter;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.ui.LauncherGesturePreference;
 import org.zimmob.zimlx.override.CustomInfoProvider;
-import org.zimmob.zimlx.predictions.CustomAppFilter;
 import org.zimmob.zimlx.predictions.CustomAppPredictor;
 import org.zimmob.zimlx.preferences.MultiSelectTabPreference;
 

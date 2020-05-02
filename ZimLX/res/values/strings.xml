@@ -257,7 +257,7 @@
     <string name="reset_custom_icons_confirmation">Revert to default icons from this Icon Pack? This can’t be undone.</string>
 
     <!-- PREFERENCES DOCK  -->
-    <string name="title__hotseat_hide_gradient">Hide gradient</string>
+    <string name="title__dock_gradient">Hide gradient</string>
     <string name="title__hotseat_hide_button">Hide dock button</string>
     <string name="title__hotseat_two_row">Two row dock</string>
     <string name="title__hotseat_num_icons">Number of icons in dock</string>
@@ -272,6 +272,8 @@
     <string name="title__dock_custom_opacity">Opacity</string>
     <string name="title__dock_scale">Dock scale</string>
     <string name="title__dock_color">Dock Background</string>
+    <string name="dock_fill">Enable Background</string>
+
     <string name="transparent_hotseat_pref_title">Transparent dock</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
@@ -294,7 +296,6 @@
     <string name="dock_search_bar">Dock search bar</string>
     <string name="automatic_short">Auto</string>
     <string name="dock_shadow">Shadow</string>
-    <string name="dock_fill">Enable Background</string>
 
     <string name="radius">Corner rounding</string>
     <string name="gradient">Gradient</string>
@@ -526,7 +527,6 @@
     <string name="folder_cover_mode">Cover mode</string>
     <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
     <string name="hide_app_sum">Hide app from the app drawer</string>
-    <string name="hide_app">Hide app</string>
     <string name="debug_component_name">Component name</string>
     <string name="debug_component_name_copied">Copied</string>
 
@@ -603,5 +603,6 @@
     <string name="action_preferences">@string/customize</string>
     <string name="default_live_wallpaper" translatable="false">com.breel.wallpapers/com.breel.wallpapers.dioramas.lagos.LagosWallpaperService</string>
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
-
+    <string name="hide_app">Hide Shortcut</string>
+    <string name="hide_badge">Hide Badge</string>
 </resources>

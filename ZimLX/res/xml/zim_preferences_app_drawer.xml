@@ -3,15 +3,13 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
-
-    <!--
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref_show_predictions"
-        android:summary="@string/summary_app_suggestions"
-        android:title="@string/title_app_suggestions"
-        app:controllerClass="org.zimmob.zimlx.settings.controller.AppSuggestionsController"
-        app:iconSpaceReserved="false" /> -->
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__app_icons">
+        <org.zimmob.zimlx.settings.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/pref_icon_popup_menu"
+            app:content="@xml/zim_preferences_drawer_icon_popup_menu"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
     <ListPreference
         android:defaultValue="0"

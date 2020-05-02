@@ -49,6 +49,9 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.ZimUtilsKt;
+
 /**
  * View scrim which draws behind hotseat and workspace
  */
@@ -253,9 +256,10 @@ public class WorkspaceAndHotseatScrim extends Scrim {
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress * mSysUiAnimMultiplier;
-        mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
+        ZimPreferences prefs = new ZimPreferences(mLauncher.getApplicationContext());
+        mBottomMaskPaint.setAlpha(prefs.getDockGradient() ? Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor) : Math.round(0 * factor));
         if (mTopScrim != null) {
-            mTopScrim.setAlpha(Math.round(255 * factor));
+            mTopScrim.setAlpha(prefs.getDockGradient() ? Math.round(255 * factor) : Math.round(0 * factor));
         }
     }
 

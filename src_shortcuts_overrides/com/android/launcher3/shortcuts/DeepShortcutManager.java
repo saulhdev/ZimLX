@@ -31,8 +31,13 @@ import android.util.Log;
 
 import androidx.annotation.Nullable;
 
+import com.android.launcher3.ItemInfo;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
+
+import org.zimmob.zimlx.override.CustomInfoProvider;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -66,6 +71,17 @@ public class DeepShortcutManager {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
     }
 
+    public static boolean supportsShortcuts(ItemInfo info) {
+        boolean isItemPromise = info instanceof WorkspaceItemInfo
+                && ((WorkspaceItemInfo) info).hasPromiseIconUi();
+        return info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
+                && !info.isDisabled() && !isItemPromise;
+    }
+
+    public static boolean supportsEdit(ItemInfo info) {
+        return CustomInfoProvider.Companion.isEditable(info) || supportsShortcuts(info);
+    }
+
     public boolean wasLastCallSuccess() {
         return mWasLastCallSuccess;
     }
@@ -90,6 +106,12 @@ public class DeepShortcutManager {
         if (activity == null) return Collections.EMPTY_LIST;
         return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
                 activity.getPackageName(), activity, null, user);
+    }
+
+    public List<ShortcutInfo> queryForShortcutsContainer(ComponentName activity,
+                                                         List<String> ids, UserHandle user) {
+        return query(ShortcutQuery.FLAG_MATCH_MANIFEST | ShortcutQuery.FLAG_MATCH_DYNAMIC,
+                activity.getPackageName(), activity, ids, user);
     }
 
     /**

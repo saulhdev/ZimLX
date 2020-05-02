@@ -17,16 +17,21 @@
 package com.android.launcher3.popup;
 
 import android.content.ComponentName;
+import android.content.Context;
+import android.content.pm.LauncherApps;
 import android.service.notification.StatusBarNotification;
 import android.util.Log;
 
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.dot.DotInfo;
 import com.android.launcher3.model.WidgetItem;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.DeepShortcutManagerBackport;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.ShortcutUtil;
@@ -46,6 +51,8 @@ import java.util.stream.Collectors;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
+import org.zimmob.zimlx.popup.ZimShortcut;
+
 /**
  * Provides data for the popup menu that appears after long-clicking on apps.
  */
@@ -57,6 +64,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
     private final Launcher mLauncher;
 
     /** Maps launcher activity components to a count of how many shortcuts they have. */
+    //private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
     private HashMap<ComponentKey, Integer> mDeepShortcutMap = new HashMap<>();
     /** Maps packages to their DotInfo's . */
     private Map<PackageUserKey, DotInfo> mPackageUserToDotInfos = new HashMap<>();
@@ -173,6 +181,30 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
         return count == null ? 0 : count;
     }
 
+    public List<String> getShortcutIdsForItem(ItemInfo info) {
+        if (!DeepShortcutManager.supportsShortcuts(info)) {
+            return Collections.EMPTY_LIST;
+        }
+        ComponentName component = info.getTargetComponent();
+        if (component == null) {
+            return Collections.EMPTY_LIST;
+        }
+
+        List<String> ids = new ArrayList<>();
+        if (!Utilities.ATLEAST_NOUGAT) {
+            for (ShortcutInfoCompat compat : DeepShortcutManagerBackport.getForPackage(mLauncher,
+                    (LauncherApps) mLauncher.getSystemService(Context.LAUNCHER_APPS_SERVICE),
+                    info.getTargetComponent(),
+                    info.getTargetComponent().getPackageName())) {
+                ids.add(compat.getId());
+            }
+        } else {
+            //int tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
+            //if (tmp != null) ids.addAll(tmp);
+        }
+        return ids;
+    }
+
     public @Nullable DotInfo getDotInfoForItem(@NonNull ItemInfo info) {
         if (!ShortcutUtil.supportsShortcuts(info)) {
             return null;
@@ -209,6 +241,18 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             return;
         }
         notificationListener.cancelNotificationFromLauncher(notificationKey);
+    }
+
+    public @NonNull
+    List<SystemShortcut> getEnabledSystemShortcutsForItem(ItemInfo info) {
+        List<SystemShortcut> systemShortcuts = new ArrayList<>();
+        for (SystemShortcut systemShortcut :
+                ZimShortcut.Companion.getInstance(mLauncher).getEnabledShortcuts()) {
+            if (systemShortcut.getOnClickListener(mLauncher, info) != null) {
+                systemShortcuts.add(systemShortcut);
+            }
+        }
+        return systemShortcuts;
     }
 
     public void setAllWidgets(ArrayList<WidgetListRowEntry> allWidgets) {

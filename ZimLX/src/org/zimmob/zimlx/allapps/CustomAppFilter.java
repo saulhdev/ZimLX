@@ -14,7 +14,7 @@
  *
  */
 
-package org.zimmob.zimlx.predictions;
+package org.zimmob.zimlx.allapps;
 
 import android.content.ComponentName;
 import android.content.Context;

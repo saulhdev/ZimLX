@@ -35,7 +35,6 @@ public class ComponentKey {
         this.componentName = componentName;
         this.user = user;
         mHashCode = Arrays.hashCode(new Object[] {componentName, user});
-
     }
 
     @Override
