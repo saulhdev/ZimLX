@@ -33,13 +33,6 @@
         </activity>
 
         <activity
-            android:name="org.zimmob.zimlx.settings.AboutActivity"
-            android:autoRemoveFromRecents="true"
-            android:label="@string/about"
-            android:parentActivityName="org.zimmob.zimlx.settings.SettingsActivity"
-            android:theme="@style/SettingsTheme.V2" />
-
-        <activity
             android:name="org.zimmob.zimlx.BlankActivity"
             android:theme="@style/Theme.Transparent" />
         <activity
@@ -59,11 +52,19 @@
             android:name="org.zimmob.zimlx.iconpack.ApplyIconPackActivity"
             android:theme="@style/SettingsTheme.V2.Transparent">
             <intent-filter>
-                <action android:name="ch.deletescape.lawnchair.APPLY_ICONS" />
+                <action android:name="org.zimmob.zimlx.APPLY_ICONS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <!-- Icon picker -->
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.EditIconActivity"
+            android:taskAffinity="${applicationId}.tasks.EDIT_ICON"
+            android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="org.zimmob.zimlx.iconpack.IconPickerActivity"
+            android:theme="@style/SettingsTheme.V2" />
 
 
         <service
