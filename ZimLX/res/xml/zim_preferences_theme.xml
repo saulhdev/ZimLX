@@ -92,6 +92,14 @@
             app:cpv_dialogTitle="@string/title__minibar_background_color"
             app:cpv_showAlphaSlider="true"
             app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/colorPrimaryDark"
+            android:key="pref_key__settings_color"
+            android:title="@string/title__settings_icon_color"
+            app:cpv_dialogTitle="@string/title__settings_icon_color"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

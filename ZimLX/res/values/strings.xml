@@ -189,6 +189,7 @@
     <string name="title__theme_icon_shape">Change icon shape</string>
     <string name="title__theme_dark_theme">Force dark theme</string>
     <string name="title__theme_folder_shape">Folder Shape</string>
+    <string name="title__settings_icon_color">Setting Icon Color</string>
     <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
 
     <string name="theme_material">Material</string>

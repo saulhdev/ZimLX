@@ -141,6 +141,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val primaryColor by IntPref("pref_key__primary_color", R.color.colorPrimary, restart)
     val accentColor by IntPref("pref_key__accent_color", R.color.colorAccent, restart)
     val dashColor by IntPref("pref_key__minibar_color", R.color.colorPrimary, restart)
+    val settingIconColor by IntPref("pref_key__settings_color", R.color.colorAccent, recreate)
     var enableBlur by BooleanPref("pref_enableBlur", zimConfig.defaultEnableBlur(), updateBlur)
     val blurRadius by FloatPref("pref_blurRadius", zimConfig.defaultBlurStrength, updateBlur)
     val colorizedLegacyTreatment by BooleanPref("pref_colorizeGeneratedBackgrounds",

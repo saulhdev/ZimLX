@@ -32,14 +32,11 @@ open class StyledIconPreference : Preference {
     var index = 0
 
     @JvmOverloads
-    constructor (context: Context) : super(context) {
-
-    }
+    constructor (context: Context) : super(context)
 
     @JvmOverloads
-    constructor (context: Context, attrs: AttributeSet) : super(context, attrs) {
+    constructor (context: Context, attrs: AttributeSet) : super(context, attrs)
 
-    }
     override fun onBindViewHolder(holder: PreferenceViewHolder) {
         super.onBindViewHolder(holder)
         holder.findViewById(androidx.appcompat.R.id.icon)?.let { it as? ImageView }?.apply {
@@ -59,7 +56,7 @@ open class StyledIconPreference : Preference {
 
     private fun applyColor() {
         icon = icon?.mutate()?.apply {
-            setTint(context.zimPrefs.accentColor)
+            setTint(context.zimPrefs.settingIconColor)
         }
 
     }
