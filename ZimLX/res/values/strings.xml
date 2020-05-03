@@ -26,6 +26,11 @@
     <string name="pref_title__behavior">Behavior</string>
     <string name="pref_title__smartspace">Home Widget</string>
     <string name="pref_title__search">Search</string>
+    <string name="pref_title__language">Language</string>
+    <string name="pref_title__folder_badge_count">Show folder badge Count</string>
+    <string name="pref_title__predictive_apps_num">Predicted apps number</string>
+    <string name="pref_title__label_two_lines">Icon labels use two lines</string>
+    <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
 
     <string name="pref_summary__app_drawer">Customize your app drawer</string>
     <string name="pref_summary__dock">Customize your dock</string>
@@ -39,16 +44,7 @@
     <string name="pref_summary__behavior">Change the behavior of ZimLX</string>
     <string name="pref_summary__smartspace">Date, time and search bar</string>
     <string name="pref_summary__search">Search Engine</string>
-
-    <string name="pref_title__language">Language</string>
-    <string name="pref_title__folder_badge_count">Show folder badge Count</string>
-
-    <string name="pref_title__predictive_apps_num">Predicted apps number</string>
-    <string name="pref_title__label_two_lines">Icon labels use two lines</string>
-    <string name="pref_title__home_opens_drawer">Home button opens app drawer</string>
-
     <string name="pref_summary__home_opens_drawer">Pressing the home button while on the desktop will open the app drawer</string>
-
     <string name="pref_summary__language">Change language of this app</string>
     <string name="pref_summary__minibar">Configure the order and visibility of minibar items.</string>
 
@@ -609,4 +605,8 @@
     <string name="full_wday_month_day_no_year">EEEE, MMMM d</string>
     <string name="hide_app">Hide Shortcut</string>
     <string name="hide_badge">Hide Badge</string>
+
+
+    <string name="allow">Allow</string>
+    <string name="deny">Deny</string>
 </resources>

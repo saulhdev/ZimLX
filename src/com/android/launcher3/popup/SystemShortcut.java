@@ -134,7 +134,6 @@ public abstract class SystemShortcut<T extends BaseDraggingActivity> extends Ite
         }
     }
 
-
     public static class Widgets extends SystemShortcut<Launcher> {
 
         public Widgets() {

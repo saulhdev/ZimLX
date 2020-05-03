@@ -30,17 +30,14 @@ import android.os.Process;
 
 import com.android.launcher3.FastBitmapDrawable;
 import com.android.launcher3.IconProvider;
-import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.LauncherAnimUtils;
 import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.compat.ShortcutConfigActivityInfo;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
-
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
+import com.android.launcher3.icons.IconCache;
 
 /**
  * Extension of ShortcutConfigActivityInfo to be used in the confirmation prompt for pin item
@@ -80,13 +77,13 @@ class PinShortcutRequestActivityInfo extends ShortcutConfigActivityInfo {
     @Override
     public Drawable getFullResIcon(IconCache cache) {
         int iconDpi = LauncherAppState.getIDP(mContext).fillResIconDpi;
-        Drawable d;
+        /*Drawable d;
         if (mIconProvider instanceof ZimIconProvider) {
-            d = ((ZimIconProvider) mIconProvider).getIcon(new ShortcutInfoCompat(mInfo), iconDpi);
-        } else {
-            d = mContext.getSystemService(LauncherApps.class)
+            d = ((ZimIconProvider) mIconProvider).getIcon(new ShortcutInfo(mInfo), iconDpi);
+        } else {*/
+        Drawable d = mContext.getSystemService(LauncherApps.class)
                     .getShortcutIconDrawable(mInfo, iconDpi);
-        }
+        //}
         if (d == null) {
             d = new FastBitmapDrawable(cache.getDefaultIcon(Process.myUserHandle()));
         }

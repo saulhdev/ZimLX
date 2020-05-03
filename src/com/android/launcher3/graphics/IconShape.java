@@ -15,8 +15,6 @@
  */
 package com.android.launcher3.graphics;
 
-import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.FloatArrayEvaluator;
@@ -35,17 +33,16 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.TypedValue;
 import android.util.Xml;
 import android.view.View;
 import android.view.ViewOutlineProvider;
 
-import com.android.launcher3.Launcher;
+import androidx.annotation.Nullable;
+
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.RoundedRectRevealOutlineProvider;
@@ -57,13 +54,12 @@ import com.android.launcher3.views.ClipPathView;
 
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserException;
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import androidx.annotation.Nullable;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 /**
  * Abstract representation of the shape of an icon shape
@@ -82,7 +78,7 @@ public abstract class IconShape {
     }
 
     public static Path getShapePath() {
-        if (Utilities.ATLEAST_OREO) {
+        /*if (Utilities.ATLEAST_OREO) {
             try {
                 // Try to load the path from Mask Icon
                 Drawable icon = ZimIconProvider.getAdaptiveIconDrawableWrapper(Launcher.mContext);
@@ -92,7 +88,7 @@ public abstract class IconShape {
                 Log.e(TAG, "Error loading mask icon", e);
             }
         }
-
+        */
         if (sShapePath == null) {
             Path p = new Path();
             getShape().addToPath(p, 0, 0, DEFAULT_PATH_SIZE * 0.5f);
@@ -109,7 +105,7 @@ public abstract class IconShape {
 
     public boolean enableShapeDetection(){
         return false;
-    };
+    }
 
     public abstract void drawShape(Canvas canvas, float offsetX, float offsetY, float radius,
             Paint paint);

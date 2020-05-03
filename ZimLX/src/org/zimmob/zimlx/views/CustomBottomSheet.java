@@ -129,7 +129,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
                 });
             }
         }
-        if (mInfoProvider != null) {
+        if (mInfoProvider != null && allowTitleEdit) {
             mPreviousTitle = mInfoProvider.getCustomTitle(mItemInfo);
             if (mPreviousTitle == null)
                 mPreviousTitle = "";
@@ -189,14 +189,15 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
         private final static String PREF_HIDE_BADGE = "pref_badge_hide";
         private final static String PREF_HIDE_FROM_PREDICTIONS = "pref_app_prediction_hide";
         private final static boolean HIDE_PREDICTION_OPTION = true;
+
         CustomInfoProvider mProvider;
-        private SwitchPreference mPrefHide;
         private SwitchPreference mPrefHidePredictions;
         private LauncherGesturePreference mSwipeUpPref;
         private MultiSelectTabPreference mTabsPref;
         private SwitchPreference mPrefCoverMode;
         private SwitchPreference mPrefHideBadge;
         private ZimPreferences prefs;
+
         private ComponentKey mKey;
         private ItemInfo itemInfo;
         private GestureHandler previousHandler;

@@ -52,8 +52,6 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
-
 import java.util.function.Supplier;
 
 /**
@@ -245,9 +243,12 @@ public class IconCache extends BaseIconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
-        if (mIconProvider instanceof ZimIconProvider)
+        /*if (mIconProvider instanceof ZimIconProvider)
             return ((ZimIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
+
+        */
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
+
     }
     @Override
     protected String getIconSystemState(String packageName) {

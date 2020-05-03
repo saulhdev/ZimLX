@@ -20,6 +20,8 @@ package org.zimmob.zimlx.iconpack
 import android.content.Context
 import android.graphics.*
 import android.graphics.drawable.Drawable
+import android.os.Build
+import androidx.annotation.RequiresApi
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.Utilities
@@ -41,6 +43,7 @@ class IconMask {
     private val validMasks by lazy { iconMaskEntries.filter { it.isAvailable } }
     private val validUpons by lazy { iconUponEntries.filter { it.isAvailable } }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getIcon(context: Context, baseIcon: Drawable, key: Any?): Drawable {
         val iconBack = getFromList(validBacks, key)
         val iconMask = getFromList(validMasks, key)

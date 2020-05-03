@@ -39,7 +39,7 @@ public class SystemShortcutFactory implements ResourceBasedOverride {
     @SuppressWarnings("unused")
     public SystemShortcutFactory() {
         this(new SystemShortcut.AppInfo(),
-                new SystemShortcut.Widgets(), new SystemShortcut.Install());
+                new SystemShortcut.Widgets(), new SystemShortcut.Install(), new SystemShortcut.Custom());
     }
 
     protected SystemShortcutFactory(SystemShortcut... shortcuts) {
@@ -48,6 +48,7 @@ public class SystemShortcutFactory implements ResourceBasedOverride {
 
     public @NonNull List<SystemShortcut> getEnabledShortcuts(Launcher launcher, ItemInfo info) {
         List<SystemShortcut> systemShortcuts = new ArrayList<>();
+
         for (SystemShortcut systemShortcut : mAllShortcuts) {
             if (systemShortcut.getOnClickListener(launcher, info) != null) {
                 systemShortcuts.add(systemShortcut);

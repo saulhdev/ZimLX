@@ -27,6 +27,7 @@ import android.os.Handler
 import android.os.ResultReceiver
 import androidx.appcompat.view.ContextThemeWrapper
 import androidx.core.app.ActivityCompat
+import org.zimmob.zimlx.theme.ThemeOverride
 import org.zimmob.zimlx.util.applyAccent
 
 class BlankActivity : Activity() {
@@ -44,7 +45,7 @@ class BlankActivity : Activity() {
         if (firstResume) {
             firstResume = false
             if (intent.hasExtra("dialogTitle")) {
-                //val theme = ThemeOverride.Settings().getTheme(this)
+                val theme = ThemeOverride.Settings().getTheme(this)
                 AlertDialog.Builder(ContextThemeWrapper(this, theme))
                         .setTitle(intent.getCharSequenceExtra("dialogTitle"))
                         .setMessage(intent.getCharSequenceExtra("dialogMessage"))

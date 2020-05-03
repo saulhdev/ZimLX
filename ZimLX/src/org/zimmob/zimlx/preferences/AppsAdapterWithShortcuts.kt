@@ -183,11 +183,11 @@ open class AppsAdapterWithShortcuts(
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
         // TODO: debug why wrong icons are loaded from the provider at times
-        val iconDrawable = if (iconProvider is ZimIconProvider && false) {
+        /*val iconDrawable = if (iconProvider is ZimIconProvider && false) {
             (iconProvider as ZimIconProvider).getIcon(info, iconDpi)
-        } else {
-            shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
-        }
+        } else {*/
+        val iconDrawable = shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
+        //}
     }
 
     class LoadingItem : Item

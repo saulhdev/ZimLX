@@ -22,17 +22,17 @@ import android.os.Handler;
 import android.os.UserHandle;
 import android.service.notification.StatusBarNotification;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.VisibleForTesting;
+
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.WorkspaceItemInfo;
-import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.notification.NotificationInfo;
 import com.android.launcher3.notification.NotificationKeyData;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.DeepShortcutView;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.util.PackageUserKey;
 
 import java.util.ArrayList;
@@ -40,9 +40,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-
-import androidx.annotation.Nullable;
-import androidx.annotation.VisibleForTesting;
 
 /**
  * Contains logic relevant to populating a {@link PopupContainerWithArrow}. In particular,
@@ -145,49 +142,6 @@ public class PopupPopulator {
 
             List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(launcher)
                     .queryForShortcutsContainer(activity, user);
-            String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
-                    : notificationKeys.get(0).shortcutId;
-            shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);
-            for (int i = 0; i < shortcuts.size() && i < shortcutViews.size(); i++) {
-                final ShortcutInfo shortcut = shortcuts.get(i);
-                final WorkspaceItemInfo si = new WorkspaceItemInfo(shortcut, launcher);
-                // Use unbadged icon for the menu.
-                LauncherIcons li = LauncherIcons.obtain(launcher);
-                si.applyFrom(li.createShortcutIcon(shortcut, false /* badged */));
-                li.recycle();
-                si.rank = i;
-
-                final DeepShortcutView view = shortcutViews.get(i);
-                uiHandler.post(() -> view.applyShortcutInfo(si, shortcut, container));
-            }
-
-            // This ensures that mLauncher.getWidgetsForPackageUser()
-            // doesn't return null (it puts all the widgets in memory).
-            uiHandler.post(() -> launcher.refreshAndBindWidgetsForPackageUser(
-                    PackageUserKey.fromItemInfo(originalInfo)));
-        };
-    }
-
-    public static Runnable createUpdateRunnable(final Launcher launcher, final ItemInfo originalInfo,
-                                                final Handler uiHandler, final PopupContainerWithArrow container,
-                                                final List<String> shortcutIds, final List<DeepShortcutView> shortcutViews,
-                                                final List<NotificationKeyData> notificationKeys) {
-        final ComponentName activity = originalInfo.getTargetComponent();
-        final UserHandle user = originalInfo.user;
-        return () -> {
-            if (!notificationKeys.isEmpty()) {
-                List<StatusBarNotification> notifications = launcher.getPopupDataProvider()
-                        .getStatusBarNotificationsForKeys(notificationKeys);
-                List<NotificationInfo> infos = new ArrayList<>(notifications.size());
-                for (int i = 0; i < notifications.size(); i++) {
-                    StatusBarNotification notification = notifications.get(i);
-                    infos.add(new NotificationInfo(launcher, notification));
-                }
-                uiHandler.post(() -> container.applyNotificationInfos(infos));
-            }
-
-            List<ShortcutInfo> shortcuts = DeepShortcutManager.getInstance(launcher)
-                    .queryForShortcutsContainer(activity, shortcutIds, user);
             String shortcutIdToDeDupe = notificationKeys.isEmpty() ? null
                     : notificationKeys.get(0).shortcutId;
             shortcuts = PopupPopulator.sortAndFilterShortcuts(shortcuts, shortcutIdToDeDupe);

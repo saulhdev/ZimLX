@@ -18,8 +18,19 @@
 package org.zimmob.zimlx.perms
 
 import android.content.Context
+import android.content.DialogInterface
+import android.view.View
+import android.widget.FrameLayout
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
+import androidx.appcompat.app.AlertDialog
+import com.android.launcher3.R
+import kotlinx.android.synthetic.zim.perm_request_dialog.view.*
+import org.zimmob.zimlx.theme.ThemeOverride
+import org.zimmob.zimlx.theme.ThemedContextProvider
+import org.zimmob.zimlx.util.applyAccent
+import org.zimmob.zimlx.util.isVisible
+import org.zimmob.zimlx.zimApp
 
 class CustomPermissionRequestDialog private constructor(private val context: Context, private val string: Int, private val icon: Int, private val explanation: Int?) {
     private val key = Pair(string, icon)
@@ -38,7 +49,7 @@ class CustomPermissionRequestDialog private constructor(private val context: Con
             return
         }
         SHOWING[key] = this
-        /*val themedContext = ThemedContextProvider(context.zimApp.activityHandler.foregroundActivity
+        val themedContext = ThemedContextProvider(context.zimApp.activityHandler.foregroundActivity
                 ?: context, null, ThemeOverride.Settings()).get()
         AlertDialog.Builder(themedContext, ThemeOverride.AlertDialog().getTheme(context))
                 .setView(DialogView(context, string, icon, explanation))
@@ -59,7 +70,7 @@ class CustomPermissionRequestDialog private constructor(private val context: Con
                     applyAccent()
                     show()
                 }
-        */
+
     }
 
     companion object {
@@ -68,7 +79,7 @@ class CustomPermissionRequestDialog private constructor(private val context: Con
         private val SHOWING = mutableMapOf<Pair<Int, Int>, CustomPermissionRequestDialog>()
     }
 
-    /*inner class DialogView(context: Context, @StringRes private val string: Int, @DrawableRes private val icn: Int, @StringRes private val explanation: Int?) : FrameLayout(context) {
+    inner class DialogView(context: Context, @StringRes private val string: Int, @DrawableRes private val icn: Int, @StringRes private val explanation: Int?) : FrameLayout(context) {
         override fun onAttachedToWindow() {
             super.onAttachedToWindow()
             View.inflate(context, R.layout.perm_request_dialog, this)
@@ -79,5 +90,5 @@ class CustomPermissionRequestDialog private constructor(private val context: Con
                 text_explanation.setText(explanation)
             }
         }
-    }*/
+    }
 }

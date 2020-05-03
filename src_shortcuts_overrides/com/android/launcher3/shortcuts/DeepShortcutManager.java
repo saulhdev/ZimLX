@@ -183,13 +183,17 @@ public class DeepShortcutManager {
 
 
     public Drawable getShortcutIconDrawable(ShortcutInfo shortcutInfo, int density) {
-        try {
-            Drawable icon = mLauncherApps.getShortcutIconDrawable(shortcutInfo, density);
-            mWasLastCallSuccess = true;
-            return icon;
-        } catch (SecurityException|IllegalStateException e) {
-            Log.e(TAG, "Failed to get shortcut icon", e);
-            mWasLastCallSuccess = false;
+        if (Utilities.ATLEAST_NOUGAT) {
+            try {
+                Drawable icon = mLauncherApps.getShortcutIconDrawable(shortcutInfo, density);
+                mWasLastCallSuccess = true;
+                return icon;
+            } catch (SecurityException|IllegalStateException e) {
+                Log.e(TAG, "Failed to get shortcut icon", e);
+                mWasLastCallSuccess = false;
+            }
+        } else {
+            //return DeepShortcutManagerBackport.getShortcutIconDrawable((ShortcutInfoCompat)shortcutInfo, density);
         }
         return null;
     }

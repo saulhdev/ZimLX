@@ -10,7 +10,7 @@ open class ZimAppFilter(context: Context) : AppFilter() {
     private val hideList = HashSet<ComponentName>()
 
     init {
-        //hideList.add(ComponentName(context, ))
+        hideList.add(ComponentName(context, ZimLauncher::class.java.name))
     }
 
     override fun shouldShowApp(componentName: ComponentName?, user: UserHandle?): Boolean {

@@ -41,8 +41,7 @@ class ZimIconProvider(context: Context) : IconProvider() {
     }
 
     fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
-        val mIcon: ShortcutInfo = shortcutInfo as ShortcutInfo
-        return iconPackManager.getIcon(mIcon, iconDpi)//.assertNotAdaptiveIconDrawable(shortcutInfo)
+        return iconPackManager.getIcon(shortcutInfo as ShortcutInfo, iconDpi)//.assertNotAdaptiveIconDrawable(shortcutInfo)
     }
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         return iconPackManager.getIcon(shortcutInfo, iconDpi)//.assertNotAdaptiveIconDrawable(shortcutInfo)

@@ -16,8 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
-
 import android.animation.ValueAnimator;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -95,7 +93,6 @@ import com.android.launcher3.widget.PendingAddShortcutInfo;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.iconpack.IconPackManager;
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -113,6 +110,8 @@ import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static com.android.launcher3.ItemInfoWithIcon.FLAG_ICON_BADGED;
 
 /**
  * Various utilities shared amongst the Launcher's classes.
@@ -707,9 +706,9 @@ public final class Utilities {
             } else {
                 outObj[0] = si.get(0);
                 int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
-                if (iconProvider instanceof ZimIconProvider) {
+                /*if (iconProvider instanceof ZimIconProvider) {
                     return ((ZimIconProvider) iconProvider).getIcon(si.get(0), iconDpi);
-                }
+                }*/
 
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }

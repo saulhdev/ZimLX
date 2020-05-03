@@ -32,7 +32,9 @@ import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherAppTransitionManager;
 import com.android.launcher3.LauncherCallbacks;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
@@ -93,7 +95,9 @@ public class ZimLauncher extends AospLauncher {
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        return super.startActivitySafely(v, intent, item);
+        boolean success = super.startActivitySafely(v, intent, item);
+        return success;
+
     }
 
     @Override
@@ -122,10 +126,15 @@ public class ZimLauncher extends AospLauncher {
         }
     }
 
+    public void finishBindingItems(int currentScreen) {
+        super.finishBindingItems(currentScreen);
+        Utilities.onLauncherStart();
+    }
+
     @Override
     public void onRestart() {
         super.onRestart();
-        //Utilities.onLauncherStart();
+        Utilities.onLauncherStart();
     }
 
     public void onDestroy() {

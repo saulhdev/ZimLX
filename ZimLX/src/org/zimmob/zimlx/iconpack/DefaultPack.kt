@@ -118,8 +118,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
             return gen.result
         }
-        return originalIcon
-        //return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
+        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {

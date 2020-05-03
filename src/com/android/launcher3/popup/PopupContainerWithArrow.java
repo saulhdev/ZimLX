@@ -207,17 +207,11 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
 
         PopupDataProvider popupDataProvider = launcher.getPopupDataProvider();
-        List<String> shortcutIds = popupDataProvider.getShortcutIdsForItem(itemInfo);
-        List<NotificationKeyData> notificationKeys = popupDataProvider
-                .getNotificationKeysForItem(itemInfo);
-        List<SystemShortcut> systemShortcuts = popupDataProvider
-                .getEnabledSystemShortcutsForItem(itemInfo);
 
         final PopupContainerWithArrow container =
                 (PopupContainerWithArrow) launcher.getLayoutInflater().inflate(
                         R.layout.popup_container, launcher.getDragLayer(), false);
-        //container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
-        container.populateAndShow(icon, shortcutIds, notificationKeys, systemShortcuts);
+        container.populateAndShow(icon, itemInfo, SystemShortcutFactory.INSTANCE.get(launcher));
         return container;
     }
 
@@ -242,13 +236,13 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         }
     }
 
-    protected void populateAndShow(
-            BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
+    protected void populateAndShow(BubbleTextView icon, ItemInfo item, SystemShortcutFactory factory) {
         PopupDataProvider popupDataProvider = mLauncher.getPopupDataProvider();
         populateAndShow(icon,
                 popupDataProvider.getShortcutCountForItem(item),
                 popupDataProvider.getNotificationKeysForItem(item),
-                factory.getEnabledShortcuts(mLauncher, item));
+                popupDataProvider.getEnabledSystemShortcutsForItem(item));
+        //factory.getEnabledShortcuts(mLauncher, item));
     }
 
     public ViewGroup getSystemShortcutContainerForTesting() {
@@ -319,72 +313,8 @@ public class PopupContainerWithArrow extends ArrowPopup implements DragSource,
         new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
                 mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
                 this, mShortcuts, notificationKeys));
-    }
 
-    @TargetApi(Build.VERSION_CODES.P)
-    private void populateAndShow(final BubbleTextView originalIcon, final List<String> shortcutIds,
-                                 final List<NotificationKeyData> notificationKeys, List<SystemShortcut> systemShortcuts) {
-        mNumNotifications = notificationKeys.size();
-        mOriginalIcon = originalIcon;
 
-        // Add views
-        if (mNumNotifications > 0) {
-            // Add notification entries
-            View.inflate(getContext(), R.layout.notification_content, this);
-            mNotificationItemView = new NotificationItemView(this);
-            if (mNumNotifications == 1) {
-                mNotificationItemView.removeFooter();
-            }
-            updateNotificationHeader();
-        }
-        int viewsToFlip = getChildCount();
-        mSystemShortcutContainer = this;
-
-        if (!shortcutIds.isEmpty()) {
-            if (mNotificationItemView != null) {
-                mNotificationItemView.addGutter();
-            }
-
-            for (int i = shortcutIds.size(); i > 0; i--) {
-                mShortcuts.add(inflateAndAdd(R.layout.deep_shortcut, this));
-            }
-            updateHiddenShortcuts();
-
-            if (!systemShortcuts.isEmpty()) {
-                mSystemShortcutContainer = inflateAndAdd(R.layout.system_shortcut_icons, this);
-                for (SystemShortcut shortcut : systemShortcuts) {
-                    initializeSystemShortcut(
-                            R.layout.system_shortcut_icon_only, mSystemShortcutContainer, shortcut);
-                }
-            }
-        } else if (!systemShortcuts.isEmpty()) {
-            if (mNotificationItemView != null) {
-                mNotificationItemView.addGutter();
-            }
-
-            for (SystemShortcut shortcut : systemShortcuts) {
-                initializeSystemShortcut(R.layout.system_shortcut, this, shortcut);
-            }
-        }
-
-        reorderAndShow(viewsToFlip);
-
-        ItemInfo originalItemInfo = (ItemInfo) originalIcon.getTag();
-        if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
-            setAccessibilityPaneTitle(getTitleForAccessibility());
-        }
-
-        mLauncher.getDragController().addDragListener(this);
-        mOriginalIcon.setForceHideDot(true);
-
-        // All views are added. Animate layout from now on.
-        setLayoutTransition(new LayoutTransition());
-
-        // Load the shortcuts on a background thread and update the container as it animates.
-        final Looper workerLooper = LauncherModel.getWorkerLooper();
-        new Handler(workerLooper).postAtFrontOfQueue(PopupPopulator.createUpdateRunnable(
-                mLauncher, originalItemInfo, new Handler(Looper.getMainLooper()),
-                this, shortcutIds, mShortcuts, notificationKeys));
     }
 
     private String getTitleForAccessibility() {
