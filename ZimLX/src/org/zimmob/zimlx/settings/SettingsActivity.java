@@ -94,7 +94,11 @@ import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
 import org.zimmob.zimlx.preferences.ButtonPreference;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
+import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
+import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.IconShapePreference;
+import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
+import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.preferences.StyledIconPreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
@@ -746,13 +750,12 @@ public class SettingsActivity extends SettingsBaseActivity
         @Override
         public void onDisplayPreferenceDialog(Preference preference) {
             final DialogFragment f;
-            /*if (preference instanceof GridSizePreference) {
+            if (preference instanceof GridSizePreference) {
                 f = GridSizeDialogFragmentCompat.Companion.newInstance(preference.getKey());
             } else if (preference instanceof SingleDimensionGridSizePreference) {
                 f = SingleDimensionGridSizeDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-            } else */
-            if (preference instanceof GesturePreference) {
+            } else if (preference instanceof GesturePreference) {
                 f = SelectGestureHandlerFragment.Companion
                         .newInstance((GesturePreference) preference);
             } else if (preference instanceof SearchProviderPreference) {

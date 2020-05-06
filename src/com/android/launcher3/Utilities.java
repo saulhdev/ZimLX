@@ -1004,6 +1004,13 @@ public final class Utilities {
         return context.getSharedPreferences(
                 LauncherFiles.REFLECTION_PREFERENCES_KEY, Context.MODE_PRIVATE);
     }
+
+    public static String upperCaseFirstLetter(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        return str.substring(0, 1).toUpperCase(Locale.US) + str.substring(1);
+    }
     /*END CUSTOM*/
 
 

@@ -4,9 +4,14 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__app_icons">
+        <org.zimmob.zimlx.preferences.DrawerGridSizePreference
+            android:key="numColsDrawer"
+            android:title="@string/title__drawer_columns"
+            app:iconSpaceReserved="false" />
+
         <org.zimmob.zimlx.settings.PreferenceDialogPreference
             android:key="pref_iconPopupMenu"
-            android:title="@string/pref_icon_popup_menu"
+            android:title="@string/title__drawer_menu"
             app:content="@xml/zim_preferences_drawer_icon_popup_menu"
             app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
@@ -26,7 +31,23 @@
         android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
         android:key="pref_hiddenApps"
         android:summary="@string/hide_apps_sum"
-        android:title="@string/hide_apps"
+        android:title="@string/title__drawer_hide_apps"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="pref_hideAllAppsAppLabels"
+        android:persistent="true"
+        android:title="@string/hide_icon_labels_pref_title"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
+        android:dependency="pref_hideAllAppsAppLabels"
+        android:key="pref_iconLabelsInTwoLines"
+        android:persistent="true"
+        android:title="@string/title__drawer_multiline_label"
         app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

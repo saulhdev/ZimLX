@@ -22,6 +22,7 @@ import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageManager;
 
 import com.android.launcher3.AppInfo;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.util.InstantAppResolver;
 
 /**
@@ -41,7 +42,10 @@ public class InstantAppResolverImpl extends InstantAppResolver {
 
     @Override
     public boolean isInstantApp(ApplicationInfo info) {
-        return info.isInstantApp();
+        if (Utilities.ATLEAST_OREO) {
+            return info.isInstantApp();
+        } else
+            return false;
     }
 
     @Override

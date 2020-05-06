@@ -18,7 +18,7 @@ public class AdaptiveIconWrapper {
     private final Context mContext;
     private final AdaptiveIconDrawable mWrapper;
 
-    private AdaptiveIconWrapper(Context context) {
+    public AdaptiveIconWrapper(Context context) {
         mContext = context;
         mWrapper = Utilities.ATLEAST_OREO
                 ? (AdaptiveIconDrawable) context.getDrawable(

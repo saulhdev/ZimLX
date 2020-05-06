@@ -20,6 +20,7 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Looper
+import android.os.Process
 import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
@@ -33,6 +34,7 @@ import org.zimmob.zimlx.groups.AppGroupsManager
 import org.zimmob.zimlx.groups.DrawerTabs
 import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.preferences.DockStyle
+import org.zimmob.zimlx.settings.GridSize
 import org.zimmob.zimlx.settings.GridSize2D
 import org.zimmob.zimlx.settings.SettingsActivity
 import org.zimmob.zimlx.smartspace.*
@@ -54,6 +56,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val onChangeListeners: MutableMap<String, MutableSet<OnPreferenceChangeListener>> = HashMap()
     private var onChangeCallback: ZimPreferencesChangeCallback? = null
     val sharedPrefs = migratePrefs()
+
     private fun migratePrefs(): SharedPreferences {
         val dir = context.cacheDir.parent
         val oldFile = File(dir, "shared_prefs/" + LauncherFiles.OLD_SHARED_PREFERENCES_KEY + ".xml")
@@ -62,14 +65,18 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             oldFile.renameTo(newFile)
             oldFile.delete()
         }
-        return context.applicationContext.getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+        return context.applicationContext
+                .getSharedPreferences(LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE)
+                .apply {
+                    migrateConfig(this)
+                }
     }
 
     val doNothing = { }
     val recreate = { recreate() }
     private val reloadApps = { reloadApps() }
     private val reloadAll = { reloadAll() }
-    private val restart = { restart() }
+    val restart = { restart() }
     private val refreshGrid = { refreshGrid() }
     private val updateBlur = { updateBlur() }
     private val reloadIcons = { reloadIcons() }
@@ -99,6 +106,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
     val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
+    private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
+    val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
+    val desktopIconScale by FloatPref("pref_iconScaleSB", 1f, recreate)
 
     /* --APP DRAWER-- */
     fun getSortMode(): Int {
@@ -106,8 +116,15 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         recreate
         return sort.toInt()
     }
-
     val showPredictions by BooleanPref("pref_show_predictions", false, recreate)
+    private val drawerMultilineLabel by BooleanPref("pref_iconLabelsInTwoLines", false, recreate)
+    val drawerLabelRows get() = if (drawerMultilineLabel) 2 else 1
+    val hideAllAppsAppLabels by BooleanPref("pref_hideAllAppsAppLabels", false, recreate)
+    val allAppsIconScale by FloatPref("pref_allAppsIconScale", 1f, recreate)
+    private val drawerGridSizeDelegate = ResettableLazy { GridSize(this, "numColsDrawer", LauncherAppState.getIDP(context), recreate) }
+    val drawerGridSize by drawerGridSizeDelegate
+    private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
+    val predictionGridSize by predictionGridSizeDelegate
 
     /*val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
@@ -121,7 +138,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
-
 
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
@@ -202,7 +218,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
     val customAppIcon = object : MutableMapPref<ComponentKey, IconPackManager.CustomIconEntry>("pref_appIconMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
-        override fun unflattenKey(key: String) = ComponentKey(ComponentName(context, key), Utilities.myUserHandle())
+        override fun unflattenKey(key: String) = ComponentKey(ComponentName(context, key), Process.myUserHandle())
         override fun flattenValue(value: IconPackManager.CustomIconEntry) = value.toString()
         override fun unflattenValue(value: String) = IconPackManager.CustomIconEntry.fromString(value)
     }
@@ -803,7 +819,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     }
 
     interface OnPreferenceChangeListener {
-
         fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean)
     }
 

@@ -32,7 +32,7 @@ class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callbac
         if (newSize > 0) {
             activity?.title = "$newSize${getString(R.string.hide_app_selected)}"
         } else {
-            activity?.title = getString(R.string.hide_apps)
+            activity?.title = getString(R.string.title__drawer_hide_apps)
         }
     }
 

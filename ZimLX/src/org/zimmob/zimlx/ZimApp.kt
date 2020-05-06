@@ -30,6 +30,7 @@ import com.android.launcher3.Utilities
 import org.zimmob.zimlx.blur.BlurWallpaperProvider
 import org.zimmob.zimlx.flowerpot.Flowerpot
 import org.zimmob.zimlx.smartspace.ZimSmartspaceController
+import org.zimmob.zimlx.theme.ThemeManager
 
 class ZimApp : Application() {
     val activityHandler = ActivityHandler()
@@ -65,7 +66,7 @@ class ZimApp : Application() {
 
     override fun onConfigurationChanged(newConfig: Configuration) {
         super.onConfigurationChanged(newConfig)
-        //ThemeManager.getInstance(this).updateNightMode(newConfig)
+        ThemeManager.getInstance(this).updateNightMode(newConfig)
     }
 
     class ActivityHandler : ActivityLifecycleCallbacks {

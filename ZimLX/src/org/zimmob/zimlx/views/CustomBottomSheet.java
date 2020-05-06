@@ -99,6 +99,7 @@ public class CustomBottomSheet extends WidgetsBottomSheet {
 
         if (itemInfo instanceof ItemInfoWithIcon || mInfoProvider.supportsIcon()) {
             ImageView icon = findViewById(R.id.icon);
+
             if (itemInfo instanceof WorkspaceItemInfo && ((WorkspaceItemInfo) itemInfo).customIcon != null) {
                 icon.setImageBitmap(((WorkspaceItemInfo) itemInfo).customIcon);
             } else if (itemInfo instanceof ItemInfoWithIcon) {

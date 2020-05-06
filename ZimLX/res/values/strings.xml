@@ -124,10 +124,16 @@
     <string name="title__sort_last_installed">Last Installed</string>
     <string name="title__sort_most_used">Most Used</string>
     <string name="title__sort_by_color">By Color</string>
+    <string name="title__drawer_hide_apps">Hidden App Shortcuts</string>
+    <string name="title__drawer_multiline_label">Multiline Labels</string>
+    <string name="title__drawer_columns">Number of columns</string>
+    <string name="title__drawer_menu">Popup menu items</string>
+
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
     <string name="summary__app_search_hidden">Display hidden apps</string>
     <string name="summary__sort_mode">Choose the sort mode</string>
+    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
 
     <string name="separate_work_apps_pref_title">Second tab for work apps</string>
     <string name="all_apps_label_pref_title">Show "All Apps" label</string>
@@ -154,15 +160,10 @@
     <string name="title_app_suggestions_in_search">App suggestions</string>
 
     <string name="app_drawer_pref_title">Drawer</string>
-    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
-
     <string name="pref_category_theme">Style</string>
-
     <string name="pref_drawer_columns">Column Count</string>
     <string name="pref_prediction_count">Suggestion Count</string>
     <string name="pref_drawer_padding">Row Height</string>
-
-    <string name="hide_apps">Hidden App Shortcuts</string>
     <string name="hidden_app">Hide apps</string>
     <string name="hide_app_selected">&#160; hidden</string>
     <string name="hide_app_reset">Reset</string>
@@ -239,7 +240,6 @@
     <string name="icon_shape_corner_cut">Cut</string>
     <string name="icon_shape_rounded_square">Rounded square</string>
     <string name="icon_scale_pref_title">Icon size</string>
-    <string name="pref_icon_popup_menu">Popup menu items</string>
     <string name="pref_legacy_treatment_title">Create adaptive icons</string>
     <string name="pref_legacy_treatment_summary">Automatic adaptive icons for all apps</string>
     <string name="pref_legacy_colored_backgrounds_summary">Coloured backgrounds for generated adaptive icons</string>

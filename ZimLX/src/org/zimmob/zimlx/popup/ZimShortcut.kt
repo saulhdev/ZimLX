@@ -42,7 +42,7 @@ class ZimShortcut(private val context: Context) {
             ShortcutEntry("info", SystemShortcut.AppInfo(), true),
             ShortcutEntry("widgets", SystemShortcut.Widgets(), true),
             ShortcutEntry("install", SystemShortcut.Install(), true),
-            ShortcutEntry("remove", Remove(), false),
+            ShortcutEntry("remove", Remove(), true),
             ShortcutEntry("uninstall", Uninstall(), false)
     )
 

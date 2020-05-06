@@ -33,7 +33,7 @@ import com.android.launcher3.icons.IconNormalizer;
 
 import org.zimmob.zimlx.ZimPreferences;
 
-public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener {
+public class DeviceProfile {
 
     public final InvariantDeviceProfile inv;
 
@@ -96,10 +96,18 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public int folderCellWidthPx;
     public int folderCellHeightPx;
 
+    private final ZimPreferences prefs;
+    // Drawer folder cell
+    public int allAppsFolderCellWidthPx;
+
     // Folder child
     public int folderChildIconSizePx;
     public int folderChildTextSizePx;
     public int folderChildDrawablePaddingPx;
+    public int allAppsFolderCellHeightPx;
+    // Drawer folder child
+    public int allAppsFolderChildIconSizePx;
+    public int allAppsFolderChildTextSizePx;
 
     // Hotseat
     public int hotseatCellHeightPx;
@@ -133,6 +141,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     // Notification dots
     public DotRenderer mDotRenderer;
     public Context mContext;
+    public int allAppsFolderChildDrawablePaddingPx;
+
     public DeviceProfile(Context context, InvariantDeviceProfile inv,
                          Point minSize, Point maxSize,
                          int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
@@ -234,20 +244,23 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         // This is done last, after iconSizePx is calculated above.
         mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
                 IconShape.DEFAULT_PATH_SIZE);
-        Utilities.getZimPrefs(context)
-                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets",
-                        "pref_twoRowDock", "pref_compactDock", "pref_allAppsPaddingScale", "pref_dockScale");
+
+
+        prefs = Utilities.getZimPrefs(context);
+        /*Utilities.getZimPrefs(context)
+                .addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockScale");*/
     }
 
-    @Override
+    /*@Override
     public void onValueChanged(String key, ZimPreferences prefs, boolean force) {
         Resources res = mContext.getResources();
+        DisplayMetrics dm = res.getDisplayMetrics();
 
         boolean fullWidthWidgets = Utilities.getZimPrefs(mContext).getAllowFullWidthWidgets();
 
         cellLayoutPaddingLeftRightPx = (!isVerticalBarLayout() && fullWidthWidgets) ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_layout_padding);
-    }
+    }*/
 
     public DeviceProfile copy(Context context) {
         Point size = new Point(availableWidthPx, availableHeightPx);
@@ -419,6 +432,26 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         folderChildDrawablePaddingPx = Math.max(0,
                 (folderCellHeightPx - folderChildIconSizePx - textHeight) / 3);
     }
+
+    private void updateDrawerFolderCellSize(float scale, DisplayMetrics dm, Resources res) {
+        // Drawer folders
+        int folderLabelRowCount = prefs.getHomeLabelRows();
+
+        allAppsFolderChildIconSizePx = (int) (Utilities.pxFromDp(inv.allAppsIconSize, dm) * scale);
+        allAppsFolderChildTextSizePx =
+                (int) (res.getDimensionPixelSize(R.dimen.folder_child_text_size) * scale);
+
+        int textHeight =
+                Utilities.calculateTextHeight(allAppsFolderChildTextSizePx) * folderLabelRowCount;
+        int cellPaddingX = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_x_padding) * scale);
+        int cellPaddingY = (int) (res.getDimensionPixelSize(R.dimen.folder_cell_y_padding) * scale);
+
+        allAppsFolderCellWidthPx = allAppsFolderChildIconSizePx + 2 * cellPaddingX;
+        allAppsFolderCellHeightPx = allAppsFolderChildIconSizePx + 2 * cellPaddingY + textHeight;
+        allAppsFolderChildDrawablePaddingPx = Math.max(0,
+                (allAppsFolderCellHeightPx - allAppsFolderChildIconSizePx - textHeight) / 3);
+    }
+
 
     public void updateInsets(Rect insets) {
         mInsets.set(insets);

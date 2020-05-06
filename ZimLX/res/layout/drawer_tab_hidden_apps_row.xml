@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="marquee"
             android:singleLine="true"
-            android:text="@string/hide_apps"
+            android:text="@string/title__drawer_hide_apps"
             android:textAppearance="?android:attr/textAppearanceListItem" />
 
         <TextView

@@ -31,6 +31,7 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.aosp.launcher.icons.AdaptiveIconWrapper
 import com.aosp.launcher.icons.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -88,8 +89,9 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         getRoundIcon(component, iconDpi)?.let {
             roundIcon = it.apply { mutate() }
         }
-        val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
-        return gen.result
+        //val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
+        val gen = AdaptiveIconWrapper(context).wrap(roundIcon ?: originalIcon)
+        return gen
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,

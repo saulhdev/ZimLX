@@ -163,6 +163,7 @@ import androidx.annotation.VisibleForTesting;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.predictions.CustomAppPredictor;
 
 /**
@@ -324,6 +325,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         overrideTheme(wallpaperColorInfo.isDark(), wallpaperColorInfo.supportsDarkText());
 
         LauncherAppState app = LauncherAppState.getInstance(this);
+        ZimPreferences prefs = Utilities.getZimPrefs(this);
+        prefs.getGridSize();
+        prefs.getDrawerGridSize();
+
         mOldConfig = new Configuration(getResources().getConfiguration());
         mModel = app.setLauncher(this);
         mRotationHelper = new RotationHelper(this);
@@ -333,7 +338,6 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mSharedPrefs = Utilities.getPrefs(this);
         mIconCache = app.getIconCache();
         mAccessibilityDelegate = new LauncherAccessibilityDelegate(this);
-
         mDragController = new DragController(this);
         mAllAppsController = new AllAppsTransitionController(this);
         mStateManager = new LauncherStateManager(this);
