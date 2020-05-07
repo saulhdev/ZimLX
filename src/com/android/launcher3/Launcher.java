@@ -327,6 +327,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         LauncherAppState app = LauncherAppState.getInstance(this);
         ZimPreferences prefs = Utilities.getZimPrefs(this);
         prefs.getGridSize();
+        prefs.getDockGridSize();
         prefs.getDrawerGridSize();
 
         mOldConfig = new Configuration(getResources().getConfiguration());

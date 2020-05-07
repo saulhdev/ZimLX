@@ -1302,6 +1302,10 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         return mItemsInReadingOrder;
     }
 
+    public void iterateOverItems(ItemOperator op) {
+        mContent.iterateOverItems(op);
+    }
+
     public List<BubbleTextView> getItemsOnPage(int page) {
         ArrayList<View> allItems = getItemsInReadingOrder();
         int lastPage = mContent.getPageCount() - 1;
@@ -1468,9 +1472,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
             } else if (!dl.isEventOverView(this, ev)) {
                 if (mLauncher.getAccessibilityDelegate().isInAccessibleDrag()) {
                     // Do not close the container if in drag and drop.
-                    if (!dl.isEventOverView(mLauncher.getDropTargetBar(), ev)) {
-                        return true;
-                    }
+                    return !dl.isEventOverView(mLauncher.getDropTargetBar(), ev);
                 } else {
                     mLauncher.getUserEventDispatcher().logActionTapOutside(
                             LoggerUtils.newContainerTarget(ContainerType.FOLDER));

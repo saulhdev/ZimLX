@@ -67,6 +67,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
+import com.android.launcher3.util.PackageUserKey;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
@@ -81,11 +82,13 @@ import org.zimmob.zimlx.groups.DrawerFolderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.function.Predicate;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
  */
-public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView {
+public class FolderIcon extends FrameLayout implements FolderListener, IconLabelDotView, Launcher.OnResumeCallback {
 
     @Thunk Launcher mLauncher;
     @Thunk Folder mFolder;
@@ -242,14 +245,13 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                 ItemInfoWithIcon coverInfo = mInfo.getCoverInfo();
                 mFolderName.setTag(coverInfo);
                 mFolderName.applyIcon(coverInfo);
-                applyCoverBadgeState(coverInfo, false);
+                applyCoverDotState(coverInfo, false);
             } else {
                 BitmapInfo info = BitmapInfo.fromBitmap(
                         Utilities.drawableToBitmap(mInfo.getIcon(getContext())));
                 mFolderName.applyIcon(info);
                 mFolderName.applyDotState(mInfo, false);
             }
-            //mBackground.setStartOpacity(0f);
         } else {
             if (isInAppDrawer()) {
                 lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
@@ -261,7 +263,6 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
             isCustomIcon = false;
             mFolderName.clearIcon();
-            //mBackground.setStartOpacity(1f);
         }
         mFolderName.setText(mInfo.getIconTitle());
         requestLayout();
@@ -416,8 +417,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
             int[] center = new int[2];
             float scale = getLocalCenterForIndex(index, numItemsInPreview, center);
-            center[0] = (int) Math.round(scaleRelativeToDragLayer * center[0]);
-            center[1] = (int) Math.round(scaleRelativeToDragLayer * center[1]);
+            center[0] = Math.round(scaleRelativeToDragLayer * center[0]);
+            center[1] = Math.round(scaleRelativeToDragLayer * center[1]);
 
             to.offset(center[0] - animateView.getMeasuredWidth() / 2,
                     center[1] - animateView.getMeasuredHeight() / 2);
@@ -467,10 +468,13 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         mDotInfo = dotInfo;
     }
 
-    public void applyCoverBadgeState(ItemInfo itemInfo, boolean animate) {
-        mFolderName.applyDotState(itemInfo, animate);
+    public WorkspaceItemInfo getCoverInfo() {
+        return mInfo.getCoverInfo();
     }
 
+    public void applyCoverDotState(ItemInfo itemInfo, boolean animate) {
+        mFolderName.applyDotState(itemInfo, animate);
+    }
 
     public ClippedFolderIconLayoutRule getLayoutRule() {
         return mPreviewLayoutRule;
@@ -652,6 +656,10 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
     @Override
     public void onItemsChanged(boolean animate) {
+        if (mInfo.isCoverMode()) {
+            onIconChanged();
+            mFolderName.setText(mInfo.getIconTitle());
+        }
         updatePreviewItems(animate);
         invalidate();
         requestLayout();
@@ -787,4 +795,34 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         return mFolderName;
     }
 
+    public void setStayPressed(boolean stayPressed) {
+        mFolderName.setStayPressed(stayPressed);
+    }
+
+    @Override
+    public void onLauncherResume() {
+        // Reset the pressed state of icon that was locked in the press state while activity
+        // was launching
+        setStayPressed(false);
+    }
+
+    public void clearPressedBackground() {
+        setStayPressed(false);
+    }
+
+    public void updateIconDots(Predicate<PackageUserKey> updatedBadges, PackageUserKey tmpKey) {
+        FolderDotInfo folderDotInfo = new FolderDotInfo();
+        for (WorkspaceItemInfo si : mInfo.contents) {
+            folderDotInfo.addDotInfo(mLauncher.getDotInfoForItem(si));
+        }
+        setDotInfo(folderDotInfo);
+
+        if (isCoverMode()) {
+            WorkspaceItemInfo coverInfo = getCoverInfo();
+            if (tmpKey.updateFromItemInfo(coverInfo) &&
+                    updatedBadges.test(tmpKey)) {
+                applyCoverDotState(coverInfo, true);
+            }
+        }
+    }
 }

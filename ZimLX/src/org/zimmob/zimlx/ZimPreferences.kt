@@ -145,6 +145,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
     val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     val dockGradient by BooleanPref("pref_key__dock_gradient", false, restart)
+    private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), restart) }
+    val dockGridSize by dockGridSizeDelegate
+
+
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -857,6 +861,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             INSTANCE?.apply {
                 onChangeListeners.clear()
                 onChangeCallback = null
+                gridSizeDelegate.resetValue()
+                dockGridSizeDelegate.resetValue()
+                drawerGridSizeDelegate.resetValue()
             }
         }
     }

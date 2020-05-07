@@ -158,6 +158,18 @@ public class FolderInfo extends ItemInfo {
         return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
     }
 
+    public Drawable getIcon(Context context) {
+        Launcher launcher = ZimLauncher.getLauncher(context);
+        Drawable icn = getIconInternal(launcher);
+        if (icn != null) {
+            return icn;
+        }
+        if (isCoverMode()) {
+            return DrawableFactory.INSTANCE.get(context).newIcon(context, getCoverInfo());
+        }
+        return getFolderIcon(launcher);
+    }
+
     public Drawable getDefaultIcon(Launcher launcher) {
         if (isCoverMode()) {
             return new FastBitmapDrawable(getCoverInfo().iconBitmap);
@@ -266,18 +278,6 @@ public class FolderInfo extends ItemInfo {
         for (FolderListener listener : listeners) {
             listener.onIconChanged();
         }
-    }
-
-    public Drawable getIcon(Context context) {
-        Launcher launcher = ZimLauncher.getLauncher(context);
-        Drawable icn = getIconInternal(launcher);
-        if (icn != null) {
-            return icn;
-        }
-        if (isCoverMode()) {
-            return DrawableFactory.INSTANCE.get(context).newIcon(context, getCoverInfo());
-        }
-        return getFolderIcon(launcher);
     }
 
     private Drawable getIconInternal(Launcher launcher) {

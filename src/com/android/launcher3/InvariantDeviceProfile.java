@@ -154,7 +154,6 @@ public class InvariantDeviceProfile {
     private InvariantDeviceProfile(InvariantDeviceProfile p) {
         numRows = p.numRows;
         numColumns = p.numColumns;
-        numColsDrawer = numColumns;
         numFolderRows = p.numFolderRows;
         numFolderColumns = p.numFolderColumns;
         iconSize = p.iconSize;

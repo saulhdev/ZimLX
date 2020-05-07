@@ -108,6 +108,7 @@
     <string name="cat__app_search">Search Bar</string>
     <string name="cat__app_misc">Miscellanea</string>
     <string name="cat__app_layout">Layout and Appearance</string>
+    <string name="cat__dock_icons">Shortcuts</string>
     <string name="title__app_spring">Spring effect</string>
     <string name="title__app_search">Show Search Bar</string>
     <string name="title__app_search_global">Global search in app drawer</string>
@@ -128,6 +129,9 @@
     <string name="title__drawer_multiline_label">Multiline Labels</string>
     <string name="title__drawer_columns">Number of columns</string>
     <string name="title__drawer_menu">Popup menu items</string>
+
+    <string name="title__dock_hotseat_icons">Icon Count</string>
+
 
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
