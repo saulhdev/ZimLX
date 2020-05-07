@@ -64,6 +64,7 @@ import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
+import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 
 import java.text.NumberFormat;
@@ -172,11 +173,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
         ZimPreferences prefs = Utilities.getZimPrefs(context);
         if (display == DISPLAY_WORKSPACE) {
+            mHideText = prefs.getHideAppLabels();
             DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
+            int lines = prefs.getHomeLabelRows();
+            setLineCount(lines);
             defaultIconSize = grid.iconSizePx;
         } else if (display == DISPLAY_ALL_APPS) {
+            mHideText = prefs.getHideAllAppsAppLabels();
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
@@ -185,10 +190,13 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setLineCount(lines);
             //TODO:  ADD DRAWER LABEL COLOR
         } else if (display == DISPLAY_FOLDER) {
+            mHideText = prefs.getHideAppLabels();
             DeviceProfile grid = mActivity.getDeviceProfile();
             setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.folderChildTextSizePx);
             setCompoundDrawablePadding(grid.folderChildDrawablePaddingPx);
             defaultIconSize = grid.folderChildIconSizePx;
+            int lines = prefs.getHomeLabelRows();
+            setLineCount(lines);
         } else if (display == DISPLAY_DRAWER_FOLDER) {
             DeviceProfile grid = mActivity.getDeviceProfile();
             mHideText = prefs.getHideAllAppsAppLabels();
@@ -323,7 +331,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mDotParams.color = IconPalette.getMutedColor(info.iconColor, 0.54f);
         }
         setIcon(iconDrawable);
-        setText(info.title);
+        if (!isTextHidden())
+            setText(info.title);
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)
@@ -352,6 +361,15 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             mSwipeUpHandler = null;
         } else {
             mSwipeUpHandler = new ViewSwipeUpGestureHandler(this, handler);
+        }
+    }
+
+    private CharSequence getTitle(ItemInfo info) {
+        CustomInfoProvider<ItemInfo> customInfoProvider = CustomInfoProvider.Companion.forItem(getContext(), info);
+        if (customInfoProvider != null) {
+            return customInfoProvider.getTitle(info);
+        } else {
+            return info.title;
         }
     }
 

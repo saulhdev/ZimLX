@@ -23,7 +23,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun reloadDrawer() {
-        //launcher.appsView.appsLists.forEach { it.reset() }
+        //launcher.appsView.apps.apps.forEach { it.reset() }
     }
 
     fun restart() {
@@ -31,7 +31,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun refreshGrid() {
-        //launcher.refreshGrid()
+        launcher.refreshGrid()
     }
 
     fun updateBlur() {
@@ -39,7 +39,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun resetAllApps() {
-        //launcher.mAllAppsController.reset()
+        launcher.mAllAppsController.reset()
     }
 
     fun updatePageIndicator() {
@@ -54,7 +54,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun updateSmartspace() {
-        //launcher.refreshGrid()
+        launcher.refreshGrid()
     }
 
     fun updateWeatherData() {

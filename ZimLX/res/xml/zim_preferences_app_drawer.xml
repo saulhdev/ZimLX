@@ -39,7 +39,7 @@
         android:disableDependentsState="true"
         android:key="pref_hideAllAppsAppLabels"
         android:persistent="true"
-        android:title="@string/hide_icon_labels_pref_title"
+        android:title="@string/title__drawer_hide_apps_icon_labels"
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat

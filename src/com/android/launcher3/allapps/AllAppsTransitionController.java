@@ -259,6 +259,10 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
+    public void reset() {
+        setProgress(1f);
+    }
+
     private boolean isAllAppsExpanded() {
         return Float.compare(mProgress, 0f) == 0;
     }

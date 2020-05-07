@@ -109,6 +109,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val desktopIconScale by FloatPref("pref_iconScaleSB", 1f, recreate)
+    val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+
+
 
     /* --APP DRAWER-- */
     fun getSortMode(): Int {

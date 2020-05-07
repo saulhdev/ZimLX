@@ -137,6 +137,10 @@ public class ZimLauncher extends AospLauncher {
         Utilities.onLauncherStart();
     }
 
+    public void refreshGrid() {
+        mWorkspace.refreshChildren();
+    }
+
     public void onDestroy() {
         super.onDestroy();
         Utilities.getZimPrefs(this).unregisterCallback();

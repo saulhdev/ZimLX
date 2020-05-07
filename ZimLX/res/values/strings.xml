@@ -58,12 +58,16 @@
     <string name="title__desktop_overlap">Overlap Placement</string>
     <string name="title__desktop_smartspace">Show Smart space widget</string>
     <string name="title__desktop_lock">Lock Desktop</string>
+    <string name="title__desktop_full_width_widgets">Full width widgets</string>
+    <string name="title__desktop_multiline_labels">Multiline app names</string>
+    <string name="title__desktop_hide_icon_labels">Hide icon labels on home screen</string>
+
     <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
+
     <string name="title_use_pill_qsb">Use pill style search bar</string>
     <string name="show_top_shadow_pref_title">Top shadow</string>
     <string name="show_top_shadow_pref_summary">Shadow under status bar</string>
     <string name="full_width_widgets_pref_summary">Allow widgets to span over the whole width without padding</string>
-    <string name="full_width_width_widgets_pref_title">Full width widgets</string>
     <string name="grid_size_height">Height</string>
     <string name="grid_size_width">Width</string>
     <!-- Minibar -->
@@ -129,9 +133,9 @@
     <string name="title__drawer_multiline_label">Multiline Labels</string>
     <string name="title__drawer_columns">Number of columns</string>
     <string name="title__drawer_menu">Popup menu items</string>
+    <string name="title__drawer_hide_apps_icon_labels">Hide icon labels in drawer</string>
 
     <string name="title__dock_hotseat_icons">Icon Count</string>
-
 
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
@@ -171,8 +175,6 @@
     <string name="hidden_app">Hide apps</string>
     <string name="hide_app_selected">&#160; hidden</string>
     <string name="hide_app_reset">Reset</string>
-    <string name="hide_all_apps_icon_labels_pref_title">Hide icon labels in drawer</string>
-    <string name="hide_icon_labels_pref_title">Hide icon labels on home screen</string>
 
     <string name="categorization">Categories</string>
     <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
@@ -551,7 +553,6 @@
     <string name="app_bugreport_url" translatable="false">https://github.com/otakuhqz/zimlx/issues</string>
     <string name="app_source_code_url" translatable="false">https://github.com/otakuhqz/zimlx</string>
     <string name="changelog">Changelog</string>
-
 
     <!-- Option to not change the icon shape on home screen and use the system default setting instead. [CHAR LIMIT=50] -->
     <string name="icon_shape_system_default">Use system default</string>
