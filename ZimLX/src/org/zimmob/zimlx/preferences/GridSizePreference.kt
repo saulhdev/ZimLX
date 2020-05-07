@@ -14,7 +14,6 @@ class GridSizePreference(context: Context, attrs: AttributeSet?) :
 
     init {
         updateSummary()
-
     }
 
     fun getSize(): Pair<Int, Int> {
