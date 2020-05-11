@@ -43,6 +43,7 @@ import android.view.ViewDebug;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.launcher3.AbstractFloatingView;
@@ -79,6 +80,9 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ClipPathView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
+
+import org.zimmob.zimlx.groups.DrawerFolderInfo;
+import org.zimmob.zimlx.views.CustomBottomSheet;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -230,6 +234,16 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         int measureSpec = MeasureSpec.UNSPECIFIED;
         mFooter.measure(measureSpec, measureSpec);
         mFooterHeight = mFooter.getMeasuredHeight();
+
+        ImageButton settingButton = findViewById(R.id.settings_button);
+        settingButton.setOnClickListener(v -> {
+            animateClosed();
+            if (mInfo instanceof DrawerFolderInfo) {
+                ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
+            } else {
+                CustomBottomSheet.show(mLauncher, mInfo);
+            }
+        });
     }
 
     public boolean onLongClick(View v) {

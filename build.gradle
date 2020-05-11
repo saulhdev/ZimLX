@@ -198,8 +198,9 @@ afterEvaluate {
     }
 }
 repositories {
-    google()
     jcenter()
+    mavenCentral()
+    maven { url "https://maven.google.com" }
     maven { url 'https://jitpack.io' }
 }
 final String SUPPORT_LIBS_VERSION = '1.0.0'

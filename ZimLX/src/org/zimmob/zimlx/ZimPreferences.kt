@@ -19,6 +19,7 @@ import android.annotation.SuppressLint
 import android.content.ComponentName
 import android.content.Context
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Looper
 import android.os.Process
 import android.text.TextUtils
@@ -111,8 +112,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val desktopIconScale by FloatPref("pref_iconScaleSB", 1f, recreate)
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
 
-
-
     /* --APP DRAWER-- */
     fun getSortMode(): Int {
         val sort: String = sharedPrefs.getString("pref_key__sort_mode", "0")!!
@@ -146,12 +145,16 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
     val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
     val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
-    val dockSearchBar by BooleanPref("pref_dockSearchBar", false, restart)
     val dockGradient by BooleanPref("pref_key__dock_gradient", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), restart) }
     val dockGridSize by dockGridSizeDelegate
-
-
+    var dockSearchBarPref by BooleanPref(
+            "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
+    )
+    inline val dockSearchBar get() = !dockHide && dockSearchBarPref
+    val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
+    val dockRowsCount get() = if (twoRowDock) 2 else 1
+    var dockScale by FloatPref("pref_dockScale", -1f, recreate)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -201,6 +204,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.defaultSearchProvider) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
+    var showVoiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
+    var showAssistantIcon by BooleanPref("opa_assistant", false, recreate)
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
     var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
@@ -216,6 +221,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)
     val enablePhysics get() = !lowPerformanceMode
+
+    /* --BACKUP-- */
+    val recentBackups = object : MutableListPref<Uri>(
+            Utilities.getDevicePrefs(context), "pref_recentBackups") {
+        override fun unflattenValue(value: String) = Uri.parse(value)
+    }
 
     val customAppName = object : MutableMapPref<ComponentKey, String>("pref_appNameMap", reloadAll) {
         override fun flattenKey(key: ComponentKey) = key.toString()
@@ -303,10 +314,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         if (!prefs.getBoolean("pref_showDateOrWeather", true)) {
             putString("pref_smartspace_widget_provider", BlankDataProvider::class.java.name)
         }
-        val showAssistant = prefs.getBoolean("pref_showMic", false)
-        putBoolean("opa_enabled", showAssistant)
-        putBoolean("opa_assistant", showAssistant)
-
         // Theme
         putString("pref_launcherTheme",
                 when (prefs.getString("pref_theme", "0")) {
@@ -584,8 +591,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     open inner class IntBasedPref<T : Any>(key: String, defaultValue: T, onChange: () -> Unit = doNothing,
                                            private val fromInt: (Int) -> T,
                                            private val toInt: (T) -> Int,
-                                           private val dispose: (T) -> Unit) :
-            PrefDelegate<T>(key, defaultValue, onChange) {
+                                           private val dispose: (T) -> Unit) : PrefDelegate<T>(key, defaultValue, onChange) {
         override fun onGetValue(): T {
             return if (sharedPrefs.contains(key)) {
                 fromInt(sharedPrefs.getInt(getKey(), toInt(defaultValue)))

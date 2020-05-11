@@ -3,11 +3,7 @@ package com.aosp.launcher;
 import android.content.Context;
 import android.os.Bundle;
 
-import androidx.preference.Preference;
-import androidx.preference.PreferenceScreen;
-
 import com.android.launcher3.settings.SettingsActivity;
-
 import com.aosp.launcher.customization.IconDatabase;
 import com.aosp.launcher.settings.IconPackPrefSetter;
 import com.aosp.launcher.settings.ReloadingListPreference;

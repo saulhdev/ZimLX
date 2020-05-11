@@ -42,6 +42,8 @@
 -keep class org.zimmob.zimlx.allapps.CustomAppFilter {
   public <init>(...);
 }
+-keep class org.zimmob.zimlx.preferences.HiddenAppsFragment
+
 # Discovery bounce animation
 -keep class com.android.launcher3.allapps.DiscoveryBounce$VerticalProgressWrapper {
   public void setProgress(float);

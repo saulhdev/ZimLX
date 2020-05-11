@@ -16,9 +16,6 @@
 
 package com.android.launcher3.folder;
 
-import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
-import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
@@ -34,6 +31,7 @@ import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewDebug;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
@@ -63,7 +61,6 @@ import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragView;
-import com.android.launcher3.graphics.DrawableFactory;
 import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.icons.DotRenderer;
 import com.android.launcher3.touch.ItemClickHandler;
@@ -72,7 +69,6 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
-import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
@@ -82,8 +78,10 @@ import org.zimmob.zimlx.groups.DrawerFolderInfo;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 import java.util.function.Predicate;
+
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
+import static com.android.launcher3.folder.PreviewItemManager.INITIAL_ITEM_ANIMATION_DURATION;
 
 /**
  * An icon that can appear on in the workspace representing an {@link Folder}.
@@ -610,11 +608,8 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     }
 
     public void setTextVisible(boolean visible) {
-        if (visible) {
-            mFolderName.setVisibility(VISIBLE);
-        } else {
-            mFolderName.setVisibility(INVISIBLE);
-        }
+        mIsTextVisible = visible;
+        mFolderName.setTextVisibility(visible);
     }
 
     public boolean getTextVisible() {

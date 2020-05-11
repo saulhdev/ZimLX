@@ -347,6 +347,7 @@ public class ConfigurationBuilder {
         mBubbleTextView.layout(0, 0, layoutParams.width, layoutParams.height);
         ArrayList<AppIndex> list = new ArrayList(mNano.allAppsCols);
         mNano.index = list.toArray(new AppIndex[list.size()]);
+
     }
 
     public byte[] build() {

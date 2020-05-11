@@ -2,11 +2,34 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__folder_searchbar_options">
-        <!--<org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
+        <org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
             android:defaultValue="@string/config_default_search_provider"
             android:key="pref_globalSearchProvider"
             android:title="@string/title__folder_search_provider"
-            app:iconSpaceReserved="false" /> -->
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="opa_enabled"
+            android:persistent="true"
+            android:title="@string/pref_show_assistant_title"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:dependency="opa_enabled"
+            android:key="opa_assistant"
+            android:persistent="true"
+            android:summary="@string/pref_show_as_assistant_summary"
+            android:title="@string/action_assistant"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_bubbleSearchStyle"
+            android:title="@string/bubble_searchbar"
+            app:iconSpaceReserved="false" />
+
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__folder_folder_options"></org.zimmob.zimlx.preferences.ZimPreferenceCategory>

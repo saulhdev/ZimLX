@@ -3,6 +3,13 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:key="pref_key__hide_hotseat"
+        android:persistent="true"
+        android:title="@string/title__hotseat_hide"
+        app:iconSpaceReserved="false" />
+
     <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__dock_icons">
         <org.zimmob.zimlx.preferences.DockGridSizePreference
             android:key="pref_dock_grid_size"
@@ -10,12 +17,12 @@
             app:iconSpaceReserved="false" />
 
     </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
-
-
-    <!--<org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
-        android:key="pref_key__dock_gradient"
-        android:persistent="true"
-        android:title="@string/title__dock_gradient"
-        app:iconSpaceReserved="false" /> -->
+    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__app_search">
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_dockSearchBar"
+            android:persistent="true"
+            android:title="@string/title__dock_search_bar"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
 </androidx.preference.PreferenceScreen>

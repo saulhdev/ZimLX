@@ -15,13 +15,7 @@
  */
 package com.aosp.launcher.qsb;
 
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
-import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
-
-import android.content.ActivityNotFoundException;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -31,24 +25,19 @@ import android.graphics.Paint.Style;
 import android.graphics.PorterDuff.Mode;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
-import android.graphics.drawable.Drawable;
 import android.graphics.drawable.InsetDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.TypedValue;
-import android.view.MotionEvent;
 import android.view.KeyEvent;
+import android.view.MotionEvent;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.view.View.OnClickListener;
-import android.view.ViewGroup.MarginLayoutParams;
 import android.view.animation.Interpolator;
-import android.widget.FrameLayout;
-import android.widget.FrameLayout.LayoutParams;
 import android.widget.ImageView;
+import android.widget.TextView;
 
-import androidx.core.content.ContextCompat;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
@@ -61,10 +50,8 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.allapps.SearchUiManager;
-import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.NinePatchDrawHelper;
 import com.android.launcher3.icons.ShadowGenerator.Builder;
@@ -72,16 +59,20 @@ import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.util.TransformingTouchDelegate;
-
 import com.android.quickstep.WindowTransformSwipeHandler;
-
-import com.aosp.launcher.AospUtils;
 import com.aosp.launcher.AospLauncher;
 import com.aosp.launcher.AospLauncherCallbacks;
+import com.aosp.launcher.AospUtils;
 import com.aosp.launcher.qsb.configs.ConfigurationBuilder;
 import com.aosp.launcher.search.SearchHandler;
 
-public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnClickListener, OnChangeListener, OnUpdateListener, SearchUiManager {
+import org.zimmob.zimlx.ZimPreferences;
+
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+
+public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable, OnClickListener, OnChangeListener, OnUpdateListener, SearchUiManager {
 
     private static final long SEARCH_TASK_DELAY_MS = 450;
     private static final Rect mSrcRect = new Rect();
@@ -109,6 +100,10 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
     private int mShadowMargin;
     private Paint mSearchIconStrokePaint = new Paint(1);
 
+    public float Dy;
+    private ZimPreferences prefs;
+    private TextView mHint;
+
     public AllAppsQsbContainer(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
@@ -128,6 +123,8 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
         mDelegate = new TransformingTouchDelegate(this);
         mShadowPaint.setColor(-1);
         mFixedTranslationY = Math.round(getTranslationY());
+        prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
         setTranslationY(0);
     }
@@ -137,11 +134,37 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
         updateQsbType();
         ((MarginLayoutParams) getLayoutParams()).topMargin = (int) Math.max(-mFixedTranslationY, insets.top - mMarginAdjusting);
         requestLayout();
+        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
+        mlp.topMargin = getTopMargin(insets);
+        requestLayout();
+        if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
+            mActivity.getAllAppsController().setScrollRangeDelta(0);
+        } else {
+            float delta = HotseatQsbContainer.getBottomMargin(mActivity, false) + Dy;
+            ZimPreferences prefs = ZimPreferences.Companion.getInstance(getContext());
+            if (!prefs.getDockHide()) {
+                delta += mlp.height + mlp.topMargin;
+                if (!prefs.getDockSearchBar()) {
+                    delta -= mlp.height;
+                    delta -= mlp.topMargin;
+                    delta -= mlp.bottomMargin;
+                    delta += Dy;
+                }
+            } else {
+                delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
+            }
+            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(delta));
+        }
+    }
+
+    public int getTopMargin(Rect rect) {
+        return Math.max(Math.round(-this.Dy), rect.top - mMarginAdjusting);
     }
 
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
+        mHint = findViewById(R.id.qsb_hint);
         mSearchIcon = findViewById(R.id.mic_icon);
         setTouchDelegate(mDelegate);
         requestLayout();
@@ -309,14 +332,13 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
     public int getMeasuredWidth(int width, DeviceProfile dp) {
         int leftRightPadding = dp.desiredWorkspaceLeftRightMarginPx
                 + dp.cellLayoutPaddingLeftRightPx;
-        int rowWidth = width - leftRightPadding * 2;
-        return rowWidth;
+        return width - leftRightPadding * 2;
     }
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         DeviceProfile dp = mLauncher.getDeviceProfile();
-        int round = Math.round(((float) dp.iconSizePx) * 0.92f);
+        int round = Math.round(((float) dp.iconSizePx) * 1.92f);
         setMeasuredDimension(calculateMeasuredDimension(dp, round, widthMeasureSpec), View.MeasureSpec.getSize(heightMeasureSpec));
         for (int childCount = getChildCount() - 1; childCount >= 0; childCount--) {
             View childAt = getChildAt(childCount);
@@ -358,9 +380,8 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
     }
 
     public void drawCanvas(Canvas canvas, int width) {
-        Canvas qsb = canvas;
         loadBitmap();
-        drawShadow(mShadowBitmap, qsb);
+        drawShadow(mShadowBitmap, canvas);
         if (mSearchIconStrokeWidth > WindowTransformSwipeHandler.SWIPE_DURATION_MULTIPLIER && mSearchIcon.getVisibility() == 0) {
             int paddingLeft = mIsRtl ? getPaddingLeft() : (width - getPaddingRight()) - getMicWidth();
             int paddingTop = getPaddingTop();
@@ -372,7 +393,7 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
                 mSearchIconStrokePaint = new Paint(1);
             }
             mSearchIconStrokePaint.setColor(-4341306);
-            qsb.drawRoundRect((float) (paddingLeft + micStrokeWidth), (float) (paddingTop + micStrokeWidth), (float) (paddingRight - micStrokeWidth), (float) ((paddingBottom - micStrokeWidth) + 1), height, height, mSearchIconStrokePaint);
+            canvas.drawRoundRect((float) (paddingLeft + micStrokeWidth), (float) (paddingTop + micStrokeWidth), (float) (paddingRight - micStrokeWidth), (float) ((paddingBottom - micStrokeWidth) + 1), height, height, mSearchIconStrokePaint);
         }
     }
 
@@ -491,14 +512,14 @@ public class AllAppsQsbContainer extends FrameLayout implements Insettable, OnCl
 
     @Override
     public void setContentVisibility(int visibleElements, PropertySetter setter, Interpolator interpolator) {
-        boolean hasSearchBoxContent = (visibleElements & HOTSEAT_SEARCH_BOX) != 0 && (visibleElements & ALL_APPS_HEADER) != 0;
+        //boolean hasSearchBoxContent = (visibleElements & HOTSEAT_SEARCH_BOX) != 0 && (visibleElements & ALL_APPS_HEADER) != 0;
+        boolean hasSearchBoxContent = (visibleElements) != 0 && (visibleElements & ALL_APPS_HEADER) != 0;
         float alpha = hasSearchBoxContent ? 1.0f : 0.0f;
-        setter.setViewAlpha(this, 1, interpolator);
+        setter.setViewAlpha(this, alpha, interpolator);
     }
 
     @Override
     public void startSearch() {
-
     }
 
     @Override

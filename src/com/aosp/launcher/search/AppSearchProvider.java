@@ -75,21 +75,18 @@ public class AppSearchProvider extends ContentProvider {
     public LooperExecutor mLooper;
 
     public AppSearchProvider() {
-        mPipeDataWriter = new PipeDataWriter<Future>() {
-            @Override
-            public void writeDataToPipe(ParcelFileDescriptor output, Uri uri, String mimeType, Bundle opts, Future args) {
-                AutoCloseOutputStream outStream = null;
+        mPipeDataWriter = (output, uri, mimeType, opts, args) -> {
+            AutoCloseOutputStream outStream = null;
+            try {
+                outStream = new AutoCloseOutputStream(output);
+                ((Bitmap) args.get()).compress(CompressFormat.PNG, 100, outStream);
+            } catch (Throwable e) {
+                Log.w("AppSearchProvider", "fail to write to pipe", e);
+            }
+            if (outStream != null) {
                 try {
-                    outStream = new AutoCloseOutputStream(output);
-                    ((Bitmap) args.get()).compress(CompressFormat.PNG, 100, outStream);
-                } catch (Throwable e) {
-                    Log.w("AppSearchProvider", "fail to write to pipe", e);
-                }
-                if (outStream != null) {
-                    try {
-                        outStream.close();
-                    } catch (Throwable ignored) {
-                    }
+                    outStream.close();
+                } catch (Throwable ignored) {
                 }
             }
         };

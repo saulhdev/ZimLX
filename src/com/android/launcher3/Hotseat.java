@@ -32,6 +32,8 @@ import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.views.Transposable;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 public class Hotseat extends CellLayout implements LogContainerProvider, Insettable, Transposable {
 
     @ViewDebug.ExportedProperty(category = "launcher")
@@ -62,6 +64,26 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     int getCellYFromOrder(int rank) {
         return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+
+        ZimPreferences prefs = Utilities.getZimPrefs(getContext());
+        if (prefs.getDockHide()) {
+            setVisibility(GONE);
+        } /*else if (prefs.getDockSearchBar()) {
+            inflate(getContext(), R.layout.search_container_hotseat, this);
+        } else {
+            View v = this.findViewById(R.id.search_container_hotseat);
+            if (v != null) {
+                removeView(v);
+            }
+        }*/
+
+        mContent = findViewById(R.id.layout);
+    }
+
 
     public void resetLayout(boolean hasVerticalHotseat) {
         removeAllViewsInLayout();

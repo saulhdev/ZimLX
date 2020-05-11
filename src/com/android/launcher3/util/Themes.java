@@ -78,7 +78,8 @@ public class Themes {
     }
 
     public static int getColorAccent(Context context) {
-        return getAttrColor(context, android.R.attr.colorAccent);
+        return Utilities.getZimPrefs(context).getAccentColor();
+        //return getAttrColor(context, android.R.attr.colorAccent);
     }
 
     public static int getAttrColor(Context context, int attr) {
