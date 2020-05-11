@@ -8,7 +8,7 @@ Our mission is to create a powerful launcher with smart features to make your de
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 ## Pre-Release
-[![Telegram](https://img.shields.io/telegram/url?color=blue&label=Telegram&logo=telegram&logoColor=blue&style=for-the-badge&url=https%3A%2F%2Ft.me%2Fzimlauncher)](https://t.me/zimlauncher)
+[![Telegram](https://img.shields.io/badge/Telegram-Group-blue.svg?style=for-the-badge)](https://t.me/zimlauncher)
 
 ## Main Features
 -   Row and columns config.
@@ -54,7 +54,7 @@ Want to buy me a coffee? https://paypal.me/saulhenriquez
         <td>
         </td>
     </tr>
-<table>
+</table>
 
 ## Want to contribute?
 If you have knowledge in Java or Kotlin you can work on additional features!
