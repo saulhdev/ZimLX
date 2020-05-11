@@ -8,7 +8,7 @@ Our mission is to create a powerful launcher with smart features to make your de
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
 ## Pre-Release
-(Telegram Channel](https://t.me/zimlauncher)
+[![Telegram](https://img.shields.io/telegram/url?color=blue&label=Telegram&logo=telegram&logoColor=blue&style=for-the-badge&url=https%3A%2F%2Ft.me%2Fzimlauncher)](https://t.me/zimlauncher)
 
 ## Main Features
 -   Row and columns config.
