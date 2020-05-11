@@ -7,8 +7,8 @@ Our mission is to create a powerful launcher with smart features to make your de
 [<img src="Logo/logotype.png" width="28%" alt="Zim Launcher">](https://github.com/otakuhqz/ZimLX)         
 [<img src="https://f-droid.org/badge/get-it-on.png" alt="Get it on F-Droid" height="80">](https://f-droid.org/packages/org.zimmob.zimlx/)
 
-## Pre-Releases
-(https://img.shields.io/badge/Chat%20on-Telegram-brightgreen.svg)](https://t.me/zimlauncher)
+## Pre-Release
+(Telegram Channel](https://t.me/zimlauncher)
 
 ## Main Features
 -   Row and columns config.
