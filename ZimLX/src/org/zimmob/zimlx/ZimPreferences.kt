@@ -111,6 +111,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
     val desktopIconScale by FloatPref("pref_iconScaleSB", 1f, recreate)
     val hideAppLabels by BooleanPref("pref_hideAppLabels", false, recreate)
+    val desktopTextScale by FloatPref("pref_iconTextScaleSB", 1f, reloadAll)
 
     /* --APP DRAWER-- */
     fun getSortMode(): Int {
@@ -127,6 +128,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerGridSize by drawerGridSizeDelegate
     private val predictionGridSizeDelegate = ResettableLazy { GridSize(this, "numPredictions", LauncherAppState.getIDP(context), recreate) }
     val predictionGridSize by predictionGridSizeDelegate
+    val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
+    val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
 
     /*val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
@@ -148,13 +151,15 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockGradient by BooleanPref("pref_key__dock_gradient", false, restart)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), restart) }
     val dockGridSize by dockGridSizeDelegate
-    var dockSearchBarPref by BooleanPref(
-            "pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate
-    )
+    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", false, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
+    val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
+    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
+    val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
+    val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
