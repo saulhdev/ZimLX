@@ -133,7 +133,6 @@ public class RecyclerViewFastScroller extends View {
 
         mThumbPaint = new Paint();
         mThumbPaint.setAntiAlias(true);
-        //mThumbPaint.setColor(Themes.getColorAccent(context));
         mThumbPaint.setColor(Utilities.getZimPrefs(context).getAccentColor());
         mThumbPaint.setStyle(Paint.Style.FILL);
 
@@ -388,6 +387,7 @@ public class RecyclerViewFastScroller extends View {
     public void setColor(int color) {
         mThumbPaint.setColor(color);
     }
+
     public boolean isHitInParent(float x, float y, Point outOffset) {
         if (mThumbOffsetY < 0) {
             return false;
