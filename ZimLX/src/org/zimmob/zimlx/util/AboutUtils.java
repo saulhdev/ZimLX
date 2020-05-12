@@ -23,6 +23,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.net.Uri;
 import android.text.Html;
@@ -248,4 +249,29 @@ public class AboutUtils {
         return mContext.getResources().getIdentifier(name, resType, mContext.getPackageName());
     }
 
+    /**
+     * Get an {@link Locale} out of a android language code
+     * The {@code androidLC} may be in any of the forms: de, en, de-rAt
+     */
+    public Locale getLocaleByAndroidCode(String androidLC) {
+        if (!TextUtils.isEmpty(androidLC)) {
+            return androidLC.contains("-r")
+                    ? new Locale(androidLC.substring(0, 2), androidLC.substring(4, 6)) // de-rAt
+                    : new Locale(androidLC); // de
+        }
+        return Resources.getSystem().getConfiguration().locale;
+    }
+
+    /**
+     * Set the apps language
+     * {@code androidLC} may be in any of the forms: en, de, de-rAt
+     * If given an empty string, the default (system) locale gets loaded
+     */
+    public void setAppLanguage(String androidLC) {
+        Locale locale = getLocaleByAndroidCode(androidLC);
+        Configuration config = mContext.getResources().getConfiguration();
+        config.locale = (locale != null && !androidLC.isEmpty())
+                ? locale : Resources.getSystem().getConfiguration().locale;
+        mContext.getResources().updateConfiguration(config, null);
+    }
 }
