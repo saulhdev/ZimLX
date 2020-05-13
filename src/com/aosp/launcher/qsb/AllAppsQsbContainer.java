@@ -123,8 +123,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         mDelegate = new TransformingTouchDelegate(this);
         mShadowPaint.setColor(-1);
         mFixedTranslationY = Math.round(getTranslationY());
-        prefs = ZimPreferences.Companion.getInstanceNoCreate();
-        Dy = getResources().getDimensionPixelSize(R.dimen.all_apps_search_vertical_offset);
         setClipToPadding(false);
         setTranslationY(0);
     }
@@ -134,37 +132,11 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         updateQsbType();
         ((MarginLayoutParams) getLayoutParams()).topMargin = (int) Math.max(-mFixedTranslationY, insets.top - mMarginAdjusting);
         requestLayout();
-        MarginLayoutParams mlp = (MarginLayoutParams) getLayoutParams();
-        mlp.topMargin = getTopMargin(insets);
-        requestLayout();
-        if (mActivity.getDeviceProfile().isVerticalBarLayout()) {
-            mActivity.getAllAppsController().setScrollRangeDelta(0);
-        } else {
-            float delta = HotseatQsbContainer.getBottomMargin(mActivity, false) + Dy;
-            ZimPreferences prefs = ZimPreferences.Companion.getInstance(getContext());
-            if (!prefs.getDockHide()) {
-                delta += mlp.height + mlp.topMargin;
-                if (!prefs.getDockSearchBar()) {
-                    delta -= mlp.height;
-                    delta -= mlp.topMargin;
-                    delta -= mlp.bottomMargin;
-                    delta += Dy;
-                }
-            } else {
-                delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
-            }
-            mActivity.getAllAppsController().setScrollRangeDelta(Math.round(delta));
-        }
-    }
-
-    public int getTopMargin(Rect rect) {
-        return Math.max(Math.round(-this.Dy), rect.top - mMarginAdjusting);
     }
 
     @Override
     public void onFinishInflate() {
         super.onFinishInflate();
-        mHint = findViewById(R.id.qsb_hint);
         mSearchIcon = findViewById(R.id.mic_icon);
         setTouchDelegate(mDelegate);
         requestLayout();

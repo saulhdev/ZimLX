@@ -367,21 +367,6 @@
         <item name="bottomSheetNavBarColor">#00000000</item>
     </style>
 
-    <style name="FastScrollerPopup">
-        <item name="android:layout_width">wrap_content</item>
-        <item name="android:minWidth">@dimen/fastscroll_popup_width</item>
-        <item name="android:layout_height">@dimen/fastscroll_popup_height</item>
-        <item name="android:textSize">@dimen/fastscroll_popup_text_size</item>
-        <item name="android:paddingEnd">@dimen/fastscroll_popup_padding</item>
-        <item name="android:gravity">center</item>
-        <item name="android:alpha">0</item>
-        <item name="android:elevation">3dp</item>
-        <item name="android:saveEnabled">false</item>
-        <item name="android:textColor">@android:color/white</item>
-        <item name="android:includeFontPadding">false</item>
-        <item name="android:importantForAccessibility">no</item>
-    </style>
-
     <!-- Base theme for BubbleTextView and sub classes -->
     <style name="BaseIcon">
         <item name="android:layout_width">match_parent</item>

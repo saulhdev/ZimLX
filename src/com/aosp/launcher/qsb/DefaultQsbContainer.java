@@ -18,9 +18,12 @@ package com.aosp.launcher.qsb;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
+import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.ViewGroup;
 
 import com.android.launcher3.ExtendedEditText;
+import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;

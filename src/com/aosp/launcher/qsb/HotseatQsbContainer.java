@@ -36,16 +36,13 @@ import com.android.launcher3.views.BaseDragLayer;
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.ZimPreferences;
 
-public class HotseatQsbContainer extends Hotseat implements ZimPreferences.OnPreferenceChangeListener {
-    public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
-    public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
+public class HotseatQsbContainer extends Hotseat {
 
     private AllAppsQsbContainer mAllAppsQsb;
 
     private boolean mIsTransposed;
     private int mMarginBottom;
     private int mWidth;
-    private boolean widgetMode;
 
     public HotseatQsbContainer(Context context) {
         this(context, null, 0);
@@ -60,39 +57,6 @@ public class HotseatQsbContainer extends Hotseat implements ZimPreferences.OnPre
         mMarginBottom = getResources().getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
     }
 
-    public static int getBottomMargin(Launcher launcher, boolean widgetMode) {
-        Resources resources = launcher.getResources();
-        int minBottom = launcher.getDeviceProfile().getInsets().bottom + launcher.getResources()
-                .getDimensionPixelSize(R.dimen.hotseat_qsb_bottom_margin);
-
-        DeviceProfile profile = launcher.getDeviceProfile();
-        Rect rect = widgetMode ? new Rect(0, 0, 0, 0) : profile.getInsets();
-        Rect hotseatLayoutPadding = profile.getHotseatLayoutPadding();
-
-        int hotseatTop = profile.hotseatBarSizePx + rect.bottom;
-        int hotseatIconsTop = hotseatTop - hotseatLayoutPadding.top;
-
-        float f = ((hotseatIconsTop - hotseatLayoutPadding.bottom) + (profile.iconSizePx * 0.92f)) / 2.0f;
-        float f2 = ((float) rect.bottom) * 0.67f;
-        int bottomMargin = Math.round(f2 + (
-                ((((((float) hotseatTop) - f2) - f) - resources
-                        .getDimension(R.dimen.qsb_widget_height))
-                        - ((float) profile.verticalDragHandleSizePx)) / 2.0f));
-
-        return Math.max(minBottom, bottomMargin);
-    }
-
-    protected void onAttachedToWindow() {
-        Utilities.getZimPrefs(getContext())
-                .addOnPreferenceChangeListener(this, KEY_DOCK_SEARCHBAR);
-        super.onAttachedToWindow();
-    }
-
-    protected void onDetachedFromWindow() {
-        super.onDetachedFromWindow();
-        Utilities.getZimPrefs(getContext())
-                .removeOnPreferenceChangeListener(this, KEY_DOCK_SEARCHBAR);
-    }
     @Override
     public void onDraw(Canvas canvas) {
         if (mIsTransposed && mAllAppsQsb != null) {
@@ -212,13 +176,5 @@ public class HotseatQsbContainer extends Hotseat implements ZimPreferences.OnPre
             return;
         }
         mAllAppsQsb = null;
-    }
-
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
-        if (!widgetMode && (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE))) {
-            boolean visible = prefs.getDockSearchBar() && !prefs.getDockHide();
-            setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
     }
 }

@@ -35,9 +35,9 @@ class HeaderPreference(context: Context, attrs: AttributeSet? = null) : Preferen
     override fun onBindViewHolder(holder: PreferenceViewHolder?) {
         super.onBindViewHolder(holder)
         val version: TextView = holder?.findViewById(R.id.app_version) as TextView
-        version.text = context.resources.getString(R.string.app_version) + ": " + aboutUtils.appVersionName;
+        version.text = context.resources.getString(R.string.app_version) + ": " + aboutUtils.appVersionName
 
-        val build: TextView = holder?.findViewById(app_build) as TextView
-        build.text = context.resources.getString(R.string.app_build) + ": " + aboutUtils.appVersionCode;
+        val build: TextView = holder.findViewById(app_build) as TextView
+        build.text = context.resources.getString(R.string.app_build) + ": " + aboutUtils.appVersionCode
     }
 }

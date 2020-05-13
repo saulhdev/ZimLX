@@ -54,7 +54,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     private val packClocks: MutableMap<Int, CustomClock.Metadata> = HashMap()
     private val packDynamicDrawables: MutableMap<Int, DynamicDrawable.Metadata> = HashMap()
 
-    //private var packMask: IconMask = IconMask()
+    private var packMask: IconMask = IconMask()
     private val defaultPack = DefaultPack(context)
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
     private val prefs by lazy { Utilities.getZimPrefs(context) }
@@ -132,7 +132,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                                 }
                             }
                         }
-                        /*name == "scale" -> {
+                        name == "scale" -> {
                             val scale = parseXml["factor"]!!.toFloat()
                             if (scale > 0x7f070000) {
                                 packMask.iconScale = packResources.getDimension(scale.toInt())
@@ -155,7 +155,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                             if (!TextUtils.isEmpty(onlyMaskLegacy)) {
                                 packMask.onlyMaskLegacy = onlyMaskLegacy!!.toBoolean()
                             }
-                        }*/
+                        }
                     }
                 }
             }
@@ -273,7 +273,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         }
 
         val isCustomPack = customIconEntry?.packPackageName == packPackageName && customIconEntry.icon == null
-        /*if ((prefs.iconPackMasking || isCustomPack) && packMask.hasMask) {
+        if ((prefs.iconPackMasking || isCustomPack) && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(launcherActivityInfo, iconDpi, flattenDrawable,
                     customIconEntry, iconProvider)
             val icon = packMask.getIcon(context, baseIcon, launcherActivityInfo.componentName)
@@ -282,7 +282,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 return gen.result
             }
             return icon
-        }*/
+        }
 
         return null
     }
@@ -290,7 +290,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
-        /*if (prefs.iconPackMasking && packMask.hasMask) {
+        if (prefs.iconPackMasking && packMask.hasMask) {
             val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
             if (baseIcon != null) {
                 val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
@@ -300,11 +300,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return icon
             }
-        }*/
+        }
 
         return null
     }
-
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
@@ -380,7 +379,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         super.getAllIcons(callback, cancel, filter)
     }
 
-    override fun supportsMasking(): Boolean = false//packMask.hasMask
+    override fun supportsMasking(): Boolean = packMask.hasMask
 
     private fun getXml(name: String): XmlPullParser? {
         val res: Resources
@@ -460,10 +459,10 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         override fun drawableForDensity(density: Int): Drawable {
             val baseIcon = defaultPack.getIcon(key, density)!!
-            // val icon = packMask.getIcon(context, baseIcon, key.componentName)
+            val icon = packMask.getIcon(context, baseIcon, key.componentName)
             if (prefs.adaptifyIconPacks) {
-                //val gen = AdaptiveIconGenerator(context, icon)
-                val gen = AdaptiveIconGenerator(context, baseIcon)
+                val gen = AdaptiveIconGenerator(context, icon)
+                //val gen = AdaptiveIconGenerator(context, baseIcon)
                 return gen.result
             }
             return baseIcon

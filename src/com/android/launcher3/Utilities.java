@@ -94,6 +94,7 @@ import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
 import org.zimmob.zimlx.iconpack.IconPackManager;
+import org.zimmob.zimlx.iconpack.ZimIconProvider;
 
 import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
@@ -707,9 +708,9 @@ public final class Utilities {
             } else {
                 outObj[0] = si.get(0);
                 int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
-                /*if (iconProvider instanceof ZimIconProvider) {
+                if (iconProvider instanceof ZimIconProvider) {
                     return ((ZimIconProvider) iconProvider).getIcon(si.get(0), iconDpi);
-                }*/
+                }
 
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }

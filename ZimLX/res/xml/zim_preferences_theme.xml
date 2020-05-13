@@ -19,6 +19,17 @@
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconPackMaskingController"
             app:iconSpaceReserved="false" />
 
+        <org.zimmob.zimlx.preferences.IconShapePreference
+            android:defaultValue="@string/icon_shape_system_default"
+            android:entries="@array/icon_shape_names"
+            android:entryValues="@array/icon_shape_values"
+            android:key="pref_iconShape"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/title__theme_icon_shape"
+            app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController"
+            app:iconSpaceReserved="false" />
+
         <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_legacy_treatment"
             android:key="pref_enableLegacyTreatment"

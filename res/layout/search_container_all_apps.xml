@@ -13,22 +13,27 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<com.aosp.launcher.qsb.DefaultQsbContainer
+
+<com.android.launcher3.allapps.search.AppsSearchContainerLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@id/search_container_all_apps"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="bottom"
-    android:gravity="center"
-    android:layout_marginLeft="48dp"
-    android:hint="@string/all_apps_search_bar_hint"
-    android:layout_marginRight="48dp"
-    android:background="@android:color/transparent"
+    android:layout_height="@dimen/all_apps_search_bar_field_height"
+    android:layout_centerHorizontal="true"
+    android:layout_gravity="top|center_horizontal"
+    android:background="@drawable/bg_all_apps_searchbox"
+    android:elevation="1dp"
     android:focusableInTouchMode="true"
+    android:gravity="center"
+    android:hint="@string/all_apps_search_bar_hint"
     android:imeOptions="actionSearch|flagNoExtractUi"
-    android:inputType="textCapWords|textNoSuggestions"
-    android:textColor="?android:attr/textColorSecondary"
+    android:inputType="text|textNoSuggestions|textCapWords"
     android:maxLines="1"
+    android:padding="8dp"
+    android:saveEnabled="false"
     android:scrollHorizontally="true"
     android:singleLine="true"
+    android:textColor="?android:attr/textColorSecondary"
     android:textColorHint="@drawable/all_apps_search_hint"
-    android:textSize="16sp" />
+    android:textSize="16sp"
+    android:translationY="24dp" />

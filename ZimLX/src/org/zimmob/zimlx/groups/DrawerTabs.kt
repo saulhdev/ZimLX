@@ -62,7 +62,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
     private fun createCustomTab(context: Context) = CustomTab(context)
 
     override fun onGroupsChanged(changeCallback: ZimPreferencesChangeCallback) {
-        //changeCallback.launcher.appsView.reloadTabs();
+        changeCallback.launcher.appsView.reloadTabs()
     }
 
     abstract class Tab(context: Context, type: Int, titleRes: Int) : Group(type, context, titleRes) {
@@ -71,7 +71,6 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
 
         init {
             //TODO
-            //addCustomization(colorResolver)
         }
     }
 
@@ -174,7 +173,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
                     .map { ComponentKey(ComponentName(context, it), Utilities.myUserHandle()) }
                     .filter { !predicate(it) })
 
-            hiddenSet.addAll(hidden as Collection<ComponentKey>)
+            hiddenSet.addAll(hidden)
             prefs.hiddenAppSet = hiddenSet.map(ComponentKey::toString).toSet()
         }
 

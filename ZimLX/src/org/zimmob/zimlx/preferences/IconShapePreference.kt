@@ -66,8 +66,8 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
 
     private fun rebuildEntries() {
         buildEntries {
-            val shapeString = iconShape.toString()
-            /*if (shapeString.startsWith("v1")) {
+            /*val shapeString = iconShape.toString()
+            if (shapeString.startsWith("v1")) {
                 addEntry(R.string.custom, shapeString)
             }*/
             addEntry(R.string.icon_shape_system_default, "")
@@ -122,14 +122,6 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
 
     class ListDialogFragment : ThemedListPreferenceDialogFragment() {
 
-        override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-            super.onPrepareDialogBuilder(builder)
-            /*builder.setNeutralButton(R.string.custom) { _, _ ->
-                dismiss()
-                (preference as IconShapePreference).forceShowCustomize(true)
-            }*/
-        }
-
         companion object {
 
             fun newInstance(key: String) = ListDialogFragment().apply {
@@ -147,14 +139,6 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
         override fun onStart() {
             super.onStart()
             (dialog as AlertDialog?)?.applyAccent()
-        }
-
-        override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
-            super.onPrepareDialogBuilder(builder)
-            /*builder.setNeutralButton(R.string.color_presets) { _, _ ->
-                dismiss()
-                (preference as IconShapePreference).forceShowCustomize(false)
-            }*/
         }
 
         override fun onCreateDialogView(context: Context?): View {

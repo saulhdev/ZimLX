@@ -159,6 +159,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                          Point minSize, Point maxSize,
                          int width, int height, boolean isLandscape, boolean isMultiWindowMode) {
         mContext = context;
+        prefs = Utilities.getZimPrefs(context);
         this.inv = inv;
         this.isLandscape = isLandscape;
         this.isMultiWindowMode = isMultiWindowMode;
@@ -219,7 +220,9 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_min_spring_loaded_space);
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
-/*
+
+        workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
+
         hotseatBarTopPaddingPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
         hotseatBarBottomPaddingPx = (isTallDevice ? 0
@@ -254,13 +257,10 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         updateWorkspacePadding();
 
         // This is done last, after iconSizePx is calculated above.
-        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(),
-                IconShape.DEFAULT_PATH_SIZE);
-        */
+        mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(), IconShape.DEFAULT_PATH_SIZE);
 
-        prefs = Utilities.getZimPrefs(context);
         prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                "pref_twoRowDock", "pref_dockScale");
+                "pref_twoRowDock", "pref_dockScale", "pref_key__hide_hotseat");
     }
 
     @Override
@@ -434,12 +434,14 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         iconDrawablePaddingPx = 0;
         cellHeightPx = iconSizePx;
 
+        int labelRows = prefs.getDrawerLabelRows();
+
         // In normal cases, All Apps cell height should equal the Workspace cell height.
         // Since we are removing labels from the Workspace, we need to manually compute the
         // All Apps cell height.
         int topBottomPadding = allAppsIconDrawablePaddingPx * (isVerticalBarLayout() ? 2 : 1);
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx
-                + Utilities.calculateTextHeight(allAppsIconTextSizePx)
+                + Utilities.calculateTextHeight(allAppsIconTextSizePx) * labelRows
                 + topBottomPadding * 2;
     }
 
@@ -638,7 +640,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         // not matter.
         Point padding = getTotalWorkspacePadding();
         result.x = calculateCellWidth(availableWidthPx - padding.x
-                - cellLayoutPaddingLeftRightPx * 2, inv.numColumns);
+                - cellLayoutPaddingLeftRightPx * 2, inv.numColsDrawer);
         result.y = calculateCellHeight(availableHeightPx - padding.y
                 - cellLayoutBottomPaddingPx, inv.numRows);
         return result;
@@ -683,12 +685,10 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 padding.set(availablePaddingX / 2, edgeMarginPx + availablePaddingY / 2,
                         availablePaddingX / 2, paddingBottom + availablePaddingY / 2);
             } else {
-                int horizontalPadding = Utilities.getZimPrefs(mContext)
-                        .getAllowFullWidthWidgets() ? 0 : desiredWorkspaceLeftRightMarginPx;
                 // Pad the top and bottom of the workspace with search/hotseat bar sizes
-                padding.set(horizontalPadding,
+                padding.set(desiredWorkspaceLeftRightMarginPx,
                         edgeMarginPx,
-                        horizontalPadding,
+                        desiredWorkspaceLeftRightMarginPx,
                         paddingBottom);
             }
         }
