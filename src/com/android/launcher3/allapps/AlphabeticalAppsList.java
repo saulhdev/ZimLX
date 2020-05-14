@@ -28,6 +28,7 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.LabelComparator;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.allapps.AppColorComparator;
 import org.zimmob.zimlx.allapps.InstallTimeComparator;
 import org.zimmob.zimlx.allapps.MostUsedComparator;
 import org.zimmob.zimlx.model.AppCountInfo;
@@ -43,6 +44,7 @@ import java.util.Map;
 import java.util.TreeMap;
 
 import static org.zimmob.zimlx.util.Config.SORT_AZ;
+import static org.zimmob.zimlx.util.Config.SORT_BY_COLOR;
 import static org.zimmob.zimlx.util.Config.SORT_LAST_INSTALLED;
 import static org.zimmob.zimlx.util.Config.SORT_MOST_USED;
 import static org.zimmob.zimlx.util.Config.SORT_ZA;
@@ -160,6 +162,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     private AllAppsGridAdapter mAdapter;
     private AlphabeticIndexCompat mIndexer;
     private AppInfoComparator mAppNameComparator;
+    private AppColorComparator mAppColorComparator;
     private final int mNumAppsPerRow;
     private int mNumAppRowsInAdapter;
     private ItemInfoMatcher mItemFilter;
@@ -170,6 +173,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mLauncher = Launcher.getLauncher(context);
         mIndexer = new AlphabeticIndexCompat(context);
         mAppNameComparator = new AppInfoComparator(context);
+        mAppColorComparator = new AppColorComparator(context);
         mIsWork = isWork;
         mNumAppsPerRow = mLauncher.getDeviceProfile().inv.numColsDrawer;
         mAllAppsStore.addUpdateListener(this);
@@ -222,6 +226,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 db.close();
                 MostUsedComparator mostUsedComparator = new MostUsedComparator(appsCounter);
                 Collections.sort(mApps, mostUsedComparator);
+                break;
+
+            case SORT_BY_COLOR:
+                Collections.sort(mApps, mAppColorComparator);
                 break;
             default:
                 Collections.sort(mApps, mAppNameComparator);

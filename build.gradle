@@ -227,6 +227,7 @@ dependencies {
     implementation 'com.squareup.okhttp3:logging-interceptor:4.0.0-RC1'
     implementation 'com.github.LawnchairLauncher:chroma:1.2.6'
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
+    implementation 'com.google.code.gson:gson:2.8.5'
     implementation project(':IconLoader')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'libGoogleFeed.jar')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')

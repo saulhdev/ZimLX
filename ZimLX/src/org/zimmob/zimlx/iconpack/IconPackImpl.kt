@@ -462,7 +462,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             val icon = packMask.getIcon(context, baseIcon, key.componentName)
             if (prefs.adaptifyIconPacks) {
                 val gen = AdaptiveIconGenerator(context, icon)
-                //val gen = AdaptiveIconGenerator(context, baseIcon)
                 return gen.result
             }
             return baseIcon

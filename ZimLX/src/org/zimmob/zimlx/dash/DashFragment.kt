@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.zimmob.zimlx.minibar
+package org.zimmob.zimlx.dash
 
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.ItemTouchHelper

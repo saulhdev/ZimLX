@@ -51,7 +51,7 @@ public class DashUtils {
     private static void RunAction(DashAction action, Context context) {
         switch (action.action) {
             case EditMinibar:
-                String fragment = "org.zimmob.zimlx.minibar.DashFragment";
+                String fragment = "org.zimmob.zimlx.dash.DashFragment";
                 SettingsActivity.startFragment(context, fragment, R.string.minibar);
                 break;
             case MobileNetworkSettings: {
