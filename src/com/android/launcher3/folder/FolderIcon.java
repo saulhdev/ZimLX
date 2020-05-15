@@ -69,12 +69,14 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.IconLabelDotView;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.gestures.BlankGestureHandler;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.gestures.GestureHandler;
 import org.zimmob.zimlx.gestures.RunnableGestureHandler;
 import org.zimmob.zimlx.gestures.handlers.ViewSwipeUpGestureHandler;
 import org.zimmob.zimlx.groups.DrawerFolderInfo;
+import org.zimmob.zimlx.util.ZimUtilsKt;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -721,6 +723,11 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
                     mLongPressHelper.cancelLongPress();
                 }
                 break;
+        }
+        Launcher launcher = ZimUtilsKt.getLauncherOrNull(getContext());
+        if (launcher instanceof ZimLauncher && mSwipeUpHandler != null) {
+            ((ZimLauncher) launcher).getGestureController()
+                    .setSwipeUpOverride(mSwipeUpHandler, event.getDownTime());
         }
         return result;
     }

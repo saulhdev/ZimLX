@@ -83,10 +83,9 @@ public class ZimLauncher extends AospLauncher {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
         }
-        super.onCreate(savedInstanceState);
-
-        IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
         gestureController = new GestureController(this);
+        super.onCreate(savedInstanceState);
+        IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
         mContext = this;
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
@@ -95,8 +94,7 @@ public class ZimLauncher extends AospLauncher {
 
     @Override
     public boolean startActivitySafely(View v, Intent intent, ItemInfo item) {
-        boolean success = super.startActivitySafely(v, intent, item);
-        return success;
+        return super.startActivitySafely(v, intent, item);
 
     }
 

@@ -38,21 +38,6 @@
         </activity>
 
         <activity
-            android:name="org.zimmob.zimlx.BlankActivity"
-            android:theme="@style/Theme.Transparent" />
-        <activity
-            android:name="org.zimmob.zimlx.FakeLauncher"
-            android:enabled="false">
-
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.HOME" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity
             android:name="org.zimmob.zimlx.backup.BackupListActivity"
             android:label="@string/backups"
             android:parentActivityName="org.zimmob.zimlx.settings.SettingsActivity"
@@ -109,6 +94,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+
         <!-- Icon picker -->
         <activity
             android:name="org.zimmob.zimlx.iconpack.EditIconActivity"
@@ -118,6 +104,69 @@
             android:name="org.zimmob.zimlx.iconpack.IconPickerActivity"
             android:theme="@style/SettingsTheme.V2" />
 
+        <!-- Actions -->
+        <activity
+            android:name="org.zimmob.zimlx.gestures.ZimShortcutActivity"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/zim_actions"
+            android:theme="@style/SettingsTheme.V2">
+            <intent-filter>
+                <action android:name="android.intent.action.CREATE_SHORTCUT" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="org.zimmob.zimlx.gestures.ui.RunHandlerActivity"
+            android:taskAffinity="${applicationId}.tasks.RUN_HANDLER"
+            android:theme="@style/SettingsTheme.V2.Transparent">
+            <intent-filter>
+                <action android:name="ch.deletescape.lawnchair.START_ACTION" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- Gesture app selection -->
+        <activity
+            android:name="org.zimmob.zimlx.gestures.ui.SelectAppActivity"
+            android:label="@string/action_open_app_select_app"
+            android:theme="@style/SettingsTheme.V2" />
+        <activity
+            android:name="org.zimmob.zimlx.BlankActivity"
+            android:theme="@style/Theme.Transparent" />
+
+        <activity
+            android:name="org.zimmob.zimlx.FakeLauncher"
+            android:enabled="false">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.HOME" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <!-- DT2S using screen timeout -->
+        <activity
+            android:name="org.zimmob.zimlx.gestures.handlers.SleepTimeoutActivity"
+            android:screenOrientation="locked"
+            android:theme="@style/SleepTimeoutTheme" />
+
+        <!-- DT2S using device admin -->
+        <receiver
+            android:name="org.zimmob.zimlx.gestures.handlers.SleepMethodDeviceAdmin$SleepDeviceAdmin"
+            android:description="@string/dt2s_admin_hint"
+            android:permission="android.permission.BIND_DEVICE_ADMIN">
+            <meta-data
+                android:name="android.app.device_admin"
+                android:resource="@xml/sleep_admin_policy" />
+
+            <intent-filter>
+                <action android:name="android.app.action.DEVICE_ADMIN_ENABLED" />
+            </intent-filter>
+        </receiver>
 
         <service
             android:name="com.android.launcher3.uioverrides.WallpaperManagerCompat$ColorExtractionService"

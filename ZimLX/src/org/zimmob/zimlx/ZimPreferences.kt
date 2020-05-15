@@ -26,6 +26,7 @@ import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
+import com.android.quickstep.OverviewInteractionState
 import org.json.JSONArray
 import org.json.JSONObject
 import org.zimmob.zimlx.gestures.BlankGestureHandler
@@ -215,6 +216,13 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
     var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+
+    // Quickstep
+    var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
+    val recentsRadius by DimensionPref("pref_recents_radius", context.resources.getInteger(R.integer.task_corner_radius).toFloat(), doNothing)
+    val swipeLeftToGoBack by BooleanPref("pref_swipe_left_to_go_back", false) {
+        OverviewInteractionState.INSTANCE.get(context).setBackButtonAlpha(1f, true)
+    }
 
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)

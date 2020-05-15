@@ -331,7 +331,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         }
         setIcon(iconDrawable);
         if (!isTextHidden())
-            setText(info.title);
+            setText(getTitle(info));
         if (info.contentDescription != null) {
             setContentDescription(info.isDisabled()
                     ? getContext().getString(R.string.disabled_app_label, info.contentDescription)

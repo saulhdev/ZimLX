@@ -21,6 +21,7 @@ import static android.view.MotionEvent.ACTION_MOVE;
 import static android.view.MotionEvent.ACTION_POINTER_UP;
 import static android.view.MotionEvent.ACTION_UP;
 
+import static android.view.ViewConfiguration.getLongPressTimeout;
 import static com.android.launcher3.LauncherState.NORMAL;
 
 import android.graphics.PointF;
@@ -36,17 +37,19 @@ import com.android.launcher3.AbstractFloatingView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.views.OptionsPopupView;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Action;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ContainerType;
 
+import org.zimmob.zimlx.touch.GestureTouchListener;
+
 /**
  * Helper class to handle touch on empty space in workspace and show options popup on long press
  */
-public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListener
-        implements OnTouchListener {
+public class WorkspaceTouchListener extends GestureTouchListener implements OnTouchListener, Runnable {
 
     /**
      * STATE_PENDING_PARENT_INFORM is the state between longPress performed & the next motionEvent.
@@ -67,20 +70,26 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private int mLongPressState = STATE_CANCELLED;
 
-    private final GestureDetector mGestureDetector;
+    //private final GestureDetector mGestureDetector;
 
     public WorkspaceTouchListener(Launcher launcher, Workspace workspace) {
+        super(launcher);
         mLauncher = launcher;
         mWorkspace = workspace;
+        setTouchDownPoint(mTouchDownPoint);
         // Use twice the touch slop as we are looking for long press which is more
         // likely to cause movement.
         mTouchSlop = 2 * ViewConfiguration.get(launcher).getScaledTouchSlop();
-        mGestureDetector = new GestureDetector(workspace.getContext(), this);
+        //mGestureDetector = new GestureDetector(workspace.getContext(), this);
     }
 
     @Override
     public boolean onTouch(View view, MotionEvent ev) {
-        mGestureDetector.onTouchEvent(ev);
+        mTouchDownPoint.set(ev.getX(), ev.getY());
+        if (super.onTouch(view, ev)) {
+            cancelLongPress();
+            return true;
+        }
 
         int action = ev.getActionMasked();
         if (action == ACTION_DOWN) {
@@ -101,7 +110,8 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
             if (handleLongPress) {
                 mLongPressState = STATE_REQUESTED;
-                mTouchDownPoint.set(ev.getX(), ev.getY());
+                mWorkspace.postDelayed(this, getLongPressTimeout());
+                //mTouchDownPoint.set(ev.getX(), ev.getY());
             }
 
             mWorkspace.onTouchEvent(ev);
@@ -126,10 +136,11 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
             mWorkspace.onTouchEvent(ev);
             if (mWorkspace.isHandlingTouch()) {
                 cancelLongPress();
-            } else if (action == ACTION_MOVE && PointF.length(
+            }
+            /*else if (action == ACTION_MOVE && PointF.length(
                     mTouchDownPoint.x - ev.getX(), mTouchDownPoint.y - ev.getY()) > mTouchSlop) {
                 cancelLongPress();
-            }
+            }*/
 
             result = true;
         } else {
@@ -156,15 +167,15 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
 
     private boolean canHandleLongPress() {
         return AbstractFloatingView.getTopOpenView(mLauncher) == null
-                && mLauncher.isInState(NORMAL);
+                && mLauncher.isInState(NORMAL) || mLauncher.isInState(LauncherState.OPTIONS);
     }
 
     private void cancelLongPress() {
+        mWorkspace.removeCallbacks(this);
         mLongPressState = STATE_CANCELLED;
     }
 
-    @Override
-    public void onLongPress(MotionEvent event) {
+    /*public void onLongPress(MotionEvent event) {
         if (mLongPressState == STATE_REQUESTED) {
             if (canHandleLongPress()) {
                 mLongPressState = STATE_PENDING_PARENT_INFORM;
@@ -176,6 +187,25 @@ public class WorkspaceTouchListener extends GestureDetector.SimpleOnGestureListe
                         Action.Direction.NONE, ContainerType.WORKSPACE,
                         mWorkspace.getCurrentPage());
                 OptionsPopupView.showDefaultOptions(mLauncher, mTouchDownPoint.x, mTouchDownPoint.y);
+            } else {
+                cancelLongPress();
+            }
+        }
+    }*/
+
+    @Override
+    public void run() {
+        if (mLongPressState == STATE_REQUESTED) {
+            if (canHandleLongPress()) {
+                mLongPressState = STATE_PENDING_PARENT_INFORM;
+                mWorkspace.getParent().requestDisallowInterceptTouchEvent(true);
+
+                mWorkspace.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS,
+                        HapticFeedbackConstants.FLAG_IGNORE_VIEW_SETTING);
+                mLauncher.getUserEventDispatcher().logActionOnContainer(Action.Touch.LONGPRESS,
+                        Action.Direction.NONE, ContainerType.WORKSPACE,
+                        mWorkspace.getCurrentPage());
+                onLongPress();
             } else {
                 cancelLongPress();
             }

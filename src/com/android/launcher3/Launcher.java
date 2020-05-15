@@ -1821,8 +1821,17 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         AbstractFloatingView topView = AbstractFloatingView.getTopOpenView(this);
         if (topView != null && topView.onBackPressed()) {
             // Handled by the floating view.
+        } else if (!isInState(NORMAL)) {
+            //mStateManager.getState().onBackPressed(this);
+            LauncherState lastState = mStateManager.getLastState();
+            ued.logActionCommand(Action.Command.BACK, mStateManager.getState().containerType,
+                    lastState.containerType);
+            mStateManager.goToState(lastState);
         } else {
-            mStateManager.getState().onBackPressed(this);
+
+            if (this instanceof ZimLauncher) {
+                ((ZimLauncher) this).getGestureController().onPressBack();
+            }
         }
     }
 

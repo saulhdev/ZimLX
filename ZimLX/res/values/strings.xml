@@ -350,11 +350,6 @@
     <string name="gestures_global_search">Open global search</string>
     <string name="title__gesture_swipe_down">Swipe down</string>
     <string name="title__gesture_swipe_up">Swipe Upwards</string>
-    <string name="action_open_notifications_class" translatable="false">org.zimmob.zimlx.gestures.handlers.NotificationsOpenGestureHandler</string>
-    <string name="action_open_drawer_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenDrawerGestureHandler</string>
-    <string name="action_open_overview_class" translatable="false">org.zimmob.zimlx.gestures.handlers.OpenOverviewGestureHandler</string>
-    <string name="action_do_nothing_class" translatable="false">org.zimmob.zimlx.gestures.BlankGestureHandler</string>
-    <string name="action_switch_apps_class" translatable="false">org.zimmob.zimlx.gestures.SwitchAppsGestureHandler</string>
     <string name="gesture_press_home">Home button</string>
     <string name="gesture_press_back">Back button</string>
     <string name="gesture_double_tap">Double tap</string>
@@ -368,28 +363,26 @@
     <string name="action_open_widgets">Open widget drawer</string>
     <string name="action_open_settings">Open launcher settings</string>
     <string name="action_open_overview">Open home screen pop-up</string>
-
     <string name="action_global_search">Open global search</string>
     <string name="action_app_search">Open app search</string>
     <string name="action_overlay">Open Google feed</string>
     <string name="action_assistant">Open assistant</string>
-
     <string name="action_open_notifications">Open notifications</string>
     <string name="action_close_notifications">Close notifications</string>
     <string name="action_sleep_timeout">Sleep (using timeout)</string>
     <string name="action_open_app">Open app</string>
-
+    <string name="action_sleep">Sleep</string>
     <string name="action_open_app_with_target">Open %s</string>
     <string name="action_open_app_select_app">Pick app</string>
     <string name="action_none">Do nothing</string>
-
+    <string name="action_switch_apps">Switch Apps</string>
     <string name="action_voice_search">Voice search</string>
+
     <string name="failed">Something went wrong</string>
     <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
     <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
 
     <string name="app_gesture_failed_toast">Something went wrong</string>
-    <string name="action_sleep">Sleep</string>
 
     <!-- SMARTSPACE -->
     <string name="title__behavior_widget_provider">Weather source</string>
@@ -655,4 +648,5 @@
     <string name="allow">Allow</string>
     <string name="deny">Deny</string>
     <string name="reset_to_default">Reset to Default</string>
+    <string name="zim_actions">Actions</string>
 </resources>

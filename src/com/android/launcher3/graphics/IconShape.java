@@ -33,6 +33,7 @@ import android.graphics.Region;
 import android.graphics.Region.Op;
 import android.graphics.drawable.AdaptiveIconDrawable;
 import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.AttributeSet;
 import android.util.SparseArray;
@@ -78,17 +79,6 @@ public abstract class IconShape {
     }
 
     public static Path getShapePath() {
-        /*if (Utilities.ATLEAST_OREO) {
-            try {
-                // Try to load the path from Mask Icon
-                Drawable icon = ZimIconProvider.getAdaptiveIconDrawableWrapper(Launcher.mContext);
-                icon.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
-                return (Path) icon.getClass().getMethod("getIconMask").invoke(icon);
-            } catch (Exception e) {
-                Log.e(TAG, "Error loading mask icon", e);
-            }
-        }
-        */
         if (sShapePath == null) {
             Path p = new Path();
             getShape().addToPath(p, 0, 0, DEFAULT_PATH_SIZE * 0.5f);

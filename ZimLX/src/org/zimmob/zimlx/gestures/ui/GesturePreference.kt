@@ -25,6 +25,7 @@ import androidx.preference.DialogPreference
 import com.android.launcher3.R
 import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.GestureController
+import org.zimmob.zimlx.gestures.NavSwipeUpGesture
 
 class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreference(context, attrs), SharedPreferences.OnSharedPreferenceChangeListener {
 
@@ -39,7 +40,7 @@ class GesturePreference(context: Context, attrs: AttributeSet?) : DialogPreferen
         val ta = context.obtainStyledAttributes(attrs, R.styleable.GesturePreference)
         val className = ta.getString(R.styleable.GesturePreference_gestureClass) ?: ""
         when (className) {
-            //NavSwipeUpGesture::class.java.name -> isSwipeUp = true
+            NavSwipeUpGesture::class.java.name -> isSwipeUp = true
         }
 
         ta.recycle()

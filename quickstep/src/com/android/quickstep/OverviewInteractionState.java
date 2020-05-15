@@ -15,10 +15,14 @@
  */
 package com.android.quickstep;
 
+import android.content.ContentResolver;
 import android.content.Context;
+import android.content.res.Resources;
+import android.database.ContentObserver;
 import android.os.Handler;
 import android.os.Message;
 import android.os.RemoteException;
+import android.provider.Settings;
 import android.util.Log;
 
 import com.android.launcher3.Utilities;
@@ -29,14 +33,26 @@ import com.android.systemui.shared.recents.ISystemUiProxy;
 
 import androidx.annotation.WorkerThread;
 
+import org.jetbrains.annotations.NotNull;
+import org.zimmob.zimlx.ZimPreferences;
+
+import android.provider.Settings;
+
 /**
  * Sets alpha for the back button
  */
-public class OverviewInteractionState {
+public class OverviewInteractionState implements ZimPreferences.OnPreferenceChangeListener {
 
     private static final String TAG = "OverviewFlags";
 
     private static final String HAS_ENABLED_QUICKSTEP_ONCE = "launcher.has_enabled_quickstep_once";
+    public static final String SWIPE_UP_SETTING_NAME = "";
+    private static final String SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
+            "config_swipe_up_gesture_setting_available";
+    private static final String CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME =
+            "config_custom_swipe_up_gesture_setting_available";
+    private static final String SWIPE_UP_ENABLED_DEFAULT_RES_NAME =
+            "config_swipe_up_gesture_default";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
     public static final MainThreadInitializedObject<OverviewInteractionState> INSTANCE =
@@ -44,6 +60,7 @@ public class OverviewInteractionState {
 
     private static final int MSG_SET_PROXY = 200;
     private static final int MSG_SET_BACK_BUTTON_ALPHA = 201;
+    private static final int MSG_SET_SWIPE_UP_ENABLED = 202;
 
     private final Context mContext;
     private final Handler mUiHandler;
@@ -54,6 +71,9 @@ public class OverviewInteractionState {
     private float mBackButtonAlpha = 1;
 
     private int mSystemUiStateFlags;
+    private final SwipeUpGestureEnabledSettingObserver mSwipeUpSettingObserver;
+    private boolean mSwipeUpEnabled = false;
+    private Runnable mOnSwipeUpSettingChangedListener;
 
     private OverviewInteractionState(Context context) {
         mContext = context;
@@ -66,10 +86,25 @@ public class OverviewInteractionState {
 
         onNavigationModeChanged(SysUINavigationMode.INSTANCE.get(context)
                 .addModeChangeListener(this::onNavigationModeChanged));
+
+        if (isSwipeUpSettingsAvailable()) {
+            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
+                    context.getContentResolver());
+            mSwipeUpSettingObserver.register();
+        } else {
+            mSwipeUpSettingObserver = null;
+            Utilities.getZimPrefs(context).addOnPreferenceChangeListener("pref_swipe_up_to_switch_apps_enabled", this);
+            mSwipeUpEnabled = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME);
+        }
     }
 
     public float getBackButtonAlpha() {
         return mBackButtonAlpha;
+    }
+
+    public static boolean isSwipeUpSettingsAvailable() {
+        return getSystemBooleanRes(CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME,
+                SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
     }
 
     public void setBackButtonAlpha(float alpha, boolean animate) {
@@ -144,6 +179,74 @@ public class OverviewInteractionState {
             return SysUINavigationMode.getMode(mContext).hasGestures;
         } else {
             return false;
+        }
+    }
+
+    private static boolean getSystemBooleanRes(String resName, String fallback) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
+
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            return getSystemBooleanRes(fallback);
+        }
+    }
+
+    private static boolean getSystemBooleanRes(String resName) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
+
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return false;
+        }
+    }
+
+    public boolean isSwipeUpGestureEnabled() {
+        return mSwipeUpEnabled;
+    }
+
+    public void setOnSwipeUpSettingChangedListener(Runnable listener) {
+        mOnSwipeUpSettingChangedListener = listener;
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+        mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+        mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
+    }
+
+    private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
+        private final int defaultValue;
+        private Handler mHandler;
+        private ContentResolver mResolver;
+
+        SwipeUpGestureEnabledSettingObserver(Handler handler, ContentResolver resolver) {
+            super(handler);
+            mHandler = handler;
+            mResolver = resolver;
+            defaultValue = getSystemBooleanRes(SWIPE_UP_ENABLED_DEFAULT_RES_NAME) ? 1 : 0;
+        }
+
+        public void register() {
+            mResolver.registerContentObserver(Settings.Secure.getUriFor(SWIPE_UP_SETTING_NAME),
+                    false, this);
+            mSwipeUpEnabled = getValue();
+            resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+        }
+
+        @Override
+        public void onChange(boolean selfChange) {
+            super.onChange(selfChange);
+            mHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+            mHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, getValue() ? 1 : 0, 0).sendToTarget();
+        }
+
+        private boolean getValue() {
+            return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
         }
     }
 }

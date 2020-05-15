@@ -1691,4 +1691,8 @@ public abstract class PagedView<T extends View & PageIndicator> extends ViewGrou
         mTmpIntPair[1] = rightChild;
         return mTmpIntPair;
     }
+
+    public boolean isScrollerFinished() {
+        return mScroller.isFinished();
+    }
 }

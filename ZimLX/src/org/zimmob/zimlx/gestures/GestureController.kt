@@ -42,7 +42,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
     val hasBackGesture
         get() = pressBackGesture.handler !is BlankGestureHandler
     val verticalSwipeGesture by lazy { VerticalSwipeGesture(this) }
-    //val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
+    val navSwipeUpGesture by lazy { NavSwipeUpGesture(this) }
 
     var touchDownPoint = PointF()
 
@@ -141,7 +141,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
         }
 
         fun getGestureHandlers(context: Context, isSwipeUp: Boolean, hasBlank: Boolean) = mutableListOf(
-                //SwitchAppsGestureHandler(context, null),
+                SwitchAppsGestureHandler(context, null),
                 //BlankGestureHandler(context, null), -> Added in apply block
                 SleepGestureHandler(context, null),
                 SleepGestureHandlerTimeout(context, null),
@@ -155,9 +155,9 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                 OpenOverlayGestureHandler(context, null),
                 StartAssistantGestureHandler(context, null),
                 StartVoiceSearchGestureHandler(context, null),
-                StartAppGestureHandler(context, null)
-                //OpenRecentsGestureHandler(context, null),
-                //LaunchMostRecentTaskGestureHandler(context, null)
+                StartAppGestureHandler(context, null),
+                OpenRecentsGestureHandler(context, null),
+                LaunchMostRecentTaskGestureHandler(context, null)
         ).apply {
             if (hasBlank) {
                 add(1, BlankGestureHandler(context, null))
