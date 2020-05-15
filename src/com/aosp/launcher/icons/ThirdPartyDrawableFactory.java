@@ -21,7 +21,7 @@ import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICA
 public class ThirdPartyDrawableFactory extends DrawableFactory {
     private final IconPackManager mManager;
     private final DynamicClock mDynamicClockDrawer;
-    private final CustomClock mCustomClockDrawer;
+    public final CustomClock mCustomClockDrawer;
     private final DateChangeReceiver mCalendars;
 
     public ThirdPartyDrawableFactory(Context context) {

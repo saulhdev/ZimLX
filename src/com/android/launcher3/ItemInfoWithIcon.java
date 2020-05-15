@@ -114,6 +114,10 @@ public abstract class ItemInfoWithIcon extends ItemInfo {
         return (runtimeStatusFlags & FLAG_DISABLED_MASK) != 0;
     }
 
+    public boolean isBadgeVisible() {
+        return (runtimeStatusFlags & FLAG_ICON_BADGED) != 0;
+    }
+
     /**
      * Indicates whether we're using a low res icon
      */

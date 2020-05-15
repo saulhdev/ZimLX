@@ -66,10 +66,10 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
 
     private fun rebuildEntries() {
         buildEntries {
-            /*val shapeString = iconShape.toString()
+            val shapeString = iconShape.toString()
             if (shapeString.startsWith("v1")) {
                 addEntry(R.string.custom, shapeString)
-            }*/
+            }
             addEntry(R.string.icon_shape_system_default, "")
             addEntry(R.string.icon_shape_circle, "circle")
             addEntry(R.string.icon_shape_square, "square")
@@ -82,12 +82,12 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
 
     override fun onAttached() {
         super.onAttached()
-        context.zimPrefs.addOnPreferenceChangeListener(Config.THEME_ICON_SHAPE, this)
+        context.zimPrefs.addOnPreferenceChangeListener("pref_iconShape", this)
     }
 
     override fun onDetached() {
         super.onDetached()
-        context.zimPrefs.removeOnPreferenceChangeListener(Config.THEME_ICON_SHAPE, this)
+        context.zimPrefs.removeOnPreferenceChangeListener("pref_iconShape", this)
     }
 
     override fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean) {
@@ -121,9 +121,14 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
     }
 
     class ListDialogFragment : ThemedListPreferenceDialogFragment() {
-
+        override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+            super.onPrepareDialogBuilder(builder)
+            builder.setNeutralButton(R.string.custom) { _, _ ->
+                dismiss()
+                (preference as IconShapePreference).forceShowCustomize(true)
+            }
+        }
         companion object {
-
             fun newInstance(key: String) = ListDialogFragment().apply {
                 arguments = Bundle(1).apply {
                     putString(ARG_KEY, key)
@@ -139,6 +144,14 @@ class IconShapePreference(context: Context, attrs: AttributeSet?) :
         override fun onStart() {
             super.onStart()
             (dialog as AlertDialog?)?.applyAccent()
+        }
+
+        override fun onPrepareDialogBuilder(builder: AlertDialog.Builder) {
+            super.onPrepareDialogBuilder(builder)
+            builder.setNeutralButton(R.string.color_presets) { _, _ ->
+                dismiss()
+                (preference as IconShapePreference).forceShowCustomize(false)
+            }
         }
 
         override fun onCreateDialogView(context: Context?): View {

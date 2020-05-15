@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__notifications">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__notifications">
         <org.zimmob.zimlx.preferences.ButtonPreference
             android:key="pref_icon_badging"
             android:persistent="false"
@@ -38,9 +38,9 @@
             app:cpv_dialogTitle="@string/pref_title__notification_background_color"
             app:cpv_showAlphaSlider="true"
             app:iconSpaceReserved="false" />
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__gestures">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__gestures">
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

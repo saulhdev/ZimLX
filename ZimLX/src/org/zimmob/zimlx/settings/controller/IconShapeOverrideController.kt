@@ -19,12 +19,8 @@ package org.zimmob.zimlx.settings.controllers
 
 import android.content.Context
 import androidx.annotation.Keep
-import androidx.preference.ListPreference
-import androidx.preference.Preference
-import com.android.launcher3.R
 import org.zimmob.zimlx.override.IconShapeOverride
 import org.zimmob.zimlx.settings.PreferenceController
-import org.zimmob.zimlx.util.zimPrefs
 
 @Keep
 class IconShapeOverrideController(context: Context) : PreferenceController(context) {

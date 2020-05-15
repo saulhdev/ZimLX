@@ -19,6 +19,7 @@ package org.zimmob.zimlx.override
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.content.pm.ShortcutInfo
 import android.os.Build
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
@@ -82,6 +83,14 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         ITEM_TYPE_SHORTCUT, ITEM_TYPE_DEEP_SHORTCUT -> true
         // TODO if work badge is present
         else -> false
+    }
+
+    override fun setBadgeVisible(info: WorkspaceItemInfo, visible: Boolean) {
+        info.setBadgeVisible(context, visible)
+    }
+
+    override fun getBadgeVisible(info: WorkspaceItemInfo): Boolean {
+        return info.isBadgeVisible
     }
 
     private fun getLauncherActivityInfo(info: WorkspaceItemInfo): LauncherActivityInfo? {

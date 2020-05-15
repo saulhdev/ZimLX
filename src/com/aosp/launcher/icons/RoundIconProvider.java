@@ -37,7 +37,7 @@ public class RoundIconProvider extends IconProvider {
                 : roundIcon;
     }
 
-    private Drawable getRoundIcon(ComponentName component, int iconDpi) {
+    public Drawable getRoundIcon(ComponentName component, int iconDpi) {
         String pkg = component.getPackageName();
         String appIcon = null;
         Map<String, String> elementTags = new HashMap<>();

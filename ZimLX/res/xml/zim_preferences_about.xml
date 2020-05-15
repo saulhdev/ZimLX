@@ -16,12 +16,12 @@
         android:summary="@string/summary__about_bug_report"
         android:title="@string/title__about_bug_reports" />
 
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory
         android:key="pref_key__project_team"
         android:title="@string/title__about_project_team">
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/category__about_licenses">
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/category__about_licenses">
 
         <org.zimmob.zimlx.preferences.StyledIconPreference
             android:icon="@drawable/ic_copyright_black_24dp"
@@ -44,5 +44,5 @@
             android:key="pref_key__copy_build_information"
             android:title="@string/title__about_copy_build" />
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

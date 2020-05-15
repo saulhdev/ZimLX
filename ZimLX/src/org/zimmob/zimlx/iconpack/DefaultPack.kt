@@ -20,9 +20,7 @@ package org.zimmob.zimlx.iconpack
 import android.content.ComponentName
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
-import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
-import android.content.res.Resources
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.text.TextUtils
@@ -31,22 +29,21 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.icons.AdaptiveIconWrapper
+import com.aosp.launcher.icons.ThirdPartyDrawableFactory
+import com.aosp.launcher.icons.ThirdPartyIconProvider
+import com.aosp.launcher.icons.calendar.DynamicCalendar
 import com.aosp.launcher.icons.clock.DynamicClock
-import org.xmlpull.v1.XmlPullParser
-import org.xmlpull.v1.XmlPullParserException
-import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import org.zimmob.zimlx.util.getLauncherActivityInfo
-import java.io.IOException
 
 class DefaultPack(context: Context) : IconPack(context, "") {
 
     val dynamicClockDrawer by lazy { DynamicClock(context) }
+
     private val appMap = HashMap<ComponentKey, Entry>().apply {
         val launcherApps = LauncherAppsCompat.getInstance(context)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach {
-                put(ComponentKey(it.componentName, user), Entry(it))
+                put(ComponentKey(it.componentName, user), Entry(it, context))
             }
         }
     }
@@ -61,10 +58,10 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
-            model.onPackageChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
-            val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, user)
+            model.onPackageChanged(DynamicCalendar.CALENDAR, user)
+            val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicCalendar.CALENDAR, user)
             if (!shortcuts.isEmpty()) {
-                model.updatePinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, shortcuts, user)
+                model.updatePinnedShortcuts(DynamicCalendar.CALENDAR, shortcuts, user)
             }
         }
     }
@@ -83,27 +80,23 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         ensureInitialLoadComplete()
 
         val info = key.getLauncherActivityInfo(context) ?: return null
-        val component = key.componentName
+        //val component = key.componentName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        var roundIcon: Drawable? = null
-        getRoundIcon(component, iconDpi)?.let {
-            roundIcon = it.apply { mutate() }
-        }
-        //val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
-        val gen = AdaptiveIconWrapper(context).wrap(roundIcon ?: originalIcon)
-        return gen
+        //var roundIcon: Drawable? = null
+
+        return originalIcon
     }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                          iconDpi: Int, flattenDrawable: Boolean,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ZimIconProvider?): Drawable {
+                         iconProvider: ThirdPartyIconProvider?): Drawable {
         ensureInitialLoadComplete()
 
         val key: ComponentKey
         val info: LauncherActivityInfo
         if (customIconEntry != null && !TextUtils.isEmpty(customIconEntry.icon)) {
-            key = ComponentKey(ComponentName(context, customIconEntry.packPackageName), Utilities.myUserHandle())
+            key = ComponentKey(ComponentName(context, customIconEntry.icon!!), Utilities.myUserHandle())
             info = key.getLauncherActivityInfo(context) ?: launcherActivityInfo
         } else {
             key = ComponentKey(launcherActivityInfo.componentName, launcherActivityInfo.user)
@@ -112,28 +105,30 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val component = key.componentName
         val packageName = component.packageName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
+        if (iconProvider == null || (DynamicCalendar.CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
-            getRoundIcon(component, iconDpi)?.let {
+            iconProvider!!.getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }
             }
-            val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
-            return gen.result
+            //val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
+            //return gen.result
         }
-        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
+        return originalIcon
+        //return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
-        val gen = AdaptiveIconGenerator(context, drawable)
-        return gen.result
+        //val gen = AdaptiveIconGenerator(context, drawable)
+        //return gen.result
+        return drawable
     }
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
+                         drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -152,61 +147,15 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun supportsMasking(): Boolean = false
 
-    private fun getRoundIcon(component: ComponentName, iconDpi: Int): Drawable? {
-        var appIcon: String? = null
-        val elementTags = HashMap<String, String>()
-
-        try {
-            val resourcesForApplication = context.packageManager.getResourcesForApplication(component.packageName)
-            val assets = resourcesForApplication.assets
-
-            val parseXml = assets.openXmlResourceParser("AndroidManifest.xml")
-            while (parseXml.next() != XmlPullParser.END_DOCUMENT) {
-                if (parseXml.eventType == XmlPullParser.START_TAG) {
-                    val name = parseXml.name
-                    for (i in 0 until parseXml.attributeCount) {
-                        elementTags[parseXml.getAttributeName(i)] = parseXml.getAttributeValue(i)
-                    }
-                    if (elementTags.containsKey("roundIcon")) {
-                        if (name == "application") {
-                            appIcon = elementTags["roundIcon"]
-                        } else if ((name == "activity" || name == "activity-alias") &&
-                                elementTags.containsKey("name") &&
-                                elementTags["name"] == component.className) {
-                            appIcon = elementTags["roundIcon"]
-                            break
-                        }
-                    }
-                    elementTags.clear()
-                }
-            }
-            parseXml.close()
-
-            if (appIcon != null) {
-                val resId = Utilities.parseResourceIdentifier(resourcesForApplication, appIcon, component.packageName)
-                return resourcesForApplication.getDrawableForDensity(resId, iconDpi)
-            }
-        } catch (ex: PackageManager.NameNotFoundException) {
-            ex.printStackTrace()
-        } catch (ex: Resources.NotFoundException) {
-            ex.printStackTrace()
-        } catch (ex: IOException) {
-            ex.printStackTrace()
-        } catch (ex: XmlPullParserException) {
-            ex.printStackTrace()
-        }
-
-        return null
-    }
-
-    class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {
+    class Entry(private val app: LauncherActivityInfo, context: Context) : IconPack.Entry() {
 
         override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()
         override val isAvailable = true
+        val customAdaptiveIcon by lazy { CustomAdaptiveIcon(context) }
 
         override fun drawableForDensity(density: Int): Drawable {
-            return AdaptiveIconCompat.wrap(app.getIcon(density)!!)
+            return customAdaptiveIcon.wrap(app.getIcon(density)!!)
         }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry("", ComponentKey(app.componentName, app.user).toString())

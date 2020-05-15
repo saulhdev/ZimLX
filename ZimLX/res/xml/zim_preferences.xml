@@ -3,7 +3,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__interfaces">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__interfaces">
         <org.zimmob.zimlx.settings.SubPreference
             android:icon="@drawable/ic_desktop"
             android:summary="@string/pref_summary__desktop"
@@ -40,8 +40,8 @@
             app:hasPreview="true"
             app:content="@xml/zim_preferences_smartspace" />
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__inputs">
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__inputs">
         <org.zimmob.zimlx.settings.SubPreference
             android:icon="@drawable/ic_folder_outline"
             android:summary="@string/pref_summary__folder"
@@ -55,8 +55,8 @@
             android:title="@string/pref_title__notifications"
             android:layout="@layout/home_preference"
             app:content="@xml/zim_preferences_notification" />
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/pref_category__others">
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__others">
 
         <org.zimmob.zimlx.settings.SubPreference
             android:icon="@drawable/ic_more_horiz"
@@ -72,5 +72,5 @@
             android:title="@string/about"
             app:content="@xml/zim_preferences_about" />
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

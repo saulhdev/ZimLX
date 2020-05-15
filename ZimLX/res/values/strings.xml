@@ -132,6 +132,8 @@
     <string name="title__sort_by_color">By Color</string>
     <string name="title__drawer_hide_apps">Hidden App Shortcuts</string>
     <string name="title__drawer_multiline_label">Multiline Labels</string>
+    <string name="title__drawer_text_size">Text Size</string>
+    <string name="title__drawer_label_color">All apps label color</string>
     <string name="title__drawer_columns">Number of columns</string>
     <string name="title__drawer_menu">Popup menu items</string>
     <string name="title__drawer_hide_apps_icon_labels">Hide icon labels in drawer</string>
@@ -649,7 +651,8 @@
     <string name="hide_app">Hide Shortcut</string>
     <string name="hide_badge">Hide Badge</string>
 
-
+    <string name="color_presets">Presets</string>
     <string name="allow">Allow</string>
     <string name="deny">Deny</string>
+    <string name="reset_to_default">Reset to Default</string>
 </resources>

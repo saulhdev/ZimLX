@@ -16,7 +16,6 @@
 
 package com.android.launcher3;
 
-import android.app.Person;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
@@ -36,8 +35,6 @@ import com.android.launcher3.util.ContentWriter;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.iconpack.IconPackManager;
-
-import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.

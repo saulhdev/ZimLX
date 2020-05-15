@@ -31,8 +31,8 @@ public class IconResolverMasked implements IconResolver {
     private final Canvas mCanvas = new Canvas();
     private final Paint mPaint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
 
-    IconResolverMasked(Context context, IconPack.Data data, ApplicationInfo packInfo,
-                       int hashCode) {
+    public IconResolverMasked(Context context, IconPack.Data data, ApplicationInfo packInfo,
+                              int hashCode) {
         mContext = context;
         mData = data;
         mPackInfo = packInfo;

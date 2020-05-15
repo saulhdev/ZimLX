@@ -92,6 +92,7 @@ import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
+import org.zimmob.zimlx.override.IconShapeOverride;
 import org.zimmob.zimlx.preferences.ButtonPreference;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
@@ -654,6 +655,13 @@ public class SettingsActivity extends SettingsBaseActivity
                                 .show(getFragmentManager(), "reset_icons");
                         return true;
                     });
+
+                    /*Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_ICON_SHAPE);
+                    if (iconShapeOverride != null) {
+                        if (IconShapeOverride.isSupported(getActivity())) {
+                            IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
+                        }
+                    }*/
 
                     break;
 

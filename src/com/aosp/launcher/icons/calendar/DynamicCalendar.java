@@ -19,7 +19,7 @@ public class DynamicCalendar {
             Bundle metaData = pm.getActivityInfo(component,
                     PackageManager.GET_META_DATA | PackageManager.GET_UNINSTALLED_PACKAGES).metaData;
 
-            Resources resourcesForApplication = pm.getResourcesForApplication(DynamicCalendar.CALENDAR);
+            Resources resourcesForApplication = pm.getResourcesForApplication(CALENDAR);
             int dayResId = DynamicCalendar.getDayResId(metaData, resourcesForApplication);
             if (dayResId != 0) {
                 return resourcesForApplication.getDrawableForDensity(dayResId, iconDpi);

@@ -23,6 +23,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
+import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.ResolveInfo
 import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
@@ -33,11 +34,19 @@ import android.os.Parcelable
 import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
+import com.aosp.launcher.customization.IconDatabase
+import com.aosp.launcher.icons.ThirdPartyDrawableFactory
+import com.aosp.launcher.icons.ThirdPartyIconProvider
+import com.aosp.launcher.icons.pack.IconResolver
+import com.aosp.launcher.icons.pack.IconResolverExternal
+import com.aosp.launcher.icons.pack.IconResolverMasked
+import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
 import org.zimmob.zimlx.util.asNonEmpty
 import org.zimmob.zimlx.util.runOnMainThread
 import org.zimmob.zimlx.util.zimPrefs
+import java.io.IOException
 import java.util.*
 
 class IconPackManager(private val context: Context) {
@@ -100,7 +109,7 @@ class IconPackManager(private val context: Context) {
     @SuppressLint("WrongConstant")
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                 iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
-                iconProvider: ZimIconProvider?): Drawable {
+                iconProvider: ThirdPartyIconProvider?): Drawable {
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
                 ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
         val customPack = customEntry?.run {
@@ -124,7 +133,7 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(shortcutInfo, iconDpi)
     }
 
-    fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon, drawableFactory: ZimDrawableFactory): FastBitmapDrawable {
+    fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon, drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
                 ?: key?.let { appInfoProvider.getCustomIconEntry(it) }
@@ -189,7 +198,7 @@ class IconPackManager(private val context: Context) {
     data class CustomIconEntry(val packPackageName: String, val icon: String? = null, val arg: String? = null) {
 
         fun toPackString(): String {
-            return "$packPackageName"
+            return packPackageName
         }
 
         override fun toString(): String {

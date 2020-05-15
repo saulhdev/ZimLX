@@ -66,7 +66,7 @@ public abstract class BaseFlags {
                     "Adds a promise icon to the home screen for new install sessions.");
 
     // Enable moving the QSB on the 0th screen of the workspace
-    public static final boolean QSB_ON_FIRST_SCREEN = true;
+    public static final boolean QSB_ON_FIRST_SCREEN = false;
 
     public static final TogglableFlag EXAMPLE_FLAG = new TogglableFlag("EXAMPLE_FLAG", true,
             "An example flag that doesn't do anything. Useful for testing");
@@ -135,7 +135,7 @@ public abstract class BaseFlags {
         SortedMap<String, TogglableFlag> flagsByKey = new TreeMap<>();
         synchronized (sLock) {
             for (TogglableFlag flag : sFlags) {
-                flagsByKey.put(((BaseTogglableFlag) flag).getKey(), flag);
+                flagsByKey.put(flag.getKey(), flag);
             }
         }
         return new ArrayList<>(flagsByKey.values());

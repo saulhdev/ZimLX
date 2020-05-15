@@ -16,8 +16,8 @@ public class IconResolverExternal implements IconResolver {
     private final String mCalendarPrefix;
     private final IconPack.Clock mClockData;
 
-    IconResolverExternal(PackageManager pm, ApplicationInfo packInfo, int drawableId,
-                         String calendarPrefix, IconPack.Clock clockData) {
+    public IconResolverExternal(PackageManager pm, ApplicationInfo packInfo, int drawableId,
+                                String calendarPrefix, IconPack.Clock clockData) {
         mPm = pm;
         mPackInfo = packInfo;
         mDrawableId = drawableId;

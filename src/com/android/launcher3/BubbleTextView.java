@@ -188,7 +188,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             defaultIconSize = grid.allAppsIconSizePx;
             int lines = prefs.getDrawerLabelRows();
             setLineCount(lines);
-            //TODO:  ADD DRAWER LABEL COLOR
+            setTextColor(prefs.getAllAppsLabelColor());
         } else if (display == DISPLAY_FOLDER) {
             mHideText = prefs.getHideAppLabels();
             DeviceProfile grid = mActivity.getDeviceProfile();

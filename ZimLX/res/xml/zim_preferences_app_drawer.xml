@@ -3,7 +3,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__app_icons">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_icons">
         <org.zimmob.zimlx.preferences.DrawerGridSizePreference
             android:key="numColsDrawer"
             android:title="@string/title__drawer_columns"
@@ -14,7 +14,7 @@
             android:title="@string/title__drawer_menu"
             app:content="@xml/zim_preferences_drawer_icon_popup_menu"
             app:iconSpaceReserved="false" />
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
     <ListPreference
         android:defaultValue="0"
@@ -48,6 +48,25 @@
         android:key="pref_iconLabelsInTwoLines"
         android:persistent="true"
         android:title="@string/title__drawer_multiline_label"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.SeekbarPreference
+        android:dependency="pref_hideAllAppsAppLabels"
+        android:key="pref_allAppsIconTextScale"
+        android:title="@string/title__drawer_text_size"
+        app:defaultSeekbarValue="1.0"
+        app:maxValue="1.8"
+        app:minValue="0.3"
+        app:steps="150"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100" />
+
+    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+        android:defaultValue="@color/qsb_drawer_text_color_normal"
+        android:key="pref_key__drawer_label_color"
+        android:title="@string/title__drawer_label_color"
+        app:cpv_dialogTitle="@string/title__drawer_label_color"
+        app:cpv_showAlphaSlider="true"
         app:iconSpaceReserved="false" />
 
 </androidx.preference.PreferenceScreen>

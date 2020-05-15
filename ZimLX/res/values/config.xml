@@ -6,8 +6,8 @@
     <string name="config_default_search_provider" translatable="false">org.zimmob.zimlx.globalsearch.providers.GoogleSearchProvider</string>
     <string name="user_event_dispatcher_class" translatable="false">org.zimmob.zimlx.predictions.CustomAppPredictor</string>
     <string name="app_filter_class" translatable="false">org.zimmob.zimlx.allapps.CustomAppFilter</string>
-    <string name="icon_provider_class" translatable="false">org.zimmob.zimlx.iconpack.ZimIconProvider</string>
-    <string name="drawable_factory_class" translatable="false">org.zimmob.zimlx.iconpack.ZimDrawableFactory</string>
+    <string name="icon_provider_class" translatable="false">com.aosp.launcher.icons.ThirdPartyIconProvider</string>
+    <string name="drawable_factory_class" translatable="false">com.aosp.launcher.icons.ThirdPartyDrawableFactory</string>
 
     <!-- Tag id used for view scrim -->
     <item type="id" name="view_scrim" />

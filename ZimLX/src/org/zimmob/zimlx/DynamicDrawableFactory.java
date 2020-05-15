@@ -28,7 +28,7 @@ import com.android.launcher3.graphics.DrawableFactory;
 import com.aosp.launcher.icons.clock.DynamicClock;
 
 public class DynamicDrawableFactory extends DrawableFactory {
-    private final DynamicClock mDynamicClockDrawer;
+    private DynamicClock mDynamicClockDrawer;
     private Context mContext;
 
     public DynamicDrawableFactory(Context context) {

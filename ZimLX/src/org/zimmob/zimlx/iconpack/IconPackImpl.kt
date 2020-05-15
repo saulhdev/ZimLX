@@ -35,6 +35,8 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
+import com.aosp.launcher.icons.ThirdPartyDrawableFactory
+import com.aosp.launcher.icons.ThirdPartyIconProvider
 import com.aosp.launcher.icons.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -59,6 +61,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     private val packResources = context.packageManager.getResourcesForApplication(packPackageName)
     private val prefs by lazy { Utilities.getZimPrefs(context) }
     override val entries get() = packComponents.values.toList()
+    private val customAdaptiveIcon by lazy { CustomAdaptiveIcon(context) }
 
     init {
         if (prefs.showDebugInfo) {
@@ -85,7 +88,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun loadPack() {
         try {
-            val startTime = System.currentTimeMillis()
             val res = packResources
             val compStart = "ComponentInfo{"
             val compStartlength = compStart.length
@@ -180,7 +182,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                     }
                 }
             }
-            val endTime = System.currentTimeMillis()
             return
         } catch (e: PackageManager.NameNotFoundException) {
             e.printStackTrace()
@@ -241,7 +242,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
                          flattenDrawable: Boolean,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ZimIconProvider?): Drawable? {
+                         iconProvider: ThirdPartyIconProvider?): Drawable? {
         ensureInitialLoadComplete()
 
         val component = launcherActivityInfo.componentName
@@ -254,7 +255,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
         if (drawableId != 0) {
             try {
-                var drawable = AdaptiveIconCompat.wrap(
+                var drawable = customAdaptiveIcon.wrap(
                         packResources.getDrawableForDensity(drawableId, iconDpi)
                                 ?: packResources.getDrawable(drawableId))
                 if (Utilities.ATLEAST_OREO && packClocks.containsKey(drawableId)) {
@@ -307,7 +308,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ZimDrawableFactory): FastBitmapDrawable? {
+                         drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable? {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -319,7 +320,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
             if (packClocks.containsKey(drawableId)) {
                 val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
-                return drawableFactory.customClockDrawer.drawIcon(itemInfo, drawable, packClocks[drawableId])
+                return drawableFactory.mCustomClockDrawer.drawIcon(itemInfo, drawable, packClocks[drawableId])
             } else if (packDynamicDrawables.containsKey(drawableId)) {
 
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi
@@ -410,8 +411,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
         }
     }
 
-    private val idCache = mutableMapOf<String, Int>()
-    private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable", packPackageName)// idCache.getOrPut(name) {    }
+    private fun getDrawableId(name: String) = packResources.getIdentifier(name, "drawable", packPackageName)
 
     fun createEntry(icon: Intent.ShortcutIconResource): Entry {
         val id = packResources.getIdentifier(icon.resourceName, null, null)
@@ -452,7 +452,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
     }
 
     inner class MaskEntry(private val key: ComponentKey) : IconPack.Entry() {
-
         override val identifierName = key.toString()
         override val displayName = identifierName
         override val isAvailable = true
@@ -464,10 +463,9 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 val gen = AdaptiveIconGenerator(context, icon)
                 return gen.result
             }
-            return baseIcon
+            return icon
         }
 
         override fun toCustomEntry() = IconPackManager.CustomIconEntry(packPackageName, key.toString(), "mask")
     }
-
 }

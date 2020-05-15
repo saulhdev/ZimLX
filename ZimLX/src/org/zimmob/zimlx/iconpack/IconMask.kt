@@ -53,9 +53,9 @@ class IconMask {
         var adaptiveBackground: Drawable? = null
         // Some random magic to get an acceptable resolution
         var size = (LauncherAppState.getIDP(context).iconBitmapSize * (3 - scale)).toInt()
-        if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconCompat) {
+        /*if (Utilities.ATLEAST_OREO && iconBack?.drawableId != 0 && iconBack?.drawable is AdaptiveIconCompat) {
             size += (size * AdaptiveIconCompat.getExtraInsetFraction()).toInt()
-        }
+        }*/
         val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
 
@@ -81,8 +81,8 @@ class IconMask {
         // Draw iconBack
         if (iconBack != null && iconBack.drawableId != 0) {
             val drawable = iconBack.drawable
-            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconCompat) {
-                adaptiveBackground = drawable.background
+            if (Utilities.ATLEAST_OREO && drawable is CustomAdaptiveIcon) {
+                //adaptiveBackground = drawable.background
             } else {
                 drawable.toBitmap()!!.let {
                     paint.xfermode = PorterDuffXfermode(PorterDuff.Mode.DST_OVER)
@@ -102,17 +102,17 @@ class IconMask {
                 matrix.reset()
             }
         }
-        if (adaptiveBackground != null) {
-            if (onlyMaskLegacy && baseIcon is AdaptiveIconCompat) {
+        /*if (adaptiveBackground != null) {
+            if (onlyMaskLegacy && baseIcon is CustomAdaptiveIcon) {
                 return baseIcon
             }
             return AdaptiveIconCompat(adaptiveBackground, FastBitmapDrawable(bitmap))
-        }
+        }*/
         return FastBitmapDrawable(bitmap)
     }
 
     private fun getScale(iconBack: IconPackImpl.Entry?): Float {
-        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconCompat) {
+        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is CustomAdaptiveIcon) {
             iconScale - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
         } else {
             iconScale

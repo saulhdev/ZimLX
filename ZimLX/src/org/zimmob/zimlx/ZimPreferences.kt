@@ -143,6 +143,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
+    val allAppsLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
 
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
@@ -167,7 +168,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()) {
         override fun unflattenValue(value: String) = value
     }
-    val iconPackMasking by BooleanPref("pref_iconPackMasking", true, reloadIcons)
+    val iconPackMasking by BooleanPref("pref_iconPackMasking", false, reloadIcons)
     val adaptifyIconPacks by BooleanPref("pref_generateAdaptiveForIconPack", false, reloadIcons)
     var launcherTheme by StringIntPref("pref_launcherTheme", 1) { ThemeManager.getInstance(context).updateTheme() }
     val primaryColor by IntPref("pref_key__primary_color", R.color.colorPrimary, restart)

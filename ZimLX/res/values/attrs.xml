@@ -104,4 +104,14 @@
         <attr name="content" />
         <attr name="hasPreview" />
     </declare-styleable>
+
+    <declare-styleable name="SeekbarPreference">
+        <attr name="minValue" format="float" />
+        <attr name="maxValue" format="float" />
+        <attr name="summaryFormat" format="string" />
+        <attr name="summaryMultiplier" format="integer" />
+        <attr name="defaultSeekbarValue" format="float" />
+        <attr name="steps" format="integer" />
+    </declare-styleable>
+
 </resources>

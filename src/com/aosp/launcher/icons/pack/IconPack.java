@@ -28,7 +28,7 @@ class IconPack {
         mPackageLabel = label;
     }
 
-    ApplicationInfo getAi() {
+    public ApplicationInfo getAi() {
         return mAi;
     }
 

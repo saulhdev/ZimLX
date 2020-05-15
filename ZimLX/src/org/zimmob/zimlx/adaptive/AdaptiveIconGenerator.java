@@ -31,13 +31,11 @@ import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.ColorExtractor;
-import com.android.launcher3.icons.FixedScaleDrawable;
 import com.android.launcher3.icons.IconNormalizer;
 import com.android.launcher3.icons.LauncherIcons;
 
 import org.zimmob.zimlx.ZimPreferences;
-import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
-import org.zimmob.zimlx.iconpack.ZimIconProvider;
+import org.zimmob.zimlx.iconpack.CustomAdaptiveIcon;
 
 import static java.lang.Math.max;
 import static java.lang.Math.min;
@@ -80,13 +78,14 @@ public class AdaptiveIconGenerator {
     private float aWidth;
     private Drawable result;
 
-    private AdaptiveIconCompat tmp;
+    private CustomAdaptiveIcon adaptiveIcon;
 
     public AdaptiveIconGenerator(Context context, @NonNull Drawable icon) {
         this.context = context;
-        this.icon = AdaptiveIconCompat.wrap(icon);
+        adaptiveIcon = new CustomAdaptiveIcon(context);
+        this.icon = adaptiveIcon.wrap(icon);
         ZimPreferences prefs = Utilities.getZimPrefs(context);
-        shouldWrap = prefs.getEnableLegacyTreatment();
+        shouldWrap = false; //prefs.getEnableLegacyTreatment();
         extractColor = shouldWrap && prefs.getColorizedLegacyTreatment();
         treatWhite = extractColor && prefs.getEnableWhiteOnlyTreatment();
     }
@@ -94,19 +93,19 @@ public class AdaptiveIconGenerator {
     private void loop() {
         if (Utilities.ATLEAST_OREO && shouldWrap) {
             Drawable extractee = icon;
-            if (icon instanceof AdaptiveIconCompat) {
+            if (icon instanceof CustomAdaptiveIcon) {
                 if (!treatWhite) {
                     onExitLoop();
                     return;
                 }
-                AdaptiveIconCompat aid = (AdaptiveIconCompat) icon;
+                CustomAdaptiveIcon aid = (CustomAdaptiveIcon) icon;
                 // we still check this seperately as this is the only information we need from the background
-                if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
+                /*if (!ColorExtractor.isSingleColor(aid.getBackground(), Color.WHITE)) {
                     onExitLoop();
                     return;
-                }
+                }*/
                 isBackgroundWhite = true;
-                extractee = aid.getForeground();
+                //extractee = aid.getForeground();
             }
 
             if (extractee == null) {
@@ -122,8 +121,8 @@ public class AdaptiveIconGenerator {
             boolean[] outShape = new boolean[1];
             RectF bounds = new RectF();
 
-            initTmpIfNeeded();
-            scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
+            //initTmpIfNeeded();
+            //scale = normalizer.getScale(extractee, bounds, tmp.getIconMask(), outShape);
             matchesMaskShape = outShape[0];
 
             if (extractee instanceof ColorDrawable) {
@@ -273,19 +272,19 @@ public class AdaptiveIconGenerator {
         if (!Utilities.ATLEAST_OREO || !shouldWrap) {
             return icon;
         }
-        if (icon instanceof AdaptiveIconCompat) {
+        if (icon instanceof CustomAdaptiveIcon) {
             if (!treatWhite || !isBackgroundWhite) {
                 return icon;
             }
-            if (((AdaptiveIconCompat) icon).getBackground() instanceof ColorDrawable) {
-                AdaptiveIconCompat mutIcon = (AdaptiveIconCompat) icon.mutate();
-                ((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
+            /*if (((CustomAdaptiveIcon) icon).getBackground() instanceof ColorDrawable) {
+                CustomAdaptiveIcon mutIcon = (CustomAdaptiveIcon) icon.mutate();
+                //((ColorDrawable) mutIcon.getBackground()).setColor(backgroundColor);
                 return mutIcon;
-            }
-            return new AdaptiveIconCompat(new ColorDrawable(backgroundColor), ((AdaptiveIconCompat) icon).getForeground());
+            }*/
+            //return new CustomAdaptiveIcon(new ColorDrawable(backgroundColor), ((CustomAdaptiveIcon) icon).getForeground());
         }
-        initTmpIfNeeded();
-        ((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
+        //initTmpIfNeeded();
+        //((FixedScaleDrawable) tmp.getForeground()).setDrawable(icon);
         if (matchesMaskShape || isFullBleed || noMixinNeeded) {
             float scale;
             if (noMixinNeeded) {
@@ -295,20 +294,20 @@ public class AdaptiveIconGenerator {
                 float upScale = max(width / aWidth, height / aHeight);
                 scale = FULL_BLEED_ICON_SCALE * upScale;
             }
-            ((FixedScaleDrawable) tmp.getForeground()).setScale(scale);
-        } else {
-            ((FixedScaleDrawable) tmp.getForeground()).setScale(scale);
+            //((FixedScaleDrawable) tmp.getForeground()).setScale(scale);
+            //} else {
+            //((FixedScaleDrawable) tmp.getForeground()).setScale(scale);
         }
-        ((ColorDrawable) tmp.getBackground()).setColor(backgroundColor);
-        return tmp;
+        //((ColorDrawable) tmp.getBackground()).setColor(backgroundColor);
+        return icon;
     }
 
-    private void initTmpIfNeeded() {
+    /*private void initTmpIfNeeded() {
         if (tmp == null) {
             tmp = ZimIconProvider.getAdaptiveIconDrawableWrapper(context);
             tmp.setBounds(0, 0, 1, 1);
         }
-    }
+    }*/
 
     public Drawable getResult() {
         if (!ranLoop) {

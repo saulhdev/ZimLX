@@ -32,11 +32,9 @@ import androidx.core.graphics.PathParser
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
-import org.zimmob.zimlx.iconpack.AdaptiveIconCompat
 import org.zimmob.zimlx.override.IconShapeOverride
-import org.zimmob.zimlx.util.Config
-import org.zimmob.zimlx.util.runOnMainThread
 import org.zimmob.zimlx.util.ZimSingletonHolder
+import org.zimmob.zimlx.util.runOnMainThread
 import org.zimmob.zimlx.util.zimPrefs
 import com.android.launcher3.graphics.IconShape as L3IconShape
 
@@ -44,7 +42,7 @@ class IconShapeManager(private val context: Context) {
 
     private val systemIconShape = getSystemShape()
     var iconShape by context.zimPrefs.StringBasedPref(
-            Config.THEME_ICON_SHAPE, systemIconShape, ::onShapeChanged,
+            "pref_iconShape", systemIconShape, ::onShapeChanged,
             {
                 IconShape.fromString(it) ?: systemIconShape
             }, IconShape::toString) { /* no dispose */ }
@@ -60,7 +58,7 @@ class IconShapeManager(private val context: Context) {
         if (!TextUtils.isEmpty(override)) {
             try {
                 iconShape = findNearestShape(PathParser.createPathFromPathData(override))
-                Utilities.getPrefs(context).edit().remove(Config.THEME_ICON_SHAPE).apply()
+                Utilities.getPrefs(context).edit().remove(IconShapeOverride.KEY_ICON_SHAPE).apply()
             } catch (e: RuntimeException) {
                 // Just ignore the error
             }
@@ -117,7 +115,7 @@ class IconShapeManager(private val context: Context) {
             LauncherAppState.getInstance(context).reloadIconCache()
 
             runOnMainThread {
-                AdaptiveIconCompat.resetMask()
+                //AdaptiveIconCompat.resetMask()
                 L3IconShape.init(context)
                 context.zimPrefs.recreate()
             }

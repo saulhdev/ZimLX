@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__folder_searchbar_options">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__folder_searchbar_options">
         <org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference
             android:defaultValue="@string/config_default_search_provider"
             android:key="pref_globalSearchProvider"
@@ -30,8 +30,8 @@
             android:title="@string/bubble_searchbar"
             app:iconSpaceReserved="false" />
 
-    </org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-    <org.zimmob.zimlx.preferences.ZimPreferenceCategory android:title="@string/cat__folder_folder_options"></org.zimmob.zimlx.preferences.ZimPreferenceCategory>
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__folder_folder_options"></org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>
