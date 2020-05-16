@@ -44,11 +44,15 @@ import com.android.launcher3.uioverrides.touchcontrollers.TransposedQuickSwitchT
 import com.android.launcher3.util.TouchController;
 import com.android.launcher3.util.UiThreadHelper;
 import com.android.launcher3.util.UiThreadHelper.AsyncCommand;
+import com.android.quickstep.OverviewInteractionState;
 import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
+
+import org.zimmob.zimlx.gestures.VerticalSwipeGestureController;
+import org.zimmob.zimlx.touch.PinchStateChangeTouchController;
 
 import java.util.ArrayList;
 
@@ -150,6 +154,19 @@ public abstract class RecentsUiFactory {
 
         ArrayList<TouchController> list = new ArrayList<>();
         list.add(launcher.getDragController());
+
+        boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
+                .isSwipeUpGestureEnabled();
+        if (!swipeUpEnabled) {
+            return new TouchController[]{
+                    launcher.getDragController(),
+                    new PinchStateChangeTouchController(launcher),
+                    new NavBarToHomeTouchController(launcher),
+                    new VerticalSwipeGestureController(launcher),
+                    new OverviewToAllAppsTouchController(launcher),
+                    new LauncherTaskViewController(launcher)};
+        }
+
         if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));

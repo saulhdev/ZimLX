@@ -292,7 +292,7 @@ public abstract class AbstractStateChangeTouchController
             }
             mIsLogContainerSet = true;
         }
-        return onDrag(displacement);
+        return true;//onDrag(displacement);
     }
 
     protected void updateProgress(float fraction) {

@@ -115,7 +115,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
 
     override fun onDragStart(start: Boolean) {}
 
-    fun onDrag(displacement: Float, velocity: Float): Boolean {
+    override fun onDrag(displacement: Float): Boolean {
         val range = content.height.toFloat()
         val bounded = Utilities.boundToRange(displacement, 0f, range)
         translationShift = bounded / range
@@ -127,10 +127,6 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
             scrollInterpolator = scrollInterpolatorForVelocity(velocity)
             close(true)
         }
-    }
-
-    override fun onDrag(displacement: Float): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
 
     fun close(animate: Boolean) {
