@@ -52,6 +52,8 @@ import com.android.quickstep.RecentsModel;
 import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.util.LayoutUtils;
 
+import org.zimmob.zimlx.ZimLauncher;
+
 /**
  * Touch controller for handling various state transitions in portrait UI.
  */
@@ -77,15 +79,22 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
 
     // If true, we will finish the current animation instantly on second touch.
     private boolean mFinishFastOnSecondTouch;
+    private boolean mStartedFromHotseat;
 
     public PortraitStatesTouchController(Launcher l, boolean allowDragToOverview) {
         super(l, SwipeDetector.VERTICAL);
         mOverviewPortraitStateTouchHelper = new PortraitOverviewStateTouchHelper(l);
         mAllowDragToOverview = allowDragToOverview;
+
+
     }
 
     @Override
     protected boolean canInterceptTouch(MotionEvent ev) {
+        DeviceProfile dp = mLauncher.getDeviceProfile();
+        int hotseatHeight = dp.hotseatBarSizePx + dp.getInsets().bottom;
+        mStartedFromHotseat = ev.getY() >= (mLauncher.getDragLayer().getHeight() - hotseatHeight);
+
         if (mCurrentAnimation != null) {
             if (mFinishFastOnSecondTouch) {
                 // TODO: Animate to finish instead.
@@ -111,6 +120,8 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         } else if (mLauncher.isInState(OVERVIEW)) {
+            //if (!mStartedFromHotseat) return false;
+            //mGoToOverview = true;
             if (!mOverviewPortraitStateTouchHelper.canInterceptTouch(ev)) {
                 return false;
             }
@@ -122,10 +133,7 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
                 return false;
             }
         }
-        if (AbstractFloatingView.getTopOpenViewWithType(mLauncher, TYPE_ACCESSIBLE) != null) {
-            return false;
-        }
-        return true;
+        return AbstractFloatingView.getTopOpenViewWithType(mLauncher, TYPE_ACCESSIBLE) == null;
     }
 
     @Override
@@ -284,6 +292,9 @@ public class PortraitStatesTouchController extends AbstractStateChangeTouchContr
         super.onSwipeInteractionCompleted(targetState, logAction);
         if (mStartState == NORMAL && targetState == OVERVIEW) {
             RecentsModel.INSTANCE.get(mLauncher).onOverviewShown(true, TAG);
+        } else if (mStartState == NORMAL && targetState == ALL_APPS) {
+            ZimLauncher.getLauncher(mLauncher).getGestureController()
+                    .getVerticalSwipeGesture().onSwipeUpAllAppsComplete(mStartedFromHotseat);
         }
     }
 

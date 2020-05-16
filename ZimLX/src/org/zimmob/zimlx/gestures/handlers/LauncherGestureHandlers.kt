@@ -18,9 +18,11 @@
 package org.zimmob.zimlx.gestures.handlers
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Process
 import android.os.UserHandle
 import android.util.Log
 import android.view.View
@@ -28,7 +30,6 @@ import android.widget.Toast
 import androidx.annotation.Keep
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
-import com.android.launcher3.Utilities
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
@@ -167,12 +168,12 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
     override val icon: Drawable
         get() = when {
             intent != null -> try {
-                context.packageManager.getActivityIcon(intent)
+                context.packageManager.getActivityIcon(intent!!)
             } catch (e: Exception) {
                 context.getIcon()
             }
             target != null -> try {
-                context.packageManager.getApplicationIcon(target?.componentName?.packageName)
+                context.packageManager.getApplicationIcon(target?.componentName!!.packageName)
             } catch (e: Exception) {
                 context.getIcon()
             }
@@ -195,7 +196,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             appName = config.getString("appName")
             type = if (config.has("type")) config.getString("type") else "app"
             if (type == "app") {
-                target = ComponentKey(target!!.componentName, Utilities.myUserHandle())
+                target = ComponentKey(target!!.componentName, Process.myUserHandle())
             } else {
                 intent = Intent.parseUri(config.getString("intent"), 0)
                 user = UserManagerCompat.getInstance(context).getUserForSerialNumber(config.getLong("user"))
@@ -229,7 +230,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             type = data.getStringExtra("type")
             when (type) {
                 "app" -> {
-                    target = ComponentKey(data.component, Utilities.myUserHandle())
+                    val component = ComponentName(context, data.getStringExtra("target"))
+                    target = ComponentKey(component, Process.myUserHandle())
                 }
                 "shortcut" -> {
                     intent = Intent.parseUri(data.getStringExtra("intent"), 0)
@@ -245,7 +247,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
         if (view == null) {
             val down = controller.touchDownPoint
             controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
-            //onGestureTrigger(controller, it)
+                //onGestureTrigger(controller, it)
         }
             return
         }
@@ -259,19 +261,16 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
                     // App is probably not installed anymore, show a Toast
                     Toast.makeText(context, R.string.failed, Toast.LENGTH_LONG).show()
                 }
-                /*val transitionManager = controller.launcher.launcherAppTransitionManager
-                        as? ZimAppTransitionManagerImpl
-                transitionManager?.playLaunchAnimation(controller.launcher, view,
-                        Intent().setComponent(target!!.componentName))
-                */
+                //val transitionManager = controller.launcher.appTransitionManager
+                //as? CustomAppTransitionManagerImpl
+                //transitionManager?.playLaunchAnimation(controller.launcher, view,
+                //        Intent().setComponent(target!!.componentName))
+
             }
             "shortcut" -> {
-                if (id?.startsWith("sesame_") == true) {
-                    //context.startActivity(SesameFrontend.addPackageAuth(context, intent!!), opts)
-                } else {
                     DeepShortcutManager.getInstance(context)
                             .startShortcut(packageName, id, intent, opts, user)
-                }
+
             }
         }
     }

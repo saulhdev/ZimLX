@@ -84,11 +84,13 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
+import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
+import com.aosp.launcher.icons.ThirdPartyIconProvider;
 
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
@@ -680,6 +682,7 @@ public final class Utilities {
      */
     public static Drawable getFullDrawable(Launcher launcher, ItemInfo info, int width, int height,
             boolean flattenDrawable, Object[] outObj) {
+
         LauncherAppState appState = LauncherAppState.getInstance(launcher);
         final IconProvider iconProvider = IconProvider.INSTANCE.get(launcher);
         IconPackManager.CustomIconEntry customIconEntry = (info instanceof WorkspaceItemInfo) ?
@@ -707,10 +710,9 @@ public final class Utilities {
             } else {
                 outObj[0] = si.get(0);
                 int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
-                /*if (iconProvider instanceof ZimIconProvider) {
-                    return ((ZimIconProvider) iconProvider).getIcon(si.get(0), iconDpi);
-                }*/
-
+                if (iconProvider instanceof ThirdPartyIconProvider) {
+                    //return ((ThirdPartyIconProvider) iconProvider).getIcon((LauncherActivityInfo)si.get(0), iconDpi, false);
+                }
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
@@ -757,7 +759,9 @@ public final class Utilities {
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            return ((FolderAdaptiveIcon) obj).getBadge();
+            //return ((FolderAdaptiveIcon) obj).getBadge();
+            return obj instanceof FolderAdaptiveIcon ? ((FolderAdaptiveIcon) obj).getBadge() : new FixedSizeEmptyDrawable(iconSize);
+
         } else {
             return launcher.getPackageManager()
                     .getUserBadgedIcon(new FixedSizeEmptyDrawable(iconSize), info.user);

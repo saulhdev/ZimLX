@@ -129,7 +129,6 @@ public class FolderInfo extends ItemInfo {
         super.onAddToDatabase(writer);
         writer.put(LauncherSettings.Favorites.TITLE, title)
                 .put(LauncherSettings.Favorites.OPTIONS, options);
-
     }
 
     public void addListener(FolderListener listener) {
@@ -155,7 +154,8 @@ public class FolderInfo extends ItemInfo {
     private Drawable cached;
 
     public ComponentKey toComponentKey() {
-        return new ComponentKey(new ComponentName("org.zimmob.zimlx.folder", String.valueOf(id)), Process.myUserHandle());
+        ComponentName componentName = new ComponentName(Launcher.mContext, "org.zimmob.zimlx.folder");
+        return new ComponentKey(componentName, Process.myUserHandle());
     }
 
     public Drawable getIcon(Context context) {
@@ -183,14 +183,14 @@ public class FolderInfo extends ItemInfo {
         FrameLayout dummy = new FrameLayout(launcher, null);
         FolderIcon icon = FolderIcon.fromXml(R.layout.folder_icon, launcher, dummy, this);
         icon.isCustomIcon = false;
-        //icon.getFolderBackground().setStartOpacity(1f);
+        icon.getFolderBackground().setStartOpacity(1f);
         Bitmap b = BitmapRenderer.createHardwareBitmap(iconSize, iconSize, out -> {
             out.translate(iconSize / 2f, 0);
             // TODO: make folder icons more visible in front of the bottom sheet
             // out.drawColor(Color.RED);
             icon.draw(out);
         });
-        //icon.unbind();
+        icon.unbind();
         return new BitmapDrawable(launcher.getResources(), b);
     }
 

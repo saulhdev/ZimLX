@@ -26,6 +26,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import org.zimmob.zimlx.gestures.GestureController
 import org.zimmob.zimlx.gestures.GestureHandler
+import org.zimmob.zimlx.util.applyAccent
 
 class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, private val currentClass: String, private val onSelectHandler: (handler: GestureHandler) -> Unit, showBlank: Boolean = true) : RecyclerView.Adapter<HandlerListAdapter.Holder>() {
 
@@ -46,7 +47,7 @@ class HandlerListAdapter(private val context: Context, isSwipeUp: Boolean, priva
 
         val text = itemView.findViewById<CheckedTextView>(android.R.id.text1)!!.apply {
             setOnClickListener(this@Holder)
-            //applyAccent()
+            applyAccent()
         }
 
         override fun onClick(v: View) {

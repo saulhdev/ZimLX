@@ -530,7 +530,8 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         anim.addListener(new AnimatorListenerAdapter() {
             @Override
             public void onAnimationStart(Animator animation) {
-                mFolderIcon.setIconVisible(false);
+                //mFolderIcon.setIconVisible(false);
+                mFolderIcon.setBackgroundVisible(false);
                 mFolderIcon.drawLeaveBehindIfExists();
             }
             @Override
@@ -606,6 +607,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
     @Override
     protected void handleClose(boolean animate) {
         mIsOpen = false;
+        if (mFolderIcon.isCustomIcon) {
+            mFolderIcon.mFolderName.setIconVisible(true);
+        }
 
         if (!animate && mCurrentAnimator != null && mCurrentAnimator.isRunning()) {
             mCurrentAnimator.cancel();
@@ -661,6 +665,7 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         if (mFolderIcon != null) {
             mFolderIcon.setVisibility(View.VISIBLE);
             mFolderIcon.setIconVisible(true);
+            mFolderIcon.setBackgroundVisible(true);
             mFolderIcon.mFolderName.setTextVisibility(true);
             if (wasAnimated) {
                 mFolderIcon.animateBgShadowAndStroke();

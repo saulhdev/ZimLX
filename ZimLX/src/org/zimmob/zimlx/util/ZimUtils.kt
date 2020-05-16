@@ -696,3 +696,16 @@ fun openPopupMenu(view: View, rect: RectF?, vararg items: OptionsPopupView.Optio
     val launcher = Launcher.getLauncher(view.context)
     OptionsPopupView.show(launcher, rect ?: RectF(launcher.getViewBounds(view)), items.toList())
 }
+
+fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup?): View? {
+    views.forEach { view ->
+        if (view == null || view.width == 0 || view.height == 0) return@forEach
+        view.forEachChild { item ->
+            val info = item.tag as ItemInfo?
+            if (op.evaluate(info, item)) {
+                return item
+            }
+        }
+    }
+    return null
+}

@@ -1808,6 +1808,11 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // We want the point to be mapped to the dragTarget.
         if (dropTargetLayout != null) {
             mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
+            /*if (mLauncher.isHotseatLayout(dropTargetLayout)) {
+                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+            } else {
+                mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
+            }*/
         }
 
         boolean droppedOnOriginalCell = false;
@@ -3172,6 +3177,15 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             }
         }
         return false;
+    }
+
+    public ShortcutAndWidgetContainer getCurrentContainer() {
+        View view = getChildAt(getCurrentPage());
+        if (view instanceof CellLayout) {
+            return ((CellLayout) view).getShortcutsAndWidgets();
+        } else {
+            return null;
+        }
     }
 
     void updateShortcuts(ArrayList<WorkspaceItemInfo> shortcuts) {

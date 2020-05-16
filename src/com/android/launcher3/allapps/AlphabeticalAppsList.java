@@ -17,6 +17,7 @@ package com.android.launcher3.allapps;
 
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.Color;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.Launcher;
@@ -31,6 +32,8 @@ import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.allapps.AppColorComparator;
 import org.zimmob.zimlx.allapps.InstallTimeComparator;
 import org.zimmob.zimlx.allapps.MostUsedComparator;
+import org.zimmob.zimlx.groups.DrawerFolderInfo;
+import org.zimmob.zimlx.groups.DrawerFolderItem;
 import org.zimmob.zimlx.model.AppCountInfo;
 import org.zimmob.zimlx.util.DbHelper;
 
@@ -41,6 +44,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import static org.zimmob.zimlx.util.Config.SORT_AZ;
@@ -78,66 +82,134 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-    /**
-     * Info about a particular adapter item (can be either section or app)
-     */
-    public static class AdapterItem {
-        /** Common properties */
-        // The index of this adapter item in the list
-        public int position;
-        // The type of this item
-        public int viewType;
+    private void refillAdapterItems() {
+        String lastSectionName = null;
+        FastScrollSectionInfo lastFastScrollerSectionInfo = null;
+        int position = 0;
+        int appIndex = 0;
+        int folderIndex = 0;
 
-        /** App-only properties */
-        // The section name of this app.  Note that there can be multiple items with different
-        // sectionNames in the same section
-        public String sectionName = null;
-        // The row that this item shows up on
-        public int rowIndex;
-        // The index of this app in the row
-        public int rowAppIndex;
-        // The associated AppInfo for the app
-        public AppInfo appInfo = null;
-        // The index of this app not including sections
-        public int appIndex = -1;
+        // Prepare to update the list of sections, filtered apps, etc.
+        mFilteredApps.clear();
+        mFastScrollerSections.clear();
+        mAdapterItems.clear();
 
-        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
-                int appIndex) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
-            item.position = pos;
-            item.sectionName = sectionName;
-            item.appInfo = appInfo;
-            item.appIndex = appIndex;
-            return item;
+        // Drawer folders are arranged before all the apps
+        if (!hasFilter()) {
+            for (DrawerFolderInfo info : getFolderInfos()) {
+                String sectionName = "#";
+
+                // Create a new section if the section names do not match
+                if (!sectionName.equals(lastSectionName)) {
+                    lastSectionName = sectionName;
+                    lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                    mFastScrollerSections.add(lastFastScrollerSectionInfo);
+                }
+
+                info.setAppsStore(mAllAppsStore);
+                // Create an folder item
+                AdapterItem appItem = AdapterItem
+                        .asFolder(position++, sectionName, info, folderIndex++);
+                if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                    lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+                }
+                mAdapterItems.add(appItem);
+            }
         }
 
-        public static AdapterItem asEmptySearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
-            item.position = pos;
-            return item;
+        Set<ComponentKey> folderFilters = getFolderFilteredApps();
+
+        // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
+        // ordered set of sections
+        for (AppInfo info : getFiltersAppInfos()) {
+            if (!hasFilter() && folderFilters.contains(info.toComponentKey())) {
+                continue;
+            }
+            String sectionName = getAndUpdateCachedSectionName(info.title);
+
+            // Create a new section if the section names do not match
+            if (!sectionName.equals(lastSectionName)) {
+                lastSectionName = sectionName;
+                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
+                mFastScrollerSections.add(lastFastScrollerSectionInfo);
+            }
+
+            // Create an app item
+            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
+            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
+                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
+            }
+            mAdapterItems.add(appItem);
+            mFilteredApps.add(info);
         }
 
-        public static AdapterItem asAllAppsDivider(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
-            item.position = pos;
-            return item;
+        if (hasFilter()) {
+            // Append the search market item
+            if (hasNoFilteredResults()) {
+                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
+            } else {
+                mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
+            }
+            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
         }
 
-        public static AdapterItem asMarketSearch(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
-            item.position = pos;
-            return item;
+        if (mNumAppsPerRow != 0) {
+            // Update the number of rows in the adapter after we do all the merging (otherwise, we
+            // would have to shift the values again)
+            int numAppsInSection = 0;
+            int numAppsInRow = 0;
+            int rowIndex = -1;
+            for (AdapterItem item : mAdapterItems) {
+                item.rowIndex = 0;
+                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
+                    numAppsInSection = 0;
+                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                    if (numAppsInSection % mNumAppsPerRow == 0) {
+                        numAppsInRow = 0;
+                        rowIndex++;
+                    }
+                    item.rowIndex = rowIndex;
+                    item.rowAppIndex = numAppsInRow;
+                    numAppsInSection++;
+                    numAppsInRow++;
+                }
+            }
+            mNumAppRowsInAdapter = rowIndex + 1;
+
+            // Pre-calculate all the fast scroller fractions
+            switch (mFastScrollDistributionMode) {
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
+                    float rowFraction = 1f / mNumAppRowsInAdapter;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+
+                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
+                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
+                    }
+                    break;
+                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
+                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
+                    float cumulativeTouchFraction = 0f;
+                    for (FastScrollSectionInfo info : mFastScrollerSections) {
+                        AdapterItem item = info.fastScrollToItem;
+                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
+                            info.touchFraction = 0f;
+                            continue;
+                        }
+                        info.touchFraction = cumulativeTouchFraction;
+                        cumulativeTouchFraction += perSectionTouchFraction;
+                    }
+                    break;
+            }
         }
 
-        public static AdapterItem asWorkTabFooter(int pos) {
-            AdapterItem item = new AdapterItem();
-            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
-            item.position = pos;
-            return item;
+        // Add the work profile footer if required.
+        if (shouldShowWorkFooter()) {
+            mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
         }
     }
 
@@ -377,106 +449,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         }
     }
 
-    private void refillAdapterItems() {
-        String lastSectionName = null;
-        FastScrollSectionInfo lastFastScrollerSectionInfo = null;
-        int position = 0;
-        int appIndex = 0;
-
-        // Prepare to update the list of sections, filtered apps, etc.
-        mFilteredApps.clear();
-        mFastScrollerSections.clear();
-        mAdapterItems.clear();
-
-        // Recreate the filtered and sectioned apps (for convenience for the grid layout) from the
-        // ordered set of sections
-        for (AppInfo info : getFiltersAppInfos()) {
-            String sectionName = getAndUpdateCachedSectionName(info.title);
-
-            // Create a new section if the section names do not match
-            if (!sectionName.equals(lastSectionName)) {
-                lastSectionName = sectionName;
-                lastFastScrollerSectionInfo = new FastScrollSectionInfo(sectionName);
-                mFastScrollerSections.add(lastFastScrollerSectionInfo);
-            }
-
-            // Create an app item
-            AdapterItem appItem = AdapterItem.asApp(position++, sectionName, info, appIndex++);
-            if (lastFastScrollerSectionInfo.fastScrollToItem == null) {
-                lastFastScrollerSectionInfo.fastScrollToItem = appItem;
-            }
-            mAdapterItems.add(appItem);
-            mFilteredApps.add(info);
-        }
-
-        if (hasFilter()) {
-            // Append the search market item
-            if (hasNoFilteredResults()) {
-                mAdapterItems.add(AdapterItem.asEmptySearch(position++));
-            } else {
-                mAdapterItems.add(AdapterItem.asAllAppsDivider(position++));
-            }
-            mAdapterItems.add(AdapterItem.asMarketSearch(position++));
-        }
-
-        if (mNumAppsPerRow != 0) {
-            // Update the number of rows in the adapter after we do all the merging (otherwise, we
-            // would have to shift the values again)
-            int numAppsInSection = 0;
-            int numAppsInRow = 0;
-            int rowIndex = -1;
-            for (AdapterItem item : mAdapterItems) {
-                item.rowIndex = 0;
-                if (AllAppsGridAdapter.isDividerViewType(item.viewType)) {
-                    numAppsInSection = 0;
-                } else if (AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                    if (numAppsInSection % mNumAppsPerRow == 0) {
-                        numAppsInRow = 0;
-                        rowIndex++;
-                    }
-                    item.rowIndex = rowIndex;
-                    item.rowAppIndex = numAppsInRow;
-                    numAppsInSection++;
-                    numAppsInRow++;
-                }
-            }
-            mNumAppRowsInAdapter = rowIndex + 1;
-
-            // Pre-calculate all the fast scroller fractions
-            switch (mFastScrollDistributionMode) {
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_ROWS_FRACTION:
-                    float rowFraction = 1f / mNumAppRowsInAdapter;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-
-                        float subRowFraction = item.rowAppIndex * (rowFraction / mNumAppsPerRow);
-                        info.touchFraction = item.rowIndex * rowFraction + subRowFraction;
-                    }
-                    break;
-                case FAST_SCROLL_FRACTION_DISTRIBUTE_BY_NUM_SECTIONS:
-                    float perSectionTouchFraction = 1f / mFastScrollerSections.size();
-                    float cumulativeTouchFraction = 0f;
-                    for (FastScrollSectionInfo info : mFastScrollerSections) {
-                        AdapterItem item = info.fastScrollToItem;
-                        if (!AllAppsGridAdapter.isIconViewType(item.viewType)) {
-                            info.touchFraction = 0f;
-                            continue;
-                        }
-                        info.touchFraction = cumulativeTouchFraction;
-                        cumulativeTouchFraction += perSectionTouchFraction;
-                    }
-                    break;
-            }
-        }
-
-        // Add the work profile footer if required.
-        if (shouldShowWorkFooter()) {
-            mAdapterItems.add(AdapterItem.asWorkTabFooter(position++));
-        }
+    private List<DrawerFolderInfo> getFolderInfos() {
+        return Utilities.getZimPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getFolderInfos(this);
     }
 
     private boolean shouldShowWorkFooter() {
@@ -517,4 +494,98 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mIsWork = isWork;
     }
 
+    private Set<ComponentKey> getFolderFilteredApps() {
+        return Utilities.getZimPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getHiddenComponents();
+    }
+
+    public void reset() {
+        updateAdapterItems();
+    }
+
+    /**
+     * Info about a particular adapter item (can be either section or app)
+     */
+    public static class AdapterItem {
+        /**
+         * Common properties
+         */
+        // The index of this adapter item in the list
+        public int position;
+        // The type of this item
+        public int viewType;
+
+        /**
+         * App-only properties
+         */
+        // The section name of this app.  Note that there can be multiple items with different
+        // sectionNames in the same section
+        public String sectionName = null;
+        // The row that this item shows up on
+        public int rowIndex;
+        // The index of this app in the row
+        public int rowAppIndex;
+        // The associated AppInfo for the app
+        public AppInfo appInfo = null;
+        // The index of this app not including sections
+        public int appIndex = -1;
+
+        /**
+         * Folder-only properties
+         */
+        // The associated folder for the folder
+        public DrawerFolderItem folderItem = null;
+
+        public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
+                                        int appIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ICON;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.appInfo = appInfo;
+            item.appIndex = appIndex;
+            return item;
+        }
+
+        public static AdapterItem asEmptySearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_EMPTY_SEARCH;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asAllAppsDivider(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_ALL_APPS_DIVIDER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asMarketSearch(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_MARKET;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asWorkTabFooter(int pos) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_WORK_TAB_FOOTER;
+            item.position = pos;
+            return item;
+        }
+
+        public static AdapterItem asFolder(int pos, String sectionName,
+                                           DrawerFolderInfo folderInfo, int folderIndex) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
+            item.position = pos;
+            item.sectionName = sectionName;
+            item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
+            return item;
+        }
+
+    }
 }

@@ -132,6 +132,10 @@ public abstract class BaseActivity extends Activity
         return mUserEventDispatcher;
     }
 
+    public boolean isInMultiWindowModeCompat() {
+        return Utilities.ATLEAST_NOUGAT && isInMultiWindowMode();
+    }
+
     public SystemUiController getSystemUiController() {
         if (mSystemUiController == null) {
             mSystemUiController = new SystemUiController(getWindow());

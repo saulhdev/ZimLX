@@ -55,8 +55,7 @@ public class ItemLongClickListener {
         return true;
     }
 
-    public static void beginDrag(View v, Launcher launcher, ItemInfo info,
-            DragOptions dragOptions) {
+    public static void beginDrag(View v, Launcher launcher, ItemInfo info, DragOptions dragOptions) {
         if (info.container >= 0) {
             Folder folder = Folder.getOpen(launcher);
             if (folder != null) {
@@ -110,8 +109,6 @@ public class ItemLongClickListener {
         // that is subsequently removed from the workspace in startBinding().
         if (launcher.isWorkspaceLocked()) return false;
         // Return early if an item is already being dragged (e.g. when long-pressing two shortcuts)
-        if (launcher.getDragController().isDragging()) return false;
-
-        return true;
+        return !launcher.getDragController().isDragging();
     }
 }

@@ -65,7 +65,7 @@ public class ZimLauncher extends AospLauncher {
     private ZimPreferences mZimPrefs;
     private boolean paused = false;
     private boolean sRestart = false;
-    private GestureController gestureController;
+    private GestureController mGestureController;
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
     private OptionsPanel optionView;
     private View dummyView;
@@ -83,7 +83,6 @@ public class ZimLauncher extends AospLauncher {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O_MR1 && !Utilities.hasStoragePermission(this)) {
             Utilities.requestStoragePermission(this);
         }
-        gestureController = new GestureController(this);
         super.onCreate(savedInstanceState);
         IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
         mContext = this;
@@ -194,7 +193,10 @@ public class ZimLauncher extends AospLauncher {
     }
 
     public GestureController getGestureController() {
-        return gestureController;
+        if (mGestureController == null)
+            mGestureController = new GestureController(this);
+
+        return mGestureController;
     }
 
     public boolean shouldRecreate() {

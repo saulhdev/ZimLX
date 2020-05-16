@@ -32,6 +32,7 @@ import androidx.core.graphics.PathParser
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.Utilities
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat
 import org.zimmob.zimlx.override.IconShapeOverride
 import org.zimmob.zimlx.util.ZimSingletonHolder
 import org.zimmob.zimlx.util.runOnMainThread
@@ -115,7 +116,7 @@ class IconShapeManager(private val context: Context) {
             LauncherAppState.getInstance(context).reloadIconCache()
 
             runOnMainThread {
-                //AdaptiveIconCompat.resetMask()
+                AdaptiveIconCompat.resetMask()
                 L3IconShape.init(context)
                 context.zimPrefs.recreate()
             }

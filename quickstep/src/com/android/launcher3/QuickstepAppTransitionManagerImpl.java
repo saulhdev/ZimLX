@@ -146,7 +146,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     private final float mWorkspaceTransY;
     private final float mClosingWindowTransY;
 
-    private DeviceProfile mDeviceProfile;
+    public DeviceProfile mDeviceProfile;
 
     private RemoteAnimationProvider mRemoteAnimationProvider;
 
@@ -591,7 +591,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
     /**
      * Registers remote animations used when closing apps to home screen.
      */
-    private void registerRemoteAnimations() {
+    public void registerRemoteAnimations() {
         // Unregister this
         if (hasControlRemoteAppTransitionPermission()) {
             RemoteAnimationDefinitionCompat definition = new RemoteAnimationDefinitionCompat();
@@ -603,7 +603,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         }
     }
 
-    private boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
+    public boolean launcherIsATargetWithMode(RemoteAnimationTargetCompat[] targets, int mode) {
         return taskIsATargetWithMode(targets, mLauncher.getTaskId(), mode);
     }
 
@@ -710,7 +710,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         } else {
             AnimatorSet workspaceAnimator = new AnimatorSet();
 
-            mDragLayer.setTranslationY(-mWorkspaceTransY);;
+            mDragLayer.setTranslationY(-mWorkspaceTransY);
             workspaceAnimator.play(ObjectAnimator.ofFloat(mDragLayer, View.TRANSLATION_Y,
                     -mWorkspaceTransY, 0));
 
@@ -746,7 +746,7 @@ public abstract class QuickstepAppTransitionManagerImpl extends LauncherAppTrans
         mDragLayer.getScrim().hideSysUiScrim(false);
     }
 
-    private boolean hasControlRemoteAppTransitionPermission() {
+    public boolean hasControlRemoteAppTransitionPermission() {
         return mLauncher.checkSelfPermission(CONTROL_REMOTE_APP_TRANSITION_PERMISSION)
                 == PackageManager.PERMISSION_GRANTED;
     }

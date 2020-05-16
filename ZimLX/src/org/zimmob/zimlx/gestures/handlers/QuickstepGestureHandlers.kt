@@ -25,7 +25,9 @@ import android.view.View
 import androidx.annotation.Keep
 import com.android.launcher3.LauncherState
 import com.android.launcher3.R
+import com.android.quickstep.RecentsModel
 import com.android.quickstep.TouchInteractionService
+import com.android.systemui.shared.system.ActivityManagerWrapper
 import org.json.JSONObject
 import org.zimmob.zimlx.gestures.GestureController
 import org.zimmob.zimlx.gestures.GestureHandler
