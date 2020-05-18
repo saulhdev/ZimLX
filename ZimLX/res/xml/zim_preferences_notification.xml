@@ -2,7 +2,7 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/pref_category__notifications">
-        <org.zimmob.zimlx.preferences.ButtonPreference
+        <com.android.launcher3.settings.NotificationDotsPreference
             android:key="pref_icon_badging"
             android:persistent="false"
             android:title="@string/notification_dots_title"
@@ -14,7 +14,7 @@
                     android:name=":settings:fragment_args_key"
                     android:value="notification_badging" />
             </intent>
-        </org.zimmob.zimlx.preferences.ButtonPreference>
+        </com.android.launcher3.settings.NotificationDotsPreference>
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
@@ -27,6 +27,7 @@
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_key__folder_badge_count"
+            android:dependency="pref_icon_badging"
             android:persistent="true"
             android:title="@string/pref_title__folder_badge_count"
             app:iconSpaceReserved="false" />
@@ -35,6 +36,7 @@
             android:defaultValue="@color/notification_background"
             android:key="pref_notification_background"
             android:title="@string/pref_title__notification_background_color"
+            android:dependency="pref_icon_badging"
             app:cpv_dialogTitle="@string/pref_title__notification_background_color"
             app:cpv_showAlphaSlider="true"
             app:iconSpaceReserved="false" />

@@ -269,6 +269,10 @@ public class SettingsActivity extends SettingsBaseActivity
                 : new LauncherSettingsFragment();
     }
 
+    protected boolean shouldShowSearch() {
+        return BuildConfig.FEATURE_SETTINGS_SEARCH && !isSubSettings;
+    }
+
     @Override
     public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragment caller, Preference pref) {
         if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
@@ -573,7 +577,8 @@ public class SettingsActivity extends SettingsBaseActivity
 
         @Override
         protected int getRecyclerViewLayoutRes() {
-            return R.layout.preference_dialog_recyclerview;
+            return BuildConfig.FEATURE_SETTINGS_SEARCH ? R.layout.preference_home_recyclerview
+                    : R.layout.preference_dialog_recyclerview;
         }
     }
 
@@ -670,7 +675,7 @@ public class SettingsActivity extends SettingsBaseActivity
                     break;
                 case R.xml.zim_preferences_notification:
                     if (getResources().getBoolean(R.bool.notification_badging_enabled)) {
-                        ButtonPreference iconBadgingPref = (ButtonPreference) findPreference(NOTIFICATION_DOTS_PREFERENCE_KEY);
+                        NotificationDotsPreference iconBadgingPref = (NotificationDotsPreference) findPreference(NOTIFICATION_DOTS_PREFERENCE_KEY);
                         // Listen to system notification badge settings while this UI is active.
                         mIconBadgingObserver = new IconBadgingObserver(
                                 iconBadgingPref, getActivity().getContentResolver(), getFragmentManager());
@@ -1006,12 +1011,12 @@ public class SettingsActivity extends SettingsBaseActivity
      */
     private static class IconBadgingObserver extends SettingsObserver.Secure implements Preference.OnPreferenceClickListener {
 
-        private final ButtonPreference mBadgingPref;
+        private final NotificationDotsPreference mBadgingPref;
         private final ContentResolver mResolver;
         private final FragmentManager mFragmentManager;
         private boolean serviceEnabled = true;
 
-        public IconBadgingObserver(ButtonPreference badgingPref, ContentResolver resolver,
+        public IconBadgingObserver(NotificationDotsPreference badgingPref, ContentResolver resolver,
                                    FragmentManager fragmentManager) {
             super(resolver);
             mBadgingPref = badgingPref;
