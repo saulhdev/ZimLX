@@ -66,7 +66,7 @@ public class NotificationDotsPreference extends Preference
         super(context);
     }
 
-    private void setWidgetFrameVisible(boolean isVisible) {
+    public void setWidgetFrameVisible(boolean isVisible) {
         if (mWidgetFrameVisible != isVisible) {
             mWidgetFrameVisible = isVisible;
             notifyChanged();

@@ -22,6 +22,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Looper
 import android.os.Process
+import android.provider.Settings
 import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
@@ -101,7 +102,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val allowFullWidthWidgets by BooleanPref("pref_fullWidthWidgets", false, restart)
     private var gridSizeDelegate = ResettableLazy { GridSize2D(this, "numRows", "numColumns", LauncherAppState.getIDP(context), refreshGrid) }
     val gridSize by gridSizeDelegate
-
+    val autoAddInstalled by BooleanPref("pref_add_icon_to_home", true, doNothing)
     val dashEnable by BooleanPref("pref_key__minibar_enable", true, recreate)
     fun setDashEnable(enable: Boolean) {
         sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
@@ -231,6 +232,12 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     /* --DEV-- */
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)
+    private var debugMenuKey by StringPref("pref_debugMenuKey", "", doNothing)
+    var debugMenuEnabled
+        get() = debugMenuKey == Settings.Secure.ANDROID_ID
+        set(value) {
+            debugMenuKey = if (value) Settings.Secure.ANDROID_ID else ""
+        }
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)

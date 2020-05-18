@@ -50,6 +50,7 @@ import androidx.viewpager.widget.PagerAdapter
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
+import com.android.launcher3.model.BgDataModel
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
@@ -61,6 +62,7 @@ import org.json.JSONObject
 import org.xmlpull.v1.XmlPullParser
 import org.zimmob.zimlx.predictions.CustomAppPredictor
 import java.lang.reflect.Field
+import java.security.MessageDigest
 import java.util.*
 import java.util.concurrent.Callable
 import java.util.concurrent.ExecutionException
@@ -708,4 +710,24 @@ fun findInViews(op: Workspace.ItemOperator, vararg views: ViewGroup?): View? {
         }
     }
     return null
+}
+
+fun String.hash(type: String): String {
+    val chars = "0123456789abcdef"
+    val bytes = MessageDigest
+            .getInstance(type)
+            .digest(toByteArray())
+    val result = StringBuilder(bytes.size * 2)
+
+    bytes.forEach {
+        val i = it.toInt()
+        result.append(chars[i shr 4 and 0x0f])
+        result.append(chars[i and 0x0f])
+    }
+
+    return result.toString()
+}
+
+fun BgDataModel.workspaceContains(packageName: String): Boolean {
+    return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
 }

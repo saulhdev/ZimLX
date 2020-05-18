@@ -50,6 +50,9 @@ import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.util.PackageUserKey;
 
+import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.util.ZimUtilsKt;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -111,8 +114,10 @@ public class PackageUpdatedTask extends BaseModelUpdateTask {
                     }
                     appsList.addPackage(context, packages[i], mUser);
 
+                    ZimPreferences prefs = Utilities.getZimPrefs(context);
                     // Automatically add homescreen icon for work profile apps for below O device.
-                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser)) {
+                    if (!Utilities.ATLEAST_OREO && !Process.myUserHandle().equals(mUser) && prefs.getAutoAddInstalled() &&
+                            !ZimUtilsKt.workspaceContains(dataModel, packages[i])) {
                         SessionCommitReceiver.queueAppIconAddition(context, packages[i], mUser);
                     }
                 }
