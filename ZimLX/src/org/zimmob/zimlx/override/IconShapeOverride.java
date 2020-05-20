@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Build;
+import android.os.Handler;
 import android.os.SystemClock;
 import android.text.TextUtils;
 import android.util.Log;
@@ -37,9 +38,13 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.LauncherModel;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.util.LooperExecutor;
 
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
+
 import java.lang.reflect.Field;
+import java.util.Arrays;
 
 import static com.android.launcher3.Utilities.getDevicePrefs;
 import static com.android.launcher3.Utilities.getPrefs;
@@ -94,6 +99,10 @@ public class IconShapeOverride {
             Resources override =
                     new ResourcesOverride(Resources.getSystem(), getConfigResId(), path);
             getSystemResField().set(null, override);
+            int masks = getOverrideMasksResId();
+            if (masks != 0) {
+                ((ResourcesOverride) override).setArrayOverrideId(masks);
+            }
         } catch (Exception e) {
             Log.e(TAG, "Unable to override icon shape", e);
             // revert value.
@@ -109,6 +118,10 @@ public class IconShapeOverride {
 
     private static int getConfigResId() {
         return Resources.getSystem().getIdentifier("config_icon_mask", "string", "android");
+    }
+
+    private static int getOverrideMasksResId() {
+        return Resources.getSystem().getIdentifier("system_icon_masks", "array", "android");
     }
 
     public static String getAppliedValue(Context context) {
@@ -137,7 +150,7 @@ public class IconShapeOverride {
     private static class ResourcesOverride extends Resources {
 
         private final int mOverrideId;
-        //private int mArrayOverrideId = 0;
+        private int mArrayOverrideId = 0;
         private final String mOverrideValue;
 
         public ResourcesOverride(Resources parent, int overrideId, String overrideValue) {
@@ -155,11 +168,11 @@ public class IconShapeOverride {
             return super.getString(id);
         }
 
-        /*void setArrayOverrideId(int id) {
+        void setArrayOverrideId(int id) {
             mArrayOverrideId = id;
-        }*/
+        }
 
-        /*@NonNull
+        @NonNull
         @Override
         public String[] getStringArray(int id) throws Resources.NotFoundException {
             if (id != 0 && id == mArrayOverrideId) {
@@ -169,7 +182,7 @@ public class IconShapeOverride {
                 return arr;
             }
             return super.getStringArray(id);
-        }*/
+        }
     }
 
     private static class PreferenceChangeHandler implements Preference.OnPreferenceChangeListener {
@@ -184,21 +197,19 @@ public class IconShapeOverride {
         public boolean onPreferenceChange(Preference preference, Object o) {
             String newValue = (String) o;
             if (!getAppliedValue(mContext).equals(newValue)) {
-                /*if (preference instanceof ListPreference) {
+                if (preference instanceof ListPreference) {
                     ((ListPreference) preference).setValue(newValue);
                 }
 
                 new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-                        new OverrideApplyHandler(mContext, newValue, new Handler()));*/
+                        new OverrideApplyHandler(mContext, newValue, new Handler()));
 
                 // Value has changed
-                ProgressDialog.show(mContext,
-                        null /* title */,
+                /*ProgressDialog.show(mContext,
+                        null,
                         mContext.getString(R.string.icon_shape_override_progress),
-                        true /* indeterminate */,
-                        false /* cancelable */);
-                new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
-                        new OverrideApplyHandler(mContext, newValue));
+                        true,
+                        false;*/
             }
             return false;
         }
@@ -208,10 +219,12 @@ public class IconShapeOverride {
 
         private final Context mContext;
         private final String mValue;
+        private final Handler mHandler;
 
-        private OverrideApplyHandler(Context context, String value) {
+        private OverrideApplyHandler(Context context, String value, Handler handler) {
             mContext = context;
             mValue = value;
+            mHandler = handler;
         }
 
         @SuppressLint("ApplySharedPref")
@@ -220,10 +233,15 @@ public class IconShapeOverride {
             // Synchronously write the preference.
             getDevicePrefs(mContext).edit().putString(KEY_ICON_SHAPE, mValue).commit();
             // Clear the icon cache.
-            LauncherAppState.getInstance(mContext).getIconCache().clear();
+            LauncherAppState.getInstance(mContext).reloadIconCache();
+            mHandler.post(() -> {
+                AdaptiveIconCompat.resetMask();
+                IconShape.init(mContext);
+                Utilities.getZimPrefs(mContext).getRecreate().invoke();
+            });
 
             // Wait for it
-            try {
+            /*try {
                 Thread.sleep(PROCESS_KILL_DELAY_MS);
             } catch (Exception e) {
                 Log.e(TAG, "Error waiting", e);
@@ -235,7 +253,7 @@ public class IconShapeOverride {
                     AlarmManager.ELAPSED_REALTIME, SystemClock.elapsedRealtime() + 50, pi);
 
             // Kill process
-            android.os.Process.killProcess(android.os.Process.myPid());
+            android.os.Process.killProcess(android.os.Process.myPid());*/
         }
     }
 }

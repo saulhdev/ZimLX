@@ -196,6 +196,8 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
             appName = config.getString("appName")
             type = if (config.has("type")) config.getString("type") else "app"
             if (type == "app") {
+
+                Log.d("GestureController", "Class X2 " + target.toString())
                 target = ComponentKey(target!!.componentName, Process.myUserHandle())
             } else {
                 intent = Intent.parseUri(config.getString("intent"), 0)
@@ -247,7 +249,7 @@ class StartAppGestureHandler(context: Context, config: JSONObject?) : GestureHan
         if (view == null) {
             val down = controller.touchDownPoint
             controller.launcher.prepareDummyView(down.x.toInt(), down.y.toInt()) {
-                //onGestureTrigger(controller, it)
+                onGestureTrigger(controller)
         }
             return
         }

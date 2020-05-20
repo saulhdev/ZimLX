@@ -18,6 +18,7 @@ package org.zimmob.zimlx;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -174,6 +175,13 @@ public class ZimLauncher extends AospLauncher {
     public void onRotationChanged() {
         BlurWallpaperProvider.Companion.getInstance(this).updateAsync();
     }
+
+    public void prepareDummyView(View view, @NotNull Function0<Unit> callback) {
+        Rect rect = new Rect();
+        getDragLayer().getViewRectRelativeToSelf(view, rect);
+        prepareDummyView(rect.left, rect.top, rect.right, rect.bottom, callback);
+    }
+
 
     public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
         int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);

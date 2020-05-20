@@ -95,6 +95,7 @@ class IconPickerActivity : SettingsBaseActivity(), View.OnLayoutChangeListener, 
 
         search_view.queryHint = iconPack.displayName
         search_view.setOnQueryTextListener(this)
+        search_view.setIconifiedByDefault(false)
 
         items.add(LoadingItem())
 

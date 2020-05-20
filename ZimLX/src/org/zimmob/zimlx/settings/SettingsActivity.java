@@ -75,6 +75,10 @@ import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SecureSettingsObserver;
 import com.aosp.launcher.AospLauncherCallbacks;
 import com.aosp.launcher.AospUtils;
+import com.aosp.launcher.customization.IconDatabase;
+import com.aosp.launcher.settings.IconPackPrefSetter;
+import com.aosp.launcher.settings.ReloadingListPreference;
+import com.aosp.launcher.util.AppReloader;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -636,6 +640,7 @@ public class SettingsActivity extends SettingsBaseActivity
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
         public static final String HAS_PREVIEW = "has_preview";
+        private static final String KEY_ICON_PACK = "pref_icon_pack";
 
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
@@ -660,13 +665,24 @@ public class SettingsActivity extends SettingsBaseActivity
                                 .show(getFragmentManager(), "reset_icons");
                         return true;
                     });
-
-                    /*Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_ICON_SHAPE);
+/*
+                    Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_ICON_SHAPE);
                     if (iconShapeOverride != null) {
-                        if (IconShapeOverride.isSupported(getActivity())) {
+                        if (IconShapeOverride.isSupported(mContext)) {
                             IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
                         }
                     }*/
+
+                    /*TEST */
+                    /*
+                    ReloadingListPreference icons = (ReloadingListPreference) findPreference(KEY_ICON_PACK);
+                    icons.setOnReloadListener(new IconPackPrefSetter(mContext));
+                    icons.setOnPreferenceChangeListener((pref, val) -> {
+                        IconDatabase.clearAll(mContext);
+                        IconDatabase.setGlobal(mContext, (String) val);
+                        AppReloader.get(mContext).reload();
+                        return true;
+                    });*/
 
                     break;
 

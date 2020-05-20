@@ -81,7 +81,7 @@ class IconMask {
         // Draw iconBack
         if (iconBack != null && iconBack.drawableId != 0) {
             val drawable = iconBack.drawable
-            if (Utilities.ATLEAST_OREO && drawable is CustomAdaptiveIcon) {
+            if (Utilities.ATLEAST_OREO && drawable is AdaptiveIconCompat) {
                 //adaptiveBackground = drawable
             } else {
                 drawable.toBitmap()!!.let {
@@ -103,7 +103,7 @@ class IconMask {
             }
         }
         if (adaptiveBackground != null) {
-            if (onlyMaskLegacy && baseIcon is CustomAdaptiveIcon) {
+            if (onlyMaskLegacy && baseIcon is AdaptiveIconCompat) {
                 return baseIcon
             }
             return AdaptiveIconCompat(adaptiveBackground, FastBitmapDrawable(bitmap))
@@ -112,7 +112,7 @@ class IconMask {
     }
 
     private fun getScale(iconBack: IconPackImpl.Entry?): Float {
-        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is CustomAdaptiveIcon) {
+        return if (Utilities.ATLEAST_OREO && iconBack?.drawable is AdaptiveIconCompat) {
             iconScale - (1f - FixedScaleDrawable.LEGACY_ICON_SCALE)
         } else {
             iconScale

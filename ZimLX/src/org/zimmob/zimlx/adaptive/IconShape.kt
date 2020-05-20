@@ -216,7 +216,8 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Squircle : IconShape(IconCornerShape.squircle,
+    object Squircle : IconShape(
+            IconCornerShape.squircle,
             IconCornerShape.squircle,
             IconCornerShape.squircle,
             IconCornerShape.squircle,
@@ -229,7 +230,8 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Teardrop : IconShape(IconCornerShape.arc,
+    object Teardrop : IconShape(
+            IconCornerShape.arc,
             IconCornerShape.arc,
             IconCornerShape.arc,
             IconCornerShape.arc,
@@ -240,7 +242,8 @@ open class IconShape(val topLeft: Corner,
         }
     }
 
-    object Cylinder : IconShape(IconCornerShape.arc,
+    object Cylinder : IconShape(
+            IconCornerShape.arc,
             IconCornerShape.arc,
             IconCornerShape.arc,
             IconCornerShape.arc,

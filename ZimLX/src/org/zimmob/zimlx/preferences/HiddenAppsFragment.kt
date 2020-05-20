@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimAppFilter
+import org.zimmob.zimlx.allapps.CustomAppFilter
 
 class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callback {
 
@@ -24,7 +25,7 @@ class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callbac
         adapter = SelectableAppsAdapter.ofProperty(context,
                 Utilities.getZimPrefs(context)::hiddenAppSet, this, ZimAppFilter(context))
         recyclerView.setHasFixedSize(true)
-        recyclerView.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+        recyclerView.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView.adapter = adapter
     }
 

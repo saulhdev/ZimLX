@@ -20,6 +20,7 @@ package org.zimmob.zimlx.gestures.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.MenuItem
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,8 +54,10 @@ class SelectAppActivity : SettingsBaseActivity(), AppsAdapterWithShortcuts.Callb
         setResult(Activity.RESULT_OK, Intent().apply {
             putExtra("type", "app")
             putExtra("appName", app.info.label)
-            putExtra("target", app.key.toString())
+            putExtra("target", app.key.componentName.packageName + "/" + app.key.componentName.className)
         })
+        Log.d("GestureController", "selected  class " + app.key.toString())
+
         finish()
     }
 

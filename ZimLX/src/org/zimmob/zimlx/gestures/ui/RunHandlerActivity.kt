@@ -20,6 +20,7 @@ package org.zimmob.zimlx.gestures.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.R
@@ -40,6 +41,7 @@ class RunHandlerActivity : Activity() {
         super.onCreate(savedInstanceState)
         if (intent.action == ZimShortcutActivity.START_ACTION) {
             val handlerString = intent.getStringExtra(ZimShortcutActivity.EXTRA_HANDLER)
+            Log.d("Gesture", "Handdle string " + handlerString)
             if (handlerString != null) {
                 val handler = GestureController.createGestureHandler(this.applicationContext, handlerString, fallback)
                 if (handler.requiresForeground) {

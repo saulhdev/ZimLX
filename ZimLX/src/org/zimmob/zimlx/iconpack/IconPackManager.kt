@@ -23,7 +23,6 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.content.pm.LauncherActivityInfo
 import android.content.pm.PackageManager
-import android.content.pm.PackageManager.NameNotFoundException
 import android.content.pm.ResolveInfo
 import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
@@ -34,19 +33,13 @@ import android.os.Parcelable
 import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.customization.IconDatabase
 import com.aosp.launcher.icons.ThirdPartyDrawableFactory
-import com.aosp.launcher.icons.ThirdPartyIconProvider
-import com.aosp.launcher.icons.pack.IconResolver
-import com.aosp.launcher.icons.pack.IconResolverExternal
-import com.aosp.launcher.icons.pack.IconResolverMasked
-import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
+import org.zimmob.zimlx.util.CustomIconUtils
 import org.zimmob.zimlx.util.asNonEmpty
 import org.zimmob.zimlx.util.runOnMainThread
 import org.zimmob.zimlx.util.zimPrefs
-import java.io.IOException
 import java.util.*
 
 class IconPackManager(private val context: Context) {
@@ -109,7 +102,7 @@ class IconPackManager(private val context: Context) {
     @SuppressLint("WrongConstant")
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                 iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
-                iconProvider: ThirdPartyIconProvider?): Drawable {
+                iconProvider: CustomIconProvider?): Drawable {
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo!!)
                 ?: appInfoProvider.getCustomIconEntry(launcherActivityInfo)
         val customPack = customEntry?.run {
@@ -160,7 +153,7 @@ class IconPackManager(private val context: Context) {
     fun getPackProviders(): Set<PackProvider> {
         val pm = context.packageManager
         val packs = HashSet<PackProvider>()
-        ICON_INTENTS.forEach { intent ->
+        CustomIconUtils.ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
                 packs.add(PackProvider(privateObj, it.activityInfo.packageName))
             }
@@ -171,7 +164,7 @@ class IconPackManager(private val context: Context) {
     fun getPackProviderInfos(): HashMap<String, IconPackInfo> {
         val pm = context.packageManager
         val packs = HashMap<String, IconPackInfo>()
-        ICON_INTENTS.forEach { intent ->
+        CustomIconUtils.ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
                 packs[it.activityInfo.packageName] = IconPackInfo.fromResolveInfo(it, pm)
             }
@@ -295,25 +288,13 @@ class IconPackManager(private val context: Context) {
             return INSTANCE!!
         }
 
-        val ICON_INTENTS = arrayOf(
-                "com.novalauncher.THEME",
-                "org.adw.launcher.THEMES",
-                "org.adw.launcher.icons.ACTION_PICK_ICON",
-                "com.anddoes.launcher.THEME",
-                "com.teslacoilsw.launcher.THEME",
-                "com.fede.launcher.THEME_ICONPACK",
-                "com.gau.go.launcherex.theme",
-                "com.dlto.atom.launcher.THEME",
-                "net.oneplus.launcher.icons.ACTION_PICK_ICON",
-                "org.zimmob.zimlx.ICONPACK")
-
         internal fun isPackProvider(context: Context, packageName: String?): Boolean {
             if (packageName != null && !packageName.isEmpty()) {
-                return ICON_INTENTS.firstOrNull {
-                    context.packageManager.queryIntentActivities(
-                            Intent(it).setPackage(packageName), PackageManager.GET_META_DATA).iterator().hasNext()
-                } != null
             }
+            return CustomIconUtils.ICON_INTENTS.firstOrNull {
+                context.packageManager.queryIntentActivities(
+                        Intent(it).setPackage(packageName), PackageManager.GET_META_DATA).iterator().hasNext()
+            } != null
             return false
         }
     }

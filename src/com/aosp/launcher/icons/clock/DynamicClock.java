@@ -32,6 +32,7 @@ import java.util.WeakHashMap;
 
 @TargetApi(26)
 public class DynamicClock extends BroadcastReceiver {
+
     public static final ComponentName DESK_CLOCK = new ComponentName(
             "com.google.android.deskclock",
             "com.android.deskclock.DeskClock");

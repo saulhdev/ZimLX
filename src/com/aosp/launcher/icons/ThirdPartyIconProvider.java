@@ -3,12 +3,18 @@ package com.aosp.launcher.icons;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.pm.LauncherActivityInfo;
+import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 
+import com.android.launcher3.R;
 import com.android.launcher3.icons.BaseIconFactory;
 import com.android.launcher3.util.ComponentKey;
 
 import com.aosp.launcher.icons.pack.IconResolver;
+
+import org.zimmob.zimlx.iconpack.AdaptiveIconCompat;
+
+import java.util.Objects;
 
 import static com.android.launcher3.icons.BaseIconFactory.CONFIG_HINT_NO_WRAP;
 
@@ -21,6 +27,10 @@ public class ThirdPartyIconProvider extends RoundIconProvider {
         mContext = context;
     }
 
+    public static AdaptiveIconCompat getAdaptiveIconDrawableWrapper(Context context) {
+
+        return (AdaptiveIconCompat) AdaptiveIconCompat.wrap(Objects.requireNonNull(context.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)));
+    }
 
     @SuppressLint("WrongConstant")
     @Override

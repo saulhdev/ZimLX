@@ -163,6 +163,7 @@ public abstract class RecentsUiFactory {
                     new PinchStateChangeTouchController(launcher),
                     new NavBarToHomeTouchController(launcher),
                     new VerticalSwipeGestureController(launcher),
+                    new QuickSwitchTouchController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LauncherTaskViewController(launcher)};
         }
@@ -170,6 +171,7 @@ public abstract class RecentsUiFactory {
         if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));
+            list.add(new VerticalSwipeGestureController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
@@ -180,7 +182,7 @@ public abstract class RecentsUiFactory {
                 }
             } else {
                 list.add(new PortraitStatesTouchController(launcher,
-                        Utilities.ATLEAST_Q && mode.hasGestures /* allowDragToOverview */));
+                        Utilities.ATLEAST_Q && mode.hasGestures));
                 if (Utilities.ATLEAST_Q && mode.hasGestures) {
                     list.add(new QuickSwitchTouchController(launcher));
                 }
@@ -195,6 +197,11 @@ public abstract class RecentsUiFactory {
         list.add(new LauncherTaskViewController(launcher));
         return list.toArray(new TouchController[list.size()]);
     }
+
+    public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {
+        OverviewInteractionState.INSTANCE.get(context).setOnSwipeUpSettingChangedListener(listener);
+    }
+
 
     /**
      * Creates and returns the controller responsible for recents view state transitions.

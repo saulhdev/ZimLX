@@ -31,9 +31,9 @@ class ViewSwipeUpGestureHandler(private val view: View, private val handler: Ges
     private val positiveMax by lazy { view.resources.getDimensionPixelSize(R.dimen.swipe_up_positive_max) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        //controller.launcher.prepareDummyView(this.view) {
-        //    handler.onGestureTrigger(controller, it)
-        //}
+        controller.launcher.prepareDummyView(this.view) {
+            handler.onGestureTrigger(controller)
+        }
     }
 
     override fun onDrag(displacement: Float, velocity: Float) {

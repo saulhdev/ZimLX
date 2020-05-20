@@ -98,9 +98,8 @@
                     android:layout_height="match_parent"
                     android:paddingStart="-4dp"
                     android:paddingEnd="0dp"
-                    android:iconifiedByDefault="false"
                     android:imeOptions="actionSearch|flagNoExtractUi"
-                    android:searchIcon="@null" />
+                    android:iconifiedByDefault="false" />
             </androidx.appcompat.widget.Toolbar>
         </androidx.cardview.widget.CardView>
     </FrameLayout>

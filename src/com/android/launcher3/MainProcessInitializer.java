@@ -23,6 +23,8 @@ import com.android.launcher3.graphics.IconShape;
 import com.android.launcher3.logging.FileLog;
 import com.android.launcher3.util.ResourceBasedOverride;
 
+import org.zimmob.zimlx.adaptive.IconShapeManager;
+
 /**
  * Utility class to handle one time initializations of the main process
  */
@@ -37,6 +39,7 @@ public class MainProcessInitializer implements ResourceBasedOverride {
     protected void init(Context context) {
         FileLog.setDir(context.getApplicationContext().getFilesDir());
         FeatureFlags.initialize(context);
+        IconShapeManager.Companion.getInstance(context);
         SessionCommitReceiver.applyDefaultUserPrefs(context);
         IconShape.init(context);
     }

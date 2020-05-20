@@ -114,7 +114,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                     className = SleepGestureHandler::class.java.name
                 }
                 val configValue = if (config?.has("config") == true) config.getJSONObject("config") else null
-                // Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
+                Log.d(TAG, "creating handler $className with config ${configValue?.toString(2)}")
                 try {
                     val handler = Class.forName(className!!).getConstructor(Context::class.java, JSONObject::class.java)
                             .newInstance(context, configValue) as GestureHandler
@@ -155,7 +155,7 @@ class GestureController(val launcher: ZimLauncher) : TouchController {
                 OpenOverlayGestureHandler(context, null),
                 StartAssistantGestureHandler(context, null),
                 StartVoiceSearchGestureHandler(context, null),
-                StartAppGestureHandler(context, null),
+                //StartAppGestureHandler(context, null),
                 OpenRecentsGestureHandler(context, null),
                 LaunchMostRecentTaskGestureHandler(context, null)
         ).apply {

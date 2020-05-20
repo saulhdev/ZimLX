@@ -1,6 +1,7 @@
 package com.aosp.launcher.icons;
 
 import android.content.Context;
+import android.content.pm.ShortcutInfo;
 import android.graphics.drawable.Drawable;
 
 import com.android.launcher3.FastBitmapDrawable;
@@ -23,7 +24,6 @@ public class ThirdPartyDrawableFactory extends DrawableFactory {
     private final DynamicClock mDynamicClockDrawer;
     public final CustomClock mCustomClockDrawer;
     private final DateChangeReceiver mCalendars;
-
     public ThirdPartyDrawableFactory(Context context) {
         mManager = IconPackManager.get(context);
         if (Utilities.ATLEAST_OREO) {

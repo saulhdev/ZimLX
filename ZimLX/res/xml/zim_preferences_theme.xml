@@ -5,19 +5,19 @@
 
         <org.zimmob.zimlx.preferences.IconPackPreference
             android:defaultValue="@string/config_default_icon_pack"
-            android:key="pref_icon_packs"
+            android:key="pref_icon_pack"
             android:persistent="true"
             android:title="@string/title__theme_icon_pack"
             app:iconSpaceReserved="false" />
 
-        <!--<org.zimmob.zimlx.preferences.IconMaskingPreference
+        <org.zimmob.zimlx.preferences.IconMaskingPreference
             android:defaultValue="false"
             android:key="pref_iconPackMasking"
             android:persistent="true"
             android:summary="@string/pref_icon_pack_masking_summary"
             android:title="@string/pref_icon_pack_masking"
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconPackMaskingController"
-            app:iconSpaceReserved="false" /> -->
+            app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.IconShapePreference
             android:defaultValue="@string/icon_shape_system_default"
@@ -30,16 +30,16 @@
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController"
             app:iconSpaceReserved="false" />
 
-        <!--<org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_legacy_treatment"
             android:key="pref_enableLegacyTreatment"
             android:persistent="true"
             android:summary="@string/pref_legacy_treatment_summary"
             android:title="@string/pref_legacy_treatment_title"
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController"
-            app:iconSpaceReserved="false" /> -->
+            app:iconSpaceReserved="false" />
 
-        <!--<org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_colorized_legacy_treatment"
             android:dependency="pref_enableLegacyTreatment"
             android:key="pref_colorizeGeneratedBackgrounds"
@@ -47,9 +47,9 @@
             android:summary="@string/pref_legacy_colored_backgrounds_summary"
             android:title="@string/pref_legacy_colored_backgrounds"
             app:controllerClass="org.zimmob.zimlx.settings.controllers.IconShapeOverrideController"
-            app:iconSpaceReserved="false" />-->
+            app:iconSpaceReserved="false" />
 
-        <!--<org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="@bool/config_enable_white_only_treatment"
             android:dependency="pref_colorizeGeneratedBackgrounds"
             android:key="pref_enableWhiteOnlyTreatment"

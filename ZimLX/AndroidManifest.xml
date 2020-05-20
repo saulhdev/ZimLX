@@ -121,7 +121,7 @@
             android:taskAffinity="${applicationId}.tasks.RUN_HANDLER"
             android:theme="@style/SettingsTheme.V2.Transparent">
             <intent-filter>
-                <action android:name="ch.deletescape.lawnchair.START_ACTION" />
+                <action android:name="org.zimmob.zimlx.START_ACTION" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>

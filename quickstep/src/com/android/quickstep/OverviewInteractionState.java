@@ -88,8 +88,7 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
                 .addModeChangeListener(this::onNavigationModeChanged));
 
         if (isSwipeUpSettingsAvailable()) {
-            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler,
-                    context.getContentResolver());
+            mSwipeUpSettingObserver = new SwipeUpGestureEnabledSettingObserver(mUiHandler, context.getContentResolver());
             mSwipeUpSettingObserver.register();
         } else {
             mSwipeUpSettingObserver = null;
@@ -98,22 +97,24 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
         }
     }
 
-    public float getBackButtonAlpha() {
-        return mBackButtonAlpha;
-    }
-
     public static boolean isSwipeUpSettingsAvailable() {
         return getSystemBooleanRes(CUSTOM_SWIPE_UP_SETTING_AVAILABLE_RES_NAME,
                 SWIPE_UP_SETTING_AVAILABLE_RES_NAME);
     }
 
-    public void setBackButtonAlpha(float alpha, boolean animate) {
-        if (!modeSupportsGestures()) {
-            alpha = 1;
+    public float getBackButtonAlpha() {
+        return mBackButtonAlpha;
+    }
+
+    private static boolean getSystemBooleanRes(String resName, String fallback) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
+
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            return getSystemBooleanRes(fallback);
         }
-        mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
-        mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)
-                .sendToTarget();
     }
 
     public void setSystemUiProxy(ISystemUiProxy proxy) {
@@ -136,16 +137,16 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
         return true;
     }
 
-    private boolean handleBgMessage(Message msg) {
-        switch (msg.what) {
-            case MSG_SET_PROXY:
-                mISystemUiProxy = (ISystemUiProxy) msg.obj;
-                break;
-            case MSG_SET_BACK_BUTTON_ALPHA:
-                applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
-                return true;
+    private static boolean getSystemBooleanRes(String resName) {
+        Resources res = Resources.getSystem();
+        int resId = res.getIdentifier(resName, "bool", "android");
+
+        if (resId != 0) {
+            return res.getBoolean(resId);
+        } else {
+            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
+            return false;
         }
-        return true;
     }
 
     @WorkerThread
@@ -164,16 +165,6 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
         resetHomeBounceSeenOnQuickstepEnabledFirstTime();
     }
 
-    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
-        if (modeSupportsGestures() && !Utilities.getPrefs(mContext).getBoolean(
-                HAS_ENABLED_QUICKSTEP_ONCE, true)) {
-            Utilities.getPrefs(mContext).edit()
-                .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
-                .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
-                .apply();
-        }
-    }
-
     private boolean modeSupportsGestures() {
         if (SysUINavigationMode.INSTANCE.get(mContext).getMode() != null) {
             return SysUINavigationMode.getMode(mContext).hasGestures;
@@ -182,41 +173,8 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
         }
     }
 
-    private static boolean getSystemBooleanRes(String resName, String fallback) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            return getSystemBooleanRes(fallback);
-        }
-    }
-
-    private static boolean getSystemBooleanRes(String resName) {
-        Resources res = Resources.getSystem();
-        int resId = res.getIdentifier(resName, "bool", "android");
-
-        if (resId != 0) {
-            return res.getBoolean(resId);
-        } else {
-            Log.e(TAG, "Failed to get system resource ID. Incompatible framework version?");
-            return false;
-        }
-    }
-
-    public boolean isSwipeUpGestureEnabled() {
-        return mSwipeUpEnabled;
-    }
-
     public void setOnSwipeUpSettingChangedListener(Runnable listener) {
         mOnSwipeUpSettingChangedListener = listener;
-    }
-
-    @Override
-    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
-        mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
-        mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
     }
 
     private class SwipeUpGestureEnabledSettingObserver extends ContentObserver {
@@ -248,5 +206,57 @@ public class OverviewInteractionState implements ZimPreferences.OnPreferenceChan
         private boolean getValue() {
             return Settings.Secure.getInt(mResolver, SWIPE_UP_SETTING_NAME, defaultValue) == 1;
         }
+    }
+
+    public boolean isSwipeUpGestureEnabled() {
+        return mSwipeUpEnabled;
+    }
+
+    public void setBackButtonAlpha(float alpha, boolean animate) {
+        if (!mSwipeUpEnabled) {
+            alpha = 1;
+        } else if (Utilities.getZimPrefs(mContext).getSwipeLeftToGoBack()) {
+            alpha = 0;
+        }
+        mUiHandler.removeMessages(MSG_SET_BACK_BUTTON_ALPHA);
+        mUiHandler.obtainMessage(MSG_SET_BACK_BUTTON_ALPHA, animate ? 1 : 0, 0, alpha)
+                .sendToTarget();
+    }
+
+    private boolean handleBgMessage(Message msg) {
+        switch (msg.what) {
+            case MSG_SET_PROXY:
+                mISystemUiProxy = (ISystemUiProxy) msg.obj;
+                break;
+            case MSG_SET_BACK_BUTTON_ALPHA:
+                applyBackButtonAlpha((float) msg.obj, msg.arg1 == 1);
+                return true;
+            case MSG_SET_SWIPE_UP_ENABLED:
+                mSwipeUpEnabled = msg.arg1 != 0;
+                resetHomeBounceSeenOnQuickstepEnabledFirstTime();
+
+                if (mOnSwipeUpSettingChangedListener != null) {
+                    mOnSwipeUpSettingChangedListener.run();
+                }
+                break;
+
+        }
+        return true;
+    }
+
+    private void resetHomeBounceSeenOnQuickstepEnabledFirstTime() {
+        if (mSwipeUpEnabled && !Utilities.getPrefs(mContext).getBoolean(
+                HAS_ENABLED_QUICKSTEP_ONCE, true)) {
+            Utilities.getPrefs(mContext).edit()
+                    .putBoolean(HAS_ENABLED_QUICKSTEP_ONCE, true)
+                    .putBoolean(DiscoveryBounce.HOME_BOUNCE_SEEN, false)
+                    .apply();
+        }
+    }
+
+    @Override
+    public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs, boolean force) {
+        mBgHandler.removeMessages(MSG_SET_SWIPE_UP_ENABLED);
+        mBgHandler.obtainMessage(MSG_SET_SWIPE_UP_ENABLED, prefs.getSwipeUpToSwitchApps() ? 1 : 0, 0).sendToTarget();
     }
 }

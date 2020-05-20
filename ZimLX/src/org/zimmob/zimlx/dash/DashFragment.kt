@@ -21,6 +21,7 @@ import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.Utilities
+import org.zimmob.zimlx.ZimPreferences
 import org.zimmob.zimlx.preferences.RecyclerViewFragment
 
 class DashFragment : RecyclerViewFragment() {

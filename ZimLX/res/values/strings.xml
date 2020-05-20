@@ -649,4 +649,8 @@
     <string name="deny">Deny</string>
     <string name="reset_to_default">Reset to Default</string>
     <string name="zim_actions">Actions</string>
+
+    <string name="pref_sesame_show_shortcuts">Show in Shortcut Bubbles</string>
+
+    <string name="pref_sesame_show_shortcuts_summary">Show in Shortcut Bubbles</string>
 </resources>

@@ -21,6 +21,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
@@ -48,6 +49,7 @@ class ZimShortcutActivity : SettingsBaseActivity() {
 
     private fun onSelectHandler(handler: GestureHandler) {
         selectedHandler = handler
+        Log.d("Gesture", "Loading xxx " + selectedHandler.toString())
         if (handler.configIntent != null) {
             startActivityForResult(handler.configIntent, REQUEST_CODE)
         } else {
@@ -58,6 +60,7 @@ class ZimShortcutActivity : SettingsBaseActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_CODE && resultCode == Activity.RESULT_OK) {
             selectedHandler?.onConfigResult(data)
+
             saveChanges()
         }
         super.onActivityResult(requestCode, resultCode, data)

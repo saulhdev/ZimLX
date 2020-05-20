@@ -19,6 +19,7 @@ package org.zimmob.zimlx.preferences
 
 import android.content.ComponentName
 import android.content.Context
+import android.os.Process
 import android.content.pm.LauncherActivityInfo
 import android.content.res.ColorStateList
 import android.view.View
@@ -111,7 +112,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
         fun ofProperty(context: Context, property: KMutableProperty0<Set<String>>,
                        callback: Callback? = null, filter: AppFilter? = null) = object : SelectableAppsAdapter(context, callback, filter) {
 
-            override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(ComponentName(context, it), Utilities.myUserHandle()) })
+            override fun getInitialSelections() = HashSet(property.get().map { ComponentKey(ComponentName(context, it), Process.myUserHandle()) })
 
             override fun setSelections(selections: Set<ComponentKey>) {
                 property.set(HashSet(selections.map { it.toString() }))

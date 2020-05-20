@@ -28,11 +28,11 @@ import android.net.Uri
 import android.os.ParcelFileDescriptor
 import android.text.TextUtils
 import com.android.launcher3.FastBitmapDrawable
-import com.android.launcher3.IconProvider
 import com.android.launcher3.ItemInfoWithIcon
+import com.android.launcher3.Utilities
 import com.android.launcher3.util.ComponentKey
 import com.aosp.launcher.icons.ThirdPartyDrawableFactory
-import com.aosp.launcher.icons.ThirdPartyIconProvider
+import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import java.io.FileDescriptor
 
 class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
@@ -71,11 +71,13 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int,
                          flattenDrawable: Boolean, customIconEntry: IconPackManager.CustomIconEntry?,
-                         iconProvider: ThirdPartyIconProvider?): Drawable? {
+                         iconProvider: CustomIconProvider?): Drawable? {
         val entry = getUriEntry(customIconEntry)
         val icon = entry?.drawable
         if (icon != null) {
-            return icon
+            return if (Utilities.ATLEAST_OREO && entry.adaptive) {
+                AdaptiveIconGenerator(context, icon).result
+            } else icon
         }
         return null
     }

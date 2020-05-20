@@ -1149,6 +1149,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
         // Setup the drag layer
         mDragLayer.setup(mDragController, mWorkspace);
+        UiFactory.setOnTouchControllersChangedListener(this, mDragLayer::recreateControllers);
         mCancelTouchController = UiFactory.enableLiveUIChanges(this);
 
         mWorkspace.setup(mDragController);

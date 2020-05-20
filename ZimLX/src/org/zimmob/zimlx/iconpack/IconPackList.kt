@@ -28,6 +28,7 @@ import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.LooperExecutor
 import org.zimmob.zimlx.util.ActionIntentFilter
+import org.zimmob.zimlx.util.CustomIconUtils
 
 class IconPackList(private val context: Context, private val manager: IconPackManager) {
 
@@ -103,7 +104,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     fun getAvailablePacks(): MutableSet<PackInfo> {
         val pm = context.packageManager
         val packs = HashSet<PackInfo>()
-        IconPackManager.ICON_INTENTS.forEach { intent ->
+        CustomIconUtils.ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), 0)
                     .mapTo(packs) { PackInfo.forPackage(context, it.activityInfo.packageName) }
         }
@@ -111,7 +112,6 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     abstract class PackInfo(val context: Context, val packageName: String) : Comparable<PackInfo> {
-
         abstract val displayName: String
         abstract val displayIcon: Drawable
 
@@ -130,7 +130,6 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
         }
 
         companion object {
-
             fun forPackage(context: Context, packageName: String): PackInfo {
                 if (TextUtils.isEmpty(packageName)) return DefaultPackInfo(context)
                 return PackInfoImpl(context, packageName)
@@ -181,9 +180,7 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     }
 
     inner class LoadedPackImpl(pack: IconPack) : LoadedPack(pack) {
-
         constructor(packageName: String) : this(IconPackImpl(context, packageName))
-
         private val updateReceiver = object : BroadcastReceiver() {
             override fun onReceive(context: Context, intent: Intent) {
                 if (intent.action == Intent.ACTION_PACKAGE_CHANGED) {
@@ -213,7 +210,6 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
 
         override fun reloadPack() {
             super.reloadPack()
-
             pack = IconPackImpl(context, packageName)
         }
     }
@@ -221,15 +217,12 @@ class IconPackList(private val context: Context, private val manager: IconPackMa
     inner class DefaultLoadedPack : LoadedPack(manager.defaultPack) {
 
         override fun register() {
-
         }
 
         override fun unregister() {
-
         }
 
         override fun reloadPack() {
-
         }
     }
 }

@@ -46,7 +46,7 @@ class SelectableAppsActivity : SettingsActivity() {
         return Fragment.instantiate(this, SelectionFragment::class.java.name, intent.extras)
     }
 
-    fun shouldShowSearch(): Boolean {
+    override fun shouldShowSearch(): Boolean {
         return false
     }
 
@@ -112,7 +112,7 @@ class SelectableAppsActivity : SettingsActivity() {
                     override fun onReceiveResult(resultCode: Int, resultData: Bundle?) {
                         if (resultCode == Activity.RESULT_OK) {
                             callback(resultData!!.getStringArrayList(KEY_SELECTION)!!.map {
-                                ComponentKey(ComponentName(context, it), Utilities.myUserHandle())
+                                ComponentKey(ComponentName(context, it), Process.myUserHandle())
                             })
                         } else {
                             callback(null)

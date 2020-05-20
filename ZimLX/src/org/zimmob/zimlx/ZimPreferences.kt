@@ -108,6 +108,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         sharedPrefs.edit().putBoolean("pref_key__minibar_enable", enable).apply()
     }
     var dashItems by StringSetPref("pref_key__minibar_items", zimConfig.minibarItems, recreate)
+
+
     val allowOverlap by BooleanPref(SettingsActivity.ALLOW_OVERLAP_PREF, false, reloadAll)
     private val homeMultilineLabel by BooleanPref("pref_homeIconLabelsInTwoLines", false, recreate)
     val homeLabelRows get() = if (homeMultilineLabel) 2 else 1
@@ -165,6 +167,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
 
     /* --THEME-- */
+
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
     val iconPacks = object : MutableListPref<String>("pref_iconPacks", reloadIconPacks,
             if (!TextUtils.isEmpty(iconPack)) listOf(iconPack) else zimConfig.defaultIconPacks.asList()) {

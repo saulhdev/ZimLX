@@ -11,20 +11,22 @@ open class ZimAppFilter(context: Context) : AppFilter() {
 
     init {
         hideList.add(ComponentName(context, ZimLauncher::class.java.name))
+
         //Voice Search
-        hideList.add(ComponentName.unflattenFromString("com.google.android.googlequicksearchbox/.VoiceSearchActivity")!!)
+        hideList.add(ComponentName(context, "com.google.android.googlequicksearchbox/.VoiceSearchActivity"))
 
         //Wallpapers
-        hideList.add(ComponentName.unflattenFromString("com.google.android.apps.wallpaper/.picker.CategoryPickerActivity")!!)
+        hideList.add(ComponentName(context, "com.google.android.apps.wallpaper/.picker.CategoryPickerActivity"))
 
         //Google Now Launcher
-        hideList.add(ComponentName.unflattenFromString("com.google.android.launcher/.StubApp")!!)
+        hideList.add(ComponentName(context, "com.google.android.launcher/.StubApp"))
 
         //Actions Services
-        hideList.add(ComponentName.unflattenFromString("com.google.android.as/com.google.android.apps.miphone.aiai.allapps.main.MainDummyActivity")!!)
+        hideList.add(ComponentName(context, "com.google.android.as/com.google.android.apps.miphone.aiai.allapps.main.MainDummyActivity"))
+
     }
 
     override fun shouldShowApp(componentName: ComponentName?, user: UserHandle?): Boolean {
-        return !hideList.contains(componentName) && super.shouldShowApp(componentName, user)
+        return !hideList.contains(componentName)
     }
 }

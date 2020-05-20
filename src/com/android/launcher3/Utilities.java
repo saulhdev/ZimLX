@@ -95,6 +95,7 @@ import com.aosp.launcher.icons.ThirdPartyIconProvider;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
+import org.zimmob.zimlx.iconpack.CustomIconProvider;
 import org.zimmob.zimlx.iconpack.IconPackManager;
 
 import java.io.ByteArrayOutputStream;
@@ -710,8 +711,8 @@ public final class Utilities {
             } else {
                 outObj[0] = si.get(0);
                 int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
-                if (iconProvider instanceof ThirdPartyIconProvider) {
-                    //return ((ThirdPartyIconProvider) iconProvider).getIcon((LauncherActivityInfo)si.get(0), iconDpi, false);
+                if (iconProvider instanceof CustomIconProvider) {
+                    return ((CustomIconProvider) iconProvider).getIcon(si.get(0), iconDpi, false);
                 }
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
@@ -759,7 +760,6 @@ public final class Utilities {
             return new InsetDrawable(new FastBitmapDrawable(badge),
                     insetFraction, insetFraction, 0, 0);
         } else if (info.itemType == LauncherSettings.Favorites.ITEM_TYPE_FOLDER) {
-            //return ((FolderAdaptiveIcon) obj).getBadge();
             return obj instanceof FolderAdaptiveIcon ? ((FolderAdaptiveIcon) obj).getBadge() : new FixedSizeEmptyDrawable(iconSize);
 
         } else {

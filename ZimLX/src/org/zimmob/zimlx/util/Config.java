@@ -29,8 +29,6 @@ import java.util.Set;
 public class Config {
     private static final String TAG = "Config";
 
-    //public static final String THEME_ICON_SHAPE = "pref_override_icon_shape";
-
     //APP DRAWER SORT MODE
     public static final int SORT_AZ = 0;
     public static final int SORT_ZA = 1;

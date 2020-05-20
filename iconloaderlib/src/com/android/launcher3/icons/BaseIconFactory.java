@@ -214,6 +214,7 @@ public class BaseIconFactory implements AutoCloseable {
         }
         float scale = 1f;
 
+        //TODO REVISAR ADAPTIVE
         if (shrinkNonAdaptiveIcons && ATLEAST_OREO) {
             if (mWrapperIcon == null) {
                 mWrapperIcon = mContext.getDrawable(R.drawable.adaptive_icon_drawable_wrapper)
@@ -223,7 +224,7 @@ public class BaseIconFactory implements AutoCloseable {
             dr.setBounds(0, 0, 1, 1);
             boolean[] outShape = new boolean[1];
             scale = getNormalizer().getScale(icon, outIconBounds, dr.getIconMask(), outShape);
-            if (!(icon instanceof AdaptiveIconDrawable) && !outShape[0]) {
+            /*if (!(icon instanceof AdaptiveIconDrawable) && !outShape[0]) {
                 FixedScaleDrawable fsd = ((FixedScaleDrawable) dr.getForeground());
                 fsd.setDrawable(icon);
                 fsd.setScale(scale);
@@ -231,7 +232,7 @@ public class BaseIconFactory implements AutoCloseable {
                 scale = getNormalizer().getScale(icon, outIconBounds, null, null);
 
                 ((ColorDrawable) dr.getBackground()).setColor(mWrapperBackgroundColor);
-            }
+            }*/
         } else {
             scale = getNormalizer().getScale(icon, outIconBounds, null, null);
         }

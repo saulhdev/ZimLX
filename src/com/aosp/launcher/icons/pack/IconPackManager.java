@@ -28,13 +28,16 @@ public class IconPackManager extends BroadcastReceiver {
     private static final String TAG = "IconPackManager";
 
     private static final String[] ICON_INTENT_ACTIONS = new String[]{
-            "com.fede.launcher.THEME_ICONPACK",
-            "com.anddoes.launcher.THEME",
             "com.novalauncher.THEME",
-            "com.teslacoilsw.launcher.THEME",
-            "com.gau.go.launcherex.theme",
             "org.adw.launcher.THEMES",
-            "org.adw.launcher.icons.ACTION_PICK_ICON"
+            "org.adw.launcher.icons.ACTION_PICK_ICON",
+            "com.anddoes.launcher.THEME",
+            "com.teslacoilsw.launcher.THEME",
+            "com.fede.launcher.THEME_ICONPACK",
+            "com.gau.go.launcherex.theme",
+            "com.dlto.atom.launcher.THEME",
+            "net.oneplus.launcher.icons.ACTION_PICK_ICON",
+            "org.zimmob.zimlx.ICONPACK"
     };
 
     private static final Intent[] ICON_INTENTS = new Intent[ICON_INTENT_ACTIONS.length];

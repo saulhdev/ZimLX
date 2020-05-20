@@ -21,7 +21,7 @@ package com.android.launcher3.config;
  */
 public final class FeatureFlags extends BaseFlags {
 
-    public static final boolean FEATURE_SETTINGS_SEARCH = false;
+    public static final boolean FEATURE_SETTINGS_SEARCH = true;
     public static boolean FORCE_FEED_BRIDGE = false;
     private FeatureFlags() {
         // Prevent instantiation

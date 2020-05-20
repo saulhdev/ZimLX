@@ -20,6 +20,7 @@ package org.zimmob.zimlx.gestures
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.util.Log
 import android.view.View
 import com.android.launcher3.R
 import org.json.JSONObject
