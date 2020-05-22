@@ -28,7 +28,6 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.compat.AlphabeticIndexCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
-import com.aosp.launcher.icons.ThirdPartyDrawableFactory
 import java.util.concurrent.Semaphore
 
 abstract class IconPack(val context: Context, val packPackageName: String) {
@@ -84,7 +83,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
     abstract fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable?
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable?
+                         drawableFactory: CustomDrawableFactory): FastBitmapDrawable?
 
     open fun getAllIcons(callback: (List<PackEntry>) -> Unit, cancel: () -> Boolean, filter: (item: String) -> Boolean = { _ -> true }) {
         ensureInitialLoadComplete()

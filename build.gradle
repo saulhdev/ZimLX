@@ -52,7 +52,7 @@ android {
         buildConfigField "String[]", "DETECTED_ANDROID_LOCALES", "${findAndroidLocales()}"
         buildConfigField "String", "BUILD_DATE", "\"${getBuildDate()}\""
         buildConfigField "String", "GITHASH", "\"${getGitHash()}\""
-        buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "true"
+        buildConfigField "boolean", "FEATURE_SETTINGS_SEARCH", "false"
         def debugMenuCode = System.getenv("DEBUG_MENU_CODE") ?: "veryperu"
         buildConfigField "String", "DEBUG_MENU_CODE_HASH", '"' + debugMenuCode.digest('SHA-1') + '"'
 

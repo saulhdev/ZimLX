@@ -391,7 +391,7 @@ public abstract class IconShape {
             // Initialize shape properties
             drawable.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
             sShapePath = new Path(drawable.getIconMask());
-            //sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, DEFAULT_PATH_SIZE, null);
+            sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, DEFAULT_PATH_SIZE, null);
             return;
         }
 

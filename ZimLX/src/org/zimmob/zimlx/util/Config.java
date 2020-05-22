@@ -73,9 +73,8 @@ public class Config {
     }
 
     public String[] getDefaultIconPacks() {
-        String[] iconPacks = context.getResources().getStringArray(R.array.config_default_icon_packs);
 
-        return iconPacks;
+        return context.getResources().getStringArray(R.array.config_default_icon_packs);
     }
 
     public boolean enableColorizedLegacyTreatment() {

@@ -4,16 +4,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_icons">
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsIconSize"
+            android:persistent="true"
+            android:title="@string/icon_scale_pref_title"
+            app:defaultSeekbarValue="1.0"
+            app:iconSpaceReserved="false"
+            app:maxValue="2.0"
+            app:minValue="0.3"
+            app:steps="170"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
         <org.zimmob.zimlx.preferences.DrawerGridSizePreference
             android:key="numColsDrawer"
             android:title="@string/title__drawer_columns"
             app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:key="pref_allAppsPaddingScale"
+            android:persistent="true"
+            android:title="@string/pref_drawer_padding"
+            app:defaultSeekbarValue="1.0"
+            app:iconSpaceReserved="false"
+            app:maxValue="1.5"
+            app:minValue="0"
+            app:steps="150"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
 
         <org.zimmob.zimlx.settings.PreferenceDialogPreference
             android:key="pref_iconPopupMenu"
             android:title="@string/title__drawer_menu"
             app:content="@xml/zim_preferences_drawer_icon_popup_menu"
             app:iconSpaceReserved="false" />
+
+        <androidx.preference.Preference
+            android:fragment="org.zimmob.zimlx.groups.ui.AppCategorizationFragment"
+            android:key="pref_categorization"
+            android:title="@string/categorization"
+            app:iconSpaceReserved="false" />
+
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
     <ListPreference
@@ -59,6 +91,7 @@
         app:minValue="0.3"
         app:steps="150"
         app:summaryFormat="%.0f%%"
+        app:iconSpaceReserved="false"
         app:summaryMultiplier="100" />
 
     <org.zimmob.zimlx.preferences.ColorPreferenceCompat
@@ -69,4 +102,22 @@
         app:cpv_showAlphaSlider="true"
         app:iconSpaceReserved="false" />
 
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory
+        android:key="prefCat_drawerMisc"
+        android:title="@string/title__drawer_cat_misc">
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_separateWorkApps"
+            android:persistent="true"
+            android:title="@string/separate_work_apps_pref_title"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_keepScrollState"
+            android:persistent="true"
+            android:title="@string/title__drawer_keep_scroll_state"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 </androidx.preference.PreferenceScreen>

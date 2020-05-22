@@ -37,7 +37,6 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.icons.ThirdPartyDrawableFactory
 import com.aosp.launcher.icons.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -308,7 +307,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable? {
+                         drawableFactory: CustomDrawableFactory): FastBitmapDrawable? {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
@@ -320,7 +319,7 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
             }
             if (packClocks.containsKey(drawableId)) {
                 val drawable = AdaptiveIconCompat.wrap(packResources.getDrawable(drawableId))
-                return drawableFactory.mCustomClockDrawer.drawIcon(itemInfo, drawable, packClocks[drawableId])
+                return drawableFactory.mCustomClockDrawer!!.drawIcon(itemInfo, drawable, packClocks[drawableId])
             } else if (packDynamicDrawables.containsKey(drawableId)) {
 
                 val iconDpi = LauncherAppState.getIDP(context).fillResIconDpi

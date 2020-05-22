@@ -31,7 +31,6 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.icons.ThirdPartyDrawableFactory
 import com.aosp.launcher.icons.calendar.DynamicCalendar
 import com.aosp.launcher.icons.clock.DynamicClock
 import org.xmlpull.v1.XmlPullParser
@@ -133,7 +132,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
     override fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
-                         drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable {
+                         drawableFactory: CustomDrawableFactory): FastBitmapDrawable {
         ensureInitialLoadComplete()
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {

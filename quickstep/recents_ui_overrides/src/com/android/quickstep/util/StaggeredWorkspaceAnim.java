@@ -15,11 +15,6 @@
  */
 package com.android.quickstep.util;
 
-import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.anim.Interpolators.LINEAR;
-
 import android.animation.Animator;
 import android.animation.Animator.AnimatorListener;
 import android.animation.AnimatorListenerAdapter;
@@ -29,7 +24,6 @@ import android.view.ViewGroup;
 
 import androidx.annotation.Nullable;
 
-import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -41,12 +35,16 @@ import com.android.launcher3.Workspace;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
-import com.android.launcher3.folder.FolderIcon;
 import com.android.launcher3.graphics.OverviewScrim;
 import com.android.launcher3.views.IconLabelDotView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.android.launcher3.LauncherAnimUtils.VIEW_TRANSLATE_Y;
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
 
 /**
  * Creates an animation where all the workspace items are moved into their final location,
@@ -184,7 +182,7 @@ public class StaggeredWorkspaceAnim {
         // Invert the rows, because we stagger starting from the bottom of the screen.
         int invertedRow = totalRows - row;
         // Add 1 to the inverted row so that the bottom most row has a start delay.
-        long startDelay = (long) ((invertedRow + 1) * APP_CLOSE_ROW_START_DELAY_MS);
+        long startDelay = (invertedRow + 1) * APP_CLOSE_ROW_START_DELAY_MS;
 
         v.setTranslationY(mSpringTransY);
         SpringObjectAnimator springTransY = new SpringObjectAnimator<>(v, VIEW_TRANSLATE_Y,

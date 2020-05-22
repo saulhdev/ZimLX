@@ -20,6 +20,7 @@ package org.zimmob.zimlx.groups.ui
 import android.content.Context
 import android.text.TextUtils
 import android.util.LayoutDirection
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -175,7 +176,9 @@ abstract class AppGroupsAdapter<VH : AppGroupsAdapter<VH, T>.GroupHolder, T : Ap
         }
 
         override fun onClick(v: View) {
+            Log.d("Group Adapter", "Click #1 adapter")
             showAddDialog()
+            Log.d("Group Adapter", "Click #2 adapter")
         }
     }
 

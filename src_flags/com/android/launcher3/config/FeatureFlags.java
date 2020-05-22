@@ -20,8 +20,6 @@ package com.android.launcher3.config;
  * Defines a set of flags used to control various launcher behaviors
  */
 public final class FeatureFlags extends BaseFlags {
-
-    public static final boolean FEATURE_SETTINGS_SEARCH = true;
     public static boolean FORCE_FEED_BRIDGE = false;
     private FeatureFlags() {
         // Prevent instantiation

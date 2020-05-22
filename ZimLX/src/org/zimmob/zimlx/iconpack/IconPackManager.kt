@@ -33,7 +33,6 @@ import android.os.Parcelable
 import android.text.TextUtils
 import com.android.launcher3.*
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.icons.ThirdPartyDrawableFactory
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
 import org.zimmob.zimlx.util.CustomIconUtils
@@ -126,7 +125,7 @@ class IconPackManager(private val context: Context) {
         return defaultPack.getIcon(shortcutInfo, iconDpi)
     }
 
-    fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon, drawableFactory: ThirdPartyDrawableFactory): FastBitmapDrawable {
+    fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon, drawableFactory: CustomDrawableFactory): FastBitmapDrawable {
         val key = itemInfo.targetComponent?.let { ComponentKey(it, itemInfo.user) }
         val customEntry = CustomInfoProvider.forItem<ItemInfo>(context, itemInfo)?.getIcon(itemInfo)
                 ?: key?.let { appInfoProvider.getCustomIconEntry(it) }

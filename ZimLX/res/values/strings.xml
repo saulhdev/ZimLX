@@ -137,16 +137,15 @@
     <string name="title__drawer_columns">Number of columns</string>
     <string name="title__drawer_menu">Popup menu items</string>
     <string name="title__drawer_hide_apps_icon_labels">Hide icon labels in drawer</string>
-
-    <string name="title__dock_hotseat_icons">Icon Count</string>
-
+    <string name="title__drawer_keep_scroll_state">Remember Position</string>
+    <string name="separate_work_apps_pref_title">Second Tab for Work Apps</string>
     <string name="summary__app_search_show">Show or hide search bar</string>
     <string name="summary__app_search_global">Display global search instead of app search</string>
     <string name="summary__app_search_hidden">Display hidden apps</string>
     <string name="summary__sort_mode">Choose the sort mode</string>
-    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
+    <string name="title__drawer_cat_misc">Other</string>
 
-    <string name="separate_work_apps_pref_title">Second tab for work apps</string>
+    <string name="app_drawer_pref_summary">Layout, Categories, Suggestions</string>
     <string name="all_apps_label_pref_title">Show "All Apps" label</string>
     <string name="title_app_suggestions">Display app suggestions</string>
     <string name="summary_app_suggestions">At the top of your All Apps list</string>
@@ -262,6 +261,7 @@
     <string name="reset_custom_icons_confirmation">Revert to default icons from this Icon Pack? This can’t be undone.</string>
 
     <!-- PREFERENCES DOCK  -->
+    <string name="title__dock_hotseat_icons">Icon Count</string>
     <string name="title__dock_gradient">Hide gradient</string>
     <string name="title__hotseat_hide_button">Hide dock button</string>
     <string name="title__hotseat_two_row">Two row dock</string>
@@ -279,18 +279,15 @@
     <string name="title__dock_color">Dock Background</string>
     <string name="title__dock_search_bar">Show Search Bar</string>
     <string name="dock_fill">Enable Background</string>
-
     <string name="transparent_hotseat_pref_title">Transparent dock</string>
     <string name="hotseat_show_page_indicator">Show page indicator</string>
     <string name="hotseat_uses_extracted_colors_pref_on">The dock will be colored with a color extracted from the wallpaper</string>
     <string name="hotseat_uses_extracted_colors_pref_off">The dock will be colored gray, but adjusted by the wallpaper brightness</string>
     <string name="hotseat_uses_extracted_colors_pref_title">Dock uses wallpaper colors</string>
     <string name="hotseat_uses_custom_opacity">Custom dock opacity</string>
-
     <string name="dock_colored_google">Coloured icons</string>
     <string name="hotseat_show_arrow">Arrow</string>
     <string name="dock_style_pref_title">Dock style</string>
-
     <string name="opacity">Opacity</string>
     <string name="dock_style_default">Default</string>
     <string name="dock_style_p">Rounded</string>
@@ -377,7 +374,6 @@
     <string name="action_none">Do nothing</string>
     <string name="action_switch_apps">Switch Apps</string>
     <string name="action_voice_search">Voice search</string>
-
     <string name="failed">Something went wrong</string>
     <string name="dt2s_admin_hint">To use double tap to lock, grant admin permission</string>
     <string name="dt2s_admin_warning">Double tap to lock will be disabled</string>
@@ -388,7 +384,6 @@
     <string name="title__behavior_widget_provider">Weather source</string>
     <string name="title__behavior_weather_units">Temperature unit</string>
     <string name="category__behavior_weather">Weather</string>
-
     <string name="smartspace_time_24_h">24-hour format</string>
     <string name="smartspace_provider_error">Something went wrong</string>
     <string name="smartspace_widget_provider_not_found">Something went wrong. Install or update the Google app.</string>
@@ -475,15 +470,11 @@
     <!-- SEARCH AND FOLDER-->
     <string name="title__folder_background">Folder Background</string>
     <string name="title__folder_search_provider">Search engine</string>
-
     <string name="summary_all_apps_google_search">Find web results and apps</string>
-
     <string name="cat__folder_searchbar_options">Search Options</string>
     <string name="cat__folder_folder_options">Folder Options</string>
-
     <string name="pref_title__folder">Search Engine and Folder</string>
     <string name="pref_summary__folder">Show search Engine and Folder settings</string>
-
     <string name="pref_show_assistant_summary">Display voice search button if supported</string>
     <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
     <string name="pref_show_assistant_title">Voice search button</string>
@@ -494,13 +485,11 @@
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="background_color">Background color</string>
-
     <string name="title__folder_google_color">Google Icon Color</string>
     <string name="title_folder_circle">Circle</string>
     <string name="title_folder_circle_bg">Circle Shadow</string>
     <string name="title_folder_square">Square</string>
     <string name="title_folder_square_bg">Square Shadow</string>
-
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -531,7 +520,6 @@
     <string name="web_search_yahoo">Yahoo (web)</string>
     <string name="label_search">Search</string>
     <string name="label_voice_search">Voice search</string>
-
     <string name="zen_mode_enabled">Do not disturb is enabled</string>
     <string name="permission_iplocate">Allow access to coarse, network based location?</string>
     <string name="permission_iplocate_twilight_explanation">This allows more accurate daytime calculations without having to know your exact location.</string>

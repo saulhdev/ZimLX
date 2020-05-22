@@ -260,7 +260,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(), IconShape.DEFAULT_PATH_SIZE);
 
         prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockSearchBar",
-                "pref_twoRowDock", "pref_dockScale", "pref_key__hide_hotseat");
+                "pref_twoRowDock", "pref_dockScale", "pref_key__hide_hotseat", "pref_allAppsPaddingScale");
     }
 
     @Override
@@ -495,8 +495,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         allAppsIconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale) -
                 (int) (allAppsIconTextSizeOriginalPx - allAppsIconTextSizePx);
         int additionalPadding = (int) (
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs
-                        .getDrawerPaddingScale());
+                res.getDimensionPixelSize(R.dimen.dynamic_grid_drawer_additional_padding) * prefs.getDrawerPaddingScale());
         allAppsCellHeightPx = allAppsIconSizePx + allAppsIconDrawablePaddingPx + textHeight
                 + additionalPadding;
 

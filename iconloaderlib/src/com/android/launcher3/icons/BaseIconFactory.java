@@ -209,9 +209,6 @@ public class BaseIconFactory implements AutoCloseable {
 
     private Drawable normalizeAndWrapToAdaptiveIcon(@NonNull Drawable icon,
             boolean shrinkNonAdaptiveIcons, RectF outIconBounds, float[] outScale) {
-        if (icon == null) {
-            return null;
-        }
         float scale = 1f;
 
         //TODO REVISAR ADAPTIVE
