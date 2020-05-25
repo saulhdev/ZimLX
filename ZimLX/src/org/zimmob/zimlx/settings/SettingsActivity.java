@@ -656,7 +656,7 @@ public class SettingsActivity extends SettingsBaseActivity
 
             switch (preference) {
                 case R.xml.zim_preferences_app_drawer:
-                    //findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
+                    findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                     break;
                 case R.xml.zim_preferences_theme:
                     Preference resetIconsPreference = findPreference("pref_resetCustomIcons");

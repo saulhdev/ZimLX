@@ -239,6 +239,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private final int[] mTmpAddItemCellCoordinates = new int[2];
 
     @Thunk Hotseat mHotseat;
+    @Nullable
+    private View mHotseatSearchBox;
 
     private DropTargetBar mDropTargetBar;
 
@@ -439,7 +441,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (hasBeenResumed() || force) {
             List<ComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
             if (apps != null) {
-                // mAppsView.getFloatingHeaderView().setPredictedApps(apps);
+                mAppsView.getFloatingHeaderView().setPredictedApps(apps);
             }
         }
     }
@@ -1022,11 +1024,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             mLauncherCallbacks.onResume();
         }
 
-        /*Handler handler = getDragLayer().getHandler();
+        Handler handler = getDragLayer().getHandler();
         if (handler != null) {
             handler.removeCallbacks(mUpdatePredictionsIfResumed);
             Utilities.postAsyncCallback(handler, mUpdatePredictionsIfResumed);
-        }*/
+        }
 
         TraceHelper.endSection("ON_RESUME");
         RaceConditionTracker.onEvent(ON_RESUME_EVT, EXIT);
@@ -1142,6 +1144,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);
+        mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -1384,6 +1387,10 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public Hotseat getHotseat() {
         return mHotseat;
+    }
+
+    public View getHotseatSearchBox() {
+        return mHotseatSearchBox;
     }
 
     public <T extends View> T getOverviewPanel() {

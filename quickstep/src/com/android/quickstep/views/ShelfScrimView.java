@@ -56,22 +56,20 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     // If the progress is more than this, shelf follows the finger, otherwise it moves faster to
     // cover the whole screen
-    private static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
+    protected static final float SCRIM_CATCHUP_THRESHOLD = 0.2f;
 
     // Temporarily needed until android.R.attr.bottomDialogCornerRadius becomes public
     private static final float BOTTOM_CORNER_RADIUS_RATIO = 2f;
 
     // In transposed layout, we simply draw a flat color.
     private boolean mDrawingFlatColor;
-
+    protected final int mMaxScrimAlpha;
     // For shelf mode
-    private final int mEndAlpha;
-    private final float mRadius;
-    private final int mMaxScrimAlpha;
+    protected int mEndAlpha;
+    protected float mRadius;
     private final Paint mPaint;
-
     // Mid point where the alpha changes
-    private int mMidAlpha;
+    protected int mMidAlpha;
     private float mMidProgress;
 
     // The progress at which the drag handle starts moving up with the shelf.
@@ -84,10 +82,10 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     private final float mShelfOffset;
     private float mTopOffset;
-    private float mShelfTop;
+    protected float mShelfTop;
     private float mShelfTopAtThreshold;
 
-    private int mShelfColor;
+    protected int mShelfColor;
     private int mRemainingScreenColor;
 
     private final Path mTempPath = new Path();
@@ -172,6 +170,10 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
         updateColors();
         updateDragHandleAlpha();
         invalidate();
+    }
+
+    protected int getMidAlpha() {
+        return Themes.getAttrInteger(getContext(), R.attr.allAppsInterimScrimAlpha);
     }
 
     @Override
@@ -267,5 +269,14 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
         mPaint.setColor(mShelfColor);
         canvas.drawRoundRect(0, mShelfTop, width, height + mRadius, mRadius, mRadius, mPaint);
+    }
+
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
+                                   float rx, float ry, Paint paint) {
+        canvas.drawRoundRect(left, top, right, bottom, rx, ry, paint);
+    }
+
+    protected float getMidProgress() {
+        return OVERVIEW.getVerticalProgress(mLauncher);
     }
 }

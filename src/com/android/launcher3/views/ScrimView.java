@@ -71,6 +71,8 @@ import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.widget.WidgetsFullSheet;
 
+import org.zimmob.zimlx.ZimPreferences;
+
 import java.util.List;
 
 
@@ -104,7 +106,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected final Launcher mLauncher;
     private final WallpaperColorInfo mWallpaperColorInfo;
     private final AccessibilityManager mAM;
-    protected final int mEndScrim;
+    protected final Rect mDragHandleBounds;
 
     protected float mMaxScrimAlpha;
 
@@ -117,7 +119,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     protected final int mDragHandleSize;
     protected float mDragHandleOffset;
-    private final Rect mDragHandleBounds;
+    protected final ZimPreferences prefs;
     private final RectF mHitRect = new RectF();
 
     private final MultiValueAlpha mMultiValueAlpha;
@@ -127,6 +129,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
     protected Drawable mDragHandle;
 
     private int mDragHandleAlpha = 255;
+    protected int mEndScrim;
 
     public ScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -146,6 +149,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         mAM = (AccessibilityManager) context.getSystemService(ACCESSIBILITY_SERVICE);
         setFocusable(false);
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
+        prefs = Utilities.getZimPrefs(context);
     }
 
     public AlphaProperty getAlphaProperty(int index) {
@@ -334,7 +338,7 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
         updateDragHandleVisibility(null);
     }
 
-    private void updateDragHandleVisibility(Drawable recycle) {
+    protected void updateDragHandleVisibility(Drawable recycle) {
         boolean visible = mLauncher.getDeviceProfile().isVerticalBarLayout() || mAM.isEnabled();
         boolean wasVisible = mDragHandle != null;
         if (visible != wasVisible) {

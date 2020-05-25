@@ -30,6 +30,7 @@ import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
 import org.json.JSONArray
 import org.json.JSONObject
+import org.zimmob.zimlx.allapps.PredictionsFloatingHeader
 import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
@@ -134,10 +135,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
 
-    /*val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
+    val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
         header?.updateShowAllAppsLabel()
-    }*/
+    }
+
     val currentTabsModel
         get() = appGroupsManager.getEnabledModel() as? DrawerTabs ?: appGroupsManager.drawerTabs
     val drawerTabs get() = appGroupsManager.drawerTabs

@@ -17,6 +17,7 @@
 package com.android.launcher3.appprediction;
 
 import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.appprediction.AppsDividerView.*;
 import static com.android.launcher3.icons.GraphicsUtils.setColorAlphaBound;
 
 import android.annotation.TargetApi;
@@ -128,7 +129,7 @@ public class PredictionRowView extends LinearLayout implements
 
         mFocusHelper = new SimpleFocusIndicatorHelper(this);
 
-        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColumns;
+        mNumPredictedAppsPerRow = LauncherAppState.getIDP(context).numColsDrawer;
         mLauncher = Launcher.getLauncher(context);
         mLauncher.addOnDeviceProfileChangeListener(this);
 

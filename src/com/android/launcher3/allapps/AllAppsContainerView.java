@@ -68,6 +68,7 @@ import com.android.launcher3.views.SpringRelativeLayout;
 
 import org.zimmob.zimlx.allapps.AllAppsTabs;
 import org.zimmob.zimlx.allapps.AllAppsTabsController;
+import org.zimmob.zimlx.allapps.PredictionsFloatingHeader;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 
 /**
@@ -93,7 +94,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
     private AllAppsPagedView mViewPager;
-    private FloatingHeaderView mHeader;
+    private PredictionsFloatingHeader mHeader;
 
     private SpannableStringBuilder mSearchQueryBuilder = null;
 
@@ -489,7 +490,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         return mAH[AdapterHolder.MAIN].appsList;
     }
 
-    public FloatingHeaderView getFloatingHeaderView() {
+    public PredictionsFloatingHeader getFloatingHeaderView() {
         return mHeader;
     }
 

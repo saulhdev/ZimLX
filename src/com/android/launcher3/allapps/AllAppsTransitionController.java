@@ -34,6 +34,8 @@ import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
+import org.zimmob.zimlx.views.BlurScrimView;
+
 /**
  * Handles AllApps view transition.
  * 1) Slides all apps view using direct manipulation
@@ -270,6 +272,12 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void highlightWorkTabIfNecessary() {
         if (isAllAppsExpanded()) {
             mAppsView.highlightWorkTabIfNecessary();
+        }
+    }
+
+    public void setOverlayScroll(float scroll) {
+        if (mScrimView instanceof BlurScrimView) {
+            ((BlurScrimView) mScrimView).setOverlayScroll(scroll);
         }
     }
 }

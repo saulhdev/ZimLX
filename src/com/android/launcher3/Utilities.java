@@ -92,6 +92,7 @@ import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
 import com.aosp.launcher.icons.ThirdPartyIconProvider;
 
+import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.backup.RestoreBackupActivity;
@@ -1090,6 +1091,15 @@ public final class Utilities {
             bm.recycle();
         }
         return resizedBitmap;
+    }
+
+    public static boolean isRecentsEnabled() {
+        LauncherAppState las = LauncherAppState.getInstanceNoCreate();
+        if (las != null) {
+            Context context = las.getContext();
+            return ZimAppKt.getZimApp(context).getRecentsEnabled();
+        }
+        return false;
     }
 
     /*END CUSTOM*/

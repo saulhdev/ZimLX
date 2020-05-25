@@ -115,6 +115,7 @@
 
 <!-- QSB IDs. DO not change -->
     <item type="id" name="search_container_workspace" />
+    <item name="search_container_hotseat" type="id" />
     <item type="id" name="search_container_all_apps" />
 
 <!-- Recents -->

@@ -72,14 +72,14 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         ZimPreferences prefs = Utilities.getZimPrefs(getContext());
         if (prefs.getDockHide()) {
             setVisibility(GONE);
-        } /*else if (prefs.getDockSearchBar()) {
+        } else if (prefs.getDockSearchBar()) {
             inflate(getContext(), R.layout.search_container_hotseat, this);
         } else {
             View v = this.findViewById(R.id.search_container_hotseat);
             if (v != null) {
                 removeView(v);
             }
-        }*/
+        }
 
         mContent = findViewById(R.id.layout);
     }

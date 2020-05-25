@@ -14,7 +14,7 @@
   ~
   -->
 
-<com.android.launcher3.allapps.FloatingHeaderView xmlns:android="http://schemas.android.com/apk/res/android"
+<org.zimmob.zimlx.allapps.PredictionsFloatingHeader xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/all_apps_header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -47,4 +47,4 @@
             android:orientation="horizontal" />
 
     </HorizontalScrollView>
-</com.android.launcher3.allapps.FloatingHeaderView>
+</org.zimmob.zimlx.allapps.PredictionsFloatingHeader>

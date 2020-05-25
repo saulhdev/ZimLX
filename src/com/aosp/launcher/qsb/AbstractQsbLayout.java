@@ -23,6 +23,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -31,11 +32,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.graphics.IconShape;
 import com.aosp.launcher.AospLauncher;
 
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
+import org.zimmob.zimlx.util.ZimUtilsKt;
 
 public abstract class AbstractQsbLayout extends FrameLayout {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
@@ -113,6 +117,19 @@ public abstract class AbstractQsbLayout extends FrameLayout {
         } else {
             mMicIconView.setVisibility(GONE);
             return new ColorDrawable(Color.TRANSPARENT);
+        }
+    }
+
+    public static float getCornerRadius(Context context, float defaultRadius) {
+        float radius = ZimUtilsKt.round(Utilities.getZimPrefs(context).getSearchBarRadius());
+        if (radius > 0f) {
+            return radius;
+        }
+        TypedValue edgeRadius = IconShape.getShape().getAttrValue(R.attr.qsbEdgeRadius);
+        if (edgeRadius != null) {
+            return edgeRadius.getDimension(context.getResources().getDisplayMetrics());
+        } else {
+            return defaultRadius;
         }
     }
 }

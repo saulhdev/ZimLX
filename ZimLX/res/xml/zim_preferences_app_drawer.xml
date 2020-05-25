@@ -102,6 +102,20 @@
         app:cpv_showAlphaSlider="true"
         app:iconSpaceReserved="false" />
 
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="pref_search_hidden_apps"
+        android:summary="@string/summary_search_hidden_apps"
+        android:title="@string/title_search_hidden_apps"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="true"
+        android:key="pref_show_predictions"
+        android:title="@string/title_app_suggestions"
+        app:iconSpaceReserved="false"
+        app:searchTitle="@string/title_app_suggestions_in_search" />
+
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory
         android:key="prefCat_drawerMisc"
         android:title="@string/title__drawer_cat_misc">
