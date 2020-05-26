@@ -150,6 +150,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
     val allAppsLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
+    val allAppsBackground by IntPref("pref_allAppsBackground", R.color.ic_allapps_background, reloadApps)
+    val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
 
     /* --DOCK-- */
     var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)

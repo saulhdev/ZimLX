@@ -17,10 +17,74 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:disableDependentsState="true"
+            android:key="pref_hideAllAppsAppLabels"
+            android:persistent="true"
+            android:title="@string/title__drawer_hide_apps_icon_labels"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:dependency="pref_hideAllAppsAppLabels"
+            android:key="pref_iconLabelsInTwoLines"
+            android:persistent="true"
+            android:title="@string/title__drawer_multiline_label"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.SeekbarPreference
+            android:dependency="pref_hideAllAppsAppLabels"
+            android:key="pref_allAppsIconTextScale"
+            android:title="@string/title__drawer_text_size"
+            app:defaultSeekbarValue="1.0"
+            app:iconSpaceReserved="false"
+            app:maxValue="1.8"
+            app:minValue="0.3"
+            app:steps="150"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/qsb_drawer_text_color_normal"
+            android:key="pref_key__drawer_label_color"
+            android:title="@string/title__drawer_label_color"
+            app:cpv_dialogTitle="@string/title__drawer_label_color"
+            app:cpv_showAlphaSlider="true"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.settings.PreferenceDialogPreference
+            android:key="pref_iconPopupMenu"
+            android:title="@string/title__drawer_menu"
+            app:content="@xml/zim_preferences_drawer_icon_popup_menu"
+            app:iconSpaceReserved="false" />
+
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
+
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_layout">
+
+        <ListPreference
+            android:defaultValue="0"
+            android:disableDependentsState="false"
+            android:entries="@array/entries__sort_mode"
+            android:entryValues="@array/values__zero_to_four"
+            android:key="pref_key__sort_mode"
+            android:persistent="true"
+            android:summary="%s"
+            android:title="@string/title__sort_mode"
+            app:iconSpaceReserved="false" />
+
         <org.zimmob.zimlx.preferences.DrawerGridSizePreference
             android:key="numColsDrawer"
             android:title="@string/title__drawer_columns"
             app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:key="pref_show_predictions"
+            android:title="@string/title_app_suggestions"
+            app:iconSpaceReserved="false"
+            app:searchTitle="@string/title_app_suggestions_in_search" />
 
         <org.zimmob.zimlx.preferences.SeekbarPreference
             android:key="pref_allAppsPaddingScale"
@@ -34,10 +98,22 @@
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
-        <org.zimmob.zimlx.settings.PreferenceDialogPreference
-            android:key="pref_iconPopupMenu"
-            android:title="@string/title__drawer_menu"
-            app:content="@xml/zim_preferences_drawer_icon_popup_menu"
+        <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
+            android:key="pref_allAppsOpacitySB"
+            android:persistent="true"
+            android:title="@string/opacity"
+            app:iconSpaceReserved="false"
+            app:maxValue="1"
+            app:minValue="0"
+            app:summaryFormat="%.0f%%"
+            app:summaryMultiplier="100" />
+
+        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+            android:defaultValue="@color/ic_allapps_background"
+            android:key="pref_allAppsBackground"
+            android:title="@string/background_color"
+            app:cpv_dialogTitle="@string/background_color"
+            app:cpv_showAlphaSlider="true"
             app:iconSpaceReserved="false" />
 
         <androidx.preference.Preference
@@ -46,79 +122,25 @@
             android:title="@string/categorization"
             app:iconSpaceReserved="false" />
 
+        <androidx.preference.Preference
+            android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
+            android:key="pref_hiddenApps"
+            android:summary="@string/hide_apps_sum"
+            android:title="@string/title__drawer_hide_apps"
+            app:iconSpaceReserved="false" />
+
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-    <ListPreference
-        android:defaultValue="0"
-        android:disableDependentsState="false"
-        android:entries="@array/entries__sort_mode"
-        android:entryValues="@array/values__zero_to_four"
-        android:key="pref_key__sort_mode"
-        android:persistent="true"
-        android:summary="%s"
-        android:title="@string/title__sort_mode"
-        app:iconSpaceReserved="false" />
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_search">
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="false"
+            android:key="pref_search_hidden_apps"
+            android:summary="@string/summary_search_hidden_apps"
+            android:title="@string/title_search_hidden_apps"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
-    <androidx.preference.Preference
-        android:fragment="org.zimmob.zimlx.preferences.HiddenAppsFragment"
-        android:key="pref_hiddenApps"
-        android:summary="@string/hide_apps_sum"
-        android:title="@string/title__drawer_hide_apps"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:defaultValue="false"
-        android:disableDependentsState="true"
-        android:key="pref_hideAllAppsAppLabels"
-        android:persistent="true"
-        android:title="@string/title__drawer_hide_apps_icon_labels"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:defaultValue="false"
-        android:dependency="pref_hideAllAppsAppLabels"
-        android:key="pref_iconLabelsInTwoLines"
-        android:persistent="true"
-        android:title="@string/title__drawer_multiline_label"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.SeekbarPreference
-        android:dependency="pref_hideAllAppsAppLabels"
-        android:key="pref_allAppsIconTextScale"
-        android:title="@string/title__drawer_text_size"
-        app:defaultSeekbarValue="1.0"
-        app:maxValue="1.8"
-        app:minValue="0.3"
-        app:steps="150"
-        app:summaryFormat="%.0f%%"
-        app:iconSpaceReserved="false"
-        app:summaryMultiplier="100" />
-
-    <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-        android:defaultValue="@color/qsb_drawer_text_color_normal"
-        android:key="pref_key__drawer_label_color"
-        android:title="@string/title__drawer_label_color"
-        app:cpv_dialogTitle="@string/title__drawer_label_color"
-        app:cpv_showAlphaSlider="true"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
-        android:defaultValue="false"
-        android:key="pref_search_hidden_apps"
-        android:summary="@string/summary_search_hidden_apps"
-        android:title="@string/title_search_hidden_apps"
-        app:iconSpaceReserved="false" />
-
-    <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="true"
-        android:key="pref_show_predictions"
-        android:title="@string/title_app_suggestions"
-        app:iconSpaceReserved="false"
-        app:searchTitle="@string/title_app_suggestions_in_search" />
-
-    <org.zimmob.zimlx.preferences.StyledPreferenceCategory
-        android:key="prefCat_drawerMisc"
-        android:title="@string/title__drawer_cat_misc">
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/title__drawer_cat_misc">
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="true"
@@ -134,4 +156,5 @@
             android:title="@string/title__drawer_keep_scroll_state"
             app:iconSpaceReserved="false" />
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
+
 </androidx.preference.PreferenceScreen>
