@@ -67,9 +67,11 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
+import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.settings.NotificationDotsPreference;
 import com.android.launcher3.settings.PreferenceHighlighter;
+import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SecureSettingsObserver;
@@ -118,11 +120,18 @@ import java.util.Set;
 
 import static androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
 import static androidx.preference.PreferenceFragment.OnPreferenceDisplayDialogCallback;
+import static com.android.launcher3.SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY;
+import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
+import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
+import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
 import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 public class SettingsActivity extends SettingsBaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
         OnBackStackChangedListener, View.OnClickListener {
+
+    private static final String DEVELOPER_OPTIONS_KEY = "pref_developer_options";
+    private static final String FLAGS_PREFERENCE_KEY = "flag_toggler";
 
     private static final String NOTIFICATION_DOTS_PREFERENCE_KEY = "pref_icon_badging";
     public static final String NOTIFICATION_BADGING = "notification_badging";
@@ -430,7 +439,7 @@ public class SettingsActivity extends SettingsBaseActivity
 
             RecyclerView list = getListView();
             PreferenceGroup.PreferencePositionCallback callback = (PreferenceGroup.PreferencePositionCallback) list.getAdapter();
-            int position = callback.getPreferenceAdapterPosition(mHighLightKey);
+            int position = Objects.requireNonNull(callback).getPreferenceAdapterPosition(mHighLightKey);
             return position >= 0 ? new PreferenceHighlighter(list, position) : null;
         }
 
@@ -640,8 +649,6 @@ public class SettingsActivity extends SettingsBaseActivity
         public static final String TITLE = "title";
         public static final String CONTENT_RES_ID = "content_res_id";
         public static final String HAS_PREVIEW = "has_preview";
-        private static final String KEY_ICON_PACK = "pref_icon_pack";
-
         private SystemDisplayRotationLockObserver mRotationLockObserver;
         private IconBadgingObserver mIconBadgingObserver;
         private Context mContext;
@@ -699,6 +706,7 @@ public class SettingsActivity extends SettingsBaseActivity
                     }
 
                     break;
+
                 case R.xml.zim_preferences_dev_options:
                     findPreference("kill").setOnPreferenceClickListener(this);
                     break;

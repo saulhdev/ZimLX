@@ -37,6 +37,7 @@ import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.IconShape;
 import com.aosp.launcher.AospLauncher;
 
+import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.util.ZimUtilsKt;

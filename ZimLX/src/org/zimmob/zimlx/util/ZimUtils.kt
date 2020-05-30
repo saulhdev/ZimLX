@@ -731,3 +731,7 @@ fun String.hash(type: String): String {
 fun BgDataModel.workspaceContains(packageName: String): Boolean {
     return this.workspaceItems.any { it.targetComponent?.packageName == packageName }
 }
+
+val Int.luminance get() = ColorUtils.calculateLuminance(this)
+
+val Int.isDark get() = luminance < 0.5f

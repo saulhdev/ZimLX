@@ -240,6 +240,7 @@ public class PredictionRowView extends LinearLayout implements
                 BubbleTextView icon = (BubbleTextView) mLauncher.getLayoutInflater().inflate(
                         R.layout.all_apps_icon, this, false);
                 icon.setOnClickListener(PREDICTION_CLICK_LISTENER);
+                //icon.setOnClickListener(ItemClickHandler.INSTANCE);
                 icon.setOnLongClickListener(ItemLongClickListener.INSTANCE_ALL_APPS);
                 icon.setLongPressTimeoutFactor(1f);
                 icon.setOnFocusChangeListener(mFocusHelper);

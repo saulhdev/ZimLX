@@ -72,7 +72,7 @@
     <dimen name="qsb_margin_top_adjusting">20dp</dimen>
     <dimen name="qsb_widget_height">56dp</dimen>
 
-    <dimen name="qsb_mic_width">56dp</dimen>
+    <dimen name="qsb_mic_width">48dp</dimen>
     <dimen name="action_view_compound_drawable_padding">5dp</dimen>
 
     <!-- Pixel -->

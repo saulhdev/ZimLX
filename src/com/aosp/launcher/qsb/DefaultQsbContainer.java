@@ -20,21 +20,25 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 
 import com.android.launcher3.ExtendedEditText;
 import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.allapps.AllAppsContainerView;
+import com.android.launcher3.allapps.AllAppsStore;
 import com.android.launcher3.allapps.AllAppsStore.OnUpdateListener;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
+import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
 
-public class DefaultQsbContainer extends ExtendedEditText implements OnUpdateListener, Callbacks {
+public class DefaultQsbContainer extends ExtendedEditText implements Callbacks,
+        AllAppsStore.OnUpdateListener {
 
     public AllAppsSearchBarController mController;
     public AllAppsQsbContainer mAllAppsQsb;
@@ -66,6 +70,13 @@ public class DefaultQsbContainer extends ExtendedEditText implements OnUpdateLis
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
         Launcher.getLauncher(getContext()).getStateManager().goToState(ALL_APPS);
         super.onLayout(changed, left, top, right, bottom);
+        // Shift the widget horizontally so that its centered in the parent (b/63428078)
+        View parent = (View) getParent();
+        int availableWidth = parent.getWidth() - parent.getPaddingLeft() - parent.getPaddingRight();
+        int myWidth = right - left;
+        int expectedLeft = parent.getPaddingLeft() + (availableWidth - myWidth) / 2;
+        int shift = expectedLeft - left;
+        setTranslationX(shift);
     }
 
     @Override

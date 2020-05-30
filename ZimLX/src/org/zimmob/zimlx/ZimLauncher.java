@@ -51,6 +51,7 @@ import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.sensors.BrightnessManager;
 import org.zimmob.zimlx.views.OptionsPanel;
+import org.zimmob.zimlx.views.ZimBackgroundView;
 
 import java.util.Objects;
 
@@ -60,7 +61,7 @@ import kotlin.jvm.functions.Function0;
 public class ZimLauncher extends AospLauncher {
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
-    public static final int CODE_EDIT_ICON = 100;
+    public final int CODE_EDIT_ICON = 100;
     public static Drawable currentEditIcon = null;
     public static ItemInfo currentEditInfo = null;
     private ZimPreferences mZimPrefs;
@@ -70,6 +71,7 @@ public class ZimLauncher extends AospLauncher {
     private ZimPreferencesChangeCallback prefCallback = new ZimPreferencesChangeCallback(this);
     private OptionsPanel optionView;
     private View dummyView;
+    public ZimBackgroundView background;
 
     public static ZimLauncher getLauncher(Context context) {
         if (context instanceof ZimLauncher) {
@@ -151,6 +153,10 @@ public class ZimLauncher extends AospLauncher {
 
     public OptionsPanel getOptionsView() {
         return optionView = findViewById(R.id.options_view);
+    }
+
+    public ZimBackgroundView getBackground() {
+        return background = findViewById(R.id.zim_background);
     }
 
     @Override

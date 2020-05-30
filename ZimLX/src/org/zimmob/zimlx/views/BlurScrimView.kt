@@ -182,7 +182,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
         prefs.addOnPreferenceChangeListener(this, *prefsToWatch)
         //ColorEngine.getInstance(context).addColorChangeListeners(this, *colorsToWatch)
-        //mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
+        mLauncher.hotseatSearchBox?.addOnLayoutChangeListener(this)
         BlurWallpaperProvider.getInstance(context).addListener(this)
         blurDrawable?.startListening()
         searchBlurDrawable?.startListening()
@@ -197,9 +197,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
                 }
             }
             key_opacity -> {
-                //mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
+                mEndAlpha = prefs.allAppsOpacity.takeIf { it >= 0 } ?: DEFAULT_END_ALPHA
                 calculateEndScrim()
-                //mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
+                mEndFlatColorAlpha = Color.alpha(mEndFlatColor)
                 postReInitUi()
             }
             key_dock_opacity -> {

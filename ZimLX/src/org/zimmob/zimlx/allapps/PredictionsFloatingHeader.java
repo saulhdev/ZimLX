@@ -19,7 +19,6 @@ package org.zimmob.zimlx.allapps;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
-import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,17 +28,12 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
-import com.android.launcher3.allapps.FloatingHeaderRow;
 import com.android.launcher3.allapps.FloatingHeaderView;
-import com.android.launcher3.appprediction.AppsDividerView;
 import com.android.launcher3.appprediction.ComponentKeyMapper;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import static com.android.launcher3.appprediction.AppsDividerView.*;
 
 public class PredictionsFloatingHeader extends FloatingHeaderView implements Insettable {
     private static final FloatProperty<PredictionsFloatingHeader> CONTENT_ALPHA = new FloatProperty<PredictionsFloatingHeader>("contentAlpha") {
@@ -53,9 +47,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     };
     private final int mHeaderTopPadding;
     private final PredictionUiStateManager mPredictionUiStateManager;
-    public FloatingHeaderRow[] mAllRows = FloatingHeaderRow.NO_ROWS;
-    private float mContentAlpha;
     private PredictionRowView mPredictionRowView;
+    private float mContentAlpha;
     private boolean mShowAllAppsLabel;
 
     public PredictionsFloatingHeader(@NonNull Context context) {
@@ -73,7 +66,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
     protected void onFinishInflate() {
         super.onFinishInflate();
         mPredictionRowView = findViewById(R.id.prediction_row);
-
+        /*
         // Find all floating header rows.
         ArrayList<FloatingHeaderRow> rows = new ArrayList<>();
         int count = getChildCount();
@@ -85,13 +78,13 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
 
         mFixedRows = rows.toArray(new FloatingHeaderRow[rows.size()]);
-        mAllRows = mFixedRows;
+        mAllRows = mFixedRows;*/
         updateShowAllAppsLabel();
     }
 
     @Override
     public void setup(AllAppsContainerView.AdapterHolder[] adapterHolderArr, boolean tabsHidden) {
-        for (FloatingHeaderRow row : mAllRows) {
+        /*for (FloatingHeaderRow row : mAllRows) {
             row.setup(this, mAllRows, tabsHidden);
         }
         updateExpectedHeight();
@@ -99,7 +92,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
 
         mPredictionRowView.setup(this, mAllRows, false);//mPredictionUiStateManager.getCurrentState().isEnabled);
         mTabsHidden = tabsHidden;
-        updateExpectedHeight();
+        updateExpectedHeight();*/
+
         super.setup(adapterHolderArr, tabsHidden);
     }
 
@@ -127,7 +121,7 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         }
     }
 
-    private void updateExpectedHeight() {
+    /*private void updateExpectedHeight() {
         boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
         /*DividerType dividerType = DividerType.NONE;
         if (useAllAppsLabel) {
@@ -135,9 +129,9 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         } else if (mTabsHidden) {
             dividerType = DividerType.LINE;
         }
-        mPredictionRowView.setDividerType(dividerType, false);*/
+        mPredictionRowView.setDividerType(dividerType, false);
         mMaxTranslation = mPredictionRowView.getExpectedHeight();
-    }
+    }*/
 
     public void setPredictedApps(List<ComponentKeyMapper> list) {
         mPredictionRowView.setPredictedApps(list);

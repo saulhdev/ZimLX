@@ -94,11 +94,13 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     private Mode mSysUINavigationMode;
 
+    protected final int DEFAULT_END_ALPHA;
+
     public ShelfScrimView(Context context, AttributeSet attrs) {
         super(context, attrs);
         mMaxScrimAlpha = Math.round(OVERVIEW.getOverviewScrimAlpha(mLauncher) * 255);
 
-        mEndAlpha = Color.alpha(mEndScrim);
+        mEndAlpha = DEFAULT_END_ALPHA = Color.alpha(mEndScrim);
         mRadius = BOTTOM_CORNER_RADIUS_RATIO * Themes.getDialogCornerRadius(context);
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
 

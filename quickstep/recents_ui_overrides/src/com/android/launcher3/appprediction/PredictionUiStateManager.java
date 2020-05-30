@@ -16,14 +16,10 @@
 
 package com.android.launcher3.appprediction;
 
-import static com.android.launcher3.LauncherState.BACKGROUND_APP;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
-
-import android.app.prediction.AppPredictor;
-import android.app.prediction.AppTarget;
 import android.content.ComponentName;
 import android.content.Context;
+import android.os.Process;
+import android.util.Log;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.InvariantDeviceProfile;
@@ -42,9 +38,15 @@ import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.MainThreadInitializedObject;
 
+import org.zimmob.zimlx.predictions.CustomAppPredictor;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
+import static com.android.launcher3.LauncherState.BACKGROUND_APP;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.quickstep.InstantAppResolverImpl.COMPONENT_CLASS_MARKER;
 
 /**
  * Handler responsible to updating the UI due to predicted apps changes. Operations:
@@ -102,7 +104,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         mActiveClient = Client.HOME;
 
         InvariantDeviceProfile idp = LauncherAppState.getIDP(context);
-        mMaxIconsPerRow = idp.numColumns;
+        mMaxIconsPerRow = idp.numColsDrawer;
 
         idp.addOnChangeListener(this);
         mPredictionServicePredictions = new List[Client.values().length];
@@ -118,7 +120,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
 
     @Override
     public void onIdpChanged(int changeFlags, InvariantDeviceProfile profile) {
-        mMaxIconsPerRow = profile.numColumns;
+        mMaxIconsPerRow = profile.numColsDrawer;
     }
 
     public Client getClient() {
@@ -202,12 +204,13 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         dispatchOnChange(true);
     }
 
-    public AppPredictor.Callback appPredictorCallback(Client client) {
+
+    /*public AppPredictor.Callback appPredictorCallback(Client client) {
         return targets -> {
             mPredictionServicePredictions[client.ordinal()] = targets;
             updatePredictionStateAfterCallback();
         };
-    }
+    }*/
 
     private void dispatchOnChange(boolean changed) {
         PredictionState newState = changed ? parseLastState() :
@@ -219,7 +222,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
         }
     }
 
-    private PredictionState parseLastState() {
+    public PredictionState parseLastState() {
         PredictionState state = new PredictionState();
         state.isEnabled = mGettingValidPredictionResults;
         if (!state.isEnabled) {
@@ -229,10 +232,12 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
 
         state.apps = new ArrayList<>();
 
-        List<AppTarget> appTargets = mPredictionServicePredictions[mActiveClient.ordinal()];
+        List<ComponentKeyMapper> appTargets = mPredictionServicePredictions[mActiveClient.ordinal()];
+/*
         if (!appTargets.isEmpty()) {
             for (AppTarget appTarget : appTargets) {
                 ComponentKey key;
+
                 if (appTarget.getShortcutInfo() != null) {
                     key = ShortcutKey.fromInfo(appTarget.getShortcutInfo());
                 } else {
@@ -241,8 +246,23 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
                 }
                 state.apps.add(new ComponentKeyMapper(mContext, key, mDynamicItemCache));
             }
+        }*/
+        CustomAppPredictor predictor = new CustomAppPredictor(mContext);
+        //List<ComponentKeyMapper> appTargets = predictor.getUiManager().getPredictions();
+        if (!appTargets.isEmpty()) {
+            int i = 0;
+            for (ComponentKeyMapper appTarget : appTargets) {
+                ComponentKey key;
+                key = new ComponentKey(appTarget.componentKey.componentName, Process.myUserHandle());
+                state.apps.add(new ComponentKeyMapper(mContext, key, mDynamicItemCache));
+
+                Log.d("PredictionUiState", "Prediction App: " + state.apps.get(i).componentKey);
+                i++;
+            }
         }
+
         updateDependencies(state);
+
         return state;
     }
 
@@ -281,7 +301,7 @@ public class PredictionUiStateManager implements StateListener, ItemInfoUpdateRe
 
     @Override
     public void onAppsUpdated() {
-        dispatchOnChange(false);
+        dispatchOnChange(true);
     }
 
     private boolean canApplyPredictions(PredictionState newState) {

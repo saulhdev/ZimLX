@@ -30,18 +30,22 @@ import com.android.launcher3.logging.UserEventDispatcher;
 import com.android.launcher3.userevent.nano.LauncherLogProto;
 import com.android.systemui.shared.system.MetricsLoggerCompat;
 
+import org.zimmob.zimlx.predictions.CustomAppPredictor;
+
 /**
  * This class handles AOSP MetricsLogger function calls and logging around
  * quickstep interactions.
  */
 @SuppressWarnings("unused")
-public class UserEventDispatcherExtension extends UserEventDispatcher {
+public class UserEventDispatcherExtension extends CustomAppPredictor {
 
     public static final int ALL_APPS_PREDICTION_TIPS = 2;
 
     private static final String TAG = "UserEventDispatcher";
 
-    public UserEventDispatcherExtension(Context context) { }
+    public UserEventDispatcherExtension(Context context) {
+        super(context);
+    }
 
     public void logStateChangeAction(int action, int dir, int downX, int downY,
                                      int srcChildTargetType, int srcParentContainerType,

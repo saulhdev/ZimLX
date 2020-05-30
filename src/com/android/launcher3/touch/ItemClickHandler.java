@@ -51,6 +51,7 @@ import com.android.launcher3.PromiseAppInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.PackageInstallerCompat;
 import com.android.launcher3.folder.Folder;

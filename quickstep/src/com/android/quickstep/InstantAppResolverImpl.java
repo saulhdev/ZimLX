@@ -43,7 +43,7 @@ public class InstantAppResolverImpl extends InstantAppResolver {
     @Override
     public boolean isInstantApp(ApplicationInfo info) {
         if (Utilities.ATLEAST_OREO) {
-            return info.isInstantApp();
+            return mPM.isInstantApp();// info.isInstantApp();
         } else
             return false;
     }

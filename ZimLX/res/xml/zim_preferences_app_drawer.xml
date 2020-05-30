@@ -132,7 +132,7 @@
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_search">
-        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_search_hidden_apps"
             android:summary="@string/summary_search_hidden_apps"
@@ -142,14 +142,21 @@
 
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/title__drawer_cat_misc">
 
-        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="false"
+            android:key="pref_showAllAppsLabel"
+            android:persistent="true"
+            android:title="@string/all_apps_label_pref_title"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="true"
             android:key="pref_separateWorkApps"
             android:persistent="true"
             android:title="@string/separate_work_apps_pref_title"
             app:iconSpaceReserved="false" />
 
-        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_keepScrollState"
             android:persistent="true"

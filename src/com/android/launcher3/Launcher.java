@@ -86,6 +86,7 @@ import com.android.launcher3.allapps.AllAppsTransitionController;
 import com.android.launcher3.allapps.DiscoveryBounce;
 import com.android.launcher3.anim.PropertyListBuilder;
 import com.android.launcher3.appprediction.ComponentKeyMapper;
+import com.android.launcher3.appprediction.PredictionUiStateManager;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.compat.LauncherAppsCompatVO;
 import com.android.launcher3.config.FeatureFlags;
@@ -438,10 +439,13 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public void updatePredictions(boolean force) {
+        CustomAppPredictor predictor = new CustomAppPredictor(mContext);
         if (hasBeenResumed() || force) {
-            List<ComponentKeyMapper> apps = ((CustomAppPredictor) getUserEventDispatcher()).getPredictions();
+            List<ComponentKeyMapper> apps = predictor.getPredictions();
             if (apps != null) {
+                //PredictionUiStateManager.INSTANCE.get(mContext).parseLastState().apps = apps;
                 mAppsView.getFloatingHeaderView().setPredictedApps(apps);
+                mAppsView.getFloatingHeaderView().headerChanged();
             }
         }
     }

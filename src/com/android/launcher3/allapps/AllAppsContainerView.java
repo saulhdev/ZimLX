@@ -90,6 +90,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 
     private final Paint mNavBarScrimPaint;
     private int mNavBarScrimHeight = 0;
+    private int mNavBarScrimColor;
 
     private SearchUiManager mSearchUiManager;
     private View mSearchContainer;
@@ -129,8 +130,10 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         mTabsController = new AllAppsTabsController(allAppsTabs, this);
         createHolders();
 
+        mNavBarScrimColor = Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor);
         mNavBarScrimPaint = new Paint();
-        mNavBarScrimPaint.setColor(Themes.getAttrColor(context, R.attr.allAppsNavBarScrimColor));
+        //mNavBarScrimPaint.setColor(mNavBarScrimColor);
+        applyBackground();
 
         mAllAppsStore.addUpdateListener(this::onAppsUpdated);
 
@@ -139,6 +142,15 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
         addSpringView(R.id.all_apps_tabs_view_pager);
 
         mMultiValueAlpha = new MultiValueAlpha(this, ALPHA_CHANNEL_COUNT);
+    }
+
+    public void applyBackground() {
+        int newScrimColor = Utilities.getZimPrefs(mLauncher).getAllAppsBackground();
+        if (Utilities.ATLEAST_OREO || ZimUtilsKt.isDark(newScrimColor)) {
+            mNavBarScrimPaint.setColor(newScrimColor);
+        } else {
+            mNavBarScrimPaint.setColor(mNavBarScrimColor);
+        }
     }
 
     public void createHolders() {

@@ -221,7 +221,7 @@ public class FloatingHeaderView extends LinearLayout implements
         return updated;
     }
 
-    private void updateExpectedHeight() {
+    protected void updateExpectedHeight() {
         mMaxTranslation = 0;
         if (mCollapsed) {
             return;
@@ -240,6 +240,7 @@ public class FloatingHeaderView extends LinearLayout implements
         mCurrentRV = mRVs.get(active);
         mActiveRV = active;
     }
+
     public int getMaxTranslation() {
         if (mMaxTranslation == 0 && mTabsHidden) {
             return getResources().getDimensionPixelSize(R.dimen.all_apps_search_bar_bottom_padding);

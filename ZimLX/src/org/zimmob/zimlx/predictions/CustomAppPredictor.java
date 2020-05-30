@@ -251,7 +251,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
-        return new ComponentKeyMapper<AppInfo>(mContext,
+        return new ComponentKeyMapper<>(mContext,
                 new ComponentKey(new ComponentName(mContext, str), Utilities.myUserHandle()), null);
     }
 
@@ -274,9 +274,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
     }
 
     private Set<String> getStringSetCopy() {
-        Set<String> set = new HashSet<>();
-        set.addAll(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
-        return set;
+        return new HashSet<>(mPrefs.getStringSet(PREDICTION_SET, EMPTY_SET));
     }
 
     public UiManager getUiManager() {
@@ -288,7 +286,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
         private final CustomAppPredictor mPredictor;
         private final List<Listener> mListeners = new ArrayList<>();
 
-        private UiManager(CustomAppPredictor predictor) {
+        public UiManager(CustomAppPredictor predictor) {
             mPredictor = predictor;
         }
 
@@ -309,7 +307,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
             return mPredictor.getPredictions();
         }
 
-        public /* private */ void onPredictionsUpdated() {
+        public void onPredictionsUpdated() {
             for (Listener listener : mListeners) {
                 listener.onPredictionsUpdated();
             }

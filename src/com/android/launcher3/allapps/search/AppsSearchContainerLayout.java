@@ -20,6 +20,7 @@ import static android.view.View.MeasureSpec.getSize;
 import static android.view.View.MeasureSpec.makeMeasureSpec;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
@@ -49,6 +50,7 @@ import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.views.ActivityContext;
 
 import java.util.ArrayList;
 
@@ -59,8 +61,8 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         implements SearchUiManager, AllAppsSearchBarController.Callbacks,
         AllAppsStore.OnUpdateListener, Insettable {
 
-
     private final Launcher mLauncher;
+    private final ActivityContext mActivity;
     private final AllAppsSearchBarController mSearchBarController;
     private final SpannableStringBuilder mSearchQueryBuilder;
 
@@ -82,6 +84,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     public AppsSearchContainerLayout(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
 
+        mActivity = ActivityContext.lookupContext(context);
         mLauncher = Launcher.getLauncher(context);
         mSearchBarController = new AllAppsSearchBarController();
 
@@ -91,7 +94,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mFixedTranslationY = getTranslationY();
         mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
 
-        setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
+        //setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
     }
 
     @Override
@@ -221,8 +224,10 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void setContentVisibility(int visibleElements, PropertySetter setter,
-            Interpolator interpolator) {
-        setter.setViewAlpha(this, (visibleElements & ALL_APPS_HEADER) != 0 ? 1 : 0, interpolator);
+    public void setContentVisibility(int visibleElements, PropertySetter setter, Interpolator interpolator) {
+        boolean hasAllAppsHeaderExtra = mAppsView != null
+                && mAppsView.getFloatingHeaderView().hasVisibleContent();
+        int headerElement = hasAllAppsHeaderExtra ? ALL_APPS_HEADER_EXTRA : ALL_APPS_HEADER;
+        setter.setViewAlpha(this, (visibleElements & headerElement) != 0 ? 1 : 0, interpolator);
     }
 }

@@ -209,8 +209,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
             } else if (user == null || user.equals(Process.myUserHandle())) {
                 // Could be launching some bookkeeping activity
                 startActivity(intent, optsBundle);
-                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(),
-                        Process.myUserHandle(), sourceContainer);
+                AppLaunchTracker.INSTANCE.get(this).onStartApp(intent.getComponent(), Process.myUserHandle(), sourceContainer);
             } else {
                 LauncherAppsCompat.getInstance(this).startActivityForProfile(
                         intent.getComponent(), user, intent.getSourceBounds(), optsBundle);
@@ -218,7 +217,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
                         sourceContainer);
             }
             getUserEventDispatcher().logAppLaunch(v, intent, user);
-            if(Utilities.ATLEAST_Q)
+            //if(Utilities.ATLEAST_Q)
                 getStatsLogManager().logAppLaunch(v, intent);
             return true;
         } catch (NullPointerException|ActivityNotFoundException|SecurityException e) {

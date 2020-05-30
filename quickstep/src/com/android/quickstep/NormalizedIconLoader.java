@@ -93,7 +93,8 @@ public class NormalizedIconLoader extends IconLoader {
                 activityInfo.loadUnbadgedIcon(mContext.getPackageManager()),
                 userId,
                 desc.getPrimaryColor(),
-                activityInfo.applicationInfo.isInstantApp());
+                mContext.getPackageManager().isInstantApp());
+        //activityInfo.applicationInfo.isInstantApp());
         return mDrawableFactory.newIcon(mContext, bitmapInfo, activityInfo);
     }
 }

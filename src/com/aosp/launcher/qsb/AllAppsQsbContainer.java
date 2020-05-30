@@ -68,9 +68,13 @@ import com.aosp.launcher.search.SearchHandler;
 
 import org.zimmob.zimlx.ZimPreferences;
 
+import static android.view.View.MeasureSpec.EXACTLY;
+import static android.view.View.MeasureSpec.getSize;
+import static android.view.View.MeasureSpec.makeMeasureSpec;
 import static com.android.launcher3.LauncherState.ALL_APPS;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable, OnClickListener, OnChangeListener, OnUpdateListener, SearchUiManager {
 
@@ -100,10 +104,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
     private int mShadowMargin;
     private Paint mSearchIconStrokePaint = new Paint(1);
 
-    public float Dy;
-    private ZimPreferences prefs;
-    private TextView mHint;
-
     public AllAppsQsbContainer(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, 0);
     }
@@ -116,13 +116,14 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         mLauncher = (AospLauncher) Launcher.getLauncher(context);
         setOnClickListener(this);
         mIsMainColorDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        mMarginAdjusting = mContext.getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
+        //mMarginAdjusting = mContext.getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         mSearchIconWidth = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
         mShadowMargin = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
         mIsRtl = Utilities.isRtl(getResources());
         mDelegate = new TransformingTouchDelegate(this);
         mShadowPaint.setColor(-1);
         mFixedTranslationY = Math.round(getTranslationY());
+        mMarginAdjusting = (int) (mFixedTranslationY - getPaddingTop());
         setClipToPadding(false);
         setTranslationY(0);
     }
@@ -298,6 +299,7 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         mDelegate.setBounds(mSrcRect.left, mSrcRect.top, mSrcRect.right, mSrcRect.bottom);
         View view = (View) getParent();
         setTranslationX((float) ((view.getPaddingLeft() + ((((view.getWidth() - view.getPaddingLeft()) - view.getPaddingRight()) - (right - left)) / 2)) - left));
+
         offsetTopAndBottom((int) mFixedTranslationY);
     }
 
@@ -309,19 +311,19 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
 
     @Override
     public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        DeviceProfile dp = mLauncher.getDeviceProfile();
-        int round = Math.round(((float) dp.iconSizePx) * 1.92f);
-        setMeasuredDimension(calculateMeasuredDimension(dp, round, widthMeasureSpec), View.MeasureSpec.getSize(heightMeasureSpec));
-        for (int childCount = getChildCount() - 1; childCount >= 0; childCount--) {
-            View childAt = getChildAt(childCount);
-            measureChildWithMargins(childAt, widthMeasureSpec, 0, heightMeasureSpec, 0);
-            if (childAt.getWidth() <= round) {
-                LayoutParams layoutParams = (LayoutParams) childAt.getLayoutParams();
-                int measuredWidth = (round - childAt.getWidth()) / 2;
-                layoutParams.rightMargin = measuredWidth;
-                layoutParams.leftMargin = measuredWidth;
-            }
-        }
+        // Update the width to match the grid padding
+        DeviceProfile dp = mActivity.getDeviceProfile();
+        int myRequestedWidth = getSize(widthMeasureSpec);
+        int leftRightPadding = dp.desiredWorkspaceLeftRightMarginPx
+                + dp.cellLayoutPaddingLeftRightPx;
+        int rowWidth = myRequestedWidth - leftRightPadding * 2;
+
+        int cellWidth = DeviceProfile.calculateCellWidth(rowWidth, dp.inv.numHotseatIcons);
+        int iconVisibleSize = Math.round(ICON_VISIBLE_AREA_FACTOR * dp.iconSizePx);
+        int iconPadding = cellWidth - iconVisibleSize;
+
+        int myWidth = rowWidth - iconPadding + getPaddingLeft() + getPaddingRight();
+        super.onMeasure(makeMeasureSpec(myWidth, EXACTLY), heightMeasureSpec);
     }
 
     public int calculateMeasuredDimension(DeviceProfile dp, int round, int widthMeasureSpec) {

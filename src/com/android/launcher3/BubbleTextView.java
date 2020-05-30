@@ -204,6 +204,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
             setCompoundDrawablePadding(grid.allAppsFolderChildDrawablePaddingPx);
             defaultIconSize = grid.allAppsFolderChildIconSizePx;
             int lines = prefs.getDrawerLabelRows();
+            setTextColor(prefs.getAllAppsLabelColor());
             setLineCount(lines);
         } else {
             defaultIconSize = mActivity.getDeviceProfile().iconSizePx;
