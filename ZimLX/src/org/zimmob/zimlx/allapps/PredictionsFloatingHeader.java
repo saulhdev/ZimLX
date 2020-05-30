@@ -19,6 +19,7 @@ package org.zimmob.zimlx.allapps;
 import android.content.Context;
 import android.util.AttributeSet;
 import android.util.FloatProperty;
+import android.view.animation.Interpolator;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +30,7 @@ import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.FloatingHeaderView;
+import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.appprediction.ComponentKeyMapper;
 import com.android.launcher3.appprediction.PredictionRowView;
 import com.android.launcher3.appprediction.PredictionUiStateManager;
@@ -95,6 +97,16 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         updateExpectedHeight();*/
 
         super.setup(adapterHolderArr, tabsHidden);
+    }
+
+    public void setContentVisibility(boolean hasHeader, boolean hasContent, PropertySetter propertySetter, Interpolator interpolator) {
+        //if (hasHeader && !hasContent && mIsCollapsed) {
+        if (hasHeader && !hasContent) {
+            Launcher.getLauncher(getContext()).getAppsView().getSearchUiManager().resetSearch();
+        }
+        allowTouchForwarding(hasContent);
+        propertySetter.setFloat(this, CONTENT_ALPHA, hasContent ? 1.0f : 0.0f, interpolator);
+        mPredictionRowView.setContentVisibility(hasHeader, hasContent, propertySetter, interpolator, interpolator);
     }
 
     public void updateShowAllAppsLabel() {

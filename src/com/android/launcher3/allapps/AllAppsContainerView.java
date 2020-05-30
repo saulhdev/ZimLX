@@ -291,6 +291,8 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
                 mHeader.reset(animate);
             }
         }
+        // Reset the search bar and base recycler view after transitioning home
+        mSearchUiManager.resetSearch();
     }
 
     @Override

@@ -19,6 +19,8 @@ import static com.android.launcher3.LauncherState.ALL_APPS;
 
 import android.content.Context;
 import android.graphics.Rect;
+import android.text.Selection;
+import android.text.SpannableStringBuilder;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +35,7 @@ import com.android.launcher3.allapps.AlphabeticalAppsList;
 import com.android.launcher3.allapps.SearchUiManager;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
+import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
@@ -44,6 +47,8 @@ public class DefaultQsbContainer extends ExtendedEditText implements Callbacks,
     public AllAppsQsbContainer mAllAppsQsb;
     public AlphabeticalAppsList mApps;
     public AllAppsContainerView mAppsView;
+    private final AllAppsSearchBarController mSearchBarController;
+    private final SpannableStringBuilder mSearchQueryBuilder;
 
     public DefaultQsbContainer(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, 0);
@@ -52,6 +57,9 @@ public class DefaultQsbContainer extends ExtendedEditText implements Callbacks,
     public DefaultQsbContainer(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
         mController = new AllAppsSearchBarController();
+        mSearchBarController = new AllAppsSearchBarController();
+        mSearchQueryBuilder = new SpannableStringBuilder();
+        Selection.setSelection(mSearchQueryBuilder, 0);
     }
 
     @Override

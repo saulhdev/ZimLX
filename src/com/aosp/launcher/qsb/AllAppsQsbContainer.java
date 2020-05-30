@@ -116,7 +116,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         mLauncher = (AospLauncher) Launcher.getLauncher(context);
         setOnClickListener(this);
         mIsMainColorDark = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
-        //mMarginAdjusting = mContext.getResources().getDimensionPixelSize(R.dimen.qsb_margin_top_adjusting);
         mSearchIconWidth = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
         mShadowMargin = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
         mIsRtl = Utilities.isRtl(getResources());
