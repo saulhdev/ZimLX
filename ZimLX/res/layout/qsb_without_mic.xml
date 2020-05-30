@@ -8,4 +8,4 @@
     android:contentDescription="@string/label_search"
     android:elevation="@dimen/qsb_button_elevation"
     android:scaleType="center"
-    android:src="@drawable/ic_super_g_color" />
+    android:src="@drawable/ic_qsb_logo" />

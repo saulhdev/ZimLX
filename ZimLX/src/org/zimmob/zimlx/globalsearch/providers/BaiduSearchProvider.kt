@@ -27,7 +27,7 @@ class BaiduSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_baidu)!!
 
-    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_mic)!!.mutate().apply {
         setTint(Color.parseColor("#2d03e4"))
     }
 

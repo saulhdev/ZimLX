@@ -22,9 +22,9 @@ class GoogleGoSearchProvider(context: Context) : SearchProvider(context) {
     override fun startVoiceSearch(callback: (intent: Intent) -> Unit) = callback(Intent("$PACKAGE.SEARCH").putExtra("openMic", true).putExtra("$PACKAGE.SKIP_BYPASS_AND_ONBOARDING", true).setPackage(PACKAGE))
     override fun startFeed(callback: (intent: Intent) -> Unit) = callback(Intent("$PACKAGE.SEARCH").putExtra("$PACKAGE.SKIP_BYPASS_AND_ONBOARDING", true).setPackage(PACKAGE))
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_super_g_color)!!
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_logo)!!
 
-    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_mic)!!
 
     companion object {
         private const val PACKAGE = "com.google.android.apps.searchlite"

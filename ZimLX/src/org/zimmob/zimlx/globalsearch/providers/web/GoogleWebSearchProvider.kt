@@ -28,5 +28,5 @@ class GoogleWebSearchProvider(context: Context) : WebSearchProvider(context) {
     override val suggestionsUrl = "https://www.google.com/complete/search?client=chrome&q=%s&hl=${context.locale.language}"
     override val name = context.getString(R.string.web_search_google)
 
-    override fun getIcon() = context.getDrawable(R.drawable.ic_super_g_color)!!
+    override fun getIcon() = context.getDrawable(R.drawable.ic_qsb_logo)!!
 }

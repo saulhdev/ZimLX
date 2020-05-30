@@ -142,7 +142,7 @@ class StartAppSearchGestureHandler(context: Context, config: JSONObject?) : Open
 class OpenOverlayGestureHandler(context: Context, config: JSONObject?) : GestureHandler(context, config) {
 
     override val displayName: String = context.getString(R.string.action_overlay)
-    override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_super_g_color) }
+    override val iconResource: Intent.ShortcutIconResource by lazy { Intent.ShortcutIconResource.fromContext(context, R.drawable.ic_qsb_logo) }
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
         //if (controller.launcher.googleNow != null) {

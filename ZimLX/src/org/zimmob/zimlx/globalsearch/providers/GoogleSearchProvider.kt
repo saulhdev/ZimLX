@@ -39,11 +39,11 @@ class GoogleSearchProvider(context: Context) : SearchProvider(context) {
         //}
     }
 
-    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_super_g_color)!!
+    override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_logo)!!
 
-    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_mic)!!
 
-    override fun getAssistantIcon(): Drawable = context.getDrawable(R.drawable.opa_assistant_logo)!!
+    override fun getAssistantIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_assist)!!
 
     companion object {
         private const val PACKAGE = "com.google.android.googlequicksearchbox"

@@ -455,8 +455,8 @@
     </style>
 
     <style name="HotseatQsbTheme.Colored" parent="@style/HotseatQsbTheme">
-        <item name="gIcon">@drawable/ic_super_g_color</item>
-        <item name="micIcon">@drawable/ic_mic_color</item>
+        <item name="gIcon">@drawable/ic_qsb_logo</item>
+        <item name="micIcon">@drawable/ic_qsb_mic</item>
     </style>
 
     <style name="Toolbar" parent="ThemeOverlay.AppCompat.ActionBar">

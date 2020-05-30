@@ -37,7 +37,7 @@ class BingSearchProvider(context: Context) : SearchProvider(context) {
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_bing)!!
 
-    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_mic)!!.mutate().apply {
         setTint(Color.parseColor("#00897B"))
     }
 

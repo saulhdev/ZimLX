@@ -52,11 +52,10 @@ class SFinderSearchProvider(context: Context) : SearchProvider(context) {
     }
 
     override fun getIcon(): Drawable = context.getDrawable(R.drawable.ic_search)!!.mutate().apply {
-        //setTint(ColorEngine.getInstance(context).accent)
         setTint(Utilities.getZimPrefs(context).accentColor)
     }
 
-    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_mic_color)!!.mutate().apply {
+    override fun getVoiceIcon(): Drawable = context.getDrawable(R.drawable.ic_qsb_mic)!!.mutate().apply {
         setTint(Utilities.getZimPrefs(context).accentColor)
     }
 
