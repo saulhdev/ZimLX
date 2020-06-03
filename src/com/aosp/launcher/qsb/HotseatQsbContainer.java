@@ -16,25 +16,18 @@
 package com.aosp.launcher.qsb;
 
 import android.content.Context;
-import android.content.res.Resources;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.View;
-import android.view.View.MeasureSpec;
 import android.widget.FrameLayout;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Hotseat;
 import com.android.launcher3.InsettableFrameLayout;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
-import com.android.launcher3.Utilities;
 import com.android.launcher3.views.BaseDragLayer;
-
-import org.jetbrains.annotations.NotNull;
-import org.zimmob.zimlx.ZimPreferences;
 
 public class HotseatQsbContainer extends Hotseat {
 
@@ -62,13 +55,13 @@ public class HotseatQsbContainer extends Hotseat {
         if (mIsTransposed && mAllAppsQsb != null) {
             DeviceProfile dp = mActivity.getWallpaperDeviceProfile();
             if (mWidth <= 0) {
-                mWidth = mAllAppsQsb.calculateMeasuredDimension(mActivity.getWallpaperDeviceProfile(), Math.round(((float) dp.iconSizePx) * 0.92f), MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY));
+                //mWidth = mAllAppsQsb.calculateMeasuredDimension(mActivity.getWallpaperDeviceProfile(), Math.round(((float) dp.iconSizePx) * 0.92f), MeasureSpec.makeMeasureSpec(getWidth(), MeasureSpec.EXACTLY));
             }
             int marginBottom = dp.hotseatBarSizePx - dp.hotseatCellHeightPx;
             int minBottom = (((marginBottom - mMarginBottom) - dp.getInsets().bottom) / 2) + dp.getInsets().bottom + mMarginBottom;
             int save = canvas.save();
             canvas.translate(((float) (getWidth() - mWidth)) * 0.5f, (float) (getHeight() - minBottom));
-            mAllAppsQsb.drawCanvas(canvas, mWidth);
+            //mAllAppsQsb.drawCanvas(canvas, mWidth);
             int width = mAllAppsQsb.getWidth() - mWidth;
             int childCount = mAllAppsQsb.getChildCount();
             for (int parent = 0; parent < childCount; parent++) {

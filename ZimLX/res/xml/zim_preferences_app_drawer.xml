@@ -105,6 +105,7 @@
             app:iconSpaceReserved="false"
             app:maxValue="1"
             app:minValue="0"
+            app:defaultValue="0.5"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 
@@ -132,12 +133,29 @@
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__app_search">
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:key="pref_allAppsSearch"
+            android:title="@string/title_all_apps_search"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+            android:defaultValue="true"
+            android:dependency="pref_allAppsSearch"
+            android:disableDependentsState="true"
+            android:key="pref_allAppsGoogleSearch"
+            android:summary="@string/summary_all_apps_google_search"
+            android:title="@string/title_all_apps_google_search"
+            app:iconSpaceReserved="false" />
+
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:key="pref_search_hidden_apps"
             android:summary="@string/summary_search_hidden_apps"
             android:title="@string/title_search_hidden_apps"
             app:iconSpaceReserved="false" />
+
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
     <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/title__drawer_cat_misc">

@@ -13,8 +13,19 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
+
+<!--
 <com.aosp.launcher.qsb.HotseatQsbContainer
     xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:launcher="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/hotseat"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:theme="@style/HomeScreenElementTheme"
+    android:importantForAccessibility="no"
+    launcher:containerType="hotseat" /> -->
+
+<com.android.launcher3.Hotseat xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto"
     android:id="@+id/hotseat"
     android:layout_width="match_parent"

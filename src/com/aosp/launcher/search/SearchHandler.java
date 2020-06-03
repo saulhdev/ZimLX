@@ -24,6 +24,7 @@ import android.os.Handler.Callback;
 import android.os.HandlerThread;
 import android.os.Message;
 
+import com.android.launcher3.BuildConfig;
 import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks;
 import com.android.launcher3.allapps.search.SearchAlgorithm;
 
@@ -49,7 +50,7 @@ public class SearchHandler implements SearchAlgorithm, Callback {
         try {
             cursor = mContext.getContentResolver().query(new Builder()
                     .scheme("content")
-                    .authority("com.aosp.launcher.appssearch")
+                    .authority(BuildConfig.APPLICATION_ID + ".appssearch")
                     .appendPath(componentList.mQuery)
                     .build(), null, null, null, null);
             int suggestIntentData = cursor.getColumnIndex("suggest_intent_data");
@@ -86,7 +87,7 @@ public class SearchHandler implements SearchAlgorithm, Callback {
         } else {
             if (!mInterruptActiveRequests) {
                 SearchResult result = (SearchResult) message.obj;
-                result.mCallbacks.onSearchResult(result.mQuery, result.mApps);
+                result.mCallbacks.onSearchResult(result.mQuery, result.mApps, result.mSuggestions);
             }
         }
         return true;

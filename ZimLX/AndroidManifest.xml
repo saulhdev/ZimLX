@@ -182,9 +182,11 @@
             </intent-filter>
         </receiver>
 
+        <receiver android:name="com.aosp.launcher.qsb.configs.LongClickReceiver" />
+
         <provider
             android:name="com.aosp.launcher.search.AppSearchProvider"
-            android:authorities="com.aosp.launcher.appssearch"
+            android:authorities="${applicationId}.appssearch"
             android:exported="true" />
 
         <provider

@@ -46,7 +46,7 @@ class FuzzyAppSearchAlgorithm(private val context: Context, private val apps: Li
         val res = query(context, query, apps, baseFilter).map { it.toComponentKey() }
         val suggestions = getSuggestions(query)
         resultHandler.post {
-            callback.onSearchResult(query, ArrayList(res))
+            callback.onSearchResult(query, ArrayList(res), suggestions)
         }
     }
 

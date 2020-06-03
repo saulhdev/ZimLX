@@ -64,7 +64,7 @@ public class Scrim implements View.OnAttachStateChangeListener,
         canvas.drawColor(setColorAlphaBound(mScrimColor, mScrimAlpha));
     }
 
-    private void setScrimProgress(float progress) {
+    public void setScrimProgress(float progress) {
         if (mScrimProgress != progress) {
             mScrimProgress = progress;
             mScrimAlpha = Math.round(255 * mScrimProgress);

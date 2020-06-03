@@ -31,7 +31,7 @@
         android:scaleType="center"
         android:src="@drawable/ic_qsb_logo" />
 
-    <com.aosp.launcher.qsb.SearchIcon
+    <ImageView
         android:layout_gravity="end|center"
         android:id="@+id/mic_icon"
         android:layout_width="@dimen/qsb_mic_width"

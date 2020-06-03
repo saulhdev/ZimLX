@@ -45,17 +45,32 @@ import androidx.core.graphics.ColorUtils;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.R;
 import com.android.launcher3.ResourceUtils;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 
 import org.zimmob.zimlx.ZimPreferences;
+import org.zimmob.zimlx.theme.ThemeManager;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 
 /**
  * View scrim which draws behind hotseat and workspace
  */
 public class WorkspaceAndHotseatScrim extends Scrim {
+
+    public static Property<WorkspaceAndHotseatScrim, Float> SCRIM_PROGRESS =
+            new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "scrimProgress") {
+                @Override
+                public Float get(WorkspaceAndHotseatScrim scrim) {
+                    return scrim.mScrimProgress;
+                }
+
+                @Override
+                public void set(WorkspaceAndHotseatScrim scrim, Float value) {
+                    scrim.setScrimProgress(value);
+                }
+            };
 
     public static Property<WorkspaceAndHotseatScrim, Float> SYSUI_PROGRESS =
             new Property<WorkspaceAndHotseatScrim, Float>(Float.TYPE, "sysUiProgress") {
@@ -115,22 +130,34 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     private final Bitmap mBottomMask;
     private final int mMaskHeight;
 
-    private final Drawable mTopScrim;
+    public final Drawable mTopScrim;
 
     private float mSysUiProgress = 1;
     private boolean mHideSysUiScrim;
 
     private boolean mAnimateScrimOnNextDraw = false;
     private float mSysUiAnimMultiplier = 1;
+    private final boolean mHasSysUiScrim;
 
     public WorkspaceAndHotseatScrim(View view) {
         super(view);
 
         mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
                 view.getResources().getDisplayMetrics());
-        mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
-        mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
-        mHideSysUiScrim = mTopScrim == null;
+        //mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
+        //mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
+
+
+        mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
+                && Utilities.getZimPrefs(mLauncher).getShowTopShadow();
+        if (mHasSysUiScrim) {
+            mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
+            mBottomMask = createDitheredAlphaMask();
+        } else {
+            mTopScrim = null;
+            mBottomMask = null;
+            mHideSysUiScrim = true;
+        }
 
         onExtractedColorsChanged(mWallpaperColorInfo);
     }
@@ -256,11 +283,8 @@ public class WorkspaceAndHotseatScrim extends Scrim {
 
     private void reapplySysUiAlphaNoInvalidate() {
         float factor = mSysUiProgress * mSysUiAnimMultiplier;
-        ZimPreferences prefs = new ZimPreferences(mLauncher.getApplicationContext());
-        mBottomMaskPaint.setAlpha(prefs.getDockGradient() ? Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor) : Math.round(0 * factor));
-        if (mTopScrim != null) {
-            mTopScrim.setAlpha(prefs.getDockGradient() ? Math.round(255 * factor) : Math.round(0 * factor));
-        }
+        mBottomMaskPaint.setAlpha(Math.round(MAX_HOTSEAT_SCRIM_ALPHA * factor));
+        mTopScrim.setAlpha(Math.round(255 * factor));
     }
 
     public Bitmap createDitheredAlphaMask() {

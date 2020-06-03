@@ -16,11 +16,8 @@
 package com.aosp.launcher.qsb.configs;
 
 import android.app.PendingIntent;
-import android.content.BroadcastReceiver;
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -40,51 +37,45 @@ import androidx.recyclerview.widget.GridLayoutManager.LayoutParams;
 import androidx.recyclerview.widget.GridLayoutManager.SpanSizeLookup;
 import androidx.recyclerview.widget.RecyclerView.ViewHolder;
 
-import com.aosp.launcher.AospLauncher;
-import com.aosp.launcher.AospLauncherCallbacks;
-import com.aosp.launcher.qsb.AllAppsQsbContainer;
-import com.aosp.launcher.search.SearchProto;
-import com.aosp.launcher.search.SearchProto.Columns;
-import com.aosp.launcher.search.SearchProto.AppIndex;
-import com.aosp.launcher.search.SearchProto.SearchBase;
-import com.aosp.launcher.search.SearchProto.SearchView;
-import com.aosp.launcher.search.AppSearchProvider;
-
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
-import com.android.launcher3.ItemInfo;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AllAppsRecyclerView;
 import com.android.launcher3.allapps.AlphabeticalAppsList;
-import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.compat.UserManagerCompat;
-import com.android.launcher3.dragndrop.BaseItemDragListener;
 import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
-import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.Themes;
-
+import com.aosp.launcher.AospLauncher;
+import com.aosp.launcher.AospLauncherCallbacks;
+import com.aosp.launcher.qsb.AllAppsQsbContainer;
+import com.aosp.launcher.search.AppSearchProvider;
+import com.aosp.launcher.search.SearchProto;
+import com.aosp.launcher.search.SearchProto.AppIndex;
+import com.aosp.launcher.search.SearchProto.Columns;
+import com.aosp.launcher.search.SearchProto.SearchView;
 import com.google.protobuf.nano.MessageNano;
 
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.List;
 
 public class ConfigurationBuilder {
 
-    public final Bundle mBundle = new Bundle();
-    public final SearchProto.SearchBase mNano = new SearchProto.SearchBase();
+    public Bundle mBundle;
+    public SearchProto.SearchBase mNano;
     public boolean mHasAllAppsDivider;
     public AospLauncher mLauncher;
     public BubbleTextView mBubbleTextView;
     public boolean mIsAllApps;
-    public AllAppsQsbContainer mAllAppsQsbContainer;
+    public AllAppsQsbContainer mQsbLayout;
     public UserManagerCompat mUserManager;
 
     public ConfigurationBuilder(AllAppsQsbContainer qsbContainer, boolean isAllApps) {
-        mAllAppsQsbContainer = qsbContainer;
-        mLauncher = mAllAppsQsbContainer.mLauncher;
+        mBundle = new Bundle();
+        mNano = new SearchProto.SearchBase();
+        mQsbLayout = qsbContainer;
+
+        mLauncher = mQsbLayout.mLauncher;
         mIsAllApps = isAllApps;
         mUserManager = UserManagerCompat.getInstance(mLauncher);
     }
@@ -92,7 +83,7 @@ public class ConfigurationBuilder {
     public static Intent getSearchIntent(Rect sourceBounds, View gIcon, View micIcon) {
         Intent intent = new Intent("com.google.nexuslauncher.FAST_TEXT_SEARCH");
         intent.setSourceBounds(sourceBounds);
-        if (micIcon.getVisibility() != 0) {
+        if (micIcon.getVisibility() != View.VISIBLE) {
             intent.putExtra("source_mic_alpha", 0.0f);
         }
         return intent.putExtra("source_round_left", true)
@@ -175,24 +166,24 @@ public class ConfigurationBuilder {
     public final RemoteViews searchQsbTemplate() {
         int width;
         RemoteViews remoteViews = new RemoteViews(mLauncher.getPackageName(), R.layout.apps_search_qsb_template);
-        int effectiveHeight = ((mAllAppsQsbContainer.getHeight() - mAllAppsQsbContainer.getPaddingTop()) - mAllAppsQsbContainer.getPaddingBottom()) + 20;
-        Bitmap mShadowBitmap = mAllAppsQsbContainer.mShadowBitmap;
+        int effectiveHeight = ((mQsbLayout.getHeight() - mQsbLayout.getPaddingTop()) - mQsbLayout.getPaddingBottom()) + 20;
+        final Bitmap mShadowBitmap = mQsbLayout.mShadowBitmap;
         if (mShadowBitmap != null) {
             int internalWidth = (mShadowBitmap.getWidth() - effectiveHeight) / 2;
-            int verticalPadding = (mAllAppsQsbContainer.getHeight() - mShadowBitmap.getHeight()) / 2;
-            remoteViews.setViewPadding(R.id.qsb_background_container, mAllAppsQsbContainer.getPaddingLeft() - internalWidth, verticalPadding, mAllAppsQsbContainer.getPaddingRight() - internalWidth, verticalPadding);
+            int verticalPadding = (mQsbLayout.getHeight() - mShadowBitmap.getHeight()) / 2;
+            remoteViews.setViewPadding(R.id.qsb_background_container, mQsbLayout.getPaddingLeft() - internalWidth, verticalPadding, mQsbLayout.getPaddingRight() - internalWidth, verticalPadding);
             Bitmap bitmap = Bitmap.createBitmap(mShadowBitmap, 0, 0, mShadowBitmap.getWidth() / 2, mShadowBitmap.getHeight());
             Bitmap bitmap2 = Bitmap.createBitmap(mShadowBitmap, (mShadowBitmap.getWidth() - 20) / 2, 0, 20, mShadowBitmap.getHeight());
             remoteViews.setImageViewBitmap(R.id.qsb_background_1, bitmap);
             remoteViews.setImageViewBitmap(R.id.qsb_background_2, bitmap2);
             remoteViews.setImageViewBitmap(R.id.qsb_background_3, bitmap);
         }
-        if (mAllAppsQsbContainer.mSearchIcon.getVisibility() != View.VISIBLE) {
+        if (mQsbLayout.mMicIconView.getVisibility() != View.VISIBLE) {
             remoteViews.setViewVisibility(R.id.mic_icon, View.INVISIBLE);
         }
-        View gIcon = mAllAppsQsbContainer.findViewById(R.id.g_icon);
-        if (mAllAppsQsbContainer.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
-            width = mAllAppsQsbContainer.getWidth() - gIcon.getRight();
+        View gIcon = mQsbLayout.findViewById(R.id.g_icon);
+        if (mQsbLayout.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL) {
+            width = mQsbLayout.getWidth() - gIcon.getRight();
         } else {
             width = gIcon.getLeft();
         }
@@ -205,7 +196,7 @@ public class ConfigurationBuilder {
         mNano.searchTemplate = "search_box_template";
         mBundle.putParcelable(mNano.searchTemplate, searchQsbTemplate());
         mNano.gIcon = R.id.g_icon;
-        mNano.micIcon = mAllAppsQsbContainer.mSearchIcon.getVisibility() == View.VISIBLE ? R.id.mic_icon : 0;
+        mNano.micIcon = mQsbLayout.mMicIconView.getVisibility() == View.VISIBLE ? R.id.mic_icon : 0;
         Columns viewBounds = getViewBounds(mLauncher.getDragLayer());
         Columns appColumns = mNano.apps;
         int topShift = appColumns.innerMargin + (mHasAllAppsDivider ? 0 : appColumns.height);
@@ -365,7 +356,7 @@ public class ConfigurationBuilder {
                 mLauncher, 2055, new Intent().setComponent(new ComponentName(mLauncher, LongClickReceiver.class)),
                 PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_ONE_SHOT));
         LongClickReceiver.getWeakReference(mLauncher);
-        mNano.bounds = getViewBounds(mAllAppsQsbContainer);
+        mNano.bounds = getViewBounds(mQsbLayout);
         mNano.isAllApps = mIsAllApps;
         if (mIsAllApps) {
             createSearchTemplate();

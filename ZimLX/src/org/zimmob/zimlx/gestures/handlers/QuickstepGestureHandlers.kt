@@ -18,6 +18,7 @@
 package org.zimmob.zimlx.gestures.handlers
 
 import android.annotation.TargetApi
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Build
@@ -61,7 +62,7 @@ open class LaunchMostRecentTaskGestureHandler(context: Context, config: JSONObje
         get() = TouchInteractionService.isConnected()
 
     override fun onGestureTrigger(controller: GestureController, view: View?) {
-        /*RecentsModel.INSTANCE.get(context).loadTasks(-1) {
+        /*RecentsModel.INSTANCE.get(context). .loadTasks(-1) {
             val opts = ActivityOptions.makeBasic()
             it.taskStack.mostRecentTask?.let { mostRecentTask -> {
                 ActivityManagerWrapper.getInstance().startActivityFromRecentsAsync(mostRecentTask.key, opts, { result ->

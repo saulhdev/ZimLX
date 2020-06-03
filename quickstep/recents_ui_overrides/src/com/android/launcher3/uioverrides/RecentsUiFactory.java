@@ -157,7 +157,7 @@ public abstract class RecentsUiFactory {
 
         boolean swipeUpEnabled = OverviewInteractionState.INSTANCE.get(launcher)
                 .isSwipeUpGestureEnabled();
-        if (!swipeUpEnabled) {
+        /*if (!swipeUpEnabled) {
             return new TouchController[]{
                     launcher.getDragController(),
                     new PinchStateChangeTouchController(launcher),
@@ -166,12 +166,13 @@ public abstract class RecentsUiFactory {
                     new QuickSwitchTouchController(launcher),
                     new OverviewToAllAppsTouchController(launcher),
                     new LauncherTaskViewController(launcher)};
+        }*/
+        if (swipeUpEnabled) {
+            list.add(new VerticalSwipeGestureController(launcher));
         }
-
         if (mode == NO_BUTTON) {
             list.add(new QuickSwitchTouchController(launcher));
             list.add(new NavBarToHomeTouchController(launcher));
-            list.add(new VerticalSwipeGestureController(launcher));
             list.add(new FlingAndHoldTouchController(launcher));
         } else {
             if (launcher.getDeviceProfile().isVerticalBarLayout()) {
@@ -196,6 +197,7 @@ public abstract class RecentsUiFactory {
 
         list.add(new LauncherTaskViewController(launcher));
         return list.toArray(new TouchController[list.size()]);
+
     }
 
     public static void setOnTouchControllersChangedListener(Context context, Runnable listener) {

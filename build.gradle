@@ -23,9 +23,9 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.6.3'
+        classpath GRADLE_CLASS_PATH
         classpath PROTOBUF_CLASS_PATH
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath KOTLIN_GRADLE_PLUGIN
     }
 }
 
@@ -206,19 +206,18 @@ repositories {
     maven { url "https://maven.google.com" }
     maven { url 'https://jitpack.io' }
 }
-final String SUPPORT_LIBS_VERSION = '1.0.0'
 dependencies {
     implementation 'com.android.support:preference-v7:29.0.0'
-    implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.cardview:cardview:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.legacy:legacy-support-v4:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.dynamicanimation:dynamicanimation:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.recyclerview:recyclerview:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.palette:palette:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.preference:preference:${SUPPORT_LIBS_VERSION}"
-    implementation "androidx.legacy:legacy-preference-v14:${SUPPORT_LIBS_VERSION}"
+    implementation "androidx.appcompat:appcompat:${ANDROID_X_VERSION}"
+    implementation "androidx.cardview:cardview:${ANDROID_X_VERSION}"
+    implementation "androidx.legacy:legacy-support-v4:${ANDROID_X_VERSION}"
+    implementation "androidx.dynamicanimation:dynamicanimation:${ANDROID_X_VERSION}"
+    implementation "androidx.recyclerview:recyclerview:${ANDROID_X_VERSION}"
+    implementation "androidx.palette:palette:${ANDROID_X_VERSION}"
+    implementation "androidx.preference:preference:${ANDROID_X_VERSION}"
+    implementation "androidx.legacy:legacy-preference-v14:${ANDROID_X_VERSION}"
     implementation 'androidx.constraintlayout:constraintlayout:2.0.0-beta4'
-    implementation "com.google.android.material:material:${SUPPORT_LIBS_VERSION}"
+    implementation "com.google.android.material:material:${ANDROID_X_VERSION}"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'com.afollestad.material-dialogs:core:2.0.3'
     implementation 'com.balysv:material-ripple:1.0.2'
@@ -245,8 +244,7 @@ dependencies {
     withoutQuickstepImplementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'plugin_core.jar')
 
     implementation 'com.android.support:appcompat-v7:29.0.0'
-    implementation "androidx.appcompat:appcompat:${SUPPORT_LIBS_VERSION}"
-    implementation 'cat.ereza:customactivityoncrash:2.2.0'
+    implementation "androidx.appcompat:appcompat:${ANDROID_X_VERSION}"
 
     // Tools
     if (enable_plugin_kotlin) {

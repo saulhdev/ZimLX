@@ -56,10 +56,10 @@
             android:theme="@style/HomeScreenElementTheme"
             launcher:pageIndicator="@+id/page_indicator" />
 
-        <!-- DO NOT CHANGE THE ID -->
-        <include
-            android:id="@+id/hotseat"
-            layout="@layout/hotseat" />
+        <View
+            android:id="@+id/workspace_blocked_row"
+            android:layout_width="0dp"
+            android:layout_height="10dp" />
 
         <include
             android:id="@+id/overview_panel"
@@ -78,6 +78,13 @@
         <include
             android:id="@+id/drop_target_bar"
             layout="@layout/drop_target_bar" />
+
+        <!-- DO NOT CHANGE THE ID -->
+        <include
+            android:id="@+id/hotseat"
+            layout="@layout/hotseat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
 
         <include
             android:id="@+id/scrim_view"

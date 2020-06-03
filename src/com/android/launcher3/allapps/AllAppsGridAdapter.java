@@ -25,12 +25,14 @@ import android.view.View.OnFocusChangeListener;
 import android.view.ViewGroup;
 import android.view.accessibility.AccessibilityEvent;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.BubbleTextView;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.allapps.AlphabeticalAppsList.AdapterItem;
 import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.folder.FolderIcon;
@@ -46,6 +48,10 @@ import androidx.core.view.accessibility.AccessibilityNodeInfoCompat;
 import androidx.core.view.accessibility.AccessibilityRecordCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+
+import org.zimmob.zimlx.globalsearch.SearchProvider;
+import org.zimmob.zimlx.globalsearch.SearchProviderController;
+import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
 
 /**
  * The grid view adapter of all the apps.
@@ -70,6 +76,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
     // Drawer folders
     public static final int VIEW_TYPE_FOLDER = 1 << 6;
+    // Web search suggestions
+    public static final int VIEW_TYPE_SEARCH_SUGGESTION = 1 << 7;
     // Common view type masks
     public static final int VIEW_TYPE_MASK_DIVIDER = VIEW_TYPE_ALL_APPS_DIVIDER;
     public static final int VIEW_TYPE_MASK_ICON = VIEW_TYPE_ICON | VIEW_TYPE_FOLDER;
@@ -285,6 +293,8 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
                         mLauncher.getDeviceProfile().allAppsCellHeightPx);
                 layout.setLayoutParams(lp);
                 return new ViewHolder(layout);
+            case VIEW_TYPE_SEARCH_SUGGESTION:
+                return new ViewHolder(mLayoutInflater.inflate(R.layout.all_apps_search_suggestion, parent, false));
             default:
                 throw new RuntimeException("Unexpected view type");
         }
@@ -335,6 +345,22 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
 
                 folderIcon.verifyHighRes();
                 break;
+
+            case VIEW_TYPE_SEARCH_SUGGESTION:
+                int color = getDrawerTextColor();
+                ViewGroup group = (ViewGroup) holder.itemView;
+                TextView textView = group.findViewById(R.id.suggestion);
+                String suggestion = mApps.getAdapterItems().get(position).suggestion;
+                textView.setText(suggestion);
+                textView.setTextColor(color);
+                ((ImageView) group.findViewById(android.R.id.icon)).getDrawable().setTint(color);
+                group.setOnClickListener(v -> {
+                    SearchProvider provider = getSearchProvider();
+                    if (provider instanceof WebSearchProvider) {
+                        ((WebSearchProvider) provider).openResults(suggestion);
+                    }
+                });
+                break;
         }
         if (mBindViewCallback != null) {
             mBindViewCallback.onBindView(holder);
@@ -358,4 +384,12 @@ public class AllAppsGridAdapter extends RecyclerView.Adapter<AllAppsGridAdapter.
         return item.viewType;
     }
 
+    public int getDrawerTextColor() {
+        return Utilities.getZimPrefs(mLauncher.getApplicationContext()).getDrawerLabelColor();
+    }
+
+
+    private SearchProvider getSearchProvider() {
+        return SearchProviderController.Companion.getInstance(mLauncher).getSearchProvider();
+    }
 }

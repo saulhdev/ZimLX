@@ -94,6 +94,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         mFastScrollerSections.clear();
         mAdapterItems.clear();
 
+        // Search suggestions should be all the way to the top
+        if (hasFilter() && hasSuggestions()) {
+            for (String suggestion : mSearchSuggestions) {
+                mAdapterItems.add(AdapterItem.asSearchSuggestion(position++, suggestion));
+            }
+        }
+
         // Drawer folders are arranged before all the apps
         if (!hasFilter()) {
             for (DrawerFolderInfo info : getFolderInfos()) {
@@ -346,6 +353,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
     }
 
     /**
+     * Returns whether there are suggestions.
+     */
+    public boolean hasSuggestions() {
+        return mSearchSuggestions != null && !mSearchSuggestions.isEmpty();
+    }
+
+    /**
      * Returns whether there are no filtered results.
      */
     public boolean hasNoFilteredResults() {
@@ -538,6 +552,11 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
         // The associated folder for the folder
         public DrawerFolderItem folderItem = null;
 
+        /**
+         * Search suggestion-only properties
+         */
+        public String suggestion;
+
         public static AdapterItem asApp(int pos, String sectionName, AppInfo appInfo,
                                         int appIndex) {
             AdapterItem item = new AdapterItem();
@@ -584,6 +603,14 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             item.position = pos;
             item.sectionName = sectionName;
             item.folderItem = new DrawerFolderItem(folderInfo, folderIndex);
+            return item;
+        }
+
+        public static AdapterItem asSearchSuggestion(int pos, String suggestion) {
+            AdapterItem item = new AdapterItem();
+            item.viewType = AllAppsGridAdapter.VIEW_TYPE_SEARCH_SUGGESTION;
+            item.position = pos;
+            item.suggestion = suggestion;
             return item;
         }
 

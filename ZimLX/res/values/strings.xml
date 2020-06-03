@@ -113,7 +113,6 @@
     <string name="cat__app_search">Search Bar</string>
     <string name="cat__app_misc">Miscellanea</string>
     <string name="cat__app_layout">Layout and Appearance</string>
-    <string name="cat__dock_icons">Shortcuts</string>
     <string name="title__app_spring">Spring effect</string>
     <string name="title__app_search">Show Search Bar</string>
     <string name="title__app_search_global">Global search in app drawer</string>
@@ -261,6 +260,8 @@
     <string name="reset_custom_icons_confirmation">Revert to default icons from this Icon Pack? This can’t be undone.</string>
 
     <!-- PREFERENCES DOCK  -->
+    <string name="cat__dock_icons">Shortcuts</string>
+    <string name="cat__dock_style">Style</string>
     <string name="title__dock_hotseat_icons">Icon Count</string>
     <string name="title__dock_gradient">Hide gradient</string>
     <string name="title__hotseat_hide_button">Hide dock button</string>
@@ -273,7 +274,7 @@
     <string name="title__dock_style">Dock style</string>
     <string name="title__dock_fill">Background</string>
     <string name="title__dock_shadow">Shadow</string>
-    <string name="title__dock_radius">Corner rounding</string>
+    <string name="title__dock_radius">Corner Radius</string>
     <string name="title__dock_custom_opacity">Opacity</string>
     <string name="title__dock_scale">Dock scale</string>
     <string name="title__dock_color">Dock Background</string>

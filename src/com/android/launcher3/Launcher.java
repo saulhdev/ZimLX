@@ -148,6 +148,7 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
+import com.aosp.launcher.AospLauncher;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -233,6 +234,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private View mLauncherView;
     @Thunk DragLayer mDragLayer;
     private DragController mDragController;
+    // Main container view for the all apps screen.
+    @Thunk
+    public AllAppsContainerView mAppsView;
 
     private AppWidgetManagerCompat mAppWidgetManager;
     private LauncherAppWidgetHost mAppWidgetHost;
@@ -244,9 +248,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     private View mHotseatSearchBox;
 
     private DropTargetBar mDropTargetBar;
-
-    // Main container view for the all apps screen.
-    @Thunk AllAppsContainerView mAppsView;
+    private View mQsbContainer;
     public AllAppsTransitionController mAllAppsController;
 
     // Scrim view for the all apps and overview state.
@@ -1093,13 +1095,51 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         void onScrollChanged(float progress);
     }
 
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
-
-        public void onScrollChanged(float progress) {
-            if (mWorkspace != null) {
-                mWorkspace.onOverlayScrollChanged(progress);
-            }
+    /**
+     * Finds all the views we need and configure them properly.
+     */
+    private void setupViews() {
+        mDragLayer = findViewById(R.id.drag_layer);
+        mFocusHandler = mDragLayer.getFocusIndicatorHelper();
+        mWorkspace = mDragLayer.findViewById(R.id.workspace);
+        if (Utilities.getZimPrefs(this).getUsePillQsb()) {
+            mQsbContainer = mDragLayer.findViewById(R.id.workspace_blocked_row);
         }
+        mWorkspace.initParentViews(mDragLayer);
+        mOverviewPanel = findViewById(R.id.overview_panel);
+        mHotseat = findViewById(R.id.hotseat);
+        //mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
+
+        mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+
+        // Setup the drag layer
+        mDragLayer.setup(mDragController, mWorkspace);
+        UiFactory.setOnTouchControllersChangedListener(this, mDragLayer::recreateControllers);
+        mCancelTouchController = UiFactory.enableLiveUIChanges(this);
+
+        mWorkspace.setup(mDragController);
+        // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
+        // default state, otherwise we will update to the wrong offsets in RTL
+        mWorkspace.lockWallpaperToDefaultPage();
+        mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
+        mDragController.addDragListener(mWorkspace);
+
+        // Get the search/delete/uninstall bar
+        mDropTargetBar = mDragLayer.findViewById(R.id.drop_target_bar);
+
+        // Setup Apps
+        mAppsView = findViewById(R.id.apps_view);
+
+        // Setup Scrim
+        mScrimView = findViewById(R.id.scrim_view);
+
+        // Setup the drag controller (drop targets have to be added in reverse order in priority)
+        mDragController.setMoveTarget(mWorkspace);
+        mDropTargetBar.setup(mDragController);
+
+        mAllAppsController.setupViews(mAppsView);
     }
 
     public boolean isInState(LauncherState state) {
@@ -1138,48 +1178,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    /**
-     * Finds all the views we need and configure them properly.
-     */
-    private void setupViews() {
-        mDragLayer = findViewById(R.id.drag_layer);
-        mFocusHandler = mDragLayer.getFocusIndicatorHelper();
-        mWorkspace = mDragLayer.findViewById(R.id.workspace);
-        mWorkspace.initParentViews(mDragLayer);
-        mOverviewPanel = findViewById(R.id.overview_panel);
-        mHotseat = findViewById(R.id.hotseat);
-        mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
-
-        mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-
-        // Setup the drag layer
-        mDragLayer.setup(mDragController, mWorkspace);
-        UiFactory.setOnTouchControllersChangedListener(this, mDragLayer::recreateControllers);
-        mCancelTouchController = UiFactory.enableLiveUIChanges(this);
-
-        mWorkspace.setup(mDragController);
-        // Until the workspace is bound, ensure that we keep the wallpaper offset locked to the
-        // default state, otherwise we will update to the wrong offsets in RTL
-        mWorkspace.lockWallpaperToDefaultPage();
-        mWorkspace.bindAndInitFirstWorkspaceScreen(null /* recycled qsb */);
-        mDragController.addDragListener(mWorkspace);
-
-        // Get the search/delete/uninstall bar
-        mDropTargetBar = mDragLayer.findViewById(R.id.drop_target_bar);
-
-        // Setup Apps
-        mAppsView = findViewById(R.id.apps_view);
-
-        // Setup Scrim
-        mScrimView = findViewById(R.id.scrim_view);
-
-        // Setup the drag controller (drop targets have to be added in reverse order in priority)
-        mDragController.setMoveTarget(mWorkspace);
-        mDropTargetBar.setup(mDragController);
-
-        mAllAppsController.setupViews(mAppsView);
+    public View getQsbContainer() {
+        return mQsbContainer;
     }
 
     /**
@@ -1391,6 +1391,11 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     public Hotseat getHotseat() {
         return mHotseat;
+    }
+
+    boolean isHotseatLayout(View layout) {
+        // TODO: Remove this method
+        return mHotseat != null && (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
     }
 
     public View getHotseatSearchBox() {
@@ -1944,9 +1949,58 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         return success;
     }
 
-    boolean isHotseatLayout(View layout) {
-        // TODO: Remove this method
-        return mHotseat != null && (layout == mHotseat);
+    /**
+     * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
+     */
+    @Override
+    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
+        super.dump(prefix, fd, writer, args);
+
+        if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
+            writer.println(prefix + "Workspace Items");
+            for (int i = 0; i < mWorkspace.getPageCount(); i++) {
+                writer.println(prefix + "  Homescreen " + i);
+
+                ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
+                for (int j = 0; j < layout.getChildCount(); j++) {
+                    Object tag = layout.getChildAt(j).getTag();
+                    if (tag != null) {
+                        writer.println(prefix + "    " + tag.toString());
+                    }
+                }
+            }
+
+            writer.println(prefix + "  Hotseat");
+            ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
+            for (int j = 0; j < layout.getChildCount(); j++) {
+                Object tag = layout.getChildAt(j).getTag();
+                if (tag != null) {
+                    writer.println(prefix + "    " + tag.toString());
+                }
+            }
+        }
+
+        writer.println(prefix + "Misc:");
+        writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
+        writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
+        writer.println(" mPendingActivityResult=" + mPendingActivityResult);
+        writer.println(" mRotationHelper: " + mRotationHelper);
+        // Extra logging for b/116853349
+        mDragLayer.dump(prefix, writer);
+        mStateManager.dump(prefix, writer);
+        dumpMisc(writer);
+
+        try {
+            FileLog.flushAll(writer);
+        } catch (Exception e) {
+            // Ignore
+        }
+
+        mModel.dumpState(prefix, fd, writer, args);
+
+        if (mLauncherCallbacks != null) {
+            mLauncherCallbacks.dump(prefix, fd, writer, args);
+        }
     }
 
     /**
@@ -2537,57 +2591,25 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
-    /**
-     * $ adb shell dumpsys activity com.android.launcher3.Launcher [--all]
-     */
-    @Override
-    public void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
-        super.dump(prefix, fd, writer, args);
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
 
-        if (args.length > 0 && TextUtils.equals(args[0], "--all")) {
-            writer.println(prefix + "Workspace Items");
-            for (int i = 0; i < mWorkspace.getPageCount(); i++) {
-                writer.println(prefix + "  Homescreen " + i);
-
-                ViewGroup layout = ((CellLayout) mWorkspace.getPageAt(i)).getShortcutsAndWidgets();
-                for (int j = 0; j < layout.getChildCount(); j++) {
-                    Object tag = layout.getChildAt(j).getTag();
-                    if (tag != null) {
-                        writer.println(prefix + "    " + tag.toString());
-                    }
-                }
-            }
-
-            writer.println(prefix + "  Hotseat");
-            ViewGroup layout = mHotseat.getShortcutsAndWidgets();
-            for (int j = 0; j < layout.getChildCount(); j++) {
-                Object tag = layout.getChildAt(j).getTag();
-                if (tag != null) {
-                    writer.println(prefix + "    " + tag.toString());
-                }
+        public void onScrollChanged(float progress) {
+            if (mWorkspace != null) {
+                mWorkspace.onOverlayScrollChanged(progress);
             }
         }
 
-        writer.println(prefix + "Misc:");
-        writer.print(prefix + "\tmWorkspaceLoading=" + mWorkspaceLoading);
-        writer.print(" mPendingRequestArgs=" + mPendingRequestArgs);
-        writer.println(" mPendingActivityResult=" + mPendingActivityResult);
-        writer.println(" mRotationHelper: " + mRotationHelper);
-        // Extra logging for b/116853349
-        mDragLayer.dump(prefix, writer);
-        mStateManager.dump(prefix, writer);
-        dumpMisc(writer);
-
-        try {
-            FileLog.flushAll(writer);
-        } catch (Exception e) {
-            // Ignore
+        private void hideOverlay(LauncherState launcherState, boolean animate) {
+            if (launcherState == LauncherState.OVERVIEW) { //|| launcherState == LauncherState.FAST_OVERVIEW) {
+                hideOverlay(animate);
+            }
         }
 
-        mModel.dumpState(prefix, fd, writer, args);
-
-        if (mLauncherCallbacks != null) {
-            mLauncherCallbacks.dump(prefix, fd, writer, args);
+        private void hideOverlay(boolean animate) {
+            Launcher launcher = Launcher.this;
+            if (launcher instanceof AospLauncher) {
+                ((AospLauncher) launcher).getGoogleNow().hideOverlay(animate);
+            }
         }
     }
 

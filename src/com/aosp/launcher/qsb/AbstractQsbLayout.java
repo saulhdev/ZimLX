@@ -19,14 +19,13 @@ package com.aosp.launcher.qsb;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.text.TextPaint;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,27 +34,39 @@ import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.graphics.IconShape;
+import com.android.launcher3.util.TransformingTouchDelegate;
 import com.aosp.launcher.AospLauncher;
 
-import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.globalsearch.SearchProvider;
 import org.zimmob.zimlx.globalsearch.SearchProviderController;
-import org.zimmob.zimlx.util.ZimUtilsKt;
+import org.zimmob.zimlx.qsb.k;
 
-public abstract class AbstractQsbLayout extends FrameLayout {
+import static org.zimmob.zimlx.util.ZimUtilsKt.round;
+
+public abstract class AbstractQsbLayout extends FrameLayout implements View.OnClickListener,
+        SharedPreferences.OnSharedPreferenceChangeListener, SearchProviderController.OnProviderChangeListener {
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
-
+    protected final boolean mIsRtl;
     protected final AospLauncher mActivity;
-    protected Bitmap mShadowBitmap;
-    protected ImageView mMicIconView;
     protected boolean mUseTwoBubbles;
-    private boolean mShowAssistant;
-    private ImageView mLogoIconView;
-    private float mRadius = -1.0f;
-
-    public AbstractQsbLayout(@NonNull Context context) {
-        this(context, null, 0);
-    }
+    //public float micStrokeWidth;
+    protected final Paint mMicStrokePaint;
+    protected final Paint CV;
+    protected final int qsbMicWidth;
+    protected final TextPaint qsbHint;
+    protected final int qsbTextSpacing;
+    protected final boolean mLowPerformanceMode;
+    protected final int twoBubbleGap;
+    protected final int qsbMaxHintLength;
+    private final TransformingTouchDelegate touchDelegate;
+    public int mShadowMargin;
+    protected FallbackAppsSearchView mFallback;
+    protected String Dg;
+    protected Bitmap Db;
+    protected int Dc;
+    protected int Dd;
+    protected k Ds;
+    protected boolean Dh;
 
     public AbstractQsbLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -63,37 +74,20 @@ public abstract class AbstractQsbLayout extends FrameLayout {
 
     public AbstractQsbLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        touchDelegate = new TransformingTouchDelegate(this);
         mActivity = (AospLauncher) Launcher.getLauncher(context);
-    }
+        mShadowMargin = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
+        qsbMicWidth = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
+        qsbTextSpacing = getResources().getDimensionPixelSize(R.dimen.qsb_text_spacing);
+        twoBubbleGap = getResources().getDimensionPixelSize(R.dimen.qsb_two_bubble_gap);
+        qsbMaxHintLength = getResources().getDimensionPixelSize(R.dimen.qsb_max_hint_length);
+        qsbHint = new TextPaint();
+        qsbHint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.qsb_hint_text_size));
+        mIsRtl = Utilities.isRtl(getResources());
+        mMicStrokePaint = new Paint(1);
+        CV = new Paint(1);
 
-    public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        switch (key) {
-            case "opa_enabled":
-            case "opa_assistant":
-            case "pref_bubbleSearchStyle":
-                loadPreferences(sharedPreferences);
-        }
-        if (key.equals("pref_searchbarRadius")) {
-            mShadowBitmap = null;
-            loadPreferences(sharedPreferences);
-        }
-    }
-
-    protected void loadPreferences(SharedPreferences sharedPreferences) {
-        post(() -> {
-            mShowAssistant = sharedPreferences.getBoolean("opa_assistant", true);
-            mLogoIconView.setImageDrawable(getIcon());
-            mMicIconView.setVisibility(sharedPreferences.getBoolean("opa_enabled", true) ? View.VISIBLE : View.GONE);
-            mMicIconView.setImageDrawable(getMicIcon());
-            mUseTwoBubbles = useTwoBubbles();
-            mRadius = Utilities.getZimPrefs(getContext()).getSearchBarRadius();
-            invalidate();
-        });
-    }
-
-    public boolean useTwoBubbles() {
-        return mMicIconView.getVisibility() == View.VISIBLE && Utilities
-                .getZimPrefs(mActivity).getDualBubbleSearch();
+        mLowPerformanceMode = Utilities.getZimPrefs(context).getLowPerformanceMode();
     }
 
     protected Drawable getIcon() {
@@ -105,24 +99,8 @@ public abstract class AbstractQsbLayout extends FrameLayout {
         return provider.getIcon(colored);
     }
 
-    protected Drawable getMicIcon() {
-        return getMicIcon(true);
-    }
-
-    protected Drawable getMicIcon(boolean colored) {
-        SearchProvider provider = SearchProviderController.Companion.getInstance(getContext()).getSearchProvider();
-        if (mShowAssistant && provider.getSupportsAssistant()) {
-            return provider.getAssistantIcon(colored);
-        } else if (provider.getSupportsVoiceSearch()) {
-            return provider.getVoiceIcon(colored);
-        } else {
-            mMicIconView.setVisibility(GONE);
-            return new ColorDrawable(Color.TRANSPARENT);
-        }
-    }
-
     public static float getCornerRadius(Context context, float defaultRadius) {
-        float radius = ZimUtilsKt.round(Utilities.getZimPrefs(context).getSearchBarRadius());
+        float radius = round(Utilities.getZimPrefs(context).getSearchBarRadius());
         if (radius > 0f) {
             return radius;
         }
@@ -132,5 +110,10 @@ public abstract class AbstractQsbLayout extends FrameLayout {
         } else {
             return defaultRadius;
         }
+    }
+
+    protected float getCornerRadius() {
+        return getCornerRadius(getContext(),
+                Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
     }
 }

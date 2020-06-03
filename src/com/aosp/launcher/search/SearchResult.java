@@ -19,15 +19,18 @@ import com.android.launcher3.allapps.search.AllAppsSearchBarController.Callbacks
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class SearchResult {
 
     public final ArrayList<ComponentKey> mApps = new ArrayList();
     public final Callbacks mCallbacks;
     public final String mQuery;
+    public final List<String> mSuggestions;
 
     public SearchResult(String query, Callbacks callbacks) {
         mQuery = query;
         mCallbacks = callbacks;
+        mSuggestions = new ArrayList<>();
     }
 }

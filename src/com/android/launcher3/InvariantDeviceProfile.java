@@ -257,8 +257,8 @@ public class InvariantDeviceProfile {
         new IconScale(Utilities.getZimPrefs(context), "hotseatIconSize", "iconSize", this);
 
         iconBitmapSize = Utilities.pxFromDp(max(max(iconSize, allAppsIconSize), hotseatIconSize), dm);
-        iconTextSize = interpolatedDisplayOption.iconTextSize;
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+        iconTextSize = interpolatedDisplayOption.iconTextSize;
 
         // If the partner customization apk contains any grid overrides, apply them
         // Supported overrides: numRows, numColumns, iconSize
@@ -308,9 +308,10 @@ public class InvariantDeviceProfile {
             float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;
         }
-        float maxSize = max(max(iconSize, allAppsIconSize), iconSize);
-        iconBitmapSize = max(1, Utilities.pxFromDp(maxSize, dm));
-        fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+        //float maxSize = max(max(iconSize, allAppsIconSize), iconSize);
+        //iconBitmapSize = max(1, Utilities.pxFromDp(maxSize, dm));
+
+        //fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
     }
 
     @Nullable

@@ -16,18 +16,25 @@
  *     You should have received a copy of the GNU General Public License
  *     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
  */
-package org.zimmob.zimlx.globalsearch
+
+package org.zimmob.zimlx.preferences
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
-import android.widget.FrameLayout
+import androidx.annotation.Keep
 
-class SearchWidget(context: Context, attrs: AttributeSet?) : FrameLayout(context, attrs) {
-    /*override fun addView(child: View?) {
-        super.addView(child)
-        if (child is HotseatQsbWidget) {
-            child.setWidgetMode(true)
+@Keep
+class AutoModeScalePreference @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
+        AutoModeSeekbarPreference(context, attrs, defStyleAttr) {
+
+    override fun updateDisplayedValue() {
+        super.updateDisplayedValue()
+        if (current < low && current != -1f) {
+            persistFloat(current)
         }
-    }*/
+    }
+
+    override fun persistFloat(value: Float): Boolean {
+        return super.persistFloat(if (value < low) -1f else value)
+    }
 }

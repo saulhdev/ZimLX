@@ -29,7 +29,7 @@ open class HomeState(id: Int, containerType: Int, transitionDuration: Int, flags
         LauncherState(id, containerType, transitionDuration, flags) {
 
     override fun getScrimProgress(launcher: Launcher): Float {
-        if (!launcher.zimPrefs.dockGradientStyle) {
+        if (!launcher.zimPrefs.dockGradient) {
             return getNormalProgress(launcher)
         }
         return super.getScrimProgress(launcher)

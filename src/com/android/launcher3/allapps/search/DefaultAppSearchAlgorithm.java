@@ -30,10 +30,14 @@ import com.android.launcher3.compat.UserManagerCompat;
 import com.android.launcher3.icons.IconCache;
 import com.android.launcher3.util.ComponentKey;
 
+import org.zimmob.zimlx.ZimAppFilter;
+import org.zimmob.zimlx.globalsearch.SearchProvider;
+import org.zimmob.zimlx.globalsearch.SearchProviderController;
 import org.zimmob.zimlx.globalsearch.providers.web.WebSearchProvider;
 
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -42,12 +46,17 @@ import java.util.List;
 public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
 
     public final static String SEARCH_HIDDEN_APPS = "pref_search_hidden_apps";
+    private final Context mContext;
     private final List<AppInfo> mApps;
-    protected final Handler mResultHandler;
+    private final Handler mResultHandler;
 
-    public DefaultAppSearchAlgorithm(List<AppInfo> apps) {
+    private final AppFilter mBaseFilter;
+
+    public DefaultAppSearchAlgorithm(Context context, List<AppInfo> apps) {
+        mContext = context;
         mApps = apps;
         mResultHandler = new Handler();
+        mBaseFilter = new ZimAppFilter(context);
     }
 
     @Override
@@ -58,16 +67,10 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
     }
 
     @Override
-    public void doSearch(final String query,
-            final AllAppsSearchBarController.Callbacks callback) {
+    public void doSearch(final String query, final AllAppsSearchBarController.Callbacks callback) {
         final ArrayList<ComponentKey> result = getTitleMatchResult(query);
-        mResultHandler.post(new Runnable() {
-
-            @Override
-            public void run() {
-                callback.onSearchResult(query, result);
-            }
-        });
+        final List<String> suggestions = getSuggestions(query);
+        mResultHandler.post(() -> callback.onSearchResult(query, result, suggestions));
     }
 
     private ArrayList<ComponentKey> getTitleMatchResult(String query) {
@@ -76,7 +79,7 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         final String queryTextLower = query.toLowerCase();
         final ArrayList<ComponentKey> result = new ArrayList<>();
         StringMatcher matcher = StringMatcher.getInstance();
-        for (AppInfo info : mApps) {
+        for (AppInfo info : getApps(mContext, mApps, mBaseFilter)) {
             if (matches(info, queryTextLower, matcher)) {
                 result.add(info.toComponentKey());
             }
@@ -84,14 +87,14 @@ public class DefaultAppSearchAlgorithm implements SearchAlgorithm {
         return result;
     }
 
-    /*private List<String> getSuggestions(String query) {
+    private List<String> getSuggestions(String query) {
         SearchProvider provider = SearchProviderController.Companion
-                .getInstance(get).getSearchProvider();
+                .getInstance(mContext).getSearchProvider();
         if (provider instanceof WebSearchProvider) {
             return ((WebSearchProvider) provider).getSuggestions(query);
         }
         return Collections.emptyList();
-    }*/
+    }
 
     public static List<AppInfo> getApps(Context context, List<AppInfo> defaultApps, AppFilter filter) {
         if (!Utilities.getPrefs(context).getBoolean(SEARCH_HIDDEN_APPS, false)) {

@@ -48,6 +48,8 @@ import com.android.launcher3.model.LoaderResults;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.LooperExecutor;
 
+import org.zimmob.zimlx.allapps.FuzzyAppSearchAlgorithm;
+
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -234,7 +236,19 @@ public class AppSearchProvider extends ContentProvider {
                 Log.d("AppSearchProvider", "Workspace not loaded, loading now");
                 mModel.startLoaderForResults(new LoaderResults(mApp, mBgDataModel, mAllAppsList, 0, null));
             }
-            if (mModel.isModelLoaded()) {
+            if (!this.mModel.isModelLoaded()) {
+                Log.d("AppSearchProvider", "Loading workspace failed");
+                return Collections.emptyList();
+            }
+            final List<AppInfo> results = FuzzyAppSearchAlgorithm.query(mApp.getContext(), mQuery, mAllAppsList.data, getBaseFilter());
+            for (AppInfo appInfo : results) {
+                if (appInfo.usingLowResIcon()) {
+                    mApp.getIconCache().getTitleAndIcon(appInfo, false);
+                }
+            }
+            return results;
+
+            /*if (mModel.isModelLoaded()) {
                 ArrayList<AppInfo> list = new ArrayList();
                 List<AppInfo> data = mAllAppsList.data;
                 StringMatcher instance = StringMatcher.getInstance();
@@ -250,7 +264,7 @@ public class AppSearchProvider extends ContentProvider {
                 return list;
             }
             Log.d("AppSearchProvider", "Loading workspace failed");
-            return Collections.emptyList();
+            return Collections.emptyList();*/
         }
 
         @Override

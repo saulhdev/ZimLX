@@ -21,6 +21,7 @@ abstract class SearchProvider(protected val context: Context) {
     open val isAvailable: Boolean = true
 
     abstract fun startSearch(callback: (intent: Intent) -> Unit = {})
+
     open fun startVoiceSearch(callback: (intent: Intent) -> Unit = {}) {
         if (supportsVoiceSearch) throw RuntimeException("Voice search supported but not implemented")
     }

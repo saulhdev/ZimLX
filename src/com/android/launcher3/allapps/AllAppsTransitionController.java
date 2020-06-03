@@ -1,6 +1,7 @@
 package com.android.launcher3.allapps;
 
 import static com.android.launcher3.LauncherState.ALL_APPS_CONTENT;
+import static com.android.launcher3.LauncherState.ALL_APPS_HEADER;
 import static com.android.launcher3.LauncherState.ALL_APPS_HEADER_EXTRA;
 import static com.android.launcher3.LauncherState.BACKGROUND_APP;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
@@ -17,7 +18,11 @@ import static com.android.launcher3.util.SystemUiController.UI_STATE_ALL_APPS;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
 import android.util.FloatProperty;
+import android.util.Property;
+import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.Interpolator;
 
 import com.android.launcher3.DeviceProfile;
@@ -27,13 +32,16 @@ import com.android.launcher3.LauncherState;
 import com.android.launcher3.LauncherStateManager.AnimationConfig;
 import com.android.launcher3.LauncherStateManager.StateHandler;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.anim.AnimationSuccessListener;
 import com.android.launcher3.anim.AnimatorSetBuilder;
+import com.android.launcher3.anim.Interpolators;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.anim.SpringObjectAnimator;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.ScrimView;
 
+import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.views.BlurScrimView;
 
 /**
@@ -65,6 +73,20 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     };
 
+    public static final Property<AllAppsTransitionController, Float> SCRIM_PROGRESS =
+            new Property<AllAppsTransitionController, Float>(Float.class, "allAppsProgress") {
+
+                @Override
+                public Float get(AllAppsTransitionController controller) {
+                    return controller.mScrimProgress;
+                }
+
+                @Override
+                public void set(AllAppsTransitionController controller, Float progress) {
+                    controller.setScrimProgress(progress);
+                }
+            };
+
     private static final int APPS_VIEW_ALPHA_CHANNEL_INDEX = 0;
 
     private AllAppsContainerView mAppsView;
@@ -82,13 +104,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     // When {@link mProgress} is 1, all apps container is pulled down.
     private float mShiftRange;      // changes depending on the orientation
     private float mProgress;        // [0, 1], mShiftRange * mProgress = shiftCurrent
+    private float mScrimProgress;
 
     private float mScrollRangeDelta = 0;
 
     public AllAppsTransitionController(Launcher l) {
         mLauncher = l;
         mShiftRange = mLauncher.getDeviceProfile().heightPx;
-        mProgress = 1f;
+        mProgress = mScrimProgress = 1f;
 
         mIsDarkTheme = Themes.getAttrBoolean(mLauncher, R.attr.isMainColorDark);
         mIsVerticalLayout = mLauncher.getDeviceProfile().isVerticalBarLayout();
@@ -99,13 +122,20 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         return mShiftRange;
     }
 
+    private void onProgressAnimationStart() {
+        // Initialize values that should not change until #onDragEnd
+        mAppsView.setVisibility(View.VISIBLE);
+    }
+
+
     @Override
     public void onDeviceProfileChanged(DeviceProfile dp) {
         mIsVerticalLayout = dp.isVerticalBarLayout();
         setScrollRangeDelta(mScrollRangeDelta);
 
         if (mIsVerticalLayout) {
-            mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1);
+            //mAppsView.getAlphaProperty(APPS_VIEW_ALPHA_CHANNEL_INDEX).setValue(1);
+            mAppsView.setAlpha(1);
             mLauncher.getHotseat().setTranslationY(0);
             mLauncher.getWorkspace().getPageIndicator().setTranslationY(0);
         }
@@ -123,9 +153,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setProgress(float progress) {
         mProgress = progress;
         mScrimView.setProgress(progress);
-        float shiftCurrent = progress * mShiftRange;
+        //float shiftCurrent = progress * mShiftRange;
+        float shiftCurrent = getShiftApps(progress, true);
 
-        mAppsView.setTranslationY(shiftCurrent);
+        //mAppsView.setTranslationY(shiftCurrent);
+        mAppsView.setTranslationY(getShiftApps(progress, false));
 
         // Use a light system UI (dark icons) if all apps is behind at least half of the
         // status bar.
@@ -147,8 +179,46 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         }
     }
 
+    private float getShiftApps(float progress, boolean inverted) {
+        float normalShift = progress * mShiftRange;
+        ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        if (mAppsView.getFloatingHeaderView().hasVisibleContent()
+                && prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+            float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
+            float overviewShift = getQsbHeight();
+            if (prefs.getAllAppsSearch()) {
+                overviewShift = -overviewShift;
+            }
+            if (progress < overviewProgress) {
+                overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
+                        inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
+                        inverted ? 0 : overviewShift,
+                        Interpolators.LINEAR);
+            } else if (inverted) {
+                overviewShift = 0;
+            }
+            return normalShift + overviewShift;
+        } else {
+            return normalShift;
+        }
+    }
+
+    private int getQsbHeight() {
+        ViewGroup.MarginLayoutParams mlp = (ViewGroup.MarginLayoutParams) mAppsView.getSearchView().getLayoutParams();
+        return mlp.topMargin + mlp.height;
+    }
+
     public float getProgress() {
         return mProgress;
+    }
+
+    public float getScrimProgress() {
+        return mScrimProgress;
+    }
+
+    public void setScrimProgress(float progress) {
+        mScrimProgress = progress;
+        mScrimView.setProgress(progress);
     }
 
     /**
@@ -158,6 +228,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     @Override
     public void setState(LauncherState state) {
         setProgress(state.getVerticalProgress(mLauncher));
+        setScrimProgress(state.getScrimProgress(mLauncher));
         setAlphas(state, null, new AnimatorSetBuilder());
         onProgressAnimationEnd();
     }
@@ -170,7 +241,9 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setStateWithAnimation(LauncherState toState,
             AnimatorSetBuilder builder, AnimationConfig config) {
         float targetProgress = toState.getVerticalProgress(mLauncher);
-        if (Float.compare(mProgress, targetProgress) == 0) {
+        float targetScrimProgress = toState.getScrimProgress(mLauncher);
+        if (Float.compare(mProgress, targetProgress) == 0
+                && Float.compare(mScrimProgress, targetScrimProgress) == 0) {
             setAlphas(toState, config, builder);
             // Fail fast
             onProgressAnimationEnd();
@@ -192,6 +265,14 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
 
         builder.play(anim);
 
+        ObjectAnimator scrimAnim =
+                ObjectAnimator.ofFloat(this, SCRIM_PROGRESS, mScrimProgress, targetScrimProgress);
+        scrimAnim.setDuration(config.duration);
+        scrimAnim.setInterpolator(builder.getInterpolator(ANIM_VERTICAL_PROGRESS, interpolator));
+        scrimAnim.addListener(getProgressAnimatorListener());
+
+        builder.play(scrimAnim);
+
         setAlphas(toState, config, builder);
     }
 
@@ -208,11 +289,16 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
     public void setAlphas(int visibleElements, AnimationConfig config, AnimatorSetBuilder builder) {
         PropertySetter setter = config == null ? NO_ANIM_PROPERTY_SETTER
                 : config.getPropertySetter(builder);
+
+
+        ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
+        boolean hasHeader = (visibleElements & ALL_APPS_HEADER) != 0 && prefs.getAllAppsSearch();
         boolean hasHeaderExtra = (visibleElements & ALL_APPS_HEADER_EXTRA) != 0;
         boolean hasAllAppsContent = (visibleElements & ALL_APPS_CONTENT) != 0;
 
         Interpolator allAppsFade = builder.getInterpolator(ANIM_ALL_APPS_FADE, LINEAR);
         Interpolator headerFade = builder.getInterpolator(ANIM_ALL_APPS_HEADER_FADE, allAppsFade);
+        setter.setViewAlpha(mAppsView.getSearchView(), hasHeader ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getContentView(), hasAllAppsContent ? 1 : 0, allAppsFade);
         setter.setViewAlpha(mAppsView.getScrollBar(), hasAllAppsContent ? 1 : 0, allAppsFade);
         mAppsView.getFloatingHeaderView().setContentVisibility(hasHeaderExtra, hasAllAppsContent,
@@ -228,6 +314,11 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             @Override
             public void onAnimationSuccess(Animator animator) {
                 onProgressAnimationEnd();
+            }
+
+            @Override
+            public void onAnimationStart(Animator animation) {
+                onProgressAnimationStart();
             }
         };
     }
@@ -253,14 +344,25 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
      * Set the final view states based on the progress.
      * TODO: This logic should go in {@link LauncherState}
      */
+    /*
     private void onProgressAnimationEnd() {
         if (Float.compare(mProgress, 1f) == 0) {
-            mAppsView.reset(false /* animate */);
+            mAppsView.reset(false );
         } else if (isAllAppsExpanded()) {
             mAppsView.onScrollUpEnd();
         }
+    }*/
+    private void onProgressAnimationEnd() {
+        if (Float.compare(mProgress, 1f) == 0) {
+            mAppsView.setVisibility(View.INVISIBLE);
+            mAppsView.reset(false /* animate */);
+        } else if (Float.compare(mProgress, 0f) == 0) {
+            mAppsView.setVisibility(View.VISIBLE);
+            mAppsView.onScrollUpEnd();
+        } else {
+            mAppsView.setVisibility(View.VISIBLE);
+        }
     }
-
     public void reset() {
         setProgress(1f);
     }

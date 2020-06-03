@@ -118,6 +118,11 @@
     <item name="search_container_hotseat" type="id" />
     <item type="id" name="search_container_all_apps" />
 
-<!-- Recents -->
+    <!-- View ID to use for blocked area on the first screen -->
+    <item name="workspace_blocked_row" type="id" />
+
+    <!-- Recents -->
     <item type="id" name="overview_panel"/>
+
+    <item name="workspace_page_container" type="id" />
 </resources>

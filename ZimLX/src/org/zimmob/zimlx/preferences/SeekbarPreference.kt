@@ -1,5 +1,6 @@
 package org.zimmob.zimlx.preferences
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.content.res.ColorStateList
 import android.os.Handler
@@ -98,8 +99,13 @@ open class SeekbarPreference
         persistFloat(current)
     }
 
+    @SuppressLint("SetTextI18n")
     protected open fun updateSummary() {
-        mValueText!!.text = String.format(format!!, current * multiplier)
+        if (format != "%.2f") {
+            mValueText!!.text = String.format(format!!, current * multiplier)
+        } else {
+            mValueText!!.text = (current * multiplier).toInt().toString() + "dp"
+        }
     }
 
     override fun onStartTrackingTouch(seekBar: SeekBar) {}

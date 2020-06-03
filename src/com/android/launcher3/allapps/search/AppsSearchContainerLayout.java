@@ -52,7 +52,10 @@ import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.views.ActivityContext;
 
+import org.zimmob.zimlx.allapps.FuzzyAppSearchAlgorithm;
+
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Layout to contain the All-apps search UI.
@@ -141,9 +144,11 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     @Override
     public void initialize(AllAppsContainerView appsView) {
         mApps = appsView.getApps();
-        mAppsView = appsView;
+        mAppsView = appsView;/*
         mSearchBarController.initialize(
-                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);
+                new DefaultAppSearchAlgorithm(mApps.getApps()), this, mLauncher, this);*/
+        mSearchBarController.initialize(
+                new FuzzyAppSearchAlgorithm(getContext(), mApps.getApps()), this, mLauncher, this);
     }
 
     @Override
@@ -176,9 +181,20 @@ public class AppsSearchContainerLayout extends ExtendedEditText
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
+        /*if (apps != null) {
+            mApps.setOrderedFilter(apps);
+            notifyResultChanged();
+            mAppsView.setLastSearchQuery(query);
+        }*/
+
         if (apps != null) {
             mApps.setOrderedFilter(apps);
+        }
+        if (suggestions != null) {
+            mApps.setSearchSuggestions(suggestions);
+        }
+        if (apps != null || suggestions != null) {
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }

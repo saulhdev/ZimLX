@@ -134,7 +134,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val predictionGridSize by predictionGridSizeDelegate
     val drawerTextScale by FloatPref("pref_allAppsIconTextScale", 1f, recreate)
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
-
+    val drawerLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
     val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
         header?.updateShowAllAppsLabel()
@@ -149,26 +149,29 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val searchHiddenApps by BooleanPref(DefaultAppSearchAlgorithm.SEARCH_HIDDEN_APPS, false)
     var hiddenAppSet by StringSetPref("hidden-app-set", Collections.emptySet(), reloadApps)
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
-    val allAppsLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
     val allAppsBackground by IntPref("pref_allAppsBackground", R.color.ic_allapps_background, reloadApps)
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
 
+    val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
+
     /* --DOCK-- */
-    var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
-    val dockStyles = DockStyle.StyleManager(this, reloadDockStyle, resetAllApps)
-    val dockGradientStyle get() = dockStyles.currentStyle.enableGradient
-    val dockGradient by BooleanPref("pref_key__dock_gradient", false, restart)
+    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
     private val dockGridSizeDelegate = ResettableLazy { GridSize(this, "numHotseatIcons", LauncherAppState.getIDP(context), restart) }
+    var dockHide by BooleanPref("pref_key__hide_hotseat", false, recreate)
+    val dockGradient by BooleanPref("pref_dockGradient", false, restart)
+    val dockColor by IntPref("pref_key__dock_background", R.color.transparentish, restart)
+    val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate)
+    var dockRadius by FloatPref("pref_dockRadius", 16f, recreate)
     val dockGridSize by dockGridSizeDelegate
-    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", false, recreate)
+    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
     val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
-    private val dockMultilineLabel by BooleanPref("pref_dockIconLabelsInTwoLines", false, recreate)
     val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
     val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
+    val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -218,11 +221,11 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.defaultSearchProvider) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
-    var showVoiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
+    var voiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
     var showAssistantIcon by BooleanPref("opa_assistant", false, recreate)
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
-    var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", true, doNothing)
+    var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", false, doNothing)
 
     // Quickstep
     var swipeUpToSwitchApps by BooleanPref("pref_swipe_up_to_switch_apps_enabled", true, doNothing)
@@ -234,7 +237,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     //Notification
     val notificationCount: Boolean by BooleanPref("pref_notification_count", true, recreate)
     val notificationBackground by IntPref("pref_notification_background", R.color.notification_background, recreate)
-    val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true, recreate)
+
+    //Folder
+    val folderBadgeCount by BooleanPref("pref_key__folder_badge_count", true)
+    val folderBackground by IntPref("pref_key__folder_background", R.color.folderBackground, recreate)
 
     /* --DEV-- */
     var developerOptionsEnabled by BooleanPref("pref_developerOptionsEnabled", false, doNothing)

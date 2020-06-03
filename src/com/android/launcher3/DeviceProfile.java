@@ -223,19 +223,37 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
 
         workspaceCellPaddingXPx = res.getDimensionPixelSize(R.dimen.dynamic_grid_cell_padding_x);
 
+        boolean dockSearchBar = prefs.getDockSearchBar();
+        int dockRows = prefs.getDockRowsCount();
         hotseatBarTopPaddingPx =
-                res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_top_padding);
-        hotseatBarBottomPaddingPx = (isTallDevice ? 0
-                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding))
-                + res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_padding);
+                res.getDimensionPixelSize(dockSearchBar ?
+                        R.dimen.dynamic_grid_hotseat_top_padding :
+                        R.dimen.v1_dynamic_grid_hotseat_top_padding);
+        int extraHotseatBottomPadding = !prefs.getDockGradient() ? 0
+                : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
+        hotseatBarBottomPaddingPx = extraHotseatBottomPadding
+                + res.getDimensionPixelSize(dockSearchBar ?
+                R.dimen.dynamic_grid_hotseat_bottom_padding :
+                R.dimen.v1_dynamic_grid_hotseat_bottom_padding);
         hotseatBarSidePaddingEndPx =
                 res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_side_padding);
         // Add a bit of space between nav bar and hotseat in vertical bar layout.
-        hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
+        /*hotseatBarSidePaddingStartPx = isVerticalBarLayout() ? verticalDragHandleSizePx : 0;
         hotseatBarSizePx = ResourceUtils.pxFromDp(inv.iconSize, dm) + (isVerticalBarLayout()
                 ? (hotseatBarSidePaddingStartPx + hotseatBarSidePaddingEndPx)
                 : (res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_extra_vertical_size)
-                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx));*/
+
+        hotseatBarSidePaddingStartPx = res.getDimensionPixelSize(R.dimen.hotseat_navbar_padding);
+        hotseatBarSizePx = isVerticalBarLayout()
+                ? hotseatIconSizePx + hotseatBarSidePaddingStartPx
+                + hotseatBarSidePaddingEndPx
+                : res.getDimensionPixelSize(dockSearchBar ?
+                R.dimen.dynamic_grid_hotseat_size :
+                R.dimen.v1_dynamic_grid_hotseat_size) * dockRows
+                + hotseatBarTopPaddingPx + hotseatBarBottomPaddingPx;
+        verticalDragHandleSizePx = res.getDimensionPixelSize(
+                R.dimen.vertical_drag_handle_size);
 
         // Calculate all of the remaining variables.
         updateAvailableDimensions(dm, res);
@@ -281,7 +299,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
                 res.getDimensionPixelSize(dockSearchBar ?
                         R.dimen.dynamic_grid_hotseat_top_padding :
                         R.dimen.v1_dynamic_grid_hotseat_top_padding);
-        int extraHotseatBottomPadding = !prefs.getDockGradientStyle() ? 0
+        int extraHotseatBottomPadding = !prefs.getDockGradient() ? 0
                 : res.getDimensionPixelSize(R.dimen.dynamic_grid_hotseat_bottom_non_tall_padding);
         hotseatBarBottomPaddingPx = extraHotseatBottomPadding
                 + res.getDimensionPixelSize(dockSearchBar ?
@@ -333,7 +351,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
             // Note: This calculation was created after noticing a pattern in the design spec.
             int extraSpace = Utilities.boundToRange(extraSpaceFromScale, 0, extraSpaceFromY);
             hotseatBarSizePx += extraSpace;
-            if (prefs.getDockGradientStyle()) {
+            if (prefs.getDockGradient()) {
                 hotseatBarBottomPaddingPx += extraSpace;
             } else {
                 hotseatBarBottomPaddingPx += extraSpace / 2;
@@ -355,7 +373,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
             int qsbHeight = res.getDimensionPixelSize(R.dimen.qsb_widget_height);
             verticalDragHandleSizePx *= adjustedDockScale;
             int bottomPaddingNew = Math.max((int) (hotseatBarBottomPaddingPx * adjustedDockScale), dockSearchBar ? qsbHeight : 0);
-            if (prefs.getDockGradientStyle()) {
+            if (prefs.getDockGradient()) {
                 hotseatBarTopPaddingPx *= adjustedDockScale;
                 hotseatBarBottomPaddingPx = bottomPaddingNew;
             } else {

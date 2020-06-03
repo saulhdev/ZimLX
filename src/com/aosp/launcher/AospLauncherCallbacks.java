@@ -22,16 +22,13 @@ import android.os.Bundle;
 
 import androidx.core.graphics.ColorUtils;
 
-import com.android.launcher3.AppInfo;
 import com.android.launcher3.LauncherCallbacks;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.uioverrides.WallpaperColorInfo.OnChangeListener;
 import com.android.launcher3.util.Themes;
-import com.android.launcher3.Utilities;
-
 import com.aosp.launcher.qsb.QsbAnimationController;
-
 import com.google.android.libraries.gsa.launcherclient.ClientOptions;
 import com.google.android.libraries.gsa.launcherclient.ClientService;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
@@ -40,7 +37,6 @@ import org.zimmob.zimlx.settings.SettingsActivity;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 
 public class AospLauncherCallbacks implements LauncherCallbacks,
         SharedPreferences.OnSharedPreferenceChangeListener, OnChangeListener {
@@ -74,7 +70,7 @@ public class AospLauncherCallbacks implements LauncherCallbacks,
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
-        mPrefs = Utilities.getPrefs(mLauncher);
+        mPrefs = Utilities.getPrefs(mLauncher.getApplicationContext());
         mOverlayCallbacks = new OverlayCallbackImpl(mLauncher);
         mLauncherClient = new LauncherClient(mLauncher, mOverlayCallbacks, getClientOptions(mPrefs));
         mQsbController = new QsbAnimationController(mLauncher);

@@ -54,7 +54,6 @@ import com.android.launcher3.graphics.FragmentWithPreview;
  * AppWidgetManager directly, so that it keeps working in that case.
  */
 public class QsbContainerView extends FrameLayout {
-
     public QsbContainerView(Context context) {
         super(context);
     }

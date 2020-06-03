@@ -39,6 +39,7 @@ import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm;
 import com.android.launcher3.util.ComponentKey;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultQsbContainer extends ExtendedEditText implements Callbacks,
         AllAppsStore.OnUpdateListener {
@@ -88,7 +89,7 @@ public class DefaultQsbContainer extends ExtendedEditText implements Callbacks,
     }
 
     @Override
-    public void onSearchResult(String query, ArrayList<ComponentKey> apps) {
+    public void onSearchResult(String query, ArrayList<ComponentKey> apps, List<String> suggestions) {
         if (apps != null && getParent() != null) {
             mApps.setOrderedFilter(apps);
             refreshSearchResult();
