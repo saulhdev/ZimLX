@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class FallbackAppsSearchView extends ExtendedEditText implements AllAppsStore.OnUpdateListener, AllAppsSearchBarController.Callbacks {
-    final AllAppsSearchBarController DI;
+    AllAppsSearchBarController DI;
     AllAppsQsbContainer DJ;
     AlphabeticalAppsList mApps;
     AllAppsContainerView mAppsView;

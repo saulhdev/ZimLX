@@ -27,6 +27,7 @@
         <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
             android:defaultValue="false"
             android:key="pref_bubbleSearchStyle"
+            android:dependency="opa_enabled"
             android:title="@string/bubble_searchbar"
             app:iconSpaceReserved="false" />
 

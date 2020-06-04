@@ -16,12 +16,21 @@
 
 package com.aosp.launcher.qsb;
 
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
+import android.graphics.drawable.GradientDrawable;
+import android.graphics.drawable.InsetDrawable;
+import android.graphics.drawable.RippleDrawable;
 import android.text.TextPaint;
+import android.text.TextUtils;
 import android.util.AttributeSet;
 import android.util.TypedValue;
 import android.view.View;
@@ -29,6 +38,7 @@ import android.widget.FrameLayout;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.core.content.ContextCompat;
 
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
@@ -49,16 +59,12 @@ public abstract class AbstractQsbLayout extends FrameLayout implements View.OnCl
     protected final boolean mIsRtl;
     protected final AospLauncher mActivity;
     protected boolean mUseTwoBubbles;
-    //public float micStrokeWidth;
-    protected final Paint mMicStrokePaint;
     protected final Paint CV;
-    protected final int qsbMicWidth;
     protected final TextPaint qsbHint;
     protected final int qsbTextSpacing;
     protected final boolean mLowPerformanceMode;
     protected final int twoBubbleGap;
     protected final int qsbMaxHintLength;
-    private final TransformingTouchDelegate touchDelegate;
     public int mShadowMargin;
     protected FallbackAppsSearchView mFallback;
     protected String Dg;
@@ -66,7 +72,6 @@ public abstract class AbstractQsbLayout extends FrameLayout implements View.OnCl
     protected int Dc;
     protected int Dd;
     protected k Ds;
-    protected boolean Dh;
 
     public AbstractQsbLayout(@NonNull Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
@@ -74,19 +79,16 @@ public abstract class AbstractQsbLayout extends FrameLayout implements View.OnCl
 
     public AbstractQsbLayout(@NonNull Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        touchDelegate = new TransformingTouchDelegate(this);
         mActivity = (AospLauncher) Launcher.getLauncher(context);
         mShadowMargin = getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin);
-        qsbMicWidth = getResources().getDimensionPixelSize(R.dimen.qsb_mic_width);
         qsbTextSpacing = getResources().getDimensionPixelSize(R.dimen.qsb_text_spacing);
         twoBubbleGap = getResources().getDimensionPixelSize(R.dimen.qsb_two_bubble_gap);
         qsbMaxHintLength = getResources().getDimensionPixelSize(R.dimen.qsb_max_hint_length);
         qsbHint = new TextPaint();
         qsbHint.setTextSize((float) getResources().getDimensionPixelSize(R.dimen.qsb_hint_text_size));
         mIsRtl = Utilities.isRtl(getResources());
-        mMicStrokePaint = new Paint(1);
         CV = new Paint(1);
-
+        CV.setColor(Color.WHITE);
         mLowPerformanceMode = Utilities.getZimPrefs(context).getLowPerformanceMode();
     }
 
@@ -112,8 +114,35 @@ public abstract class AbstractQsbLayout extends FrameLayout implements View.OnCl
         }
     }
 
+    protected InsetDrawable createRipple() {
+        GradientDrawable shape = new GradientDrawable();
+        shape.setShape(GradientDrawable.RECTANGLE);
+        shape.setCornerRadius(getCornerRadius());
+        shape.setColor(ContextCompat.getColor(getContext(), android.R.color.white));
+
+        ColorStateList rippleColor = ContextCompat.getColorStateList(getContext(), R.color.focused_background);
+        RippleDrawable ripple = new RippleDrawable(rippleColor, null, shape);
+        return new InsetDrawable(ripple, getResources().getDimensionPixelSize(R.dimen.qsb_shadow_margin));
+    }
+
     protected float getCornerRadius() {
         return getCornerRadius(getContext(),
                 Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+    }
+
+    @Nullable
+    protected String getClipboardText() {
+        ClipboardManager clipboardManager = ContextCompat
+                .getSystemService(getContext(), ClipboardManager.class);
+        ClipData primaryClip = clipboardManager.getPrimaryClip();
+        if (primaryClip != null) {
+            for (int i = 0; i < primaryClip.getItemCount(); i++) {
+                CharSequence text = primaryClip.getItemAt(i).coerceToText(getContext());
+                if (!TextUtils.isEmpty(text)) {
+                    return text.toString();
+                }
+            }
+        }
+        return null;
     }
 }

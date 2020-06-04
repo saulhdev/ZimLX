@@ -19,6 +19,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
@@ -42,6 +43,7 @@ import android.view.animation.Interpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import androidx.annotation.Nullable;
 import androidx.core.graphics.ColorUtils;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.recyclerview.widget.RecyclerView.OnScrollListener;
@@ -107,14 +109,14 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
     public Bitmap mShadowBitmap;
     protected int mResult;
     protected Bitmap mClearBitmap;
-    ZimPreferences prefs;
+    protected ZimPreferences prefs;
     private int mMarginTop;
     private ImageView mLogoIconView;
     private boolean mShowAssistant;
     private float mRadius = -1.0f;
-    private Bitmap mQsbScroll;
     private boolean mUseFallbackSearch;
     private TextView mHint;
+    private Bitmap mQsbScroll;
 
     public AllAppsQsbContainer(Context context, AttributeSet attributeSet) {
         this(context, attributeSet, 0);
@@ -174,7 +176,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         WallpaperColorInfo instance = WallpaperColorInfo.getInstance(getContext());
         instance.addOnChangeListener(this);
         onExtractedColorsChanged(instance);
-        dN();
         updateConfiguration();
     }
 
@@ -255,11 +256,12 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
             mShadowHelper.paint.setAlpha(255);
         }
 
-        drawCanvas(canvas, getWidth());
-
         loadBitmap();
+        drawShadow(mShadowBitmap, canvas);
+
         clearMainPillBg(canvas);
         drawShadow(mShadowBitmap, canvas);
+
         int i;
 
         if (mUseTwoBubbles) {
@@ -285,100 +287,34 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
             if (mIsRtl) {
                 paddingLeft = getPaddingLeft() - i;
                 paddingLeft2 = getPaddingLeft() + i;
-                i = dG();
+                i = getMicWidth();
             } else {
-                paddingLeft = ((getWidth() - getPaddingRight()) - dG()) - i;
+                paddingLeft = ((getWidth() - getPaddingRight()) - getMicWidth()) - i;
                 paddingLeft2 = getWidth() - getPaddingRight();
             }
             clearPillBg(canvas, paddingLeft, paddingTop, paddingLeft2 + i);
             mShadowHelper.draw(bitmap2, canvas, (float) paddingLeft, (float) paddingTop, (float) (paddingLeft2 + i));
         }
-        if (mSearchIconStrokeWidth > 0.0f && mMicIconView.getVisibility() == View.VISIBLE) {
-            float i2;
-            i = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - dG();
-            int paddingTop2 = getPaddingTop();
-            int paddingLeft3 = mIsRtl ? getPaddingLeft() + dG() : getWidth() - getPaddingRight();
+
+        if (mSearchIconStrokeWidth > WindowTransformSwipeHandler.SWIPE_DURATION_MULTIPLIER && mMicIconView.getVisibility() == View.VISIBLE) {
+            int paddingLeft = mIsRtl ? getPaddingLeft() : (getWidth() - getPaddingRight()) - getMicWidth();
+            int paddingTop = getPaddingTop();
+            int paddingRight = mIsRtl ? getPaddingLeft() + getMicWidth() : getWidth() - getPaddingRight();
             int paddingBottom = LauncherAppState.getInstance(getContext()).getInvariantDeviceProfile().iconBitmapSize - getPaddingBottom();
-            float f = ((float) (paddingBottom - paddingTop2)) * 0.5f;
-            float i3 = mSearchIconStrokeWidth / 2.0f;
+            float height = ((float) (paddingBottom - paddingTop)) * 0.5f;
+            int micStrokeWidth = (int) (mSearchIconStrokeWidth / 2.0f);
             if (mUseTwoBubbles) {
-                i2 = i3;
+                canvas.drawRoundRect(paddingLeft + micStrokeWidth, paddingTop + micStrokeWidth, paddingRight - micStrokeWidth, (paddingBottom - micStrokeWidth) + 1, height, height, mSearchIconStrokePaint);
             } else {
-                i2 = i3;
-                canvas.drawRoundRect(i + i3, paddingTop2 + i3, paddingLeft3 - i3, (paddingBottom - i3) + 1, f, f, CV);
+                canvas.drawRoundRect(paddingLeft + micStrokeWidth, paddingTop + micStrokeWidth, paddingRight - micStrokeWidth, (paddingBottom - micStrokeWidth) + 1, height, height, CV);
             }
-            canvas.drawRoundRect(i + i2, paddingTop2 + i2, paddingLeft3 - i2, (paddingBottom - i2) + 1, f, f, mMicStrokePaint);
         }
         super.draw(canvas);
-    }
 
-    private void dN() {
-        az(Dc);
-        addOrUpdateSearchPaint(Ds.micStrokeWidth());
-        this.Dh = Ds.hintIsForAssistant();
-        mUseTwoBubbles = useTwoBubbles();
-        setHintText(Ds.hintTextValue(), mHint);
-        addOrUpdateSearchRipple();
-    }
-
-    /*public final void h(float f) {
-        micStrokeWidth = TypedValue.applyDimension(1, f, getResources().getDisplayMetrics());
-        mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
-        mMicStrokePaint.setStyle(Style.STROKE);
-        mMicStrokePaint.setColor(0xFFBDC1C6);
-    }*/
-
-    protected final boolean dE() {
-        if (!Dh) {
-            return mUseTwoBubbles;
-        }
-        return true;
-    }
-
-    public final void az(int i) {
-        Dd = i;
-        if (Dd != Dc || Db != mShadowBitmap) {
-            Db = null;
-            invalidate();
-        }
     }
 
     protected int dF() {
-        return mUseTwoBubbles ? dG() + twoBubbleGap : 0;
-    }
-
-    protected int dG() {
-        if (!mUseTwoBubbles || TextUtils.isEmpty(Dg)) {
-            return qsbMicWidth;
-        }
-        return (Math.round(qsbHint.measureText(Dg)) + qsbTextSpacing) + qsbMicWidth;
-    }
-
-    protected int dD() {
-        return mUseTwoBubbles ? qsbMicWidth : qsbMicWidth + qsbTextSpacing;
-    }
-
-    protected final void setHintText(String str, TextView textView) {
-        String str2;
-        if (TextUtils.isEmpty(str) || !dE()) {
-            str2 = str;
-        } else {
-            str2 = TextUtils.ellipsize(str, qsbHint, (float) qsbMaxHintLength, TextUtils.TruncateAt.END).toString();
-        }
-        this.Dg = str2;
-        textView.setText(this.Dg);
-        int i = 17;
-        if (dE()) {
-            i = 8388629;
-            if (this.mIsRtl) {
-                textView.setPadding(dD(), 0, 0, 0);
-            } else {
-                textView.setPadding(0, 0, dD(), 0);
-            }
-        }
-        textView.setGravity(i);
-        ((LayoutParams) textView.getLayoutParams()).gravity = i;
-        textView.setContentDescription(str);
+        return mUseTwoBubbles ? getMicWidth() + twoBubbleGap : 0;
     }
 
     public int getTopMargin(@NotNull Rect rect) {
@@ -421,6 +357,7 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
 
     private void updateConfiguration() {
         addOrUpdateSearchPaint(0.0f);
+        mUseTwoBubbles = useTwoBubbles();
         addOrUpdateSearchRipple();
     }
 
@@ -494,9 +431,15 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         }
     }
 
+    private boolean shouldUseFallbackSearch() {
+        SearchProviderController controller = SearchProviderController.Companion
+                .getInstance(mActivity);
+        SearchProvider provider = controller.getSearchProvider();
+        return shouldUseFallbackSearch(provider);
+    }
+
     private boolean shouldUseFallbackSearch(SearchProvider provider) {
-        return !Utilities
-                .getZimPrefs(getContext()).getAllAppsGlobalSearch()
+        return !Utilities.getZimPrefs(getContext()).getAllAppsGlobalSearch()
                 || provider instanceof AppSearchSearchProvider
                 || provider instanceof WebSearchProvider
                 || (!Utilities.ATLEAST_NOUGAT && provider instanceof GoogleSearchProvider);
@@ -512,13 +455,13 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         }
     }
 
-    public void searchFallback(String query) {
+    protected void searchFallback(String query) {
         ensureFallbackView();
         mFallback.setText(query);
         mFallback.showKeyboard();
     }
 
-    private void ensureFallbackView() {
+    protected void ensureFallbackView() {
         if (mFallback == null) {
             setOnClickListener(null);
             mFallback = (FallbackAppsSearchView) this.mActivity.getLayoutInflater()
@@ -529,8 +472,7 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
             mFallback.mAppsView = allAppsContainerView;
             mFallback.DI.initialize(new SearchHandler(mFallback.getContext()), mFallback,
                     Launcher.getLauncher(mFallback.getContext()), mFallback);
-            addView(this.mFallback);
-            //mFallback.setTextColor(mForegroundColor);
+            addView(mFallback);
         }
     }
 
@@ -566,22 +508,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
         }
     }
 
-    /*private void removeDefaultQsb() {
-        if (mDefaultQsb != null) {
-            mDefaultQsb.clearSearchResult();
-            setOnClickListener(this);
-            removeView(mDefaultQsb);
-            mDefaultQsb = null;
-        }
-    }*/
-/*
-    private void resetDefaultQsb() {
-        if (mDefaultQsb != null) {
-            mDefaultQsb.reset();
-            mDefaultQsb.clearSearchResult();
-        }
-    }*/
-
     public int getMeasuredWidth(int width, DeviceProfile dp) {
         int leftRightPadding = dp.desiredWorkspaceLeftRightMarginPx
                 + dp.cellLayoutPaddingLeftRightPx;
@@ -602,6 +528,11 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
                 mClearBitmap = getShadowBitmap(0xFF000000);
             }
         }
+    }
+
+    @Nullable
+    protected String getClipboardText() {
+        return shouldUseFallbackSearch() ? super.getClipboardText() : null;
     }
 
     protected void clearMainPillBg(Canvas canvas) {
@@ -627,24 +558,6 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
             right -= dF();
         }
         helper.draw(bitmap, canvas, (float) left, (float) top, (float) right);
-    }
-
-    public void drawCanvas(Canvas canvas, int width) {
-        loadBitmap();
-        drawShadow(mShadowBitmap, canvas);
-        if (mSearchIconStrokeWidth > WindowTransformSwipeHandler.SWIPE_DURATION_MULTIPLIER && mMicIconView.getVisibility() == View.VISIBLE) {
-            int paddingLeft = mIsRtl ? getPaddingLeft() : (width - getPaddingRight()) - getMicWidth();
-            int paddingTop = getPaddingTop();
-            int paddingRight = mIsRtl ? getPaddingLeft() + getMicWidth() : width - getPaddingRight();
-            int paddingBottom = LauncherAppState.getIDP(getContext()).iconBitmapSize - getPaddingBottom();
-            float height = ((float) (paddingBottom - paddingTop)) * 0.5f;
-            int micStrokeWidth = (int) (mSearchIconStrokeWidth / 2.0f);
-            if (mSearchIconStrokePaint == null) {
-                mSearchIconStrokePaint = new Paint(1);
-            }
-            mSearchIconStrokePaint.setColor(-4341306);
-            canvas.drawRoundRect((float) (paddingLeft + micStrokeWidth), (float) (paddingTop + micStrokeWidth), (float) (paddingRight - micStrokeWidth), (float) ((paddingBottom - micStrokeWidth) + 1), height, height, mSearchIconStrokePaint);
-        }
     }
 
     private void drawShadow(Bitmap bitmap, Canvas canvas) {
@@ -701,15 +614,17 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
     }
 
     private void addOrUpdateSearchRipple() {
-        InsetDrawable insetDrawable = (InsetDrawable) getResources().getDrawable(R.drawable.qsb_icon_feedback_bg).mutate();
+        InsetDrawable insetDrawable = (InsetDrawable) createRipple().mutate();
         RippleDrawable oldRipple = (RippleDrawable) insetDrawable.getDrawable();
         int width = mIsRtl ? getRtlDimens() : 0;
         int height = mIsRtl ? 0 : getRtlDimens();
+
 
         oldRipple.setLayerInset(0, width, 0, height, 0);
         setBackground(insetDrawable);
         RippleDrawable newRipple = (RippleDrawable) oldRipple.getConstantState().newDrawable().mutate();
         newRipple.setLayerInset(0, 0, mShadowMargin, 0, mShadowMargin);
+
         mMicIconView.setBackground(newRipple);
         mMicIconView.getLayoutParams().width = getMicWidth();
 
@@ -737,7 +652,14 @@ public class AllAppsQsbContainer extends AbstractQsbLayout implements Insettable
     }
 
     public int getRtlDimens() {
-        return 0;
+        return mUseTwoBubbles ? dG() + twoBubbleGap : 0;
+    }
+
+    protected final int dG() {
+        if (!mUseTwoBubbles || TextUtils.isEmpty(Dg)) {
+            return mSearchIconWidth;
+        }
+        return (Math.round(qsbHint.measureText(Dg)) + qsbTextSpacing) + mSearchIconWidth;
     }
 
     public int getMicWidth() {
