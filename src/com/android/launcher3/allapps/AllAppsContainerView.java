@@ -65,12 +65,12 @@ import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
 import com.android.launcher3.views.SpringRelativeLayout;
-import com.aosp.launcher.qsb.AllAppsQsbContainer;
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
+import com.google.android.apps.nexuslauncher.qsb.AllAppsQsbLayout;
 
 import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.allapps.AllAppsTabs;
 import org.zimmob.zimlx.allapps.AllAppsTabsController;
-import org.zimmob.zimlx.allapps.PredictionsFloatingHeader;
 import org.zimmob.zimlx.util.ZimUtilsKt;
 
 /**
@@ -360,7 +360,7 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             setPadding(grid.workspacePadding.left, 0, grid.workspacePadding.right, 0);
         } else {
             if (!ZimPreferences.Companion.getInstance(getContext()).getAllAppsSearch()) {
-                AllAppsQsbContainer qsb = (AllAppsQsbContainer) mSearchContainer;
+                AllAppsQsbLayout qsb = (AllAppsQsbLayout) mSearchContainer;
                 mlp.topMargin = -(qsb.getTopMargin(insets) + qsb.getLayoutParams().height);
             }
             mlp.leftMargin = mlp.rightMargin = 0;

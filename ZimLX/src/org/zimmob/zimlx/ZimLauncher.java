@@ -31,17 +31,12 @@ import androidx.core.app.ActivityCompat;
 import com.android.launcher3.AppInfo;
 import com.android.launcher3.FolderInfo;
 import com.android.launcher3.ItemInfo;
-import com.android.launcher3.Launcher;
 import com.android.launcher3.LauncherAppState;
-import com.android.launcher3.LauncherAppTransitionManager;
-import com.android.launcher3.LauncherCallbacks;
-import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
 import com.android.launcher3.util.ComponentKey;
-import com.aosp.launcher.AospLauncher;
-import com.aosp.launcher.AospLauncherCallbacks;
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
@@ -58,7 +53,7 @@ import java.util.Objects;
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
 
-public class ZimLauncher extends AospLauncher {
+public class ZimLauncher extends NexusLauncherActivity {
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
     public static final int REQUEST_PERMISSION_LOCATION_ACCESS = 667;
     public final int CODE_EDIT_ICON = 100;

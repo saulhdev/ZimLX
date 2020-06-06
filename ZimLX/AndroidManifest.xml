@@ -175,18 +175,18 @@
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
         <receiver
-            android:name="com.aosp.launcher.qsb.OPAStatusReceiver"
+            android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
             android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
             <intent-filter>
                 <action android:name="com.google.android.systemui.OPA_ENABLED" />
             </intent-filter>
         </receiver>
 
-        <receiver android:name="com.aosp.launcher.qsb.configs.LongClickReceiver" />
+        <receiver android:name="com.google.android.apps.nexuslauncher.qsb.LongClickReceiver" />
 
         <provider
-            android:name="com.aosp.launcher.search.AppSearchProvider"
             android:authorities="${applicationId}.appssearch"
+            android:name="com.google.android.apps.nexuslauncher.search.AppSearchProvider"
             android:exported="true" />
 
         <provider

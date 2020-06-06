@@ -20,6 +20,7 @@ package org.zimmob.zimlx.iconpack
 import android.content.Context
 import android.content.pm.PackageManager
 import android.content.res.Resources
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.RotateDrawable
@@ -27,10 +28,10 @@ import android.util.Log
 import android.util.Xml
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
-import com.aosp.launcher.icons.clock.CustomClock
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.xmlpull.v1.XmlPullParserFactory
+import org.zimmob.zimlx.icons.clock.CustomClock
 import org.zimmob.zimlx.util.get
 import java.io.IOException
 
@@ -41,15 +42,16 @@ class DynamicDrawable {
         fun getIcon(context: Context, drawable: Drawable, metadata: Metadata, iconDpi: Int): Drawable {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
+                Type.CLOCK -> CustomClock.getClock(context, metadata.clockMetadata!!.drawable,
+                        metadata.clockMetadata!!.metadata)
                 else -> drawable
             }
         }
 
-        fun drawIcon(context: Context, icon: ItemInfoWithIcon, metadata: Metadata, drawableFactory: CustomDrawableFactory, iconDpi: Int): FastBitmapDrawable? {
+        fun drawIcon(context: Context, itemInfo: ItemInfoWithIcon, metadata: Metadata, drawableFactory: CustomDrawableFactory, iconDpi: Int): FastBitmapDrawable? {
             metadata.load(context, iconDpi)
             return when (metadata.type) {
-                Type.CLOCK -> drawableFactory.mCustomClockDrawer!!.drawIcon(icon, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
+                Type.CLOCK -> drawableFactory.customClockDrawer.drawIcon(itemInfo, metadata.clockMetadata!!.drawable, metadata.clockMetadata!!.metadata)
                 else -> null
             }
         }

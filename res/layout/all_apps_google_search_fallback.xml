@@ -13,13 +13,13 @@
      limitations under the License.
 -->
 
-<com.aosp.launcher.qsb.FallbackAppsSearchView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.apps.nexuslauncher.qsb.FallbackAppsSearchView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     android:layout_gravity="bottom"
     android:layout_marginLeft="48dp"
     android:layout_marginRight="48dp"
-    android:background="@android:color/holo_red_dark"
+    android:background="@android:color/transparent"
     android:focusableInTouchMode="true"
     android:gravity="start|center"
     android:imeOptions="actionSearch|flagNoExtractUi"

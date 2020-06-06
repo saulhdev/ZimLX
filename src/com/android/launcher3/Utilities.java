@@ -90,7 +90,6 @@ import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.PendingAddShortcutInfo;
-import com.aosp.launcher.icons.ThirdPartyIconProvider;
 
 import org.zimmob.zimlx.ZimAppKt;
 import org.zimmob.zimlx.ZimLauncher;

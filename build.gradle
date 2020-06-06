@@ -134,7 +134,7 @@ android {
         main {
             res.srcDirs = ['res']
             java.srcDirs = ['src', 'src_plugins']
-            aidl.srcDirs=['src']
+            aidl.srcDirs = ['src']
             manifest.srcFile 'AndroidManifest-common.xml'
             proto {
                 srcDir 'protos/'
@@ -231,7 +231,7 @@ dependencies {
     implementation 'me.xdrop:fuzzywuzzy:1.2.0'
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation project(':IconLoader')
-    implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'libGoogleFeed.jar')
+    //implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'libGoogleFeed.jar')
     implementation fileTree(dir: "${FRAMEWORK_PREBUILTS_DIR}/libs", include: 'launcher_protos.jar')
 
     // Recents lib dependency
@@ -274,6 +274,7 @@ protobuf {
                         option "java_package=launcher_log_extension.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_log.proto|com.android.launcher3.userevent.nano"
                         option "java_package=launcher_dump.proto|com.android.launcher3.model.nano"
+                        option "java_package=smartspace.proto|com.google.android.apps.nexuslauncher.smartspace.nano"
                         option "enum_style=java"
                     }
                 }

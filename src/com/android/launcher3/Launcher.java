@@ -148,7 +148,8 @@ import com.android.launcher3.widget.WidgetHostViewLoader;
 import com.android.launcher3.widget.WidgetListRowEntry;
 import com.android.launcher3.widget.WidgetsFullSheet;
 import com.android.launcher3.widget.custom.CustomWidgetParser;
-import com.aosp.launcher.AospLauncher;
+import com.google.android.apps.nexuslauncher.NexusLauncher;
+import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
 import java.io.FileDescriptor;
 import java.io.PrintWriter;
@@ -441,7 +442,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public void updatePredictions(boolean force) {
-        CustomAppPredictor predictor = new CustomAppPredictor(mContext);
+        /*CustomAppPredictor predictor = new CustomAppPredictor(mContext);
         if (hasBeenResumed() || force) {
             List<ComponentKeyMapper> apps = predictor.getPredictions();
             if (apps != null) {
@@ -449,7 +450,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mAppsView.getFloatingHeaderView().setPredictedApps(apps);
                 mAppsView.getFloatingHeaderView().headerChanged();
             }
-        }
+        }*/
     }
 
     protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
@@ -1749,8 +1750,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         }
     }
 
-    FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX,
-            int cellY) {
+    FolderIcon addFolder(CellLayout layout, int container, final int screenId, int cellX, int cellY) {
         final FolderInfo folderInfo = new FolderInfo();
         folderInfo.title = getText(R.string.folder_name);
 
@@ -2591,26 +2591,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mModel.refreshAndBindWidgetsAndShortcuts(packageUser);
     }
 
-    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
-
-        public void onScrollChanged(float progress) {
-            if (mWorkspace != null) {
-                mWorkspace.onOverlayScrollChanged(progress);
-            }
-        }
-
-        private void hideOverlay(LauncherState launcherState, boolean animate) {
-            if (launcherState == LauncherState.OVERVIEW) { //|| launcherState == LauncherState.FAST_OVERVIEW) {
-                hideOverlay(animate);
-            }
-        }
-
-        private void hideOverlay(boolean animate) {
-            Launcher launcher = Launcher.this;
-            if (launcher instanceof AospLauncher) {
-                ((AospLauncher) launcher).getGoogleNow().hideOverlay(animate);
-            }
-        }
+    public boolean useVerticalBarLayout() {
+        return mDeviceProfile.isVerticalBarLayout();
     }
 
     @Override
@@ -2699,6 +2681,28 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             return true;
         }
         return super.onKeyUp(keyCode, event);
+    }
+
+    class LauncherOverlayCallbacksImpl implements LauncherOverlayCallbacks {
+
+        public void onScrollChanged(float progress) {
+            if (mWorkspace != null) {
+                mWorkspace.onOverlayScrollChanged(progress);
+            }
+        }
+
+        private void hideOverlay(LauncherState launcherState, boolean animate) {
+            if (launcherState == LauncherState.OVERVIEW) { //|| launcherState == LauncherState.FAST_OVERVIEW) {
+                hideOverlay(animate);
+            }
+        }
+
+        private void hideOverlay(boolean animate) {
+            Launcher launcher = Launcher.this;
+            if (launcher instanceof NexusLauncherActivity) {
+                ((NexusLauncherActivity) launcher).getGoogleNow().hideOverlay(animate);
+            }
+        }
     }
 
     public static Launcher getLauncher(Context context) {

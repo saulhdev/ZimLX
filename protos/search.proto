@@ -15,7 +15,7 @@
  */
 syntax = "proto2";
 
-option java_package = "com.aosp.launcher.search";
+option java_package = "com.google.android.apps.nexuslauncher.search";
 option java_outer_classname = "SearchProto";
 
 package search;

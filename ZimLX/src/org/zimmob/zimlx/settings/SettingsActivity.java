@@ -75,12 +75,6 @@ import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
 import com.android.launcher3.util.SecureSettingsObserver;
-import com.aosp.launcher.AospLauncherCallbacks;
-import com.aosp.launcher.AospUtils;
-import com.aosp.launcher.customization.IconDatabase;
-import com.aosp.launcher.settings.IconPackPrefSetter;
-import com.aosp.launcher.settings.ReloadingListPreference;
-import com.aosp.launcher.util.AppReloader;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -240,6 +234,16 @@ public class SettingsActivity extends SettingsBaseActivity
         if (hasPreview) {
             overrideCloseAnim();
         }
+    }
+
+    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller,
+                                             Preference pref) {
+        if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
+            InstallFragment fragment = new InstallFragment();
+            fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
+            return true;
+        }
+        return false;
     }
 
     private void updateUpButton() {
@@ -694,7 +698,7 @@ public class SettingsActivity extends SettingsBaseActivity
                     break;
 
                 case R.xml.zim_preferences_smartspace:
-                    AospUtils.hasPackageInstalled(getActivity(), AospLauncherCallbacks.SEARCH_PACKAGE);
+                    //AospUtils.hasPackageInstalled(getActivity(), AospLauncherCallbacks.SEARCH_PACKAGE);
                     break;
                 case R.xml.zim_preferences_notification:
                     if (getResources().getBoolean(R.bool.notification_badging_enabled)) {

@@ -36,6 +36,7 @@ import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
 import org.zimmob.zimlx.util.CustomIconUtils
+import org.zimmob.zimlx.util.CustomIconUtils.ICON_INTENTS
 import org.zimmob.zimlx.util.asNonEmpty
 import org.zimmob.zimlx.util.runOnMainThread
 import org.zimmob.zimlx.util.zimPrefs
@@ -289,11 +290,11 @@ class IconPackManager(private val context: Context) {
 
         internal fun isPackProvider(context: Context, packageName: String?): Boolean {
             if (packageName != null && !packageName.isEmpty()) {
+                return ICON_INTENTS.firstOrNull {
+                    context.packageManager.queryIntentActivities(
+                            Intent(it).setPackage(packageName), PackageManager.GET_META_DATA).iterator().hasNext()
+                } != null
             }
-            return CustomIconUtils.ICON_INTENTS.firstOrNull {
-                context.packageManager.queryIntentActivities(
-                        Intent(it).setPackage(packageName), PackageManager.GET_META_DATA).iterator().hasNext()
-            } != null
             return false
         }
     }

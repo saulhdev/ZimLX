@@ -28,16 +28,15 @@ import com.android.launcher3.*
 import com.android.launcher3.allapps.search.DefaultAppSearchAlgorithm
 import com.android.launcher3.util.ComponentKey
 import com.android.quickstep.OverviewInteractionState
+import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader
 import org.json.JSONArray
 import org.json.JSONObject
-import org.zimmob.zimlx.allapps.PredictionsFloatingHeader
 import org.zimmob.zimlx.gestures.BlankGestureHandler
 import org.zimmob.zimlx.gestures.handlers.*
 import org.zimmob.zimlx.globalsearch.SearchProviderController
 import org.zimmob.zimlx.groups.AppGroupsManager
 import org.zimmob.zimlx.groups.DrawerTabs
 import org.zimmob.zimlx.iconpack.IconPackManager
-import org.zimmob.zimlx.preferences.DockStyle
 import org.zimmob.zimlx.settings.GridSize
 import org.zimmob.zimlx.settings.GridSize2D
 import org.zimmob.zimlx.settings.SettingsActivity
@@ -136,6 +135,8 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
     val drawerLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
     val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
+        /*val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
+        header?.updateShowAllAppsLabel()*/
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
         header?.updateShowAllAppsLabel()
     }
@@ -221,8 +222,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
             zimConfig.defaultSearchProvider) {
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
-    var voiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
-    var showAssistantIcon by BooleanPref("opa_assistant", false, recreate)
+
+    //var voiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
+    //var showAssistantIcon by BooleanPref("opa_assistant", false, recreate)
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
     var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", false, doNothing)

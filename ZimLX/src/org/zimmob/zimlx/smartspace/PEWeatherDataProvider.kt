@@ -33,7 +33,7 @@ class PEWeatherDataProvider(controller: ZimSmartspaceController) :
     private val contentResolver = context.contentResolver
 
     init {
-        if (!PEWeatherDataProvider.isAvailable(context)) {
+        if (!isAvailable(context)) {
             throw RuntimeException("PE provider is not available")
         }
     }

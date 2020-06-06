@@ -33,7 +33,7 @@ class CustomIconProvider(context: Context) : IconProvider() {
     private val iconPackManager by lazy { IconPackManager.getInstance(context) }
 
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {
-        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this).assertNotAdaptiveIconDrawable(launcherActivityInfo)
+        return iconPackManager.getIcon(launcherActivityInfo, iconDpi, flattenDrawable, null, this)//.assertNotAdaptiveIconDrawable(launcherActivityInfo)
     }
 
     fun getIcon(launcherActivityInfo: LauncherActivityInfo, itemInfo: ItemInfo, iconDpi: Int, flattenDrawable: Boolean): Drawable {

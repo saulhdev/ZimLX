@@ -31,11 +31,12 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
 import com.android.launcher3.util.ComponentKey
-import com.aosp.launcher.icons.calendar.DynamicCalendar
-import com.aosp.launcher.icons.clock.DynamicClock
+import com.google.android.apps.nexuslauncher.DynamicIconProvider
+
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
+import org.zimmob.zimlx.icons.clock.DynamicClock
 import org.zimmob.zimlx.util.getLauncherActivityInfo
 import java.io.IOException
 
@@ -62,10 +63,10 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun onDateChanged() {
         val model = LauncherAppState.getInstance(context).model
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
-            model.onPackageChanged(DynamicCalendar.CALENDAR, user)
-            val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicCalendar.CALENDAR, user)
+            model.onPackageChanged(DynamicIconProvider.GOOGLE_CALENDAR, user)
+            val shortcuts = DeepShortcutManager.getInstance(context).queryForPinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, user)
             if (!shortcuts.isEmpty()) {
-                model.updatePinnedShortcuts(DynamicCalendar.CALENDAR, shortcuts, user)
+                model.updatePinnedShortcuts(DynamicIconProvider.GOOGLE_CALENDAR, shortcuts, user)
             }
         }
     }
@@ -111,7 +112,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val component = key.componentName
         val packageName = component.packageName
         val originalIcon = info.getIcon(iconDpi).apply { mutate() }
-        if (iconProvider == null || (DynamicCalendar.CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
+        if (iconProvider == null || (DynamicIconProvider.GOOGLE_CALENDAR != packageName && DynamicClock.DESK_CLOCK != component)) {
             var roundIcon: Drawable? = null
             getRoundIcon(component, iconDpi)?.let {
                 roundIcon = it.apply { mutate() }

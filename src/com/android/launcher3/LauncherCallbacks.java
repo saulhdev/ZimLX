@@ -19,7 +19,6 @@ package com.android.launcher3;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.aosp.launcher.qsb.QsbAnimationController;
 import com.google.android.libraries.gsa.launcherclient.LauncherClient;
 
 import java.io.FileDescriptor;
@@ -46,8 +45,8 @@ public interface LauncherCallbacks {
     void onDestroy();
     void onSaveInstanceState(Bundle outState);
     void onActivityResult(int requestCode, int resultCode, Intent data);
-    void onRequestPermissionsResult(int requestCode, String[] permissions,
-            int[] grantResults);
+
+    void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults);
     void onAttachedToWindow();
     void onDetachedFromWindow();
     void dump(String prefix, FileDescriptor fd, PrintWriter w, String[] args);
@@ -75,9 +74,4 @@ public interface LauncherCallbacks {
      * Retrieves the current Launcher Client
      */
     LauncherClient getClient();
-
-    /*
-     * Retrieves the QSB Animation Controller
-     */
-    QsbAnimationController getQsbController();
 }
