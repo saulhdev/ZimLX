@@ -21,7 +21,21 @@
 
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.READ_SETTINGS" />
+    <uses-permission android:name="com.google.android.apps.nexuslauncher.permission.WRITE_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.READ_SETTINGS" />
+    <uses-permission android:name="${applicationId}.permission.WRITE_SETTINGS" />
+
+    <!-- Pixel -->
+    <permission
+        android:name="${applicationId}.permission.QSB"
+        android:permissionGroup="android.permission-group.SYSTEM_TOOLS"
+        android:protectionLevel="signatureOrSystem" />
+
     <uses-permission android:name="${applicationId}.permission.QSB" />
+
+    <!-- Custom -->
+    <uses-permission android:name="android.permission.WRITE_SETTINGS" />
 
     <application
         android:name="org.zimmob.zimlx.ZimApp">
@@ -30,12 +44,18 @@
             android:autoRemoveFromRecents="true"
             android:label="@string/derived_app_name"
             android:name="org.zimmob.zimlx.settings.SettingsActivity"
+            android:taskAffinity="${applicationId}.tasks.SETTINGS"
             android:theme="@style/SettingsTheme.V2">
             <intent-filter>
                 <action android:name="android.intent.action.APPLICATION_PREFERENCES"/>
                 <category android:name="android.intent.category.DEFAULT"/>
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="org.zimmob.zimlx.preferences.SelectableAppsActivity"
+            android:autoRemoveFromRecents="true"
+            android:theme="@style/SettingsTheme.V2" />
 
         <activity
             android:name="org.zimmob.zimlx.backup.BackupListActivity"
@@ -174,11 +194,31 @@
             android:process=":wallpaper_chooser"
             android:permission="android.permission.BIND_JOB_SERVICE" />
 
+        <!-- Pixel -->
+        <activity
+            android:name="com.google.android.apps.nexuslauncher.search.AppLaunchActivity"
+            android:theme="@android:style/Theme.NoDisplay">
+            <intent-filter android:priority="1">
+                <action android:name="com.google.android.apps.nexuslauncher.search.APP_LAUNCH" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
+                <data
+                    android:mimeType="vnd.android.cursor.dir/vnd.android.search.suggest"
+                    android:scheme="content" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name="com.google.android.apps.nexuslauncher.qsb.OPAStatusReceiver"
             android:permission="android.permission.CAPTURE_AUDIO_HOTWORD">
             <intent-filter>
                 <action android:name="com.google.android.systemui.OPA_ENABLED" />
+            </intent-filter>
+        </receiver>
+        <receiver android:name="com.google.android.apps.nexuslauncher.smartspace.SmartspaceBroadcastReceiver">
+            <intent-filter>
+                <action android:name="com.google.android.apps.nexuslauncher.UPDATE_SMARTSPACE" />
             </intent-filter>
         </receiver>
 
