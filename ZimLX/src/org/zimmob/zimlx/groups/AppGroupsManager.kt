@@ -21,7 +21,7 @@ import org.zimmob.zimlx.ZimPreferences
 
 class AppGroupsManager(val prefs: ZimPreferences) {
 
-    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", false, ::onPrefsChanged)
+    var categorizationEnabled by prefs.BooleanPref("pref_appsCategorizationEnabled", true, ::onPrefsChanged)
     var categorizationType by prefs.EnumPref("pref_appsCategorizationType", CategorizationType.Tabs, ::onPrefsChanged)
 
     val drawerTabs by lazy { CustomTabs(this) }

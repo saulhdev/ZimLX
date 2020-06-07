@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import org.zimmob.zimlx.ZimAppFilter
-import org.zimmob.zimlx.allapps.CustomAppFilter
 
 class HiddenAppsFragment : RecyclerViewFragment(), SelectableAppsAdapter.Callback {
 

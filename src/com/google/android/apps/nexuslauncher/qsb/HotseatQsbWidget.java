@@ -22,6 +22,7 @@ import android.view.View;
 
 import androidx.annotation.Nullable;
 import androidx.core.app.ActivityOptionsCompat;
+import androidx.core.graphics.ColorUtils;
 
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.Launcher;
@@ -108,7 +109,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
                 .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
         dW();
         super.onAttachedToWindow();
-        this.Ds.a(this);
+        Ds.a(this);
         addOrUpdateSearchRipple();
         setOnFocusChangeListener(this.mActivity.mFocusHandler);
     }
@@ -118,7 +119,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         Utilities.getZimPrefs(getContext())
                 .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
                         KEY_DOCK_SEARCHBAR);
-        this.Ds.b(this);
+        Ds.b(this);
     }
 
     @Override
@@ -173,26 +174,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         View.inflate(new ContextThemeWrapper(getContext(),
                         mIsGoogleColored ? R.style.HotseatQsbTheme_Colored : R.style.HotseatQsbTheme),
                 R.layout.qsb_hotseat_content, this);
-        /*int colorRes;
-        if (isDarkBar()) {
-            colorRes = R.color.qsb_background_hotseat_dark;
-        } else {
-            colorRes = mIsGoogleColored ? R.color.qsb_background_hotseat_white : R.color.qsb_background_hotseat_default;
-        }
-        ay(getResources().getColor(colorRes));
-        az(ColorUtils.setAlphaComponent(Dc, Ds.micOpacity()));*/
     }
 
     public boolean isGoogleColored() {
         return isGoogleColored(getContext());
-    }
-
-    protected final int aA(int i) {
-        if (widgetMode) {
-            return i;
-        }
-        View view = this.mActivity.getHotseat().getLayout();
-        return (i - view.getPaddingLeft()) - view.getPaddingRight();
     }
 
     private void doOnClick() {
@@ -252,15 +237,13 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
         if (pm.queryIntentActivities(searchIntent, 0).isEmpty()) {
             try {
-                context.startActivity(
-                        new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
+                context.startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("https://google.com")));
                 mActivity.openQsb();
             } catch (ActivityNotFoundException ignored) {
                 try {
                     getContext().getPackageManager().getPackageInfo(GOOGLE_QSB, 0);
                     LauncherAppsCompat.getInstance(getContext())
-                            .showAppDetailsForProfile(
-                                    new ComponentName(GOOGLE_QSB, ".SearchActivity"),
+                            .showAppDetailsForProfile(new ComponentName(GOOGLE_QSB, ".SearchActivity"),
                                     Process.myUserHandle(), null, null);
                 } catch (PackageManager.NameNotFoundException ignored2) {
                 }
@@ -287,15 +270,14 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     public void setInsets(Rect rect) {
         super.setInsets(rect);
         if (!widgetMode) {
-            setVisibility(
-                    mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
+            setVisibility(mActivity.getDeviceProfile().isVerticalBarLayout() ? View.GONE : View.VISIBLE);
         }
     }
 
     public void onClick(View view) {
         super.onClick(view);
         if (view == this) {
-            startSearch("", this.mResult);
+            startSearch("", mResult);
         }
     }
 

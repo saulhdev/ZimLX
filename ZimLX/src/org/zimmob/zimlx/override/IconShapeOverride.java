@@ -203,13 +203,6 @@ public class IconShapeOverride {
 
                 new LooperExecutor(LauncherModel.getWorkerLooper()).execute(
                         new OverrideApplyHandler(mContext, newValue, new Handler()));
-
-                // Value has changed
-                /*ProgressDialog.show(mContext,
-                        null,
-                        mContext.getString(R.string.icon_shape_override_progress),
-                        true,
-                        false;*/
             }
             return false;
         }

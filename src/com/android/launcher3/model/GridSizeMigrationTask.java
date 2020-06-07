@@ -69,7 +69,7 @@ public class GridSizeMigrationTask {
     protected final IntArray mEntryToRemove = new IntArray();
     protected final ArrayList<DbEntry> mCarryOver = new ArrayList<>();
 
-    private final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
+    protected final SparseArray<ContentValues> mUpdateOperations = new SparseArray<>();
     private final HashSet<String> mValidPackages;
 
     private final int mSrcX, mSrcY;
@@ -715,6 +715,7 @@ public class GridSizeMigrationTask {
                                 WT_APPLICATION : WT_SHORTCUT;
                         break;
                     }
+                    case Favorites.ITEM_TYPE_CUSTOM_APPWIDGET:
                     case Favorites.ITEM_TYPE_APPWIDGET: {
                         String provider = c.getString(indexAppWidgetProvider);
                         ComponentName cn = ComponentName.unflattenFromString(provider);

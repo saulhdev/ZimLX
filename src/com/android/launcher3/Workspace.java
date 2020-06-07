@@ -1815,12 +1815,14 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         // We want the point to be mapped to the dragTarget.
         if (dropTargetLayout != null) {
             mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
-            /*if (mLauncher.isHotseatLayout(dropTargetLayout)) {
+        }
+        /*if (dropTargetLayout != null) {
+            if (mLauncher.isHotseatLayout(dropTargetLayout)) {
                 mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
             } else {
-                mapPointFromDropLayout(dropTargetLayout, mDragViewVisualCenter);
-            }*/
-        }
+                mapPointFromSelfToChild(dropTargetLayout, mDragViewVisualCenter);
+            }
+        }*/
 
         boolean droppedOnOriginalCell = false;
 
@@ -1932,21 +1934,19 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     lp.cellVSpan = item.spanY;
                     lp.isLockedToGrid = true;
 
-                    if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT &&
-                            cell instanceof LauncherAppWidgetHostView) {
+                    //if (container != LauncherSettings.Favorites.CONTAINER_HOTSEAT && cell instanceof LauncherAppWidgetHostView) {
+                    if (cell instanceof LauncherAppWidgetHostView) {
                         final CellLayout cellLayout = dropTargetLayout;
                         // We post this call so that the widget has a chance to be placed
                         // in its final location
 
                         final LauncherAppWidgetHostView hostView = (LauncherAppWidgetHostView) cell;
                         AppWidgetProviderInfo pInfo = hostView.getAppWidgetInfo();
-                        if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE
-                                && !d.accessibleDrag) {
-                            onCompleteRunnable = new Runnable() {
-                                public void run() {
-                                    if (!isPageInTransition()) {
-                                        AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
-                                    }
+                        //if (pInfo != null && pInfo.resizeMode != AppWidgetProviderInfo.RESIZE_NONE&& !d.accessibleDrag) {
+                        if (pInfo != null && !d.accessibleDrag) {
+                            onCompleteRunnable = () -> {
+                                if (!isPageInTransition()) {
+                                    AppWidgetResizeFrame.showForWidget(hostView, cellLayout);
                                 }
                             };
                         }
@@ -2010,6 +2010,25 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     public void onNoCellFound(View dropTargetLayout) {
         int strId = mLauncher.isHotseatLayout(dropTargetLayout)
                 ? R.string.hotseat_out_of_space : R.string.out_of_space;
+        Log.d(TAG, mLauncher.getString(strId));
+        Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
+
+        /*if (mLauncher.isHotseatLayout(dropTargetLayout)) {
+            Hotseat hotseat = mLauncher.getHotseat();
+            boolean droppedOnAllAppsIcon = !FeatureFlags.NO_ALL_APPS_ICON
+                    && mTargetCell != null && !mLauncher.getDeviceProfile().inv.isAllAppsButtonRank(
+                    hotseat.getOrderInHotseat(mTargetCell[0], mTargetCell[1]));
+            if (!droppedOnAllAppsIcon) {
+                // Only show message when hotseat is full and drop target was not AllApps button
+                showOutOfSpaceMessage(true);
+            }
+        } else {
+            showOutOfSpaceMessage(false);
+        }*/
+    }
+
+    private void showOutOfSpaceMessage(boolean isHotseatLayout) {
+        int strId = (isHotseatLayout ? R.string.hotseat_out_of_space : R.string.out_of_space);
         Toast.makeText(mLauncher, mLauncher.getString(strId), Toast.LENGTH_SHORT).show();
     }
 
@@ -2023,7 +2042,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         }
 
         ShortcutAndWidgetContainer boundingLayout = child.getShortcutsAndWidgets();
-        mLauncher.getDragLayer().getDescendantRectRelativeToSelf(boundingLayout, outArea);
+        //mLauncher.getDragLayer().getDescendantRectRelativeToSelf(boundingLayout, outArea);
+        // Use the absolute left instead of the child left, as we want the visible area
+        // irrespective of the visible child. Since the view can only scroll horizontally, the
+        // top position is not affected.
+        mTempXY[0] = getPaddingLeft() + boundingLayout.getLeft();
+        mTempXY[1] = child.getTop() + boundingLayout.getTop();
+
+        float scale = mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempXY);
+        outArea.set(mTempXY[0], mTempXY[1],
+                (int) (mTempXY[0] + scale * boundingLayout.getMeasuredWidth()),
+                (int) (mTempXY[1] + scale * boundingLayout.getMeasuredHeight()));
     }
 
     @Override
@@ -2191,14 +2220,24 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
      * @param layout either hotseat of a page in workspace
      * @param xy the point location in workspace co-ordinate space
      */
-   private void mapPointFromDropLayout(CellLayout layout, float[] xy) {
-       if (mLauncher.isHotseatLayout(layout)) {
+    private void mapPointFromDropLayout(CellLayout layout, float[] xy) {
+        if (mLauncher.isHotseatLayout(layout)) {
            mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, xy, true);
            mLauncher.getDragLayer().mapCoordInSelfToDescendant(layout, xy);
-       } else {
+        } else {
            mapPointFromSelfToChild(layout, xy);
-       }
-   }
+        }
+    }
+
+    /*void mapPointFromSelfToHotseatLayout(Hotseat hotseat, float[] xy) {
+        mTempFXY[0] = (int) xy[0];
+        mTempFXY[1] = (int) xy[1];
+        mLauncher.getDragLayer().getDescendantCoordRelativeToSelf(this, mTempFXY, true);
+        mLauncher.getDragLayer().mapCoordInSelfToDescendant(hotseat.getLayout(), mTempFXY);
+
+        xy[0] = mTempFXY[0];
+        xy[1] = mTempFXY[1];
+    }*/
 
     private boolean isDragWidget(DragObject d) {
         return (d.dragInfo instanceof LauncherAppWidgetInfo ||
@@ -2234,6 +2273,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         if (mDragTargetLayout != null) {
             // We want the point to be mapped to the dragTarget.
             mapPointFromDropLayout(mDragTargetLayout, mDragViewVisualCenter);
+            // We want the point to be mapped to the dragTarget.
+            /*if (mLauncher.isHotseatLayout(mDragTargetLayout)) {
+                mapPointFromSelfToHotseatLayout(mLauncher.getHotseat(), mDragViewVisualCenter);
+            } else {
+                mapPointFromSelfToChild(mDragTargetLayout, mDragViewVisualCenter);
+            }*/
 
             int minSpanX = item.spanX;
             int minSpanY = item.spanY;
@@ -2557,19 +2602,16 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 item.spanY = resultSpan[1];
             }
 
-            Runnable onAnimationCompleteRunnable = new Runnable() {
-                @Override
-                public void run() {
-                    // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
-                    // adding an item that may not be dropped right away (due to a config activity)
-                    // we defer the removal until the activity returns.
-                    deferRemoveExtraEmptyScreen();
+            Runnable onAnimationCompleteRunnable = () -> {
+                // Normally removeExtraEmptyScreen is called in Workspace#onDragEnd, but when
+                // adding an item that may not be dropped right away (due to a config activity)
+                // we defer the removal until the activity returns.
+                deferRemoveExtraEmptyScreen();
 
-                    // When dragging and dropping from customization tray, we deal with creating
-                    // widgets/shortcuts/folders in a slightly different way
-                    mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
-                            item.spanX, item.spanY);
-                }
+                // When dragging and dropping from customization tray, we deal with creating
+                // widgets/shortcuts/folders in a slightly different way
+                mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
+                        item.spanX, item.spanY);
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
                     || pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
@@ -2578,8 +2620,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                     ((PendingAddWidgetInfo) pendingInfo).boundWidget : null;
 
             if (finalView != null && updateWidgetSize) {
-                AppWidgetResizeFrame.updateWidgetSizeRanges(finalView, mLauncher, item.spanX,
-                        item.spanY);
+                AppWidgetResizeFrame.updateWidgetSizeRanges(finalView, mLauncher, item.spanX, item.spanY);
             }
 
             int animationStyle = ANIMATE_INTO_POSITION_AND_DISAPPEAR;
@@ -2596,13 +2637,24 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
             View view;
 
             switch (info.itemType) {
-            case ITEM_TYPE_APPLICATION:
+                case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                if (info.container == NO_ID && info instanceof AppInfo) {
+                /*if (info.container == NO_ID && info instanceof AppInfo) {
                     // Came from all apps -- make a copy
                     info = ((AppInfo) info).makeWorkspaceItem();
                     d.dragInfo = info;
+                }*/
+                if (info.container == NO_ID) {
+                    // Came from all apps -- make a copy
+                    if (info instanceof AppInfo) {
+                        info = ((AppInfo) info).makeWorkspaceItem();
+                        d.dragInfo = info;
+                    } else if (info instanceof WorkspaceItemInfo) {
+                        info = new WorkspaceItemInfo((WorkspaceItemInfo) info);
+                        d.dragInfo = info;
+                    }
+
                 }
                 view = mLauncher.createShortcut(cellLayout, (WorkspaceItemInfo) info);
                 break;
@@ -2761,15 +2813,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 endStyle = DragLayer.ANIMATION_END_DISAPPEAR;
             }
 
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    if (finalView != null) {
-                        finalView.setVisibility(VISIBLE);
-                    }
-                    if (onCompleteRunnable != null) {
-                        onCompleteRunnable.run();
-                    }
+            Runnable onComplete = () -> {
+                if (finalView != null) {
+                    finalView.setVisibility(VISIBLE);
+                }
+                if (onCompleteRunnable != null) {
+                    onCompleteRunnable.run();
                 }
             };
             dragLayer.animateViewIntoPosition(dragView, from.left, from.top, finalPos[0],
@@ -3281,20 +3330,17 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
     }
 
     public void updateRestoreItems(final HashSet<ItemInfo> updates) {
-        mapOverItems(MAP_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
-                        && updates.contains(info)) {
-                    ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
-                } else if (v instanceof PendingAppWidgetHostView
-                        && info instanceof LauncherAppWidgetInfo
-                        && updates.contains(info)) {
-                    ((PendingAppWidgetHostView) v).applyState();
-                }
-                // process all the shortcuts
-                return false;
+        mapOverItems(MAP_RECURSE, (info, v) -> {
+            if (info instanceof WorkspaceItemInfo && v instanceof BubbleTextView
+                    && updates.contains(info)) {
+                ((BubbleTextView) v).applyPromiseState(false /* promiseStateChanged */);
+            } else if (v instanceof PendingAppWidgetHostView
+                    && info instanceof LauncherAppWidgetInfo
+                    && updates.contains(info)) {
+                ((PendingAppWidgetHostView) v).applyState();
             }
+            // process all the shortcuts
+            return false;
         });
     }
 

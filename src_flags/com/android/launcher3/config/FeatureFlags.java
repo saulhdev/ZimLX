@@ -21,6 +21,9 @@ package com.android.launcher3.config;
  */
 public final class FeatureFlags extends BaseFlags {
     public static boolean FORCE_FEED_BRIDGE = false;
+
+    // When enabled the all-apps icon is not added to the hotseat.
+    public static final boolean NO_ALL_APPS_ICON = true;
     private FeatureFlags() {
         // Prevent instantiation
     }

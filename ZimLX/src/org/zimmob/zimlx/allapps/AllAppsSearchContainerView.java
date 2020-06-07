@@ -52,9 +52,10 @@ public class AllAppsSearchContainerView extends AllAppsContainerView {
             int top = (int) (qsb.getTop() + qsb.getTranslationY());
             int right = left + qsb.getWidth() + 1;
             int bottom = top + qsb.getHeight() + 1;
-            //if (Utilities.ATLEAST_P && Utilities.HIDDEN_APIS_ALLOWED) {
-            //    canvas.saveUnclippedLayer(left, 0, right, bottom);
-            //} else {
+            /*if (Utilities.ATLEAST_P && Utilities.HIDDEN_APIS_ALLOWED) {
+                canvas.saveLayer(left, 0, right, bottom);
+                canvas.saveLayer()
+            } else {*/
             int flags = Utilities.ATLEAST_P ? Canvas.ALL_SAVE_FLAG : 0x04 /* HAS_ALPHA_LAYER_SAVE_FLAG */;
             canvas.saveLayer(left, 0, right, bottom, null, flags);
             //}

@@ -25,6 +25,7 @@
         <org.zimmob.zimlx.preferences.ColorPreferenceCompat
             android:defaultValue="@color/transparentish"
             android:key="pref_key__dock_background"
+            android:dependency="pref_dockGradient"
             android:title="@string/title__dock_color"
             app:cpv_dialogTitle="@string/title__dock_color"
             app:cpv_showAlphaSlider="true"

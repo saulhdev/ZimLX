@@ -28,6 +28,7 @@ import android.text.TextPaint;
 import android.text.TextUtils;
 import android.text.TextUtils.TruncateAt;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
@@ -66,6 +67,7 @@ import static org.zimmob.zimlx.util.ZimUtilsKt.round;
 
 public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedPreferenceChangeListener,
         OnClickListener, OnLongClickListener, Insettable, SearchProviderController.OnProviderChangeListener, WallpaperColorInfo.OnChangeListener {
+    protected final static String TAG = "AbstractQsbLayout";
     protected final static String GOOGLE_QSB = "com.google.android.googlequicksearchbox";
     private static final Rect mSrcRect = new Rect();
     protected final TextPaint qsbTextHintSize;
@@ -428,6 +430,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected final int getHeightWithoutPadding() {
+        Log.d(TAG, "Height: " + getHeight());
         return (getHeight() - getPaddingTop()) - getPaddingBottom();
     }
 
@@ -527,8 +530,9 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     }
 
     protected float getCornerRadius() {
-        return getCornerRadius(getContext(),
+        mRadius = getCornerRadius(getContext(),
                 Utilities.pxFromDp(100, getResources().getDisplayMetrics()));
+        return mRadius;
     }
 
     public boolean dI() {

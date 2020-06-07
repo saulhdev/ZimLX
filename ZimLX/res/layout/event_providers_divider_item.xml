@@ -15,23 +15,25 @@
   ~     along with Lawnchair Launcher.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<com.android.launcher3.folder.FolderIcon xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/folder_icon"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:layout_gravity="center"
-    android:orientation="vertical"
-    android:paddingLeft="@dimen/dynamic_grid_cell_padding_x"
-    android:focusable="true"
-    android:paddingRight="@dimen/dynamic_grid_cell_padding_x">
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <com.android.launcher3.BubbleTextView
-        style="@style/BaseIcon"
-        android:id="@+id/folder_icon_name"
-        android:layout_gravity="top"
-        android:focusable="false"
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginStart="@dimen/dialog_horizontal_padding"
+        android:layout_marginTop="13dp"
+        android:layout_marginEnd="@dimen/dialog_horizontal_padding"
+        android:layout_marginBottom="13dp"
+        android:background="?android:attr/listDivider"
+        android:importantForAccessibility="no" />
+
+    <include
+        layout="@layout/event_provider_text_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:iconDisplay="all_apps" />
-</com.android.launcher3.folder.FolderIcon>
+        android:layout_marginTop="7dp"
+        android:layout_marginBottom="13dp" />
+</LinearLayout>

@@ -133,6 +133,11 @@ public class RestoreDbTask {
         db.update(Favorites.TABLE_NAME, values, "itemType = ?",
                 new String[]{Integer.toString(Favorites.ITEM_TYPE_APPWIDGET)});
 
+        // Mark custom widgets as restore completed
+        values.put(Favorites.RESTORED, LauncherAppWidgetInfo.RESTORE_COMPLETED);
+        db.update(Favorites.TABLE_NAME, values, "itemType = ?",
+                new String[]{Integer.toString(Favorites.ITEM_TYPE_CUSTOM_APPWIDGET)});
+
         // Migrate ids. To avoid any overlap, we initially move conflicting ids to a temp location.
         // Using Long.MIN_VALUE since profile ids can not be negative, so there will be no overlap.
         final long tempLocationOffset = Long.MIN_VALUE;

@@ -16,8 +16,7 @@
 -->
 <widgets xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:launcher="http://schemas.android.com/apk/res-auto">
-    <!--
-     <widget
+    <widget
         android:label="@string/home_widget"
         android:initialLayout="@layout/smartspace_widget"
         android:icon="@mipmap/ic_launcher"
@@ -29,34 +28,21 @@
         launcher:providerId="1"
         launcher:noPadding="true"
         launcher:customizeTitle="@string/home_widget"
-        launcher:customizeScreen="@xml/lawnchair_smartspace_preferences"
+        launcher:customizeScreen="@xml/zim_preferences_smartspace"
         launcher:customizeHasPreview="true" />
 
     <widget
-        android:label="@string/title_pref_feed"
-        android:initialLayout="@layout/activity_feed"
+        android:initialLayout="@layout/search_widget"
+        android:label="@string/pref_category_searchbar"
         android:icon="@mipmap/ic_launcher"
         android:resizeMode="horizontal|vertical"
-        launcher:numRows="8"
+        launcher:customizeHasPreview="false"
         launcher:numColumns="5"
         launcher:numMinRows="1"
         launcher:numMinColumns="3"
         launcher:providerId="2"
         launcher:noPadding="true"
-        launcher:customizeTitle="@string/title_pref_feed"
-        launcher:customizeScreen="@xml/lawnchair_feed_preferences"
-        launcher:customizeHasPreview="true" />
-
-    <widget
-        android:label="@string/pref_category_weather"
-        android:initialLayout="@layout/widget_weather"
-        android:icon="@mipmap/ic_launcher"
-        android:resizeMode="horizontal|vertical"
-        launcher:numRows="8"
-        launcher:numColumns="5"
-        launcher:numMinRows="1"
-        launcher:numMinColumns="3"
-        launcher:providerId="3"
-        launcher:noPadding="true" />
-     -->
+        launcher:customizeScreen="@xml/zim_preferences_folder"
+        launcher:customizeTitle="@string/pref_category_searchbar"
+        launcher:numRows="1" />
 </widgets>

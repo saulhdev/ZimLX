@@ -27,6 +27,7 @@ import com.google.android.apps.nexuslauncher.utils.ColorManipulation;
 import org.jetbrains.annotations.NotNull;
 
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 public class SmartspaceCard {
     private final b dI;
@@ -223,10 +224,7 @@ public class SmartspaceCard {
         }
         String cn = cg.cN;
         if (this.cL(cg)) {
-            return String.format(cn, this.cK(cg.cO, s));
-        }
-        if (cn == null) {
-            cn = "";
+            return String.format(cn, cK(cg.cO, s));
         }
         return cn;
     }
@@ -237,7 +235,7 @@ public class SmartspaceCard {
 
     public String cB(final boolean b) {
         int i = 0;
-        final e[] co = this.cG(b).cO;
+        final e[] co = Objects.requireNonNull(cG(b)).cO;
         if (co != null) {
             while (i < co.length) {
                 if (co[i].cS != 0) {

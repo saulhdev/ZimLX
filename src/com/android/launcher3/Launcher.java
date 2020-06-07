@@ -1109,7 +1109,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         mWorkspace.initParentViews(mDragLayer);
         mOverviewPanel = findViewById(R.id.overview_panel);
         mHotseat = findViewById(R.id.hotseat);
-        //mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
+        mHotseatSearchBox = findViewById(R.id.search_container_hotseat);
 
         mLauncherView.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
                 | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -1215,7 +1215,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
      * @param data The intent describing the shortcut.
      */
     private void completeAddShortcut(Intent data, int container, int screenId, int cellX,
-            int cellY, PendingRequestArgs args) {
+                                     int cellY, PendingRequestArgs args) {
         if (args.getRequestCode() != REQUEST_CREATE_SHORTCUT
                 || args.getPendingIntent().getComponent() == null) {
             return;
@@ -1396,7 +1396,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
 
     boolean isHotseatLayout(View layout) {
         // TODO: Remove this method
-        return mHotseat != null && (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
+        //return mHotseat != null && (layout instanceof CellLayout) && (layout == mHotseat.getLayout());
+        return mHotseat != null && (layout == mHotseat);
     }
 
     public View getHotseatSearchBox() {
@@ -1662,12 +1663,9 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
         if (!addFlowHandler.startConfigActivity(this, appWidgetId, info, REQUEST_CREATE_APPWIDGET)) {
             // If the configuration flow was not started, add the widget
 
-            Runnable onComplete = new Runnable() {
-                @Override
-                public void run() {
-                    // Exit spring loaded mode if necessary after adding the widget
-                    mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
-                }
+            Runnable onComplete = () -> {
+                // Exit spring loaded mode if necessary after adding the widget
+                mStateManager.goToState(NORMAL, SPRING_LOADED_EXIT_DELAY);
             };
             completeAddAppWidget(appWidgetId, info, boundWidget, addFlowHandler.getProviderInfo(this));
             mWorkspace.removeExtraEmptyScreenDelayed(true, onComplete, delay, false);
@@ -1971,7 +1969,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
 
             writer.println(prefix + "  Hotseat");
-            ViewGroup layout = mHotseat.getLayout().getShortcutsAndWidgets();
+            ViewGroup layout = mHotseat.getShortcutsAndWidgets();
             for (int j = 0; j < layout.getChildCount(); j++) {
                 Object tag = layout.getChildAt(j).getTag();
                 if (tag != null) {

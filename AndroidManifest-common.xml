@@ -64,9 +64,6 @@
         android:label="@string/permlab_write_settings"
         android:description="@string/permdesc_write_settings"/>
 
-    <uses-permission android:name="${packageName}.permission.READ_SETTINGS" />
-    <uses-permission android:name="${packageName}.permission.WRITE_SETTINGS" />
-
     <application
         android:backupAgent="com.android.launcher3.LauncherBackupAgent"
         android:fullBackupOnly="true"

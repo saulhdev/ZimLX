@@ -30,15 +30,15 @@ import com.android.launcher3.icons.BitmapRenderer;
 import com.android.launcher3.uioverrides.WallpaperColorInfo;
 import com.android.launcher3.util.Themes;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
-import com.google.android.apps.nexuslauncher.allapps.PredictionsFloatingHeader;
 import com.google.android.apps.nexuslauncher.search.AppSearchProvider;
 import com.google.android.apps.nexuslauncher.search.SearchProto.SearchBase;
-import com.google.android.apps.nexuslauncher.util.ComponentKeyMapper;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.google.android.apps.nexuslauncher.search.SearchProto.*;
+import static com.google.android.apps.nexuslauncher.search.SearchProto.AppIndex;
+import static com.google.android.apps.nexuslauncher.search.SearchProto.Columns;
+import static com.google.android.apps.nexuslauncher.search.SearchProto.SearchView;
 
 public class ConfigBuilder {
     private final SearchBase mNano;

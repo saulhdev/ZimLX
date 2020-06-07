@@ -16,7 +16,6 @@
 package org.zimmob.zimlx.settings;
 
 import android.annotation.SuppressLint;
-import android.app.ActivityManager;
 import android.app.Dialog;
 import android.content.ComponentName;
 import android.content.ContentResolver;
@@ -30,7 +29,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.provider.Settings;
 import android.text.TextUtils;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -38,7 +36,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -55,7 +52,6 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
-import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
@@ -67,14 +63,11 @@ import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
-import com.android.launcher3.config.FeatureFlags;
 import com.android.launcher3.notification.NotificationListener;
 import com.android.launcher3.settings.NotificationDotsPreference;
 import com.android.launcher3.settings.PreferenceHighlighter;
-import com.android.launcher3.uioverrides.plugins.PluginManagerWrapper;
 import com.android.launcher3.util.ComponentKey;
 import com.android.launcher3.util.ContentWriter;
-import com.android.launcher3.util.SecureSettingsObserver;
 import com.jaredrummler.android.colorpicker.ColorPickerDialog;
 import com.jaredrummler.android.colorpicker.ColorPickerDialogListener;
 
@@ -92,14 +85,14 @@ import org.zimmob.zimlx.gestures.ui.GesturePreference;
 import org.zimmob.zimlx.gestures.ui.SelectGestureHandlerFragment;
 import org.zimmob.zimlx.globalsearch.ui.SearchProviderPreference;
 import org.zimmob.zimlx.globalsearch.ui.SelectSearchProviderFragment;
-import org.zimmob.zimlx.override.IconShapeOverride;
-import org.zimmob.zimlx.preferences.ButtonPreference;
 import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.IconShapePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
+import org.zimmob.zimlx.preferences.SmartspaceEventProvidersFragment;
+import org.zimmob.zimlx.preferences.SmartspaceEventProvidersPreference;
 import org.zimmob.zimlx.preferences.StyledIconPreference;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
@@ -114,11 +107,6 @@ import java.util.Set;
 
 import static androidx.fragment.app.FragmentManager.OnBackStackChangedListener;
 import static androidx.preference.PreferenceFragment.OnPreferenceDisplayDialogCallback;
-import static com.android.launcher3.SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY;
-import static com.android.launcher3.settings.SettingsActivity.GRID_OPTIONS_PREFERENCE_KEY;
-import static com.android.launcher3.states.RotationHelper.ALLOW_ROTATION_PREFERENCE_KEY;
-import static com.android.launcher3.states.RotationHelper.getAllowRotationDefaultValue;
-import static com.android.launcher3.util.SecureSettingsObserver.newNotificationSettingsObserver;
 
 public class SettingsActivity extends SettingsBaseActivity
         implements PreferenceFragmentCompat.OnPreferenceStartFragmentCallback, OnPreferenceDisplayDialogCallback,
@@ -198,6 +186,9 @@ public class SettingsActivity extends SettingsBaseActivity
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.search_toolbar) {
+            startActivity(new Intent(this, SettingsSearchActivity.class));
+        }
     }
 
     @NotNull
@@ -676,24 +667,6 @@ public class SettingsActivity extends SettingsBaseActivity
                                 .show(getFragmentManager(), "reset_icons");
                         return true;
                     });
-/*
-                    Preference iconShapeOverride = findPreference(IconShapeOverride.KEY_ICON_SHAPE);
-                    if (iconShapeOverride != null) {
-                        if (IconShapeOverride.isSupported(mContext)) {
-                            IconShapeOverride.handlePreferenceUi((ListPreference) iconShapeOverride);
-                        }
-                    }*/
-
-                    /*TEST */
-                    /*
-                    ReloadingListPreference icons = (ReloadingListPreference) findPreference(KEY_ICON_PACK);
-                    icons.setOnReloadListener(new IconPackPrefSetter(mContext));
-                    icons.setOnPreferenceChangeListener((pref, val) -> {
-                        IconDatabase.clearAll(mContext);
-                        IconDatabase.setGlobal(mContext, (String) val);
-                        AppReloader.get(mContext).reload();
-                        return true;
-                    });*/
 
                     break;
 
@@ -816,9 +789,9 @@ public class SettingsActivity extends SettingsBaseActivity
             } else if (preference instanceof AbstractMultiSelectListPreference) {
                 f = ThemedMultiSelectListPreferenceDialogFragmentCompat.Companion
                         .newInstance(preference.getKey());
-            } //else if (preference instanceof SmartspaceEventProvidersPreference) {
-            //  f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
-            //}
+            } else if (preference instanceof SmartspaceEventProvidersPreference) {
+                f = SmartspaceEventProvidersFragment.Companion.newInstance(preference.getKey());
+            }
             else {
                 super.onDisplayPreferenceDialog(preference);
                 return;

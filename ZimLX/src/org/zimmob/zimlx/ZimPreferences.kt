@@ -164,7 +164,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate)
     var dockRadius by FloatPref("pref_dockRadius", 16f, recreate)
     val dockGridSize by dockGridSizeDelegate
-    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", Utilities.ATLEAST_MARSHMALLOW, recreate)
+    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", false, recreate)
     inline val dockSearchBar get() = !dockHide && dockSearchBarPref
     val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
     val dockRowsCount get() = if (twoRowDock) 2 else 1

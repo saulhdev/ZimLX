@@ -692,6 +692,9 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         clearDragInfo();
         mState = STATE_SMALL;
         mContent.setCurrentPage(0);
+        if (mInfo instanceof DrawerFolderInfo) {
+            ((DrawerFolderInfo) mInfo).onCloseComplete();
+        }
     }
 
     @Override

@@ -35,7 +35,7 @@ import static org.zimmob.zimlx.smartspace.ZimSmartspaceController.WeatherData;
  */
 public class QsbBlockerView extends FrameLayout implements ZimSmartspaceController.Listener, View.OnLongClickListener, View.OnClickListener {
     private final Paint mBgPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-    //public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
+    public static final Property<QsbBlockerView, Integer> QSB_BLOCKER_VIEW_ALPHA = new QsbBlockerViewAlpha(Integer.TYPE, "bgAlpha");
     private ZimSmartspaceController mController;
     private int mState = 0;
     private View mView;

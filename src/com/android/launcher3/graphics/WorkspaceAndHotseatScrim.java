@@ -142,22 +142,20 @@ public class WorkspaceAndHotseatScrim extends Scrim {
     public WorkspaceAndHotseatScrim(View view) {
         super(view);
 
-        mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP,
-                view.getResources().getDisplayMetrics());
-        //mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
-        //mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
-
+        mMaskHeight = ResourceUtils.pxFromDp(ALPHA_MASK_BITMAP_DP, view.getResources().getDisplayMetrics());
+        mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
+        mBottomMask = mTopScrim == null ? null : createDitheredAlphaMask();
 
         mHasSysUiScrim = !ThemeManager.Companion.getInstance(mLauncher).getSupportsDarkText()
                 && Utilities.getZimPrefs(mLauncher).getShowTopShadow();
-        if (mHasSysUiScrim) {
+        /*if (mHasSysUiScrim) {
             mTopScrim = Themes.getAttrDrawable(view.getContext(), R.attr.workspaceStatusBarScrim);
             mBottomMask = createDitheredAlphaMask();
         } else {
             mTopScrim = null;
             mBottomMask = null;
             mHideSysUiScrim = true;
-        }
+        }*/
 
         onExtractedColorsChanged(mWallpaperColorInfo);
     }

@@ -378,8 +378,8 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
                 updateColor(view)
 
-                view.setOnClickListener {
-                    /*val dialog = AlertDialog.Builder(context).create()
+                /*view.setOnClickListener {
+                    val dialog = AlertDialog.Builder(context).create()
                     val current = value()
                     val resolvers = resources.getStringArray(R.array.resolver_tabs)
                     with(dialog) {
@@ -404,11 +404,11 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
                             window!!.setBackgroundDrawable(this.context.getDrawable(R.drawable.dialog_material_background))
                         }
                     }
-                    dialog.show()*/
+                    dialog.show()
 
                     //TODO
                     /*Crear opcion para seleccionar color*/
-                }
+                }*/
 
                 return view
             }

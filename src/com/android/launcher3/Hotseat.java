@@ -39,7 +39,7 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mHasVerticalHotseat;
 
-    private CellLayout mContent;
+    //private CellLayout mContent;
 
     public Hotseat(Context context) {
         this(context, null);
@@ -53,9 +53,17 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         super(context, attrs, defStyle);
     }
 
-    public CellLayout getLayout() {
+    /*public CellLayout getLayout() {
         return mContent;
-    }
+    }*/
+
+    /* Get the orientation invariant order of the item in the hotseat for persistence. */
+    /*int getOrderInHotseat(int x, int y) {
+        int xOrder = mHasVerticalHotseat ? (mContent.getCountY() - y - 1) : x;
+        int yOrder = mHasVerticalHotseat ? x * mContent.getCountY() : y * mContent.getCountX();
+        return xOrder + yOrder;
+    }*/
+
     /* Get the orientation specific coordinates given an invariant order in the hotseat. */
     int getCellXFromOrder(int rank) {
         return mHasVerticalHotseat ? 0 : rank;
@@ -65,24 +73,24 @@ public class Hotseat extends CellLayout implements LogContainerProvider, Insetta
         return mHasVerticalHotseat ? (getCountY() - (rank + 1)) : 0;
     }
 
-    @Override
+    /*@Override
     protected void onFinishInflate() {
         super.onFinishInflate();
 
         ZimPreferences prefs = Utilities.getZimPrefs(getContext());
         if (prefs.getDockHide()) {
             setVisibility(GONE);
-        } /*else if (prefs.getDockSearchBar()) {
+        } else if (prefs.getDockSearchBar()) {
             inflate(getContext(), R.layout.search_container_hotseat, this);
         } else {
             View v = this.findViewById(R.id.search_container_hotseat);
             if (v != null) {
                 removeView(v);
             }
-        }*/
+        }
 
         mContent = findViewById(R.id.layout);
-    }
+    }*/
 
 
     public void resetLayout(boolean hasVerticalHotseat) {

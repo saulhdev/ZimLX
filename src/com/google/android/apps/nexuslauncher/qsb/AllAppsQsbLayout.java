@@ -150,14 +150,14 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         Ds.b(this);
     }
 
-    protected final int aA(int i) {
+    /*protected final int aA(int i) {
         if (this.mActivity.getDeviceProfile().isVerticalBarLayout()) {
             return (i - this.mAppsView.getActiveRecyclerView().getPaddingLeft()) - this.mAppsView
                     .getActiveRecyclerView().getPaddingRight();
         }
         View view = this.mActivity.getHotseat().getLayout();
         return (i - view.getPaddingLeft()) - view.getPaddingRight();
-    }
+    }*/
 
     public final void initialize(AllAppsContainerView allAppsContainerView) {
         this.mAppsView = allAppsContainerView;

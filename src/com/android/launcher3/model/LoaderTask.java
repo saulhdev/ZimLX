@@ -20,6 +20,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_LOCKED_USER;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SAFEMODE;
 import static com.android.launcher3.ItemInfoWithIcon.FLAG_DISABLED_SUSPENDED;
 import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
+import static com.android.launcher3.folder.ClippedFolderIconLayoutRule.MAX_NUM_ITEMS_IN_PREVIEW;
 import static com.android.launcher3.model.LoaderResults.filterCurrentWorkspaceItems;
 
 import android.appwidget.AppWidgetProviderInfo;
@@ -285,8 +286,7 @@ public class LoaderTask implements Runnable {
         synchronized (mBgDataModel) {
             mBgDataModel.clear();
 
-            final HashMap<PackageUserKey, SessionInfo> installingPkgs =
-                    mPackageInstaller.updateAndGetActiveSessionCache();
+            final HashMap<PackageUserKey, SessionInfo> installingPkgs = mPackageInstaller.updateAndGetActiveSessionCache();
             final PackageUserKey tempPackageKey = new PackageUserKey(null, null);
             mFirstScreenBroadcast = new FirstScreenBroadcast(installingPkgs);
 
@@ -383,6 +383,9 @@ public class LoaderTask implements Runnable {
                             customIconEntry = c.getString(customIconEntryIndex);
                             swipeUpAction = c.getString(swipeUpActionEntryIndex);
                             badgeVisible = c.getInt(badgeVisibleIndex) != 0;
+
+                            FolderIconPreviewVerifier verifier =
+                                    new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
 
                             if (allUsers.indexOfValue(c.user) < 0) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
@@ -481,7 +484,8 @@ public class LoaderTask implements Runnable {
                                 c.markRestored();
                             }
 
-                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat();
+                            boolean useLowResIcon = !c.isOnWorkspaceOrHotseat() &&
+                                    !verifier.isItemInPreview(c.getInt(rankIndex));
 
                             if (c.restoreFlag != 0) {
                                 // Already verified above that user is same as default user
@@ -586,6 +590,8 @@ public class LoaderTask implements Runnable {
                             folderInfo.spanX = 1;
                             folderInfo.spanY = 1;
                             folderInfo.options = c.getInt(optionsIndex);
+
+                            folderInfo.swipeUpAction = c.getString(swipeUpActionEntryIndex);
 
                             // no special handling required for restored folders
                             c.markRestored();
@@ -779,9 +785,11 @@ public class LoaderTask implements Runnable {
                 verifier.setFolderInfo(folder);
                 int size = folder.contents.size();
 
+                int numItemsInPreview = 0;
                 // Update ranks here to ensure there are no gaps caused by removed folder items.
                 // Ranks are the source of truth for folder items, so cellX and cellY can be ignored
                 // for now. Database will be updated once user manually modifies folder.
+
                 for (int rank = 0; rank < size; ++rank) {
                     WorkspaceItemInfo info = folder.contents.get(rank);
                     info.rank = rank;
@@ -790,6 +798,10 @@ public class LoaderTask implements Runnable {
                             && info.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION
                             && verifier.isItemInPreview(info.rank)) {
                         mIconCache.getTitleAndIcon(info, false);
+                        numItemsInPreview++;
+                    }
+                    if (numItemsInPreview >= MAX_NUM_ITEMS_IN_PREVIEW) {
+                        break;
                     }
                 }
             }
