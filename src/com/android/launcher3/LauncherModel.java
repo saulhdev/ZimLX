@@ -145,31 +145,10 @@ public class LauncherModel extends BroadcastReceiver
         }
     };
 
-    public interface Callbacks {
-        public void rebindModel();
-
-        public int getCurrentWorkspaceScreen();
-        public void clearPendingBinds();
-        public void startBinding();
-        public void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
-        public void bindScreens(IntArray orderedScreenIds);
-        public void finishFirstPageBind(ViewOnDrawExecutor executor);
-        public void finishBindingItems(int pageBoundFirst);
-        public void bindAllApplications(ArrayList<AppInfo> apps);
-        public void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
-        public void preAddApps();
-        public void bindAppsAdded(IntArray newScreens,
-                ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
-        public void bindPromiseAppProgressUpdated(PromiseAppInfo app);
-        public void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
-        public void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
-        public void bindRestoreItemsChange(HashSet<ItemInfo> updates);
-        public void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
-        public void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
-        public void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
-        public void onPageBoundSynchronously(int page);
-        public void executeOnNextDraw(ViewOnDrawExecutor executor);
-        public void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
+    public List<LauncherAppWidgetInfo> getLoadedWidgets() {
+        synchronized (sBgDataModel) {
+            return new ArrayList<>(sBgDataModel.appWidgets);
+        }
     }
 
     LauncherModel(LauncherAppState app, IconCache iconCache, AppFilter appFilter) {
@@ -610,6 +589,53 @@ public class LauncherModel extends BroadcastReceiver
                 bindUpdatedWidgets(dataModel);
             }
         });
+    }
+
+    public interface Callbacks {
+        void rebindModel();
+
+        int getCurrentWorkspaceScreen();
+
+        void clearPendingBinds();
+
+        void startBinding();
+
+        void bindItems(List<ItemInfo> shortcuts, boolean forceAnimateIcons);
+
+        void bindScreens(IntArray orderedScreenIds);
+
+        void finishFirstPageBind(ViewOnDrawExecutor executor);
+
+        void finishBindingItems(int pageBoundFirst);
+
+        void bindAllApplications(ArrayList<AppInfo> apps);
+
+        void bindAppsAddedOrUpdated(ArrayList<AppInfo> apps);
+
+        void preAddApps();
+
+        void bindAppsAdded(IntArray newScreens,
+                           ArrayList<ItemInfo> addNotAnimated, ArrayList<ItemInfo> addAnimated);
+
+        void bindPromiseAppProgressUpdated(PromiseAppInfo app);
+
+        void bindWorkspaceItemsChanged(ArrayList<WorkspaceItemInfo> updated);
+
+        void bindWidgetsRestored(ArrayList<LauncherAppWidgetInfo> widgets);
+
+        void bindRestoreItemsChange(HashSet<ItemInfo> updates);
+
+        void bindWorkspaceComponentsRemoved(ItemInfoMatcher matcher);
+
+        void bindAppInfosRemoved(ArrayList<AppInfo> appInfos);
+
+        void bindAllWidgets(ArrayList<WidgetListRowEntry> widgets);
+
+        void onPageBoundSynchronously(int page);
+
+        void executeOnNextDraw(ViewOnDrawExecutor executor);
+
+        void bindDeepShortcutMap(HashMap<ComponentKey, Integer> deepShortcutMap);
     }
 
     public void dumpState(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {

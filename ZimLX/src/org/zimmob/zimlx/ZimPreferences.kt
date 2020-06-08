@@ -164,10 +164,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val showTopShadow by BooleanPref("pref_showTopShadow", true, recreate)
     var dockRadius by FloatPref("pref_dockRadius", 16f, recreate)
     val dockGridSize by dockGridSizeDelegate
-    var dockSearchBarPref by BooleanPref("pref_dockSearchBar", false, recreate)
-    inline val dockSearchBar get() = !dockHide && dockSearchBarPref
-    val twoRowDock by BooleanPref("pref_twoRowDock", false, restart)
-    val dockRowsCount get() = if (twoRowDock) 2 else 1
     var dockScale by FloatPref("pref_dockScale", -1f, recreate)
     val hideDockLabels by BooleanPref("pref_hideDockLabels", true, restart)
     val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
@@ -343,17 +339,14 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
                 // The new dock qsb should be close enough I guess
                 && !prefs.getBoolean("pref_fullWidthSearchbar", false)
         putBoolean("pref_use_pill_qsb", pillQsb)
-        if (pillQsb) {
-            putBoolean("pref_dockSearchBar", false)
-        }
         if (!prefs.getBoolean("pref_showDateOrWeather", true)) {
             putString("pref_smartspace_widget_provider", BlankDataProvider::class.java.name)
         }
         // Theme
         putString("pref_launcherTheme",
                 when (prefs.getString("pref_theme", "0")) {
-                    //"1" -> ThemeManager.THEME_DARK
-                    //"2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
+                    "1" -> ThemeManager.THEME_DARK
+                    "2" -> ThemeManager.THEME_USE_BLACK or ThemeManager.THEME_DARK
                     else -> 0
                 }.toString())
         putString("pref_icon_pack", prefs.getString("pref_iconPackPackage", ""))
@@ -585,7 +578,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         }
 
         open fun disposeOldValue(oldValue: T) {
-
         }
     }
 

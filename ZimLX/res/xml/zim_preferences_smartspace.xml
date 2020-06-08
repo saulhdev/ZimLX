@@ -2,11 +2,86 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <org.zimmob.zimlx.preferences.PreviewPreference
+        android:key="pref_smartspace_preview"
+        app:previewLayout="@layout/smartspace_preview" />
+
+    <org.zimmob.zimlx.preferences.SmartspaceAddToHomePreference
+        android:key="pref_smartspace_add_to_home"
+        android:title="@string/title__desktop_smartspace"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_use_pill_qsb"
+        android:key="pref_smartspace_time"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_time"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
+        android:key="pref_smartspace_time_above"
+        android:summary="@string/pref_smartspace_time_above_summary"
+        android:title="@string/pref_smartspace_time_above"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_smartspace_time"
+        android:key="pref_smartspace_time_24_h"
+        android:title="@string/smartspace_time_24_h"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:dependency="pref_use_pill_qsb"
+        android:key="pref_smartspace_date"
+        android:summary="@string/in_smartspace"
+        android:title="@string/smartspace_date"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreference
+        android:defaultValue="false"
+        android:disableDependentsState="true"
+        android:key="pref_use_pill_qsb"
+        android:title="@string/title_use_pill_qsb"
+        app:iconSpaceReserved="false" />
+
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"
         android:key="pref_enable_minus_one"
         android:summary="@string/pref_show_google_now_summary"
         android:title="@string/title_show_google_app"
         app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
+        android:key="prefCat_homewidgetWeather"
+        android:title="@string/category__behavior_weather">
+
+        <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
+            android:key="pref_smartspace_widget_provider"
+            android:summary="%s"
+            android:title="@string/title__behavior_widget_provider"
+            app:iconSpaceReserved="false" />
+
+        <androidx.preference.ListPreference
+            android:defaultValue="metric"
+            android:dependency="pref_smartspace_widget_provider"
+            android:entries="@array/unitsTexts"
+            android:entryValues="@array/unitsValues"
+            android:key="pref_weather_units"
+            android:summary="%s"
+            android:title="@string/title__behavior_weather_units"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.SmartspaceEventProvidersPreference
+            android:dependency="pref_use_pill_qsb"
+            android:key="pref_smartspace_event_providers"
+            android:summary="%s"
+            android:title="@string/pref_smartspace_event_providers"
+            app:iconSpaceReserved="false" />
+    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

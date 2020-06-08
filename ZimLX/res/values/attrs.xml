@@ -113,5 +113,7 @@
         <attr name="defaultSeekbarValue" format="float" />
         <attr name="steps" format="integer" />
     </declare-styleable>
-
+    <declare-styleable name="PreviewPreference">
+        <attr name="previewLayout" format="float" />
+    </declare-styleable>
 </resources>

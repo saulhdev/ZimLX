@@ -183,7 +183,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
         float normalShift = progress * mShiftRange;
         ZimPreferences prefs = ZimPreferences.Companion.getInstanceNoCreate();
         if (mAppsView.getFloatingHeaderView().hasVisibleContent()
-                && prefs.getAllAppsSearch() != prefs.getDockSearchBar()) {
+                && prefs.getAllAppsSearch()) {
             float overviewProgress = OVERVIEW.getVerticalProgress(mLauncher);
             float overviewShift = getQsbHeight();
             if (prefs.getAllAppsSearch()) {
@@ -191,7 +191,7 @@ public class AllAppsTransitionController implements StateHandler, OnDeviceProfil
             }
             if (progress < overviewProgress) {
                 overviewShift = Utilities.mapToRange(progress, 0, overviewProgress,
-                        inverted ? prefs.getDockSearchBar() ? -overviewShift : 0 : 0,
+                        inverted ? 0 : 0,
                         inverted ? 0 : overviewShift,
                         Interpolators.LINEAR);
             } else if (inverted) {

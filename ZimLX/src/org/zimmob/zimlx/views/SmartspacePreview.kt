@@ -25,6 +25,7 @@ import android.widget.FrameLayout
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.widget.custom.CustomWidgetParser
+import com.google.android.apps.nexuslauncher.smartspace.SmartspaceView
 import org.zimmob.zimlx.ZimPreferences
 
 class SmartspacePreview(context: Context, attrs: AttributeSet?) :
@@ -35,7 +36,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     private val prefsToWatch = arrayOf("pref_smartspace_time", "pref_smartspace_time_above",
             "pref_smartspace_time_24_h", "pref_smartspace_date", "pref_use_pill_qsb")
     private val needsReinflate = setOf("pref_use_pill_qsb")
-    //private var currentView: SmartspaceView? = null
+    private var currentView: SmartspaceView? = null
 
     override val provider = CustomWidgetParser.getCustomWidgets(context)[0]!!
 
@@ -52,12 +53,12 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     }
 
     override fun onValueChanged(key: String, prefs: ZimPreferences, force: Boolean) {
-        /*if (currentView == null || needsReinflate.contains(key)) {
+        if (currentView == null || needsReinflate.contains(key)) {
             removeAllViews()
             inflateCurrentView()
         } else {
             currentView!!.reloadCustomizations()
-        }*/
+        }
     }
 
     private fun inflateCurrentView() {
@@ -68,7 +69,7 @@ class SmartspacePreview(context: Context, attrs: AttributeSet?) :
     private fun inflateView(layout: Int): View {
         val view = LayoutInflater.from(context).inflate(layout, this, false)
         view.layoutParams.height = resources.getDimensionPixelSize(R.dimen.smartspace_preview_height)
-        //currentView = view as? SmartspaceView
+        currentView = view as? SmartspaceView
         return view
     }
 }

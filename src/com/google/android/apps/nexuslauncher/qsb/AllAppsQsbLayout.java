@@ -89,12 +89,12 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
             ZimPreferences prefs = ZimPreferences.Companion.getInstance(getContext());
             if (!prefs.getDockHide()) {
                 delta += mlp.height + mlp.topMargin;
-                if (!prefs.getDockSearchBar()) {
-                    delta -= mlp.height;
+
+                delta -= mlp.height;
                     delta -= mlp.topMargin;
                     delta -= mlp.bottomMargin;
                     delta += Dy;
-                }
+
             } else {
                 delta -= mActivity.getResources().getDimensionPixelSize(R.dimen.vertical_drag_handle_size);
             }

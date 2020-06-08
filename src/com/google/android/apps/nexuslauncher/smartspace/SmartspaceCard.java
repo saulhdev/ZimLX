@@ -224,7 +224,7 @@ public class SmartspaceCard {
         }
         String cn = cg.cN;
         if (this.cL(cg)) {
-            return String.format(cn, cK(cg.cO, s));
+            return String.format(cn, this.cK(cg.cO, s));
         }
         return cn;
     }

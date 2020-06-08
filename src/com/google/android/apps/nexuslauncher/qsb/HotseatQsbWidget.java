@@ -40,9 +40,6 @@ import java.util.List;
 
 public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         ZimPreferences.OnPreferenceChangeListener {
-
-    public static final String KEY_DOCK_COLORED_GOOGLE = "pref_dockColoredGoogle";
-    public static final String KEY_DOCK_SEARCHBAR = "pref_dockSearchBar";
     public static final String KEY_DOCK_HIDE = "pref_hideHotseat";
     private final k Ds;
     private boolean mIsGoogleColored;
@@ -105,8 +102,6 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
     }
 
     protected void onAttachedToWindow() {
-        Utilities.getZimPrefs(getContext())
-                .addOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE, KEY_DOCK_SEARCHBAR);
         dW();
         super.onAttachedToWindow();
         Ds.a(this);
@@ -116,22 +111,12 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
 
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        Utilities.getZimPrefs(getContext())
-                .removeOnPreferenceChangeListener(this, KEY_DOCK_COLORED_GOOGLE,
-                        KEY_DOCK_SEARCHBAR);
         Ds.b(this);
     }
 
     @Override
     public void onValueChanged(@NotNull String key, @NotNull ZimPreferences prefs,
                                boolean force) {
-        if (key.equals(KEY_DOCK_COLORED_GOOGLE)) {
-            mIsGoogleColored = isGoogleColored();
-            dM();
-        } else if (!widgetMode && (key.equals(KEY_DOCK_SEARCHBAR) || key.equals(KEY_DOCK_HIDE))) {
-            boolean visible = prefs.getDockSearchBar() && !prefs.getDockHide();
-            setVisibility(visible ? View.VISIBLE : View.GONE);
-        }
     }
 
     @Override
