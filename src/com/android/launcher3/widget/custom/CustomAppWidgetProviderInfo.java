@@ -69,6 +69,11 @@ public class CustomAppWidgetProviderInfo extends LauncherAppWidgetProviderInfo
         super.writeToParcel(out, flags);
         out.writeInt(providerId);
         out.writeString(provider.getPackageName());
+        out.writeByte((byte) (noPadding ? 1 : 0));
+        out.writeInt(customizeTitle);
+        out.writeInt(customizeScreen);
+        out.writeByte((byte) (customizeHasPreview ? 1 : 0));
+        out.writeString(provider.getPackageName());
 
         out.writeString(label);
         out.writeInt(initialLayout);

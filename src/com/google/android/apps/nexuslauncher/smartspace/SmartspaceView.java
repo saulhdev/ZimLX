@@ -67,6 +67,7 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private final OnClickListener mCalendarClickListener;
     private final OnClickListener mClockClickListener;
     private final OnClickListener mWeatherClickListener;
+    private OnClickListener mEventClickListener;
     private final Handler mHandler;
     private TextView mSubtitleWeatherText;
     private View mTitleSeparator;
@@ -81,7 +82,6 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
     private BubbleTextView dr;
     private boolean ds;
     private boolean mDoubleLine;
-    private OnClickListener mEventClickListener;
     private View mSubtitleLine;
     private ImageView mSubtitleIcon;
     private TextView mSubtitleText;
@@ -508,35 +508,11 @@ public class SmartspaceView extends FrameLayout implements ISmartspace, ValueAni
 
     @Override
     public void run() {
-
     }
 
     @Override
     public void setPadding(final int n, final int n2, final int n3, final int n4) {
         super.setPadding(0, 0, 0, 0);
-    }
-
-    final class h implements OnClickListener {
-        final SmartspaceView dZ;
-
-        h(final SmartspaceView dz) {
-            dZ = dz;
-        }
-
-        public void onClick(final View view) {
-            final Uri content_URI = CalendarContract.CONTENT_URI;
-            final Uri.Builder appendPath = content_URI.buildUpon().appendPath("time");
-            ContentUris.appendId(appendPath, System.currentTimeMillis());
-            final Intent addFlags = new Intent(Intent.ACTION_VIEW).setData(appendPath.build())
-                    .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_RESET_TASK_IF_NEEDED);
-            try {
-                final Context context = dZ.getContext();
-                Launcher.getLauncher(context).startActivitySafely(view, addFlags, null);
-            } catch (ActivityNotFoundException ex) {
-                LauncherAppsCompat.getInstance(dZ.getContext()).showAppDetailsForProfile(
-                        new ComponentName(DynamicIconProvider.GOOGLE_CALENDAR, ""), Process.myUserHandle(), null, null);
-            }
-        }
     }
 }
 

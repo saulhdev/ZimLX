@@ -2,17 +2,18 @@
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <!--
     <org.zimmob.zimlx.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
-        app:previewLayout="@layout/smartspace_preview" />
+        app:previewLayout="@layout/smartspace_preview" /> -->
 
     <org.zimmob.zimlx.preferences.SmartspaceAddToHomePreference
         android:key="pref_smartspace_add_to_home"
         android:title="@string/title__desktop_smartspace"
-        app:iconSpaceReserved="false" />
+        app:iconSpaceReserved="false"/>
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:dependency="pref_use_pill_qsb"
         android:key="pref_smartspace_time"
         android:summary="@string/in_smartspace"
@@ -43,7 +44,7 @@
         app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
-        android:defaultValue="false"
+        android:defaultValue="true"
         android:disableDependentsState="true"
         android:key="pref_use_pill_qsb"
         android:title="@string/title_use_pill_qsb"
@@ -56,8 +57,7 @@
         android:title="@string/title_show_google_app"
         app:iconSpaceReserved="false" />
 
-    <org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory
-        android:key="prefCat_homewidgetWeather"
+    <org.zimmob.zimlx.preferences.StyledPreferenceCategory
         android:title="@string/category__behavior_weather">
 
         <org.zimmob.zimlx.preferences.SmartspaceProviderPreference
@@ -82,6 +82,6 @@
             android:summary="%s"
             android:title="@string/pref_smartspace_event_providers"
             app:iconSpaceReserved="false" />
-    </org.zimmob.zimlx.preferences.LauncherStyledPreferenceCategory>
+    </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
 </androidx.preference.PreferenceScreen>

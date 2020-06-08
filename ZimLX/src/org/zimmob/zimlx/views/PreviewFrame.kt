@@ -42,7 +42,6 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context
 
     override fun dispatchDraw(canvas: Canvas) {
         canvas.drawPaint(clearPaint)
-
         super.dispatchDraw(canvas)
     }
 
@@ -71,9 +70,7 @@ class PreviewFrame(context: Context, attrs: AttributeSet?) : FrameLayout(context
                 val description = ClipDescription("", arrayOf(listener.mimeType))
                 val data = ClipData(description, ClipData.Item(""))
                 startDragAndDrop(data, object : DragShadowBuilder(this) {
-
                     override fun onDrawShadow(canvas: Canvas) {}
-
                     override fun onProvideShadowMetrics(
                             outShadowSize: Point, outShadowTouchPoint: Point
                     ) {

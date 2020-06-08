@@ -80,7 +80,6 @@ public class SuperGContainerView extends BaseGContainerView {
 
     @Override
     protected void setGoogleAnimationStart(Rect rect, Intent intent) {
-
     }
 
     @Override

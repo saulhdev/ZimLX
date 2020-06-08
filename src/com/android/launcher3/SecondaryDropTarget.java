@@ -7,6 +7,7 @@ import static com.android.launcher3.ItemInfoWithIcon.FLAG_SYSTEM_NO;
 import static com.android.launcher3.LauncherSettings.Favorites.CONTAINER_DESKTOP;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.RECONFIGURE;
 import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.UNINSTALL;
+import static com.android.launcher3.accessibility.LauncherAccessibilityDelegate.CUSTOMIZE;
 
 import android.appwidget.AppWidgetHostView;
 import android.appwidget.AppWidgetProviderInfo;
@@ -33,6 +34,9 @@ import com.android.launcher3.logging.LoggerUtils;
 import com.android.launcher3.userevent.nano.LauncherLogProto.ControlType;
 import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.Themes;
+import com.android.launcher3.widget.custom.CustomAppWidgetProviderInfo;
+
+import org.zimmob.zimlx.settings.SettingsActivity;
 
 import java.net.URISyntaxException;
 
@@ -113,6 +117,9 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         if (view instanceof AppWidgetHostView) {
             if (getReconfigurableWidgetId(view) != INVALID_APPWIDGET_ID) {
                 setupUi(RECONFIGURE);
+                return true;
+            }else if (getWidgetCustomizeIntent(view) != null) {
+                setupUi(CUSTOMIZE);
                 return true;
             }
             return false;
@@ -214,6 +221,23 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
         return hostView.getAppWidgetId();
     }
 
+    private Intent getWidgetCustomizeIntent(View view) {
+        if (!(view instanceof AppWidgetHostView)) {
+            return null;
+        }
+        AppWidgetHostView hostView = (AppWidgetHostView) view;
+        AppWidgetProviderInfo widgetInfo = hostView.getAppWidgetInfo();
+        if (widgetInfo instanceof CustomAppWidgetProviderInfo) {
+            CustomAppWidgetProviderInfo customInfo = (CustomAppWidgetProviderInfo) widgetInfo;
+            Context context = getContext();
+            return new Intent(context, SettingsActivity.class)
+                    .putExtra(SettingsActivity.SubSettingsFragment.TITLE, context.getString(customInfo.customizeTitle))
+                    .putExtra(SettingsActivity.SubSettingsFragment.CONTENT_RES_ID, customInfo.customizeScreen)
+                    .putExtra(SettingsActivity.SubSettingsFragment.HAS_PREVIEW, customInfo.customizeHasPreview);
+        }
+        return null;
+    }
+
     /**
      * Performs the drop action and returns the target component for the dragObject or null if
      * the action was not performed.
@@ -223,6 +247,14 @@ public class SecondaryDropTarget extends ButtonDropTarget implements OnAlarmList
             int widgetId = getReconfigurableWidgetId(view);
             if (widgetId != INVALID_APPWIDGET_ID) {
                 mLauncher.getAppWidgetHost().startConfigActivity(mLauncher, widgetId, -1);
+            }
+            return null;
+        }
+        else if (mCurrentAccessibilityAction == CUSTOMIZE) {
+            Intent customizeIntent = getWidgetCustomizeIntent(view);
+            if (customizeIntent != null) {
+                Launcher launcher = Launcher.getLauncher(view.getContext());
+                launcher.startActivitySafely(view, customizeIntent, null);
             }
             return null;
         }

@@ -85,6 +85,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val reloadIcons = { reloadIcons() }
     private val reloadIconPacks = { IconPackManager.getInstance(context).packList.reloadPacks() }
     private val resetAllApps = { onChangeCallback?.resetAllApps() ?: Unit }
+    private val updateSmartspace = { updateSmartspace() }
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadDockStyle = {
         //LauncherAppState.getIDP(context).onDockStyleChanged(this)
@@ -219,8 +220,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         SearchProviderController.getInstance(context).onSearchProviderChanged()
     }
 
-    //var voiceSearchIcon by BooleanPref("opa_enabled", false, recreate)
-    //var showAssistantIcon by BooleanPref("opa_assistant", false, recreate)
     val dualBubbleSearch by BooleanPref("pref_bubbleSearchStyle", false, recreate)
     var searchBarRadius by DimensionPref("pref_searchbarRadius", -1f)
     var allAppsGlobalSearch by BooleanPref("pref_allAppsGoogleSearch", false, doNothing)
@@ -251,7 +250,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val debugOkHttp by BooleanPref("pref_debugOkhttp", onChange = restart)
     val showDebugInfo by BooleanPref("pref_showDebugInfo", false, doNothing)
     val lowPerformanceMode by BooleanPref("pref_lowPerformanceMode", false, recreate)
-    val enablePhysics get() = !lowPerformanceMode
 
     /* --BACKUP-- */
     val recentBackups = object : MutableListPref<Uri>(
