@@ -554,7 +554,6 @@
     <string name="debug_pref_title">Debug</string>
     <string name="folder_cover_mode">Cover mode</string>
     <string name="folder_cover_mode_desc">Tap to open first app, swipe up to open folder</string>
-    <string name="hide_app_sum">Hide app from the app drawer</string>
     <string name="debug_component_name">Component name</string>
     <string name="debug_component_name_copied">Copied</string>
 

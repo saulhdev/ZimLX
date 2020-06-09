@@ -45,7 +45,7 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     }
 
     fun toUriList(): List<Uri> {
-        return backupList.map { it -> it.uri }
+        return backupList.map { it.uri }
     }
 
     operator fun get(position: Int) = backupList[position]
@@ -158,7 +158,6 @@ class BackupListAdapter(val context: Context) : RecyclerView.Adapter<BackupListA
     }
 
     interface Callbacks {
-
         fun openEdit(position: Int)
         fun openRestore(position: Int)
         fun openRestore()

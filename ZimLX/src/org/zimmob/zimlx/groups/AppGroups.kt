@@ -19,29 +19,26 @@ package org.zimmob.zimlx.groups
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.res.Configuration
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import android.widget.ImageView
 import android.widget.Switch
 import android.widget.TextView
-import androidx.appcompat.app.AlertDialog
 import com.android.launcher3.R
 import com.android.launcher3.util.ComponentKey
-import me.priyesh.chroma.ColorMode
-import me.priyesh.chroma.orientation
-import me.priyesh.chroma.percentOf
-import me.priyesh.chroma.screenDimensions
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import org.zimmob.zimlx.*
+import org.zimmob.zimlx.ZimPreferencesChangeCallback
 import org.zimmob.zimlx.preferences.SelectableAppsActivity
 import org.zimmob.zimlx.util.*
+import android.os.Process
+
+import android.os.UserHandle
+
 
 typealias GroupCreator<T> = (Context) -> T?
 
@@ -461,7 +458,7 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
             }
 
             override fun unflatten(context: Context, value: String): ComponentKey {
-                return ComponentKey(ComponentName(context, value), null)
+                return ComponentKey(ComponentName(context, value), Process.myUserHandle())
             }
 
             override fun flatten(value: ComponentKey): String {

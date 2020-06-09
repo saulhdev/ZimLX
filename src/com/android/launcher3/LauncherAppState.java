@@ -25,6 +25,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 
 import com.android.launcher3.compat.LauncherAppsCompat;
@@ -38,13 +39,19 @@ import com.android.launcher3.util.MainThreadInitializedObject;
 import com.android.launcher3.util.Preconditions;
 import com.android.launcher3.util.SecureSettingsObserver;
 
+import org.zimmob.zimlx.ZimAppKt;
+
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+
 public class LauncherAppState {
 
     public static final String ACTION_FORCE_ROLOAD = "force-reload-launcher";
 
     // We do not need any synchronization for this variable as its only written on UI thread.
-    public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
-            new MainThreadInitializedObject<>(LauncherAppState::new);
+    //public static final MainThreadInitializedObject<LauncherAppState> INSTANCE =
+    //        new MainThreadInitializedObject<>(LauncherAppState::new);
+    private static LauncherAppState INSTANCE;
 
     private final Context mContext;
     private final LauncherModel mModel;
@@ -54,11 +61,25 @@ public class LauncherAppState {
     private final SecureSettingsObserver mNotificationDotsObserver;
     private Launcher mLauncher;
     public static LauncherAppState getInstance(final Context context) {
-        return INSTANCE.get(context);
+        if (INSTANCE == null) {
+            if (Looper.myLooper() == Looper.getMainLooper()) {
+                INSTANCE = new LauncherAppState(context.getApplicationContext());
+                ZimAppKt.getZimApp(context).onLauncherAppStateCreated();
+            } else {
+                try {
+                    return new MainThreadExecutor().submit(() -> LauncherAppState.getInstance(context)).get();
+                } catch (InterruptedException | ExecutionException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+        }
+        return INSTANCE;
+
+        //return INSTANCE.get(context);
     }
 
     public static LauncherAppState getInstanceNoCreate() {
-        return INSTANCE.getNoCreate();
+        return INSTANCE;
     }
 
     public Context getContext() {

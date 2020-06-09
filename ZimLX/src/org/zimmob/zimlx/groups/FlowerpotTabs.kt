@@ -129,7 +129,7 @@ class FlowerpotTabs(manager: AppGroupsManager) : DrawerTabs(manager, AppGroupsMa
                         .setNegativeButton(android.R.string.cancel, null)
                         .create()
                         .apply {
-                            applyAccent()
+                            //applyAccent()
                             show()
                         }
             }

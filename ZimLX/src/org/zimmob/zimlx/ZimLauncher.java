@@ -237,12 +237,11 @@ public class ZimLauncher extends NexusLauncherActivity {
             currentEditIcon = null;
         }
 
-        currentEditInfo = itemInfo;
+        // currentEditInfo = itemInfo;
         boolean folderInfo = itemInfo instanceof FolderInfo;
-        Intent intent = EditIconActivity
-                .Companion
-                .newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
-        int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS;
+        int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TASK;
+        Intent intent = EditIconActivity.Companion.newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
+
         BlankActivity.Companion
                 .startActivityForResult(this, intent, CODE_EDIT_ICON, flags, (resultCode, data) -> {
                     handleEditIconResult(resultCode, data);
@@ -258,7 +257,7 @@ public class ZimLauncher extends NexusLauncherActivity {
             }
             ItemInfo itemInfo = currentEditInfo;
             String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
-            IconPackManager.CustomIconEntry customIconEntry = IconPackManager.CustomIconEntry.Companion.fromNullableString(entryString);
+            IconPackManager.CustomIconEntry customIconEntry = IconPackManager.CustomIconEntry.Companion.fromString(entryString);
 
             Objects.requireNonNull(CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
         }

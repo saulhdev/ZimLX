@@ -167,7 +167,7 @@ class SettingsBottomSheet(context: Context, attrs: AttributeSet) : LinearLayout(
 
 
     fun close(animate: Boolean) {
-        //handleClose(animate and !Utilities.isPowerSaverPreventingAnimation(context))
+        handleClose(animate and !Utilities.isPowerSaverPreventingAnimation(context))
         isOpen = false
     }
 

@@ -1101,6 +1101,15 @@ public final class Utilities {
         return false;
     }
 
+    public static boolean isPowerSaverPreventingAnimation(Context context) {
+        if (ATLEAST_P) {
+            // Battery saver mode no longer prevents animations.
+            return false;
+        }
+        PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+        return powerManager.isPowerSaveMode();
+    }
+
     /*END CUSTOM*/
 
     private static class FixedSizeEmptyDrawable extends ColorDrawable {
