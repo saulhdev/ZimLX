@@ -263,7 +263,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         // This is done last, after iconSizePx is calculated above.
         mDotRenderer = new DotRenderer(iconSizePx, IconShape.getShapePath(), IconShape.DEFAULT_PATH_SIZE);
 
-        prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets", "pref_dockScale", "pref_key__hide_hotseat", "pref_allAppsPaddingScale");
+        prefs.addOnPreferenceChangeListener(this, "pref_fullWidthWidgets",
+                "pref_dockScale", "pref_key__hide_hotseat", "pref_allAppsPaddingScale");
     }
 
     @Override
@@ -467,7 +468,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         iconTextSizePx = (int) (iconTextSizePx * scale);
         iconDrawablePaddingPx = (int) (iconDrawablePaddingOriginalPx * scale) - (iconTextSizeOriginalPx - iconTextSizePx);
 
-
         int textHeight = Utilities.calculateTextHeight(iconTextSizePx) * labelRowCount;
         cellHeightPx = iconSizePx + iconDrawablePaddingPx + textHeight;
         int cellYPadding = (getCellSize().y - cellHeightPx) / 2;
@@ -504,7 +504,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         hotseatIconTextSizePx = (int) (hotseatIconTextSizeOriginalPx * scale);
         textHeight = Utilities.calculateTextHeight(hotseatIconTextSizePx) * dockLabelRowCount;
         hotseatIconSizeOriginalPx = Utilities.pxFromDp(invHotseatIconSizePx, dm);
-        hotseatIconSizePx = (int) (hotseatIconSizeOriginalPx * scale);
+        hotseatIconSizePx = (int) (Utilities.pxFromDp(invHotseatIconSizePx, dm) * scale);
 
         if (isVerticalLayout) {
             hotseatBarSizePx =
@@ -612,7 +612,6 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
         allAppsFolderChildDrawablePaddingPx = Math.max(0,
                 (allAppsFolderCellHeightPx - allAppsFolderChildIconSizePx - textHeight) / 3);
     }
-
 
     public void updateInsets(Rect insets) {
         mInsets.set(insets);

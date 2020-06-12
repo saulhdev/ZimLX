@@ -42,6 +42,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.Property;
 import android.util.SparseArray;
+import android.util.TypedValue;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewDebug;
@@ -69,6 +70,8 @@ import com.android.launcher3.util.Thunk;
 import com.android.launcher3.views.ActivityContext;
 import com.android.launcher3.views.Transposable;
 import com.android.launcher3.widget.LauncherAppWidgetHostView;
+
+import org.zimmob.zimlx.ZimPreferences;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -161,6 +164,9 @@ public class CellLayout extends ViewGroup implements Transposable {
 
     private final float mChildScale = 1f;
 
+    private final int mDockIconSize;
+    private final int mDockIconTextSize;
+
     public static final int MODE_SHOW_REORDER_HINT = 0;
     public static final int MODE_DRAG_OVER = 1;
     public static final int MODE_ON_DROP = 2;
@@ -188,6 +194,8 @@ public class CellLayout extends ViewGroup implements Transposable {
     private boolean mUseTouchHelper = false;
     private RotationMode mRotationMode = RotationMode.NORMAL;
 
+    private final ZimPreferences mPrefs;
+
     public CellLayout(Context context) {
         this(context, null);
     }
@@ -212,6 +220,10 @@ public class CellLayout extends ViewGroup implements Transposable {
 
         mCellWidth = mCellHeight = -1;
         mFixedCellWidth = mFixedCellHeight = -1;
+
+        mDockIconSize = grid.hotseatIconSizePx;
+        mDockIconTextSize = grid.hotseatIconTextSizePx;
+        mPrefs = Utilities.getZimPrefs(context);
 
         mCountX = grid.inv.numColumns;
         mCountY = grid.inv.numRows;
@@ -571,6 +583,10 @@ public class CellLayout extends ViewGroup implements Transposable {
         return mContainerType == WORKSPACE;
     }
 
+    public boolean isHotseat() {
+        return mContainerType == HOTSEAT;
+    }
+
     public boolean addViewToCellLayout(View child, int index, int childId, LayoutParams params,
             boolean markCells) {
         final LayoutParams lp = params;
@@ -578,7 +594,14 @@ public class CellLayout extends ViewGroup implements Transposable {
         // Hotseat icons - remove text
         if (child instanceof BubbleTextView) {
             BubbleTextView bubbleChild = (BubbleTextView) child;
-            bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
+            //bubbleChild.setTextVisibility(mContainerType != HOTSEAT);
+            if (isHotseat()) {
+                bubbleChild.setTextVisibility(!mPrefs.getHideDockLabels());
+                bubbleChild.setIconSize(mDockIconSize);
+                bubbleChild.setLineCount(mPrefs.getDockLabelRows());
+                bubbleChild.setTextSize(TypedValue.COMPLEX_UNIT_PX, mDockIconTextSize);
+            }
+
         }
 
         child.setScaleX(mChildScale);

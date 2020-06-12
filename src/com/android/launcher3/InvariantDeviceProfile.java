@@ -162,6 +162,7 @@ public class InvariantDeviceProfile {
         landscapeIconSize = p.landscapeIconSize;
         iconTextSize = p.iconTextSize;
         allAppsIconSize = p.allAppsIconSize;
+        hotseatIconSize = p.hotseatIconSize;
         numHotseatIcons = p.numHotseatIcons;
         defaultLayoutId = p.defaultLayoutId;
         demoModeLayoutId = p.demoModeLayoutId;
@@ -255,7 +256,7 @@ public class InvariantDeviceProfile {
 
         new IconScale(Utilities.getZimPrefs(context), "iconSize", this);
         new IconScale(Utilities.getZimPrefs(context), "allAppsIconSize", this);
-        new IconScale(Utilities.getZimPrefs(context), "hotseatIconSize", "iconSize", this);
+        new IconScale(Utilities.getZimPrefs(context), "hotseatIconSize", this);
 
         iconBitmapSize = Utilities.pxFromDp(max(max(iconSize, allAppsIconSize), hotseatIconSize), dm);
         fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
@@ -309,10 +310,10 @@ public class InvariantDeviceProfile {
             float iconScale = prefs.getAllAppsIconScale();
             allAppsIconSize *= iconScale;
         }
-        //float maxSize = max(max(iconSize, allAppsIconSize), iconSize);
-        //iconBitmapSize = max(1, Utilities.pxFromDp(maxSize, dm));
-
-        //fillResIconDpi = getLauncherIconDensity(iconBitmapSize);
+        if (prefs.getDockIconScale() != 1f) {
+            float iconScale = prefs.getDockIconScale();
+            hotseatIconSize *= iconScale;
+        }
     }
 
     @Nullable

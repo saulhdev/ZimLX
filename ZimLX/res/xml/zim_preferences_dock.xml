@@ -38,6 +38,7 @@
             app:defaultSeekbarValue="0"
             app:maxValue="24"
             app:minValue="0"
+            app:iconSpaceReserved="false"
             app:summaryMultiplier="1" />
 
         <org.zimmob.zimlx.preferences.AutoModeScalePreference
@@ -65,6 +66,18 @@
                 android:key="pref_dock_grid_size"
                 android:title="@string/title__dock_hotseat_icons"
                 app:iconSpaceReserved="false" />
+
+            <org.zimmob.zimlx.preferences.AutoModeScalePreference
+                android:key="pref_hotseatIconSize"
+                android:persistent="true"
+                android:title="@string/icon_scale_pref_title"
+                app:defaultSeekbarValue="0"
+                app:iconSpaceReserved="false"
+                app:maxValue="2.0"
+                app:minValue="0.3"
+                app:steps="170"
+                app:summaryFormat="%.0f%%"
+                app:summaryMultiplier="100" />
 
         </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
 
