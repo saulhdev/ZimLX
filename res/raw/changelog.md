@@ -1,7 +1,6 @@
 ### v0.7.1
 *   Update source code from Android Q.
 
-
 ### v0.6.5
 *   Fix gestures
 *   Fix full widgets width

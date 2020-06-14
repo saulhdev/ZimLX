@@ -14,7 +14,8 @@
      See the License for the specific language governing permissions and
      limitations under the License.
 -->
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
     <item android:gravity="bottom">
         <!-- Shadow -->
         <shape>
@@ -31,7 +32,8 @@
                 android:topLeftRadius="?android:attr/dialogCornerRadius"
                 android:topRightRadius="?android:attr/dialogCornerRadius"
                 android:bottomLeftRadius="0dp"
-                android:bottomRightRadius="0dp" />
+                android:bottomRightRadius="0dp"
+                tools:ignore="NewApi" />
             <solid android:color="?attr/popupColorPrimary" />
         </shape>
     </item>

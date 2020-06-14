@@ -25,21 +25,21 @@
     <com.google.android.apps.nexuslauncher.graphics.IcuDateTextView
         android:id="@+id/time_above"
         style="@style/SmartspaceTextHeadline"
-        android:scrollHorizontally="true"
-        android:ellipsize="end"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_gravity="center"
+        android:layout_marginBottom="4dp"
+        android:layout_weight="1.25"
         android:background="@drawable/bg_smartspace"
         android:clickable="true"
+        android:ellipsize="end"
         android:gravity="center"
-        android:layout_weight="1.25"
         android:paddingLeft="10dp"
         android:paddingRight="10dp"
+        android:scrollHorizontally="true"
         android:textColor="?workspaceTextColor"
         android:textSize="@dimen/smartspace_title_size"
         android:visibility="gone"
-        android:layout_marginBottom="4dp"
         tools:visibility="visible" />
 
     <com.google.android.apps.nexuslauncher.graphics.DoubleShadowTextView
@@ -82,8 +82,8 @@
             android:drawablePadding="6dp"
             android:includeFontPadding="false"
             android:maxLines="1"
-            android:paddingBottom="4dp"
             android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:textColor="?workspaceTextColor"
             android:textSize="16dp" />
 
