@@ -19,8 +19,9 @@ package org.zimmob.zimlx.override
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
-import android.content.pm.ShortcutInfo
 import android.os.Build
+import android.util.Log
+import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT
 import com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT
@@ -32,7 +33,7 @@ import org.zimmob.zimlx.iconpack.IconPackManager
 import org.zimmob.zimlx.util.useApplicationContext
 import org.zimmob.zimlx.util.SingletonHolder
 
-class ShortcutInfoProvider private constructor(context: Context) : CustomInfoProvider<WorkspaceItemInfo>(context) {
+class WorkspaceInfoProvider private constructor(context: Context) : CustomInfoProvider<WorkspaceItemInfo>(context) {
 
     private val launcherApps by lazy { LauncherAppsCompat.getInstance(context) }
 
@@ -57,9 +58,10 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         if (entry != null) {
             val launcherActivityInfo = getLauncherActivityInfo(info)
             val iconCache = LauncherAppState.getInstance(context).iconCache
-            val drawable = iconCache.getFullResIcon(launcherActivityInfo, info, false)
+            val drawable = iconCache.getFullResIcon(launcherActivityInfo, info, true)
             val bitmap = LauncherIcons.obtain(context).createBadgedIconBitmap(drawable, info.user, Build.VERSION_CODES.O_MR1)
             info.setIcon(context, bitmap.icon)
+            Log.d("WorkspaceInfoProvider", "Icon Entry " + bitmap.icon.toString())
         } else {
             info.setIcon(context, null)
         }
@@ -97,6 +99,6 @@ class ShortcutInfoProvider private constructor(context: Context) : CustomInfoPro
         return launcherApps.resolveActivity(info.getIntent(), info.user)
     }
 
-    companion object : SingletonHolder<ShortcutInfoProvider, Context>(ensureOnMainThread(
-            useApplicationContext(::ShortcutInfoProvider)))
+    companion object : SingletonHolder<WorkspaceInfoProvider, Context>(ensureOnMainThread(
+            useApplicationContext(::WorkspaceInfoProvider)))
 }
