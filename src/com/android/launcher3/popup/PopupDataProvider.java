@@ -200,7 +200,7 @@ public class PopupDataProvider implements NotificationListener.NotificationsChan
             }
         } else {
             //int tmp = mDeepShortcutMap.get(new ComponentKey(component, info.user));
-            //if (tmp != null) ids.addAll(tmp);
+            //if (tmp != 0) ids.addAll(tmp);
         }
         return ids;
     }

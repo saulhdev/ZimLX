@@ -16,12 +16,15 @@
 
 package com.android.launcher3;
 
+import android.app.Person;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
 import android.graphics.Bitmap;
+import android.os.UserHandle;
 import android.text.TextUtils;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -35,6 +38,8 @@ import com.android.launcher3.util.ContentWriter;
 
 import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.iconpack.IconPackManager;
+
+import java.util.Arrays;
 
 /**
  * Represents a launchable icon on the workspaces and in folders.
@@ -104,16 +109,15 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
      */
     private int mInstallProgress;
     public String swipeUpAction;
+    private boolean badgeVisible = true;
     public CharSequence customTitle;
 
     public Bitmap customIcon;
 
     public IconPackManager.CustomIconEntry customIconEntry;
 
-    private boolean badgeVisible = true;
-
     public WorkspaceItemInfo() {
-        itemType = LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT;
+        itemType = LauncherSettings.BaseLauncherColumns.ITEM_TYPE_SHORTCUT;
     }
 
     public WorkspaceItemInfo(WorkspaceItemInfo info) {
@@ -133,6 +137,11 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         intent = new Intent(info.intent);
     }
 
+    public WorkspaceItemInfo(String title, Intent intent, UserHandle user) {
+        this.title = title;
+        this.intent = intent;
+        this.user = user;
+    }
     /**
      * Creates a {@link WorkspaceItemInfo} from a {@link ShortcutInfo}.
      */
@@ -145,16 +154,16 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     @Override
     public void onAddToDatabase(ContentWriter writer) {
         super.onAddToDatabase(writer);
-        writer.put(Favorites.TITLE, title)
-                .put(Favorites.INTENT, getIntent())
-                .put(Favorites.RESTORED, status);
+        writer.put(LauncherSettings.BaseLauncherColumns.TITLE, title)
+                .put(LauncherSettings.BaseLauncherColumns.INTENT, getIntent())
+                .put(LauncherSettings.Favorites.RESTORED, status);
 
         if (!usingLowResIcon()) {
             writer.putIcon(iconBitmap, user);
         }
         if (iconResource != null) {
-            writer.put(Favorites.ICON_PACKAGE, iconResource.packageName)
-                    .put(Favorites.ICON_RESOURCE, iconResource.resourceName);
+            writer.put(LauncherSettings.BaseLauncherColumns.ICON_PACKAGE, iconResource.packageName)
+                    .put(LauncherSettings.BaseLauncherColumns.ICON_RESOURCE, iconResource.resourceName);
         }
     }
 
@@ -202,12 +211,12 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
         }
         disabledMessage = shortcutInfo.getDisabledMessage();
 
-        if(Utilities.ATLEAST_Q) {
+        /*if(Utilities.ATLEAST_Q) {
             String[] persons = UiFactory.getPersons(shortcutInfo);
-            /*personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
-                    : Arrays.stream(persons).map(Person::getKey).sorted().toArray(String[]::new);*/
+            personKeys = persons.length == 0 ? Utilities.EMPTY_STRING_ARRAY
+                    : Arrays.stream(persons).map(Person.::getKey).sorted().toArray(String[]::new);
 
-        }
+        }*/
     }
 
     /** Returns the WorkspaceItemInfo id associated with the deep shortcut. */
@@ -245,9 +254,9 @@ public class WorkspaceItemInfo extends ItemInfoWithIcon {
     }
 
     public void onLoadCustomizations(String titleAlias, String swipeUpAction, boolean badgeVisible,
-                                     IconPackManager.CustomIconEntry customIcon, Bitmap icon) {
+                                     IconPackManager.CustomIconEntry customEntry, Bitmap icon) {
         customTitle = titleAlias;
-        customIconEntry = customIcon;
+        customIconEntry = customEntry;
         this.customIcon = icon;
         this.swipeUpAction = swipeUpAction;
         this.badgeVisible = badgeVisible;

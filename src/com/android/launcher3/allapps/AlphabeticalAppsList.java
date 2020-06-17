@@ -470,6 +470,13 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 .getFolderInfos(this);
     }
 
+    private Set<ComponentKey> getFolderFilteredApps() {
+        return Utilities.getZimPrefs(mLauncher)
+                .getAppGroupsManager()
+                .getDrawerFolders()
+                .getHiddenComponents();
+    }
+
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
                 (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
@@ -506,13 +513,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public void setIsWork(boolean isWork) {
         mIsWork = isWork;
-    }
-
-    private Set<ComponentKey> getFolderFilteredApps() {
-        return Utilities.getZimPrefs(mLauncher)
-                .getAppGroupsManager()
-                .getDrawerFolders()
-                .getHiddenComponents();
     }
 
     public void reset() {
@@ -596,8 +596,7 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
             return item;
         }
 
-        public static AdapterItem asFolder(int pos, String sectionName,
-                                           DrawerFolderInfo folderInfo, int folderIndex) {
+        public static AdapterItem asFolder(int pos, String sectionName, DrawerFolderInfo folderInfo, int folderIndex) {
             AdapterItem item = new AdapterItem();
             item.viewType = AllAppsGridAdapter.VIEW_TYPE_FOLDER;
             item.position = pos;

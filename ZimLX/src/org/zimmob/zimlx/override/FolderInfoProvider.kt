@@ -49,6 +49,7 @@ class FolderInfoProvider(context: Context) : CustomInfoProvider<FolderInfo>(cont
 
     override fun setIcon(info: FolderInfo, entry: IconPackManager.CustomIconEntry?) {
         prefs.customAppIcon[info.toComponentKey()] = entry
+        info.onIconChanged()
     }
 
     override fun getIcon(info: FolderInfo): IconPackManager.CustomIconEntry? {

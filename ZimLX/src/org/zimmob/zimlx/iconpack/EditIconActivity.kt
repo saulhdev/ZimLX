@@ -18,7 +18,6 @@
 package org.zimmob.zimlx.iconpack
 
 import android.app.Activity
-import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.graphics.drawable.BitmapDrawable
@@ -28,6 +27,7 @@ import android.os.Bundle
 import android.os.Process
 import android.text.TextUtils
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -59,7 +59,7 @@ class EditIconActivity : SettingsBaseActivity() {
     private val iconPackManager by lazy { IconPackManager.getInstance(this) }
     private val component by lazy {
         if (intent.hasExtra(EXTRA_COMPONENT)) {
-            ComponentKey(intent.getParcelableExtra<ComponentName>(EXTRA_COMPONENT), intent.getParcelableExtra(EXTRA_USER))
+            ComponentKey(intent.getParcelableExtra(EXTRA_COMPONENT), intent.getParcelableExtra(EXTRA_USER))
         } else null
     }
     private val isFolder by lazy { intent.getBooleanExtra(EXTRA_FOLDER, false) }
@@ -146,7 +146,8 @@ class EditIconActivity : SettingsBaseActivity() {
 
     fun onSelectIcon(entry: IconPack.Entry?) {
         val customEntry = entry?.toCustomEntry()
-        val entryString = if (isFolder) customEntry?.toString() else customEntry?.toPackString()
+        Log.d("EditIcon", "entry " + customEntry?.icon.toString())
+        val entryString = if (isFolder) customEntry.toString() else customEntry?.toPackString()
         setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entryString))
         finish()
     }

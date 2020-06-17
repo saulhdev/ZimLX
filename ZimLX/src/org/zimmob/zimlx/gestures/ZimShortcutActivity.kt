@@ -49,7 +49,7 @@ class ZimShortcutActivity : SettingsBaseActivity() {
 
     private fun onSelectHandler(handler: GestureHandler) {
         selectedHandler = handler
-        Log.d("Gesture", "Loading xxx " + selectedHandler.toString())
+        Log.d("Gesture", "Loading " + selectedHandler.toString())
         if (handler.configIntent != null) {
             startActivityForResult(handler.configIntent, REQUEST_CODE)
         } else {

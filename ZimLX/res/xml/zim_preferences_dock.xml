@@ -15,6 +15,14 @@
             app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.preferences.StyledSwitchPreference
+            android:defaultValue="true"
+            android:dependency="pref_key__hide_hotseat"
+            android:key="pref_dockShadow"
+            android:persistent="true"
+            android:title="@string/dock_shadow"
+            app:iconSpaceReserved="false" />
+
+        <org.zimmob.zimlx.preferences.StyledSwitchPreference
             android:defaultValue="false"
             android:dependency="pref_key__hide_hotseat"
             android:key="pref_dockGradient"

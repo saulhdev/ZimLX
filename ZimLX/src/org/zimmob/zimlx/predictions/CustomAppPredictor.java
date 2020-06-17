@@ -252,7 +252,7 @@ public class CustomAppPredictor extends UserEventDispatcher implements SharedPre
 
     private ComponentKeyMapper<AppInfo> getComponentFromString(String str) {
         return new ComponentKeyMapper<>(mContext,
-                new ComponentKey(new ComponentName(mContext, str), Utilities.myUserHandle()), null);
+                new ComponentKey(new ComponentName(mContext, str), Process.myUserHandle()), null);
     }
 
     private void clearNonExistentPackages() {

@@ -272,7 +272,7 @@ public class FolderInfo extends ItemInfo {
     }
 
     /**
-     * DO NOT USE OUTSIDE CUSTOMINFOPROVIDER
+     * DO NOT USE OUTSIDE CUSTOM INFO PROVIDER
      */
     public void onIconChanged() {
         for (FolderListener listener : listeners) {

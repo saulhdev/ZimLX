@@ -44,8 +44,8 @@ public abstract class LauncherAppsCompat {
         void onPackagesUnavailable(String[] packageNames, UserHandle user, boolean replacing);
         void onPackagesSuspended(String[] packageNames, UserHandle user);
         void onPackagesUnsuspended(String[] packageNames, UserHandle user);
-        void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts,
-                UserHandle user);
+
+        void onShortcutsChanged(String packageName, List<ShortcutInfo> shortcuts, UserHandle user);
     }
 
     protected LauncherAppsCompat() {

@@ -59,6 +59,10 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         setOnClickListener(this);
     }
 
+    public void setWidgetMode(boolean widgetMode) {
+        this.widgetMode = widgetMode;
+    }
+
     static void a(HotseatQsbWidget hotseatQsbWidget) {
         if (hotseatQsbWidget.mIsGoogleColored != hotseatQsbWidget.isGoogleColored()) {
             hotseatQsbWidget.mIsGoogleColored = !hotseatQsbWidget.mIsGoogleColored;
@@ -97,16 +101,20 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         return Math.max(minBottom, bottomMargin);
     }
 
-    public void setWidgetMode(boolean widgetMode) {
-        this.widgetMode = widgetMode;
-    }
-
     protected void onAttachedToWindow() {
         dW();
         super.onAttachedToWindow();
         Ds.a(this);
         addOrUpdateSearchRipple();
-        setOnFocusChangeListener(this.mActivity.mFocusHandler);
+        setOnFocusChangeListener(mActivity.mFocusHandler);
+    }
+
+    protected void loadIcons() {
+        mLogoIconView = findViewById(R.id.g_icon);
+        mMicIconView = findViewById(R.id.mic_icon);
+
+        mMicIconView.setOnClickListener(this);
+        mLogoIconView.setOnClickListener(this);
     }
 
     protected void onDetachedFromWindow() {
@@ -280,6 +288,7 @@ public class HotseatQsbWidget extends AbstractQsbLayout implements o,
         return null;
     }
 
+    @Override
     protected final Intent createSettingsIntent() {
         SearchProviderController controller = SearchProviderController.Companion.getInstance(mActivity);
         SearchProvider provider = controller.getSearchProvider();

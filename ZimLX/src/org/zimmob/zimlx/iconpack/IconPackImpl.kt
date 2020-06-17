@@ -38,6 +38,7 @@ import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserException
@@ -272,7 +273,6 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
                 }
                 return drawable.mutate()
             } catch (ex: Resources.NotFoundException) {
-                Log.e("IconPackImpl", "Can't get drawable for name $component ($drawableId). Exception " + ex.message)
             }
         }
 
@@ -292,6 +292,25 @@ class IconPackImpl(context: Context, packPackageName: String) : IconPack(context
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
+        ensureInitialLoadComplete()
+
+        if (prefs.iconPackMasking && packMask.hasMask) {
+            val baseIcon = defaultPack.getIcon(shortcutInfo, iconDpi)
+            if (baseIcon != null) {
+                val icon = packMask.getIcon(context, baseIcon, shortcutInfo.activity)
+                if (prefs.adaptifyIconPacks) {
+                    val gen = AdaptiveIconGenerator(context, icon)
+                    return gen.result
+                }
+                return icon
+            }
+        }
+
+        return null
+    }
+
+    @RequiresApi(Build.VERSION_CODES.O)
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         if (prefs.iconPackMasking && packMask.hasMask) {

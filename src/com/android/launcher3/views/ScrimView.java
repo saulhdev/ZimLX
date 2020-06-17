@@ -35,6 +35,7 @@ import android.animation.RectEvaluator;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
@@ -251,6 +252,11 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
             mDragHandle.draw(canvas);
             canvas.translate(0, mDragHandleOffset);
         }
+    }
+
+    protected void onDrawRoundRect(Canvas canvas, float left, float top, float right, float bottom,
+                                   float rx, float ry, Paint paint) {
+
     }
 
     @Override
@@ -475,5 +481,9 @@ public class ScrimView extends View implements Insettable, OnChangeListener,
 
     public int getDragHandleSize() {
         return mDragHandleSize;
+    }
+
+    protected void onDrawFlatColor(Canvas canvas) {
+
     }
 }

@@ -4,10 +4,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:title="Settings">
 
+    <Preference
+        android:fragment="org.zimmob.zimlx.dash.DashFragment"
+        android:key="pref_key__dash_edit"
+        android:persistent="true"
+        android:summary="@string/pref_summary__minibar"
+        android:title="@string/pref_title__minibar"
+        app:iconSpaceReserved="false" />
+
     <org.zimmob.zimlx.preferences.GridSizePreference
         android:key="pref_desktop_grid_size"
         android:title="@string/title__desktop_grid_size"
         app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.StyledSwitchPreferenceCompat
+        android:defaultValue="false"
+        android:key="pref_allowOverlap"
+        android:title="@string/overlap_placement"
+        app:iconSpaceReserved="false" />
+
+    <org.zimmob.zimlx.preferences.SeekbarPreference
+        android:key="pref_iconScaleSB"
+        android:persistent="true"
+        android:title="@string/title__desktop_icon_scale"
+        app:defaultSeekbarValue="1.0"
+        app:iconSpaceReserved="false"
+        app:maxValue="1.5"
+        app:minValue="0.5"
+        app:steps="100"
+        app:summaryFormat="%.0f%%"
+        app:summaryMultiplier="100" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="false"

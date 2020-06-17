@@ -16,6 +16,7 @@
 
 package com.android.launcher3;
 
+import static com.android.launcher3.LauncherSettings.*;
 import static com.android.launcher3.provider.LauncherDbUtils.dropTable;
 import static com.android.launcher3.provider.LauncherDbUtils.tableExists;
 
@@ -84,6 +85,8 @@ import java.io.StringReader;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.Locale;
 
 public class LauncherProvider extends ContentProvider {
@@ -190,7 +193,7 @@ public class LauncherProvider extends ContentProvider {
         if (values == null) {
             throw new RuntimeException("Error: attempting to insert null values");
         }
-        if (!values.containsKey(LauncherSettings.Favorites._ID)) {
+        if (!values.containsKey(Favorites._ID)) {
             throw new RuntimeException("Error: attempting to add item without specifying an id");
         }
         helper.checkId(values);
@@ -230,41 +233,9 @@ public class LauncherProvider extends ContentProvider {
         return uri;
     }
 
-    private boolean initializeExternalAdd(ContentValues values) {
-        // 1. Ensure that externally added items have a valid item id
-        int id = mOpenHelper.generateNewItemId();
-        values.put(LauncherSettings.Favorites._ID, id);
-
-        // 2. In the case of an app widget, and if no app widget id is specified, we
-        // attempt allocate and bind the widget.
-        Integer itemType = values.getAsInteger(LauncherSettings.Favorites.ITEM_TYPE);
-        if (itemType != null &&
-                itemType.intValue() == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET &&
-                !values.containsKey(LauncherSettings.Favorites.APPWIDGET_ID)) {
-
-            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
-            ComponentName cn = ComponentName.unflattenFromString(
-                    values.getAsString(Favorites.APPWIDGET_PROVIDER));
-
-            if (cn != null) {
-                try {
-                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
-                    int appWidgetId = widgetHost.allocateAppWidgetId();
-                    values.put(LauncherSettings.Favorites.APPWIDGET_ID, appWidgetId);
-                    if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId,cn)) {
-                        widgetHost.deleteAppWidgetId(appWidgetId);
-                        return false;
-                    }
-                } catch (RuntimeException e) {
-                    Log.e(TAG, "Failed to initialize external widget", e);
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        }
-
-        return true;
+    @Thunk
+    static void addModifiedTime(ContentValues values) {
+        values.put(Favorites.MODIFIED, System.currentTimeMillis());
     }
 
     @Override
@@ -412,31 +383,57 @@ public class LauncherProvider extends ContentProvider {
         return null;
     }
 
-    /**
-     * Deletes any empty folder from the DB.
-     * @return Ids of deleted folders.
-     */
-    private IntArray deleteEmptyFolders() {
-        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
-        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
-            // Select folders whose id do not match any container value.
-            String selection = LauncherSettings.Favorites.ITEM_TYPE + " = "
-                    + LauncherSettings.Favorites.ITEM_TYPE_FOLDER + " AND "
-                    + LauncherSettings.Favorites._ID +  " NOT IN (SELECT " +
-                            LauncherSettings.Favorites.CONTAINER + " FROM "
-                                + Favorites.TABLE_NAME + ")";
+    private boolean initializeExternalAdd(ContentValues values) {
+        // 1. Ensure that externally added items have a valid item id
+        int id = mOpenHelper.generateNewItemId();
+        values.put(Favorites._ID, id);
 
-            IntArray folderIds = LauncherDbUtils.queryIntArray(db, Favorites.TABLE_NAME,
-                    Favorites._ID, selection, null, null);
-            if (!folderIds.isEmpty()) {
-                db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
-                        LauncherSettings.Favorites._ID, folderIds), null);
+        // 2. In the case of an app widget, and if no app widget id is specified, we
+        // attempt allocate and bind the widget.
+        Integer itemType = values.getAsInteger(Favorites.ITEM_TYPE);
+        if (itemType != null &&
+                itemType.intValue() == Favorites.ITEM_TYPE_APPWIDGET &&
+                !values.containsKey(Favorites.APPWIDGET_ID)) {
+
+            final AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getContext());
+            ComponentName cn = ComponentName.unflattenFromString(
+                    values.getAsString(Favorites.APPWIDGET_PROVIDER));
+
+            if (cn != null) {
+                try {
+                    AppWidgetHost widgetHost = mOpenHelper.newLauncherWidgetHost();
+                    int appWidgetId = widgetHost.allocateAppWidgetId();
+                    values.put(Favorites.APPWIDGET_ID, appWidgetId);
+                    if (!appWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, cn)) {
+                        widgetHost.deleteAppWidgetId(appWidgetId);
+                        return false;
+                    }
+                } catch (RuntimeException e) {
+                    Log.e(TAG, "Failed to initialize external widget", e);
+                    return false;
+                }
+            } else {
+                return false;
             }
-            t.commit();
-            return folderIds;
-        } catch (SQLException ex) {
-            Log.e(TAG, ex.getMessage(), ex);
-            return new IntArray();
+        }
+
+        // Add screen id if not present
+        long screenId = values.getAsLong(Favorites.SCREEN);
+        SQLiteStatement stmp = null;
+        try {
+            stmp = mOpenHelper.getWritableDatabase().compileStatement(
+                    "INSERT OR IGNORE INTO workspaceScreens (_id, screenRank) " +
+                            "select ?, (ifnull(MAX(screenRank), -1)+1) from workspaceScreens");
+            stmp.bindLong(1, screenId);
+
+            ContentValues valuesInserted = new ContentValues();
+            valuesInserted.put(BaseLauncherColumns._ID, stmp.executeInsert());
+            mOpenHelper.checkId(WorkspaceScreens.TABLE_NAME, valuesInserted);
+            return true;
+        } catch (Exception e) {
+            return false;
+        } finally {
+            Utilities.closeSilently(stmp);
         }
     }
 
@@ -447,8 +444,32 @@ public class LauncherProvider extends ContentProvider {
         mListenerHandler.sendEmptyMessage(ChangeListenerWrapper.MSG_LAUNCHER_PROVIDER_CHANGED);
     }
 
-    @Thunk static void addModifiedTime(ContentValues values) {
-        values.put(LauncherSettings.Favorites.MODIFIED, System.currentTimeMillis());
+    /**
+     * Deletes any empty folder from the DB.
+     * @return Ids of deleted folders.
+     */
+    private IntArray deleteEmptyFolders() {
+        SQLiteDatabase db = mOpenHelper.getWritableDatabase();
+        try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+            // Select folders whose id do not match any container value.
+            String selection = Favorites.ITEM_TYPE + " = "
+                    + Favorites.ITEM_TYPE_FOLDER + " AND "
+                    + Favorites._ID + " NOT IN (SELECT " +
+                    Favorites.CONTAINER + " FROM "
+                                + Favorites.TABLE_NAME + ")";
+
+            IntArray folderIds = LauncherDbUtils.queryIntArray(db, Favorites.TABLE_NAME,
+                    Favorites._ID, selection, null, null);
+            if (!folderIds.isEmpty()) {
+                db.delete(Favorites.TABLE_NAME, Utilities.createDbSelectionQuery(
+                        Favorites._ID, folderIds), null);
+            }
+            t.commit();
+            return folderIds;
+        } catch (SQLException ex) {
+            Log.e(TAG, ex.getMessage(), ex);
+            return new IntArray();
+        }
     }
 
     private void clearFlagEmptyDbCreated() {
@@ -618,6 +639,7 @@ public class LauncherProvider extends ContentProvider {
             mMaxScreenId = 0;
 
             addFavoritesTable(db, false);
+            addWorkspacesTable(db, false);
 
             // Fresh and clean launcher DB.
             mMaxItemId = initializeMaxItemId(db);
@@ -658,6 +680,15 @@ public class LauncherProvider extends ContentProvider {
             Favorites.addTableToDb(db, getDefaultUserSerial(), optional);
         }
 
+        private void addWorkspacesTable(SQLiteDatabase db, boolean optional) {
+            String ifNotExists = optional ? " IF NOT EXISTS " : "";
+            db.execSQL("CREATE TABLE " + ifNotExists + WorkspaceScreens.TABLE_NAME + " (" +
+                    WorkspaceScreens._ID + " INTEGER PRIMARY KEY," +
+                    WorkspaceScreens.SCREEN_RANK + " INTEGER," +
+                    ChangeLogColumns.MODIFIED + " INTEGER NOT NULL DEFAULT 0" +
+                    ");");
+        }
+
         @Override
         public void onOpen(SQLiteDatabase db) {
             super.onOpen(db);
@@ -695,6 +726,10 @@ public class LauncherProvider extends ContentProvider {
                 // version of the DB.
                 case 12:
                     // No-op
+                    // With the new shrink-wrapped and re-orderable workspaces, it makes sense
+                    // to persist workspace screens and their relative order.
+                    mMaxScreenId = 0;
+                    addWorkspacesTable(db, false);
                 case 13: {
                     try (SQLiteTransaction t = new SQLiteTransaction(db)) {
                         // Insert new column for holding widget provider name
@@ -708,7 +743,19 @@ public class LauncherProvider extends ContentProvider {
                     }
                 }
                 case 14: {
-                    if (!addIntegerColumn(db, Favorites.MODIFIED, 0)) {
+                    /*if (!addIntegerColumn(db, Favorites.MODIFIED, 0)) {
+                        // Old version remains, which means we wipe old data
+                        break;
+                    }*/
+                    try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+                        // Insert new column for holding update timestamp
+                        db.execSQL("ALTER TABLE favorites " +
+                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                        db.execSQL("ALTER TABLE workspaceScreens " +
+                                "ADD COLUMN modified INTEGER NOT NULL DEFAULT 0;");
+                        t.commit();
+                    } catch (SQLException ex) {
+                        Log.e(TAG, ex.getMessage(), ex);
                         // Old version remains, which means we wipe old data
                         break;
                     }
@@ -737,7 +784,10 @@ public class LauncherProvider extends ContentProvider {
                         break;
                     }
                 case 21:
-                    // No-op
+                    // Recreate workspace table with screen id a primary key
+                    if (!recreateWorkspaceTable(db)) {
+                        break;
+                    }
                 case 22: {
                     if (!addIntegerColumn(db, Favorites.OPTIONS, 0)) {
                         // Old version remains, which means we wipe old data
@@ -894,6 +944,43 @@ public class LauncherProvider extends ContentProvider {
             }
         }
 
+        /**
+         * Recreates workspace table and migrates data to the new table.
+         */
+        public boolean recreateWorkspaceTable(SQLiteDatabase db) {
+            try (SQLiteTransaction t = new SQLiteTransaction(db)) {
+                final ArrayList<Integer> sortedIDs;
+
+                try (Cursor c = db.query(WorkspaceScreens.TABLE_NAME,
+                        new String[]{WorkspaceScreens._ID},
+                        null, null, null, null,
+                        WorkspaceScreens.SCREEN_RANK)) {
+                    // Use LinkedHashSet so that ordering is preserved
+                    sortedIDs = new ArrayList<Integer>(
+                            LauncherDbUtils.iterateCursor(c, 0, new LinkedHashSet<Integer>()));
+                }
+                db.execSQL("DROP TABLE IF EXISTS " + WorkspaceScreens.TABLE_NAME);
+                addWorkspacesTable(db, false);
+
+                // Add all screen ids back
+                int total = sortedIDs.size();
+                for (int i = 0; i < total; i++) {
+                    ContentValues values = new ContentValues();
+                    values.put(WorkspaceScreens._ID, sortedIDs.get(i));
+                    values.put(WorkspaceScreens.SCREEN_RANK, i);
+                    addModifiedTime(values);
+                    db.insertOrThrow(WorkspaceScreens.TABLE_NAME, null, values);
+                }
+                t.commit();
+                mMaxScreenId = sortedIDs.isEmpty() ? 0 : Collections.max(sortedIDs).intValue();
+            } catch (SQLException ex) {
+                // Old version remains, which means we wipe old data
+                Log.e(TAG, ex.getMessage(), ex);
+                return false;
+            }
+            return true;
+        }
+
         @Thunk boolean updateFolderItemsRank(SQLiteDatabase db, boolean addRankColumn) {
             try (SQLiteTransaction t = new SQLiteTransaction(db)) {
                 if (addRankColumn) {
@@ -905,7 +992,7 @@ public class LauncherProvider extends ContentProvider {
                 Cursor c = db.rawQuery("SELECT container, MAX(cellX) FROM favorites"
                         + " WHERE container IN (SELECT _id FROM favorites WHERE itemType = ?)"
                         + " GROUP BY container;",
-                        new String[] {Integer.toString(LauncherSettings.Favorites.ITEM_TYPE_FOLDER)});
+                        new String[]{Integer.toString(Favorites.ITEM_TYPE_FOLDER)});
 
                 while (c.moveToNext()) {
                     db.execSQL("UPDATE favorites SET rank=cellX+(cellY*?) WHERE "
@@ -969,6 +1056,16 @@ public class LauncherProvider extends ContentProvider {
                 mMaxScreenId = Math.max(screen, mMaxScreenId);
             }
         }
+
+        public void checkId(String table, ContentValues values) {
+            long id = values.getAsLong(BaseLauncherColumns._ID);
+            if (WorkspaceScreens.TABLE_NAME.equals(table)) {
+                mMaxScreenId = (int) Math.max(id, mMaxScreenId);
+            } else {
+                mMaxItemId = (int) Math.max(id, mMaxItemId);
+            }
+        }
+
 
         private int initializeMaxItemId(SQLiteDatabase db) {
             return getMaxId(db, "SELECT MAX(%1$s) FROM %2$s", Favorites._ID, Favorites.TABLE_NAME);

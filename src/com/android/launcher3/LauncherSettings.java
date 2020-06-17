@@ -26,11 +26,98 @@ import android.provider.BaseColumns;
  * Settings related utilities.
  */
 public class LauncherSettings {
+    /**
+     * Columns required on table staht will be subject to backup and restore.
+     */
+    interface ChangeLogColumns extends BaseColumns {
+        /**
+         * The time of the last update to this row.
+         * <P>Type: INTEGER</P>
+         */
+        String MODIFIED = "modified";
+    }
+
+    public interface BaseLauncherColumns extends ChangeLogColumns {
+        /**
+         * Descriptive name of the gesture that can be displayed to the user.
+         * <P>Type: TEXT</P>
+         */
+        String TITLE = "title";
+
+        /**
+         * The Intent URL of the gesture, describing what it points to. This
+         * value is given to {@link android.content.Intent#parseUri(String, int)} to create
+         * an Intent that can be launched.
+         * <P>Type: TEXT</P>
+         */
+        String INTENT = "intent";
+
+        /**
+         * The type of the gesture
+         *
+         * <P>Type: INTEGER</P>
+         */
+        String ITEM_TYPE = "itemType";
+
+        /**
+         * The gesture is an application
+         */
+        int ITEM_TYPE_APPLICATION = 0;
+
+        /**
+         * The gesture is an application created shortcut
+         */
+        int ITEM_TYPE_SHORTCUT = 1;
+
+        /**
+         * The icon package name in Intent.ShortcutIconResource
+         * <P>Type: TEXT</P>
+         */
+        String ICON_PACKAGE = "iconPackage";
+
+        /**
+         * The icon resource name in Intent.ShortcutIconResource
+         * <P>Type: TEXT</P>
+         */
+        String ICON_RESOURCE = "iconResource";
+
+        /**
+         * The custom icon bitmap.
+         * <P>Type: BLOB</P>
+         */
+        String ICON = "icon";
+
+        String CUSTOM_ICON = "customIcon";
+
+        String CUSTOM_ICON_ENTRY = "customIconEntry";
+    }
+
+    /**
+     * Workspace Screens.
+     * <p>
+     * Tracks the order of workspace screens.
+     */
+    public static final class WorkspaceScreens implements ChangeLogColumns {
+
+        public static final String TABLE_NAME = "workspaceScreens";
+
+        /**
+         * The content:// style URL for this table
+         */
+        public static final Uri CONTENT_URI = Uri.parse("content://" +
+                LauncherProvider.AUTHORITY + "/" + TABLE_NAME);
+
+        /**
+         * The rank of this screen -- ie. how it is ordered relative to the other screens.
+         * <P>Type: INTEGER</P>
+         */
+        public static final String SCREEN_RANK = "screenRank";
+    }
 
     /**
      * Favorites.
      */
-    public static final class Favorites implements BaseColumns {
+    public static final class Favorites implements BaseLauncherColumns {
         /**
          * The time of the last update to this row.
          * <P>Type: INTEGER</P>
@@ -50,45 +137,6 @@ public class LauncherSettings {
          * <P>Type: TEXT</P>
          */
         public static final String INTENT = "intent";
-
-        /**
-         * The type of the gesture
-         *
-         * <P>Type: INTEGER</P>
-         */
-        public static final String ITEM_TYPE = "itemType";
-
-        /**
-         * The gesture is an application
-         */
-        public static final int ITEM_TYPE_APPLICATION = 0;
-
-        /**
-         * The gesture is an application created shortcut
-         */
-        public static final int ITEM_TYPE_SHORTCUT = 1;
-
-        /**
-         * The icon package name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_PACKAGE = "iconPackage";
-
-        /**
-         * The icon resource name in Intent.ShortcutIconResource
-         * <P>Type: TEXT</P>
-         */
-        public static final String ICON_RESOURCE = "iconResource";
-
-        /**
-         * The custom icon bitmap.
-         * <P>Type: BLOB</P>
-         */
-        public static final String ICON = "icon";
-
-        public static final String CUSTOM_ICON = "customIcon";
-
-        public static final String CUSTOM_ICON_ENTRY = "customIconEntry";
 
         public static final String TABLE_NAME = "favorites";
 

@@ -384,14 +384,14 @@ public abstract class IconShape {
      * Initializes the shape which is closest to the {@link AdaptiveIconDrawable}
      */
     public static void init(Context context) {
-        if (Utilities.ATLEAST_OREO) {
-
+        if (!Utilities.ATLEAST_OREO) {
+/*
             AdaptiveIconDrawable drawable = new AdaptiveIconDrawable(
                     new ColorDrawable(Color.BLACK), new ColorDrawable(Color.BLACK));
             // Initialize shape properties
             drawable.setBounds(0, 0, DEFAULT_PATH_SIZE, DEFAULT_PATH_SIZE);
             sShapePath = new Path(drawable.getIconMask());
-            sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, DEFAULT_PATH_SIZE, null);
+            sNormalizationScale = IconNormalizer.normalizeAdaptiveIcon(drawable, DEFAULT_PATH_SIZE, null);*/
             return;
         }
 

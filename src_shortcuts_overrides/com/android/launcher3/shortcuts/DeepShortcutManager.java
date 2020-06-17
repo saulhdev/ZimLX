@@ -54,6 +54,7 @@ public class DeepShortcutManager {
 
     private static DeepShortcutManager sInstance;
     private static final Object sInstanceLock = new Object();
+    private final Context mContext;
 
     public static DeepShortcutManager getInstance(Context context) {
         synchronized (sInstanceLock) {
@@ -69,6 +70,7 @@ public class DeepShortcutManager {
 
     private DeepShortcutManager(Context context) {
         mLauncherApps = (LauncherApps) context.getSystemService(Context.LAUNCHER_APPS_SERVICE);
+        mContext = context;
     }
 
     public static boolean supportsShortcuts(ItemInfo info) {
@@ -177,7 +179,7 @@ public class DeepShortcutManager {
                 mWasLastCallSuccess = false;
             }
         } else {
-            //mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
+            mContext.startActivity(ShortcutInfoCompatBackport.stripPackage(intent), startActivityOptions);
         }
     }
 

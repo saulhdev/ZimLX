@@ -52,6 +52,8 @@ import com.android.launcher3.model.PackageItemInfo;
 import com.android.launcher3.util.InstantAppResolver;
 import com.android.launcher3.util.Preconditions;
 
+import org.zimmob.zimlx.override.CustomInfoProvider;
+
 import java.util.function.Supplier;
 
 /**
@@ -105,12 +107,10 @@ public class IconCache extends BaseIconCache {
     public synchronized void updateIconsForPkg(String packageName, UserHandle user) {
         removeIconsForPkg(packageName, user);
         try {
-            PackageInfo info = mPackageManager.getPackageInfo(packageName,
-                    PackageManager.GET_UNINSTALLED_PACKAGES);
+            PackageInfo info = mPackageManager.getPackageInfo(packageName, PackageManager.GET_UNINSTALLED_PACKAGES);
             long userSerial = mUserManager.getSerialNumberForUser(user);
             for (LauncherActivityInfo app : mLauncherApps.getActivityList(packageName, user)) {
-                addIconToDBAndMemCache(app, mLauncherActivityInfoCachingLogic, info, userSerial,
-                        false /*replace existing*/);
+                addIconToDBAndMemCache(app, mLauncherActivityInfoCachingLogic, info, userSerial, false);
             }
         } catch (NameNotFoundException e) {
             Log.d(TAG, "Package not found", e);
@@ -243,10 +243,6 @@ public class IconCache extends BaseIconCache {
     }
 
     public Drawable getFullResIcon(LauncherActivityInfo info, ItemInfo itemInfo, boolean flattenDrawable) {
-        /*if (mIconProvider instanceof ZimIconProvider)
-            return ((ZimIconProvider) mIconProvider).getIcon(info, itemInfo, mIconDpi, flattenDrawable);
-
-        */
         return mIconProvider.getIcon(info, mIconDpi, flattenDrawable);
 
     }

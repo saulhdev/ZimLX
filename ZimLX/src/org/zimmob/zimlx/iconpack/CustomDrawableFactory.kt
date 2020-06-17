@@ -24,6 +24,7 @@ import com.google.android.apps.nexuslauncher.DynamicDrawableFactory
 import org.zimmob.zimlx.icons.clock.CustomClock
 
 class CustomDrawableFactory(context: Context) : DynamicDrawableFactory(context) {
+
     private val iconPackManager = IconPackManager.getInstance(context)
     val customClockDrawer by lazy { CustomClock(context) }
 

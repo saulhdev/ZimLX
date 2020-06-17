@@ -61,7 +61,6 @@ public class DbHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         // discard the data and start over
         db.execSQL(SQL_DELETE + TABLE_APP_COUNT);
-        //db.execSQL(SQL_DELETE + TABLE_DASH_ITEMS);
         onCreate(db);
     }
 

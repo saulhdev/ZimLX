@@ -77,11 +77,11 @@ import java.text.NumberFormat;
 public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, OnResumeCallback,
         IconLabelDotView {
 
-    private static final int DISPLAY_DRAWER_FOLDER = 5;
 
     private static final int DISPLAY_WORKSPACE = 0;
     private static final int DISPLAY_ALL_APPS = 1;
     private static final int DISPLAY_FOLDER = 2;
+    private static final int DISPLAY_DRAWER_FOLDER = 5;
     private boolean mHideText;
 
     private static final int[] STATE_PRESSED = new int[] {android.R.attr.state_pressed};
@@ -123,7 +123,7 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
     private final float mSlop;
 
     private final boolean mLayoutHorizontal;
-    private final int mIconSize;
+    private int mIconSize;
 
     @ViewDebug.ExportedProperty(category = "launcher")
     private boolean mIsIconVisible = true;
@@ -161,7 +161,8 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public BubbleTextView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
-        mActivity = ActivityContext.lookupContext(context);
+        mActivity = ZimUtilsKt.getBaseDraggingActivityOrNull(context);
+        //mActivity = ActivityContext.lookupContext(context);
         mSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
 
         TypedArray a = context.obtainStyledAttributes(attrs,
@@ -175,15 +176,16 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
         if (display == DISPLAY_WORKSPACE) {
             mHideText = prefs.getHideAppLabels();
             DeviceProfile grid = mActivity.getWallpaperDeviceProfile();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.iconTextSizePx);
+            mHideText = prefs.getHideAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.iconTextSizePx);
             setCompoundDrawablePadding(grid.iconDrawablePaddingPx);
             int lines = prefs.getHomeLabelRows();
             setLineCount(lines);
             defaultIconSize = grid.iconSizePx;
         } else if (display == DISPLAY_ALL_APPS) {
-            mHideText = prefs.getHideAllAppsAppLabels();
             DeviceProfile grid = mActivity.getDeviceProfile();
-            setTextSize(TypedValue.COMPLEX_UNIT_PX, grid.allAppsIconTextSizePx);
+            mHideText = prefs.getHideAllAppsAppLabels();
+            setTextSize(TypedValue.COMPLEX_UNIT_PX, isTextHidden() ? 0 : grid.allAppsIconTextSizePx);
             setCompoundDrawablePadding(grid.allAppsIconDrawablePaddingPx);
             defaultIconSize = grid.allAppsIconSizePx;
             int lines = prefs.getDrawerLabelRows();
@@ -785,6 +787,11 @@ public class BubbleTextView extends TextView implements ItemInfoUpdateReceiver, 
 
     public int getIconSize() {
         return mIconSize;
+    }
+
+    public void setIconSize(int iconSize) {
+        mIconSize = iconSize;
+        setIcon(mIcon);
     }
 
     protected boolean isTextHidden() {

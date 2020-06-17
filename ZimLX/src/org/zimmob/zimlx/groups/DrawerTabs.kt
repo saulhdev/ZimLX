@@ -70,7 +70,7 @@ abstract class DrawerTabs(manager: AppGroupsManager, type: AppGroupsManager.Cate
         val colorResolver = ColorRow(KEY_COLOR, Color.CYAN)
 
         init {
-            //TODO
+            //addCustomization(colorResolver)
         }
     }
 

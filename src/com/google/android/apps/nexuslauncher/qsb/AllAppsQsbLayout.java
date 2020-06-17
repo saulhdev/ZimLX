@@ -10,6 +10,7 @@ import android.util.AttributeSet;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.animation.Interpolator;
+import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -160,7 +161,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
     }*/
 
     public final void initialize(AllAppsContainerView allAppsContainerView) {
-        this.mAppsView = allAppsContainerView;
+        mAppsView = allAppsContainerView;
         mAppsView.addElevationController(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
@@ -180,7 +181,7 @@ public class AllAppsQsbLayout extends AbstractQsbLayout implements SearchUiManag
         addOrUpdateSearchPaint(Ds.micStrokeWidth());
         Dh = Ds.hintIsForAssistant();
         mUseTwoBubbles = useTwoBubbles();
-        setHintText(this.Ds.hintTextValue(), mHint);
+        setHintText(Ds.hintTextValue(), mHint);
         addOrUpdateSearchRipple();
     }
 

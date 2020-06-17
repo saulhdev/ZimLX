@@ -73,6 +73,7 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
     public final int edgeMarginPx;
     public float workspaceSpringLoadShrinkFactor;
     public final int workspaceSpringLoadedBottomSpace;
+    public float workspaceOptionsShrinkFactor;
 
     // Drag handle
     public int verticalDragHandleSizePx;
@@ -527,6 +528,8 @@ public class DeviceProfile implements ZimPreferences.OnPreferenceChangeListener 
             workspaceSpringLoadShrinkFactor =
                     res.getInteger(R.integer.config_workspaceSpringLoadShrinkPercentage) / 100.0f;
         }
+        workspaceOptionsShrinkFactor =
+                res.getInteger(R.integer.config_workspaceOptionsShrinkPercentage) / 100.0f;
 
         // Folder icon
         folderIconSizePx = IconNormalizer.getNormalizedCircleSize(iconSizePx);

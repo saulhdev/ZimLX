@@ -16,16 +16,6 @@
 
 package com.android.launcher3;
 
-import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
-import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
-import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.SPRING_LOADED;
-import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
-import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
-
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.LayoutTransition;
@@ -68,9 +58,9 @@ import com.android.launcher3.accessibility.AccessibleDragListenerAdapter;
 import com.android.launcher3.accessibility.WorkspaceAccessibilityHelper;
 import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.Interpolators;
-import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.compat.AppWidgetManagerCompat;
 import com.android.launcher3.config.FeatureFlags;
+import com.android.launcher3.dot.FolderDotInfo;
 import com.android.launcher3.dragndrop.DragController;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.dragndrop.DragOptions;
@@ -105,8 +95,17 @@ import com.android.launcher3.widget.PendingAppWidgetHostView;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Predicate;
+
+import static com.android.launcher3.LauncherAnimUtils.OVERVIEW_TRANSITION_MS;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_EXIT_DELAY;
+import static com.android.launcher3.LauncherAnimUtils.SPRING_LOADED_TRANSITION_MS;
+import static com.android.launcher3.LauncherSettings.Favorites.ITEM_TYPE_APPLICATION;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.SPRING_LOADED;
+import static com.android.launcher3.config.FeatureFlags.ADAPTIVE_ICON_WINDOW_ANIM;
+import static com.android.launcher3.dragndrop.DragLayer.ALPHA_INDEX_OVERLAY;
 
 /**
  * The workspace is a wide area with a wallpaper and a finite number of pages.
@@ -1053,11 +1052,13 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
     @Override
     protected void overScroll(int amount) {
+        boolean inOptionsState = mLauncher.isInState(LauncherState.OPTIONS);
+
         boolean shouldScrollOverlay = mLauncherOverlay != null && !mScroller.isSpringing() &&
-                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl));
+                ((amount <= 0 && !mIsRtl) || (amount >= 0 && mIsRtl)) && !inOptionsState;
 
         boolean shouldZeroOverlay = mLauncherOverlay != null && mLastOverlayScroll != 0 &&
-                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl));
+                ((amount >= 0 && !mIsRtl) || (amount <= 0 && mIsRtl) || inOptionsState);
 
         if (shouldScrollOverlay) {
             if (!mStartedSendingScrollEvents && mScrollInteractionBegan) {
@@ -1067,7 +1068,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
             mLastOverlayScroll = Math.abs(((float) amount) / getMeasuredWidth());
             mLauncherOverlay.onScrollChange(mLastOverlayScroll, mIsRtl);
-        } else {
+        } else if (!inOptionsState) {
             dampedOverScroll(amount);
         }
 
@@ -2610,8 +2611,7 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
 
                 // When dragging and dropping from customization tray, we deal with creating
                 // widgets/shortcuts/folders in a slightly different way
-                mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell,
-                        item.spanX, item.spanY);
+                mLauncher.addPendingItem(pendingInfo, container, screenId, mTargetCell, item.spanX, item.spanY);
             };
             boolean isWidget = pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPWIDGET
                     || pendingInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_CUSTOM_APPWIDGET;
@@ -2640,11 +2640,6 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
                 case LauncherSettings.Favorites.ITEM_TYPE_APPLICATION:
             case LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT:
             case LauncherSettings.Favorites.ITEM_TYPE_DEEP_SHORTCUT:
-                /*if (info.container == NO_ID && info instanceof AppInfo) {
-                    // Came from all apps -- make a copy
-                    info = ((AppInfo) info).makeWorkspaceItem();
-                    d.dragInfo = info;
-                }*/
                 if (info.container == NO_ID) {
                     // Came from all apps -- make a copy
                     if (info instanceof AppInfo) {
@@ -3273,15 +3268,12 @@ public class Workspace extends PagedView<WorkspacePageIndicator>
         });
 
         // Update folder icons
-        mapOverItems(MAP_NO_RECURSE, new ItemOperator() {
-            @Override
-            public boolean evaluate(ItemInfo info, View v) {
-                if (info instanceof FolderInfo && folderIds.contains(info.id)) {
-                    ((FolderInfo) info).itemsChanged(false);
-                }
-                // process all the shortcuts
-                return false;
+        mapOverItems(MAP_NO_RECURSE, (info, v) -> {
+            if (info instanceof FolderInfo && folderIds.contains(info.id)) {
+                ((FolderInfo) info).itemsChanged(false);
             }
+            // process all the shortcuts
+            return false;
         });
     }
 

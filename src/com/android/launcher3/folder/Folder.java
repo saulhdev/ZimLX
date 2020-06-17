@@ -64,6 +64,7 @@ import com.android.launcher3.OnAlarmListener;
 import com.android.launcher3.PagedView;
 import com.android.launcher3.R;
 import com.android.launcher3.ShortcutAndWidgetContainer;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.Workspace;
 import com.android.launcher3.Workspace.ItemOperator;
 import com.android.launcher3.WorkspaceItemInfo;
@@ -236,14 +237,18 @@ public class Folder extends AbstractFloatingView implements ClipPathView, DragSo
         mFooterHeight = mFooter.getMeasuredHeight();
 
         ImageButton settingButton = findViewById(R.id.settings_button);
-        settingButton.setOnClickListener(v -> {
-            animateClosed();
-            if (mInfo instanceof DrawerFolderInfo) {
-                ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
-            } else {
-                CustomBottomSheet.show(mLauncher, mInfo);
-            }
-        });
+        if (Utilities.getZimPrefs(mLauncher).getLockDesktop()) {
+            settingButton.setVisibility(View.GONE);
+        } else {
+            settingButton.setOnClickListener(v -> {
+                animateClosed();
+                if (mInfo instanceof DrawerFolderInfo) {
+                    ((DrawerFolderInfo) mInfo).showEdit(mLauncher);
+                } else {
+                    CustomBottomSheet.show(mLauncher, mInfo);
+                }
+            });
+        }
     }
 
     public boolean onLongClick(View v) {

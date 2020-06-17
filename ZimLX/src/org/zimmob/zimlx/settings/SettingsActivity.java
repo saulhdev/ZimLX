@@ -765,10 +765,8 @@ public class SettingsActivity extends SettingsBaseActivity
             setActivityTitle();
 
             if (getContent() == R.xml.zim_preferences_smartspace) {
-                SwitchPreference minusOne = (SwitchPreference) findPreference(
-                        ENABLE_MINUS_ONE_PREF);
-                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
-                        .isInstalled()) {
+                SwitchPreference minusOne = (SwitchPreference) findPreference(ENABLE_MINUS_ONE_PREF);
+                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
                     minusOne.setChecked(false);
                 }
             }

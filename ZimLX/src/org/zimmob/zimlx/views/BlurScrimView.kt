@@ -119,6 +119,9 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
     private var fullBlurProgress = 0f
 
     private var shouldDrawDebug = false
+
+    private val enableShadow get() = prefs.dockShadow && !useFlatColor
+
     private val debugTextPaint = Paint().apply {
         textSize = DEBUG_TEXT_SIZE
         color = Color.RED
@@ -266,10 +269,10 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             colorRanges.add(ColorRange(color1.first, color2.first, color1.second, color2.second))
         }
     }
-/*
-    fun getMidAlpha(): Int {
+
+    override fun getMidAlpha(): Int {
         return prefs.dockOpacity.takeIf { it >= 0 } ?: super.getMidAlpha()
-    }*/
+    }
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
@@ -283,7 +286,6 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
-
         if (!Utilities.ATLEAST_MARSHMALLOW && !isDarkTheme) {
             val scrimProgress = Utilities.boundToRange(Utilities.mapToRange(mProgress,
                     0f, SCRIM_CATCHUP_THRESHOLD, 0f, 1f, Interpolators.LINEAR), 0f, 1f)
@@ -302,7 +304,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
         postReInitUi()
     }
 
-    fun onDrawFlatColor(canvas: Canvas) {
+    override fun onDrawFlatColor(canvas: Canvas) {
         blurDrawable?.run {
             setBounds(0, 0, width, height)
             draw(canvas, true)
@@ -315,7 +317,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             setBlurBounds(left, top, right, bottom)
             draw(canvas)
         }
-        /*if (enableShadow) {
+        if (enableShadow) {
             val scrimHeight = mShelfTop
             val f = paddingLeft.toFloat() - shadowBlur
             val f2 = scrimHeight - shadowBlur
@@ -325,7 +327,7 @@ class BlurScrimView(context: Context, attrs: AttributeSet) : ShelfScrimView(cont
             } else {
                 shadowHelper.drawVerticallyStretched(shadowBitmap, canvas, f, f2, f3, scrimHeight)
             }
-        }*/
+        }
         drawSearchBlur(canvas)
         super.onDrawRoundRect(canvas, left, top, right, bottom, rx, ry, paint)
     }

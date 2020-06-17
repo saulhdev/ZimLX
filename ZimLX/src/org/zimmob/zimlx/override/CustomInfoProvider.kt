@@ -65,7 +65,7 @@ abstract class CustomInfoProvider<in T : ItemInfo>(val context: Context) {
         fun <T : ItemInfo> forItem(context: Context, info: ItemInfo?): CustomInfoProvider<T>? {
             return when (info) {
                 is AppInfo -> AppInfoProvider.getInstance(context)
-                is WorkspaceItemInfo -> ShortcutInfoProvider.getInstance(context)
+                is WorkspaceItemInfo -> WorkspaceInfoProvider.getInstance(context)
                 is FolderInfo -> FolderInfoProvider.getInstance(context)
                 else -> null
             } as CustomInfoProvider<T>?

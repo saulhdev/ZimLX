@@ -27,11 +27,14 @@ import android.content.pm.ResolveInfo
 import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Handler
 import android.os.Parcel
 import android.os.Parcelable
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import com.android.launcher3.*
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
@@ -99,7 +102,7 @@ class IconPackManager(private val context: Context) {
         return getIconPackInternal(packProvider.name, put, load)!!
     }
 
-    @SuppressLint("WrongConstant")
+    @RequiresApi(Build.VERSION_CODES.O)
     fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                 iconDpi: Int, flattenDrawable: Boolean, itemInfo: ItemInfo?,
                 iconProvider: CustomIconProvider?): Drawable {
@@ -120,6 +123,13 @@ class IconPackManager(private val context: Context) {
     }
 
     fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
+        packList.iterator().forEach { pack ->
+            pack.getIcon(shortcutInfo, iconDpi)?.let { return it }
+        }
+        return defaultPack.getIcon(shortcutInfo, iconDpi)
+    }
+
+    fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         packList.iterator().forEach { pack ->
             pack.getIcon(shortcutInfo, iconDpi)?.let { return it }
         }
@@ -153,7 +163,7 @@ class IconPackManager(private val context: Context) {
     fun getPackProviders(): Set<PackProvider> {
         val pm = context.packageManager
         val packs = HashSet<PackProvider>()
-        CustomIconUtils.ICON_INTENTS.forEach { intent ->
+        ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
                 packs.add(PackProvider(privateObj, it.activityInfo.packageName))
             }
@@ -164,7 +174,7 @@ class IconPackManager(private val context: Context) {
     fun getPackProviderInfos(): HashMap<String, IconPackInfo> {
         val pm = context.packageManager
         val packs = HashMap<String, IconPackInfo>()
-        CustomIconUtils.ICON_INTENTS.forEach { intent ->
+        ICON_INTENTS.forEach { intent ->
             pm.queryIntentActivities(Intent(intent), PackageManager.GET_META_DATA).forEach {
                 packs[it.activityInfo.packageName] = IconPackInfo.fromResolveInfo(it, pm)
             }

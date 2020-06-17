@@ -89,7 +89,6 @@ open class AppsAdapter(
     }
 
     open fun onBindApp(app: App, holder: AppHolder) {
-
     }
 
     open fun onClickApp(position: Int, holder: AppHolder) {

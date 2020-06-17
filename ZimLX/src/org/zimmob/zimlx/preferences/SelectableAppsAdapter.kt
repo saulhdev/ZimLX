@@ -57,7 +57,7 @@ abstract class SelectableAppsAdapter(context: Context, private val callback: Cal
         callback?.onSelectionsChanged(selections.size)
     }
 
-    override fun onBindApp(app: App, holder: AppHolder) {
+    override fun onBindApp(app: AppsAdapter.App, holder: AppHolder) {
         super.onBindApp(app, holder)
         holder.checkBox.apply {
             visibility = View.VISIBLE

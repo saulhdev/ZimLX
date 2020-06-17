@@ -83,6 +83,11 @@ public class BgDataModel {
     public final IntSparseArrayMap<FolderInfo> folders = new IntSparseArrayMap<>();
 
     /**
+     * Ordered list of workspace screens ids.
+     */
+    public final ArrayList<Integer> workspaceScreens = new ArrayList<>();
+
+    /**
      * Map of ShortcutKey to the number of times it is pinned.
      */
     public final Map<ShortcutKey, MutableInt> pinnedShortcutCounts = new HashMap<>();

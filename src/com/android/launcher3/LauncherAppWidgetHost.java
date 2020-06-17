@@ -250,7 +250,7 @@ public class LauncherAppWidgetHost extends AppWidgetHost {
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER, info.provider)
                 .putExtra(AppWidgetManager.EXTRA_APPWIDGET_PROVIDER_PROFILE, info.getProfile());
         // TODO: we need to make sure that this accounts for the options bundle.
-        // intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
+        //intent.putExtra(AppWidgetManager.EXTRA_APPWIDGET_OPTIONS, options);
         activity.startActivityForResult(intent, requestCode);
     }
 

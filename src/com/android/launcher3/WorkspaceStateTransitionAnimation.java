@@ -20,6 +20,7 @@ import static com.android.launcher3.LauncherAnimUtils.DRAWABLE_ALPHA;
 import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
 import static com.android.launcher3.LauncherState.HOTSEAT_ICONS;
 import static com.android.launcher3.LauncherState.HOTSEAT_SEARCH_BOX;
+import static com.android.launcher3.LauncherState.OPTIONS_VIEW;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_SCALE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_HOTSEAT_TRANSLATE;
 import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
@@ -41,6 +42,9 @@ import com.android.launcher3.anim.AnimatorSetBuilder;
 import com.android.launcher3.anim.PropertySetter;
 import com.android.launcher3.dragndrop.DragLayer;
 import com.android.launcher3.graphics.WorkspaceAndHotseatScrim;
+
+import org.zimmob.zimlx.ZimLauncher;
+import org.zimmob.zimlx.views.OptionsPanel;
 
 /**
  * Manages the animations between each of the workspace states.
@@ -117,6 +121,10 @@ public class WorkspaceStateTransitionAnimation {
             propertySetter.setViewAlpha(mLauncher.getWorkspace().getPageIndicator(),
                     hotseatIconsAlpha, fadeInterpolator);
         }
+
+        // Set options view
+        OptionsPanel optionsPanel = ZimLauncher.getLauncher(mLauncher).getOptionsView();
+        propertySetter.setViewAlpha(optionsPanel, (elements & OPTIONS_VIEW) != 0 ? 1 : 0, fadeInterpolator);
 
         if (!config.playNonAtomicComponent()) {
             // Only the alpha and scale, handled above, are included in the atomic animation.

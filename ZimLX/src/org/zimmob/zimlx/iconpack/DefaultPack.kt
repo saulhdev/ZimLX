@@ -24,12 +24,16 @@ import android.content.pm.PackageManager
 import android.content.pm.ShortcutInfo
 import android.content.res.Resources
 import android.graphics.Bitmap
+import android.os.Process
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.text.TextUtils
+import androidx.annotation.RequiresApi
 import com.android.launcher3.*
 import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.google.android.apps.nexuslauncher.DynamicIconProvider
 
@@ -48,7 +52,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val launcherApps = LauncherAppsCompat.getInstance(context)
         UserManagerCompat.getInstance(context).userProfiles.forEach { user ->
             launcherApps.getActivityList(null, user).forEach {
-                put(ComponentKey(it.componentName, user), Entry(it, context))
+                put(ComponentKey(it.componentName, user), Entry(it))
             }
         }
     }
@@ -77,7 +81,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
     override fun getEntryForComponent(key: ComponentKey) = appMap[key]
 
     override fun getIcon(entry: IconPackManager.CustomIconEntry, iconDpi: Int): Drawable? {
-        return getIcon(ComponentKey(ComponentName(context, entry.packPackageName), Utilities.myUserHandle()), iconDpi)
+        return getIcon(ComponentKey(ComponentName(context, entry.packPackageName), Process.myUserHandle()), iconDpi)
     }
 
     fun getIcon(key: ComponentKey, iconDpi: Int): Drawable? {
@@ -94,6 +98,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return gen.result
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getIcon(launcherActivityInfo: LauncherActivityInfo,
                          iconDpi: Int, flattenDrawable: Boolean,
                          customIconEntry: IconPackManager.CustomIconEntry?,
@@ -103,7 +108,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         val key: ComponentKey
         val info: LauncherActivityInfo
         if (customIconEntry != null && !TextUtils.isEmpty(customIconEntry.icon)) {
-            key = ComponentKey(ComponentName(context, customIconEntry.icon!!), Utilities.myUserHandle())
+            key = ComponentKey(ComponentName(context, customIconEntry.icon!!), launcherActivityInfo.user)
             info = key.getLauncherActivityInfo(context) ?: launcherActivityInfo
         } else {
             key = ComponentKey(launcherActivityInfo.componentName, launcherActivityInfo.user)
@@ -120,10 +125,18 @@ class DefaultPack(context: Context) : IconPack(context, "") {
             val gen = AdaptiveIconGenerator(context, roundIcon ?: originalIcon)
             return gen.result
         }
-        return originalIcon
+        return iconProvider.getDynamicIcon(info, iconDpi, flattenDrawable)
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
+        ensureInitialLoadComplete()
+
+        val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
+        val gen = AdaptiveIconGenerator(context, drawable)
+        return gen.result
+    }
+
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         ensureInitialLoadComplete()
 
         val drawable = DeepShortcutManager.getInstance(context).getShortcutIconDrawable(shortcutInfo, iconDpi)
@@ -138,7 +151,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
 
         if (Utilities.ATLEAST_OREO && itemInfo.itemType == LauncherSettings.Favorites.ITEM_TYPE_APPLICATION) {
             val component = if (customIconEntry?.icon != null) {
-                ComponentKey(ComponentName(context, customIconEntry.packPackageName), Utilities.myUserHandle()).componentName
+                ComponentKey(ComponentName(context, customIconEntry.packPackageName), itemInfo.user).componentName
             } else {
                 itemInfo.targetComponent
             }
@@ -199,7 +212,7 @@ class DefaultPack(context: Context) : IconPack(context, "") {
         return null
     }
 
-    class Entry(private val app: LauncherActivityInfo, context: Context) : IconPack.Entry() {
+    class Entry(private val app: LauncherActivityInfo) : IconPack.Entry() {
 
         override val displayName by lazy { app.label.toString() }
         override val identifierName = ComponentKey(app.componentName, app.user).toString()

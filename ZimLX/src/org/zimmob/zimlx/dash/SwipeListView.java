@@ -31,6 +31,8 @@ import org.zimmob.zimlx.ZimPreferences;
 
 import java.util.ArrayList;
 
+import android.os.Process;
+
 public class SwipeListView extends ListView {
     private Context mContext;
     private ArrayList<DashItem> dashItems = new ArrayList<>();
@@ -53,7 +55,7 @@ public class SwipeListView extends ListView {
             if (action.length() == 2) {
                 item = DashUtils.getDashItemFromString(action);
             } else {
-                ComponentKey keyMapper = new ComponentKey(new ComponentName(mContext, action), null );
+                ComponentKey keyMapper = new ComponentKey(new ComponentName(mContext, action), Process.myUserHandle());
                 AppInfo app = Launcher.getLauncher(mContext).getAppsView().getAppsStore().getApp(keyMapper);
                 if (app != null) {
                     item = DashItem.asApp(app, 0);

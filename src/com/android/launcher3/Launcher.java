@@ -442,7 +442,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
     }
 
     public void updatePredictions(boolean force) {
-        /*CustomAppPredictor predictor = new CustomAppPredictor(mContext);
+        CustomAppPredictor predictor = new CustomAppPredictor(mContext);
         if (hasBeenResumed() || force) {
             List<ComponentKeyMapper> apps = predictor.getPredictions();
             if (apps != null) {
@@ -450,7 +450,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mAppsView.getFloatingHeaderView().setPredictedApps(apps);
                 mAppsView.getFloatingHeaderView().headerChanged();
             }
-        }*/
+        }
     }
 
     protected void overrideTheme(boolean isDark, boolean supportsDarkText) {
@@ -750,6 +750,8 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
                 mWorkspace.removeExtraEmptyScreenDelayed(true, exitSpringLoaded,
                         ON_ACTIVITY_RESULT_ANIMATION_DELAY, false);
             } else if (resultCode == RESULT_OK) {
+                Log.d(TAG, "Widget ID " + appWidgetId);
+
                 addAppWidgetImpl(
                         appWidgetId, requestArgs, null,
                         requestArgs.getWidgetHandler(),
@@ -1738,8 +1740,7 @@ public class Launcher extends BaseDraggingActivity implements LauncherExterns,
             }
             Bundle options = info.bindOptions;
 
-            boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(
-                    appWidgetId, info.info, options);
+            boolean success = mAppWidgetManager.bindAppWidgetIdIfAllowed(appWidgetId, info.info, options);
             if (success) {
                 addAppWidgetFromDropImpl(appWidgetId, info, null, addFlowHandler);
             } else {

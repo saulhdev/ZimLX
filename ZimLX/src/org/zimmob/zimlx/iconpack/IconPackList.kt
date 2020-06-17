@@ -27,7 +27,7 @@ import com.android.launcher3.LauncherModel
 import com.android.launcher3.R
 import com.android.launcher3.Utilities
 import com.android.launcher3.util.LooperExecutor
-import org.zimmob.zimlx.util.ActionIntentFilter
+import com.google.android.apps.nexuslauncher.utils.ActionIntentFilter
 import org.zimmob.zimlx.util.CustomIconUtils
 
 class IconPackList(private val context: Context, private val manager: IconPackManager) {

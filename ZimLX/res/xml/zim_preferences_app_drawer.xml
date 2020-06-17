@@ -50,12 +50,12 @@
             android:key="pref_key__drawer_label_color"
             android:title="@string/title__drawer_label_color"
             app:cpv_dialogTitle="@string/title__drawer_label_color"
-            app:cpv_showAlphaSlider="true"
             app:iconSpaceReserved="false" />
 
         <org.zimmob.zimlx.settings.PreferenceDialogPreference
             android:key="pref_iconPopupMenu"
             android:title="@string/title__drawer_menu"
+            app:cpv_showAlphaSlider="true"
             app:content="@xml/zim_preferences_drawer_icon_popup_menu"
             app:iconSpaceReserved="false" />
 
@@ -105,7 +105,7 @@
             app:iconSpaceReserved="false"
             app:maxValue="1"
             app:minValue="0"
-            app:defaultValue="0.5"
+            app:defaultSeekbarValue="0.3"
             app:summaryFormat="%.0f%%"
             app:summaryMultiplier="100" />
 

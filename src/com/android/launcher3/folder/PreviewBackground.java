@@ -42,7 +42,10 @@ import android.view.View;
 import com.android.launcher3.CellLayout;
 import com.android.launcher3.DeviceProfile;
 import com.android.launcher3.R;
+import com.android.launcher3.Utilities;
 import com.android.launcher3.views.ActivityContext;
+
+import org.zimmob.zimlx.ZimPreferences;
 
 /**
  * This object represents a FolderIcon preview background. It stores drawing / measurement
@@ -96,6 +99,16 @@ public class PreviewBackground {
     private ObjectAnimator mStrokeAlphaAnimator;
     private ObjectAnimator mShadowAnimator;
 
+    private boolean isInDrawer;
+
+    public PreviewBackground() {
+        this(false);
+    }
+
+    public PreviewBackground(boolean inDrawer) {
+        isInDrawer = inDrawer;
+    }
+
     private static final Property<PreviewBackground, Integer> STROKE_ALPHA =
             new Property<PreviewBackground, Integer>(Integer.class, "strokeAlpha") {
                 @Override
@@ -132,13 +145,14 @@ public class PreviewBackground {
         mDotColor = ta.getColor(R.styleable.FolderIconPreview_folderDotColor, 0);
         mStrokeColor = ta.getColor(R.styleable.FolderIconPreview_folderIconBorderColor, 0);
         mBgColor = ta.getColor(R.styleable.FolderIconPreview_folderFillColor, 0);
+        //mBgColor = Utilities.getZimPrefs(context).getFolderBackground();
         ta.recycle();
 
         DeviceProfile grid = activity.getWallpaperDeviceProfile();
-        previewSize = grid.folderIconSizePx;
+        previewSize = isInDrawer ? grid.allAppsFolderIconSizePx : grid.folderIconSizePx;
 
         basePreviewOffsetX = (availableSpaceX - previewSize) / 2;
-        basePreviewOffsetY = topPadding + grid.folderIconOffsetYPx;
+        basePreviewOffsetY = topPadding + (isInDrawer ? grid.allAppsFolderIconOffsetYPx : grid.folderIconOffsetYPx);
 
         // Stroke width is 1dp
         mStrokeWidth = context.getResources().getDisplayMetrics().density;

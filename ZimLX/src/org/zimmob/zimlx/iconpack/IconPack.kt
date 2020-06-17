@@ -26,6 +26,7 @@ import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
 import com.android.launcher3.LauncherModel
 import com.android.launcher3.compat.AlphabeticIndexCompat
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import com.android.launcher3.util.LooperExecutor
 import java.util.concurrent.Semaphore
@@ -81,6 +82,7 @@ abstract class IconPack(val context: Context, val packPackageName: String) {
                          iconProvider: CustomIconProvider?): Drawable?
 
     abstract fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable?
+    abstract fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable?
     abstract fun newIcon(icon: Bitmap, itemInfo: ItemInfoWithIcon,
                          customIconEntry: IconPackManager.CustomIconEntry?,
                          drawableFactory: CustomDrawableFactory): FastBitmapDrawable?

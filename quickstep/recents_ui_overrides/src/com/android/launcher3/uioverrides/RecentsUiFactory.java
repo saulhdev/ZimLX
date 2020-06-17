@@ -51,6 +51,7 @@ import com.android.quickstep.TouchInteractionService;
 import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.WindowManagerWrapper;
 
+import org.zimmob.zimlx.ZimLauncher;
 import org.zimmob.zimlx.gestures.VerticalSwipeGestureController;
 import org.zimmob.zimlx.touch.PinchStateChangeTouchController;
 
@@ -234,6 +235,17 @@ public abstract class RecentsUiFactory {
                 && !profile.isVerticalBarLayout();
         UiThreadHelper.runAsyncCommand(launcher, SET_SHELF_HEIGHT_CMD,
                 visible ? 1 : 0, profile.hotseatBarSizePx);
+
+        if (Utilities.isRecentsEnabled()) {
+            try {
+                WindowManagerWrapper.getInstance().setShelfHeight(
+                        (state == NORMAL || state == OVERVIEW) && launcher.isUserActive()
+                                && !profile.isVerticalBarLayout(),
+                        ((ZimLauncher) launcher).getShelfHeight());
+            } catch (Exception ignore) {
+
+            }
+        }
 
         if (state == NORMAL) {
             launcher.<RecentsView>getOverviewPanel().setSwipeDownShouldLaunchApp(false);

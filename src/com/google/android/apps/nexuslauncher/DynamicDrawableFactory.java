@@ -33,7 +33,6 @@ import com.android.launcher3.icons.BitmapInfo;
 import com.android.launcher3.util.ComponentKey;
 
 import org.zimmob.zimlx.icons.calendar.DateChangeReceiver;
-import org.zimmob.zimlx.icons.calendar.DynamicCalendar;
 import org.zimmob.zimlx.icons.clock.CustomClock;
 import org.zimmob.zimlx.icons.clock.DynamicClock;
 

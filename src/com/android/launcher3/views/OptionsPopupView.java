@@ -35,6 +35,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.VisibleForTesting;
 
 import com.android.launcher3.Launcher;
+import com.android.launcher3.LauncherState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.config.FeatureFlags;
@@ -162,6 +163,8 @@ public class OptionsPopupView extends ArrowPopup
             options.add(new OptionItem(R.string.widget_button_text, R.drawable.ic_widget,
                     ControlType.WIDGETS_BUTTON, OptionsPopupView::onWidgetsClicked));
         }
+        options.add(new OptionItem(R.string.button_organize_screens, R.drawable.ic_pages, -1,
+                OptionsPopupView::startOrganizer));
         options.add(new OptionItem(R.string.settings_button_text, R.drawable.ic_setting,
                 ControlType.SETTINGS_BUTTON, OptionsPopupView::startSettings));
 
@@ -188,6 +191,12 @@ public class OptionsPopupView extends ArrowPopup
         launcher.startActivity(new Intent(Intent.ACTION_APPLICATION_PREFERENCES)
                 .setPackage(launcher.getPackageName())
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK));
+        return true;
+    }
+
+    public static boolean startOrganizer(View view) {
+        Launcher launcher = Launcher.getLauncher(view.getContext());
+        launcher.getStateManager().goToState(LauncherState.OPTIONS, true);
         return true;
     }
 

@@ -16,7 +16,19 @@
 
 package com.android.launcher3;
 
+import static android.view.View.VISIBLE;
 import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OPTIONS;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_OVERVIEW_SCALE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_FADE;
+import static com.android.launcher3.anim.AnimatorSetBuilder.ANIM_WORKSPACE_SCALE;
+import static com.android.launcher3.anim.Interpolators.ACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL;
+import static com.android.launcher3.anim.Interpolators.DEACCEL_1_7;
+import static com.android.launcher3.anim.Interpolators.LINEAR;
+import static com.android.launcher3.anim.Interpolators.OVERSHOOT_1_2;
+import static com.android.launcher3.anim.Interpolators.clampToProgress;
 import static com.android.launcher3.anim.PropertySetter.NO_ANIM_PROPERTY_SETTER;
 
 import android.animation.Animator;
@@ -308,7 +320,37 @@ public class LauncherStateManager {
      */
     public void prepareForAtomicAnimation(LauncherState fromState, LauncherState toState,
             AnimatorSetBuilder builder) {
-        toState.prepareForAtomicAnimation(mLauncher, fromState, builder);
+        //toState.prepareForAtomicAnimation(mLauncher, fromState, builder);
+        if (fromState == NORMAL && toState.overviewUi) {
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, OVERSHOOT_1_2);
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, OVERSHOOT_1_2);
+
+            // Start from a higher overview scale, but only if we're invisible so we don't jump.
+            UiFactory.prepareToShowOverview(mLauncher);
+        } else if (fromState.overviewUi && toState == NORMAL) {
+            builder.setInterpolator(ANIM_WORKSPACE_SCALE, DEACCEL);
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, ACCEL);
+            builder.setInterpolator(ANIM_OVERVIEW_SCALE, clampToProgress(ACCEL, 0, 0.9f));
+            builder.setInterpolator(ANIM_OVERVIEW_FADE, DEACCEL_1_7);
+            Workspace workspace = mLauncher.getWorkspace();
+
+            // Start from a higher workspace scale, but only if we're invisible so we don't jump.
+            boolean isWorkspaceVisible = workspace.getVisibility() == VISIBLE;
+            if (isWorkspaceVisible) {
+                CellLayout currentChild = (CellLayout) workspace.getChildAt(
+                        workspace.getCurrentPage());
+                isWorkspaceVisible = currentChild != null && (currentChild.getVisibility() == VISIBLE
+                        && currentChild.getShortcutsAndWidgets().getAlpha() > 0);
+            }
+            if (!isWorkspaceVisible) {
+                workspace.setScaleX(0.92f);
+                workspace.setScaleY(0.92f);
+            }
+        } else if (fromState == OPTIONS || toState == OPTIONS) {
+            builder.setInterpolator(ANIM_WORKSPACE_FADE, LINEAR);
+        }
     }
 
     public AnimatorSet createAtomicAnimation(LauncherState fromState, LauncherState toState,

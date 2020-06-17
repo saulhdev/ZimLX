@@ -62,6 +62,7 @@ public class GridSizeMigrationTask {
     private static final float WT_WIDGET_MIN = 2;
     private static final float WT_WIDGET_FACTOR = 0.6f;
     private static final float WT_FOLDER_FACTOR = 0.5f;
+    public static boolean ENABLED = Utilities.ATLEAST_NOUGAT;
 
     protected final SQLiteDatabase mDb;
     protected final Context mContext;
@@ -118,7 +119,7 @@ public class GridSizeMigrationTask {
      *
      * @return true if any DB operation was commited.
      */
-    private boolean applyOperations() throws Exception {
+    protected boolean applyOperations() throws Exception {
         // Update items
         int updateCount = mUpdateOperations.size();
         for (int i = 0; i < updateCount; i++) {

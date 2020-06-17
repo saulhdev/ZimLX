@@ -31,7 +31,7 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
         val ws = launcher.workspace
 
         if (grid.isVerticalBarLayout) {
-            val scale = 1f//grid.workspaceOptionsShrinkFactor
+            val scale = grid.workspaceOptionsShrinkFactor
             val optionsView = ZimLauncher.getLauncher(launcher).optionsView
 
             val wsHeightWithoutInsets = ws.height - grid.insets.top - grid.insets.bottom
@@ -44,7 +44,7 @@ class OptionsState(id: Int) : LauncherState(id, LauncherLogProto.ContainerType.O
             return ScaleAndTranslation(scale, 0f, Math.max(desiredCenter - actualCenter, desiredBottom - actualBottom))
         }
 
-        val scale = 1f//grid.workspaceOptionsShrinkFactor
+        val scale = grid.workspaceOptionsShrinkFactor
         val insets = launcher.dragLayer.insets
 
         val scaledHeight = scale * ws.normalChildHeight

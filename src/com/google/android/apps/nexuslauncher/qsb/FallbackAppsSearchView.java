@@ -34,7 +34,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
 
     public FallbackAppsSearchView(Context context, AttributeSet attributeSet, int i) {
         super(context, attributeSet, i);
-        this.DI = new AllAppsSearchBarController();
+        DI = new AllAppsSearchBarController();
     }
 
     protected void onAttachedToWindow() {
@@ -96,7 +96,7 @@ public class FallbackAppsSearchView extends ExtendedEditText implements OnUpdate
     }
 
     private void dV() {
-        this.DJ.setShadowAlpha(0);
+        DJ.setShadowAlpha(0);
         mAppsView.onSearchResultsChanged();
     }
 }

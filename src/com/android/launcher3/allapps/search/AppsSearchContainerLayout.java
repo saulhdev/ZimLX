@@ -25,6 +25,7 @@ import static com.android.launcher3.Utilities.prefixTextWithIcon;
 import static com.android.launcher3.icons.IconNormalizer.ICON_VISIBLE_AREA_FACTOR;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.text.Selection;
 import android.text.Spannable;
@@ -97,7 +98,7 @@ public class AppsSearchContainerLayout extends ExtendedEditText
         mFixedTranslationY = getTranslationY();
         mMarginTopAdjusting = mFixedTranslationY - getPaddingTop();
 
-        //setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
+        setHint(prefixTextWithIcon(getContext(), R.drawable.ic_allapps_search, getHint()));
     }
 
     @Override
@@ -198,6 +199,16 @@ public class AppsSearchContainerLayout extends ExtendedEditText
             notifyResultChanged();
             mAppsView.setLastSearchQuery(query);
         }
+    }
+
+    @Override
+    public boolean onSubmitSearch() {
+        if (mApps.hasNoFilteredResults()) {
+            return false;
+        }
+        Intent i = mApps.getFilteredApps().get(0).getIntent();
+        getContext().startActivity(i);
+        return true;
     }
 
     @Override

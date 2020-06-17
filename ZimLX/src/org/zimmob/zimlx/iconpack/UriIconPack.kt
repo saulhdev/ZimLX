@@ -30,6 +30,7 @@ import android.text.TextUtils
 import com.android.launcher3.FastBitmapDrawable
 import com.android.launcher3.ItemInfoWithIcon
 import com.android.launcher3.Utilities
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.adaptive.AdaptiveIconGenerator
 import java.io.FileDescriptor
@@ -65,6 +66,10 @@ class UriIconPack(context: Context) : IconPack(context, "zimUriPack") {
     }
 
     override fun getIcon(shortcutInfo: ShortcutInfo, iconDpi: Int): Drawable? {
+        throw NotImplementedError()
+    }
+
+    override fun getIcon(shortcutInfo: ShortcutInfoCompat, iconDpi: Int): Drawable? {
         throw NotImplementedError()
     }
 

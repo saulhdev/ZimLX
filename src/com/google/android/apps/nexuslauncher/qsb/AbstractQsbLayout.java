@@ -89,6 +89,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected Bitmap Db;
     protected int Dd;
     protected ImageView mMicIconView;
+    protected ImageView mLogoIconView;
     protected String Dg;
     protected boolean Dh;
     protected int mResult;
@@ -96,8 +97,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
     protected Bitmap mShadowBitmap;
     protected Bitmap mClearBitmap;
     protected int mColor;
-    private ImageView mLogoIconView;
-    private boolean mShowAssistant;
+    protected boolean mShowAssistant;
     private float mRadius = -1.0f;
 
     public AbstractQsbLayout(Context context) {
@@ -190,9 +190,10 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return devicePrefs;
     }
 
-    protected final void loadIcons() {
+    protected void loadIcons() {
         mLogoIconView = findViewById(R.id.g_icon);
         mMicIconView = findViewById(R.id.mic_icon);
+
         mMicIconView.setOnClickListener(this);
         mLogoIconView.setOnClickListener(this);
     }
@@ -236,7 +237,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
 
     public final void addOrUpdateSearchPaint(float value) {
         micStrokeWidth = TypedValue.applyDimension(1, value, getResources().getDisplayMetrics());
-        mMicStrokePaint.setStrokeWidth(this.micStrokeWidth);
+        mMicStrokePaint.setStrokeWidth(micStrokeWidth);
         mMicStrokePaint.setStyle(Style.STROKE);
         mMicStrokePaint.setColor(0xFFBDC1C6);
     }
@@ -268,6 +269,8 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         }
     }
 
+
+    //SEARCH BAR WIDTH
     public int getMeasuredWidth(int width, @NotNull DeviceProfile dp) {
         int leftRightPadding = dp.desiredWorkspaceLeftRightMarginPx
                 + dp.cellLayoutPaddingLeftRightPx;
@@ -443,7 +446,7 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         if (TextUtils.isEmpty(str) || !dE()) {
             str2 = str;
         } else {
-            str2 = TextUtils.ellipsize(str, this.qsbTextHintSize, (float) qsbHintLenght, TruncateAt.END).toString();
+            str2 = TextUtils.ellipsize(str, qsbTextHintSize, (float) qsbHintLenght, TruncateAt.END).toString();
         }
         Dg = str2;
         textView.setText(this.Dg);
@@ -472,8 +475,15 @@ public abstract class AbstractQsbLayout extends FrameLayout implements OnSharedP
         return mUseTwoBubbles ? getMicWidth() + twoBubbleGap : 0;
     }
 
-    public int getMicWidth() {
+    /*public int getMicWidth() {
         return mSearchIconWidth;
+    }*/
+
+    protected final int getMicWidth() {
+        if (!mUseTwoBubbles || TextUtils.isEmpty(this.Dg)) {
+            return mSearchIconWidth;
+        }
+        return (Math.round(qsbTextHintSize.measureText(this.Dg)) + qsbTextSpacing) + mSearchIconWidth;
     }
 
     private void setColor(int color) {

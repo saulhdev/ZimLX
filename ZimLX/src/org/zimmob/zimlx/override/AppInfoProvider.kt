@@ -19,6 +19,7 @@ package org.zimmob.zimlx.override
 
 import android.content.Context
 import android.content.pm.LauncherActivityInfo
+import android.util.Log
 import com.android.launcher3.AppInfo
 import com.android.launcher3.LauncherAppState
 import com.android.launcher3.compat.LauncherAppsCompat
@@ -61,6 +62,7 @@ class AppInfoProvider private constructor(context: Context) : CustomInfoProvider
     }
 
     override fun setIcon(info: AppInfo, entry: IconPackManager.CustomIconEntry?) {
+        Log.d("AppInfoProvider", "Entry Icons " + info.componentName)
         setIcon(info.toComponentKey(), entry)
     }
 

@@ -28,9 +28,13 @@ import com.android.launcher3.Insettable;
 import com.android.launcher3.Launcher;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
+import com.android.launcher3.allapps.AllAppsContainerView;
 import com.android.launcher3.allapps.FloatingHeaderView;
 import com.android.launcher3.anim.PropertySetter;
+import com.android.launcher3.appprediction.ComponentKeyMapper;
 import com.android.launcher3.appprediction.PredictionRowView;
+
+import java.util.List;
 
 @TargetApi(26)
 public class PredictionsFloatingHeader extends FloatingHeaderView implements Insettable {
@@ -69,13 +73,12 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
         updateShowAllAppsLabel();
     }
 
-    /*@Override
+    @Override
     public void setup(AllAppsContainerView.AdapterHolder[] mAH, boolean tabsHidden) {
-        mPredictionRowView.setup(this, Utilities.getZimPrefs(mContext).getShowPredictions(), tabsHidden);
         mTabsHidden = tabsHidden;
         updateExpectedHeight();
         super.setup(mAH, tabsHidden);
-    }*/
+    }
 
     /*protected void updateExpectedHeight() {
         boolean useAllAppsLabel = mShowAllAppsLabel && mTabsHidden;
@@ -174,8 +177,8 @@ public class PredictionsFloatingHeader extends FloatingHeaderView implements Ins
             headerChanged();
         }
     }
-/*
-    public void setPredictedApps(boolean z, List<ComponentKeyMapper> list) {
-        mPredictionRowView.setPredictedApps(z, list);
-    }*/
+
+    public void setPredictedApps(List<ComponentKeyMapper> list) {
+        mPredictionRowView.setPredictedApps(list);
+    }
 }

@@ -298,6 +298,7 @@ public class ItemClickHandler {
             db.updateAppCount(((AppInfo) item).componentName.getPackageName());
             db.close();
         }
+        Log.i(TAG, "Clicking Item " + item.title.toString());
         launcher.startActivitySafely(v, intent, item, sourceContainer);
         launcher.getUserEventDispatcher().logAppLaunch(v, intent, item.user);
     }

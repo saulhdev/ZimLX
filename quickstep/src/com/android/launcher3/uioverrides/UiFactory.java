@@ -16,23 +16,9 @@
 
 package com.android.launcher3.uioverrides;
 
-import static android.app.Activity.RESULT_CANCELED;
-
-import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
-import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
-import static com.android.launcher3.LauncherState.ALL_APPS;
-import static com.android.launcher3.LauncherState.NORMAL;
-import static com.android.launcher3.LauncherState.OVERVIEW;
-import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
-import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
-
 import android.animation.AnimatorSet;
 import android.animation.ValueAnimator;
 import android.app.Activity;
-import android.app.Person;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentSender;
@@ -57,11 +43,26 @@ import com.android.quickstep.SysUINavigationMode;
 import com.android.quickstep.SysUINavigationMode.Mode;
 import com.android.quickstep.SysUINavigationMode.NavigationModeChangeListener;
 import com.android.quickstep.util.RemoteFadeOutAnimationListener;
+import com.android.quickstep.views.RecentsView;
 import com.android.systemui.shared.system.ActivityCompat;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.zip.Deflater;
+
+import static android.app.Activity.RESULT_CANCELED;
+import static android.view.View.VISIBLE;
+import static com.android.launcher3.AbstractFloatingView.TYPE_ALL;
+import static com.android.launcher3.AbstractFloatingView.TYPE_HIDE_BACK_BUTTON;
+import static com.android.launcher3.LauncherAnimUtils.SCALE_PROPERTY;
+import static com.android.launcher3.LauncherState.ALL_APPS;
+import static com.android.launcher3.LauncherState.NORMAL;
+import static com.android.launcher3.LauncherState.OVERVIEW;
+import static com.android.launcher3.allapps.DiscoveryBounce.BOUNCE_MAX_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.HOME_BOUNCE_SEEN;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_COUNT;
+import static com.android.launcher3.allapps.DiscoveryBounce.SHELF_BOUNCE_SEEN;
 
 public class UiFactory extends RecentsUiFactory {
 
@@ -90,6 +91,8 @@ public class UiFactory extends RecentsUiFactory {
     public static void onLauncherStateOrFocusChanged(Launcher launcher) {
         boolean shouldBackButtonBeHidden = launcher != null
                 && launcher.getStateManager().getState().hideBackButton
+                && launcher.hasWindowFocus();
+        boolean shouldClockBeHidden = launcher != null
                 && launcher.hasWindowFocus();
         if (shouldBackButtonBeHidden) {
             // Show the back button if there is a floating view visible.
@@ -250,5 +253,12 @@ public class UiFactory extends RecentsUiFactory {
     public static String[] getPersons(ShortcutInfo si) {
         String[] persons = null;//si.getPersons();
         return  Utilities.EMPTY_PERSON_ARRAY;
+    }
+
+    public static void prepareToShowOverview(Launcher launcher) {
+        RecentsView overview = launcher.getOverviewPanel();
+        if (overview.getVisibility() != VISIBLE || overview.getContentAlpha() == 0) {
+            SCALE_PROPERTY.set(overview, 1.33f);
+        }
     }
 }

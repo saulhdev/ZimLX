@@ -19,6 +19,7 @@ package org.zimmob.zimlx.groups
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.res.Configuration
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
@@ -38,6 +39,11 @@ import org.zimmob.zimlx.util.*
 import android.os.Process
 
 import android.os.UserHandle
+import android.view.WindowManager
+import androidx.appcompat.app.AlertDialog
+import me.priyesh.chroma.orientation
+import me.priyesh.chroma.percentOf
+import me.priyesh.chroma.screenDimensions
 
 
 typealias GroupCreator<T> = (Context) -> T?
@@ -371,14 +377,14 @@ abstract class AppGroups<T : AppGroups.Group>(private val manager: AppGroupsMana
 
             override fun createRow(context: Context, parent: ViewGroup, accent: Int): View? {
                 val view = LayoutInflater.from(context).inflate(R.layout.drawer_tab_color_row, parent, false)
-                val resources = context.resources
+                //val resources = context.resources
 
                 updateColor(view)
 
                 /*view.setOnClickListener {
                     val dialog = AlertDialog.Builder(context).create()
                     val current = value()
-                    val resolvers = resources.getStringArray(R.array.resolver_tabs)
+                    //val resolvers = resources.getStringArray(R.array.resolver_tabs)
                     with(dialog) {
                         val tabbedPickerView = TabbedPickerView(this.context, "tabs", current,
                                 ColorMode.RGB, resolvers, false, {

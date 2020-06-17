@@ -35,6 +35,7 @@ import android.util.ArrayMap;
 import androidx.annotation.UiThread;
 
 import com.android.launcher3.FastBitmapDrawable;
+import com.android.launcher3.ItemInfo;
 import com.android.launcher3.ItemInfoWithIcon;
 import com.android.launcher3.R;
 import com.android.launcher3.icons.BitmapInfo;
@@ -78,6 +79,13 @@ public class DrawableFactory implements ResourceBasedOverride {
 
     public FastBitmapDrawable newIcon(BitmapInfo info, ActivityInfo target) {
         return new FastBitmapDrawable(info);
+    }
+
+    /**
+     * Returns a FastBitmapDrawable with the icon.
+     */
+    public FastBitmapDrawable newIcon(Bitmap icon, ItemInfoWithIcon info) {
+        return new FastBitmapDrawable(icon);
     }
 
     /**

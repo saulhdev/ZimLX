@@ -148,8 +148,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
     public boolean isCustomIcon = false;
     private GestureHandler mSwipeUpHandler;
     private boolean mIsTextVisible = true;
-    private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY
-            = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
+    private static final Property<FolderIcon, Float> DOT_SCALE_PROPERTY = new Property<FolderIcon, Float>(Float.TYPE, "dotScale") {
         @Override
         public Float get(FolderIcon folderIcon) {
             return folderIcon.mDotScale;
@@ -203,7 +202,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
         lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
         if (folderInfo instanceof DrawerFolderInfo) {
             lp.topMargin = grid.allAppsIconSizePx + grid.allAppsIconDrawablePaddingPx;
-            icon.mBackground = new PreviewBackground();
+            icon.mBackground = new PreviewBackground(true);
             ((DrawerFolderInfo) folderInfo).getAppsStore().registerFolderIcon(icon);
         } else {
             lp.topMargin = grid.iconSizePx + grid.iconDrawablePaddingPx;
@@ -385,7 +384,7 @@ public class FolderIcon extends FrameLayout implements FolderListener, IconLabel
 
             isCustomIcon = false;
             mFolderName.clearIcon();
-            mBackground.setStartOpacity(0f);
+            mBackground.setStartOpacity(1f);
         }
         mFolderName.setText(mInfo.getIconTitle());
         requestLayout();

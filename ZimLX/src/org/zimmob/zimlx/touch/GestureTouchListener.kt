@@ -72,13 +72,17 @@ open class GestureTouchListener(context: Context) : View.OnTouchListener {
     }
 
     fun onLongPress() {
+        val rectF = RectF()
+        rectF.left = touchDownX
+        rectF.bottom = touchDownY
+
         if (launcher.isInState(LauncherState.NORMAL)) {
             gestureController.onLongPress()
         } else if (launcher.isInState(LauncherState.OPTIONS)) {
             // Don't go to normal on up
             clickPossible = false
 
-            OptionsPopupView.show(launcher, null, listOf(OptionsPopupView.OptionItem(
+            OptionsPopupView.show(launcher, rectF, listOf(OptionsPopupView.OptionItem(
                     R.string.remove_drop_target_label,
                     R.drawable.ic_remove_no_shadow,
                     -1) {

@@ -112,6 +112,11 @@ public class AllAppsSearchBarController
         if (query.isEmpty()) {
             return false;
         }
+
+        if (mCb.onSubmitSearch()) {
+            return true;
+        }
+
         return mLauncher.startActivitySafely(v,
                 PackageManagerHelper.getMarketSearchIntent(mLauncher, query), null,
                 AppLaunchTracker.CONTAINER_SEARCH);
@@ -174,6 +179,8 @@ public class AllAppsSearchBarController
          * Called when the search results should be cleared.
          */
         void clearSearchResult();
+
+        boolean onSubmitSearch();
     }
 
 }

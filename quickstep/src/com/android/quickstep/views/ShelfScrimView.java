@@ -234,6 +234,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
 
     private void drawBackground(Canvas canvas) {
         if (mDrawingFlatColor) {
+            onDrawFlatColor(canvas);
             if (mCurrentFlatColor != 0) {
                 canvas.drawColor(mCurrentFlatColor);
             }
@@ -243,6 +244,7 @@ public class ShelfScrimView extends ScrimView implements NavigationModeChangeLis
         if (Color.alpha(mShelfColor) == 0) {
             return;
         } else if (mProgress <= 0) {
+            onDrawFlatColor(canvas);
             canvas.drawColor(mShelfColor);
             return;
         }

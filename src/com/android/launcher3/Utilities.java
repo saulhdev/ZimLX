@@ -84,9 +84,7 @@ import com.android.launcher3.graphics.RotationMode;
 import com.android.launcher3.graphics.TintedDrawableSpan;
 import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
-import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
-import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
@@ -151,6 +149,8 @@ public final class Utilities {
     public static final boolean ATLEAST_MARSHMALLOW =
             Build.VERSION.SDK_INT >= Build.VERSION_CODES.M;
     public static final int SINGLE_FRAME_MS = 16;
+
+    public static boolean HIDDEN_APIS_ALLOWED = false; //!ATLEAST_P || HiddenApiCompat.checkIfAllowed();
 
     /**
      * Set on a motion event dispatched from the nav bar. See {@link MotionEvent#setEdgeFlags(int)}.
@@ -1128,6 +1128,11 @@ public final class Utilities {
             return originalSmallestWidth >= 600;
         }
         return false;
+    }
+
+    public static boolean hasWriteSecureSettingsPermission(Context context) {
+        return ContextCompat.checkSelfPermission(context,
+                android.Manifest.permission.WRITE_SECURE_SETTINGS) == PackageManager.PERMISSION_GRANTED;
     }
 
     /*END CUSTOM*/

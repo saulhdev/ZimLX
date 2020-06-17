@@ -25,9 +25,12 @@ import android.os.Binder;
 import android.util.Log;
 
 import com.android.launcher3.LauncherAppState;
+import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.LauncherSettings.Favorites;
 import com.android.launcher3.util.IntArray;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Locale;
 
 /**
@@ -90,6 +93,26 @@ public class LauncherDbUtils {
         ContentValues values = new ContentValues();
         values.put(Favorites.SCREEN, newScreen);
         db.update(Favorites.TABLE_NAME, values, "container = -100 and screen = ?", whereParams);
+    }
+
+    /**
+     * Parses the cursor containing workspace screens table and returns the list of screen IDs
+     */
+    public static ArrayList<Integer> getScreenIdsFromCursor(Cursor sc) {
+        try {
+            return iterateCursor(sc,
+                    sc.getColumnIndexOrThrow(LauncherSettings.WorkspaceScreens._ID),
+                    new ArrayList<>());
+        } finally {
+            sc.close();
+        }
+    }
+
+    public static <T extends Collection<Integer>> T iterateCursor(Cursor c, int columnIndex, T out) {
+        while (c.moveToNext()) {
+            out.add(c.getInt(columnIndex));
+        }
+        return out;
     }
 
     public static IntArray queryIntArray(SQLiteDatabase db, String tableName, String columnName,
