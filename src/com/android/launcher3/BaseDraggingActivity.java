@@ -70,7 +70,7 @@ public abstract class BaseDraggingActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mIsSafeModeEnabled = getPackageManager().isSafeMode();
-        mRotationListener = new DisplayRotationListener(this, this::onDeviceRotationChanged);
+        mRotationListener = DisplayRotationListener.create(this, this::onDeviceRotationChanged);
 
         // Update theme
         WallpaperColorInfo wallpaperColorInfo = WallpaperColorInfo.getInstance(this);
