@@ -52,6 +52,7 @@ import androidx.preference.PreferenceFragmentCompat;
 import androidx.preference.PreferenceGroup;
 import androidx.preference.PreferenceRecyclerViewAccessibilityDelegate;
 import androidx.preference.PreferenceScreen;
+import androidx.preference.SwitchPreference;
 import androidx.preference.TwoStatePreference;
 import androidx.preference.internal.AbstractMultiSelectListPreference;
 import androidx.recyclerview.widget.RecyclerView;
@@ -61,6 +62,7 @@ import com.android.launcher3.BuildConfig;
 import com.android.launcher3.LauncherFiles;
 import com.android.launcher3.LauncherSettings;
 import com.android.launcher3.R;
+import com.android.launcher3.SessionCommitReceiver;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.compat.LauncherAppsCompat;
 import com.android.launcher3.notification.NotificationListener;
@@ -94,6 +96,7 @@ import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.preferences.SmartspaceEventProvidersFragment;
 import org.zimmob.zimlx.preferences.SmartspaceEventProvidersPreference;
 import org.zimmob.zimlx.preferences.StyledIconPreference;
+import org.zimmob.zimlx.smartspace.FeedBridge;
 import org.zimmob.zimlx.smartspace.OnboardingProvider;
 import org.zimmob.zimlx.theme.ThemeOverride;
 import org.zimmob.zimlx.util.AboutUtils;
@@ -121,6 +124,7 @@ public class SettingsActivity extends SettingsBaseActivity
     public final static String ALLOW_OVERLAP_PREF = "pref_allowOverlap";
 
     public final static String ENABLE_MINUS_ONE_PREF = "pref_enable_minus_one";
+    public final static String SMARTSPACE_PREF = "pref_smartspace";
     private final static String BRIDGE_TAG = "tag_bridge";
 
     public static final String EXTRA_FRAGMENT_ARG_KEY = ":settings:fragment_args_key";
@@ -225,16 +229,6 @@ public class SettingsActivity extends SettingsBaseActivity
         if (hasPreview) {
             overrideCloseAnim();
         }
-    }
-
-    public boolean onPreferenceDisplayDialog(@NonNull PreferenceFragmentCompat caller,
-                                             Preference pref) {
-        if (ENABLE_MINUS_ONE_PREF.equals(pref.getKey())) {
-            InstallFragment fragment = new InstallFragment();
-            fragment.show(getSupportFragmentManager(), BRIDGE_TAG);
-            return true;
-        }
-        return false;
     }
 
     private void updateUpButton() {
@@ -655,8 +649,31 @@ public class SettingsActivity extends SettingsBaseActivity
             mContext = getActivity();
             getPreferenceManager().setSharedPreferencesName(LauncherFiles.SHARED_PREFERENCES_KEY);
             int preference = getContent();
-
+            ContentResolver resolver = mContext.getContentResolver();
             switch (preference) {
+                case R.xml.zim_preferences_desktop:
+                    if (!Utilities.ATLEAST_OREO) {
+                        getPreferenceScreen().removePreference(
+                                findPreference(SessionCommitReceiver.ADD_ICON_PREFERENCE_KEY));
+                    }
+                    // Setup allow rotation preference
+                    Preference rotationPref = findPreference(Utilities.ALLOW_ROTATION_PREFERENCE_KEY);
+                    if (getResources().getBoolean(R.bool.allow_rotation)) {
+                        // Launcher supports rotation by default. No need to show this setting.
+                        getPreferenceScreen().removePreference(rotationPref);
+                    } else {
+                        mRotationLockObserver = new SystemDisplayRotationLockObserver(rotationPref, resolver);
+
+                        // Register a content observer to listen for system setting changes while
+                        // this UI is active.
+                        mRotationLockObserver.register(Settings.System.ACCELEROMETER_ROTATION);
+
+                        // Initialize the UI once
+                        rotationPref.setDefaultValue(Utilities.getAllowRotationDefaultValue(getActivity()));
+                    }
+
+                    break;
+
                 case R.xml.zim_preferences_app_drawer:
                     findPreference(SHOW_PREDICTIONS_PREF).setOnPreferenceChangeListener(this);
                     break;
@@ -746,6 +763,15 @@ public class SettingsActivity extends SettingsBaseActivity
         public void onResume() {
             super.onResume();
             setActivityTitle();
+
+            if (getContent() == R.xml.zim_preferences_smartspace) {
+                SwitchPreference minusOne = (SwitchPreference) findPreference(
+                        ENABLE_MINUS_ONE_PREF);
+                if (minusOne != null && !FeedBridge.Companion.getInstance(getActivity())
+                        .isInstalled()) {
+                    minusOne.setChecked(false);
+                }
+            }
         }
 
         protected void setActivityTitle() {
@@ -841,6 +867,9 @@ public class SettingsActivity extends SettingsBaseActivity
                     break;
 
                 case ENABLE_MINUS_ONE_PREF:
+                    if (FeedBridge.Companion.getInstance(getActivity()).isInstalled()) {
+                        return true;
+                    }
                     FragmentManager fm = getFragmentManager();
                     if (fm.findFragmentByTag(BRIDGE_TAG) == null) {
                         InstallFragment fragment = new InstallFragment();

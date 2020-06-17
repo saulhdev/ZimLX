@@ -86,6 +86,7 @@ import com.android.launcher3.icons.LauncherIcons;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutInfoCompat;
 import com.android.launcher3.shortcuts.ShortcutKey;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.PackageManagerHelper;
 import com.android.launcher3.views.Transposable;
@@ -159,6 +160,7 @@ public final class Utilities {
     public static final int COLOR_EXTRACTION_JOB_ID = 1;
     public static final int WALLPAPER_COMPAT_JOB_ID = 2;
 
+    public static final String ALLOW_ROTATION_PREFERENCE_KEY = "pref_allowRotation";
     /**
      * Indicates if the device has a debug build. Should only be used to store additional info or
      * add extra logging and not for changing the app behavior.
@@ -610,8 +612,9 @@ public final class Utilities {
     }
 
     public static SharedPreferences getPrefs(Context context) {
-        return context.getSharedPreferences(
-                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);
+        /*return context.getSharedPreferences(
+                LauncherFiles.SHARED_PREFERENCES_KEY, Context.MODE_PRIVATE);*/
+        return getZimPrefs(context).getSharedPrefs();
     }
 
     public static SharedPreferences getDevicePrefs(Context context) {
@@ -712,7 +715,7 @@ public final class Utilities {
                 outObj[0] = si.get(0);
                 int iconDpi = appState.getInvariantDeviceProfile().fillResIconDpi;
                 if (iconProvider instanceof CustomIconProvider) {
-                    return ((CustomIconProvider) iconProvider).getIcon(si.get(0), iconDpi, false);
+                    return ((CustomIconProvider) iconProvider).getIcon(si.get(0), iconDpi, true);
                 }
                 return sm.getShortcutIconDrawable(si.get(0), iconDpi);
             }
@@ -1108,6 +1111,23 @@ public final class Utilities {
         }
         PowerManager powerManager = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
         return powerManager.isPowerSaveMode();
+    }
+
+    public static boolean isAllowRotationPrefEnabled(Context context) {
+        return getPrefs(context).getBoolean(ALLOW_ROTATION_PREFERENCE_KEY,
+                getAllowRotationDefaultValue(context));
+    }
+
+    public static boolean getAllowRotationDefaultValue(Context context) {
+        if (ATLEAST_NOUGAT) {
+            // If the device was scaled, used the original dimensions to determine if rotation
+            // is allowed of not.
+            Resources res = context.getResources();
+            int originalSmallestWidth = res.getConfiguration().smallestScreenWidthDp
+                    * res.getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEVICE_STABLE;
+            return originalSmallestWidth >= 600;
+        }
+        return false;
     }
 
     /*END CUSTOM*/
