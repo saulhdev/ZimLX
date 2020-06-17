@@ -63,6 +63,7 @@
     <string name="title__desktop_hide_icon_labels">Hide icon labels on home screen</string>
     <string name="title__desktop_grid_size">Grid Size</string>
 
+    <string name="overlap_placement">Allow Overlaps</string>
     <string name="summary__desktop_overlap">Allow icons and widget to overlap</string>
 
     <string name="title_use_pill_qsb">Use pill style search bar</string>
@@ -102,7 +103,6 @@
 
     <!-- PREFERENCES NOTIFICATIONS  -->
     <!-- Title for Notification dots setting. Tapping this will link to the system Notifications settings screen where the user can turn off notification dots globally. [CHAR LIMIT=50] -->
-    <string name="icon_badging_title">Enable Notifications</string>
     <string name="pref_category__notifications">Notifications</string>
     <string name="pref_category__gestures">Gestures</string>
     <string name="pref_title__notification_background_color">Notification Background Color</string>
@@ -181,8 +181,8 @@
     <string name="pref_app_groups_edit_tip">Tap to edit, drag to reorder.</string>
 
     <!-- PREFERENCES THEME -->
-    <string name="pref_cat__theme_icons">Icons</string>
-    <string name="pref_cat__theme_style">Style</string>
+    <string name="cat__theme_icons">Icons</string>
+    <string name="cat__theme_style">Style</string>
     <string name="title__theme_adaptive_icons">Adaptive Icons</string>
     <string name="title__theme_force_adaptive_icons">Force adaptive Icons</string>
     <string name="title__theme_colored_icons">Background Icons</string>
@@ -193,8 +193,11 @@
     <string name="title__theme_icon_shape">Change icon shape</string>
     <string name="title__theme_dark_theme">Force dark theme</string>
     <string name="title__theme_folder_shape">Folder Shape</string>
+    <string name="title__theme_blur_radius">Blur strength</string>
+    <string name="title__theme_blur">Blur</string>
     <string name="title__settings_icon_color">Setting Icon Color</string>
-    <string name="pref_summary__theme_colored_icons">Generate background based on the icon color</string>
+    <string name="summary__theme_blur">Blur effect for app drawer, dock, settings backgrounds</string>
+    <string name="summary__theme_colored_icons">Generate background based on the icon color</string>
 
     <string name="theme_material">Material</string>
     <string name="theme_automatic">Automatic</string>
@@ -469,28 +472,27 @@
     <string name="google_app">Google app</string>
 
     <!-- SEARCH AND FOLDER-->
-    <string name="title__folder_background">Folder Background</string>
-    <string name="title__folder_search_provider">Search engine</string>
-    <string name="summary_all_apps_google_search">Find web results and apps</string>
     <string name="cat__folder_searchbar_options">Search Options</string>
     <string name="cat__folder_folder_options">Folder Options</string>
+    <string name="title__folder_background">Folder Background</string>
+    <string name="title__folder_search_provider">Search engine</string>
+    <string name="title_all_apps_search">Drawer search bar</string>
+    <string name="title_all_apps_google_search">Global search</string>
+    <string name="title_search_hidden_apps">Find hidden apps</string>
+    <string name="title_folder_circle">Circle</string>
+    <string name="title_folder_circle_bg">Circle Shadow</string>
+    <string name="title_folder_square">Square</string>
+    <string name="title_folder_square_bg">Square Shadow</string>
+    <string name="summary_all_apps_google_search">Find web results and apps</string>
     <string name="pref_title__folder">Search Engine and Folder</string>
     <string name="pref_summary__folder">Show search Engine and Folder settings</string>
     <string name="pref_show_assistant_summary">Display voice search button if supported</string>
     <string name="pref_show_as_assistant_summary">Display assistant button instead of voice search</string>
     <string name="pref_show_assistant_title">Voice search button</string>
     <string name="bubble_searchbar">Dual bubble search bar</string>
-    <string name="title_all_apps_search">Drawer search bar</string>
-    <string name="title_all_apps_google_search">Global search</string>
-    <string name="title_search_hidden_apps">Find hidden apps</string>
     <string name="summary_search_hidden_apps">Show hidden apps in results</string>
     <string name="pref_search_bar_radius">Search bar corner rounding</string>
     <string name="background_color">Background color</string>
-    <string name="title__folder_google_color">Google Icon Color</string>
-    <string name="title_folder_circle">Circle</string>
-    <string name="title_folder_circle_bg">Circle Shadow</string>
-    <string name="title_folder_square">Square</string>
-    <string name="title_folder_square_bg">Square Shadow</string>
     <string name="search_provider_yandex">Yandex</string>
     <string name="search_provider_ddg">DuckDuckGo</string>
     <string name="search_provider_bing">Bing</string>
@@ -508,7 +510,6 @@
     <string name="icon_shape_override_label">Icon Shape Override</string>
     <string name="search_provider_edge">Edge</string>
     <string name="search_provider_qwant">Qwant</string>
-    <string name="special_greeting" translatable="false">Hi Jane! Lots of love from the team.</string>
     <string name="web_search_google">Google (web)</string>
     <string name="web_search_ddg">DuckDuckGo (web)</string>
     <string name="web_search_startpage">Startpage.com (web)</string>
@@ -639,6 +640,5 @@
     <string name="zim_actions">Actions</string>
 
     <string name="pref_sesame_show_shortcuts">Show in Shortcut Bubbles</string>
-
     <string name="pref_sesame_show_shortcuts_summary">Show in Shortcut Bubbles</string>
 </resources>

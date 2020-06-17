@@ -88,7 +88,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     private val updateSmartspace = { updateSmartspace() }
     private val updateWeatherData = { onChangeCallback?.updateWeatherData() ?: Unit }
     private val reloadDockStyle = {
-        //LauncherAppState.getIDP(context).onDockStyleChanged(this)
         recreate()
     }
     private val zimConfig = Config.getInstance(context)
@@ -136,8 +135,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val drawerPaddingScale by FloatPref("pref_allAppsPaddingScale", 1.0f, recreate)
     val drawerLabelColor by IntPref("pref_key__drawer_label_color", R.color.qsb_drawer_text_color_normal, reloadApps)
     val showAllAppsLabel by BooleanPref("pref_showAllAppsLabel", false) {
-        /*val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
-        header?.updateShowAllAppsLabel()*/
         val header = onChangeCallback?.launcher?.appsView?.floatingHeaderView
         header?.updateShowAllAppsLabel()
     }
@@ -153,7 +150,6 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     var hiddenPredictionAppSet by StringSetPref("pref_hidden_prediction_set", Collections.emptySet(), doNothing)
     val allAppsBackground by IntPref("pref_allAppsBackground", R.color.ic_allapps_background, reloadApps)
     val allAppsOpacity by AlphaPref("pref_allAppsOpacitySB", -1, recreate)
-
     val allAppsSearch by BooleanPref("pref_allAppsSearch", true, recreate)
 
     /* --DOCK-- */
@@ -170,6 +166,9 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
     val dockLabelRows get() = if (dockMultilineLabel) 2 else 1
     val dockTextScale by FloatPref("pref_dockTextScale", -1f, restart)
     val dockColoredGoogle by BooleanPref("pref_dockColoredGoogle", true, doNothing)
+    val dockIconScale by FloatPref("pref_hotseatIconSize", 1f, recreate)
+    var dockShadow by BooleanPref("pref_dockShadow", true, recreate)
+    var dockOpacity by IntPref("pref_hotseatCustomOpacity", 1, recreate)
 
     /* --THEME-- */
     private var iconPack by StringPref("pref_icon_pack", context.resources.getString(R.string.config_default_icon_pack), reloadIconPacks)
@@ -326,10 +325,10 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
         putBoolean("pref_dockShadow", false)
         putBoolean("pref_hotseatShowArrow", prefs.getBoolean("pref_hotseatShowArrow", true))
         putFloat("pref_dockRadius", 0f)
-        putBoolean("pref_dockGradient", prefs.getBoolean("pref_isHotseatTransparent", false))
-        if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
+        //putBoolean("pref_dockGradient", prefs.getBoolean("pref_isHotseatTransparent", false))
+        /*if (!prefs.getBoolean("pref_hotseatShouldUseCustomOpacity", false)) {
             putFloat("pref_hotseatCustomOpacity", -1f / 255)
-        }
+        }*/
         putFloat("pref_dockScale", prefs.getFloat("pref_hotseatHeightScale", 1f))
 
         // Home widget
@@ -581,7 +580,7 @@ class ZimPreferences(val context: Context) : SharedPreferences.OnSharedPreferenc
 
     open inner class StringSetPref(key: String, defaultValue: Set<String>, onChange: () -> Unit = doNothing) :
             PrefDelegate<Set<String>>(key, defaultValue, onChange) {
-        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue)!!
+        override fun onGetValue(): Set<String> = sharedPrefs.getStringSet(getKey(), defaultValue) as Set<String>
 
         override fun onSetValue(value: Set<String>) {
             edit { putStringSet(getKey(), value) }

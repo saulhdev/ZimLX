@@ -23,6 +23,7 @@ import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -35,6 +36,7 @@ import com.android.launcher3.LauncherAppState;
 import com.android.launcher3.R;
 import com.android.launcher3.Utilities;
 import com.android.launcher3.WorkspaceItemInfo;
+import com.android.launcher3.uioverrides.states.OverviewState;
 import com.android.launcher3.util.ComponentKey;
 import com.google.android.apps.nexuslauncher.NexusLauncherActivity;
 
@@ -52,6 +54,8 @@ import java.util.Objects;
 
 import kotlin.Unit;
 import kotlin.jvm.functions.Function0;
+
+import static org.zimmob.zimlx.iconpack.IconPackManager.*;
 
 public class ZimLauncher extends NexusLauncherActivity {
     public static final int REQUEST_PERMISSION_STORAGE_ACCESS = 666;
@@ -82,7 +86,7 @@ public class ZimLauncher extends NexusLauncherActivity {
             Utilities.requestStoragePermission(this);
         }
         super.onCreate(savedInstanceState);
-        IconPackManager.Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
+        Companion.getInstance(this).getDefaultPack().getDynamicClockDrawer();
         mContext = this;
         mZimPrefs = Utilities.getZimPrefs(mContext);
         mZimPrefs.registerCallback(prefCallback);
@@ -183,6 +187,14 @@ public class ZimLauncher extends NexusLauncherActivity {
         prepareDummyView(rect.left, rect.top, rect.right, rect.bottom, callback);
     }
 
+    public int getShelfHeight() {
+        if (mZimPrefs.getShowPredictions()) {
+            int qsbHeight = getResources().getDimensionPixelSize(R.dimen.qsb_widget_height);
+            return (int) (OverviewState.getDefaultSwipeHeight(this) + qsbHeight);
+        } else {
+            return mDeviceProfile.hotseatBarSizePx;
+        }
+    }
 
     public void prepareDummyView(int left, int top, @NotNull Function0<Unit> callback) {
         int size = getResources().getDimensionPixelSize(R.dimen.options_menu_thumb_size);
@@ -223,9 +235,11 @@ public class ZimLauncher extends NexusLauncherActivity {
     public void startEditIcon(ItemInfo itemInfo, CustomInfoProvider<ItemInfo> infoProvider) {
         ComponentKey component;
 
+        currentEditInfo = itemInfo;
+
         if (itemInfo instanceof AppInfo) {
             component = ((AppInfo) itemInfo).toComponentKey();
-            currentEditIcon = Objects.requireNonNull(IconPackManager.Companion.getInstance(this).getEntryForComponent(component)).getDrawable();
+            currentEditIcon = Objects.requireNonNull(Companion.getInstance(this).getEntryForComponent(component)).getDrawable();
         } else if (itemInfo instanceof WorkspaceItemInfo) {
             component = new ComponentKey(itemInfo.getTargetComponent(), itemInfo.user);
             currentEditIcon = new BitmapDrawable(mContext.getResources(), ((WorkspaceItemInfo) itemInfo).iconBitmap);
@@ -237,7 +251,6 @@ public class ZimLauncher extends NexusLauncherActivity {
             currentEditIcon = null;
         }
 
-        // currentEditInfo = itemInfo;
         boolean folderInfo = itemInfo instanceof FolderInfo;
         int flags = Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS | Intent.FLAG_ACTIVITY_CLEAR_TASK;
         Intent intent = EditIconActivity.Companion.newIntent(this, infoProvider.getTitle(itemInfo), folderInfo, component);
@@ -256,10 +269,12 @@ public class ZimLauncher extends NexusLauncherActivity {
                 return;
             }
             ItemInfo itemInfo = currentEditInfo;
-            String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
-            IconPackManager.CustomIconEntry customIconEntry = IconPackManager.CustomIconEntry.Companion.fromString(entryString);
 
-            Objects.requireNonNull(CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
+            String entryString = Objects.requireNonNull(data).getString(EditIconActivity.EXTRA_ENTRY);
+
+            CustomIconEntry customIconEntry = CustomIconEntry.Companion.fromString(entryString);
+            Log.d(TAG, "Entry Icon:  Item: " + itemInfo + " Entry: " + customIconEntry);
+            (CustomInfoProvider.Companion.forItem(this, itemInfo)).setIcon(itemInfo, customIconEntry);
         }
     }
 

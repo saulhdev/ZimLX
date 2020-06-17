@@ -31,6 +31,12 @@
     </com.android.launcher3.settings.NotificationDotsPreference>
 
     <SwitchPreference
+        android:defaultValue="true"
+        android:key="pref_smartspace"
+        android:persistent="true"
+        android:summary="@string/smartspace_preferences_in_settings_desc"
+        android:title="@string/smartspace_preferences_in_settings" />
+    <SwitchPreference
         android:key="pref_add_icon_to_home"
         android:title="@string/auto_add_shortcuts_label"
         android:summary="@string/auto_add_shortcuts_description"

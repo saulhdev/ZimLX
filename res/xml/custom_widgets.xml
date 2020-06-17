@@ -31,6 +31,7 @@
         launcher:customizeScreen="@xml/zim_preferences_smartspace"
         launcher:customizeHasPreview="true" />
 
+    <!--
     <widget
         android:initialLayout="@layout/search_widget"
         android:label="@string/pref_category_searchbar"
@@ -44,5 +45,5 @@
         launcher:noPadding="true"
         launcher:customizeScreen="@xml/zim_preferences_folder"
         launcher:customizeTitle="@string/pref_category_searchbar"
-        launcher:numRows="1" />
+        launcher:numRows="1" /> -->
 </widgets>
