@@ -38,7 +38,6 @@ import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
 import org.zimmob.zimlx.override.AppInfoProvider
 import org.zimmob.zimlx.override.CustomInfoProvider
-import org.zimmob.zimlx.util.CustomIconUtils
 import org.zimmob.zimlx.util.CustomIconUtils.ICON_INTENTS
 import org.zimmob.zimlx.util.asNonEmpty
 import org.zimmob.zimlx.util.runOnMainThread

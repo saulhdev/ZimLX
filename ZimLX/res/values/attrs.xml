@@ -76,24 +76,6 @@
         <attr name="switchFlag" format="integer" />
     </declare-styleable>
 
-    <declare-styleable name="CustomAppWidgetProviderInfo">
-        <attr name="providerId" format="integer" />
-        <attr name="noPadding" format="boolean" />
-        <attr name="customizeTitle" format="string" />
-        <attr name="customizeScreen" format="reference" />
-        <attr name="customizeHasPreview" format="boolean" />
-
-        <attr name="android:label" />
-        <attr name="android:initialLayout" />
-        <attr name="android:icon" />
-        <attr name="android:previewImage" />
-        <attr name="android:resizeMode" />
-
-        <attr name="numRows" />
-        <attr name="numColumns" />
-        <attr name="numMinRows" format="integer" />
-        <attr name="numMinColumns" format="integer" />
-    </declare-styleable>
     <declare-styleable name="IndexablePreference">
         <attr name="android:key" />
         <attr name="android:defaultValue" />

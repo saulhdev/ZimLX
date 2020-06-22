@@ -33,6 +33,7 @@ import android.content.pm.LauncherActivityInfo;
 import android.content.pm.PackageInstaller;
 import android.content.pm.PackageInstaller.SessionInfo;
 import android.content.pm.ShortcutInfo;
+import android.graphics.Bitmap;
 import android.os.Handler;
 import android.os.Process;
 import android.os.UserHandle;
@@ -71,6 +72,7 @@ import com.android.launcher3.provider.ImportDataTask;
 import com.android.launcher3.shortcuts.DeepShortcutManager;
 import com.android.launcher3.shortcuts.ShortcutKey;
 import com.android.launcher3.util.ComponentKey;
+import com.android.launcher3.util.IntArray;
 import com.android.launcher3.util.LooperIdleLock;
 import com.android.launcher3.util.MultiHashMap;
 import com.android.launcher3.util.PackageManagerHelper;
@@ -81,9 +83,11 @@ import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.model.HomeWidgetMigrationTask;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.CancellationException;
@@ -392,7 +396,7 @@ public class LoaderTask implements Runnable {
 
                             FolderIconPreviewVerifier verifier =
                                     new FolderIconPreviewVerifier(mApp.getInvariantDeviceProfile());
-
+                            /*
                             if (allUsers.indexOfValue(c.user) < 0) {
                                 if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
                                     c.markDeleted("Legacy shortcuts are only allowed for current users");
@@ -400,6 +404,22 @@ public class LoaderTask implements Runnable {
                                 } else if (c.restoreFlag != 0) {
                                     // Don't restore items for other profiles.
                                     c.markDeleted("Restore from other profiles not supported");
+                                    continue;
+                                }
+                            }
+                            if (TextUtils.isEmpty(targetPkg) &&
+                                    c.itemType != LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                                c.markDeleted("Only legacy shortcuts can have null package");
+                                continue;
+                            }*/
+
+                            if (!Process.myUserHandle().equals(c.user)) {
+                                if (c.itemType == LauncherSettings.Favorites.ITEM_TYPE_SHORTCUT) {
+                                    c.markDeleted("Legacy shortcuts are only allowed for default user");
+                                    continue;
+                                } else if (c.restoreFlag != 0) {
+                                    // Don't restore items for other profiles.
+                                    c.markDeleted("Restore from managed profile not supported");
                                     continue;
                                 }
                             }
@@ -423,7 +443,7 @@ public class LoaderTask implements Runnable {
                                     // no special handling necessary for this item
                                     c.markRestored();
                                 } else {
-                                    // Gracefully try to find a fallback activity.
+                                    /*// Gracefully try to find a fallback activity.
                                     intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
                                     if (intent != null) {
                                         c.restoreFlag = 0;
@@ -433,6 +453,27 @@ public class LoaderTask implements Runnable {
                                         cn = intent.getComponent();
                                     } else {
                                         c.markDeleted("Unable to find a launch target");
+                                        continue;
+                                    }*/
+
+                                    if (c.hasRestoreFlag(WorkspaceItemInfo.FLAG_AUTOINSTALL_ICON)) {
+                                        // We allow auto install apps to have their intent
+                                        // updated after an install.
+                                        intent = pmHelper.getAppLaunchIntent(targetPkg, c.user);
+                                        if (intent != null) {
+                                            c.restoreFlag = 0;
+                                            c.updater().put(
+                                                    LauncherSettings.Favorites.INTENT,
+                                                    intent.toUri(0)).commit();
+                                            cn = intent.getComponent();
+                                        } else {
+                                            c.markDeleted("Unable to find a launch target");
+                                            continue;
+                                        }
+                                    } else {
+                                        // The app is installed but the component is no
+                                        // longer available.
+                                        c.markDeleted("Invalid component removed: " + cn);
                                         continue;
                                     }
                                 }
@@ -666,8 +707,7 @@ public class LoaderTask implements Runnable {
                                     Log.v(TAG, "Widget restore pending id=" + c.id
                                             + " appWidgetId=" + appWidgetId
                                             + " status =" + c.restoreFlag);
-                                    appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId,
-                                            component);
+                                    appWidgetInfo = new LauncherAppWidgetInfo(appWidgetId, component);
                                     appWidgetInfo.restoreStatus = c.restoreFlag;
 
                                     tempPackageKey.update(component.getPackageName(), c.user);
@@ -772,14 +812,17 @@ public class LoaderTask implements Runnable {
             }
 
             // Unpin shortcuts that don't exist on the workspace.
-            HashSet<ShortcutKey> pendingShortcuts =
-                    InstallShortcutReceiver.getPendingShortcuts(context);
-            for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
-                MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
-                if ((numTimesPinned == null || numTimesPinned.value == 0)
-                        && !pendingShortcuts.contains(key)) {
-                    // Shortcut is pinned but doesn't exist on the workspace; unpin it.
-                    mShortcutManager.unpinShortcut(key);
+            if (Utilities.ATLEAST_NOUGAT) {
+                // Unpin shortcuts that don't exist on the workspace.
+                HashSet<ShortcutKey> pendingShortcuts =
+                        InstallShortcutReceiver.getPendingShortcuts(context);
+                for (ShortcutKey key : shortcutKeyToPinnedShortcuts.keySet()) {
+                    MutableInt numTimesPinned = mBgDataModel.pinnedShortcutCounts.get(key);
+                    if ((numTimesPinned == null || numTimesPinned.value == 0)
+                            && !pendingShortcuts.contains(key)) {
+                        // Shortcut is pinned but doesn't exist on the workspace; unpin it.
+                        mShortcutManager.unpinShortcut(key);
+                    }
                 }
             }
 

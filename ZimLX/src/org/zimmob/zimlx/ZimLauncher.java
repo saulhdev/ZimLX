@@ -44,7 +44,6 @@ import org.jetbrains.annotations.NotNull;
 import org.zimmob.zimlx.blur.BlurWallpaperProvider;
 import org.zimmob.zimlx.gestures.GestureController;
 import org.zimmob.zimlx.iconpack.EditIconActivity;
-import org.zimmob.zimlx.iconpack.IconPackManager;
 import org.zimmob.zimlx.override.CustomInfoProvider;
 import org.zimmob.zimlx.sensors.BrightnessManager;
 import org.zimmob.zimlx.views.OptionsPanel;

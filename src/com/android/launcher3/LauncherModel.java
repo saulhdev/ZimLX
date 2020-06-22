@@ -21,7 +21,9 @@ import static com.android.launcher3.config.FeatureFlags.IS_DOGFOOD_BUILD;
 
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
+import android.content.ContentProviderOperation;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ShortcutInfo;
@@ -67,8 +69,10 @@ import java.io.FileDescriptor;
 import java.io.PrintWriter;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.Executor;
@@ -109,8 +113,6 @@ public class LauncherModel extends BroadcastReceiver
         sIconPackUiThread.start();
     }
     @Thunk static final Handler sWorker = new Handler(mWorkerLooper);
-    @Thunk
-    static final Handler sIconPack = new Handler(sIconPackThread.getLooper());
 
     // Indicates whether the current model data is valid or not.
     // We start off with everything not loaded. After that, we assume that
@@ -159,6 +161,20 @@ public class LauncherModel extends BroadcastReceiver
         mBgAllAppsList = new AllAppsList(iconCache, appFilter);
     }
 
+    /**
+     * Runs the specified runnable immediately if called from the worker thread, otherwise it is
+     * posted on the worker thread handler.
+     */
+    private static void runOnWorkerThread(Runnable r) {
+        if (sWorkerThread.getThreadId() == Process.myTid()) {
+            r.run();
+        } else {
+            // If we are not on the worker thread, then post to the worker handler
+            sWorker.post(r);
+        }
+    }
+
+
     public void setPackageState(PackageInstallInfo installInfo) {
         enqueueModelUpdateTask(new PackageInstallStateChangedTask(installInfo));
     }
@@ -188,6 +204,103 @@ public class LauncherModel extends BroadcastReceiver
         return new ModelWriter(mApp.getContext(), this, sBgDataModel,
                 hasVerticalHotseat, verifyChanges);
     }
+
+    static void checkItemInfoLocked(
+            final int itemId, final ItemInfo item, StackTraceElement[] stackTrace) {
+        ItemInfo modelItem = sBgDataModel.itemsIdMap.get(itemId);
+        if (modelItem != null && item != modelItem) {
+            // check all the data is consistent
+            if (modelItem instanceof WorkspaceItemInfo && item instanceof WorkspaceItemInfo) {
+                WorkspaceItemInfo modelShortcut = (WorkspaceItemInfo) modelItem;
+                WorkspaceItemInfo shortcut = (WorkspaceItemInfo) item;
+                if (modelShortcut.title.toString().equals(shortcut.title.toString()) &&
+                        modelShortcut.intent.filterEquals(shortcut.intent) &&
+                        modelShortcut.id == shortcut.id &&
+                        modelShortcut.itemType == shortcut.itemType &&
+                        modelShortcut.container == shortcut.container &&
+                        modelShortcut.screenId == shortcut.screenId &&
+                        modelShortcut.cellX == shortcut.cellX &&
+                        modelShortcut.cellY == shortcut.cellY &&
+                        modelShortcut.spanX == shortcut.spanX &&
+                        modelShortcut.spanY == shortcut.spanY) {
+                    // For all intents and purposes, this is the same object
+                    return;
+                }
+            }
+
+            // the modelItem needs to match up perfectly with item if our model is
+            // to be consistent with the database-- for now, just require
+            // modelItem == item or the equality check above
+            String msg = "item: " + ((item != null) ? item.toString() : "null") +
+                    "modelItem: " +
+                    ((modelItem != null) ? modelItem.toString() : "null") +
+                    "Error: ItemInfo passed to checkItemInfo doesn't match original";
+            RuntimeException e = new RuntimeException(msg);
+            if (stackTrace != null) {
+                e.setStackTrace(stackTrace);
+            }
+            throw e;
+        }
+    }
+
+    static void checkItemInfo(final ItemInfo item) {
+        final StackTraceElement[] stackTrace = new Throwable().getStackTrace();
+        final int itemId = item.id;
+        Runnable r = () -> {
+            synchronized (sBgDataModel) {
+                checkItemInfoLocked(itemId, item, stackTrace);
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
+    /**
+     * Update the order of the workspace screens in the database. The array list contains
+     * a list of screen ids in the order that they should appear.
+     */
+    public static void updateWorkspaceScreenOrder(Context context, final IntArray screens) {
+        final IntArray screensCopy = new IntArray();
+        screensCopy.addAll(screens);
+
+        final ContentResolver cr = context.getContentResolver();
+        final Uri uri = LauncherSettings.WorkspaceScreens.CONTENT_URI;
+
+        // Remove any negative screen ids -- these aren't persisted
+        Iterator<Integer> iter = (Iterator<Integer>) screensCopy;
+        while (iter.hasNext()) {
+            long id = iter.next();
+            if (id < 0) {
+                iter.remove();
+            }
+        }
+
+        Runnable r = () -> {
+            ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+            // Clear the table
+            ops.add(ContentProviderOperation.newDelete(uri).build());
+            int count = screensCopy.size();
+            for (int i = 0; i < count; i++) {
+                ContentValues v = new ContentValues();
+                long screenId = screensCopy.get(i);
+                v.put(LauncherSettings.WorkspaceScreens._ID, screenId);
+                v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+                ops.add(ContentProviderOperation.newInsert(uri).withValues(v).build());
+            }
+
+            try {
+                cr.applyBatch(LauncherProvider.AUTHORITY, ops);
+            } catch (Exception ex) {
+                throw new RuntimeException(ex);
+            }
+
+            synchronized (sBgDataModel) {
+                sBgDataModel.workspaceScreens.clear();
+                sBgDataModel.workspaceScreens.addAll((Collection<? extends Integer>) screensCopy);
+            }
+        };
+        runOnWorkerThread(r);
+    }
+
 
     /**
      * Set this as the current Launcher activity object for the loader.

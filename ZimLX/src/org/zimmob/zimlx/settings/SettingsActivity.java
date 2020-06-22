@@ -91,6 +91,7 @@ import org.zimmob.zimlx.preferences.ColorPreferenceCompat;
 import org.zimmob.zimlx.preferences.GridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.GridSizePreference;
 import org.zimmob.zimlx.preferences.IconShapePreference;
+import org.zimmob.zimlx.preferences.ResumablePreference;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizeDialogFragmentCompat;
 import org.zimmob.zimlx.preferences.SingleDimensionGridSizePreference;
 import org.zimmob.zimlx.preferences.SmartspaceEventProvidersFragment;
@@ -436,7 +437,9 @@ public class SettingsActivity extends SettingsBaseActivity
             int count = group.getPreferenceCount();
             for (int i = 0; i < count; i++) {
                 Preference preference = group.getPreference(i);
-
+                if (preference instanceof ResumablePreference) {
+                    ((ResumablePreference) preference).onResume();
+                }
                 if (preference instanceof PreferenceGroup) {
                     dispatchOnResume((PreferenceGroup) preference);
                 }

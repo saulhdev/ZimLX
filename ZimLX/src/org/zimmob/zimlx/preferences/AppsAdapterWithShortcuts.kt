@@ -41,7 +41,9 @@ import com.android.launcher3.compat.LauncherAppsCompat
 import com.android.launcher3.compat.UserManagerCompat
 import com.android.launcher3.pageindicators.CaretDrawable
 import com.android.launcher3.shortcuts.DeepShortcutManager
+import com.android.launcher3.shortcuts.ShortcutInfoCompat
 import com.android.launcher3.util.ComponentKey
+import org.zimmob.zimlx.iconpack.CustomIconProvider
 import org.zimmob.zimlx.util.isVisible
 
 open class AppsAdapterWithShortcuts(
@@ -182,11 +184,11 @@ open class AppsAdapterWithShortcuts(
 
         val label = if (!TextUtils.isEmpty(info.longLabel)) info.longLabel else info.shortLabel
         // TODO: debug why wrong icons are loaded from the provider at times
-        /*val iconDrawable = if (iconProvider is ThirdPartyIconProvider && false) {
-            (iconProvider as ThirdPartyIconProvider).getIcon(info, iconDpi)
-        } else {*/
-        val iconDrawable = shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
-        //}
+        val iconDrawable = if (iconProvider is CustomIconProvider && false) {
+            (iconProvider as CustomIconProvider).getIcon(info, iconDpi, false)
+        } else {
+            shortcutManager.getShortcutIconDrawable(info, DisplayMetrics.DENSITY_XXHIGH)
+        }
     }
 
     class LoadingItem : Item

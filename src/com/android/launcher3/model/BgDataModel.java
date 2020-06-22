@@ -120,6 +120,7 @@ public class BgDataModel {
         appWidgets.clear();
         folders.clear();
         itemsIdMap.clear();
+        workspaceScreens.clear();
         pinnedShortcutCounts.clear();
         deepShortcutMap.clear();
     }
@@ -140,11 +141,15 @@ public class BgDataModel {
         return screenSet.getArray();
     }
 
-    public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer,
-            String[] args) {
+    public synchronized void dump(String prefix, FileDescriptor fd, PrintWriter writer, String[] args) {
         if (Arrays.asList(args).contains("--proto")) {
             dumpProto(prefix, fd, writer, args);
             return;
+        }
+        writer.println(prefix + "Data Model:");
+        writer.print(prefix + " ---- workspace screens: ");
+        for (int i = 0; i < workspaceScreens.size(); i++) {
+            writer.print(" " + workspaceScreens.get(i).toString());
         }
         writer.println(prefix + "Data Model:");
         writer.println(prefix + " ---- workspace items ");
@@ -225,7 +230,6 @@ public class BgDataModel {
                 workspaces.get(info.screenId).add(dtw);
             }
         }
-
 
         // Traverse target wrapper
         ArrayList<DumpTarget> targetList = new ArrayList<>();

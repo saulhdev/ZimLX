@@ -154,7 +154,7 @@ public class FolderInfo extends ItemInfo {
     private Drawable cached;
 
     public ComponentKey toComponentKey() {
-        ComponentName componentName = new ComponentName(Launcher.mContext, "org.zimmob.zimlx.folder");
+        ComponentName componentName = new ComponentName(Launcher.mContext, "org.zimmob.zimlx.folder" + id);
         return new ComponentKey(componentName, Process.myUserHandle());
     }
 

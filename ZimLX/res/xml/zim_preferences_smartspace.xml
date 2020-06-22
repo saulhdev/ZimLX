@@ -5,12 +5,12 @@
     <!--
     <org.zimmob.zimlx.preferences.PreviewPreference
         android:key="pref_smartspace_preview"
-        app:previewLayout="@layout/smartspace_preview" />
+        app:previewLayout="@layout/smartspace_preview" />-->
 
     <org.zimmob.zimlx.preferences.SmartspaceAddToHomePreference
         android:key="pref_smartspace_add_to_home"
         android:title="@string/title__desktop_smartspace"
-        app:iconSpaceReserved="false"/>-->
+        app:iconSpaceReserved="false" />
 
     <org.zimmob.zimlx.preferences.StyledSwitchPreference
         android:defaultValue="true"

@@ -146,7 +146,6 @@ class EditIconActivity : SettingsBaseActivity() {
 
     fun onSelectIcon(entry: IconPack.Entry?) {
         val customEntry = entry?.toCustomEntry()
-        Log.d("EditIcon", "entry " + customEntry?.icon.toString())
         val entryString = if (isFolder) customEntry.toString() else customEntry?.toPackString()
         setResult(Activity.RESULT_OK, Intent().putExtra(EXTRA_ENTRY, entryString))
         finish()

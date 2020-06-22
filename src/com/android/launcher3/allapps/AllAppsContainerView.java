@@ -18,6 +18,7 @@ package com.android.launcher3.allapps;
 import android.animation.ValueAnimator;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -61,6 +62,7 @@ import com.android.launcher3.userevent.nano.LauncherLogProto.Target;
 import com.android.launcher3.util.ItemInfoMatcher;
 import com.android.launcher3.util.MultiValueAlpha;
 import com.android.launcher3.util.MultiValueAlpha.AlphaProperty;
+import com.android.launcher3.util.SystemUiController;
 import com.android.launcher3.util.Themes;
 import com.android.launcher3.views.BottomUserEducationView;
 import com.android.launcher3.views.RecyclerViewFastScroller;
@@ -72,6 +74,10 @@ import org.zimmob.zimlx.ZimPreferences;
 import org.zimmob.zimlx.allapps.AllAppsTabs;
 import org.zimmob.zimlx.allapps.AllAppsTabsController;
 import org.zimmob.zimlx.util.ZimUtilsKt;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 /**
  * The all apps view container.
@@ -152,6 +158,12 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
             mNavBarScrimPaint.setColor(newScrimColor);
         } else {
             mNavBarScrimPaint.setColor(mNavBarScrimColor);
+        }
+        int color = Color.argb(50, 128, 128, 128);
+        if (newScrimColor > color) {
+            mLauncher.getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, true);
+        } else {
+            mLauncher.getSystemUiController().updateUiState(SystemUiController.UI_STATE_BASE_WINDOW, false);
         }
     }
 
@@ -507,6 +519,14 @@ public class AllAppsContainerView extends SpringRelativeLayout implements DragSo
 */
     public AlphabeticalAppsList getApps() {
         return mAH[AdapterHolder.MAIN].appsList;
+    }
+
+    public Collection<AlphabeticalAppsList> getAppsLists() {
+        List<AlphabeticalAppsList> results = new ArrayList<>();
+        for (AdapterHolder holder : mAH) {
+            results.add(holder.appsList);
+        }
+        return results;
     }
 
     public PredictionsFloatingHeader getFloatingHeaderView() {

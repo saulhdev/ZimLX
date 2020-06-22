@@ -23,7 +23,7 @@ class ZimPreferencesChangeCallback(val launcher: ZimLauncher) {
     }
 
     fun reloadDrawer() {
-        //launcher.appsView.apps.apps.forEach { it.reset() }
+        launcher.appsView.appsLists.forEach { it.reset() }
     }
 
     fun restart() {

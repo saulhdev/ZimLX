@@ -30,26 +30,26 @@
             android:dependency="opa_enabled"
             android:title="@string/bubble_searchbar"
             app:iconSpaceReserved="false" />
-
-        <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
-            android:key="pref_searchbarRadius"
-            android:title="@string/pref_search_bar_radius"
-            app:defaultSeekbarValue="-1.0"
-            app:maxValue="24"
-            app:minValue="0.0"
-            app:steps="24"
-            app:summaryFormat="%.0fdp" />
+        <!--
+                <org.zimmob.zimlx.preferences.AutoModeSeekbarPreference
+                    android:key="pref_searchbarRadius"
+                    android:title="@string/pref_search_bar_radius"
+                    app:defaultSeekbarValue="-1.0"
+                    app:maxValue="24"
+                    app:minValue="0.0"
+                    app:steps="24"
+                    app:summaryFormat="%.0fdp" /> -->
 
     </org.zimmob.zimlx.preferences.StyledPreferenceCategory>
     <!--
-    <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__folder_folder_options">
-        <org.zimmob.zimlx.preferences.ColorPreferenceCompat
-            android:defaultValue="@color/folderBackground"
-            android:key="pref_key__folder_background"
-            android:title="@string/title__folder_background"
-            app:cpv_dialogTitle="@string/title__folder_background"
-            app:cpv_showAlphaSlider="true"
-            app:iconSpaceReserved="false" />
-    </org.zimmob.zimlx.preferences.StyledPreferenceCategory> -->
+        <org.zimmob.zimlx.preferences.StyledPreferenceCategory android:title="@string/cat__folder_folder_options">
+            <org.zimmob.zimlx.preferences.ColorPreferenceCompat
+                android:defaultValue="@color/folderBackground"
+                android:key="pref_key__folder_background"
+                android:title="@string/title__folder_background"
+                app:cpv_dialogTitle="@string/title__folder_background"
+                app:cpv_showAlphaSlider="true"
+                app:iconSpaceReserved="false" />
+        </org.zimmob.zimlx.preferences.StyledPreferenceCategory> -->
 
 </androidx.preference.PreferenceScreen>

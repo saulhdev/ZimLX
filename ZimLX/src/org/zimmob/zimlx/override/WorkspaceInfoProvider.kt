@@ -58,7 +58,7 @@ class WorkspaceInfoProvider private constructor(context: Context) : CustomInfoPr
         if (entry != null) {
             val launcherActivityInfo = getLauncherActivityInfo(info)
             val iconCache = LauncherAppState.getInstance(context).iconCache
-            val drawable = iconCache.getFullResIcon(launcherActivityInfo, info, true)
+            val drawable = iconCache.getFullResIcon(launcherActivityInfo, info, false)
             val bitmap = LauncherIcons.obtain(context).createBadgedIconBitmap(drawable, info.user, Build.VERSION_CODES.O_MR1)
             info.setIcon(context, bitmap.icon)
             Log.d("WorkspaceInfoProvider", "Icon Entry " + bitmap.icon.toString())

@@ -37,6 +37,7 @@ class SmartspaceAddToHomePreference(context: Context, attrs: AttributeSet?) :
     override fun onResume() {
         isVisible = LauncherAppState.getInstance(context).model
                 .loadedWidgets?.any { it.isCustomWidget } != true
+
     }
 
     override fun onClick() {

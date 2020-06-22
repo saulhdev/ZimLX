@@ -477,6 +477,10 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
                 .getHiddenComponents();
     }
 
+    public void reset() {
+        updateAdapterItems();
+    }
+
     private boolean shouldShowWorkFooter() {
         return mIsWork && Utilities.ATLEAST_P &&
                 (DeepShortcutManager.getInstance(mLauncher).hasHostPermission()
@@ -513,10 +517,6 @@ public class AlphabeticalAppsList implements AllAppsStore.OnUpdateListener {
 
     public void setIsWork(boolean isWork) {
         mIsWork = isWork;
-    }
-
-    public void reset() {
-        updateAdapterItems();
     }
 
     /**

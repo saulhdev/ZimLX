@@ -32,6 +32,7 @@ import android.net.Uri;
 import android.os.Process;
 import android.text.TextUtils;
 import android.util.ArrayMap;
+import android.util.LongSparseArray;
 import android.util.SparseBooleanArray;
 
 import com.android.launcher3.AutoInstallsLayout.LayoutParserCallback;
@@ -70,6 +71,7 @@ public class ImportDataTask {
 
     private final Context mContext;
 
+    private final Uri mOtherScreensUri;
     private final Uri mOtherFavoritesUri;
 
     private int mHotseatSize;
@@ -78,13 +80,39 @@ public class ImportDataTask {
 
     private ImportDataTask(Context context, String sourceAuthority) {
         mContext = context;
+        mOtherScreensUri = Uri.parse("content://" + sourceAuthority + "/" + LauncherSettings.WorkspaceScreens.TABLE_NAME);
         mOtherFavoritesUri = Uri.parse("content://" + sourceAuthority + "/" + Favorites.TABLE_NAME);
     }
 
     public boolean importWorkspace() throws Exception {
+        ArrayList<Integer> allScreens = LauncherDbUtils.getScreenIdsFromCursor(
+                mContext.getContentResolver().query(mOtherScreensUri, null, null, null,
+                        LauncherSettings.WorkspaceScreens.SCREEN_RANK));
         FileLog.d(TAG, "Importing DB from " + mOtherFavoritesUri);
 
+        // During import we reset the screen IDs to 0-indexed values.
+        if (allScreens.isEmpty()) {
+            // No thing to migrate
+            FileLog.e(TAG, "No data found to import");
+            return false;
+        }
+
         mHotseatSize = mMaxGridSizeX = mMaxGridSizeY = 0;
+
+        // Build screen update
+        ArrayList<ContentProviderOperation> screenOps = new ArrayList<>();
+        int count = allScreens.size();
+        LongSparseArray<Long> screenIdMap = new LongSparseArray<>(count);
+        for (int i = 0; i < count; i++) {
+            ContentValues v = new ContentValues();
+            v.put(LauncherSettings.WorkspaceScreens._ID, i);
+            v.put(LauncherSettings.WorkspaceScreens.SCREEN_RANK, i);
+            screenIdMap.put(allScreens.get(i), (long) i);
+            screenOps.add(ContentProviderOperation.newInsert(
+                    LauncherSettings.WorkspaceScreens.CONTENT_URI).withValues(v).build());
+        }
+        mContext.getContentResolver().applyBatch(LauncherProvider.AUTHORITY, screenOps);
+
         importWorkspaceItems();
         GridSizeMigrationTask.markForMigration(mContext, mMaxGridSizeX, mMaxGridSizeY, mHotseatSize);
 

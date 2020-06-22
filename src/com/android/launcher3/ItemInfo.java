@@ -116,6 +116,7 @@ public class ItemInfo {
 
     ItemInfo(ItemInfo info) {
         copyFrom(info);
+        LauncherModel.checkItemInfo(this);
     }
 
     public void copyFrom(ItemInfo info) {
@@ -189,7 +190,7 @@ public class ItemInfo {
     protected String dumpProperties() {
         return "id=" + id
                 + " type=" + LauncherSettings.Favorites.itemTypeToString(itemType)
-                + " container=" + LauncherSettings.Favorites.containerToString((int)container)
+                + " container=" + LauncherSettings.Favorites.containerToString(container)
                 + " screen=" + screenId
                 + " cell(" + cellX + "," + cellY + ")"
                 + " span(" + spanX + "," + spanY + ")"
