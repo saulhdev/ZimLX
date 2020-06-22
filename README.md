@@ -1,3 +1,11 @@
+#Thank you
+### This project is no longer developed. I want to thank everyone who supported me with ideas, bugs, code, 
+### or any other kind of support. 
+
+### I will come back soon with a new project more professional, quicker releases and bringing new and cool features,
+### free and open source.
+
+
 # Zim Launcher
 [![Travis](https://img.shields.io/travis/otakuhqz/ZimLX.svg?style=for-the-badge)](https://travis-ci.org/otakuhqz/ZimLX)    [![Donate on PayPal](https://img.shields.io/badge/PayPal-Donate%20Now-orange.svg?style=for-the-badge)](https://paypal.me/saulhenriquez)    [![Codacy grade](https://img.shields.io/codacy/grade/b7b8e9a71417473ab7467a5984e41b36.svg?style=for-the-badge)](https://app.codacy.com/app/otakuhqz/ZimLX)  [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg?style=for-the-badge)](https://opensource.org/licenses/Apache-2.0)    [![GitHub release](https://img.shields.io/github/release/otakuhqz/ZimLX.svg?style=for-the-badge)](https://github.com/otakuhqz/ZimLX/releases)
 
