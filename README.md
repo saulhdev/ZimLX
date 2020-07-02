@@ -1,3 +1,6 @@
+### This project has been replaced with https://github.com/otakuhqz/omega.
+### The project has a more update code base (Launcher3 10 r35). Some features of this launcher will be avialable in the new Launcehr
+
 # Thank you
 ### This project is no longer developed. I want to thank everyone who supported me with ideas, bugs, code, or any other kind of support. 
 
