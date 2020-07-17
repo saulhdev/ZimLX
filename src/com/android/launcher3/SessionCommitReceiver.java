@@ -50,6 +50,8 @@ import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class SessionCommitReceiver extends BroadcastReceiver {
+    UserHandle lastuser = null;
+    SessionInfo lastinfo = null;
 
     private static final String TAG = "SessionCommitReceiver";
 
@@ -62,25 +64,28 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
             "pref_add_icon_to_home_initialized";
 
+    
     @Override
     public void onReceive(Context context, Intent intent) {
+        if (lastinfo.equals(intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION)) && lastuser.equals(intent.getParcelableExtra(Intent.EXTRA_USER))) {
+            return;
+        }
+        updateValues(intent);
         if (!isEnabled(context) || !Utilities.ATLEAST_OREO) {
             // User has decided to not add icons on homescreen.
             return;
         }
 
-        SessionInfo info = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
-        UserHandle user = intent.getParcelableExtra(Intent.EXTRA_USER);
         PackageInstallerCompat packageInstallerCompat = PackageInstallerCompat.getInstance(context);
 
-        if (TextUtils.isEmpty(info.getAppPackageName())
-                || info.getInstallReason() != PackageManager.INSTALL_REASON_USER
-                || packageInstallerCompat.promiseIconAddedForId(info.getSessionId())) {
-            packageInstallerCompat.removePromiseIconId(info.getSessionId());
+        if (TextUtils.isEmpty(lastinfo.getAppPackageName())
+                || lastinfo.getInstallReason() != PackageManager.INSTALL_REASON_USER
+                || packageInstallerCompat.promiseIconAddedForId(lastinfo.getSessionId())) {
+            packageInstallerCompat.removePromiseIconId(lastinfo.getSessionId());
             return;
         }
 
-        queueAppIconAddition(context, info.getAppPackageName(), user);
+        queueAppIconAddition(context, lastinfo.getAppPackageName(), lastuser);
     }
 
     public static void queuePromiseAppIconAddition(Context context, SessionInfo sessionInfo) {
@@ -135,6 +140,11 @@ public class SessionCommitReceiver extends BroadcastReceiver {
         } else if (!prefs.contains(ADD_ICON_PREFERENCE_INITIALIZED_KEY)) {
             new PrefInitTask(context).executeOnExecutor(Utilities.THREAD_POOL_EXECUTOR);
         }
+    }
+
+    private void updateValues(Intent intent) {
+        lastinfo = intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION);
+        lastuser = intent.getParcelableExtra(Intent.EXTRA_USER);
     }
 
     private static class PrefInitTask extends AsyncTask<Void, Void, Void> {
