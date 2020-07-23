@@ -106,7 +106,6 @@ public class WorkspaceAndHotseatScrim extends Scrim {
 
         String lastaction = null;
 
-
         @Override
         public void onReceive(Context context, Intent intent) {
             if (lastaction.equals(intent.getAction())) {

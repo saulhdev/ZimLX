@@ -64,7 +64,6 @@ public class SessionCommitReceiver extends BroadcastReceiver {
     public static final String ADD_ICON_PREFERENCE_INITIALIZED_KEY =
             "pref_add_icon_to_home_initialized";
 
-    
     @Override
     public void onReceive(Context context, Intent intent) {
         if (lastinfo.equals(intent.getParcelableExtra(PackageInstaller.EXTRA_SESSION)) && lastuser.equals(intent.getParcelableExtra(Intent.EXTRA_USER))) {
