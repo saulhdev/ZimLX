@@ -50,8 +50,8 @@ import static com.android.launcher3.compat.PackageInstallerCompat.getUserHandle;
  */
 @TargetApi(Build.VERSION_CODES.O)
 public class SessionCommitReceiver extends BroadcastReceiver {
-    UserHandle lastuser = null;
-    SessionInfo lastinfo = null;
+    private UserHandle lastuser = null;
+    private SessionInfo lastinfo = null;
 
     private static final String TAG = "SessionCommitReceiver";
 
