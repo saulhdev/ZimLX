@@ -100,12 +100,21 @@ public class WorkspaceAndHotseatScrim extends Scrim {
             };
 
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        private void updateValues(Intent intent) {
+            lastaction = intent.getAction();
+        }
+
+        private String lastaction = null;
+
         @Override
         public void onReceive(Context context, Intent intent) {
-            final String action = intent.getAction();
-            if (ACTION_SCREEN_OFF.equals(action)) {
+            if (lastaction.equals(intent.getAction())) {
+                return;
+            }
+            updateValues(intent);
+            if (ACTION_SCREEN_OFF.equals(lastaction)) {
                 mAnimateScrimOnNextDraw = true;
-            } else if (ACTION_USER_PRESENT.equals(action)) {
+            } else if (ACTION_USER_PRESENT.equals(lastaction)) {
                 // ACTION_USER_PRESENT is sent after onStart/onResume. This covers the case where
                 // the user unlocked and the Launcher is not in the foreground.
                 mAnimateScrimOnNextDraw = false;
